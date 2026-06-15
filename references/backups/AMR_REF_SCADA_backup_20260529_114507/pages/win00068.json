@@ -1,0 +1,87 @@
+{
+  "id": "win00068",
+  "title": "win00068",
+  "size": {
+    "width": 375,
+    "height": 139
+  },
+  "background": "rgba(0,0,0,1)",
+  "layers": [
+    {
+      "id": "legacy_embed",
+      "type": "legacy_embed",
+      "x": 0,
+      "y": 0,
+      "width": 375,
+      "height": 139,
+      "src": "../assets/html_pages/win00068_updated.html",
+      "sandbox": "allow-scripts allow-same-origin",
+      "scrolling": "auto"
+    }
+  ],
+  "bindings": [],
+  "navigation": [],
+  "layout": {
+    "mode": "fixed"
+  },
+  "legacy": {
+    "source_html": "08_web_modernized/html_pages/win00068_updated.html",
+    "inventory": {
+      "summary": {
+        "shape_layers": 1,
+        "scripts": 0,
+        "layers_total": 3,
+        "type_Button": 2,
+        "type_Text": 1,
+        "svg_shapes_total": 1
+      },
+      "svg_shape_counts": {
+        "rect": 1,
+        "line": 0,
+        "polyline": 0,
+        "polygon": 0,
+        "circle": 0,
+        "ellipse": 0,
+        "path": 0
+      },
+      "elements": [
+        {
+          "tag": "button",
+          "type": "Button",
+          "name": "Button1",
+          "id": "1",
+          "src": "",
+          "x": 254,
+          "y": 68,
+          "width": 103,
+          "height": 39,
+          "text": "Fermer"
+        },
+        {
+          "tag": "button",
+          "type": "Button",
+          "name": "Button2",
+          "id": "2",
+          "src": "",
+          "x": 148,
+          "y": 68,
+          "width": 98,
+          "height": 39,
+          "text": "OK"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text1",
+          "id": "4",
+          "src": "",
+          "x": 23,
+          "y": 3,
+          "width": 155,
+          "height": 21,
+          "text": "Entrez votre mot de passe"
+        }
+      ]
+    }
+  }
+}

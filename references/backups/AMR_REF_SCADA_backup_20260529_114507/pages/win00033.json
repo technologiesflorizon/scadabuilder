@@ -1,0 +1,354 @@
+{
+  "id": "win00033",
+  "title": "win00033",
+  "size": {
+    "width": 1280,
+    "height": 873
+  },
+  "background": "rgba(0,0,0,1)",
+  "layers": [
+    {
+      "id": "legacy_embed",
+      "type": "legacy_embed",
+      "x": 0,
+      "y": 0,
+      "width": 1280,
+      "height": 873,
+      "src": "../assets/html_pages/win00033_updated.html",
+      "sandbox": "allow-scripts allow-same-origin",
+      "scrolling": "auto"
+    }
+  ],
+  "bindings": [],
+  "navigation": [],
+  "layout": {
+    "mode": "fixed"
+  },
+  "legacy": {
+    "source_html": "08_web_modernized/html_pages/win00033_updated.html",
+    "inventory": {
+      "summary": {
+        "shape_layers": 1,
+        "scripts": 0,
+        "layers_total": 26,
+        "type_Button": 2,
+        "type_Image": 10,
+        "type_Text": 14,
+        "svg_shapes_total": 1236
+      },
+      "svg_shape_counts": {
+        "rect": 65,
+        "line": 73,
+        "polyline": 291,
+        "polygon": 807,
+        "circle": 0,
+        "ellipse": 0,
+        "path": 0
+      },
+      "elements": [
+        {
+          "tag": "button",
+          "type": "Button",
+          "name": "Button1",
+          "id": "1",
+          "src": "",
+          "x": 36,
+          "y": 225,
+          "width": 95,
+          "height": 65,
+          "text": "E-Stop"
+        },
+        {
+          "tag": "button",
+          "type": "Button",
+          "name": "Button2",
+          "id": "2",
+          "src": "",
+          "x": 33,
+          "y": 295,
+          "width": 99,
+          "height": 67,
+          "text": "Set alarm"
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image1",
+          "id": "14",
+          "src": "assets/41da4c1d24240c5dbcc4248be64f6448ad8e7ddeee7982335af81ad2d80f3713.png",
+          "x": 44,
+          "y": 629,
+          "width": 144,
+          "height": 132
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text1",
+          "id": "25",
+          "src": "",
+          "x": 89,
+          "y": 597,
+          "width": 11,
+          "height": 13,
+          "text": "E-5"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text2",
+          "id": "26",
+          "src": "",
+          "x": 216,
+          "y": 796,
+          "width": 44,
+          "height": 13,
+          "text": "Liquide (M.T.)"
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image2",
+          "id": "244",
+          "src": "assets/d01e500562dd8fb794148c37b264cfe363ae39447fe42bf598626e86e7e8b77c.png",
+          "x": 483,
+          "y": 569,
+          "width": 124,
+          "height": 132
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text3",
+          "id": "262",
+          "src": "",
+          "x": 639,
+          "y": 733,
+          "width": 62,
+          "height": 13,
+          "text": "Liquide (All\u00e9e B.T.)"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text4",
+          "id": "481",
+          "src": "",
+          "x": 490,
+          "y": 615,
+          "width": 15,
+          "height": 13,
+          "text": "E-13"
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image3",
+          "id": "482",
+          "src": "assets/3fc0c96903034496b889b18f7e791aeb9f71e15ae77724a9a3ccec9fe27a64b8.png",
+          "x": 190,
+          "y": 1,
+          "width": 145,
+          "height": 157
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image4",
+          "id": "483",
+          "src": "assets/85f7e0ecb8d9adc4a7e9da5bcd105d947a43e7a0fb01c3ba7b209e670bc63c28.png",
+          "x": 375,
+          "y": 0,
+          "width": 145,
+          "height": 157
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image5",
+          "id": "484",
+          "src": "assets/1dac31eb084603e4e03001c0f230bb3f58eb6b56c8a817e178cb1ea051a8bc3f.png",
+          "x": 36,
+          "y": 431,
+          "width": 133,
+          "height": 124
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image6",
+          "id": "485",
+          "src": "assets/1f2cf529e05e4da28c811fa00da778e9def85d970e08875133ae6dca135ff705.png",
+          "x": 404,
+          "y": 48,
+          "width": 11,
+          "height": 65
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image7",
+          "id": "487",
+          "src": "assets/210c7b4c074067335a2e6fece9f0e2ccc4214d41420746157a19e5d37cc5fd9d.png",
+          "x": 561,
+          "y": 1,
+          "width": 146,
+          "height": 148
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image8",
+          "id": "488",
+          "src": "assets/5829b3c06cc449f6d14993cd3912be9aee29b54014488f03c7de3b3e72358010.png",
+          "x": 11,
+          "y": 1,
+          "width": 143,
+          "height": 155
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image9",
+          "id": "509",
+          "src": "assets/c3078dcbaa19c58e5ef3ecc415e6edb48a1e35c502aa0d76d3c98bce6dfc7407.png",
+          "x": 836,
+          "y": 620,
+          "width": 161,
+          "height": 161
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text5",
+          "id": "523",
+          "src": "",
+          "x": 1033,
+          "y": 845,
+          "width": 44,
+          "height": 13,
+          "text": "Liquide (M.T.)"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text6",
+          "id": "722",
+          "src": "",
+          "x": 1063,
+          "y": 536,
+          "width": 10,
+          "height": 13,
+          "text": "GC"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text7",
+          "id": "723",
+          "src": "",
+          "x": 1108,
+          "y": 565,
+          "width": 10,
+          "height": 13,
+          "text": "SH"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text8",
+          "id": "871",
+          "src": "",
+          "x": 1026,
+          "y": 691,
+          "width": 25,
+          "height": 16,
+          "text": "YV-E4-80"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text9",
+          "id": "873",
+          "src": "",
+          "x": 1098,
+          "y": 653,
+          "width": 25,
+          "height": 16,
+          "text": "YV-E4-76"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text10",
+          "id": "875",
+          "src": "",
+          "x": 1028,
+          "y": 588,
+          "width": 25,
+          "height": 16,
+          "text": "YV-E4-83"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text11",
+          "id": "877",
+          "src": "",
+          "x": 1068,
+          "y": 743,
+          "width": 25,
+          "height": 16,
+          "text": "YV-E4-73"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text12",
+          "id": "879",
+          "src": "",
+          "x": 1038,
+          "y": 793,
+          "width": 25,
+          "height": 16,
+          "text": "YV-E4-65"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text13",
+          "id": "888",
+          "src": "",
+          "x": 1218,
+          "y": 608,
+          "width": 24,
+          "height": 13,
+          "text": "L (M.T.)"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text14",
+          "id": "889",
+          "src": "",
+          "x": 881,
+          "y": 671,
+          "width": 33,
+          "height": 35,
+          "text": "E-4"
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image10",
+          "id": "903",
+          "src": "assets/f0b1dbd5256ef8cdfa50a437bc40fd5df94be82ae2382ca23ae1a9cccc32295e.png",
+          "x": 188,
+          "y": 184,
+          "width": 158,
+          "height": 156
+        }
+      ]
+    }
+  }
+}

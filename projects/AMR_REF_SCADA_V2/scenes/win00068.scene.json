@@ -1,0 +1,252 @@
+{
+  "Id": "win00068",
+  "Title": "win00068",
+  "CanvasSize": {
+    "Width": 1280,
+    "Height": 873
+  },
+  "Elements": [
+    {
+      "Id": "legacy_3",
+      "DisplayName": "Rectangle1",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 24,
+        "Y": 32,
+        "Width": 323,
+        "Height": 27
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00068",
+        "SourceElementId": "3",
+        "SourceElementName": "Rectangle1",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00068_811a2bc70605.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "rect",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_1",
+      "DisplayName": "Button1",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 255,
+        "Y": 69,
+        "Width": 103,
+        "Height": 39
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00068",
+        "SourceElementId": "1",
+        "SourceElementName": "Button1",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00068_811a2bc70605.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Button",
+        "Text": "",
+        "IsTextLike": true,
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_2",
+      "DisplayName": "Button2",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 149,
+        "Y": 69,
+        "Width": 98,
+        "Height": 39
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00068",
+        "SourceElementId": "2",
+        "SourceElementName": "Button2",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00068_811a2bc70605.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Button",
+        "Text": "",
+        "IsTextLike": true,
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_4",
+      "DisplayName": "Text1",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 24,
+        "Y": 4,
+        "Width": 155,
+        "Height": 21
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00068",
+        "SourceElementId": "4",
+        "SourceElementName": "Text1",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00068_811a2bc70605.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 14,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "Entrez votre mot de passe",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Text",
+        "Text": "Entrez votre mot de passe",
+        "IsTextLike": true,
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 14,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    }
+  ],
+  "BackgroundColor": "#000000",
+  "LegacyTextOverrides": [],
+  "LegacyElementsMaterialized": true,
+  "RemovedSourceElementIds": null,
+  "PageType": "Default",
+  "Background": null,
+  "Actions": null,
+  "IncludeInBuild": false,
+  "HeaderPageId": null,
+  "FooterPageId": null
+}

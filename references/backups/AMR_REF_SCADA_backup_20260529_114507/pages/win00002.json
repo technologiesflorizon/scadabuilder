@@ -1,0 +1,204 @@
+{
+  "id": "win00002",
+  "title": "win00002",
+  "size": {
+    "width": 1280,
+    "height": 67
+  },
+  "background": "rgba(0,0,0,1)",
+  "layers": [
+    {
+      "id": "legacy_embed",
+      "type": "legacy_embed",
+      "x": 0,
+      "y": 0,
+      "width": 1280,
+      "height": 67,
+      "src": "../assets/html_pages/win00002_updated.html",
+      "sandbox": "allow-scripts allow-same-origin",
+      "scrolling": "auto"
+    }
+  ],
+  "bindings": [],
+  "navigation": [],
+  "layout": {
+    "mode": "fixed"
+  },
+  "legacy": {
+    "source_html": "08_web_modernized/html_pages/win00002_updated.html",
+    "inventory": {
+      "summary": {
+        "shape_layers": 0,
+        "scripts": 0,
+        "layers_total": 13,
+        "type_Image": 3,
+        "type_Text": 10,
+        "svg_shapes_total": 0
+      },
+      "svg_shape_counts": {
+        "rect": 0,
+        "line": 0,
+        "polyline": 0,
+        "polygon": 0,
+        "circle": 0,
+        "ellipse": 0,
+        "path": 0
+      },
+      "elements": [
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text1",
+          "id": "1",
+          "src": "",
+          "x": 1050,
+          "y": 40,
+          "width": 109,
+          "height": 18,
+          "text": "M\u00e9tro-Richelieu"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text2",
+          "id": "2",
+          "src": "",
+          "x": 534,
+          "y": 9,
+          "width": 162,
+          "height": 30,
+          "text": "Menu Principal"
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image1",
+          "id": "3",
+          "src": "assets/3555fa2b057b01dff870eabe624a3f1f06ec0f84b4371b6c97d39b1539199b28.png",
+          "x": 145,
+          "y": 4,
+          "width": 39,
+          "height": 33
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image2",
+          "id": "4",
+          "src": "assets/cf62b5737335f6add77977e8509246f08634a861bf335b8c062f17ba95673051.png",
+          "x": 1068,
+          "y": 3,
+          "width": 55,
+          "height": 37
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text3",
+          "id": "5",
+          "src": "",
+          "x": 83,
+          "y": 38,
+          "width": 147,
+          "height": 18,
+          "text": "Delisle Despaux ass."
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text4",
+          "id": "6",
+          "src": "",
+          "x": 1180,
+          "y": 32,
+          "width": 18,
+          "height": 21,
+          "text": "00"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text5",
+          "id": "7",
+          "src": "",
+          "x": 1199,
+          "y": 32,
+          "width": 22,
+          "height": 21,
+          "text": "/00"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text6",
+          "id": "8",
+          "src": "",
+          "x": 1223,
+          "y": 32,
+          "width": 40,
+          "height": 21,
+          "text": "/0000"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text7",
+          "id": "9",
+          "src": "",
+          "x": 533,
+          "y": 39,
+          "width": 164,
+          "height": 24,
+          "text": "T\u00b0 ext\u00e9rieure 0.0 \u00b0C"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text8",
+          "id": "10",
+          "src": "",
+          "x": 1188,
+          "y": 11,
+          "width": 18,
+          "height": 21,
+          "text": "00"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text9",
+          "id": "11",
+          "src": "",
+          "x": 1206,
+          "y": 11,
+          "width": 22,
+          "height": 21,
+          "text": ":00"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text10",
+          "id": "12",
+          "src": "",
+          "x": 1229,
+          "y": 11,
+          "width": 22,
+          "height": 21,
+          "text": ":00"
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image3",
+          "id": "13",
+          "src": "assets/e8e66d4523c38ad90392fc9126ee58ba1f3fb6fc666fa6b5a76093c2dd9346e3.png",
+          "x": 0,
+          "y": 0,
+          "width": 63,
+          "height": 61
+        }
+      ]
+    }
+  }
+}

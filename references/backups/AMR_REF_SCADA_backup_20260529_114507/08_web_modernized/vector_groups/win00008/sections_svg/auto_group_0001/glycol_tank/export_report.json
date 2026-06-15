@@ -1,0 +1,20 @@
+{
+  "source_svg": "F:\\MetroSearch\\SCADA_AMR_GROUP\\08_web_modernized\\vector_groups\\win00008\\groups_svg\\auto_group_0001.svg",
+  "assignments": "F:\\MetroSearch\\SCADA_AMR_GROUP\\08_web_modernized\\vector_groups\\win00008\\assignments\\auto_group_0001\\glycol_tank.json",
+  "out_dir": "F:\\MetroSearch\\SCADA_AMR_GROUP\\08_web_modernized\\vector_groups\\win00008\\sections_svg\\auto_group_0001\\glycol_tank",
+  "sections": [
+    {
+      "name": "section_01",
+      "exported": true,
+      "count": 12,
+      "missing_ids": [],
+      "output": "F:\\MetroSearch\\SCADA_AMR_GROUP\\08_web_modernized\\vector_groups\\win00008\\sections_svg\\auto_group_0001\\glycol_tank\\section_01.svg",
+      "viewBox": [
+        727.0,
+        397.0,
+        254.0,
+        200.0
+      ]
+    }
+  ]
+}

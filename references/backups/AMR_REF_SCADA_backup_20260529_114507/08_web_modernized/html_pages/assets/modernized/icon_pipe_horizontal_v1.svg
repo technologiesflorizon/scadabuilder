@@ -1,0 +1,12 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="69" height="4" viewBox="0 0 69 4" role="img" aria-label="Pipe segment horizontal">
+  <defs>
+    <linearGradient id="pipeH" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5f6774"/>
+      <stop offset="0.35" stop-color="#e6edf6"/>
+      <stop offset="0.65" stop-color="#b5bfcc"/>
+      <stop offset="1" stop-color="#535b68"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="69" height="4" fill="#222831"/>
+  <rect x="1" y="1" width="67" height="2" fill="url(#pipeH)"/>
+</svg>

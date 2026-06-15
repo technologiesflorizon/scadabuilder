@@ -1,0 +1,111 @@
+{
+  "id": "win00065",
+  "title": "win00065",
+  "size": {
+    "width": 168,
+    "height": 153
+  },
+  "background": "rgba(0,0,0,1)",
+  "layers": [
+    {
+      "id": "legacy_embed",
+      "type": "legacy_embed",
+      "x": 0,
+      "y": 0,
+      "width": 168,
+      "height": 153,
+      "src": "../assets/html_pages/win00065_updated.html",
+      "sandbox": "allow-scripts allow-same-origin",
+      "scrolling": "auto"
+    }
+  ],
+  "bindings": [],
+  "navigation": [],
+  "layout": {
+    "mode": "fixed"
+  },
+  "legacy": {
+    "source_html": "08_web_modernized/html_pages/win00065_updated.html",
+    "inventory": {
+      "summary": {
+        "shape_layers": 1,
+        "scripts": 0,
+        "layers_total": 5,
+        "type_Button": 2,
+        "type_Text": 3,
+        "svg_shapes_total": 12
+      },
+      "svg_shape_counts": {
+        "rect": 1,
+        "line": 11,
+        "polyline": 0,
+        "polygon": 0,
+        "circle": 0,
+        "ellipse": 0,
+        "path": 0
+      },
+      "elements": [
+        {
+          "tag": "button",
+          "type": "Button",
+          "name": "Button1",
+          "id": "1",
+          "src": "",
+          "x": 84,
+          "y": 100,
+          "width": 74,
+          "height": 25,
+          "text": "Fermer"
+        },
+        {
+          "tag": "button",
+          "type": "Button",
+          "name": "Button2",
+          "id": "11",
+          "src": "",
+          "x": 11,
+          "y": 37,
+          "width": 138,
+          "height": 40,
+          "text": ""
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text1",
+          "id": "12",
+          "src": "",
+          "x": 23,
+          "y": 47,
+          "width": 64,
+          "height": 21,
+          "text": "D\u00c9GIVRER"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text2",
+          "id": "16",
+          "src": "",
+          "x": 5,
+          "y": 3,
+          "width": 95,
+          "height": 21,
+          "text": "\u00c9VAPORATEUR"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text3",
+          "id": "17",
+          "src": "",
+          "x": 131,
+          "y": 3,
+          "width": 17,
+          "height": 21,
+          "text": "\u00c9V"
+        }
+      ]
+    }
+  }
+}

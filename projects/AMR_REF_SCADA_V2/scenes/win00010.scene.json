@@ -1,0 +1,1876 @@
+{
+  "Id": "win00010",
+  "Title": "win00010",
+  "CanvasSize": {
+    "Width": 1280,
+    "Height": 873
+  },
+  "Elements": [
+    {
+      "Id": "legacy_1",
+      "DisplayName": "Line1",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 116,
+        "Y": 230,
+        "Width": 694,
+        "Height": 1
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "1",
+        "SourceElementName": "Line1",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "line",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_2",
+      "DisplayName": "Line2",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 810,
+        "Y": 230,
+        "Width": 1,
+        "Height": 334
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "2",
+        "SourceElementName": "Line2",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "line",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_3",
+      "DisplayName": "Line3",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 115,
+        "Y": 564,
+        "Width": 695,
+        "Height": 1
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "3",
+        "SourceElementName": "Line3",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "line",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_4",
+      "DisplayName": "Line4",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 116,
+        "Y": 230,
+        "Width": 1,
+        "Height": 334
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "4",
+        "SourceElementName": "Line4",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "line",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_5",
+      "DisplayName": "Line5",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 115,
+        "Y": 229,
+        "Width": 695,
+        "Height": 1
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "5",
+        "SourceElementName": "Line5",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "line",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_6",
+      "DisplayName": "Line6",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 809,
+        "Y": 231,
+        "Width": 1,
+        "Height": 332
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "6",
+        "SourceElementName": "Line6",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "line",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_7",
+      "DisplayName": "Line7",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 116,
+        "Y": 563,
+        "Width": 693,
+        "Height": 1
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "7",
+        "SourceElementName": "Line7",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "line",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_8",
+      "DisplayName": "Line8",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 115,
+        "Y": 229,
+        "Width": 1,
+        "Height": 335
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "8",
+        "SourceElementName": "Line8",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "line",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_9",
+      "DisplayName": "Line9",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 809,
+        "Y": 229,
+        "Width": 1,
+        "Height": 1
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "9",
+        "SourceElementName": "Line9",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "line",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_10",
+      "DisplayName": "Line10",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 825,
+        "Y": 230,
+        "Width": 336,
+        "Height": 1
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "10",
+        "SourceElementName": "Line10",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "line",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_11",
+      "DisplayName": "Line11",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 1161,
+        "Y": 230,
+        "Width": 1,
+        "Height": 334
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "11",
+        "SourceElementName": "Line11",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "line",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_12",
+      "DisplayName": "Line12",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 824,
+        "Y": 564,
+        "Width": 337,
+        "Height": 1
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "12",
+        "SourceElementName": "Line12",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "line",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_13",
+      "DisplayName": "Line13",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 825,
+        "Y": 230,
+        "Width": 1,
+        "Height": 334
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "13",
+        "SourceElementName": "Line13",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "line",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_14",
+      "DisplayName": "Line14",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 824,
+        "Y": 229,
+        "Width": 337,
+        "Height": 1
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "14",
+        "SourceElementName": "Line14",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "line",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_15",
+      "DisplayName": "Line15",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 1160,
+        "Y": 231,
+        "Width": 1,
+        "Height": 332
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "15",
+        "SourceElementName": "Line15",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "line",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_16",
+      "DisplayName": "Line16",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 825,
+        "Y": 563,
+        "Width": 335,
+        "Height": 1
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "16",
+        "SourceElementName": "Line16",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "line",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_17",
+      "DisplayName": "Line17",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 824,
+        "Y": 229,
+        "Width": 1,
+        "Height": 335
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "17",
+        "SourceElementName": "Line17",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "line",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_18",
+      "DisplayName": "Line18",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 1160,
+        "Y": 229,
+        "Width": 1,
+        "Height": 1
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "18",
+        "SourceElementName": "Line18",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "line",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_19",
+      "DisplayName": "Button1",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 171,
+        "Y": 386,
+        "Width": 243,
+        "Height": 59
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "19",
+        "SourceElementName": "Button1",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Button",
+        "Text": "",
+        "IsTextLike": true,
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_20",
+      "DisplayName": "Button2",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 530,
+        "Y": 386,
+        "Width": 243,
+        "Height": 59
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "20",
+        "SourceElementName": "Button2",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Button",
+        "Text": "",
+        "IsTextLike": true,
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_21",
+      "DisplayName": "Button3",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 529,
+        "Y": 476,
+        "Width": 243,
+        "Height": 59
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "21",
+        "SourceElementName": "Button3",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Button",
+        "Text": "",
+        "IsTextLike": true,
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_22",
+      "DisplayName": "Button4",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 871,
+        "Y": 386,
+        "Width": 243,
+        "Height": 59
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "22",
+        "SourceElementName": "Button4",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Button",
+        "Text": "",
+        "IsTextLike": true,
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_23",
+      "DisplayName": "Button5",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 169,
+        "Y": 476,
+        "Width": 243,
+        "Height": 59
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "23",
+        "SourceElementName": "Button5",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Button",
+        "Text": "",
+        "IsTextLike": true,
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_24",
+      "DisplayName": "Button6",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 172,
+        "Y": 294,
+        "Width": 243,
+        "Height": 59
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "24",
+        "SourceElementName": "Button6",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Button",
+        "Text": "",
+        "IsTextLike": true,
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_25",
+      "DisplayName": "Text1",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 245,
+        "Y": 303,
+        "Width": 78,
+        "Height": 16
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "25",
+        "SourceElementName": "Text1",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "Cong\u00E9lateur",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Text",
+        "Text": "Cong\u00E9lateur",
+        "IsTextLike": true,
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_26",
+      "DisplayName": "Text2",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 215,
+        "Y": 323,
+        "Width": 126,
+        "Height": 16
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "26",
+        "SourceElementName": "Text2",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "(Penthouse \u0026 All\u00E9e)",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Text",
+        "Text": "(Penthouse \u0026 All\u00E9e)",
+        "IsTextLike": true,
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_27",
+      "DisplayName": "Text3",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 134,
+        "Y": 243,
+        "Width": 90,
+        "Height": 16
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "27",
+        "SourceElementName": "Text3",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "Temp\u00E9ratures",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Text",
+        "Text": "Temp\u00E9ratures",
+        "IsTextLike": true,
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_28",
+      "DisplayName": "Text4",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 842,
+        "Y": 243,
+        "Width": 66,
+        "Height": 16
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "28",
+        "SourceElementName": "Text4",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "Pressions",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Text",
+        "Text": "Pressions",
+        "IsTextLike": true,
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_29",
+      "DisplayName": "Button7",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 871,
+        "Y": 476,
+        "Width": 243,
+        "Height": 59
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "29",
+        "SourceElementName": "Button7",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Button",
+        "Text": "",
+        "IsTextLike": true,
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_30",
+      "DisplayName": "Text5",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 941,
+        "Y": 484,
+        "Width": 82,
+        "Height": 16
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "30",
+        "SourceElementName": "Text5",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "Refoulement",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Text",
+        "Text": "Refoulement",
+        "IsTextLike": true,
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_31",
+      "DisplayName": "Text6",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 880,
+        "Y": 504,
+        "Width": 181,
+        "Height": 16
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "31",
+        "SourceElementName": "Text6",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "(Compr. et pompe de glycol)",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Text",
+        "Text": "(Compr. et pompe de glycol)",
+        "IsTextLike": true,
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_32",
+      "DisplayName": "Button8",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 529,
+        "Y": 294,
+        "Width": 243,
+        "Height": 59
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00010",
+        "SourceElementId": "32",
+        "SourceElementName": "Button8",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00010_d1e6f56ddcf0.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Button",
+        "Text": "",
+        "IsTextLike": true,
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    }
+  ],
+  "BackgroundColor": "#ADADAD",
+  "LegacyTextOverrides": [],
+  "LegacyElementsMaterialized": true,
+  "RemovedSourceElementIds": null,
+  "PageType": "Default",
+  "Background": null,
+  "Actions": null,
+  "IncludeInBuild": false,
+  "HeaderPageId": null,
+  "FooterPageId": null
+}

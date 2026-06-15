@@ -1,0 +1,159 @@
+{
+  "id": "win00092",
+  "title": "win00092",
+  "size": {
+    "width": 234,
+    "height": 274
+  },
+  "background": "rgba(0,0,0,1)",
+  "layers": [
+    {
+      "id": "legacy_embed",
+      "type": "legacy_embed",
+      "x": 0,
+      "y": 0,
+      "width": 234,
+      "height": 274,
+      "src": "../assets/html_pages/win00092_updated.html",
+      "sandbox": "allow-scripts allow-same-origin",
+      "scrolling": "auto"
+    }
+  ],
+  "bindings": [],
+  "navigation": [],
+  "layout": {
+    "mode": "fixed"
+  },
+  "legacy": {
+    "source_html": "08_web_modernized/html_pages/win00092_updated.html",
+    "inventory": {
+      "summary": {
+        "shape_layers": 1,
+        "scripts": 0,
+        "layers_total": 9,
+        "type_Button": 1,
+        "type_Text": 8,
+        "svg_shapes_total": 13
+      },
+      "svg_shape_counts": {
+        "rect": 4,
+        "line": 9,
+        "polyline": 0,
+        "polygon": 0,
+        "circle": 0,
+        "ellipse": 0,
+        "path": 0
+      },
+      "elements": [
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text1",
+          "id": "1",
+          "src": "",
+          "x": 93,
+          "y": 0,
+          "width": 93,
+          "height": 21,
+          "text": "NOM DE L'Ex"
+        },
+        {
+          "tag": "button",
+          "type": "Button",
+          "name": "Button1",
+          "id": "2",
+          "src": "",
+          "x": 56,
+          "y": 201,
+          "width": 108,
+          "height": 40,
+          "text": "Fermer"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text2",
+          "id": "12",
+          "src": "",
+          "x": 3,
+          "y": 0,
+          "width": 71,
+          "height": 21,
+          "text": "D\u00e9givrage"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text3",
+          "id": "14",
+          "src": "",
+          "x": 173,
+          "y": 59,
+          "width": 32,
+          "height": 21,
+          "text": "0000"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text4",
+          "id": "16",
+          "src": "",
+          "x": 173,
+          "y": 91,
+          "width": 32,
+          "height": 21,
+          "text": "0000"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text5",
+          "id": "17",
+          "src": "",
+          "x": 26,
+          "y": 33,
+          "width": 71,
+          "height": 21,
+          "text": "Activation"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text6",
+          "id": "18",
+          "src": "",
+          "x": 158,
+          "y": 33,
+          "width": 52,
+          "height": 21,
+          "text": "Horaire"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text7",
+          "id": "20",
+          "src": "",
+          "x": 173,
+          "y": 123,
+          "width": 32,
+          "height": 21,
+          "text": "0000"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text8",
+          "id": "22",
+          "src": "",
+          "x": 173,
+          "y": 153,
+          "width": 32,
+          "height": 21,
+          "text": "0000"
+        }
+      ]
+    }
+  }
+}

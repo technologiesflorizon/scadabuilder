@@ -1,0 +1,600 @@
+{
+  "Id": "win00075",
+  "Title": "win00075",
+  "CanvasSize": {
+    "Width": 1280,
+    "Height": 873
+  },
+  "Elements": [
+    {
+      "Id": "legacy_1",
+      "DisplayName": "Button1",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 136,
+        "Y": 277,
+        "Width": 68,
+        "Height": 24
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00075",
+        "SourceElementId": "1",
+        "SourceElementName": "Button1",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00075_0e20680843bd.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Button",
+        "Text": "",
+        "IsTextLike": true,
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_2",
+      "DisplayName": "Image1",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 60,
+        "Y": 14,
+        "Width": 95,
+        "Height": 60
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00075",
+        "SourceElementId": "2",
+        "SourceElementName": "Image1",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00075_0e20680843bd.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Image",
+        "Text": "",
+        "IsTextLike": false,
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_3",
+      "DisplayName": "Text1",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 55,
+        "Y": 77,
+        "Width": 103,
+        "Height": 19
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00075",
+        "SourceElementId": "3",
+        "SourceElementName": "Text1",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00075_0e20680843bd.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 12,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "\u00C9piciers unis ",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Text",
+        "Text": "\u00C9piciers unis ",
+        "IsTextLike": true,
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 12,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_4",
+      "DisplayName": "Text2",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 31,
+        "Y": 93,
+        "Width": 150,
+        "Height": 19
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00075",
+        "SourceElementId": "4",
+        "SourceElementName": "Text2",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00075_0e20680843bd.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 12,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "M\u00E9tro-Richelieu inc.",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Text",
+        "Text": "M\u00E9tro-Richelieu inc.",
+        "IsTextLike": true,
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 12,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_5",
+      "DisplayName": "Text3",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 10,
+        "Y": 132,
+        "Width": 193,
+        "Height": 19
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00075",
+        "SourceElementId": "5",
+        "SourceElementName": "Text3",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00075_0e20680843bd.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 12,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "9201, rue Notre-Dame Est",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Text",
+        "Text": "9201, rue Notre-Dame Est",
+        "IsTextLike": true,
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 12,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_6",
+      "DisplayName": "Text4",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 2,
+        "Y": 148,
+        "Width": 208,
+        "Height": 19
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00075",
+        "SourceElementId": "6",
+        "SourceElementName": "Text4",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00075_0e20680843bd.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 12,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "Montr\u00E9al (Qu\u00E9bec) H1L 3N4",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Text",
+        "Text": "Montr\u00E9al (Qu\u00E9bec) H1L 3N4",
+        "IsTextLike": true,
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 12,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_7",
+      "DisplayName": "Text5",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 33,
+        "Y": 162,
+        "Width": 146,
+        "Height": 19
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00075",
+        "SourceElementId": "7",
+        "SourceElementName": "Text5",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00075_0e20680843bd.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 12,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "Tel.: (514) 493-5008",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Text",
+        "Text": "Tel.: (514) 493-5008",
+        "IsTextLike": true,
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 12,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_8",
+      "DisplayName": "Text6",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 33,
+        "Y": 180,
+        "Width": 147,
+        "Height": 19
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00075",
+        "SourceElementId": "8",
+        "SourceElementName": "Text6",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00075_0e20680843bd.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 12,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "Fax: (514) 493-5038",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Text",
+        "Text": "Fax: (514) 493-5038",
+        "IsTextLike": true,
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 12,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_9",
+      "DisplayName": "Text7",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 43,
+        "Y": 217,
+        "Width": 127,
+        "Height": 19
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00075",
+        "SourceElementId": "9",
+        "SourceElementName": "Text7",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00075_0e20680843bd.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 12,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "info@fixair.qc.ca",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Text",
+        "Text": "info@fixair.qc.ca",
+        "IsTextLike": true,
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 12,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    },
+    {
+      "Id": "legacy_10",
+      "DisplayName": "Text8",
+      "Kind": "LegacyStatic",
+      "Bounds": {
+        "X": 30,
+        "Y": 202,
+        "Width": 153,
+        "Height": 19
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00075",
+        "SourceElementId": "10",
+        "SourceElementName": "Text8",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00075_0e20680843bd.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 12,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "http://www.metro.ca",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": {
+        "LegacyType": "Text",
+        "Text": "http://www.metro.ca",
+        "IsTextLike": true,
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 12,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "LegacyMarkup": null,
+        "RawMetadataJson": null
+      },
+      "Events": null
+    }
+  ],
+  "BackgroundColor": "#000000",
+  "LegacyTextOverrides": [],
+  "LegacyElementsMaterialized": true,
+  "RemovedSourceElementIds": null,
+  "PageType": "Default",
+  "Background": null,
+  "Actions": null,
+  "IncludeInBuild": false,
+  "HeaderPageId": null,
+  "FooterPageId": null
+}

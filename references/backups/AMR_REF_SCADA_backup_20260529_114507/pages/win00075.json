@@ -1,0 +1,171 @@
+{
+  "id": "win00075",
+  "title": "win00075",
+  "size": {
+    "width": 219,
+    "height": 334
+  },
+  "background": "rgba(0,0,0,1)",
+  "layers": [
+    {
+      "id": "legacy_embed",
+      "type": "legacy_embed",
+      "x": 0,
+      "y": 0,
+      "width": 219,
+      "height": 334,
+      "src": "../assets/html_pages/win00075_updated.html",
+      "sandbox": "allow-scripts allow-same-origin",
+      "scrolling": "auto"
+    }
+  ],
+  "bindings": [],
+  "navigation": [],
+  "layout": {
+    "mode": "fixed"
+  },
+  "legacy": {
+    "source_html": "08_web_modernized/html_pages/win00075_updated.html",
+    "inventory": {
+      "summary": {
+        "shape_layers": 0,
+        "scripts": 0,
+        "layers_total": 10,
+        "type_Button": 1,
+        "type_Image": 1,
+        "type_Text": 8,
+        "svg_shapes_total": 0
+      },
+      "svg_shape_counts": {
+        "rect": 0,
+        "line": 0,
+        "polyline": 0,
+        "polygon": 0,
+        "circle": 0,
+        "ellipse": 0,
+        "path": 0
+      },
+      "elements": [
+        {
+          "tag": "button",
+          "type": "Button",
+          "name": "Button1",
+          "id": "1",
+          "src": "",
+          "x": 135,
+          "y": 276,
+          "width": 68,
+          "height": 24,
+          "text": "Fermer"
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image1",
+          "id": "2",
+          "src": "assets/54cd5b509d693f71b0d395824276fc4a9f70fbe16c555348f76e56405599296d.png",
+          "x": 59,
+          "y": 13,
+          "width": 95,
+          "height": 60
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text1",
+          "id": "3",
+          "src": "",
+          "x": 54,
+          "y": 76,
+          "width": 103,
+          "height": 19,
+          "text": "\u00c9piciers unis"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text2",
+          "id": "4",
+          "src": "",
+          "x": 30,
+          "y": 92,
+          "width": 150,
+          "height": 19,
+          "text": "M\u00e9tro-Richelieu inc."
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text3",
+          "id": "5",
+          "src": "",
+          "x": 9,
+          "y": 131,
+          "width": 193,
+          "height": 19,
+          "text": "9201, rue Notre-Dame Est"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text4",
+          "id": "6",
+          "src": "",
+          "x": 1,
+          "y": 147,
+          "width": 208,
+          "height": 19,
+          "text": "Montr\u00e9al (Qu\u00e9bec) H1L 3N4"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text5",
+          "id": "7",
+          "src": "",
+          "x": 32,
+          "y": 161,
+          "width": 146,
+          "height": 19,
+          "text": "Tel.: (514) 493-5008"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text6",
+          "id": "8",
+          "src": "",
+          "x": 32,
+          "y": 179,
+          "width": 147,
+          "height": 19,
+          "text": "Fax: (514) 493-5038"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text7",
+          "id": "9",
+          "src": "",
+          "x": 42,
+          "y": 216,
+          "width": 127,
+          "height": 19,
+          "text": "info@fixair.qc.ca"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text8",
+          "id": "10",
+          "src": "",
+          "x": 29,
+          "y": 201,
+          "width": 153,
+          "height": 19,
+          "text": "http://www.metro.ca"
+        }
+      ]
+    }
+  }
+}

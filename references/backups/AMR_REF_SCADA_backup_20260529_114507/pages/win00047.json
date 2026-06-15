@@ -1,0 +1,297 @@
+{
+  "id": "win00047",
+  "title": "win00047",
+  "size": {
+    "width": 1280,
+    "height": 873
+  },
+  "background": "rgba(0,0,0,1)",
+  "layers": [
+    {
+      "id": "legacy_embed",
+      "type": "legacy_embed",
+      "x": 0,
+      "y": 0,
+      "width": 1280,
+      "height": 873,
+      "src": "../assets/html_pages/win00047_updated.html",
+      "sandbox": "allow-scripts allow-same-origin",
+      "scrolling": "auto"
+    }
+  ],
+  "bindings": [],
+  "navigation": [],
+  "layout": {
+    "mode": "fixed"
+  },
+  "legacy": {
+    "source_html": "08_web_modernized/html_pages/win00047_updated.html",
+    "inventory": {
+      "summary": {
+        "shape_layers": 1,
+        "scripts": 0,
+        "layers_total": 21,
+        "type_Button": 3,
+        "type_Image": 7,
+        "type_Text": 11,
+        "svg_shapes_total": 238
+      },
+      "svg_shape_counts": {
+        "rect": 10,
+        "line": 26,
+        "polyline": 115,
+        "polygon": 68,
+        "circle": 0,
+        "ellipse": 19,
+        "path": 0
+      },
+      "elements": [
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image1",
+          "id": "2",
+          "src": "assets/8f629e1be6d726a5503c5c5cc7fb76661dd9f50b5b9dccf96e5f95ad04095600.png",
+          "x": 704,
+          "y": 368,
+          "width": 143,
+          "height": 155
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image2",
+          "id": "203",
+          "src": "assets/136753b4bd78d78cd81cb65c442a115b380f58b71af86bf57637f4749341a6a7.png",
+          "x": 695,
+          "y": 256,
+          "width": 41,
+          "height": 72
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image3",
+          "id": "204",
+          "src": "assets/a71b4ff4776de819c32ca163d264b91b18f0d19958fc945279d881f4a08b4740.png",
+          "x": 835,
+          "y": 129,
+          "width": 24,
+          "height": 23
+        },
+        {
+          "tag": "button",
+          "type": "Button",
+          "name": "Button1",
+          "id": "205",
+          "src": "",
+          "x": 503,
+          "y": 56,
+          "width": 149,
+          "height": 65,
+          "text": "Text"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text1",
+          "id": "231",
+          "src": "",
+          "x": 94,
+          "y": 75,
+          "width": 61,
+          "height": 24,
+          "text": "ZONE-1"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text2",
+          "id": "232",
+          "src": "",
+          "x": 40,
+          "y": 45,
+          "width": 153,
+          "height": 27,
+          "text": "D\u00c9TECTION NH3"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text3",
+          "id": "233",
+          "src": "",
+          "x": 94,
+          "y": 44,
+          "width": 63,
+          "height": 24,
+          "text": "NH3 OK"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text4",
+          "id": "234",
+          "src": "",
+          "x": 76,
+          "y": 101,
+          "width": 87,
+          "height": 24,
+          "text": "OVERRIDE"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text5",
+          "id": "235",
+          "src": "",
+          "x": 122,
+          "y": 149,
+          "width": 21,
+          "height": 17,
+          "text": "250'"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text6",
+          "id": "237",
+          "src": "",
+          "x": 959,
+          "y": 362,
+          "width": 87,
+          "height": 16,
+          "text": "\u00c9vaporateurs"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text7",
+          "id": "239",
+          "src": "",
+          "x": 956,
+          "y": 414,
+          "width": 95,
+          "height": 16,
+          "text": "Compresseurs"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text8",
+          "id": "241",
+          "src": "",
+          "x": 958,
+          "y": 477,
+          "width": 95,
+          "height": 16,
+          "text": "Compresseurs"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text9",
+          "id": "251",
+          "src": "",
+          "x": 970,
+          "y": 631,
+          "width": 74,
+          "height": 16,
+          "text": "Permission"
+        },
+        {
+          "tag": "button",
+          "type": "Button",
+          "name": "Button2",
+          "id": "252",
+          "src": "",
+          "x": 1009,
+          "y": 708,
+          "width": 93,
+          "height": 32,
+          "text": ""
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text10",
+          "id": "253",
+          "src": "",
+          "x": 1025,
+          "y": 715,
+          "width": 48,
+          "height": 16,
+          "text": "Lecture"
+        },
+        {
+          "tag": "button",
+          "type": "Button",
+          "name": "Button3",
+          "id": "254",
+          "src": "",
+          "x": 1009,
+          "y": 667,
+          "width": 91,
+          "height": 31,
+          "text": ""
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text11",
+          "id": "255",
+          "src": "",
+          "x": 1014,
+          "y": 673,
+          "width": 64,
+          "height": 16,
+          "text": "Op\u00e9rateur"
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image4",
+          "id": "256",
+          "src": "assets/09089fc419664229ebab1007362a291fbaabc88c752338ddc1e5ec67e750a3c8.png",
+          "x": 979,
+          "y": 713,
+          "width": 24,
+          "height": 23
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image5",
+          "id": "257",
+          "src": "assets/00b7c4eff1caad1446258caa2b59b22ed1f79f829b9d4a476d997062cdc2e3f8.png",
+          "x": 980,
+          "y": 713,
+          "width": 21,
+          "height": 23
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image6",
+          "id": "258",
+          "src": "assets/00b7c4eff1caad1446258caa2b59b22ed1f79f829b9d4a476d997062cdc2e3f8.png",
+          "x": 980,
+          "y": 673,
+          "width": 21,
+          "height": 23
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image7",
+          "id": "259",
+          "src": "assets/09089fc419664229ebab1007362a291fbaabc88c752338ddc1e5ec67e750a3c8.png",
+          "x": 979,
+          "y": 673,
+          "width": 24,
+          "height": 23
+        }
+      ]
+    }
+  }
+}

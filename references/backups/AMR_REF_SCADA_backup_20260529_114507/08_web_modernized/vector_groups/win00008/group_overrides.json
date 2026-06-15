@@ -1,0 +1,10 @@
+﻿{
+  "manual_groups": {},
+  "manual_regions": [
+    {"name": "condenser_left_zone", "bbox": [700, 90, 915, 325]},
+    {"name": "condenser_right_zone", "bbox": [995, 90, 1210, 325]},
+    {"name": "pressure_panel_zone", "bbox": [0, 0, 235, 290]},
+    {"name": "makeup_level_zone", "bbox": [1025, 420, 1235, 745]}
+  ],
+  "exclude_ids": []
+}

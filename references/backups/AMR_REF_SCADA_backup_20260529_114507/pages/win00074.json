@@ -1,0 +1,122 @@
+{
+  "id": "win00074",
+  "title": "win00074",
+  "size": {
+    "width": 1234,
+    "height": 803
+  },
+  "background": "rgba(0,0,0,1)",
+  "layers": [
+    {
+      "id": "legacy_embed",
+      "type": "legacy_embed",
+      "x": 0,
+      "y": 0,
+      "width": 1234,
+      "height": 803,
+      "src": "../assets/html_pages/win00074_updated.html",
+      "sandbox": "allow-scripts allow-same-origin",
+      "scrolling": "auto"
+    }
+  ],
+  "bindings": [],
+  "navigation": [],
+  "layout": {
+    "mode": "fixed"
+  },
+  "legacy": {
+    "source_html": "08_web_modernized/html_pages/win00074_updated.html",
+    "inventory": {
+      "summary": {
+        "shape_layers": 1,
+        "scripts": 0,
+        "layers_total": 6,
+        "type_Text": 6,
+        "svg_shapes_total": 128
+      },
+      "svg_shape_counts": {
+        "rect": 1,
+        "line": 0,
+        "polyline": 97,
+        "polygon": 30,
+        "circle": 0,
+        "ellipse": 0,
+        "path": 0
+      },
+      "elements": [
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text1",
+          "id": "41",
+          "src": "",
+          "x": 823,
+          "y": 100,
+          "width": 314,
+          "height": 75,
+          "text": "PANNEAU"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text2",
+          "id": "42",
+          "src": "",
+          "x": 845,
+          "y": 184,
+          "width": 271,
+          "height": 75,
+          "text": "ALARME"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text3",
+          "id": "43",
+          "src": "",
+          "x": 815,
+          "y": 279,
+          "width": 330,
+          "height": 75,
+          "text": "EDWARDS"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text4",
+          "id": "44",
+          "src": "",
+          "x": 863,
+          "y": 358,
+          "width": 235,
+          "height": 75,
+          "text": "ACTIV\u00c9"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text5",
+          "id": "45",
+          "src": "",
+          "x": 16,
+          "y": 621,
+          "width": 655,
+          "height": 111,
+          "text": "\u00c9VACUATION"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text6",
+          "id": "46",
+          "src": "",
+          "x": 673,
+          "y": 621,
+          "width": 533,
+          "height": 111,
+          "text": "IMM\u00c9DIATE"
+        }
+      ]
+    }
+  }
+}

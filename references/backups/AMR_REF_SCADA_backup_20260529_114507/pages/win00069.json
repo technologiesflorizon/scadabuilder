@@ -1,0 +1,327 @@
+{
+  "id": "win00069",
+  "title": "win00069",
+  "size": {
+    "width": 529,
+    "height": 560
+  },
+  "background": "rgba(0,0,0,1)",
+  "layers": [
+    {
+      "id": "legacy_embed",
+      "type": "legacy_embed",
+      "x": 0,
+      "y": 0,
+      "width": 529,
+      "height": 560,
+      "src": "../assets/html_pages/win00069_updated.html",
+      "sandbox": "allow-scripts allow-same-origin",
+      "scrolling": "auto"
+    }
+  ],
+  "bindings": [],
+  "navigation": [],
+  "layout": {
+    "mode": "fixed"
+  },
+  "legacy": {
+    "source_html": "08_web_modernized/html_pages/win00069_updated.html",
+    "inventory": {
+      "summary": {
+        "shape_layers": 1,
+        "scripts": 0,
+        "layers_total": 23,
+        "type_Button": 1,
+        "type_Text": 22,
+        "svg_shapes_total": 356
+      },
+      "svg_shape_counts": {
+        "rect": 18,
+        "line": 0,
+        "polyline": 158,
+        "polygon": 180,
+        "circle": 0,
+        "ellipse": 0,
+        "path": 0
+      },
+      "elements": [
+        {
+          "tag": "button",
+          "type": "Button",
+          "name": "Button1",
+          "id": "6",
+          "src": "",
+          "x": 433,
+          "y": 492,
+          "width": 78,
+          "height": 29,
+          "text": "Fermer"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text1",
+          "id": "130",
+          "src": "",
+          "x": 3,
+          "y": 356,
+          "width": 74,
+          "height": 21,
+          "text": "D\u00c9GIVRAGE"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text2",
+          "id": "166",
+          "src": "",
+          "x": 104,
+          "y": 33,
+          "width": 145,
+          "height": 16,
+          "text": "Entr\u00e9e d'une consigne"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text3",
+          "id": "167",
+          "src": "",
+          "x": 104,
+          "y": 58,
+          "width": 162,
+          "height": 16,
+          "text": "Affichage d'une consigne"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text4",
+          "id": "168",
+          "src": "",
+          "x": 104,
+          "y": 97,
+          "width": 239,
+          "height": 16,
+          "text": "Affichage d'une valeur analogique ok"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text5",
+          "id": "169",
+          "src": "",
+          "x": 104,
+          "y": 121,
+          "width": 276,
+          "height": 16,
+          "text": "Affichage d'une valeur analogique en faute"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text6",
+          "id": "170",
+          "src": "",
+          "x": 104,
+          "y": 169,
+          "width": 117,
+          "height": 16,
+          "text": "Moteur en marche"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text7",
+          "id": "171",
+          "src": "",
+          "x": 356,
+          "y": 169,
+          "width": 99,
+          "height": 16,
+          "text": "Moteur en arr\u00eat"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text8",
+          "id": "176",
+          "src": "",
+          "x": 25,
+          "y": 35,
+          "width": 18,
+          "height": 15,
+          "text": "######"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text9",
+          "id": "177",
+          "src": "",
+          "x": 25,
+          "y": 60,
+          "width": 18,
+          "height": 15,
+          "text": "######"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text10",
+          "id": "178",
+          "src": "",
+          "x": 25,
+          "y": 95,
+          "width": 18,
+          "height": 15,
+          "text": "######"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text11",
+          "id": "179",
+          "src": "",
+          "x": 25,
+          "y": 123,
+          "width": 18,
+          "height": 15,
+          "text": "######"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text12",
+          "id": "180",
+          "src": "",
+          "x": 104,
+          "y": 222,
+          "width": 89,
+          "height": 16,
+          "text": "Valve ouverte"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text13",
+          "id": "181",
+          "src": "",
+          "x": 356,
+          "y": 222,
+          "width": 85,
+          "height": 16,
+          "text": "Valve ferm\u00e9e"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text14",
+          "id": "182",
+          "src": "",
+          "x": 104,
+          "y": 267,
+          "width": 141,
+          "height": 16,
+          "text": "Ventilateur en marche"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text15",
+          "id": "183",
+          "src": "",
+          "x": 356,
+          "y": 267,
+          "width": 123,
+          "height": 16,
+          "text": "Ventilateur en arr\u00eat"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text16",
+          "id": "184",
+          "src": "",
+          "x": 104,
+          "y": 311,
+          "width": 134,
+          "height": 16,
+          "text": "Direction du proc\u00e9d\u00e9"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text17",
+          "id": "185",
+          "src": "",
+          "x": 104,
+          "y": 357,
+          "width": 127,
+          "height": 16,
+          "text": "D\u00e9givrage en cours"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text18",
+          "id": "186",
+          "src": "",
+          "x": 104,
+          "y": 497,
+          "width": 216,
+          "height": 16,
+          "text": "Vanne manuelle (sans animation)"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text19",
+          "id": "264",
+          "src": "",
+          "x": 104,
+          "y": 406,
+          "width": 127,
+          "height": 16,
+          "text": "Flotte de niveau OK"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text20",
+          "id": "265",
+          "src": "",
+          "x": 314,
+          "y": 405,
+          "width": 160,
+          "height": 16,
+          "text": "Flotte de niveau en faute"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text21",
+          "id": "266",
+          "src": "",
+          "x": 104,
+          "y": 450,
+          "width": 104,
+          "height": 16,
+          "text": "\u00c9quipement OK"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text22",
+          "id": "267",
+          "src": "",
+          "x": 354,
+          "y": 450,
+          "width": 133,
+          "height": 16,
+          "text": "\u00c9quipement en faute"
+        }
+      ]
+    }
+  }
+}

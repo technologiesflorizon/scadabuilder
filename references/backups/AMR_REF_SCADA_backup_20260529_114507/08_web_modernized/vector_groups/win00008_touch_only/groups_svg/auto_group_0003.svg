@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37.000 68.000" width="37.000" height="68.000">
+  <g transform="translate(-1087.000,-594.000)">
+    <rect x="1089" y="596" width="33" height="64" fill="rgba(255,191,191,1.000)" stroke="rgba(0,0,0,1.000)" stroke-width="0.0" data-name="Rectangle10" data-id="976"/>
+    <polygon points="1100.0,615.0 1096.0,613.0 1096.0,604.0 1100.0,603.0 1114.0,603.0 1114.0,604.0 1114.0,614.0 1101.0,614.0 1100.0,615.0" fill="rgba(153,255,255,1.000)" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="Polygon537" data-id="977"/>
+    <polygon points="1107.0,653.0 1107.0,637.0 1108.0,636.0 1108.0,634.0 1111.0,634.0 1111.0,636.0 1112.0,637.0 1112.0,653.0 1107.0,653.0" fill="rgba(0,0,0,1.000)" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="Polygon538" data-id="978"/>
+    <polygon points="1106.0,614.0 1112.0,614.0 1112.0,621.0 1106.0,621.0 1106.0,614.0" fill="rgba(153,255,255,1.000)" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="Polygon539" data-id="979"/>
+    <polygon points="1109.0,621.0 1110.0,621.0 1110.0,634.0 1109.0,634.0 1109.0,621.0" fill="rgba(127,127,127,1.000)" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="Polygon540" data-id="980"/>
+    <polyline points="1108.0,634.0 1111.0,634.0 1111.0,637.0 1108.0,637.0 1108.0,634.0" fill="none" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="PolyLine222" data-id="981"/>
+    <polygon points="1107.0,637.0 1111.0,637.0 1111.0,651.0 1107.0,651.0 1107.0,637.0" fill="rgba(229,229,229,1.000)" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="Polygon541" data-id="982"/>
+    <polygon points="1108.0,638.0 1109.0,638.0 1109.0,651.0 1108.0,651.0 1108.0,638.0" fill="rgba(127,127,127,1.000)" stroke="rgba(255,255,255,1.000)" stroke-width="0.0" data-name="Polygon542" data-id="983"/>
+    <polyline points="1109.0,638.0 1109.0,651.0 1109.0,638.0" fill="none" stroke="rgba(255,255,255,1.000)" stroke-width="1.0" data-name="PolyLine223" data-id="985"/>
+    <polyline points="1108.0,636.0 1111.0,636.0" fill="none" stroke="rgba(255,255,255,1.000)" stroke-width="1.0" data-name="PolyLine224" data-id="986"/>
+    <polygon points="1106.0,621.0 1106.0,620.0 1106.0,615.0 1100.0,615.0 1096.0,613.0 1096.0,604.0 1096.0,606.0 1096.0,612.0 1101.0,614.0 1106.0,614.0 1106.0,621.0" fill="rgba(0,255,255,1.000)" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="Polygon543" data-id="987"/>
+    <polygon points="1096.0,606.0 1101.0,604.0 1114.0,604.0 1114.0,603.0 1100.0,603.0 1096.0,604.0 1096.0,606.0" fill="rgba(0,255,255,1.000)" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="Polygon544" data-id="988"/>
+    <polyline points="1100.0,603.0 1101.0,604.0 1101.0,614.0" fill="none" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="PolyLine225" data-id="989"/>
+    <polyline points="1096.0,612.0 1098.0,613.0" fill="none" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="PolyLine226" data-id="990"/>
+    <polyline points="1101.0,614.0 1100.0,615.0" fill="none" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="PolyLine227" data-id="991"/>
+    <polyline points="1106.0,615.0 1108.0,614.0" fill="none" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="PolyLine228" data-id="992"/>
+    <polygon points="1110.0,604.0 1113.0,604.0 1113.0,614.0 1110.0,614.0 1110.0,604.0" fill="rgba(255,204,0,1.000)" stroke="rgba(127,127,127,1.000)" stroke-width="1.0" data-name="Polygon545" data-id="993"/>
+    <polyline points="1096.0,613.0 1096.0,612.0 1096.0,606.0 1096.0,604.0 1096.0,613.0" fill="none" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="PolyLine229" data-id="995"/>
+    <polyline points="1096.0,606.0 1096.0,607.0 1096.0,608.0 1096.0,609.0 1096.0,610.0 1096.0,611.0 1096.0,610.0 1096.0,609.0 1096.0,608.0 1096.0,607.0 1096.0,606.0 1096.0,606.0" fill="none" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="PolyLine230" data-id="997"/>
+    <polyline points="1096.0,608.0 1096.0,609.0 1096.0,610.0 1096.0,609.0 1096.0,608.0 1096.0,608.0" fill="none" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="PolyLine231" data-id="999"/>
+    <polygon points="1104.0,612.0 1104.0,613.0 1103.0,613.0 1103.0,612.0 1104.0,612.0 1104.0,612.0" fill="rgba(255,255,0,1.000)" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="Polygon546" data-id="1000"/>
+    <polygon points="1104.0,610.0 1104.0,611.0 1103.0,611.0 1103.0,610.0 1104.0,610.0 1104.0,610.0" fill="rgba(229,229,229,1.000)" stroke="rgba(255,255,255,1.000)" stroke-width="0.0" data-name="Polygon547" data-id="1001"/>
+    <polygon points="1104.0,607.0 1104.0,608.0 1103.0,608.0 1103.0,607.0 1104.0,607.0 1104.0,607.0" fill="rgba(229,229,229,1.000)" stroke="rgba(255,255,255,1.000)" stroke-width="0.0" data-name="Polygon548" data-id="1002"/>
+    <polygon points="1104.0,605.0 1104.0,606.0 1103.0,606.0 1103.0,605.0 1104.0,605.0 1104.0,605.0" fill="rgba(229,229,229,1.000)" stroke="rgba(255,255,255,1.000)" stroke-width="0.0" data-name="Polygon549" data-id="1003"/>
+    <polyline points="1096.0,605.0 1100.0,603.0" fill="none" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="PolyLine232" data-id="1004"/>
+    <polyline points="1096.0,613.0 1099.0,614.0" fill="none" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="PolyLine233" data-id="1005"/>
+    <polygon points="1096.0,608.0 1100.0,608.0 1100.0,609.0 1096.0,609.0 1096.0,608.0" fill="rgba(127,127,127,1.000)" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="Polygon550" data-id="1006"/>
+    <polygon points="1106.0,608.0 1106.0,609.0 1106.0,610.0 1105.0,609.0 1106.0,608.0 1106.0,608.0" fill="rgba(204,204,204,1.000)" stroke="rgba(255,255,255,1.000)" stroke-width="0.0" data-name="Polygon551" data-id="1007"/>
+    <polygon points="1108.0,608.0 1108.0,609.0 1109.0,609.0 1108.0,609.0 1108.0,610.0 1108.0,609.0 1107.0,609.0 1108.0,609.0 1108.0,608.0 1108.0,608.0" fill="rgba(204,204,204,1.000)" stroke="rgba(255,255,255,1.000)" stroke-width="0.0" data-name="Polygon552" data-id="1008"/>
+    <polygon points="1107.0,643.0 1110.0,643.0 1110.0,647.0 1107.0,647.0 1107.0,643.0" fill="rgba(255,255,255,1.000)" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="Polygon553" data-id="1009"/>
+  </g>
+</svg>

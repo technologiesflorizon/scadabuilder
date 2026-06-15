@@ -1,0 +1,17 @@
+{
+  "manual_groups": {
+    "example_condenser_left": [
+      "97",
+      "860",
+      "861",
+      "862"
+    ],
+    "example_condenser_right": [
+      "96",
+      "918",
+      "919",
+      "920"
+    ]
+  },
+  "exclude_ids": []
+}

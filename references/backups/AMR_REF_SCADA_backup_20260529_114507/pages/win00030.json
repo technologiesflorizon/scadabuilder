@@ -1,0 +1,298 @@
+{
+  "id": "win00030",
+  "title": "win00030",
+  "size": {
+    "width": 1280,
+    "height": 873
+  },
+  "background": "rgba(0,0,0,1)",
+  "layers": [
+    {
+      "id": "legacy_embed",
+      "type": "legacy_embed",
+      "x": 0,
+      "y": 0,
+      "width": 1280,
+      "height": 873,
+      "src": "../assets/html_pages/win00030_updated.html",
+      "sandbox": "allow-scripts allow-same-origin",
+      "scrolling": "auto"
+    }
+  ],
+  "bindings": [],
+  "navigation": [],
+  "layout": {
+    "mode": "fixed"
+  },
+  "legacy": {
+    "source_html": "08_web_modernized/html_pages/win00030_updated.html",
+    "inventory": {
+      "summary": {
+        "shape_layers": 1,
+        "scripts": 0,
+        "layers_total": 22,
+        "type_Image": 17,
+        "type_Text": 5,
+        "svg_shapes_total": 300
+      },
+      "svg_shape_counts": {
+        "rect": 30,
+        "line": 98,
+        "polyline": 44,
+        "polygon": 110,
+        "circle": 0,
+        "ellipse": 18,
+        "path": 0
+      },
+      "elements": [
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image1",
+          "id": "14",
+          "src": "assets/43e9ea32683f9174c78fb80fe9d1af3b85b60bd0682da8e1a95c50f7f65ba7d8.png",
+          "x": 66,
+          "y": 428,
+          "width": 133,
+          "height": 124
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image2",
+          "id": "57",
+          "src": "assets/a7928a8e0d68d142c293183e53a474cc8aedc1a2d1345ee75873f5d51a144df3.png",
+          "x": 48,
+          "y": 272,
+          "width": 191,
+          "height": 176
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image3",
+          "id": "58",
+          "src": "assets/640f1863c6862a9ceae67c4cb17e1d0d10fb8ba5cb2a167d68824d027ece38a7.png",
+          "x": 1143,
+          "y": 161,
+          "width": 75,
+          "height": 168
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image4",
+          "id": "59",
+          "src": "assets/7f3dda736272d6d714e1190cb7b884bad75e83c0937cbf03f502981b1b6e3cb5.png",
+          "x": 1044,
+          "y": 156,
+          "width": 75,
+          "height": 168
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image5",
+          "id": "60",
+          "src": "assets/c069d31a92d4b7c8d8ae5304ab2d5c60da219387b5a839ead12ef4950ad296be.png",
+          "x": 956,
+          "y": 168,
+          "width": 75,
+          "height": 168
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image6",
+          "id": "117",
+          "src": "assets/ad231960c96bf957481238b88a70682d3c13546ee6c45011daf6b8d5f9e1231c.png",
+          "x": 411,
+          "y": 51,
+          "width": 29,
+          "height": 65
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image7",
+          "id": "118",
+          "src": "assets/fdbd8129ea92ec8ce401ec2c466b6fdb19c464fd4c35858ee1f2bc17c402a02c.png",
+          "x": 345,
+          "y": 48,
+          "width": 29,
+          "height": 65
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image8",
+          "id": "119",
+          "src": "assets/36ebc6fced240b4216e0f155e4887e57acc5f1c502958a6faafb5077452d1091.png",
+          "x": 345,
+          "y": 48,
+          "width": 29,
+          "height": 65
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image9",
+          "id": "120",
+          "src": "assets/d01e500562dd8fb794148c37b264cfe363ae39447fe42bf598626e86e7e8b77c.png",
+          "x": 601,
+          "y": 312,
+          "width": 124,
+          "height": 132
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image10",
+          "id": "151",
+          "src": "assets/bc3d8f3da11538de5fba9d3844c98275623626270971256f621c743f74ed077d.png",
+          "x": 335,
+          "y": 163,
+          "width": 199,
+          "height": 216
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text1",
+          "id": "208",
+          "src": "",
+          "x": 561,
+          "y": 687,
+          "width": 53,
+          "height": 16,
+          "text": "Alarmes"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text2",
+          "id": "214",
+          "src": "",
+          "x": 371,
+          "y": 661,
+          "width": 53,
+          "height": 16,
+          "text": "Alarmes"
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image11",
+          "id": "264",
+          "src": "assets/865e5d8931fd902003d355de06fde9d6e3793c1092a0feceab9c03d31247f6a1.png",
+          "x": 614,
+          "y": 172,
+          "width": 65,
+          "height": 43
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image12",
+          "id": "281",
+          "src": "assets/61471181fbab64d78c471875b45b7a9e27ef5a7bdfa7f6e6037cc546dc26db1b.png",
+          "x": 730,
+          "y": 27,
+          "width": 139,
+          "height": 132
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image13",
+          "id": "282",
+          "src": "assets/4baa30d4da0797ba7056ffcf2da910029d14b0251fb0528657f180b7f37db0df.png",
+          "x": 911,
+          "y": 4,
+          "width": 139,
+          "height": 132
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text3",
+          "id": "284",
+          "src": "",
+          "x": 954,
+          "y": 76,
+          "width": 34,
+          "height": 16,
+          "text": "MC-13B"
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image14",
+          "id": "324",
+          "src": "assets/1b7ac241b627748513f212feede61ea4e17ea885abdcfed99c6bc4b58051db21.png",
+          "x": 573,
+          "y": 239,
+          "width": 69,
+          "height": 67
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image15",
+          "id": "325",
+          "src": "assets/fdd3e504422f5950c4a30a32c2ab1ade36074bdff2a2f00ed0386879b4d5d21b.png",
+          "x": 474,
+          "y": 564,
+          "width": 53,
+          "height": 51
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image16",
+          "id": "326",
+          "src": "assets/f96f25b3d6adfcfe349ef4d030ca4734f6c3404dca7b03a17853000f1ee049b9.png",
+          "x": 584,
+          "y": 593,
+          "width": 104,
+          "height": 56
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text4",
+          "id": "327",
+          "src": "",
+          "x": 570,
+          "y": 650,
+          "width": 61,
+          "height": 15,
+          "text": "AIA Automation inc"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text5",
+          "id": "328",
+          "src": "",
+          "x": 589,
+          "y": 530,
+          "width": 122,
+          "height": 16,
+          "text": "AIA Automation inc"
+        },
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image17",
+          "id": "329",
+          "src": "assets/e8e66d4523c38ad90392fc9126ee58ba1f3fb6fc666fa6b5a76093c2dd9346e3.png",
+          "x": 535,
+          "y": 745,
+          "width": 63,
+          "height": 61
+        }
+      ]
+    }
+  }
+}

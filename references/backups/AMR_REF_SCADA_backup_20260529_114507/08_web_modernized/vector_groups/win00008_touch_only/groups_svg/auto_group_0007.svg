@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 221.000 96.000" width="221.000" height="96.000">
+  <g transform="translate(-2.000,-1.000)">
+    <line x1="5.0" y1="4.0" x2="221.0" y2="4.0" stroke="rgba(255,255,255,1.000)" stroke-width="1.0" data-name="Line10" data-id="11"/>
+    <line x1="221.0" y1="4.0" x2="221.0" y2="95.0" stroke="rgba(255,255,255,1.000)" stroke-width="1.0" data-name="Line11" data-id="12"/>
+    <line x1="221.0" y1="95.0" x2="4.0" y2="95.0" stroke="rgba(255,255,255,1.000)" stroke-width="1.0" data-name="Line12" data-id="13"/>
+    <line x1="5.0" y1="95.0" x2="5.0" y2="4.0" stroke="rgba(255,255,255,1.000)" stroke-width="1.0" data-name="Line13" data-id="14"/>
+    <line x1="4.0" y1="3.0" x2="221.0" y2="3.0" stroke="rgba(128,128,128,1.000)" stroke-width="1.0" data-name="Line14" data-id="15"/>
+    <line x1="220.0" y1="5.0" x2="220.0" y2="94.0" stroke="rgba(128,128,128,1.000)" stroke-width="1.0" data-name="Line15" data-id="16"/>
+    <line x1="220.0" y1="94.0" x2="5.0" y2="94.0" stroke="rgba(128,128,128,1.000)" stroke-width="1.0" data-name="Line16" data-id="17"/>
+    <line x1="4.0" y1="95.0" x2="4.0" y2="3.0" stroke="rgba(128,128,128,1.000)" stroke-width="1.0" data-name="Line17" data-id="18"/>
+    <line x1="221.0" y1="3.0" x2="220.0" y2="3.0" stroke="rgba(128,128,128,1.000)" stroke-width="1.0" data-name="Line18" data-id="19"/>
+  </g>
+</svg>

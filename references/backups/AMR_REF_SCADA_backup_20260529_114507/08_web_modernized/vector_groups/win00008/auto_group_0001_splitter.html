@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>auto_group_0001 - Interactive Splitter</title>
+  <style>
+    :root {
+      --bg: #0f141a;
+      --panel: #161d26;
+      --panel-2: #1d2633;
+      --text: #d9e2ef;
+      --muted: #8fa2b8;
+      --line: #2a3648;
+      --accent: #42b5ff;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", Arial, sans-serif;
+    }
+    .topbar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--line);
+      background: #101821;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .topbar input[type="text"] {
+      width: 520px;
+      max-width: 58vw;
+      background: #0c1219;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 6px 8px;
+    }
+    .topbar button,
+    .topbar input[type="number"],
+    .sidebar button,
+    .sidebar input,
+    .sidebar select {
+      background: #0f1720;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 6px 8px;
+      font-size: 13px;
+    }
+    .topbar button:hover,
+    .sidebar button:hover {
+      border-color: #3a4a60;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      min-height: calc(100vh - 56px);
+    }
+    .viewer {
+      position: relative;
+      padding: 10px;
+      overflow: auto;
+    }
+    .stage {
+      position: relative;
+      display: inline-block;
+      border: 1px solid var(--line);
+      background: #0e1319;
+      min-width: 300px;
+      min-height: 200px;
+    }
+    .stage svg {
+      display: block;
+      background: #0f151d;
+    }
+    .selection-box {
+      position: absolute;
+      border: 1px dashed #71b8ff;
+      background: rgba(90, 160, 255, 0.15);
+      pointer-events: none;
+      display: none;
+      z-index: 20;
+    }
+    .selection-box.erase {
+      border-color: #ff8f8f;
+      background: rgba(255, 90, 90, 0.16);
+    }
+    .sidebar {
+      border-left: 1px solid var(--line);
+      background: var(--panel);
+      padding: 12px;
+      overflow: auto;
+    }
+    .group {
+      margin-bottom: 12px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-2);
+    }
+    .group h3 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: #e8f0fa;
+    }
+    .hint {
+      color: var(--muted);
+      font-size: 12px;
+      margin: 4px 0 0;
+      line-height: 1.35;
+    }
+    .sections {
+      max-height: 300px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #101822;
+    }
+    .section-row {
+      display: grid;
+      grid-template-columns: 22px 1fr auto;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-bottom: 1px solid #233045;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .section-row:last-child { border-bottom: none; }
+    .section-row.active {
+      background: rgba(66, 181, 255, 0.14);
+      outline: 1px solid #42b5ff66;
+    }
+    .chip {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1px solid #00000080;
+    }
+    .count {
+      color: #9fbedc;
+      font-variant-numeric: tabular-nums;
+      font-size: 12px;
+    }
+    .row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .status {
+      margin-top: 6px;
+      color: #9fd0ff;
+      font-size: 12px;
+      white-space: pre-wrap;
+    }
+    .primitive {
+      cursor: pointer;
+      transition: filter .12s ease, opacity .12s ease;
+    }
+    .primitive.unassigned {
+      opacity: 0.22;
+    }
+    .primitive.assigned {
+      opacity: 1;
+      filter: drop-shadow(0 0 1px var(--sec-color)) drop-shadow(0 0 5px var(--sec-color));
+    }
+    .primitive.hovered {
+      filter: drop-shadow(0 0 1px #fff) drop-shadow(0 0 6px #fff);
+    }
+    .kbd {
+      font-family: Consolas, monospace;
+      border: 1px solid #3b4a63;
+      border-bottom-width: 2px;
+      border-radius: 4px;
+      padding: 0 4px;
+      font-size: 11px;
+      color: #b6c9df;
+    }
+    .mono { font-family: Consolas, monospace; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <label class="mono">SVG source</label>
+    <input id="svgPath" type="text" value="groups_svg/auto_group_0001.svg" />
+    <button id="loadSvgBtn">Charger</button>
+    <label class="mono">Nom export</label>
+    <input id="exportName" type="text" value="auto_group_0001_sections.json" style="width:260px; max-width:26vw;" />
+    <button id="saveLocalBtn">Sauver local</button>
+    <button id="loadLocalBtn">Recharger local</button>
+    <button id="exportJsonBtn">Exporter JSON</button>
+    <label class="mono">Importer JSON
+      <input id="importJsonInput" type="file" accept=".json,application/json" />
+    </label>
+  </div>
+
+  <div class="layout">
+    <div class="viewer">
+      <div id="stage" class="stage">
+        <div id="selectionBox" class="selection-box"></div>
+      </div>
+      <p class="hint">
+        Click = assigner a la section active. Alt+Click = retirer. Shift+Drag = box assign. Shift+Alt+Drag = box deselect.
+      </p>
+    </div>
+
+    <aside class="sidebar">
+      <div class="group">
+        <h3>Sections</h3>
+        <div class="row">
+          <button id="addSectionBtn">+ Section</button>
+          <button id="renameSectionBtn">Renommer</button>
+          <button id="deleteSectionBtn">Supprimer</button>
+        </div>
+        <div class="sections" id="sectionsList"></div>
+        <p class="hint">Section active: <span id="activeSectionLabel" class="mono">-</span></p>
+      </div>
+
+      <div class="group">
+        <h3>Actions</h3>
+        <div class="row">
+          <button id="clearCurrentBtn">Vider section active</button>
+          <button id="clearAllBtn">Tout vider</button>
+        </div>
+        <div class="row">
+          <label>Split X bandes</label>
+          <input id="bandsInput" type="number" min="2" max="20" value="6" style="width:72px;" />
+          <button id="splitBandsBtn">Generer</button>
+        </div>
+        <p class="hint">Le split bandes cree des sections de depart, puis tu ajustes a la main.</p>
+      </div>
+
+      <div class="group">
+        <h3>Stats</h3>
+        <div id="statsBox" class="mono"></div>
+        <div id="status" class="status"></div>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const PALETTE = [
+      "#6ecbff", "#ffb95c", "#77e28a", "#f27ea9", "#b28cff",
+      "#6fe6d8", "#ffd166", "#ff8f70", "#9be15d", "#7aa6ff",
+      "#f4a2ff", "#6df0a5", "#ffa657", "#8ad7ff", "#d0a8ff"
+    ];
+
+    const state = {
+      svgPath: "groups_svg/auto_group_0001.svg",
+      svgRoot: null,
+      primitives: [],
+      byId: new Map(),
+      sections: [],
+      assignments: new Map(), // id -> sectionName
+      activeSection: null,
+      dragging: false,
+      dragStart: null,
+      dragEraseMode: false,
+      hoverId: null
+    };
+
+    const el = {
+      svgPath: document.getElementById("svgPath"),
+      exportName: document.getElementById("exportName"),
+      stage: document.getElementById("stage"),
+      selectionBox: document.getElementById("selectionBox"),
+      sectionsList: document.getElementById("sectionsList"),
+      statsBox: document.getElementById("statsBox"),
+      activeSectionLabel: document.getElementById("activeSectionLabel"),
+      status: document.getElementById("status"),
+      bandsInput: document.getElementById("bandsInput"),
+      importJsonInput: document.getElementById("importJsonInput")
+    };
+
+    function localKey() {
+      return "scada_splitter::" + state.svgPath;
+    }
+
+    function setStatus(msg) {
+      el.status.textContent = msg || "";
+    }
+
+    function sanitizeFileName(name) {
+      const raw = String(name || "").trim();
+      const cleaned = raw
+        .replace(/[\\/:*?"<>|]/g, "_")
+        .replace(/\s+/g, "_")
+        .replace(/_+/g, "_")
+        .replace(/^_+|_+$/g, "");
+      return cleaned || "sections";
+    }
+
+    function ensureJsonExt(name) {
+      const n = String(name || "").trim();
+      if (!n) return "sections.json";
+      return /\.json$/i.test(n) ? n : `${n}.json`;
+    }
+
+    function defaultExportNameFromSvgPath(path) {
+      const p = String(path || "").trim();
+      const file = p.split("/").pop()?.split("\\").pop() || "sections";
+      const stem = file.replace(/\.[^.]+$/, "");
+      return ensureJsonExt(`${sanitizeFileName(stem)}_sections`);
+    }
+
+    function colorForIndex(i) {
+      return PALETTE[i % PALETTE.length];
+    }
+
+    function addSection(name) {
+      let n = (name || "").trim();
+      if (!n) {
+        n = `section_${String(state.sections.length + 1).padStart(2, "0")}`;
+      }
+      if (state.sections.some(s => s.name === n)) {
+        let idx = 2;
+        while (state.sections.some(s => s.name === `${n}_${idx}`)) idx += 1;
+        n = `${n}_${idx}`;
+      }
+      const sec = { name: n, color: colorForIndex(state.sections.length) };
+      state.sections.push(sec);
+      if (!state.activeSection) {
+        state.activeSection = sec.name;
+      }
+      renderSections();
+      renderAssignments();
+      return sec;
+    }
+
+    function removeSection(name) {
+      state.sections = state.sections.filter(s => s.name !== name);
+      for (const [id, sec] of [...state.assignments.entries()]) {
+        if (sec === name) state.assignments.delete(id);
+      }
+      if (!state.sections.length) {
+        state.activeSection = null;
+      } else if (!state.sections.some(s => s.name === state.activeSection)) {
+        state.activeSection = state.sections[0].name;
+      }
+      renderSections();
+      renderAssignments();
+    }
+
+    function getSection(name) {
+      return state.sections.find(s => s.name === name) || null;
+    }
+
+    function renderSections() {
+      el.sectionsList.innerHTML = "";
+      for (const sec of state.sections) {
+        const row = document.createElement("div");
+        row.className = "section-row" + (sec.name === state.activeSection ? " active" : "");
+        row.dataset.name = sec.name;
+        row.innerHTML = `
+          <span class="chip" style="background:${sec.color}"></span>
+          <span>${sec.name}</span>
+          <span class="count">${countAssigned(sec.name)}</span>
+        `;
+        row.addEventListener("click", () => {
+          state.activeSection = sec.name;
+          renderSections();
+          renderAssignments();
+        });
+        el.sectionsList.appendChild(row);
+      }
+      el.activeSectionLabel.textContent = state.activeSection || "-";
+      renderStats();
+    }
+
+    function countAssigned(sectionName) {
+      let c = 0;
+      for (const sec of state.assignments.values()) {
+        if (sec === sectionName) c += 1;
+      }
+      return c;
+    }
+
+    function assignIdToSection(id, sectionName) {
+      if (!id || !sectionName) return;
+      state.assignments.set(id, sectionName);
+    }
+
+    function unassignId(id) {
+      state.assignments.delete(id);
+    }
+
+    function renderAssignments() {
+      const sectionColor = new Map(state.sections.map(s => [s.name, s.color]));
+      for (const p of state.primitives) {
+        const id = p.getAttribute("data-id");
+        p.classList.remove("assigned", "unassigned");
+        p.style.removeProperty("--sec-color");
+        const sec = state.assignments.get(id);
+        if (sec && sectionColor.has(sec)) {
+          p.classList.add("assigned");
+          p.style.setProperty("--sec-color", sectionColor.get(sec));
+        } else {
+          p.classList.add("unassigned");
+        }
+      }
+      renderSections();
+      renderStats();
+    }
+
+    function renderStats() {
+      const total = state.primitives.length;
+      const assigned = state.assignments.size;
+      const unassigned = total - assigned;
+      const lines = [
+        `SVG: ${state.svgPath}`,
+        `Primitives: ${total}`,
+        `Assigned: ${assigned}`,
+        `Unassigned: ${unassigned}`,
+        `Sections: ${state.sections.length}`
+      ];
+      el.statsBox.textContent = lines.join("\n");
+    }
+
+    function parseSvgSize(svg) {
+      const vb = svg.getAttribute("viewBox");
+      if (vb) {
+        const p = vb.split(/\s+/).map(x => parseFloat(x));
+        if (p.length === 4 && Number.isFinite(p[2]) && Number.isFinite(p[3])) {
+          return { w: p[2], h: p[3] };
+        }
+      }
+      return { w: 1000, h: 700 };
+    }
+
+    async function loadSvgFromPath(path) {
+      const resp = await fetch(path);
+      if (!resp.ok) throw new Error(`Fetch failed (${resp.status})`);
+      const txt = await resp.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(txt, "image/svg+xml");
+      const svg = doc.documentElement;
+      if (!svg || svg.tagName.toLowerCase() !== "svg") {
+        throw new Error("Invalid SVG");
+      }
+      state.svgPath = path;
+      state.svgRoot = svg;
+      el.exportName.value = defaultExportNameFromSvgPath(path);
+      el.stage.querySelectorAll("svg").forEach(n => n.remove());
+      el.stage.appendChild(svg);
+
+      const size = parseSvgSize(svg);
+      svg.setAttribute("width", size.w);
+      svg.setAttribute("height", size.h);
+
+      state.primitives = Array.from(svg.querySelectorAll("g > *[data-id]"));
+      if (!state.primitives.length) {
+        state.primitives = Array.from(svg.querySelectorAll("[data-id]"));
+      }
+      state.byId.clear();
+      for (const p of state.primitives) {
+        p.classList.add("primitive");
+        const id = p.getAttribute("data-id");
+        if (id) state.byId.set(id, p);
+      }
+
+      state.assignments.clear();
+      if (!state.sections.length) addSection("section_01");
+
+      wirePrimitiveEvents();
+      renderAssignments();
+      setStatus(`SVG charge: ${state.primitives.length} primitives`);
+    }
+
+    function wirePrimitiveEvents() {
+      for (const p of state.primitives) {
+        p.addEventListener("mouseenter", () => p.classList.add("hovered"));
+        p.addEventListener("mouseleave", () => p.classList.remove("hovered"));
+        p.addEventListener("click", (ev) => {
+          ev.stopPropagation();
+          const id = p.getAttribute("data-id");
+          if (!id) return;
+          if (ev.altKey) {
+            unassignId(id);
+          } else {
+            if (!state.activeSection) {
+              setStatus("Choisir une section active d'abord.");
+              return;
+            }
+            assignIdToSection(id, state.activeSection);
+          }
+          renderAssignments();
+        });
+      }
+
+      const stage = el.stage;
+      let dragCurrent = null;
+      stage.addEventListener("mousedown", (ev) => {
+        if (!ev.shiftKey) return;
+        state.dragging = true;
+        state.dragStart = { x: ev.clientX, y: ev.clientY };
+        state.dragEraseMode = !!ev.altKey;
+        dragCurrent = { ...state.dragStart };
+        el.selectionBox.style.display = "block";
+        el.selectionBox.classList.toggle("erase", state.dragEraseMode);
+        setStatus(state.dragEraseMode ? "Box deselect en cours..." : "Box assign en cours...");
+        updateSelectionBox(state.dragStart, dragCurrent);
+        ev.preventDefault();
+      });
+      window.addEventListener("mousemove", (ev) => {
+        if (!state.dragging || !state.dragStart) return;
+        dragCurrent = { x: ev.clientX, y: ev.clientY };
+        updateSelectionBox(state.dragStart, dragCurrent);
+      });
+      window.addEventListener("mouseup", (ev) => {
+        if (!state.dragging || !state.dragStart) return;
+        const end = { x: ev.clientX, y: ev.clientY };
+        applyBoxAssign(state.dragStart, end, state.dragEraseMode);
+        state.dragging = false;
+        state.dragStart = null;
+        state.dragEraseMode = false;
+        dragCurrent = null;
+        el.selectionBox.style.display = "none";
+        el.selectionBox.classList.remove("erase");
+      });
+    }
+
+    function updateSelectionBox(a, b) {
+      const stageRect = el.stage.getBoundingClientRect();
+      const left = Math.min(a.x, b.x) - stageRect.left;
+      const top = Math.min(a.y, b.y) - stageRect.top;
+      const width = Math.abs(a.x - b.x);
+      const height = Math.abs(a.y - b.y);
+      el.selectionBox.style.left = `${left}px`;
+      el.selectionBox.style.top = `${top}px`;
+      el.selectionBox.style.width = `${width}px`;
+      el.selectionBox.style.height = `${height}px`;
+    }
+
+    function intersects(r1, r2) {
+      return !(r2.left > r1.right || r2.right < r1.left || r2.top > r1.bottom || r2.bottom < r1.top);
+    }
+
+    function applyBoxAssign(start, end, eraseMode) {
+      const rect = {
+        left: Math.min(start.x, end.x),
+        top: Math.min(start.y, end.y),
+        right: Math.max(start.x, end.x),
+        bottom: Math.max(start.y, end.y)
+      };
+      if (!eraseMode && !state.activeSection) {
+        setStatus("Choisir une section active avant le box select.");
+        return;
+      }
+      let hit = 0;
+      for (const p of state.primitives) {
+        const pr = p.getBoundingClientRect();
+        if (!intersects(rect, pr)) continue;
+        const id = p.getAttribute("data-id");
+        if (!id) continue;
+        if (eraseMode) {
+          unassignId(id);
+        } else {
+          assignIdToSection(id, state.activeSection);
+        }
+        hit += 1;
+      }
+      renderAssignments();
+      setStatus(`Box ${eraseMode ? "deselect" : "assign"}: ${hit} primitives ${eraseMode ? "retirees" : "assignees"}.`);
+    }
+
+    function exportJson() {
+      const sectionsObj = {};
+      for (const sec of state.sections) {
+        sectionsObj[sec.name] = [];
+      }
+      for (const [id, secName] of state.assignments.entries()) {
+        if (!sectionsObj[secName]) sectionsObj[secName] = [];
+        sectionsObj[secName].push(id);
+      }
+      for (const k of Object.keys(sectionsObj)) {
+        sectionsObj[k].sort((a, b) => Number(a) - Number(b));
+      }
+
+      const colors = {};
+      for (const sec of state.sections) {
+        colors[sec.name] = sec.color;
+      }
+
+      const payload = {
+        source_svg: state.svgPath,
+        exported_at: new Date().toISOString(),
+        export_name: ensureJsonExt(sanitizeFileName(el.exportName.value)),
+        sections: sectionsObj,
+        section_colors: colors
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const requested = ensureJsonExt(sanitizeFileName(el.exportName.value));
+      el.exportName.value = requested;
+      a.download = requested;
+      a.click();
+      URL.revokeObjectURL(url);
+      setStatus(`JSON exporte: ${requested}`);
+    }
+
+    async function importJson(file) {
+      const text = await file.text();
+      const obj = JSON.parse(text);
+      const sections = obj.sections || {};
+      const colors = obj.section_colors || {};
+      if (obj.export_name) {
+        el.exportName.value = ensureJsonExt(sanitizeFileName(obj.export_name));
+      }
+
+      state.sections = [];
+      state.assignments.clear();
+
+      for (const [name, ids] of Object.entries(sections)) {
+        const sec = addSection(name);
+        if (colors[name]) sec.color = colors[name];
+        for (const id of ids) {
+          if (state.byId.has(String(id))) {
+            state.assignments.set(String(id), name);
+          }
+        }
+      }
+
+      if (!state.sections.length) addSection("section_01");
+      state.activeSection = state.sections[0].name;
+      renderSections();
+      renderAssignments();
+      setStatus("JSON importe.");
+    }
+
+    function saveLocal() {
+      const sectionsObj = {};
+      for (const sec of state.sections) {
+        sectionsObj[sec.name] = [];
+      }
+      for (const [id, sec] of state.assignments.entries()) {
+        if (!sectionsObj[sec]) sectionsObj[sec] = [];
+        sectionsObj[sec].push(id);
+      }
+      const payload = {
+        source_svg: state.svgPath,
+        export_name: ensureJsonExt(sanitizeFileName(el.exportName.value)),
+        sections: sectionsObj,
+        section_colors: Object.fromEntries(state.sections.map(s => [s.name, s.color])),
+        active: state.activeSection
+      };
+      localStorage.setItem(localKey(), JSON.stringify(payload));
+      setStatus("Etat sauvegarde localement.");
+    }
+
+    function loadLocal() {
+      const raw = localStorage.getItem(localKey());
+      if (!raw) {
+        setStatus("Aucune sauvegarde locale.");
+        return;
+      }
+      const obj = JSON.parse(raw);
+      state.sections = [];
+      state.assignments.clear();
+      const colors = obj.section_colors || {};
+      const sections = obj.sections || {};
+      if (obj.export_name) {
+        el.exportName.value = ensureJsonExt(sanitizeFileName(obj.export_name));
+      }
+
+      for (const [name, ids] of Object.entries(sections)) {
+        const sec = addSection(name);
+        if (colors[name]) sec.color = colors[name];
+        for (const id of ids) {
+          if (state.byId.has(String(id))) {
+            state.assignments.set(String(id), name);
+          }
+        }
+      }
+      if (!state.sections.length) addSection("section_01");
+      state.activeSection = obj.active && getSection(obj.active) ? obj.active : state.sections[0].name;
+      renderSections();
+      renderAssignments();
+      setStatus("Etat recharge depuis localStorage.");
+    }
+
+    function splitByXBands() {
+      const n = Math.max(2, Math.min(20, Number(el.bandsInput.value || 6)));
+      if (!state.primitives.length) return;
+
+      let minX = Infinity;
+      let maxX = -Infinity;
+      const centers = [];
+      for (const p of state.primitives) {
+        const b = p.getBBox();
+        const cx = b.x + b.width / 2;
+        centers.push({ id: p.getAttribute("data-id"), cx });
+        if (cx < minX) minX = cx;
+        if (cx > maxX) maxX = cx;
+      }
+      const span = Math.max(1e-6, maxX - minX);
+
+      state.sections = [];
+      state.assignments.clear();
+      for (let i = 0; i < n; i += 1) {
+        addSection(`band_${String(i + 1).padStart(2, "0")}`);
+      }
+      state.activeSection = state.sections[0].name;
+
+      for (const c of centers) {
+        let k = Math.floor(((c.cx - minX) / span) * n);
+        if (k < 0) k = 0;
+        if (k >= n) k = n - 1;
+        assignIdToSection(c.id, state.sections[k].name);
+      }
+      renderSections();
+      renderAssignments();
+      setStatus(`Split initial en ${n} bandes applique.`);
+    }
+
+    function bindUi() {
+      document.getElementById("loadSvgBtn").addEventListener("click", async () => {
+        try {
+          await loadSvgFromPath(el.svgPath.value.trim());
+        } catch (err) {
+          setStatus("Erreur chargement SVG: " + err.message);
+        }
+      });
+      document.getElementById("addSectionBtn").addEventListener("click", () => {
+        const name = prompt("Nom de la section:");
+        addSection(name || "");
+        renderSections();
+      });
+      document.getElementById("renameSectionBtn").addEventListener("click", () => {
+        if (!state.activeSection) return;
+        const next = prompt("Nouveau nom:", state.activeSection);
+        if (!next) return;
+        const target = getSection(state.activeSection);
+        if (!target) return;
+        const old = target.name;
+        target.name = next.trim();
+        for (const [id, sec] of [...state.assignments.entries()]) {
+          if (sec === old) state.assignments.set(id, target.name);
+        }
+        state.activeSection = target.name;
+        renderSections();
+        renderAssignments();
+      });
+      document.getElementById("deleteSectionBtn").addEventListener("click", () => {
+        if (!state.activeSection) return;
+        if (!confirm(`Supprimer ${state.activeSection} ?`)) return;
+        removeSection(state.activeSection);
+      });
+      document.getElementById("clearCurrentBtn").addEventListener("click", () => {
+        if (!state.activeSection) return;
+        for (const [id, sec] of [...state.assignments.entries()]) {
+          if (sec === state.activeSection) state.assignments.delete(id);
+        }
+        renderAssignments();
+      });
+      document.getElementById("clearAllBtn").addEventListener("click", () => {
+        if (!confirm("Vider toutes les assignations ?")) return;
+        state.assignments.clear();
+        renderAssignments();
+      });
+      document.getElementById("splitBandsBtn").addEventListener("click", splitByXBands);
+      document.getElementById("exportJsonBtn").addEventListener("click", exportJson);
+      document.getElementById("saveLocalBtn").addEventListener("click", saveLocal);
+      document.getElementById("loadLocalBtn").addEventListener("click", loadLocal);
+      el.importJsonInput.addEventListener("change", async () => {
+        const f = el.importJsonInput.files && el.importJsonInput.files[0];
+        if (!f) return;
+        await importJson(f);
+        el.importJsonInput.value = "";
+      });
+    }
+
+    async function init() {
+      bindUi();
+      addSection("section_01");
+      try {
+        await loadSvgFromPath(el.svgPath.value.trim());
+      } catch (err) {
+        setStatus("Erreur init: " + err.message + " (ouvre la page via serveur local si file:// bloque fetch)");
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>

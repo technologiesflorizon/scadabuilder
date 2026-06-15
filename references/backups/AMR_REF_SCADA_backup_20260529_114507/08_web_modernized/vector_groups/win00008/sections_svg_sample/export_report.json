@@ -1,0 +1,33 @@
+{
+  "source_svg": "F:\\MetroSearch\\SCADA_AMR_GROUP\\08_web_modernized\\vector_groups\\win00008\\groups_svg\\auto_group_0001.svg",
+  "assignments": "F:\\MetroSearch\\SCADA_AMR_GROUP\\08_web_modernized\\vector_groups\\win00008\\auto_group_0001_sections.sample.json",
+  "out_dir": "F:\\MetroSearch\\SCADA_AMR_GROUP\\08_web_modernized\\vector_groups\\win00008\\sections_svg_sample",
+  "sections": [
+    {
+      "name": "sample_a",
+      "exported": true,
+      "count": 25,
+      "missing_ids": [],
+      "output": "F:\\MetroSearch\\SCADA_AMR_GROUP\\08_web_modernized\\vector_groups\\win00008\\sections_svg_sample\\sample_a.svg",
+      "viewBox": [
+        0.0,
+        277.0,
+        984.0,
+        459.0
+      ]
+    },
+    {
+      "name": "sample_b",
+      "exported": true,
+      "count": 25,
+      "missing_ids": [],
+      "output": "F:\\MetroSearch\\SCADA_AMR_GROUP\\08_web_modernized\\vector_groups\\win00008\\sections_svg_sample\\sample_b.svg",
+      "viewBox": [
+        668.0,
+        185.0,
+        316.0,
+        238.0
+      ]
+    }
+  ]
+}

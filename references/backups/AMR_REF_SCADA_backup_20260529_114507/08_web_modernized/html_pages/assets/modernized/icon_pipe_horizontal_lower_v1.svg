@@ -1,0 +1,11 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="69" height="4" viewBox="0 0 69 4" role="img" aria-label="Pipe horizontal lower highlight">
+  <defs>
+    <linearGradient id="pipeHDown" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5e6876"/>
+      <stop offset="0.65" stop-color="#dbe4ef"/>
+      <stop offset="1" stop-color="#f4f8ff"/>
+    </linearGradient>
+  </defs>
+  <rect x="0" y="0" width="69" height="4" fill="#1f252d"/>
+  <rect x="1" y="1" width="67" height="2" fill="url(#pipeHDown)"/>
+</svg>

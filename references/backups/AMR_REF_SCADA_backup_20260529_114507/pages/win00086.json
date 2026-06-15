@@ -1,0 +1,86 @@
+{
+  "id": "win00086",
+  "title": "win00086",
+  "size": {
+    "width": 775,
+    "height": 234
+  },
+  "background": "rgba(0,0,0,1)",
+  "layers": [
+    {
+      "id": "legacy_embed",
+      "type": "legacy_embed",
+      "x": 0,
+      "y": 0,
+      "width": 775,
+      "height": 234,
+      "src": "../assets/html_pages/win00086_updated.html",
+      "sandbox": "allow-scripts allow-same-origin",
+      "scrolling": "auto"
+    }
+  ],
+  "bindings": [],
+  "navigation": [],
+  "layout": {
+    "mode": "fixed"
+  },
+  "legacy": {
+    "source_html": "08_web_modernized/html_pages/win00086_updated.html",
+    "inventory": {
+      "summary": {
+        "shape_layers": 1,
+        "scripts": 0,
+        "layers_total": 3,
+        "type_Image": 1,
+        "type_Text": 2,
+        "svg_shapes_total": 17
+      },
+      "svg_shape_counts": {
+        "rect": 0,
+        "line": 3,
+        "polyline": 0,
+        "polygon": 6,
+        "circle": 0,
+        "ellipse": 8,
+        "path": 0
+      },
+      "elements": [
+        {
+          "tag": "img",
+          "type": "Image",
+          "name": "Image1",
+          "id": "1",
+          "src": "assets/136753b4bd78d78cd81cb65c442a115b380f58b71af86bf57637f4749341a6a7.png",
+          "x": 342,
+          "y": 85,
+          "width": 59,
+          "height": 104
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text1",
+          "id": "2",
+          "src": "",
+          "x": 87,
+          "y": 111,
+          "width": 570,
+          "height": 41,
+          "text": "PANNEAU VULCAIN EN TROUBLE"
+        },
+        {
+          "tag": "div",
+          "type": "Text",
+          "name": "Text2",
+          "id": "3",
+          "src": "",
+          "x": 85,
+          "y": 109,
+          "width": 570,
+          "height": 41,
+          "text": "PANNEAU VULCAIN EN TROUBLE"
+        }
+      ]
+    }
+  }
+}

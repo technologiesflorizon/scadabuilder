@@ -1,0 +1,20 @@
+{
+  "source_svg": "F:\\MetroSearch\\SCADA_AMR_GROUP\\08_web_modernized\\vector_groups\\win00008\\groups_svg\\auto_group_0001.svg",
+  "assignments": "F:\\MetroSearch\\SCADA_AMR_GROUP\\08_web_modernized\\vector_groups\\win00008\\assignments\\auto_group_0001\\pump1_out_pipe.json",
+  "out_dir": "F:\\MetroSearch\\SCADA_AMR_GROUP\\08_web_modernized\\vector_groups\\win00008\\sections_svg\\auto_group_0001\\pump1_out_pipe",
+  "sections": [
+    {
+      "name": "section_01",
+      "exported": true,
+      "count": 64,
+      "missing_ids": [],
+      "output": "F:\\MetroSearch\\SCADA_AMR_GROUP\\08_web_modernized\\vector_groups\\win00008\\sections_svg\\auto_group_0001\\pump1_out_pipe\\section_01.svg",
+      "viewBox": [
+        150.0,
+        2.0,
+        635.0,
+        597.0
+      ]
+    }
+  ]
+}

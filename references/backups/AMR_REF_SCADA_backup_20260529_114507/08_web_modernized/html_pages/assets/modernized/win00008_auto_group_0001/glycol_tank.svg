@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="727.000 397.000 254.000 200.000" width="254.000" height="200.000">
+  <style id="modernize-style-v1">
+  svg { shape-rendering: geometricPrecision; text-rendering: geometricPrecision; }
+  .state-active { filter: drop-shadow(0 0 2px rgba(33,179,111,.65)) drop-shadow(0 0 7px rgba(33,179,111,.35)); }
+  .state-warning { filter: drop-shadow(0 0 2px rgba(232,176,65,.62)) drop-shadow(0 0 7px rgba(232,176,65,.32)); }
+  .state-fault { filter: drop-shadow(0 0 2px rgba(217,73,73,.66)) drop-shadow(0 0 8px rgba(217,73,73,.34)); }
+  .state-critical { filter: drop-shadow(0 0 3px rgba(255,56,56,.72)) drop-shadow(0 0 10px rgba(255,56,56,.40)); }
+  .state-idle { filter: none; }
+</style><g transform="translate(-46.000,-121.000)"><polygon points="790.0,520.0 1018.0,520.0 1018.0,716.0 790.0,716.0 790.0,520.0" fill="rgba(171,187,207,1.000)" stroke="rgba(217,229,244,1.000)" stroke-width="0.0" data-name="Polygon456" data-id="697" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <polygon points="903.0,620.0 785.0,521.0 1024.0,521.0 903.0,620.0" fill="rgba(171,187,207,1.000)" stroke="rgba(217,229,244,1.000)" stroke-width="0.0" data-name="Polygon457" data-id="698" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <polygon points="909.0,616.0 786.0,710.0 786.0,523.0 909.0,616.0" fill="rgba(171,187,207,1.000)" stroke="rgba(217,229,244,1.000)" stroke-width="0.0" data-name="Polygon458" data-id="699" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <polyline points="786.0,520.0 1015.0,520.0 1015.0,716.0 786.0,716.0 786.0,520.0" fill="none" stroke="rgba(26,37,49,1.000)" stroke-width="1.05" data-name="PolyLine178" data-id="700" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <rect x="775" y="520" width="249" height="4" rx="2" ry="2" fill="rgba(171,187,207,1.000)" stroke="rgba(26,37,49,1.000)" stroke-width="1.05" data-name="RoundRectangle1" data-id="701" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <rect x="775" y="527" width="249" height="4" rx="2" ry="2" fill="rgba(171,187,207,1.000)" stroke="rgba(26,37,49,1.000)" stroke-width="1.05" data-name="RoundRectangle2" data-id="702" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <rect x="775" y="580" width="249" height="4" rx="2" ry="2" fill="rgba(171,187,207,1.000)" stroke="rgba(26,37,49,1.000)" stroke-width="1.05" data-name="RoundRectangle3" data-id="703" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <rect x="775" y="587" width="250" height="4" rx="2" ry="2" fill="rgba(171,187,207,1.000)" stroke="rgba(26,37,49,1.000)" stroke-width="1.05" data-name="RoundRectangle4" data-id="704" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <rect x="775" y="640" width="246" height="4" rx="2" ry="2" fill="rgba(171,187,207,1.000)" stroke="rgba(26,37,49,1.000)" stroke-width="1.05" data-name="RoundRectangle5" data-id="705" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <rect x="775" y="648" width="246" height="4" rx="2" ry="2" fill="rgba(171,187,207,1.000)" stroke="rgba(26,37,49,1.000)" stroke-width="1.05" data-name="RoundRectangle6" data-id="706" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <rect x="775" y="712" width="250" height="4" rx="2" ry="2" fill="rgba(171,187,207,1.000)" stroke="rgba(26,37,49,1.000)" stroke-width="1.05" data-name="RoundRectangle7" data-id="707" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    <rect x="775" y="705" width="248" height="4" rx="2" ry="2" fill="rgba(171,187,207,1.000)" stroke="rgba(26,37,49,1.000)" stroke-width="1.05" data-name="RoundRectangle8" data-id="708" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    </g>
+</svg>

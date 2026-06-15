@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 221.000 278.000" width="221.000" height="278.000">
+  <g transform="translate(-2.000,-1.000)">
+    <line x1="5.0" y1="102.0" x2="220.0" y2="102.0" stroke="rgba(255,255,255,1.000)" stroke-width="1.0" data-name="Line1" data-id="2"/>
+    <line x1="220.0" y1="102.0" x2="220.0" y2="277.0" stroke="rgba(255,255,255,1.000)" stroke-width="1.0" data-name="Line2" data-id="3"/>
+    <line x1="220.0" y1="277.0" x2="4.0" y2="277.0" stroke="rgba(255,255,255,1.000)" stroke-width="1.0" data-name="Line3" data-id="4"/>
+    <line x1="5.0" y1="277.0" x2="5.0" y2="102.0" stroke="rgba(255,255,255,1.000)" stroke-width="1.0" data-name="Line4" data-id="5"/>
+    <line x1="4.0" y1="101.0" x2="220.0" y2="101.0" stroke="rgba(128,128,128,1.000)" stroke-width="1.0" data-name="Line5" data-id="6"/>
+    <line x1="219.0" y1="103.0" x2="219.0" y2="276.0" stroke="rgba(128,128,128,1.000)" stroke-width="1.0" data-name="Line6" data-id="7"/>
+    <line x1="219.0" y1="276.0" x2="5.0" y2="276.0" stroke="rgba(128,128,128,1.000)" stroke-width="1.0" data-name="Line7" data-id="8"/>
+    <line x1="4.0" y1="277.0" x2="4.0" y2="101.0" stroke="rgba(128,128,128,1.000)" stroke-width="1.0" data-name="Line8" data-id="9"/>
+    <line x1="220.0" y1="101.0" x2="219.0" y2="101.0" stroke="rgba(128,128,128,1.000)" stroke-width="1.0" data-name="Line9" data-id="10"/>
+    <line x1="5.0" y1="4.0" x2="221.0" y2="4.0" stroke="rgba(255,255,255,1.000)" stroke-width="1.0" data-name="Line10" data-id="11"/>
+    <line x1="221.0" y1="4.0" x2="221.0" y2="95.0" stroke="rgba(255,255,255,1.000)" stroke-width="1.0" data-name="Line11" data-id="12"/>
+    <line x1="221.0" y1="95.0" x2="4.0" y2="95.0" stroke="rgba(255,255,255,1.000)" stroke-width="1.0" data-name="Line12" data-id="13"/>
+    <line x1="5.0" y1="95.0" x2="5.0" y2="4.0" stroke="rgba(255,255,255,1.000)" stroke-width="1.0" data-name="Line13" data-id="14"/>
+    <line x1="4.0" y1="3.0" x2="221.0" y2="3.0" stroke="rgba(128,128,128,1.000)" stroke-width="1.0" data-name="Line14" data-id="15"/>
+    <line x1="220.0" y1="5.0" x2="220.0" y2="94.0" stroke="rgba(128,128,128,1.000)" stroke-width="1.0" data-name="Line15" data-id="16"/>
+    <line x1="220.0" y1="94.0" x2="5.0" y2="94.0" stroke="rgba(128,128,128,1.000)" stroke-width="1.0" data-name="Line16" data-id="17"/>
+    <line x1="4.0" y1="95.0" x2="4.0" y2="3.0" stroke="rgba(128,128,128,1.000)" stroke-width="1.0" data-name="Line17" data-id="18"/>
+    <line x1="221.0" y1="3.0" x2="220.0" y2="3.0" stroke="rgba(128,128,128,1.000)" stroke-width="1.0" data-name="Line18" data-id="19"/>
+    <rect x="54" y="55" width="119" height="30" fill="rgba(192,192,192,1.000)" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="Rectangle6" data-id="783"/>
+    <line x1="171.0" y1="55.0" x2="171.0" y2="85.0" stroke="rgba(255,255,255,1.000)" stroke-width="1.0" data-name="Line19" data-id="785"/>
+    <line x1="55.0" y1="84.0" x2="171.0" y2="84.0" stroke="rgba(255,255,255,1.000)" stroke-width="1.0" data-name="Line20" data-id="786"/>
+    <rect x="54" y="233" width="116" height="27" fill="rgba(0,186,0,1.000)" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="Rectangle7" data-id="788"/>
+    <rect x="53" y="176" width="119" height="27" fill="rgba(208,208,208,1.000)" stroke="rgba(0,0,0,1.000)" stroke-width="1.0" data-name="Rectangle8" data-id="792"/>
+    <line x1="170.0" y1="179.0" x2="170.0" y2="203.0" stroke="rgba(192,192,192,1.000)" stroke-width="1.0" data-name="Line21" data-id="796"/>
+    <line x1="53.0" y1="203.0" x2="171.0" y2="203.0" stroke="rgba(192,192,192,1.000)" stroke-width="1.0" data-name="Line22" data-id="797"/>
+    <line x1="169.0" y1="233.0" x2="169.0" y2="260.0" stroke="rgba(255,255,255,1.000)" stroke-width="1.0" data-name="Line23" data-id="798"/>
+    <line x1="169.0" y1="260.0" x2="53.0" y2="260.0" stroke="rgba(255,255,255,1.000)" stroke-width="1.0" data-name="Line24" data-id="799"/>
+  </g>
+</svg>

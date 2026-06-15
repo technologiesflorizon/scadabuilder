@@ -1,0 +1,1932 @@
+{
+  "Name": "AMR_REF_SCADA_V2",
+  "Version": {
+    "Production": 0,
+    "Feature": 3,
+    "Iteration": 2
+  },
+  "CanvasSize": {
+    "Width": 1280,
+    "Height": 873
+  },
+  "ResponsiveMode": "Fixed",
+  "AuthoringMode": "DesktopFirst",
+  "DevicePresets": [
+    {
+      "Id": "desktop-1280x873",
+      "Name": "Desktop reference",
+      "DeviceClass": "Desktop",
+      "Orientation": "Landscape",
+      "Size": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "CanRotate": false
+    },
+    {
+      "Id": "desktop-1920x1080",
+      "Name": "Desktop 16:9",
+      "DeviceClass": "Desktop",
+      "Orientation": "Landscape",
+      "Size": {
+        "Width": 1920,
+        "Height": 1080
+      },
+      "CanRotate": false
+    },
+    {
+      "Id": "ipad-landscape",
+      "Name": "iPad landscape",
+      "DeviceClass": "Tablet",
+      "Orientation": "Landscape",
+      "Size": {
+        "Width": 1180,
+        "Height": 820
+      },
+      "CanRotate": true
+    },
+    {
+      "Id": "ipad-portrait",
+      "Name": "iPad portrait",
+      "DeviceClass": "Tablet",
+      "Orientation": "Portrait",
+      "Size": {
+        "Width": 820,
+        "Height": 1180
+      },
+      "CanRotate": true
+    },
+    {
+      "Id": "iphone-landscape",
+      "Name": "iPhone landscape",
+      "DeviceClass": "Mobile",
+      "Orientation": "Landscape",
+      "Size": {
+        "Width": 932,
+        "Height": 430
+      },
+      "CanRotate": true
+    },
+    {
+      "Id": "iphone-portrait",
+      "Name": "iPhone portrait",
+      "DeviceClass": "Mobile",
+      "Orientation": "Portrait",
+      "Size": {
+        "Width": 430,
+        "Height": 932
+      },
+      "CanRotate": true
+    }
+  ],
+  "Scenes": [
+    {
+      "Id": "win00002",
+      "Title": "win00002",
+      "RelativePath": "scenes/win00002.scene.json",
+      "Type": "Header",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 120
+      },
+      "Background": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 120
+      },
+      "EffectiveBackground": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00003",
+      "Title": "win00003",
+      "RelativePath": "scenes/win00003.scene.json",
+      "Type": "Footer",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 120
+      },
+      "Background": {
+        "Color": "#A6A6A6",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 120
+      },
+      "EffectiveBackground": {
+        "Color": "#A6A6A6",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00004",
+      "Title": "win00004",
+      "RelativePath": "scenes/win00004.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00007",
+      "Title": "win00007",
+      "RelativePath": "scenes/win00007.scene.json",
+      "Type": "Default",
+      "CanvasSize": null,
+      "Background": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00008",
+      "Title": "win00008",
+      "RelativePath": "scenes/win00008.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": true,
+      "HeaderPageId": "win00002",
+      "FooterPageId": "win00003",
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00009",
+      "Title": "win00009",
+      "RelativePath": "scenes/win00009.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": true,
+      "HeaderPageId": "win00002",
+      "FooterPageId": "win00003",
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00010",
+      "Title": "win00010",
+      "RelativePath": "scenes/win00010.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00011",
+      "Title": "win00011",
+      "RelativePath": "scenes/win00011.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00012",
+      "Title": "win00012",
+      "RelativePath": "scenes/win00012.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00013",
+      "Title": "win00013",
+      "RelativePath": "scenes/win00013.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00014",
+      "Title": "win00014",
+      "RelativePath": "scenes/win00014.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00015",
+      "Title": "win00015",
+      "RelativePath": "scenes/win00015.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00017",
+      "Title": "win00017",
+      "RelativePath": "scenes/win00017.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#A0A0A0",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": true,
+      "HeaderPageId": "win00002",
+      "FooterPageId": "win00003",
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#A0A0A0",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00025",
+      "Title": "win00025",
+      "RelativePath": "scenes/win00025.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00026",
+      "Title": "win00026",
+      "RelativePath": "scenes/win00026.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00027",
+      "Title": "win00027",
+      "RelativePath": "scenes/win00027.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00028",
+      "Title": "win00028",
+      "RelativePath": "scenes/win00028.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00029",
+      "Title": "win00029",
+      "RelativePath": "scenes/win00029.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00030",
+      "Title": "win00030",
+      "RelativePath": "scenes/win00030.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00031",
+      "Title": "win00031",
+      "RelativePath": "scenes/win00031.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00032",
+      "Title": "win00032",
+      "RelativePath": "scenes/win00032.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00033",
+      "Title": "win00033",
+      "RelativePath": "scenes/win00033.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00034",
+      "Title": "win00034",
+      "RelativePath": "scenes/win00034.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#B9B9B9",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#B9B9B9",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00047",
+      "Title": "win00047",
+      "RelativePath": "scenes/win00047.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00048",
+      "Title": "win00048",
+      "RelativePath": "scenes/win00048.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00054",
+      "Title": "win00054",
+      "RelativePath": "scenes/win00054.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#9C9C9C",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#9C9C9C",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00059",
+      "Title": "win00059",
+      "RelativePath": "scenes/win00059.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00065",
+      "Title": "win00065",
+      "RelativePath": "scenes/win00065.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00068",
+      "Title": "win00068",
+      "RelativePath": "scenes/win00068.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00069",
+      "Title": "win00069",
+      "RelativePath": "scenes/win00069.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00070",
+      "Title": "win00070",
+      "RelativePath": "scenes/win00070.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#B7B7B7",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#B7B7B7",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00072",
+      "Title": "win00072",
+      "RelativePath": "scenes/win00072.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00073",
+      "Title": "win00073",
+      "RelativePath": "scenes/win00073.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00074",
+      "Title": "win00074",
+      "RelativePath": "scenes/win00074.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00075",
+      "Title": "win00075",
+      "RelativePath": "scenes/win00075.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00076",
+      "Title": "win00076",
+      "RelativePath": "scenes/win00076.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00077",
+      "Title": "win00077",
+      "RelativePath": "scenes/win00077.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00078",
+      "Title": "win00078",
+      "RelativePath": "scenes/win00078.scene.json",
+      "Type": "Default",
+      "CanvasSize": null,
+      "Background": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00079",
+      "Title": "win00079",
+      "RelativePath": "scenes/win00079.scene.json",
+      "Type": "Default",
+      "CanvasSize": null,
+      "Background": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00082",
+      "Title": "win00082",
+      "RelativePath": "scenes/win00082.scene.json",
+      "Type": "Default",
+      "CanvasSize": null,
+      "Background": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00083",
+      "Title": "win00083",
+      "RelativePath": "scenes/win00083.scene.json",
+      "Type": "Default",
+      "CanvasSize": null,
+      "Background": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00084",
+      "Title": "win00084",
+      "RelativePath": "scenes/win00084.scene.json",
+      "Type": "Default",
+      "CanvasSize": null,
+      "Background": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00085",
+      "Title": "win00085",
+      "RelativePath": "scenes/win00085.scene.json",
+      "Type": "Default",
+      "CanvasSize": null,
+      "Background": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00086",
+      "Title": "win00086",
+      "RelativePath": "scenes/win00086.scene.json",
+      "Type": "Default",
+      "CanvasSize": null,
+      "Background": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00087",
+      "Title": "win00087",
+      "RelativePath": "scenes/win00087.scene.json",
+      "Type": "Default",
+      "CanvasSize": null,
+      "Background": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00088",
+      "Title": "win00088",
+      "RelativePath": "scenes/win00088.scene.json",
+      "Type": "Default",
+      "CanvasSize": null,
+      "Background": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00089",
+      "Title": "win00089",
+      "RelativePath": "scenes/win00089.scene.json",
+      "Type": "Default",
+      "CanvasSize": null,
+      "Background": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00090",
+      "Title": "win00090",
+      "RelativePath": "scenes/win00090.scene.json",
+      "Type": "Default",
+      "CanvasSize": null,
+      "Background": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00092",
+      "Title": "win00092",
+      "RelativePath": "scenes/win00092.scene.json",
+      "Type": "Default",
+      "CanvasSize": null,
+      "Background": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00093",
+      "Title": "win00093",
+      "RelativePath": "scenes/win00093.scene.json",
+      "Type": "Default",
+      "CanvasSize": null,
+      "Background": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00094",
+      "Title": "win00094",
+      "RelativePath": "scenes/win00094.scene.json",
+      "Type": "Default",
+      "CanvasSize": null,
+      "Background": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00095",
+      "Title": "win00095",
+      "RelativePath": "scenes/win00095.scene.json",
+      "Type": "Default",
+      "CanvasSize": null,
+      "Background": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00096",
+      "Title": "win00096",
+      "RelativePath": "scenes/win00096.scene.json",
+      "Type": "Default",
+      "CanvasSize": null,
+      "Background": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    }
+  ],
+  "ManifestVersion": "2.0",
+  "HomePageId": "win00008"
+}
