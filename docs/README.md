@@ -8,7 +8,7 @@ Document version: `V2.1.1.0030`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-15 | `V2.1.1.0030` | `PENDING` | Creation de l'arbre documentaire stable, des regles de header et des decisions de deprecation `index.html`. |
+| 2026-06-15 | `V2.1.1.0030` | `72350e3` | Creation de l'arbre documentaire stable, des regles de header et des decisions de deprecation `index.html`. |
 
 ## 1. Role
 

@@ -10,7 +10,7 @@ Wireframe source: `docs/wireframes/wireframe_Scada_Builder_V2.png`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-15 | `V2.1.1.0030` | `PENDING` | Ajout du header documentaire obligatoire et rattachement a l'arbre documentaire stable. |
+| 2026-06-15 | `V2.1.1.0030` | `72350e3` | Ajout du header documentaire obligatoire et rattachement a l'arbre documentaire stable. |
 | 2026-06-15 | `V2.0.0.0000` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 
 ## 1. Intention generale

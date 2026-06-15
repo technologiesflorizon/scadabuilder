@@ -8,7 +8,7 @@ Document version: `V2.1.1.0030`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-15 | `V2.1.1.0030` | `PENDING` | Deprecation explicite de `index.html`, clarification preview/export source-of-truth et ajout du repere `win00009` correct / `win00008` divergent. |
+| 2026-06-15 | `V2.1.1.0030` | `72350e3` | Deprecation explicite de `index.html`, clarification preview/export source-of-truth et ajout du repere `win00009` correct / `win00008` divergent. |
 | 2026-06-15 | `V2.1.1.0029` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 
 ## 1. Objective
