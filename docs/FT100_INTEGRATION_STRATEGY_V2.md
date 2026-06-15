@@ -1,8 +1,15 @@
 # SCADA Builder V2 - FT100 Integration Strategy
 
-Date: 2026-05-29
+Date: 2026-06-15
 Status: Draft
-Version: `V2.1.1.0029`
+Document version: `V2.1.1.0030`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0030` | `PENDING` | Deprecation explicite de `index.html`, clarification source legacy/modernized et ajout du risque `win00008` vs `win00009`. |
+| 2026-06-15 | `V2.1.1.0029` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 
 ## 1. Context
 
@@ -62,7 +69,7 @@ The model should allow:
 4. Import/reimport of FT100 mappings.
 5. Future migration without rewriting scene layouts.
 
-## 6. TF100Web Alignment Audit - 2026-06-11
+## 6. TF100Web Alignment Audit
 
 TF100Web repository path:
 
@@ -70,15 +77,21 @@ TF100Web repository path:
 F:\Projet\Git\TF100Web
 ```
 
-Current observed runtime intake:
+Historical intake risk observed on 2026-06-11:
 
-1. TF100Web currently reads imported SCADA HTML from `F:\Projet\Git\TF100Web\import`.
-2. The Django view has a hardcoded page entry for `win00008`.
-3. The HTML file path is `import/win00008/index.html`.
-4. The CSS URL is served from `static/asset/scada/win00008/css/win00008.css`.
-5. Runtime image URLs are rewritten to `static/asset/scada/win00008/images/`.
-6. Live numeric runtime behavior is added by TF100Web through `static/asset/js/station/visualisation_import.js`.
-7. TF100Web injects mapping attributes from a hardcoded Python dictionary in `frontend/views.py`, not from the SCADA Builder export manifest.
+1. TF100Web previously supported imported SCADA HTML from `F:\Projet\Git\TF100Web\import`.
+2. Older Django-side wiring contained hardcoded page entries for `win00008`.
+3. Older imported page contracts used a now-deprecated page-local index file.
+4. Older CSS/image serving could split HTML, CSS, and images between `import/` and `static/asset/scada/`.
+5. Older runtime numeric behavior used Django-side/manual mapping dictionaries.
+
+Current contract correction on 2026-06-15:
+
+1. `index.html` is deprecated and must not be emitted by new SCADA Builder V2 FT100/TF100Web exports.
+2. TF100Web intake for current SCADA Builder V2 packages must start from `import/scada-builder-v2-ft100-package/manifest.json`.
+3. Page HTML is addressed by the manifest `RelativePath`, normally `<page-id>/<page-id>.html`.
+4. Legacy `index.html` fallback, if retained in TF100Web, is an isolated compatibility path for old packages only.
+5. Hardcoded mapping dictionaries remain transition material and must not define the SCADA Builder V2 package contract.
 
 Current SCADA Builder V2 export behavior:
 
@@ -121,23 +134,24 @@ Contract rules:
 2. TF100Web owns package intake, validation, static serving, and runtime telemetry binding resolution.
 3. `manifest.json` is the authoritative Django-readable contract for page identity, page dimensions, required display dimensions, build inclusion, home page identity, header/footer composition, object identity, event bindings, actions, and binding placeholders.
 4. TF100Web must not depend on editor-only state, selection overlays, handles, drag rectangles, diagnostics, or Studio Element+ workzone geometry.
-5. TF100Web may support `index.html` and `ft100-legacy-layer` as migration compatibility, but new SCADA Builder V2 exports should use `<scene-id>.html` and `ft100-source-layer`.
+5. `index.html` is deprecated for current SCADA Builder V2 FT100/TF100Web exports. New exports must use `<page-id>.html` and `ft100-source-layer`; TF100Web legacy fallback must not be documented as the current contract.
 6. The imported package should be copied or staged atomically so TF100Web never renders mixed HTML/CSS/image versions.
 7. Binding resolution should move from hardcoded page dictionaries toward manifest-driven matching against `RegisterMapping`.
 8. SCADA Builder V2 recreates one package folder per export so stale pages, CSS, images, and metadata are removed.
 9. Deleted source objects are filtered from source HTML before image asset copying, including decommissioned legacy image nodes that were selected and deleted before they were materialized as scene objects.
 10. `LegacyStatic` scene elements are source-projection state. FT100 export must use them to write `data-id` CSS for edited imported-object bounds and must keep them in `manifest.json` as source inventory metadata, but must not emit them as `ft100-element` DOM nodes.
-11. FT100 export source resolution must prefer the reference page HTML source, such as `08_web_modernized/html_pages/<page>_updated.html`, before falling back to raw `03_web_legacy/html_pages`. The raw fallback is compatibility only and must not replace the source declared by the reference page when that file exists.
+11. FT100 export source resolution must not blindly treat `08_web_modernized` as raw source. The V2 scene/project model is the target source of truth. During migration, raw visual comparison should prefer `03_web_legacy/html_pages/*`; `08_web_modernized/*` may be used only as comparison/history material or as an explicitly approved sanitized source with helper scripts, layout tools, test panels, and editor-only artifacts removed.
+12. `win00009` currently displays correctly in SCADA Builder V2 and should be used as a comparison baseline for expected source-layer rendering. `win00008` is a known regression candidate because its modernized source, inventory metadata, and exported package positions diverge.
 
 ## 8. Alignment Plan
 
 Phase 1 - Freeze and validate the file contract:
 
 1. Add a TF100Web importer service that discovers `import/<scene-id>/manifest.json`.
-2. Accept `<scene-id>.html` as the primary entry file and keep `index.html` as a compatibility fallback.
+2. Accept `<scene-id>.html` as the current entry file and reject `index.html` for current SCADA Builder V2 package validation.
 3. Resolve CSS and images from the same package version instead of requiring manual duplication into `static/asset/scada`.
 4. Add validation errors for missing HTML, CSS, manifest, root id, duplicate object ids, and broken image references.
-5. Add tests in TF100Web for package discovery, HTML extraction, asset URL rewriting, and compatibility fallback.
+5. Add tests in TF100Web for package discovery, HTML extraction, asset URL rewriting, and rejection of current packages that only provide `index.html`.
 
 Phase 2 - Make telemetry binding manifest-driven:
 
@@ -169,7 +183,7 @@ SCADA Builder V2 implementation status:
 2. Root `manifest.json` is emitted inside `scada-builder-v2-ft100-package`.
 3. Per-page folders remain emitted as `<page-id>/<page-id>.html`, `css/`, `images/`, and page-local `manifest.json`.
 4. Legacy static imported geometry is no longer exported as empty Element+ runtime DOM nodes, while `manifest.json` still preserves source inventory metadata for those objects.
-5. Reference-page HTML source resolution is preferred for export so pages such as `win00008` keep their modernized source-layer visual content.
+5. Current SCADA Builder V2 still has an implementation gap around migration source selection: documentation now requires V2 model/sanitized-source governance, while the existing resolver may still select `legacy.source_html` when present.
 6. TF100Web consumes the root manifest and performs runtime header/page/footer composition in the package loader.
 
 Phase 5 - Production hardening:
@@ -204,8 +218,8 @@ USB deployment hardening requirements:
 ## 10. Open Decisions
 
 1. Decide whether TF100Web should serve package assets directly from `import/` or copy accepted packages into `static/asset/scada/`.
-2. Decide whether SCADA Builder V2 should optionally emit a compatibility `index.html` during the transition.
-3. Decide the exact binding schema fields required in `manifest.json`.
-4. Decide how TF100Web should expose multiple imported SCADA scenes in station configuration.
-5. Decide whether local SCADA Builder V2 export should know the default TF100Web path or use a user-configured deployment target.
-6. Decide the exact USB filesystem layout, registry file format, and validation/checksum policy for Industrial deployments.
+2. Decide the exact binding schema fields required in `manifest.json`.
+3. Decide how TF100Web should expose multiple imported SCADA scenes in station configuration.
+4. Decide whether local SCADA Builder V2 export should know the default TF100Web path or use a user-configured deployment target.
+5. Decide the exact USB filesystem layout, registry file format, and validation/checksum policy for Industrial deployments.
+6. Decide the approved sanitized-source policy for pages where `03_web_legacy`, `08_web_modernized`, inventory JSON, and saved V2 scene geometry disagree.

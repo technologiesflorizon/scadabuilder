@@ -1,11 +1,15 @@
 # SCADA Builder V2 - Project Model XAML
 
-Date: 2026-06-11
+Date: 2026-06-15
 Status: Draft specification
-Document version: `V2.1.1.0022`
-Previous planning version: `V2.0.1.0000`
-Bump type: iteration
-Reason: clarification that pages do not own actions and that object event bindings trigger runtime action definitions for Django/readable manifests.
+Document version: `V2.1.1.0030`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0030` | `PENDING` | Normalisation du header documentaire et rattachement a l'arbre documentaire stable. |
+| 2026-06-15 | `V2.1.1.0022` | `2b59efb` | Baseline initiale du depot SCADA Builder V2; clarification page/action manifest. |
 
 ## 1. Purpose
 

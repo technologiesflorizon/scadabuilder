@@ -1,11 +1,15 @@
 # SCADA Builder V2 - Page Manifest And Object Actions Plan
 
-Date: 2026-06-11
+Date: 2026-06-15
 Status: First implementation slice delivered
-Document version: `V2.1.1.0024`
-Previous planning version: `V2.0.0.0001`
-Bump type: iteration
-Reason: first implementation slice for page metadata, structured background, object-owned events, and Django-readable FT100 export manifest.
+Document version: `V2.1.1.0030`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0030` | `PENDING` | Normalisation du header documentaire et rattachement a l'arbre documentaire stable. |
+| 2026-06-15 | `V2.1.1.0024` | `2b59efb` | Baseline initiale du depot SCADA Builder V2; premiere tranche page manifest/actions. |
 
 ## 1. Objective
 

@@ -1,8 +1,15 @@
 # SCADA Builder V2 - Legacy Modernization Workflow
 
-Date: 2026-05-29
+Date: 2026-06-15
 Status: Draft direction
-Document version: `V2.0.2.0028`
+Document version: `V2.1.1.0030`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0030` | `PENDING` | Clarification du role non-source de `08_web_modernized` et ajout du repere `win00009` correct / `win00008` divergent. |
+| 2026-06-15 | `V2.0.2.0028` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 
 ## 1. Core Decision
 
@@ -55,6 +62,16 @@ Extraction should favor:
 3. `08_web_modernized/*` only as comparison material or as a record of previous manual work.
 
 The modernized HTML may contain edits, helper scripts, layout tools, repaired positions, or component substitutions. It must not be treated as the raw source.
+
+## 2.2 Known Page Baselines
+
+Current visual audit notes:
+
+1. `win00009` displays correctly in SCADA Builder V2 and is the current known-good comparison page for normal rendering.
+2. `win00008` does not display correctly and must be treated as a regression candidate.
+3. `win00008` contains conflicting evidence between modernized HTML, inventory JSON, saved V2 scene geometry, and current FT100/TF100Web export output.
+4. `win00008_updated.html` contains helper/test tooling such as the condenser test panel and layout-tool local storage logic; these are not runtime/export material.
+5. Until the sanitized-source policy is implemented, `win00008` must not be used as evidence that the source resolution contract is correct.
 
 ## 3. Integrated Tools
 
@@ -188,6 +205,8 @@ Its value is:
 The FT100 build must compile from the V2 project model only.
 
 Legacy artifacts may be included as references, diagnostics, or comparison aids, but generated FT100 output must not depend on legacy page HTML as the runtime source of truth.
+
+If a temporary source layer is required during migration, the source must be explicitly classified and sanitized. Modernized HTML with helper scripts, layout tools, test panels, or manually repaired geometry is not acceptable as raw runtime source.
 
 ## 7. First Implementation Milestones
 

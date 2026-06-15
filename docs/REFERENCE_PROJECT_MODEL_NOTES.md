@@ -1,11 +1,15 @@
 # SCADA Builder V2 - Reference Project Model Notes
 
-Date: 2026-05-29
+Date: 2026-06-15
 Status: Draft reference notes
-Document version: `V2.0.1.0000`
-Previous planning version: `V2.0.0.0001`
-Bump type: iteration
-Reason: documentation notes connecting `AMR_REF_SCADA` to the V2 project model.
+Document version: `V2.1.1.0030`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0030` | `PENDING` | Normalisation du header documentaire et rattachement a l'arbre documentaire stable. |
+| 2026-06-15 | `V2.0.1.0000` | `2b59efb` | Baseline initiale du depot SCADA Builder V2; notes de liaison AMR_REF_SCADA vers modele V2. |
 
 ## 1. Reference Project
 
@@ -113,15 +117,19 @@ Workspace behavior:
 3. Dirty state belongs to the editor session and is reflected by the workspace tab marker.
 4. Scene deletion is a project command and must update `project.xaml`.
 
-## 5. `win00008` as Initial Test Scene
+## 5. `win00008` as Regression Test Scene
 
-`win00008` is a strong first validation scene because it contains:
+`win00008` remains valuable as a stress/regression scene because it contains:
 
 1. A fixed canvas of `1280 x 873`.
 2. A black background.
 3. A `legacy_embed` layer pointing to `../assets/html_pages/win00008_updated.html`.
 4. Legacy inventory metadata.
 5. Image elements for modernized pipe, tank, pump, and valve assets.
+6. Text elements with process labels and placeholder values such as `###.0` and `####`.
+7. Source ids such as `784`, `795`, and labels such as `TE-EXT`.
+
+It must not be treated as a known-good visual baseline until the `win00008` modernized-source, inventory, V2 scene, and export geometry divergence is resolved. `win00009` is the current known-good SCADA Builder V2 display reference.
 
 Raw source note:
 
@@ -138,8 +146,6 @@ F:\Groupe AMR\SCADA_AMR_GROUP\08_web_modernized\html_pages\win00008_updated.html
 ```
 
 is useful for comparison and historical context, but it has already been worked and should not be the default raw extraction source.
-6. Text elements with process labels and placeholder values such as `###.0` and `####`.
-7. Source ids such as `784`, `795`, and labels such as `TE-EXT`.
 
 Initial V2 import approach:
 
@@ -159,7 +165,8 @@ Trace fields required for migrated scenes:
     SourceReferenceId="amr-ref-scada"
     SourceProjectFile="project.json"
     SourcePageFile="pages/win00008.json"
-    SourceHtml="08_web_modernized/html_pages/win00008_updated.html" />
+    RawSourceHtml="03_web_legacy/html_pages/win00008_a0cf691217f4.html"
+    ComparisonHtml="08_web_modernized/html_pages/win00008_updated.html" />
 ```
 
 Trace fields required for migrated elements:
@@ -294,7 +301,7 @@ runtime/
 dist/runtime/
 dist/pages/
 dist/data/pages/
-dist/index.html
+dist/index.html  (legacy generated output; deprecated for current FT100/TF100Web package contract)
 ```
 
 V2 interpretation:
@@ -317,10 +324,10 @@ Recommended first sequence:
 6. Promote selected inventory items into V2 elements.
 7. Create desktop layout placements from current `x`, `y`, `width`, and `height`.
 8. Add unresolved FT100 placeholders for obvious process labels.
-9. Preview `win00008` in fixed mode.
+9. Preview `win00009` first as the known-good display reference, then use `win00008` as a regression/stress scene.
 10. Add scale-to-fit behavior.
 11. Add tablet and mobile layout variants only after desktop parity is acceptable.
-12. Compare V2 preview against existing `dist/pages/win00008.html` and modernized HTML references.
+12. Compare V2 preview against raw legacy, generated dist output, and modernized HTML references without treating modernized HTML as raw source.
 
 ## 13. Validation Notes
 

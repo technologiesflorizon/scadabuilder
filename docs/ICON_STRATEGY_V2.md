@@ -1,11 +1,15 @@
 # SCADA Builder V2 - Icon Strategy
 
-Date: 2026-05-29
+Date: 2026-06-15
 Status: Draft strategy
-Document version: `V2.0.2.0026`
-Previous planning version: `V2.0.0.0003`
-Bump type: iteration
-Reason: documentation strategy for SCADA Builder V2 icon sourcing, licensing review, and first command icon map.
+Document version: `V2.1.1.0030`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0030` | `PENDING` | Normalisation du header documentaire et rattachement a l'arbre documentaire stable. |
+| 2026-06-15 | `V2.0.2.0026` | `2b59efb` | Baseline initiale du depot SCADA Builder V2; strategie d'icones et carte initiale des commandes. |
 
 ## 1. Objective
 

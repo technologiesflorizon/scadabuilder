@@ -2,7 +2,14 @@
 
 Date: 2026-06-15
 Status: Draft implementation note
-Version: `V2.1.1.0025`
+Document version: `V2.1.1.0030`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0030` | `PENDING` | Deprecation explicite de `index.html`, mise a jour hygiene depot/tests et clarification du prochain travail TF100Web. |
+| 2026-06-15 | `V2.1.1.0025` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 
 ## 1. Objective
 
@@ -15,7 +22,7 @@ The goal is to make TF100Web consume the SCADA Builder V2 FT100 package as a sta
 Current SCADA_BUILDER_V2 status:
 
 1. The solution is organized as a .NET 8 layered application with `Domain`, `Application`, `Infrastructure`, `Rendering`, WPF editor app, separate Studio Element+ app, and MSTest regression suite.
-2. `dotnet test ScadaBuilderV2.sln --no-restore` passes with 164 tests.
+2. `dotnet test ScadaBuilderV2.sln --no-restore` passes with 167 tests as of the 2026-06-15 baseline audit.
 3. The FT100 exporter already emits a normalized project package folder named `scada-builder-v2-ft100-package`.
 4. Project export recreates the package folder on each export, removing stale files before writing new output.
 5. Per-page output includes `<page-id>/<page-id>.html`, `css/<page-id>.css`, `images/`, per-page `manifest.json`, and `README.txt`.
@@ -26,9 +33,11 @@ Current SCADA_BUILDER_V2 status:
 
 Current repository hygiene findings:
 
-1. SCADA_BUILDER_V2 is not a Git repository at this folder level.
-2. No root `.gitignore` was found.
-3. Generated `bin`, `obj`, and WebView2 runtime folders are present under `src` and `tests`, which makes repository search noisy and increases the risk of copying generated state into future packaging work.
+1. SCADA_BUILDER_V2 is now initialized as a local Git repository.
+2. Root `.gitignore` excludes generated `bin`, `obj`, WebView2 profiles, test results, logs, artifacts, and generated export packages.
+3. The baseline commit is `2b59efb`.
+4. Generated export packages remain ignored in this repository; the committed runtime import copy belongs on the TF100Web side.
+5. Documentation history entries use `PENDING` for uncommitted changes because a file cannot reliably contain the hash of the commit that creates its own content.
 
 ## 3. Evidence From Current Code
 
@@ -78,7 +87,7 @@ Slice 1 - Package discovery and validation:
 2. Parse the root manifest into a typed intake model.
 3. Validate manifest version, home page id, page ids, relative paths, page-local manifests, CSS files, and image references.
 4. Accept `<page-id>.html` as the primary entry file.
-5. Keep `index.html` as a temporary compatibility fallback only.
+5. Reject current SCADA Builder V2 packages that provide only `index.html`; any legacy fallback must be isolated outside the current package contract.
 6. Return structured validation errors before rendering.
 
 Slice 2 - Asset serving and HTML intake:
@@ -126,14 +135,14 @@ Minimum next changes in SCADA Builder V2:
 ## 7. Open Decisions
 
 1. Should TF100Web serve assets directly from `import/scada-builder-v2-ft100-package`, or copy validated packages into `static/asset/scada`?
-2. Should SCADA Builder V2 emit compatibility `index.html` files during transition?
-3. What exact binding schema should replace raw `TagBinding` in the manifest?
-4. Which TF100Web object should own binding resolution: page view, importer service, station service, or a dedicated SCADA package service?
-5. Should header/footer composition happen at TF100Web intake time or at request render time?
-6. What is the approved atomic replacement strategy on Windows and on the target FT100 environment?
+2. What exact binding schema should replace raw `TagBinding` in the manifest?
+3. Which TF100Web object should own binding resolution: page view, importer service, station service, or a dedicated SCADA package service?
+4. Should header/footer composition happen at TF100Web intake time or at request render time?
+5. What is the approved atomic replacement strategy on Windows and on the target FT100 environment?
+6. What sanitized-source policy should block pages like `win00008` from exporting mismatched modernized/source/inventory geometry while allowing known-good pages such as `win00009` to continue rendering?
 
 ## 8. Recommended Next Step
 
 Implement Slice 1 in TF100Web first.
 
-This is the narrowest useful integration step because it gives TF100Web a stable package reader and validation gate without changing SCADA Builder V2 runtime behavior. Once TF100Web can reliably read the root manifest and render a page from `<page-id>/<page-id>.html`, the binding schema can be added with regression tests on both sides.
+This is the narrowest useful integration step because it gives TF100Web a stable package reader and validation gate without changing SCADA Builder V2 runtime behavior. Once TF100Web can reliably read the root manifest and render a page from `<page-id>/<page-id>.html` without `index.html`, the binding schema can be added with regression tests on both sides.

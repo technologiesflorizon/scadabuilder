@@ -1,8 +1,15 @@
 # SCADA Builder V2 - Architecture
 
-Date: 2026-05-29
+Date: 2026-06-15
 Status: Draft
-Planning version: `V2.0.0.0002`
+Document version: `V2.1.1.0030`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0030` | `PENDING` | Normalisation du header documentaire et rattachement a l'arbre documentaire stable. |
+| 2026-06-15 | `V2.0.0.0002` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 
 ## 1. Objective
 

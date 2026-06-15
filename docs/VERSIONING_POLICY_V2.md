@@ -1,7 +1,16 @@
 # SCADA Builder V2 - Versioning Policy
 
-Date: 2026-05-29
-Current version: `V2.1.1.0029`
+Date: 2026-06-15
+Status: Active policy
+Document version: `V2.1.1.0030`
+Current version: `V2.1.1.0030`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0030` | `PENDING` | Bump iteration pour gouvernance documentaire et headers obligatoires. |
+| 2026-06-15 | `V2.1.1.0029` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 
 ## 1. Format
 

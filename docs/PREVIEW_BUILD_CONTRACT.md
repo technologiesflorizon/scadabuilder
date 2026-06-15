@@ -1,8 +1,15 @@
 # SCADA Builder V2 - Preview Build Contract
 
-Date: 2026-06-11
+Date: 2026-06-15
 Status: Draft
-Version: `V2.1.1.0029`
+Document version: `V2.1.1.0030`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0030` | `PENDING` | Deprecation explicite de `index.html`, clarification preview/export source-of-truth et ajout du repere `win00009` correct / `win00008` divergent. |
+| 2026-06-15 | `V2.1.1.0029` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 
 ## 1. Objective
 
@@ -67,7 +74,8 @@ Rules:
 14. Edited imported-object bounds are active scene geometry. Preview refresh must replay those bounds into the source projection, and FT100 export must emit data-id based CSS so exported source-layer objects use the same geometry.
 15. FT100 export manifests must keep page `Width` and `Height` as the authored `CanvasSize`, and must also report `RequiredDisplayWidth` and `RequiredDisplayHeight` as the minimum display area required by exported runtime geometry.
 16. `LegacyStatic` imported-source projections must not be emitted into the Element+ runtime layer. They must remain in manifests as source inventory metadata, and their export-side rendering effect is limited to source-layer CSS needed to replay saved SCADA Builder geometry.
-17. FT100 preview/export must resolve source HTML from the reference page contract before using raw legacy fallbacks, so the exported source layer reflects the same modernized page content used by SCADA Builder.
+17. FT100 preview/export must not treat modernized legacy HTML as raw source by default. The V2 scene/project model is the target source of truth; temporary legacy source layers must be classified as raw, comparison, or sanitized before export.
+18. `win00009` is the current known-good visual comparison page in SCADA Builder V2. `win00008` is a known regression candidate and must not be used to validate the contract until its source/position/tooling divergence is resolved.
 
 ## 4. Output Targets
 
@@ -87,12 +95,12 @@ Build target:
 4. Asset folder.
 5. Manifest/report files.
 
-Expected build structure:
+Deprecated generic build sketch:
 
 ```text
 exports/
   <build-id>/
-    index.html
+    <entry>.html
     assets/
     css/
       reset.css
@@ -122,7 +130,7 @@ exports/
       README.txt
 ```
 
-The FT100 project export structure is the current implemented SCADA Builder V2 to TF100Web package shape. `scada-builder-v2-ft100-package` is recreated on each export and is the only folder intended to be moved or copied into TF100Web. The root `manifest.json` indexes all compiled pages. Each page folder remains browser-openable and keeps a page-local manifest for diagnostics and compatibility. The broader `index.html` build structure remains the target for a full generic web bundle unless a later decision consolidates both formats.
+The FT100 project export structure is the current implemented SCADA Builder V2 to TF100Web package shape. `scada-builder-v2-ft100-package` is recreated on each export and is the only folder intended to be moved or copied into TF100Web. The root `manifest.json` indexes all compiled pages. Each page folder remains browser-openable and keeps a page-local manifest for diagnostics and compatibility. `index.html` is deprecated for current SCADA Builder V2 FT100/TF100Web exports and must not be presented as an active package target.
 
 The generated `manifest.json` is the Django-readable runtime contract. It must include page records, object inventory, object event bindings, action definitions, asset references, and validation metadata while excluding editor-only state. Source-projection-only `LegacyStatic` objects are retained as manifest inventory but are not emitted as runtime Element+ DOM.
 
@@ -416,4 +424,4 @@ A preview/build implementation satisfies this contract when:
 2. Decide whether build output should include minified CSS in the first implementation.
 3. Decide where validation reports are stored for preview-only sessions.
 4. Confirm whether source maps are required for generated CSS in MVP.
-5. Decide whether the transition export should also emit `index.html` for TF100Web compatibility or whether TF100Web should accept `<scene-id>.html` directly.
+5. Decide the approved sanitized-source policy for pages where raw legacy HTML, modernized HTML, inventory JSON, and saved V2 scene geometry disagree.

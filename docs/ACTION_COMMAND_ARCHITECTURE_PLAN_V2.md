@@ -1,8 +1,15 @@
 # SCADA Builder V2 - Action/Command Architecture Plan
 
-Date: 2026-06-09
+Date: 2026-06-15
 Status: Approved direction to implement
-Document version: `V2.1.1.0026`
+Document version: `V2.1.1.0030`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0030` | `PENDING` | Normalisation du header documentaire et rattachement a l'arbre documentaire stable. |
+| 2026-06-15 | `V2.1.1.0026` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 
 ## Revision Log
 
@@ -104,7 +111,7 @@ The exporter now repairs common Wonderware/ArchestrA mojibake sequences before w
 ### V2.0.3.0028
 
 Added first FT100 folder export from SCADA Builder V2.
-The File ribbon Build button now opens a destination folder picker and exports the active scene as a browser-openable folder containing `index.html`, `css/<scene>.css`, `images/`, and a short integration README. Export paths are relative so the output can be opened directly in any browser and later embedded in the Django FT100 container.
+The File ribbon Build button originally opened a destination folder picker and exported the active scene as a browser-openable folder containing a now-deprecated `index.html`, `css/<scene>.css`, `images/`, and a short integration README. This entry is historical; current FT100/TF100Web package documentation deprecates `index.html` and uses manifest-driven `<page-id>.html` output.
 
 ### V2.0.3.0027
 

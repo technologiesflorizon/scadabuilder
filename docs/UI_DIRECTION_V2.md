@@ -1,8 +1,17 @@
 # SCADA Builder V2 - Direction UI
 
-Date: 2026-05-29
+Date: 2026-06-15
 Statut: Draft de conception
+Status: Draft de conception
+Document version: `V2.1.1.0030`
 Wireframe source: `docs/wireframes/wireframe_Scada_Builder_V2.png`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0030` | `PENDING` | Ajout du header documentaire obligatoire et rattachement a l'arbre documentaire stable. |
+| 2026-06-15 | `V2.0.0.0000` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 
 ## 1. Intention generale
 
