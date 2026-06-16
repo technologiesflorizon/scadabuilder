@@ -8,7 +8,7 @@ Document version: `V2.1.1.0038`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-15 | `V2.1.1.0038` | `PENDING` | Ajout de la roadmap `On click -> open popup` et hover border sur element/groupe. |
+| 2026-06-15 | `V2.1.1.0038` | `841d05a` | Ajout de la roadmap `On click -> open popup` et hover border sur element/groupe. |
 | 2026-06-15 | `V2.1.1.0037` | `90c108b` | Ajout de la roadmap de developpement: events, tags TF100Web, Studio Element+, proprietes CSS, effets visuels et scripts globaux. |
 | 2026-06-15 | `V2.1.1.0036` | `63c2475` | Generalisation du contrat de namespace CSS/DOM par page pour interdire les collisions de selecteurs en composition TF100Web. |
 | 2026-06-15 | `V2.1.1.0035` | `63c2475` | Clarification du scoping CSS par page pour eviter les collisions header/body/footer sur les `data-id`. |

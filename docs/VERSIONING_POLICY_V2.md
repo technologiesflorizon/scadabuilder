@@ -9,7 +9,7 @@ Current version: `V2.1.1.0038`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-15 | `V2.1.1.0038` | `PENDING` | Bump iteration pour roadmap `On click -> open popup` et hover border element/groupe. |
+| 2026-06-15 | `V2.1.1.0038` | `841d05a` | Bump iteration pour roadmap `On click -> open popup` et hover border element/groupe. |
 | 2026-06-15 | `V2.1.1.0037` | `90c108b` | Bump iteration pour documentation de la roadmap events, tags TF100Web, Studio Element+, CSS, effets visuels et scripts globaux. |
 | 2026-06-15 | `V2.1.1.0036` | `63c2475` | Bump iteration pour namespace CSS/DOM/runtime generalise dans l'export FT100/TF100Web. |
 | 2026-06-15 | `V2.1.1.0035` | `63c2475` | Bump iteration pour correction scoping CSS FT100/TF100Web. |
