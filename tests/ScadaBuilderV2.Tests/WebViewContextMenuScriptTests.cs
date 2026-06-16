@@ -331,6 +331,19 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void ElementGroupContextMenuPromotesChildWrappersToGroupWrapper()
+    {
+        var source = NormalizeNewLines(ReadMainWindowSource());
+
+        StringAssert.Contains(source, "const sceneContextWrapper = getSceneMoveWrapper(wrapper);");
+        StringAssert.Contains(source, "const sceneContextId = sceneContextWrapper?.dataset?.id || element.Id;");
+        StringAssert.Contains(source, "selectedModernIds.has(sceneContextId)");
+        StringAssert.Contains(source, "selectModernElementInDom(sceneContextId);");
+        StringAssert.Contains(source, "toggleModernElementInSelection(sceneContextId);");
+        StringAssert.Contains(source, "id: sceneContextId,");
+    }
+
+    [TestMethod]
     public void LegacyGroupingRequiresElementPlusConversion()
     {
         var source = ReadMainWindowSource();
@@ -426,7 +439,8 @@ public sealed class WebViewContextMenuScriptTests
         var source = ReadMainWindowSource();
 
         StringAssert.Contains(source, "const selectedModernIds = new Set();");
-        StringAssert.Contains(source, "toggleModernElementInSelection(element.Id);");
+        StringAssert.Contains(source, "toggleModernElementInSelection(sceneMoveId);");
+        StringAssert.Contains(source, "toggleModernElementInSelection(sceneContextId);");
         StringAssert.Contains(source, "additive: event.ctrlKey || event.shiftKey");
         StringAssert.Contains(source, "toggle: event.ctrlKey || event.shiftKey");
         StringAssert.Contains(source, "command?.Ids || command?.ids || []");

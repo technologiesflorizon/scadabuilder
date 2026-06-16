@@ -6823,16 +6823,18 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
         event.preventDefault();
         event.stopPropagation();
-        if (!selectedModernIds.has(element.Id) && !event.ctrlKey && !event.shiftKey) {
+        const sceneContextWrapper = getSceneMoveWrapper(wrapper);
+        const sceneContextId = sceneContextWrapper?.dataset?.id || element.Id;
+        if (!selectedModernIds.has(sceneContextId) && !event.ctrlKey && !event.shiftKey) {
           clearSelection();
-          selectModernElementInDom(element.Id);
+          selectModernElementInDom(sceneContextId);
         } else if (event.ctrlKey || event.shiftKey) {
-          toggleModernElementInSelection(element.Id);
+          toggleModernElementInSelection(sceneContextId);
         }
         window.chrome?.webview?.postMessage({
           type: 'contextMenuRequest',
           targetKind: 'object',
-          id: element.Id,
+          id: sceneContextId,
           x: event.clientX,
           y: event.clientY,
           backgroundColor: getBackgroundColor()
