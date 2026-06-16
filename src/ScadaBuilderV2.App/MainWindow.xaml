@@ -773,7 +773,7 @@
                                         <Button Content="Effacer sel."
                                                 Click="OnClearSelectionClick"/>
                                         <Button Content="Grouper"
-                                                Click="OnGroupSelectedLegacyClick"/>
+                                                Click="OnGroupSelectedClick"/>
                                         <Button Content="Degrouper"
                                                 Click="OnUngroupSelectedModernClick"/>
                                     </UniformGrid>

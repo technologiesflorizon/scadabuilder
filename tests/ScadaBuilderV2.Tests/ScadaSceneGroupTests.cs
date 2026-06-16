@@ -6,6 +6,58 @@ namespace ScadaBuilderV2.Tests;
 public sealed class ScadaSceneGroupTests
 {
     [TestMethod]
+    public void SceneGroupSelectedModernElementsCreatesParentAndRelativeChildren()
+    {
+        var shapeA = CreateShape("shape-001", 100, 200);
+        var shapeB = CreateShape("shape-002", 150, 240);
+        var scene = ScadaScene
+            .CreateEmpty("win-test", "Test", new(1280, 873))
+            .WithElement(shapeA)
+            .WithElement(shapeB);
+
+        scene = scene.WithGroupedElements("group-001", "Groupe pompe", ["shape-001", "shape-002"]);
+
+        var group = scene.FindElementRecursive("group-001");
+        Assert.IsNotNull(group);
+        Assert.AreEqual(ScadaElementKind.Group, group.Kind);
+        Assert.AreEqual(100, group.Bounds.X);
+        Assert.AreEqual(200, group.Bounds.Y);
+        Assert.AreEqual(70, group.Bounds.Width);
+        Assert.AreEqual(60, group.Bounds.Height);
+        Assert.AreEqual(2, group.ChildElements.Count);
+
+        var childA = group.ChildElements.Single(child => child.Id == "shape-001");
+        var childB = group.ChildElements.Single(child => child.Id == "shape-002");
+        Assert.AreEqual(0, childA.Bounds.X);
+        Assert.AreEqual(0, childA.Bounds.Y);
+        Assert.AreEqual(50, childB.Bounds.X);
+        Assert.AreEqual(40, childB.Bounds.Y);
+        Assert.AreEqual(ElementPositionMode.Relative, childA.Layout?.PositionMode);
+        Assert.AreEqual("group-001", childA.Layout?.RelativeToElementId);
+        Assert.AreEqual("group-001", childB.Layout?.RelativeToElementId);
+        Assert.AreEqual(1, scene.Elements.Count);
+    }
+
+    [TestMethod]
+    public void SceneGroupSelectedModernElementsRejectsLegacyStaticSource()
+    {
+        var modern = CreateShape("shape-001", 100, 200);
+        var legacy = ScadaElement.CreateLegacyStatic(
+            "legacy-001",
+            "Legacy001",
+            new SceneBounds(150, 240, 20, 20),
+            new LegacySourceTrace("Wonderware/ArchestrA", "win-test", "784", "Text22", null),
+            new LegacyElementPayload("text", "Text", true, "Segoe UI", 12, "#000000", "Transparent", null, null));
+        var scene = ScadaScene
+            .CreateEmpty("win-test", "Test", new(1280, 873))
+            .WithElement(modern)
+            .WithElement(legacy);
+
+        Assert.ThrowsException<InvalidOperationException>(() =>
+            scene.WithGroupedElements("group-001", "Groupe pompe", ["shape-001", "legacy-001"]));
+    }
+
+    [TestMethod]
     public void SceneFindReplaceAndDeleteWorkRecursivelyForGroupChildren()
     {
         var child = CreateShape("shape-001", 5, 6);

@@ -415,6 +415,111 @@ public sealed record ScadaScene(
             .FirstOrDefault(element => element is not null);
     }
 
+    /// <summary>
+    /// Groups two or more existing Element+ scene objects under a new group while preserving visual positions.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0006, DEC-0010.
+    /// Contracts: docs/04_editor/COMMANDS_CONTRACT_V2.md, docs/04_editor/SELECTION_CONTRACT_V2.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/ScadaSceneGroupTests.cs.
+    /// </remarks>
+    public ScadaScene WithGroupedElements(string groupId, string groupName, IEnumerable<string> elementIds)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(groupId);
+        var selectedIds = elementIds
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Select(id => id.Trim())
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        if (selectedIds.Length < 2)
+        {
+            throw new InvalidOperationException("A group requires at least two Element+ objects.");
+        }
+
+        if (selectedIds.Contains(groupId, StringComparer.Ordinal))
+        {
+            throw new InvalidOperationException("A group cannot contain itself.");
+        }
+
+        var selected = selectedIds
+            .Select(id => new SceneElementSelection(
+                FindElementRecursive(id) ?? throw new InvalidOperationException($"Element '{id}' was not found."),
+                FindParentOf(id),
+                GetAbsoluteBounds(id)))
+            .ToArray();
+
+        if (selected.Any(item => item.Element.IsLegacyStatic))
+        {
+            throw new InvalidOperationException("Legacy source elements must be converted to Element+ before grouping.");
+        }
+
+        foreach (var item in selected)
+        {
+            if (selected.Any(candidate =>
+                !string.Equals(candidate.Element.Id, item.Element.Id, StringComparison.Ordinal) &&
+                ContainsElement(item.Element, candidate.Element.Id)))
+            {
+                throw new InvalidOperationException("A group selection cannot contain both a group and one of its descendants.");
+            }
+        }
+
+        var parentKeys = selected
+            .Select(item => item.Parent?.Id ?? "")
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        if (parentKeys.Length != 1)
+        {
+            throw new InvalidOperationException("Grouped Element+ objects must share the same parent.");
+        }
+
+        var parent = selected[0].Parent;
+        var groupBoundsAbsolute = CalculateOuterBounds(selected.Select(item => item.AbsoluteBounds));
+        var parentAbsoluteBounds = parent is null ? new SceneBounds(0, 0, 0, 0) : GetAbsoluteBounds(parent.Id);
+        var groupBounds = new SceneBounds(
+            groupBoundsAbsolute.X - parentAbsoluteBounds.X,
+            groupBoundsAbsolute.Y - parentAbsoluteBounds.Y,
+            groupBoundsAbsolute.Width,
+            groupBoundsAbsolute.Height);
+        var children = selected
+            .Select(item => item.Element with
+            {
+                Bounds = new SceneBounds(
+                    item.AbsoluteBounds.X - groupBoundsAbsolute.X,
+                    item.AbsoluteBounds.Y - groupBoundsAbsolute.Y,
+                    item.AbsoluteBounds.Width,
+                    item.AbsoluteBounds.Height),
+                Layout = new ScadaElementLayout(ElementPositionMode.Relative, groupId)
+            })
+            .ToArray();
+
+        var group = new ScadaElement(
+            groupId,
+            string.IsNullOrWhiteSpace(groupName) ? groupId : groupName,
+            ScadaElementKind.Group,
+            groupBounds,
+            null,
+            parent is null
+                ? ScadaElementLayout.Absolute
+                : new ScadaElementLayout(ElementPositionMode.Relative, parent.Id),
+            ScadaElementStyle.DefaultText with
+            {
+                Background = "Transparent",
+                BorderColor = "#2090A0",
+                BorderWidth = 1,
+                BorderStyle = "Dashed"
+            },
+            null,
+            children);
+
+        var selectedIdSet = selectedIds.ToHashSet(StringComparer.Ordinal);
+        return parent is null
+            ? this with { Elements = ReplaceSelectedSiblingsWithGroup(Elements, selectedIdSet, group) }
+            : WithReplacedElementRecursive(parent with
+            {
+                Children = ReplaceSelectedSiblingsWithGroup(parent.ChildElements, selectedIdSet, group)
+            });
+    }
+
     public ScadaScene WithUngroupedElement(string groupId)
     {
         var group = FindElementRecursive(groupId);
@@ -607,6 +712,88 @@ public sealed record ScadaScene(
         return ids;
     }
 
+    private SceneBounds GetAbsoluteBounds(string elementId)
+    {
+        foreach (var element in Elements)
+        {
+            if (TryGetAbsoluteBounds(element, elementId, 0, 0, out var bounds))
+            {
+                return bounds;
+            }
+        }
+
+        throw new InvalidOperationException($"Element '{elementId}' was not found.");
+    }
+
+    private static bool TryGetAbsoluteBounds(
+        ScadaElement current,
+        string elementId,
+        double offsetX,
+        double offsetY,
+        out SceneBounds bounds)
+    {
+        var currentAbsoluteX = offsetX + current.Bounds.X;
+        var currentAbsoluteY = offsetY + current.Bounds.Y;
+        if (string.Equals(current.Id, elementId, StringComparison.Ordinal))
+        {
+            bounds = new SceneBounds(currentAbsoluteX, currentAbsoluteY, current.Bounds.Width, current.Bounds.Height);
+            return true;
+        }
+
+        foreach (var child in current.ChildElements)
+        {
+            if (TryGetAbsoluteBounds(child, elementId, currentAbsoluteX, currentAbsoluteY, out bounds))
+            {
+                return true;
+            }
+        }
+
+        bounds = new SceneBounds(0, 0, 0, 0);
+        return false;
+    }
+
+    private static SceneBounds CalculateOuterBounds(IEnumerable<SceneBounds> bounds)
+    {
+        var items = bounds.ToArray();
+        var left = items.Min(item => item.X);
+        var top = items.Min(item => item.Y);
+        var right = items.Max(item => item.X + item.Width);
+        var bottom = items.Max(item => item.Y + item.Height);
+        return new SceneBounds(left, top, right - left, bottom - top);
+    }
+
+    private static IReadOnlyList<ScadaElement> ReplaceSelectedSiblingsWithGroup(
+        IReadOnlyList<ScadaElement> siblings,
+        IReadOnlySet<string> selectedIds,
+        ScadaElement group)
+    {
+        var result = new List<ScadaElement>();
+        var insertedGroup = false;
+        foreach (var sibling in siblings)
+        {
+            if (!selectedIds.Contains(sibling.Id))
+            {
+                result.Add(sibling);
+                continue;
+            }
+
+            if (!insertedGroup)
+            {
+                result.Add(group);
+                insertedGroup = true;
+            }
+        }
+
+        return result;
+    }
+
+    private static bool ContainsElement(ScadaElement current, string elementId)
+    {
+        return current.ChildElements.Any(child =>
+            string.Equals(child.Id, elementId, StringComparison.Ordinal) ||
+            ContainsElement(child, elementId));
+    }
+
     private static IEnumerable<ScadaElement> FlattenElements(IEnumerable<ScadaElement> elements)
     {
         foreach (var element in elements)
@@ -685,4 +872,9 @@ public sealed record ScadaScene(
             .Select(child => FindParentRecursive(child, elementId))
             .FirstOrDefault(parent => parent is not null);
     }
+
+    private sealed record SceneElementSelection(
+        ScadaElement Element,
+        ScadaElement? Parent,
+        SceneBounds AbsoluteBounds);
 }

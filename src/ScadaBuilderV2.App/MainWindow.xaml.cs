@@ -1315,9 +1315,9 @@ public partial class MainWindow : Window
         ExtractSelectedLegacyElements();
     }
 
-    private async void OnGroupSelectedLegacyClick(object sender, RoutedEventArgs e)
+    private async void OnGroupSelectedClick(object sender, RoutedEventArgs e)
     {
-        await GroupSelectedLegacyElementsAsync();
+        await GroupSelectedModernElementsAsync();
     }
 
     private void OnUngroupSelectedModernClick(object sender, RoutedEventArgs e)
@@ -1993,7 +1993,8 @@ public partial class MainWindow : Window
         SetStatus($"{convertedElements.Length} Text legacy converti(s) en Element+ ({GetConversionTargetLabel(target)}). Undo disponible jusqu'a fermeture.{skippedMessage}");
     }
 
-    private async Task GroupSelectedLegacyElementsAsync()
+    // Scene grouping is Element+ only; legacy source nodes must be converted before they can become group children.
+    private async Task GroupSelectedModernElementsAsync()
     {
         if (_activeScene is null)
         {
@@ -2001,33 +2002,63 @@ public partial class MainWindow : Window
             return;
         }
 
-        var selectedLegacy = _sourceObjects
-            .Where(element => _selectedSourceObjectIds.Contains(element.Id))
-            .ToArray();
-        if (selectedLegacy.Length < 2)
+        if (_selectedSourceObjectIds.Count > 0)
         {
-            SetStatus("Selectionnez au moins deux elements legacy pour grouper.");
+            WarnLegacyGroupingRequiresConversion();
             return;
         }
 
-        var group = CreateGroupFrameFromLegacySelection(selectedLegacy);
+        var selectedModernIds = _selectedSceneObjectIds
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        if (selectedModernIds.Length < 2)
+        {
+            SetStatus("Selectionnez au moins deux Element+ pour grouper.");
+            return;
+        }
+
+        var sequence = _nextGroupSequence++;
+        var groupId = CreateUniqueElementId($"group_{sequence:000}");
+        var groupName = $"Group{sequence:000}";
         var beforeScene = _activeScene;
-        _activeScene = _activeScene.WithElement(group);
+        try
+        {
+            _activeScene = _activeScene.WithGroupedElements(groupId, groupName, selectedModernIds);
+        }
+        catch (InvalidOperationException ex)
+        {
+            SetStatus(ex.Message);
+            return;
+        }
+
         _activeSceneTab?.History.Push(new SceneSnapshotChangedAction(
             beforeScene.Id,
             beforeScene,
             _activeScene,
-            "groupement legacy Element+"));
+            "groupement Element+"));
+        var group = _activeScene.FindElementRecursive(groupId);
         _selectedSceneObject = group;
         _selectedSceneObjectIds.Clear();
-        _selectedSceneObjectIds.Add(group.Id);
+        _selectedSceneObjectIds.Add(groupId);
         _selectedSourceObjectIds.Clear();
         await ExecuteLegacyViewerCommandAsync("clearSelection");
         MarkActiveSceneDirty();
         RefreshSelectionUi();
         RefreshModernSceneUi();
         await RenderModernSceneAsync();
-        SetStatus($"{selectedLegacy.Length} element(s) legacy encadre(s) par {group.DisplayName}. Le rendu legacy reste inchange.");
+        SetStatus($"{selectedModernIds.Length} Element+ groupe(s) dans {group?.DisplayName ?? groupName}. Sauvegarde requise.");
+    }
+
+    private Task GroupSelectedLegacyElementsAsync()
+    {
+        WarnLegacyGroupingRequiresConversion();
+        return Task.CompletedTask;
+    }
+
+    private void WarnLegacyGroupingRequiresConversion()
+    {
+        SetStatus("Le groupement direct des elements legacy est decommissionne. Convertissez d'abord les elements en Element+, puis relancez Grouper.");
     }
 
     private async Task OpenSelectedLegacyInElementStudioAsync()
