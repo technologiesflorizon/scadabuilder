@@ -2,12 +2,18 @@
 
 Date: 2026-06-15
 Status: Draft
-Document version: `V2.1.1.0030`
+Document version: `V2.1.1.0036`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0036` | `PENDING` | Contrat general de namespace CSS/DOM/runtime par page pour eviter toute collision de selecteurs TF100Web. |
+| 2026-06-15 | `V2.1.1.0035` | `PENDING` | Clarification que les CSS `data-id` exportees sont scopees au root de page pour proteger la composition TF100Web. |
+| 2026-06-15 | `V2.1.1.0034` | `PENDING` | Clarification que l'omission export source depend de l'etat scene `RemovedSourceElementIds`, pas du masquage WebView. |
+| 2026-06-15 | `V2.1.1.0033` | `PENDING` | Clarification que la geometrie inline FT100 vise les couches HTML legacy et ne doit pas muter les formes SVG source. |
+| 2026-06-15 | `V2.1.1.0032` | `PENDING` | Extension de la geometrie inline FT100 aux objets source legacy avec positions persistantes. |
+| 2026-06-15 | `V2.1.1.0031` | `PENDING` | Decision de composition header/body/footer par manifeste et ajout de la geometrie inline critique dans les exports FT100. |
 | 2026-06-15 | `V2.1.1.0030` | `72350e3` | Deprecation explicite de `index.html`, clarification source legacy/modernized et ajout du risque `win00008` vs `win00009`. |
 | 2026-06-15 | `V2.1.1.0029` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 
@@ -142,6 +148,13 @@ Contract rules:
 10. `LegacyStatic` scene elements are source-projection state. FT100 export must use them to write `data-id` CSS for edited imported-object bounds and must keep them in `manifest.json` as source inventory metadata, but must not emit them as `ft100-element` DOM nodes.
 11. FT100 export source resolution must not blindly treat `08_web_modernized` as raw source. The V2 scene/project model is the target source of truth. During migration, raw visual comparison should prefer `03_web_legacy/html_pages/*`; `08_web_modernized/*` may be used only as comparison/history material or as an explicitly approved sanitized source with helper scripts, layout tools, test panels, and editor-only artifacts removed.
 12. `win00009` currently displays correctly in SCADA Builder V2 and should be used as a comparison baseline for expected source-layer rendering. `win00008` is a known regression candidate because its modernized source, inventory metadata, and exported package positions diverge.
+13. Header and footer are compiled pages. TF100Web must compose them from root manifest references as complete page roots in header/body/footer slots, not by copying loose child nodes into another page.
+14. Header/body/footer slot dimensions come from each page record `Width` and `Height`; the exported HTML root also exposes `data-scada-width` and `data-scada-height` for diagnostics and fallback validation.
+15. Any viewport scaling must be applied once to the composed page container. Independent scaling or recentering of header, body, and footer pages is outside the approved contract.
+16. SCADA Builder V2 emits critical inline geometry on the page root, HTML source-layer objects with saved bounds, and modern Element+ objects to protect fragment composition during deployment, while `css/<page-id>.css` remains the full runtime stylesheet and must be loaded from the same package version.
+17. SVG source shapes with `data-id` remain selectable and movable in the editor, but FT100 export must preserve their native SVG geometry model and must not inject HTML absolute-position inline styles into SVG child tags.
+18. Source omission during export is driven by scene state: `RemovedSourceElementIds` and explicit conversion suppression. WebView CSS state, inventory deltas, and temporary masking are not export inputs.
+19. CSS, generated DOM ids, and runtime action lookup are page-namespaced under the exported root id. TF100Web composes header, body, and footer in one document, so generated selectors must not rely on package-global `data-id`, Element+ ids, FT100 layer classes, `:root`, or `html/body`; those identities are page-local and may repeat across composed pages.
 
 ## 8. Alignment Plan
 
@@ -185,6 +198,7 @@ SCADA Builder V2 implementation status:
 4. Legacy static imported geometry is no longer exported as empty Element+ runtime DOM nodes, while `manifest.json` still preserves source inventory metadata for those objects.
 5. Current SCADA Builder V2 still has an implementation gap around migration source selection: documentation now requires V2 model/sanitized-source governance, while the existing resolver may still select `legacy.source_html` when present.
 6. TF100Web consumes the root manifest and performs runtime header/page/footer composition in the package loader.
+7. FT100 page HTML now includes page type/dimension data attributes and inline geometry for the exported root, HTML source-layer legacy elements, and modern Element+ elements; SVG source shapes remain governed by SVG attributes plus page CSS. Regression coverage protects the fragment-composition guardrail.
 
 Phase 5 - Production hardening:
 

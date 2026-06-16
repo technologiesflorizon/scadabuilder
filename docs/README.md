@@ -2,12 +2,18 @@
 
 Date: 2026-06-15
 Status: Active documentation map
-Document version: `V2.1.1.0030`
+Document version: `V2.1.1.0036`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0036` | `PENDING` | Generalisation du contrat de namespace CSS/DOM par page pour interdire les collisions de selecteurs en composition TF100Web. |
+| 2026-06-15 | `V2.1.1.0035` | `PENDING` | Clarification du scoping CSS par page pour eviter les collisions header/body/footer sur les `data-id`. |
+| 2026-06-15 | `V2.1.1.0034` | `PENDING` | Documentation du contrat selection polymorphe et suppression globale source/objet sans masquage durable. |
+| 2026-06-15 | `V2.1.1.0033` | `PENDING` | Clarification du contrat de selection source `data-id`, incluant SVG, et du garde-fou inline limite aux couches HTML legacy. |
+| 2026-06-15 | `V2.1.1.0032` | `PENDING` | Extension du garde-fou de geometrie inline aux objets source legacy persistants. |
+| 2026-06-15 | `V2.1.1.0031` | `PENDING` | Documentation du contrat de composition header/body/footer TF100Web et du garde-fou de geometrie inline FT100. |
 | 2026-06-15 | `V2.1.1.0030` | `72350e3` | Creation de l'arbre documentaire stable, des regles de header et des decisions de deprecation `index.html`. |
 
 ## 1. Role
@@ -40,6 +46,25 @@ Rules:
 3. TF100Web may keep isolated legacy fallback support for old imported packages only.
 4. Root `manifest.json` is the authoritative intake contract.
 5. Preview, build, and export must converge on the same V2 project model and must not depend on editor-only overlays or tooling.
+6. Header and footer pages are composed as complete exported page fragments, not copied as loose child HTML.
+7. TF100Web must size header/body/footer slots from manifest page dimensions and apply viewport scale to the composed page container once.
+8. Page HTML carries critical inline geometry for the page root, HTML source-layer objects, and Element+ objects as a deployment guardrail; SVG source shapes keep SVG geometry attributes and the page CSS remains the complete runtime stylesheet that must still be loaded from the same package version.
+9. Selection is polymorphic: any present non-editor source or Element+ object is selectable, and commands resolve the selected runtime type after hit-testing.
+10. Persistent deletion uses the global scene history and `RemovedSourceElementIds`. WebView masking or `display:none` is not a durable delete state, and inventory differences must not auto-hide source nodes.
+11. Exported page HTML, CSS, and runtime JavaScript must use a page namespace rooted at the exported page id, such as `#ft100-win00003`. Generated selectors for source `data-id`, Element+ object ids, FT100 layer classes, and runtime action targets must be page-scoped or page-prefixed; unscoped `:root`, `html/body`, `[data-id="..."]`, `.ft100-*`, or `#Button1`-style selectors are invalid for current TF100Web composition. Legacy `data-id` values and scene element ids remain page-local metadata, not package-global selector identities.
+
+## 2.1 Header/Footer Composition Contract
+
+Approved policy:
+
+1. The root package manifest owns page inventory and composition references.
+2. A default page renders as ordered slots: referenced header page, body page, referenced footer page.
+3. Each slot injects the complete exported page root, such as `#ft100-win00002`, and keeps its page-local CSS active.
+4. Slot width and height come from the referenced page `Width` and `Height` values, with `data-scada-width` and `data-scada-height` as HTML-side diagnostics.
+5. TF100Web must not flatten header/footer children into the body page or infer positions after extraction.
+6. Manual deployment must keep HTML, CSS, images, and manifests from the same package export to avoid mixed-version rendering.
+7. HTML source-layer elements with persisted SCADA Builder bounds must carry those bounds directly in their exported inline `style` attributes, after any original legacy style declarations.
+8. All imported source elements with `data-id`, including footer SVG shapes and `win00008` non-`.layer` nodes, remain selectable/editable in SCADA Builder V2; the C# materialization inventory remains limited to managed source projections and must not hide present source nodes; export must not inject HTML absolute-position declarations into SVG child tags.
 
 ## 3. Legacy Source Contract
 

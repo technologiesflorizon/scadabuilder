@@ -233,7 +233,7 @@
         "Height": 873
       },
       "Background": {
-        "Color": "#ADADAD",
+        "Color": "#A8A8A8",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
@@ -251,7 +251,7 @@
         "Height": 873
       },
       "EffectiveBackground": {
-        "Color": "#ADADAD",
+        "Color": "#A8A8A8",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
@@ -1130,7 +1130,7 @@
         "Height": 873
       },
       "Background": {
-        "Color": "#000000",
+        "Color": "#AFAFAF",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
@@ -1148,7 +1148,7 @@
         "Height": 873
       },
       "EffectiveBackground": {
-        "Color": "#000000",
+        "Color": "#AFAFAF",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
@@ -1169,7 +1169,7 @@
         "Height": 873
       },
       "Background": {
-        "Color": "#000000",
+        "Color": "#C4C4C4",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
@@ -1187,7 +1187,7 @@
         "Height": 873
       },
       "EffectiveBackground": {
-        "Color": "#000000",
+        "Color": "#C4C4C4",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
@@ -1286,7 +1286,7 @@
         "Height": 873
       },
       "Background": {
-        "Color": "#000000",
+        "Color": "#CECECE",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
@@ -1304,7 +1304,7 @@
         "Height": 873
       },
       "EffectiveBackground": {
-        "Color": "#000000",
+        "Color": "#CECECE",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
@@ -1325,7 +1325,7 @@
         "Height": 873
       },
       "Background": {
-        "Color": "#000000",
+        "Color": "#C7C7C7",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
@@ -1343,7 +1343,7 @@
         "Height": 873
       },
       "EffectiveBackground": {
-        "Color": "#000000",
+        "Color": "#C7C7C7",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",

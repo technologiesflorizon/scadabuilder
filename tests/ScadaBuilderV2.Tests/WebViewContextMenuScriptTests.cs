@@ -157,11 +157,51 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(deleteMethod, "new SceneObjectsDeletedAction(");
         StringAssert.Contains(deleteMethod, ".WithoutSceneObjects(deletedElements.Select(element => element.Id))");
         StringAssert.Contains(deleteMethod, ".WithRemovedSourceElementIds(sourceIds)");
+        StringAssert.Contains(deleteMethod, "await RemoveLegacyElementsInViewerAsync(sourceIds);");
         StringAssert.Contains(deleteMethod, "MarkActiveSceneDirty();");
         StringAssert.Contains(deleteMethod, "Sauvegarde requise");
         Assert.IsFalse(
+            deleteMethod.Contains("await HideLegacyElementsInViewerAsync(sourceIds);", StringComparison.Ordinal),
+            "Durable source deletion must remove the source DOM node as scene-state feedback, not persist deletion as a WebView hide.");
+        Assert.IsFalse(
             source.Contains("new EditorCommandDescriptor(\"selection.clear\", \"Effacer la selection\", \"selection\")", StringComparison.Ordinal),
             "The right-click menu must delete the selected objects, not only clear the current selection.");
+    }
+
+    [TestMethod]
+    public void LegacyInventoryDoesNotAutoHidePresentSourceNodes()
+    {
+        var source = ReadMainWindowSource();
+        var inventoryMethod = ExtractMethod(source, "private void ApplyLegacyInventory(IReadOnlyList<LegacyViewerElementMessage> items)");
+
+        StringAssert.Contains(inventoryMethod, "MaterializeLegacyElementsFromInventory(items);");
+        StringAssert.Contains(inventoryMethod, "foreach (var legacyElement in _activeScene.GetLegacyStaticElements())");
+        Assert.IsFalse(
+            inventoryMethod.Contains("removedLegacyIds", StringComparison.Ordinal),
+            "Inventory deltas must not decide that present source DOM nodes should disappear.");
+        Assert.IsFalse(
+            inventoryMethod.Contains("HideLegacyElementsInViewerAsync(removedLegacyIds", StringComparison.Ordinal),
+            "ApplyLegacyInventory must not auto-hide source nodes that are absent from the materialized inventory.");
+    }
+
+    [TestMethod]
+    public void PersistentSourceDeletionUsesNodeRemovalInsteadOfDisplayMasking()
+    {
+        var source = NormalizeNewLines(ReadMainWindowSource());
+
+        StringAssert.Contains(source, "const removedNodes = new Map();");
+        StringAssert.Contains(source, "function removeSourceElement(el)");
+        StringAssert.Contains(source, "rememberRemovedSourceElement(el, id);");
+        StringAssert.Contains(source, "el.remove();");
+        StringAssert.Contains(source, "function removeLegacyElements(ids)");
+        StringAssert.Contains(source, "removeLegacyElements,");
+        StringAssert.Contains(source, "window.scadaSceneEditor && window.scadaSceneEditor.removeLegacyElements");
+        Assert.IsFalse(
+            source.Contains("el.style.display = 'none';", StringComparison.Ordinal),
+            "Source delete/suppress operations must not store persistent deletion as a display mask.");
+        Assert.IsFalse(
+            source.Contains("el.setAttribute('data-scada-deleted', 'true');", StringComparison.Ordinal),
+            "Deleted source state belongs to the scene model, not to a persistent WebView DOM marker.");
     }
 
     [TestMethod]
@@ -411,6 +451,9 @@ public sealed class WebViewContextMenuScriptTests
 
         StringAssert.Contains(source, "let sourceDrag = null;");
         StringAssert.Contains(source, "function applySourceElementBounds(bounds)");
+        StringAssert.Contains(source, "function getSelectableElementById(id)");
+        StringAssert.Contains(source, "setSvgSourceElementGeometry(el, geometry);");
+        StringAssert.Contains(source, "el.setAttribute('x', `${x}`);");
         StringAssert.Contains(source, "applySourceElementBounds,\n    renderModernElements");
         StringAssert.Contains(source, "type: 'moveSelectionBy'");
         StringAssert.Contains(source, "targetKind,");
@@ -564,6 +607,7 @@ public sealed class WebViewContextMenuScriptTests
         var source = ReadMainWindowSource();
 
         StringAssert.Contains(source, "RemoveLegacyElementsFromInventory(convertedLegacyIds);");
+        StringAssert.Contains(source, "await RemoveLegacyElementsInViewerAsync(convertedLegacyIds);");
         StringAssert.Contains(source, "_hiddenSourceObjectIds.Contains(id)");
         StringAssert.Contains(source, "UndoLegacyConversionAsync");
         StringAssert.Contains(source, "RestoreLegacyElementInInventory(source);");
@@ -646,6 +690,20 @@ public sealed class WebViewContextMenuScriptTests
         Assert.IsTrue(
             CountOccurrences(source, "if (placementKind) {\n          return;\n        }\n        if (event.target?.closest?.('.scada-modern-element') !== wrapper)") >= 3,
             "Modern element pointer, double-click, and context-menu handlers must ignore events while placement is active.");
+    }
+
+    [TestMethod]
+    public void LegacyInventoryTargetsAllSourceDataIdsIncludingSvgSourceShapes()
+    {
+        var source = NormalizeNewLines(ReadMainWindowSource());
+
+        StringAssert.Contains(source, "const selectableSelector = '[data-id]:not(.scada-modern-element)';");
+        StringAssert.Contains(source, "const inventorySelector = '.layer[data-id]:not(.scada-modern-element), .shape-layer [data-id]';");
+        StringAssert.Contains(source, "return `[data-id=\"${escaped}\"]:not(.scada-modern-element)`;");
+        StringAssert.Contains(source, "function getInventoryElements()");
+        StringAssert.Contains(source, "const items = getInventoryElements().map(toElementMessage);");
+        StringAssert.Contains(source, "const el = getSelectableElementById(id);");
+        StringAssert.Contains(source, "const target = getSelectableElementById(overrideItem.Id);");
     }
 
     [TestMethod]

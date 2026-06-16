@@ -727,5 +727,8 @@
   ],
   "PageType": "Footer",
   "Background": null,
-  "Actions": null
+  "Actions": null,
+  "IncludeInBuild": true,
+  "HeaderPageId": null,
+  "FooterPageId": null
 }

@@ -949,7 +949,7 @@ public partial class MainWindow : Window
             return;
         }
 
-        await HideLegacyElementsInViewerAsync(_hiddenSourceObjectIds.ToArray());
+        await RemoveLegacyElementsInViewerAsync(_hiddenSourceObjectIds.ToArray());
     }
 
     private async Task ResetSourceProjectionVisibilityFromActiveSceneAsync()
@@ -1130,22 +1130,6 @@ public partial class MainWindow : Window
         _sourceObjects.Clear();
         if (_activeScene?.LegacyElementsMaterialized == true)
         {
-            var activeLegacySourceIds = _activeScene.GetLegacyStaticElements()
-                .Select(element => element.LegacySource?.SourceElementId)
-                .Where(id => !string.IsNullOrWhiteSpace(id))
-                .ToHashSet(StringComparer.Ordinal);
-            var suppressedSourceIds = _activeScene.GetSuppressedSourceElementIds();
-            var removedLegacyIds = items
-                .Where(item => !string.IsNullOrWhiteSpace(item.Id))
-                .Select(item => item.Id.Trim())
-                .Where(id => !activeLegacySourceIds.Contains(id) && !suppressedSourceIds.Contains(id))
-                .Where(id => _hiddenSourceObjectIds.Add(id))
-                .ToArray();
-            if (removedLegacyIds.Length > 0)
-            {
-                _ = HideLegacyElementsInViewerAsync(removedLegacyIds);
-            }
-
             foreach (var legacyElement in _activeScene.GetLegacyStaticElements())
             {
                 var sourceId = legacyElement.LegacySource?.SourceElementId;
@@ -1856,7 +1840,7 @@ public partial class MainWindow : Window
         }
 
         RemoveLegacyElementsFromInventory(sourceIds);
-        await HideLegacyElementsInViewerAsync(sourceIds);
+        await RemoveLegacyElementsInViewerAsync(sourceIds);
         _selectedSourceObjectIds.Clear();
         _selectedSceneObject = null;
         _selectedSceneObjectIds.Clear();
@@ -1994,7 +1978,7 @@ public partial class MainWindow : Window
             _ => RedoLegacyConversionAsync(sourceSnapshots, convertedSnapshots, targetLabel)));
 
         RemoveLegacyElementsFromInventory(convertedLegacyIds);
-        await HideLegacyElementsInViewerAsync(convertedLegacyIds);
+        await RemoveLegacyElementsInViewerAsync(convertedLegacyIds);
         _selectedSceneObject = convertedElements[^1];
         _selectedSceneObjectIds.Clear();
         _selectedSceneObjectIds.Add(_selectedSceneObject.Id);
@@ -2828,6 +2812,17 @@ public partial class MainWindow : Window
 
         var idsJson = JsonSerializer.Serialize(ids);
         await PreviewWebView.ExecuteScriptAsync($"window.scadaSceneEditor && window.scadaSceneEditor.hideLegacyElements({idsJson});");
+    }
+
+    private async Task RemoveLegacyElementsInViewerAsync(IReadOnlyList<string> ids)
+    {
+        if (PreviewWebView.CoreWebView2 is null)
+        {
+            return;
+        }
+
+        var idsJson = JsonSerializer.Serialize(ids);
+        await PreviewWebView.ExecuteScriptAsync($"window.scadaSceneEditor && window.scadaSceneEditor.removeLegacyElements({idsJson});");
     }
 
     private async Task PrepareInitialSceneBackgroundScriptAsync(string color)
@@ -4875,7 +4870,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         var ids = deletedInventoryItems.Select(item => item.Id).ToArray();
         RemoveLegacyElementsFromInventory(ids);
-        await HideLegacyElementsInViewerAsync(ids);
+        await RemoveLegacyElementsInViewerAsync(ids);
         _selectedSourceObjectIds.Clear();
         MarkActiveSceneDirty();
         RefreshSelectionUi();
@@ -4962,7 +4957,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         var convertedLegacyIds = sources.Select(source => source.RuntimeId).ToArray();
         RemoveLegacyElementsFromInventory(convertedLegacyIds);
-        await HideLegacyElementsInViewerAsync(convertedLegacyIds);
+        await RemoveLegacyElementsInViewerAsync(convertedLegacyIds);
 
         _selectedSceneObject = convertedElements[^1];
         _selectedSceneObjectIds.Clear();
@@ -5209,8 +5204,10 @@ await PreviewWebView.ExecuteScriptAsync($$"""
   }
 
   const selectableSelector = '[data-id]:not(.scada-modern-element)';
+  const inventorySelector = '.layer[data-id]:not(.scada-modern-element), .shape-layer [data-id]';
   const selected = new Set();
   const hidden = new Set();
+  const removedNodes = new Map();
 
   const style = document.createElement('style');
   style.textContent = `
@@ -5570,9 +5567,89 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     return el && el.getAttribute ? (el.getAttribute('data-id') || '') : '';
   }
 
+  function selectableSelectorForId(id) {
+    const escaped = CSS.escape(id || '');
+    return `[data-id="${escaped}"]:not(.scada-modern-element)`;
+  }
+
+  function getSelectableElementById(id) {
+    return id ? document.querySelector(selectableSelectorForId(id)) : null;
+  }
+
   function getSelectableElements() {
     return Array.from(document.querySelectorAll(selectableSelector))
       .filter(el => getId(el) && !hidden.has(getId(el)));
+  }
+
+  function getInventoryElements() {
+    return Array.from(document.querySelectorAll(inventorySelector))
+      .filter(el => getId(el) && !hidden.has(getId(el)));
+  }
+
+  function rememberRemovedSourceElement(el, id) {
+    if (!el || !id || !el.parentNode || removedNodes.has(id)) return;
+    removedNodes.set(id, {
+      node: el,
+      parent: el.parentNode,
+      nextSibling: el.nextSibling
+    });
+  }
+
+  function removeSourceElement(el) {
+    const id = getId(el);
+    if (!id) return;
+    hidden.add(id);
+    selected.delete(id);
+    el.removeAttribute('data-scada-selected');
+    el.removeAttribute('data-scada-deleted');
+    rememberRemovedSourceElement(el, id);
+    if (el.parentNode) {
+      el.remove();
+    }
+  }
+
+  function removeSourceElements(ids) {
+    const removeIds = new Set(Array.isArray(ids) ? ids : []);
+    if (!removeIds.size) return;
+    removeIds.forEach(id => {
+      const normalizedId = `${id || ''}`.trim();
+      if (!normalizedId) return;
+      const el = getSelectableElementById(normalizedId);
+      if (el) {
+        removeSourceElement(el);
+      } else {
+        hidden.add(normalizedId);
+        selected.delete(normalizedId);
+      }
+    });
+    postInventory();
+    postSelection();
+  }
+
+  function restoreSourceElement(id, shouldSelect = false) {
+    const normalizedId = `${id || ''}`.trim();
+    if (!normalizedId) return;
+    const entry = removedNodes.get(normalizedId);
+    if (entry && entry.node && entry.parent && entry.parent.isConnected) {
+      if (entry.nextSibling && entry.nextSibling.parentNode === entry.parent) {
+        entry.parent.insertBefore(entry.node, entry.nextSibling);
+      } else {
+        entry.parent.appendChild(entry.node);
+      }
+    }
+    removedNodes.delete(normalizedId);
+
+    const el = getSelectableElementById(normalizedId);
+    hidden.delete(normalizedId);
+    selected.delete(normalizedId);
+    if (!el) return;
+    el.style.display = '';
+    el.removeAttribute('data-scada-selected');
+    el.removeAttribute('data-scada-deleted');
+    if (shouldSelect) {
+      selected.add(normalizedId);
+      el.setAttribute('data-scada-selected', 'true');
+    }
   }
 
   function getRenderOrder(el) {
@@ -5593,6 +5670,10 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
   function setSourceElementGeometry(el, geometry) {
     if (!el || !geometry) return;
+    if (isSvgSourceShape(el)) {
+      setSvgSourceElementGeometry(el, geometry);
+      return;
+    }
     el.style.position = window.getComputedStyle(el).position === 'static' ? 'absolute' : el.style.position;
     el.style.left = `${Math.max(0, Math.round(geometry.x))}px`;
     el.style.top = `${Math.max(0, Math.round(geometry.y))}px`;
@@ -5605,6 +5686,46 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     el.style.transform = '';
   }
 
+  function isSvgSourceShape(el) {
+    return !!(el && el.ownerSVGElement && el !== el.ownerSVGElement);
+  }
+
+  function setSvgSourceElementGeometry(el, geometry) {
+    const surface = getPageSurface();
+    const surfaceRect = surface.getBoundingClientRect();
+    const svg = el.ownerSVGElement;
+    const svgRect = svg.getBoundingClientRect();
+    const viewBox = svg.viewBox && svg.viewBox.baseVal ? svg.viewBox.baseVal : null;
+    const scaleX = viewBox && svgRect.width ? viewBox.width / svgRect.width : 1;
+    const scaleY = viewBox && svgRect.height ? viewBox.height / svgRect.height : 1;
+    const originX = svgRect.left - surfaceRect.left + surface.scrollLeft;
+    const originY = svgRect.top - surfaceRect.top + surface.scrollTop;
+    const x = Math.max(0, Math.round(((geometry.x || 0) - originX) * scaleX + (viewBox ? viewBox.x : 0)));
+    const y = Math.max(0, Math.round(((geometry.y || 0) - originY) * scaleY + (viewBox ? viewBox.y : 0)));
+    const width = Number.isFinite(geometry.width) && geometry.width > 0
+      ? Math.max(1, Math.round(geometry.width * scaleX))
+      : null;
+    const height = Number.isFinite(geometry.height) && geometry.height > 0
+      ? Math.max(1, Math.round(geometry.height * scaleY))
+      : null;
+
+    const tag = (el.tagName || '').toLowerCase();
+    if (tag === 'rect' || tag === 'image' || tag === 'foreignobject' || el.hasAttribute('x')) {
+      el.setAttribute('x', `${x}`);
+      el.setAttribute('y', `${y}`);
+      if (width !== null) el.setAttribute('width', `${width}`);
+      if (height !== null) el.setAttribute('height', `${height}`);
+      el.removeAttribute('transform');
+      return;
+    }
+
+    try {
+      const box = el.getBBox();
+      el.setAttribute('transform', `translate(${x - Math.round(box.x)} ${y - Math.round(box.y)})`);
+    } catch {
+    }
+  }
+
   function selectedSourceElements() {
     return getSelectableElements().filter(el => selected.has(getId(el)));
   }
@@ -5614,7 +5735,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     bounds.forEach(item => {
       const id = item?.Id || item?.id;
       if (!id) return;
-      const el = document.querySelector(`${selectableSelector}[data-id="${CSS.escape(id)}"]`);
+      const el = getSelectableElementById(id);
       if (!el) return;
       setSourceElementGeometry(el, {
         x: item.X ?? item.x ?? 0,
@@ -5833,7 +5954,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
   }
 
   function postInventory() {
-    const items = getSelectableElements().map(toElementMessage);
+    const items = getInventoryElements().map(toElementMessage);
     window.chrome?.webview?.postMessage({ type: 'inventory', items });
   }
 
@@ -6550,7 +6671,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     if (!Array.isArray(overrides)) return;
     overrides.forEach(overrideItem => {
       if (!overrideItem || !overrideItem.Id) return;
-      const target = document.querySelector(`${selectableSelector}[data-id="${CSS.escape(overrideItem.Id)}"]`);
+      const target = getSelectableElementById(overrideItem.Id);
       if (target) {
         setEditableText(target, overrideItem.Text || '');
       }
@@ -6943,46 +7064,32 @@ await PreviewWebView.ExecuteScriptAsync($$"""
   function hideSelected() {
     getSelectableElements()
       .filter(el => selected.has(getId(el)))
-      .forEach(el => {
-        hidden.add(getId(el));
-        el.style.display = 'none';
-        el.removeAttribute('data-scada-selected');
-      });
+      .forEach(removeSourceElement);
     selected.clear();
     postInventory();
     postSelection();
   }
 
   function hideLegacyElements(ids) {
-    const hideIds = new Set(Array.isArray(ids) ? ids : []);
-    if (!hideIds.size) return;
-    getSelectableElements()
-      .filter(el => hideIds.has(getId(el)))
-      .forEach(el => {
-        hidden.add(getId(el));
-        el.style.display = 'none';
-        el.removeAttribute('data-scada-selected');
-        selected.delete(getId(el));
-      });
-    postInventory();
-    postSelection();
+    removeSourceElements(ids);
+  }
+
+  function removeLegacyElements(ids) {
+    removeSourceElements(ids);
   }
 
   function deleteSelected() {
     getSelectableElements()
       .filter(el => selected.has(getId(el)))
-      .forEach(el => {
-        hidden.add(getId(el));
-        el.setAttribute('data-scada-deleted', 'true');
-        el.style.display = 'none';
-        el.removeAttribute('data-scada-selected');
-      });
+      .forEach(removeSourceElement);
     selected.clear();
     postInventory();
     postSelection();
   }
 
   function restoreHidden() {
+    const restoreIds = new Set([...hidden, ...removedNodes.keys()]);
+    restoreIds.forEach(id => restoreSourceElement(id, false));
     hidden.clear();
     document.querySelectorAll(selectableSelector).forEach(el => {
       el.style.display = '';
@@ -6997,15 +7104,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
   function restoreLegacyElements(ids) {
     const restoreIds = new Set(Array.isArray(ids) ? ids : []);
     if (!restoreIds.size) return;
-    document.querySelectorAll(selectableSelector).forEach(el => {
-      const id = getId(el);
-      if (!restoreIds.has(id)) return;
-      hidden.delete(id);
-      el.style.display = '';
-      el.removeAttribute('data-scada-selected');
-      el.removeAttribute('data-scada-deleted');
-      selected.add(id);
-    });
+    restoreIds.forEach(id => restoreSourceElement(id, true));
     postInventory();
     postSelection();
   }
@@ -7046,6 +7145,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     getSelectedMessagesForStudio,
     selectLegacyElements,
     hideLegacyElements,
+    removeLegacyElements,
     restoreLegacyElements,
     setBackgroundColor(color) {
       const surface = getPageSurface();

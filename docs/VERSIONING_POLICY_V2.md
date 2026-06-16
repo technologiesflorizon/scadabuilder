@@ -2,13 +2,19 @@
 
 Date: 2026-06-15
 Status: Active policy
-Document version: `V2.1.1.0030`
-Current version: `V2.1.1.0030`
+Document version: `V2.1.1.0036`
+Current version: `V2.1.1.0036`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0036` | `PENDING` | Bump iteration pour namespace CSS/DOM/runtime generalise dans l'export FT100/TF100Web. |
+| 2026-06-15 | `V2.1.1.0035` | `PENDING` | Bump iteration pour correction scoping CSS FT100/TF100Web. |
+| 2026-06-15 | `V2.1.1.0034` | `PENDING` | Bump iteration pour contrat selection polymorphe et correction suppression globale source/objet. |
+| 2026-06-15 | `V2.1.1.0033` | `PENDING` | Bump iteration pour correction selection SVG source et durcissement export footer FT100. |
+| 2026-06-15 | `V2.1.1.0032` | `PENDING` | Bump iteration pour geometrie inline source legacy dans l'export FT100. |
+| 2026-06-15 | `V2.1.1.0031` | `PENDING` | Bump iteration pour durcissement composition header/footer FT100Web et regression d'export. |
 | 2026-06-15 | `V2.1.1.0030` | `72350e3` | Bump iteration pour gouvernance documentaire et headers obligatoires. |
 | 2026-06-15 | `V2.1.1.0029` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 

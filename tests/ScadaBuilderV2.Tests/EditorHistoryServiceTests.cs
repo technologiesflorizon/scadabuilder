@@ -205,6 +205,46 @@ public sealed class EditorHistoryServiceTests
     }
 
     [TestMethod]
+    public async Task SceneObjectDeleteActionUndoRedoRestoresMixedObjectsAndSourceOnlyIds()
+    {
+        var sourceElement = ScadaElement.CreateLegacyStatic(
+            "legacy_784",
+            "Text22",
+            new SceneBounds(80, 57, 45, 24),
+            new LegacySourceTrace("Wonderware/ArchestrA", "win00008", "784", "Text22", "win00008.html"),
+            new LegacyElementPayload("Text", "###.0", true, "Arial", 16, "#FFFFFF", "Transparent", "<text>###.0</text>", "{}"));
+        var modernElement = ScadaElement.CreateText("text_001", "Element+", 20, 30);
+        var scene = ScadaScene.CreateEmpty("win00008", "win00008", new(1280, 873))
+            .WithElement(sourceElement)
+            .WithElement(modernElement)
+            .WithLegacyElementsMaterialized()
+            .WithoutSceneObjects([sourceElement.Id, modernElement.Id])
+            .WithRemovedSourceElementIds(["784", "source-only-13"]);
+        var history = new EditorHistoryService();
+        var context = CreateContext(scene, replacement => scene = replacement);
+
+        history.Push(new SceneObjectsDeletedAction(
+            scene.Id,
+            [
+                new DeletedSceneObjectSnapshot(sourceElement, null, 0),
+                new DeletedSceneObjectSnapshot(modernElement, null, 1)
+            ],
+            ["784", "source-only-13"]));
+
+        Assert.IsTrue(await history.UndoAsync(context));
+        Assert.IsNotNull(scene.FindElementRecursive(sourceElement.Id));
+        Assert.IsNotNull(scene.FindElementRecursive(modernElement.Id));
+        Assert.IsFalse(scene.RemovedSourceIds.Contains("784"));
+        Assert.IsFalse(scene.RemovedSourceIds.Contains("source-only-13"));
+
+        Assert.IsTrue(await history.RedoAsync(context));
+        Assert.IsNull(scene.FindElementRecursive(sourceElement.Id));
+        Assert.IsNull(scene.FindElementRecursive(modernElement.Id));
+        Assert.IsTrue(scene.RemovedSourceIds.Contains("784"));
+        Assert.IsTrue(scene.RemovedSourceIds.Contains("source-only-13"));
+    }
+
+    [TestMethod]
     public async Task SceneSnapshotActionUndoRedoReplacesWholeScene()
     {
         var element = ScadaElement.CreateText("text-001", "Text001", 10, 20);

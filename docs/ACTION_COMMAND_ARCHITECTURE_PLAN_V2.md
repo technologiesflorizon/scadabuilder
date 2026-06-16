@@ -2,16 +2,58 @@
 
 Date: 2026-06-15
 Status: Approved direction to implement
-Document version: `V2.1.1.0030`
+Document version: `V2.1.1.0036`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0036` | `PENDING` | Generalisation du namespace CSS/DOM/runtime FT100 pour supprimer les collisions de selecteurs en composition TF100Web. |
+| 2026-06-15 | `V2.1.1.0035` | `PENDING` | Scoping des CSS source `data-id` par page pour corriger les collisions runtime TF100Web footer. |
+| 2026-06-15 | `V2.1.1.0034` | `PENDING` | Durcissement du contrat selection polymorphe et suppression globale source/objet sans masquage persistant. |
+| 2026-06-15 | `V2.1.1.0033` | `PENDING` | Restauration de la selection large des elements source `data-id`, incluant SVG, et restriction de l'injection inline FT100 aux couches HTML legacy. |
+| 2026-06-15 | `V2.1.1.0032` | `PENDING` | Injection de la geometrie persistante dans les styles inline des objets source legacy exportes. |
+| 2026-06-15 | `V2.1.1.0031` | `PENDING` | Durcissement de l'export FT100 pour la composition header/footer avec geometrie inline critique et regression dediee. |
+| 2026-06-15 | `V2.1.1.0030` | `PENDING` | Correction de l'etat de suppression source `win00002` pour les textes decommissionnes `1` et `5`, avec regression d'export HTML. |
 | 2026-06-15 | `V2.1.1.0030` | `72350e3` | Normalisation du header documentaire et rattachement a l'arbre documentaire stable. |
 | 2026-06-15 | `V2.1.1.0026` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 
 ## Revision Log
+
+### V2.1.1.0036
+
+Generalized the FT100 selector namespace contract for TF100Web composition.
+The exporter now generates page-prefixed runtime DOM ids for Element+ objects, retains original scene ids only as metadata, scopes generated CSS selectors under the page root, avoids package-global `:root` and `html/body` CSS, and binds runtime action lookup from the current page root instead of the full document. Regression coverage rejects unscoped generated selectors and protects duplicate names such as `Button1` across header, body, and footer pages.
+
+### V2.1.1.0035
+
+Scoped FT100 source CSS for TF100Web composition.
+The exporter now prefixes imported source `data-id` CSS rules with the exported page root id, for example `#ft100-win00003 [data-id="1"]`. This keeps footer buttons such as `Button1` through `Button6` from being moved or hidden by body-page CSS when TF100Web loads header, body, and footer stylesheets into the same document. Regression coverage now protects page-scoped source geometry and suppression selectors in multi-page package export.
+
+### V2.1.1.0034
+
+Locked the polymorphic selection and global deletion contract.
+Every present non-editor element is selectable, whether it is a source DOM node, managed source projection, SVG source shape, or Element+ scene object. The source materialization inventory remains a projection input only; it must not auto-hide nodes that are present in the WebView. Source/object deletion is routed through `SceneObjectsDeletedAction` with scene-object snapshots and source-only ids in one global scene history action. Durable source removal is represented by `RemovedSourceElementIds`; WebView node removal is immediate feedback only and must be reversible through undo/reload from scene state. Regression coverage protects against reintroducing inventory-driven masking or `display:none` as a persistent delete mechanism.
+
+### V2.1.1.0033
+
+Restored broad imported source selection and hardened footer export.
+The WebView source selector targets imported `[data-id]` elements broadly instead of requiring the legacy `.layer` class, so dense pages such as `win00008` keep their source nodes selectable while SVG source shapes remain selectable. The C# materialization inventory remains scoped to managed source projections so the 1000+ raw `data-id` nodes in `win00008` are not mistaken for managed materialization targets. An id-specific selector helper protects click, drag rectangle, move, delete, restore, and text override paths. SVG rectangles are moved by updating native `x`, `y`, `width`, and `height` attributes instead of HTML `left` and `top` style fields. FT100 export keeps the inline geometry guardrail for HTML source-layer objects, preserves original legacy style text without destructive quote re-encoding, and does not inject HTML absolute-position styles into SVG child tags. Regression coverage protects the editor selector contract, inventory/selection separation, SVG rectangle movement bridge, preserved legacy font-family style text, and SVG export exclusion.
+
+### V2.1.1.0032
+
+Hardened source-layer geometry for FT100 fragment composition.
+FT100 export now rewrites matching HTML source-layer `data-id` nodes for persisted `LegacyStatic` scene objects so the exported HTML keeps the original legacy styling and appends SCADA Builder `position`, `left`, `top`, `width`, and `height` declarations inline. This protects header date/time fragments such as `Text4`, `Text5`, `Text6`, `Text8`, `Text9`, and `Text10` when TF100Web receives HTML before or without the page CSS. Regression coverage verifies both CSS and inline geometry for edited source elements.
+
+### V2.1.1.0031
+
+Hardened FT100 header/footer fragment composition.
+Generated page HTML now carries page type/dimension data attributes, inline root dimensions, inline Element+ geometry, and full-size input styling so TF100Web fragment injection preserves authored positions even before or while the page CSS is attached. The page CSS remains the complete runtime stylesheet and must be loaded from the same package version. Regression coverage verifies `win00002`-style header fragment metadata and inline geometry for `Menu Principal`, `T° extérieure`, and the numeric input.
+
+### V2.1.1.0030
+
+Corrected the reference `win00002` source-deletion state for decommissioned header text.
+The header scene now records removed source text ids `1` and `5` in addition to the already removed image ids `3`, `4`, and `13`, so regenerated FT100 output omits `Metro-Richelieu` and `Delisle Despaux ass.` from the source HTML. Regression coverage now verifies that removed source text nodes are omitted from FT100 HTML, matching the existing removed-image omission contract.
 
 ### V2.1.1.0026
 

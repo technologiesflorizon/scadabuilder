@@ -2,12 +2,13 @@
 
 Date: 2026-06-15
 Status: Draft
-Document version: `V2.1.1.0030`
+Document version: `V2.1.1.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0034` | `PENDING` | Clarification du contrat de selection polymorphe et de la pile globale de suppression source/objet. |
 | 2026-06-15 | `V2.1.1.0030` | `72350e3` | Normalisation du header documentaire et rattachement a l'arbre documentaire stable. |
 | 2026-06-15 | `V2.1.1.0026` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 
@@ -261,6 +262,9 @@ Rules:
 9. User-facing selection labels must not describe the active model as separate Legacy/V2 versions; origin is trace metadata, not a separate editing mode.
 10. Context-menu command ids use neutral active-scene categories: `source.*` for source-object operations and `object.*` for scene-object operations. Legacy command ids may remain as temporary dispatcher aliases only.
 11. Runtime selection state is owned by one active selection state object. Source-object ids, scene-object ids, and the primary scene object are coordinated together so delete, undo/redo, property panels, and WebView selection refreshes do not split behavior by product generation.
+12. Any present non-editor element is selectable, regardless of whether it originated as raw imported source, managed `LegacyStatic` projection, SVG source geometry, or Element+ scene object.
+13. Selection is polymorphic: source DOM ids and scene object ids may coexist in one active selection, and commands must resolve the runtime target type instead of narrowing the hit-test selector to one implementation family.
+14. Preview inventory is not an authorization list for selection or visibility. Inventory can remain scoped to managed materialization candidates, but it must not auto-hide present source DOM nodes just because they are absent from the materialized scene inventory.
 
 ## 10. Panel State
 
@@ -341,6 +345,9 @@ Implemented baseline:
 7. Deleted imported source object ids are persisted as active scene state so preview, save/reload, and FT100 export converge on the same visible object set.
 8. Source-object deletion persists selected source `data-id` values even when the source object has no materialized `LegacyStatic` snapshot in the scene, and those source-only deletions use the same scene-scoped undo/redo action as normal scene-object deletion.
 9. The implementation keeps compatibility aliases for older command and WebView bridge names, but new state and command surfaces use source/object terminology.
+10. `SceneObjectsDeletedAction` is the global deletion stack action for source/object deletion. It must carry both deleted scene-object snapshots and source-only ids, undo must clear those ids from `RemovedSourceElementIds`, and redo must restore them.
+11. Persistent source deletion must never be stored as CSS or WebView masking such as `display:none`. The durable state is `RemovedSourceElementIds`; the WebView may remove nodes only as immediate preview feedback that is restored by undo/reload from scene state.
+12. Automatic deletion or hiding based only on source inventory deltas is forbidden. A source node disappears durably only after an explicit delete/redo/conversion state transition that records the source id in the active scene or conversion suppression set.
 
 Undo policies:
 

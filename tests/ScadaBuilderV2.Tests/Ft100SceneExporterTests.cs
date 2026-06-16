@@ -73,15 +73,20 @@ public sealed class Ft100SceneExporterTests
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             StringAssert.Contains(html, "<link rel=\"stylesheet\" href=\"css/win00008.css\">");
             StringAssert.Contains(html, "src=\"images/pump.png\"");
-            StringAssert.Contains(html, "id=\"custom_pipe-001\"");
+            StringAssert.Contains(html, "id=\"ft100-win00008__custom_pipe-001\"");
+            StringAssert.Contains(html, "data-scada-element-id=\"custom:pipe-001\"");
             Assert.IsFalse(html.Contains("F:\\", StringComparison.OrdinalIgnoreCase));
             Assert.IsFalse(html.Contains(sourceRoot, StringComparison.OrdinalIgnoreCase));
 
             var css = await File.ReadAllTextAsync(result.CssPath);
             StringAssert.Contains(html, "class=\"ft100-source-layer\"");
-            StringAssert.Contains(css, ".ft100-source-layer .shape-layer");
-            StringAssert.Contains(css, "[data-id=\"784\"] { display: none !important; }");
-            StringAssert.Contains(css, "#custom_pipe-001");
+            StringAssert.Contains(css, "#ft100-win00008 .ft100-source-layer .shape-layer");
+            StringAssert.Contains(css, "#ft100-win00008 [data-id=\"784\"] { display: none !important; }");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__custom_pipe-001");
+            AssertExportCssHasNoGlobalRuntimeSelectors(css);
+            Assert.IsFalse(
+                css.Contains("\n[data-id=\"784\"] { display: none !important; }", StringComparison.Ordinal),
+                "Suppressed source CSS must be scoped to the exported page root so composed header/body/footer pages cannot hide each other.");
         }
         finally
         {
@@ -108,7 +113,8 @@ public sealed class Ft100SceneExporterTests
 <html>
 <body>
   <div class="page">
-    <button class="layer" data-id="8">Button8</button>
+    <svg class="shape-layer" viewBox="0 0 1280 84" width="1280" height="84" xmlns="http://www.w3.org/2000/svg"><rect x="149" y="4" width="133" height="22" data-id="21" /></svg>
+    <button class="layer" data-id="8" style="position:absolute; left:1px; top:2px; width:3px; height:4px; display:flex; font-family:'Microsoft Sans Serif', Arial, sans-serif;">Button8</button>
   </div>
 </body>
 </html>
@@ -129,9 +135,25 @@ public sealed class Ft100SceneExporterTests
                 "rgb(211, 211, 211)",
                 null,
                 null));
+        var rectangle = ScadaElement.CreateLegacyStatic(
+            "source_rect_21",
+            "Rectangle6",
+            new SceneBounds(150, 5, 133, 22),
+            new LegacySourceTrace("Wonderware/ArchestrA", "win00003", "21", "Rectangle6", "win00003.html"),
+            new LegacyElementPayload(
+                "rect",
+                "",
+                false,
+                "\"Segoe UI\", Arial, sans-serif",
+                16,
+                "rgb(232, 237, 245)",
+                "rgba(0, 0, 0, 0)",
+                null,
+                null));
         var scene = ScadaScene
             .CreateEmpty("win00003", "Navigation", new(1280, 120))
             .WithElement(button)
+            .WithElement(rectangle)
             .WithLegacyElementsMaterialized();
 
         try
@@ -139,11 +161,26 @@ public sealed class Ft100SceneExporterTests
             var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
 
             var css = await File.ReadAllTextAsync(result.CssPath);
-            StringAssert.Contains(css, "[data-id=\"8\"] {");
+            StringAssert.Contains(css, "#ft100-win00003 [data-id=\"8\"] {");
             StringAssert.Contains(css, "left: 1144px !important;");
             StringAssert.Contains(css, "top: 14px !important;");
             StringAssert.Contains(css, "width: 138px;");
             StringAssert.Contains(css, "height: 72px;");
+
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            StringAssert.Contains(html, "data-id=\"8\"");
+            StringAssert.Contains(html, "display:flex;");
+            StringAssert.Contains(html, "font-family:'Microsoft Sans Serif', Arial, sans-serif;");
+            Assert.IsFalse(html.Contains("&#x27;Microsoft Sans Serif&#x27;", StringComparison.Ordinal));
+            StringAssert.Contains(html, "left:1144px !important;");
+            StringAssert.Contains(html, "top:14px !important;");
+            StringAssert.Contains(html, "width:138px !important;");
+            StringAssert.Contains(html, "height:72px !important;");
+            StringAssert.Contains(html, "data-id=\"21\"");
+            Assert.IsFalse(
+                html.Contains("""data-id="21" style=""", StringComparison.Ordinal)
+                    || html.Contains("""data-id="21"  style=""", StringComparison.Ordinal),
+                "SVG source shapes must keep SVG geometry attributes instead of receiving HTML absolute-position inline style.");
         }
         finally
         {
@@ -212,19 +249,96 @@ public sealed class Ft100SceneExporterTests
 
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             StringAssert.Contains(html, "data-id=\"1\"");
-            StringAssert.Contains(html, "id=\"modern_text_1\"");
+            StringAssert.Contains(html, "id=\"ft100-win00002__modern_text_1\"");
+            StringAssert.Contains(html, "data-scada-element-id=\"modern_text_1\"");
             Assert.IsFalse(html.Contains("ft100-element--LegacyStatic", StringComparison.Ordinal));
             Assert.IsFalse(html.Contains("id=\"legacy_1\"", StringComparison.Ordinal));
 
             var css = await File.ReadAllTextAsync(result.CssPath);
-            StringAssert.Contains(css, "[data-id=\"1\"] {");
+            StringAssert.Contains(css, "#ft100-win00002 [data-id=\"1\"] {");
             StringAssert.Contains(css, "left: 12px !important;");
-            StringAssert.Contains(css, "#modern_text_1");
+            StringAssert.Contains(css, "#ft100-win00002 #ft100-win00002__modern_text_1");
+            AssertExportCssHasNoGlobalRuntimeSelectors(css);
 
             var manifest = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "manifest.json"));
             StringAssert.Contains(manifest, "\"Id\": \"modern_text_1\"");
             StringAssert.Contains(manifest, "\"Id\": \"legacy_1\"");
             StringAssert.Contains(manifest, "\"Kind\": \"LegacyStatic\"");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public async Task ExportWritesInlineCriticalGeometryForFragmentComposition()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "win00002_test.html");
+        await File.WriteAllTextAsync(
+            sourceHtmlPath,
+            """
+<!doctype html>
+<html>
+<body>
+  <div class="page"></div>
+</body>
+</html>
+""");
+
+        var menu = ScadaElement.CreateText("elementplus_text_2", "Menu Principal", 535, 10) with
+        {
+            Bounds = new SceneBounds(535, 10, 162, 30)
+        };
+        var temperature = ScadaElement.CreateText("elementplus_text_9", "T° extérieure", 535, 51) with
+        {
+            Bounds = new SceneBounds(535, 51, 164, 24)
+        };
+        var numeric = new ScadaElement(
+            "input_numeric_001",
+            "Temperature exterieure",
+            ScadaElementKind.InputNumeric,
+            new SceneBounds(640, 47, 48, 31),
+            null,
+            ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultInput,
+            new ScadaElementData(null, null, null, null, null, null, null, null, null, false));
+        var scene = ScadaScene
+            .CreateEmpty("win00002", "Header", new(1280, 120))
+            .WithPageType(ScadaPageType.Header)
+            .WithElement(menu)
+            .WithElement(temperature)
+            .WithElement(numeric);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            StringAssert.Contains(html, "data-scada-page-type=\"header\"");
+            StringAssert.Contains(html, "data-scada-width=\"1280\"");
+            StringAssert.Contains(html, "data-scada-height=\"120\"");
+            StringAssert.Contains(html, "style=\"position:relative;width:1280px;height:120px;");
+            StringAssert.Contains(html, "id=\"ft100-win00002__elementplus_text_2\"");
+            StringAssert.Contains(html, "data-scada-element-id=\"elementplus_text_2\"");
+            StringAssert.Contains(html, "style=\"position:absolute;box-sizing:border-box;overflow:visible;pointer-events:auto;left:535px;top:10px;width:162px;height:30px;");
+            StringAssert.Contains(html, "id=\"ft100-win00002__elementplus_text_9\"");
+            StringAssert.Contains(html, "left:535px;top:51px;width:164px;height:24px;");
+            StringAssert.Contains(html, "id=\"ft100-win00002__input_numeric_001\"");
+            StringAssert.Contains(html, "left:640px;top:47px;width:48px;height:31px;");
+            StringAssert.Contains(html, "style=\"width:100%;height:100%;box-sizing:border-box;\"");
+
+            var readme = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "README.txt"));
+            StringAssert.Contains(readme, "For fragment composition, inject the complete div with id ft100-win00002 into the target slot");
+            StringAssert.Contains(readme, "css/win00002.css remains the complete runtime stylesheet");
         }
         finally
         {
@@ -275,6 +389,54 @@ public sealed class Ft100SceneExporterTests
             Assert.IsFalse(browserText.Contains("Ancien texte", StringComparison.Ordinal));
             Assert.IsFalse(browserText.Contains("Ã", StringComparison.Ordinal));
             Assert.IsFalse(browserText.Contains("Â", StringComparison.Ordinal));
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public async Task ExportOmitsRemovedSourceTextFromHtml()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "win00002_test.html");
+        await File.WriteAllTextAsync(
+            sourceHtmlPath,
+            """
+<!doctype html>
+<html>
+<body>
+  <div class="page">
+    <div class="layer" data-id="1">Metro-Richelieu</div>
+    <div class="layer" data-id="2">Menu Principal</div>
+    <div class="layer" data-id="5">Delisle Despaux ass.</div>
+  </div>
+</body>
+</html>
+""");
+
+        var scene = ScadaScene
+            .CreateEmpty("win00002", "Menu principal", new(1280, 120))
+            .WithRemovedSourceElementIds(["1", "5"]);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            Assert.IsFalse(html.Contains("Metro-Richelieu", StringComparison.Ordinal));
+            Assert.IsFalse(html.Contains("Delisle Despaux ass.", StringComparison.Ordinal));
+            Assert.IsFalse(html.Contains("data-id=\"1\"", StringComparison.Ordinal));
+            Assert.IsFalse(html.Contains("data-id=\"5\"", StringComparison.Ordinal));
+            StringAssert.Contains(html, "Menu Principal");
         }
         finally
         {
@@ -415,15 +577,21 @@ public sealed class Ft100SceneExporterTests
             Assert.IsTrue(File.Exists(manifestPath));
 
             var css = await File.ReadAllTextAsync(result.CssPath);
-            StringAssert.Contains(css, "--ft100-scada-width: 1440px;");
-            StringAssert.Contains(css, "--ft100-scada-height: 900px;");
+            StringAssert.Contains(css, "#ft100-win00008.ft100-scada-scene {");
+            StringAssert.Contains(css, "width: 1440px;");
+            StringAssert.Contains(css, "height: 900px;");
             StringAssert.Contains(css, "background-color: #123456;");
             StringAssert.Contains(css, "background-size: contain;");
             StringAssert.Contains(css, "background-repeat: repeat-x;");
+            AssertExportCssHasNoGlobalRuntimeSelectors(css);
 
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             StringAssert.Contains(html, "data-scada-events=");
             StringAssert.Contains(html, "action_nav_win00009");
+            StringAssert.Contains(html, "const root = document.getElementById(\"ft100-win00008\");");
+            StringAssert.Contains(html, "root.querySelectorAll('[data-scada-events]')");
+            StringAssert.Contains(html, "root.id + '__' + sanitizeElementId(elementId)");
+            Assert.IsFalse(html.Contains("document.querySelectorAll('[data-scada-events]')", StringComparison.Ordinal));
             StringAssert.Contains(html, "window.location.href = '../' + encodeURIComponent(targetPageId) + '/' + encodeURIComponent(targetPageId) + '.html';");
 
             var manifest = await File.ReadAllTextAsync(manifestPath);
@@ -609,5 +777,155 @@ public sealed class Ft100SceneExporterTests
                 Directory.Delete(root, recursive: true);
             }
         }
+    }
+
+    [TestMethod]
+    public async Task ExportCssScopesImportedSourceDataIdsToPageRootForComposition()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var headerSource = await WriteSourceAsync("header_main", "1", "Header Button");
+        var homeSource = await WriteSourceAsync("win00008", "1", "Home Button");
+        var footerSource = await WriteSourceAsync("win00003", "1", "Footer Button");
+
+        static async Task<string> WriteSourceAsync(string pageId, string dataId, string text)
+        {
+            var path = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", "composition-css-source", Guid.NewGuid().ToString("N"), $"{pageId}.html");
+            Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+            await File.WriteAllTextAsync(
+                path,
+                $$"""
+<!doctype html>
+<html>
+<body>
+  <div class="page"><button class="layer" data-id="{{dataId}}">{{text}}</button></div>
+</body>
+</html>
+""");
+            return path;
+        }
+
+        var header = ScadaScene
+            .CreateEmpty("header_main", "Header", new(1280, 80))
+            .WithPageType(ScadaPageType.Header)
+            .WithElement(CreateSourceButton("header_1", "1", 10, 10))
+            .WithElement(CreateModernButton("Button1", "Header modern", 200, 10));
+        var home = ScadaScene
+            .CreateEmpty("win00008", "Home", new(1280, 873))
+            .WithPageComposition("header_main", "win00003")
+            .WithElement(CreateSourceButton("home_1", "1", 20, 20))
+            .WithElement(CreateModernButton("Button1", "Home modern", 210, 20))
+            .WithRemovedSourceElementIds(["999"]);
+        var footer = ScadaScene
+            .CreateEmpty("win00003", "Footer", new(1280, 120))
+            .WithPageType(ScadaPageType.Footer)
+            .WithElement(CreateSourceButton("footer_1", "1", 30, 30))
+            .WithElement(CreateModernButton("Button1", "Footer modern", 220, 30));
+        var project = ScadaProject.CreateDefault("Runtime") with
+        {
+            HomePageId = "win00008",
+            Scenes =
+            [
+                new ScadaSceneReference("header_main", "Header", "scenes/header_main.scene.json", ScadaPageType.Header),
+                new ScadaSceneReference("win00008", "Home", "scenes/win00008.scene.json", HeaderPageId: "header_main", FooterPageId: "win00003"),
+                new ScadaSceneReference("win00003", "Footer", "scenes/win00003.scene.json", ScadaPageType.Footer)
+            ]
+        };
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportProjectAsync(
+                project,
+                [
+                    new Ft100ProjectPageExportInput(header, headerSource),
+                    new Ft100ProjectPageExportInput(home, homeSource),
+                    new Ft100ProjectPageExportInput(footer, footerSource)
+                ],
+                exportRoot);
+
+            var footerCss = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "win00003", "css", "win00003.css"));
+            var homeCss = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "win00008", "css", "win00008.css"));
+            var headerCss = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "header_main", "css", "header_main.css"));
+            var footerHtml = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "win00003", "win00003.html"));
+            var homeHtml = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "win00008", "win00008.html"));
+            var headerHtml = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "header_main", "header_main.html"));
+
+            StringAssert.Contains(footerCss, "#ft100-win00003 [data-id=\"1\"] {");
+            StringAssert.Contains(homeCss, "#ft100-win00008 [data-id=\"1\"] {");
+            StringAssert.Contains(homeCss, "#ft100-win00008 [data-id=\"999\"] { display: none !important; }");
+            StringAssert.Contains(headerCss, "#ft100-header_main #ft100-header_main__Button1");
+            StringAssert.Contains(homeCss, "#ft100-win00008 #ft100-win00008__Button1");
+            StringAssert.Contains(footerCss, "#ft100-win00003 #ft100-win00003__Button1");
+            StringAssert.Contains(headerHtml, "id=\"ft100-header_main__Button1\"");
+            StringAssert.Contains(homeHtml, "id=\"ft100-win00008__Button1\"");
+            StringAssert.Contains(footerHtml, "id=\"ft100-win00003__Button1\"");
+            Assert.IsFalse(headerHtml.Contains("<div id=\"Button1\"", StringComparison.Ordinal));
+            Assert.IsFalse(homeHtml.Contains("<div id=\"Button1\"", StringComparison.Ordinal));
+            Assert.IsFalse(footerHtml.Contains("<div id=\"Button1\"", StringComparison.Ordinal));
+            Assert.IsFalse(footerCss.Contains("\n[data-id=\"1\"] {", StringComparison.Ordinal));
+            Assert.IsFalse(homeCss.Contains("\n[data-id=\"1\"] {", StringComparison.Ordinal));
+            Assert.IsFalse(homeCss.Contains("\n[data-id=\"999\"] { display: none !important; }", StringComparison.Ordinal));
+            Assert.IsFalse(footerCss.Contains("\n#Button1 {", StringComparison.Ordinal));
+            Assert.IsFalse(homeCss.Contains("\n#Button1 {", StringComparison.Ordinal));
+            AssertExportCssHasNoGlobalRuntimeSelectors(headerCss);
+            AssertExportCssHasNoGlobalRuntimeSelectors(homeCss);
+            AssertExportCssHasNoGlobalRuntimeSelectors(footerCss);
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+            if (Directory.Exists(Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", "composition-css-source")))
+            {
+                Directory.Delete(Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", "composition-css-source"), recursive: true);
+            }
+        }
+    }
+
+    private static ScadaElement CreateSourceButton(string id, string sourceId, double x, double y)
+    {
+        return ScadaElement.CreateLegacyStatic(
+            id,
+            $"Button{sourceId}",
+            new SceneBounds(x, y, 100, 40),
+            new LegacySourceTrace("Wonderware/ArchestrA", "test", sourceId, $"Button{sourceId}", "test.html"),
+            new LegacyElementPayload("Button", $"Button{sourceId}", true, "Arial", 10, "#000", "#ddd", null, null));
+    }
+
+    private static ScadaElement CreateModernButton(string id, string text, double x, double y)
+    {
+        return new ScadaElement(
+            id,
+            text,
+            ScadaElementKind.Button,
+            new SceneBounds(x, y, 100, 40),
+            null,
+            ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultInput,
+            new ScadaElementData(text, null, null, null, null, null, null, null, null, false));
+    }
+
+    private static void AssertExportCssHasNoGlobalRuntimeSelectors(string css)
+    {
+        Assert.IsFalse(
+            System.Text.RegularExpressions.Regex.IsMatch(css, @"(?m)^\s*:root\b"),
+            "FT100 CSS must not emit package-global :root variables because header/body/footer CSS files share one document in TF100Web.");
+        Assert.IsFalse(
+            System.Text.RegularExpressions.Regex.IsMatch(css, @"(?m)^\s*(html|body)\b"),
+            "FT100 CSS must not emit package-global html/body rules.");
+        Assert.IsFalse(
+            System.Text.RegularExpressions.Regex.IsMatch(css, @"(?m)^\s*\[data-id="),
+            "FT100 source data-id selectors must be scoped to the exported page root.");
+        Assert.IsFalse(
+            System.Text.RegularExpressions.Regex.IsMatch(css, @"(?m)^\s*\.ft100-"),
+            "FT100 layer selectors must be scoped to the exported page root.");
+        Assert.IsFalse(
+            System.Text.RegularExpressions.Regex.IsMatch(css, @"(?m)^\s*#(?!ft100-)"),
+            "FT100 Element+ id selectors must use page-prefixed DOM ids under the exported page root.");
     }
 }

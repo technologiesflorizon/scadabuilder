@@ -70,6 +70,7 @@ public sealed partial class Ft100SceneExporter
         var normalizedSourceContent = ApplyLegacyTextOverrides(
             RepairLegacyTextEncoding(rewrittenSourceContent),
             scene.TextOverrides);
+        normalizedSourceContent = ApplyLegacySourceInlineBounds(normalizedSourceContent, scene);
 
         var cssFileName = $"{scene.Id}.css";
         var htmlFileName = $"{scene.Id}.html";
@@ -388,12 +389,118 @@ public sealed partial class Ft100SceneExporter
         return updated;
     }
 
+    private static string ApplyLegacySourceInlineBounds(string html, ScadaScene scene)
+    {
+        var sourceBounds = FlattenElementsWithAbsoluteBounds(scene.Elements, 0, 0)
+            .Where(item => item.Element.IsLegacyStatic && !string.IsNullOrWhiteSpace(item.Element.LegacySource?.SourceElementId))
+            .Select(item => new
+            {
+                SourceElementId = item.Element.LegacySource!.SourceElementId,
+                Style = BuildSourceProjectionInlineStyle(item.Element, item.X, item.Y)
+            })
+            .GroupBy(item => item.SourceElementId, StringComparer.Ordinal)
+            .Select(group => group.First())
+            .ToArray();
+        if (sourceBounds.Length == 0)
+        {
+            return html;
+        }
+
+        var updated = html;
+        foreach (var item in sourceBounds)
+        {
+            var escapedDataId = Regex.Escape(item.SourceElementId!);
+            updated = LegacyElementWithDataIdRegex(escapedDataId).Replace(
+                updated,
+                match => ShouldApplyLegacyInlineBounds(match.Groups["open"].Value)
+                    ? $"{ApplyInlineStyleToTag(match.Groups["open"].Value, item.Style)}{match.Groups["content"].Value}{match.Groups["close"].Value}"
+                    : match.Value);
+            updated = LegacySelfClosingElementWithDataIdRegex(escapedDataId).Replace(
+                updated,
+                match => ShouldApplyLegacyInlineBounds(match.Value)
+                    ? ApplyInlineStyleToTag(match.Value, item.Style)
+                    : match.Value);
+        }
+
+        return updated;
+    }
+
+    private static bool ShouldApplyLegacyInlineBounds(string tag)
+    {
+        var tagMatch = TagNameRegex().Match(tag);
+        if (!tagMatch.Success)
+        {
+            return false;
+        }
+
+        var tagName = tagMatch.Groups["tag"].Value;
+        if (IsSvgShapeTag(tagName))
+        {
+            return false;
+        }
+
+        var classMatch = ClassAttributeRegex().Match(tag);
+        if (!classMatch.Success)
+        {
+            return false;
+        }
+
+        var classes = classMatch.Groups["value"].Value
+            .Split([' ', '\t', '\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        return classes.Contains("layer", StringComparer.Ordinal);
+    }
+
+    private static bool IsSvgShapeTag(string tagName)
+    {
+        return tagName.Equals("rect", StringComparison.OrdinalIgnoreCase)
+            || tagName.Equals("path", StringComparison.OrdinalIgnoreCase)
+            || tagName.Equals("circle", StringComparison.OrdinalIgnoreCase)
+            || tagName.Equals("ellipse", StringComparison.OrdinalIgnoreCase)
+            || tagName.Equals("line", StringComparison.OrdinalIgnoreCase)
+            || tagName.Equals("polyline", StringComparison.OrdinalIgnoreCase)
+            || tagName.Equals("polygon", StringComparison.OrdinalIgnoreCase)
+            || tagName.Equals("text", StringComparison.OrdinalIgnoreCase)
+            || tagName.Equals("use", StringComparison.OrdinalIgnoreCase)
+            || tagName.Equals("image", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string ApplyInlineStyleToTag(string tag, string geometryStyle)
+    {
+        var styleMatch = StyleAttributeRegex().Match(tag);
+        if (styleMatch.Success)
+        {
+            var existingStyle = styleMatch.Groups["value"].Value.Trim();
+            var combinedStyle = string.IsNullOrWhiteSpace(existingStyle)
+                ? geometryStyle
+                : $"{existingStyle.TrimEnd(';')};{geometryStyle}";
+            return StyleAttributeRegex().Replace(
+                tag,
+                $" style=\"{EncodeLegacyStyleAttribute(combinedStyle)}\"",
+                count: 1);
+        }
+
+        var insertAt = tag.EndsWith("/>", StringComparison.Ordinal)
+            ? tag.Length - 2
+            : tag.Length - 1;
+        return tag.Insert(insertAt, $" style=\"{EncodeLegacyStyleAttribute(geometryStyle)}\"");
+    }
+
+    private static string EncodeLegacyStyleAttribute(string style)
+    {
+        return style.Replace("\"", "&quot;", StringComparison.Ordinal);
+    }
+
     private static string BuildHtml(ScadaScene scene, string cssFileName, string sourceContent)
     {
+        var scope = Ft100ExportScope.ForScene(scene);
         var title = HtmlEncoder.Default.Encode(scene.Title);
-        var sceneId = HtmlEncoder.Default.Encode(scene.Id);
-        var modernElements = string.Concat(scene.Elements.Select(element => BuildElementHtml(element, 0, 0)));
-        var runtimeScript = BuildRuntimeScript(scene);
+        var pageId = HtmlEncoder.Default.Encode(scene.Id);
+        var rootDomId = HtmlEncoder.Default.Encode(scope.RootDomId);
+        var pageClass = HtmlEncoder.Default.Encode(CssIdentifier(scene.Id));
+        var sceneType = HtmlEncoder.Default.Encode(ToManifestPageType(scene.PageType));
+        var rootStyle = HtmlEncoder.Default.Encode(BuildSceneRootInlineStyle(scene));
+        var modernElements = string.Concat(scene.Elements.Select(element => BuildElementHtml(element, 0, 0, scope)));
+        var runtimeScript = BuildRuntimeScript(scene, scope);
 
         return $$"""
 <!doctype html>
@@ -404,12 +511,12 @@ public sealed partial class Ft100SceneExporter
   <title>{{title}}</title>
   <link rel="stylesheet" href="css/{{HtmlEncoder.Default.Encode(cssFileName)}}">
 </head>
-<body>
-  <div id="ft100-{{sceneId}}" class="ft100-scada-scene ft100-scada-scene--{{sceneId}}">
-    <div class="ft100-source-layer">
+<body style="margin:0;padding:0;">
+  <div id="{{rootDomId}}" class="ft100-scada-scene ft100-scada-scene--{{pageClass}}" data-scada-page-id="{{pageId}}" data-scada-page-type="{{sceneType}}" data-scada-width="{{Format(scene.CanvasSize.Width)}}" data-scada-height="{{Format(scene.CanvasSize.Height)}}" style="{{rootStyle}}">
+    <div class="ft100-source-layer" style="position:absolute;inset:0;">
 {{Indent(sourceContent, 6)}}
     </div>
-    <div class="ft100-elementplus-layer">
+    <div class="ft100-elementplus-layer" style="position:absolute;inset:0;pointer-events:none;">
 {{Indent(modernElements, 6)}}
     </div>
   </div>
@@ -421,7 +528,7 @@ public sealed partial class Ft100SceneExporter
 """;
     }
 
-    private static string BuildElementHtml(ScadaElement element, double parentX, double parentY)
+    private static string BuildElementHtml(ScadaElement element, double parentX, double parentY, Ft100ExportScope scope)
     {
         if (element.IsLegacyStatic)
         {
@@ -432,19 +539,21 @@ public sealed partial class Ft100SceneExporter
         var absoluteY = parentY + element.Bounds.Y;
         if (element.Kind == ScadaElementKind.Group)
         {
-            return string.Concat(element.ChildElements.Select(child => BuildElementHtml(child, absoluteX, absoluteY)));
+            return string.Concat(element.ChildElements.Select(child => BuildElementHtml(child, absoluteX, absoluteY, scope)));
         }
 
-        var id = HtmlEncoder.Default.Encode(CssIdentifier(element.Id));
+        var id = HtmlEncoder.Default.Encode(scope.ElementDomId(element.Id));
+        var sceneElementId = HtmlEncoder.Default.Encode(element.Id);
         var name = HtmlEncoder.Default.Encode(element.DisplayName);
         var kind = HtmlEncoder.Default.Encode(element.Kind.ToString());
+        var inlineStyle = HtmlEncoder.Default.Encode(BuildElementInlineStyle(element, absoluteX, absoluteY));
         var content = BuildElementContent(element);
         var eventAttribute = element.EventBindings.Count == 0
             ? ""
             : $" data-scada-events=\"{HtmlEncoder.Default.Encode(JsonSerializer.Serialize(element.EventBindings, ManifestJsonOptions))}\"";
 
         return $$"""
-<div id="{{id}}" class="ft100-element ft100-element--{{kind}}" data-name="{{name}}"{{eventAttribute}}>
+<div id="{{id}}" class="ft100-element ft100-element--{{kind}}" data-scada-element-id="{{sceneElementId}}" data-name="{{name}}" style="{{inlineStyle}}"{{eventAttribute}}>
   {{content}}
 </div>
 """;
@@ -474,41 +583,85 @@ public sealed partial class Ft100SceneExporter
         var placeholder = HtmlEncoder.Default.Encode(data.Placeholder ?? "");
         var encodedValue = HtmlEncoder.Default.Encode(value);
         var readOnly = data.IsReadOnly ? " readonly" : "";
-        return $"""<input type="{type}" value="{encodedValue}" placeholder="{placeholder}"{readOnly}>""";
+        return $"""<input type="{type}" value="{encodedValue}" placeholder="{placeholder}" style="width:100%;height:100%;box-sizing:border-box;"{readOnly}>""";
+    }
+
+    private static string BuildSceneRootInlineStyle(ScadaScene scene)
+    {
+        var style = new StringBuilder();
+        style.Append("position:relative;");
+        style.Append($"width:{Format(scene.CanvasSize.Width)}px;");
+        style.Append($"height:{Format(scene.CanvasSize.Height)}px;");
+        style.Append("overflow:hidden;");
+        style.Append($"background-color:{scene.EffectiveBackground.Color};");
+        return style.ToString();
+    }
+
+    private static string BuildElementInlineStyle(ScadaElement element, double absoluteX, double absoluteY)
+    {
+        var style = element.Style ?? ScadaElementStyle.DefaultText;
+        var css = new StringBuilder();
+        css.Append("position:absolute;");
+        css.Append("box-sizing:border-box;");
+        css.Append("overflow:visible;");
+        css.Append("pointer-events:auto;");
+        css.Append($"left:{Format(absoluteX)}px;");
+        css.Append($"top:{Format(absoluteY)}px;");
+        css.Append($"width:{Format(element.Bounds.Width)}px;");
+        css.Append($"height:{Format(element.Bounds.Height)}px;");
+        css.Append($"color:{style.Foreground};");
+        css.Append($"background:{style.Background};");
+        css.Append($"font-family:{style.FontFamily};");
+        css.Append($"font-size:{Format(style.FontSize)}px;");
+        css.Append($"border:{Format(style.BorderWidth)}px {NormalizeBorderStyle(style.BorderStyle)} {style.BorderColor};");
+        css.Append($"box-shadow:{ShadowCss(style.ShadowPreset)};");
+        if (!string.IsNullOrWhiteSpace(style.AdvancedCss))
+        {
+            css.Append(style.AdvancedCss);
+        }
+
+        return css.ToString();
+    }
+
+    private static string BuildSourceProjectionInlineStyle(ScadaElement element, double absoluteX, double absoluteY)
+    {
+        return string.Concat(
+            "position:absolute !important;",
+            $"left:{Format(absoluteX)}px !important;",
+            $"top:{Format(absoluteY)}px !important;",
+            $"width:{Format(element.Bounds.Width)}px !important;",
+            $"height:{Format(element.Bounds.Height)}px !important;",
+            "box-sizing:border-box;");
     }
 
     private static string BuildCss(ScadaScene scene)
     {
         var css = new StringBuilder();
-        css.AppendLine(":root {");
-        css.AppendLine($"  --ft100-scada-width: {Format(scene.CanvasSize.Width)}px;");
-        css.AppendLine($"  --ft100-scada-height: {Format(scene.CanvasSize.Height)}px;");
-        css.AppendLine("}");
-        css.AppendLine();
-        css.AppendLine("html, body { margin: 0; padding: 0; }");
-        css.AppendLine(".ft100-scada-scene {");
+        var scope = Ft100ExportScope.ForScene(scene);
+        css.AppendLine($"{scope.RootSelector}.ft100-scada-scene {{");
         css.AppendLine("  position: relative;");
-        css.AppendLine("  width: var(--ft100-scada-width);");
-        css.AppendLine("  height: var(--ft100-scada-height);");
+        css.AppendLine($"  width: {Format(scene.CanvasSize.Width)}px;");
+        css.AppendLine($"  height: {Format(scene.CanvasSize.Height)}px;");
         AppendBackgroundCss(css, scene.EffectiveBackground);
         css.AppendLine("  overflow: hidden;");
+        css.AppendLine("  isolation: isolate;");
         css.AppendLine("}");
-        css.AppendLine(".ft100-source-layer, .ft100-legacy-layer, .ft100-elementplus-layer { position: absolute; inset: 0; }");
-        css.AppendLine(".ft100-elementplus-layer { pointer-events: none; }");
-        css.AppendLine(".ft100-source-layer .shape-layer, .ft100-legacy-layer .shape-layer { position: absolute; left: 0; top: 0; pointer-events: none; }");
-        css.AppendLine(".ft100-source-layer .layer, .ft100-legacy-layer .layer { position: absolute; margin: 0; }");
-        css.AppendLine(".ft100-element { position: absolute; box-sizing: border-box; overflow: visible; pointer-events: auto; }");
-        css.AppendLine(".ft100-element svg { display: block; width: 100%; height: 100%; overflow: visible; }");
-        css.AppendLine(".ft100-element input { width: 100%; height: 100%; box-sizing: border-box; }");
+        css.AppendLine($"{scope.Descendant(".ft100-source-layer")}, {scope.Descendant(".ft100-legacy-layer")}, {scope.Descendant(".ft100-elementplus-layer")} {{ position: absolute; inset: 0; }}");
+        css.AppendLine($"{scope.Descendant(".ft100-elementplus-layer")} {{ pointer-events: none; }}");
+        css.AppendLine($"{scope.Descendant(".ft100-source-layer .shape-layer")}, {scope.Descendant(".ft100-legacy-layer .shape-layer")} {{ position: absolute; left: 0; top: 0; pointer-events: none; }}");
+        css.AppendLine($"{scope.Descendant(".ft100-source-layer .layer")}, {scope.Descendant(".ft100-legacy-layer .layer")} {{ position: absolute; margin: 0; }}");
+        css.AppendLine($"{scope.Descendant(".ft100-element")} {{ position: absolute; box-sizing: border-box; overflow: visible; pointer-events: auto; }}");
+        css.AppendLine($"{scope.Descendant(".ft100-element svg")} {{ display: block; width: 100%; height: 100%; overflow: visible; }}");
+        css.AppendLine($"{scope.Descendant(".ft100-element input")} {{ width: 100%; height: 100%; box-sizing: border-box; }}");
 
         foreach (var legacyId in scene.GetSuppressedSourceElementIds().OrderBy(id => id, StringComparer.Ordinal))
         {
-            css.AppendLine($"[data-id=\"{CssEscape(legacyId)}\"] {{ display: none !important; }}");
+            css.AppendLine($"{scope.SourceDataIdSelector(legacyId)} {{ display: none !important; }}");
         }
 
         foreach (var element in scene.Elements)
         {
-            AppendElementCss(css, element, 0, 0);
+            AppendElementCss(css, element, 0, 0, scope);
         }
 
         return css.ToString();
@@ -530,7 +683,7 @@ public sealed partial class Ft100SceneExporter
         }
     }
 
-    private static void AppendElementCss(StringBuilder css, ScadaElement element, double parentX, double parentY)
+    private static void AppendElementCss(StringBuilder css, ScadaElement element, double parentX, double parentY, Ft100ExportScope scope)
     {
         var absoluteX = parentX + element.Bounds.X;
         var absoluteY = parentY + element.Bounds.Y;
@@ -538,7 +691,7 @@ public sealed partial class Ft100SceneExporter
         {
             foreach (var child in element.ChildElements)
             {
-                AppendElementCss(css, child, absoluteX, absoluteY);
+                AppendElementCss(css, child, absoluteX, absoluteY, scope);
             }
 
             return;
@@ -547,7 +700,7 @@ public sealed partial class Ft100SceneExporter
         if (element.IsLegacyStatic && !string.IsNullOrWhiteSpace(element.LegacySource?.SourceElementId))
         {
             css.AppendLine();
-            css.AppendLine($"[data-id=\"{CssEscape(element.LegacySource.SourceElementId)}\"] {{");
+            css.AppendLine($"{scope.SourceDataIdSelector(element.LegacySource.SourceElementId)} {{");
             css.AppendLine("  position: absolute !important;");
             css.AppendLine($"  left: {Format(absoluteX)}px !important;");
             css.AppendLine($"  top: {Format(absoluteY)}px !important;");
@@ -559,7 +712,7 @@ public sealed partial class Ft100SceneExporter
 
         var style = element.Style ?? ScadaElementStyle.DefaultText;
         css.AppendLine();
-        css.AppendLine($"#{CssIdentifier(element.Id)} {{");
+        css.AppendLine($"{scope.ElementSelector(element.Id)} {{");
         css.AppendLine($"  left: {Format(absoluteX)}px;");
         css.AppendLine($"  top: {Format(absoluteY)}px;");
         css.AppendLine($"  width: {Format(element.Bounds.Width)}px;");
@@ -589,8 +742,11 @@ Files:
 - manifest.json: Django-readable page, object event, and action manifest.
 
 Django integration:
-Copy the content of the div with id ft100-{scene.Id} into the target FT100 container,
-include css/{scene.Id}.css, and serve images/ next to that CSS/HTML path or preserve the relative paths.
+Load this page through the package manifest when possible.
+For fragment composition, inject the complete div with id ft100-{scene.Id} into the target slot,
+include css/{scene.Id}.css, and size the slot from manifest Width/Height or the div data-scada-width/data-scada-height attributes.
+The div and Element+ objects carry critical inline geometry as a deployment guardrail, but css/{scene.Id}.css remains the complete runtime stylesheet.
+Serve images/ next to that CSS/HTML path or preserve the relative paths.
 """;
     }
 
@@ -719,16 +875,27 @@ Files:
 
 Compiled pages: {pageCount}
 Home page: {project.EffectiveHomePageId ?? "(fallback unavailable)"}
+
+Composition:
+Use the root manifest as the page inventory. Render default pages by composing the referenced header page, body page, and footer page as separate slots.
+Each slot must preserve the complete exported page root and load that page's CSS from the same package version.
+Apply any viewport scale to the composed page container, not independently to header, body, and footer slots.
 """;
     }
 
-    private static string BuildRuntimeScript(ScadaScene scene)
+    private static string BuildRuntimeScript(ScadaScene scene, Ft100ExportScope scope)
     {
         var actionsJson = JsonSerializer.Serialize(
             scene.ActionDefinitions.ToDictionary(action => action.Id, StringComparer.Ordinal),
             ManifestJsonOptions);
+        var rootIdJson = JsonSerializer.Serialize(scope.RootDomId);
         return $$"""
 (function () {
+  const root = document.getElementById({{rootIdJson}});
+  if (!root) {
+    return;
+  }
+
   const actions = {{actionsJson}};
 
   function navigate(targetPageId) {
@@ -737,6 +904,19 @@ Home page: {project.EffectiveHomePageId ?? "(fallback unavailable)"}
     }
 
     window.location.href = '../' + encodeURIComponent(targetPageId) + '/' + encodeURIComponent(targetPageId) + '.html';
+  }
+
+  function sanitizeElementId(value) {
+    return String(value || '').replace(/[^a-zA-Z0-9_-]/g, '_');
+  }
+
+  function getPageElement(elementId) {
+    if (!elementId) {
+      return null;
+    }
+
+    const target = document.getElementById(root.id + '__' + sanitizeElementId(elementId));
+    return target && root.contains(target) ? target : null;
   }
 
   function applyAction(action) {
@@ -750,7 +930,7 @@ Home page: {project.EffectiveHomePageId ?? "(fallback unavailable)"}
       return;
     }
 
-    const target = action.TargetElementId ? document.getElementById(action.TargetElementId.replace(/[^a-zA-Z0-9_-]/g, '_')) : null;
+    const target = getPageElement(action.TargetElementId);
     if (!target) {
       return;
     }
@@ -768,7 +948,7 @@ Home page: {project.EffectiveHomePageId ?? "(fallback unavailable)"}
     }
   }
 
-  document.querySelectorAll('[data-scada-events]').forEach(function (element) {
+  root.querySelectorAll('[data-scada-events]').forEach(function (element) {
     let bindings = [];
     try {
       bindings = JSON.parse(element.getAttribute('data-scada-events') || '[]');
@@ -802,6 +982,23 @@ Home page: {project.EffectiveHomePageId ?? "(fallback unavailable)"}
         {
             yield return element;
             foreach (var child in FlattenElements(element.ChildElements))
+            {
+                yield return child;
+            }
+        }
+    }
+
+    private static IEnumerable<(ScadaElement Element, double X, double Y)> FlattenElementsWithAbsoluteBounds(
+        IEnumerable<ScadaElement> elements,
+        double parentX,
+        double parentY)
+    {
+        foreach (var element in elements)
+        {
+            var absoluteX = parentX + element.Bounds.X;
+            var absoluteY = parentY + element.Bounds.Y;
+            yield return (element, absoluteX, absoluteY);
+            foreach (var child in FlattenElementsWithAbsoluteBounds(element.ChildElements, absoluteX, absoluteY))
             {
                 yield return child;
             }
@@ -848,6 +1045,44 @@ Home page: {project.EffectiveHomePageId ?? "(fallback unavailable)"}
         };
     }
 
+    private sealed class Ft100ExportScope
+    {
+        private Ft100ExportScope(string sceneId)
+        {
+            RootDomId = $"ft100-{CssIdentifier(sceneId)}";
+            RootSelector = $"#{RootDomId}";
+        }
+
+        public string RootDomId { get; }
+
+        public string RootSelector { get; }
+
+        public static Ft100ExportScope ForScene(ScadaScene scene)
+        {
+            return new Ft100ExportScope(scene.Id);
+        }
+
+        public string Descendant(string selector)
+        {
+            return $"{RootSelector} {selector}";
+        }
+
+        public string SourceDataIdSelector(string sourceElementId)
+        {
+            return $"{RootSelector} [data-id=\"{CssEscape(sourceElementId)}\"]";
+        }
+
+        public string ElementDomId(string elementId)
+        {
+            return $"{RootDomId}__{CssIdentifier(elementId)}";
+        }
+
+        public string ElementSelector(string elementId)
+        {
+            return $"{RootSelector} #{ElementDomId(elementId)}";
+        }
+    }
+
     private static string CssIdentifier(string value)
     {
         return string.Concat(value.Select(character => char.IsLetterOrDigit(character) || character is '-' or '_' ? character : '_'));
@@ -866,6 +1101,15 @@ Home page: {project.EffectiveHomePageId ?? "(fallback unavailable)"}
 
     [GeneratedRegex("""src=(?<quote>["'])(?<value>[^"']+)\k<quote>""", RegexOptions.IgnoreCase)]
     private static partial Regex SrcAttributeRegex();
+
+    [GeneratedRegex("""\sstyle\s*=\s*(?<quote>["'])(?<value>.*?)\k<quote>""", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
+    private static partial Regex StyleAttributeRegex();
+
+    [GeneratedRegex("""^<\s*(?<tag>[a-zA-Z][\w:-]*)\b""", RegexOptions.IgnoreCase)]
+    private static partial Regex TagNameRegex();
+
+    [GeneratedRegex("""\sclass\s*=\s*(?<quote>["'])(?<value>.*?)\k<quote>""", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
+    private static partial Regex ClassAttributeRegex();
 
     private static Regex LegacyElementWithDataIdRegex(string escapedDataId)
     {

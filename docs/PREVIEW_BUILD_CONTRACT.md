@@ -2,12 +2,18 @@
 
 Date: 2026-06-15
 Status: Draft
-Document version: `V2.1.1.0030`
+Document version: `V2.1.1.0036`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0036` | `PENDING` | Generalisation du contrat de namespace CSS/DOM/runtime par page pour tous les selecteurs exportes TF100Web. |
+| 2026-06-15 | `V2.1.1.0035` | `PENDING` | Ajout du contrat de CSS page-scopee pour les regles source `data-id` dans les compositions header/body/footer. |
+| 2026-06-15 | `V2.1.1.0034` | `PENDING` | Clarification que la selection preview est polymorphe et que la suppression source durable passe par `RemovedSourceElementIds`, pas par masquage. |
+| 2026-06-15 | `V2.1.1.0033` | `PENDING` | Limitation du garde-fou inline aux couches HTML legacy et verrouillage de la selection large des elements source `data-id`, incluant SVG. |
+| 2026-06-15 | `V2.1.1.0032` | `PENDING` | Ajout du contrat de geometrie inline pour les source-projection legacy persistants. |
+| 2026-06-15 | `V2.1.1.0031` | `PENDING` | Ajout du contrat de composition header/body/footer et du garde-fou HTML inline pour la geometrie critique des fragments FT100. |
 | 2026-06-15 | `V2.1.1.0030` | `72350e3` | Deprecation explicite de `index.html`, clarification preview/export source-of-truth et ajout du repere `win00009` correct / `win00008` divergent. |
 | 2026-06-15 | `V2.1.1.0029` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 
@@ -76,6 +82,14 @@ Rules:
 16. `LegacyStatic` imported-source projections must not be emitted into the Element+ runtime layer. They must remain in manifests as source inventory metadata, and their export-side rendering effect is limited to source-layer CSS needed to replay saved SCADA Builder geometry.
 17. FT100 preview/export must not treat modernized legacy HTML as raw source by default. The V2 scene/project model is the target source of truth; temporary legacy source layers must be classified as raw, comparison, or sanitized before export.
 18. `win00009` is the current known-good visual comparison page in SCADA Builder V2. `win00008` is a known regression candidate and must not be used to validate the contract until its source/position/tooling divergence is resolved.
+19. Header and footer pages are render inputs of their own. They must be composed through manifest references as complete page fragments with their own page root, dimensions, CSS, images, and runtime metadata.
+20. FT100 page HTML must carry critical inline geometry for the exported page root, persisted HTML source-layer objects, and Element+ objects so fragment injection preserves authored positions even when an intake pipeline temporarily handles HTML before CSS is attached. The page CSS remains authoritative for complete runtime styling and must be loaded.
+21. Imported source elements with `data-id` are editable imported geometry even when they are not `.layer` nodes. Preview selection must include broad source `[data-id]` elements, movement must update native SVG geometry such as `x`, `y`, `width`, and `height` for rectangles, and export must not inject HTML `position`, `left`, or `top` declarations into SVG child tags.
+22. Preview inventory is not the same as preview selection. Inventory sent to the C# materialization path must stay scoped to managed source projections, otherwise dense raw pages such as `win00008` can report hundreds of non-materialized `data-id` nodes.
+23. Inventory deltas must not auto-hide or delete source nodes. A present imported source element remains selectable unless explicit scene state suppresses it through conversion or `RemovedSourceElementIds`.
+24. Source/object deletion is durable only when the active scene records it. Preview may remove a source DOM node for immediate feedback, but reload, undo/redo, save, and export must derive visibility from scene state rather than from WebView CSS masking.
+25. Exported CSS, generated DOM ids, and runtime action lookup must be namespaced by exported page root id. Unscoped generated selectors are forbidden, including `:root`, `html/body`, raw `[data-id="..."]`, raw `.ft100-*`, and raw Element+ ids such as `#Button1`, because TF100Web composes header, body, and footer pages in one document and page-local identities can repeat.
+26. TF100Web must apply viewport scaling to the composed header/body/footer container as one unit. It must not independently scale or recenter header, body, and footer slots.
 
 ## 4. Output Targets
 
@@ -133,6 +147,16 @@ exports/
 The FT100 project export structure is the current implemented SCADA Builder V2 to TF100Web package shape. `scada-builder-v2-ft100-package` is recreated on each export and is the only folder intended to be moved or copied into TF100Web. The root `manifest.json` indexes all compiled pages. Each page folder remains browser-openable and keeps a page-local manifest for diagnostics and compatibility. `index.html` is deprecated for current SCADA Builder V2 FT100/TF100Web exports and must not be presented as an active package target.
 
 The generated `manifest.json` is the Django-readable runtime contract. It must include page records, object inventory, object event bindings, action definitions, asset references, and validation metadata while excluding editor-only state. Source-projection-only `LegacyStatic` objects are retained as manifest inventory but are not emitted as runtime Element+ DOM.
+
+Header/footer composition output rules:
+
+1. The root manifest is the only source of page inventory and header/footer references.
+2. A composed default page uses three ordered slots: header, body, and footer.
+3. Slot dimensions come from each referenced page record `Width` and `Height`.
+4. Each slot must preserve the complete exported page root and load that page's CSS from the same package version.
+5. HTML-side `data-scada-page-type`, `data-scada-width`, and `data-scada-height` are diagnostics and fallback metadata; they must not replace the manifest.
+6. HTML source-layer objects with saved SCADA Builder geometry must have their original inline source style preserved, then receive SCADA Builder `position`, `left`, `top`, `width`, and `height` declarations directly in the exported HTML.
+7. SVG source child tags with `data-id` must not receive HTML absolute-position inline styles. Their authored SVG attributes and page CSS are the runtime geometry contract.
 
 ## 5. WebView2 Preview Parity
 
@@ -303,6 +327,8 @@ Rules:
 4. Generated CSS must preserve stable element identity.
 5. CSS output must be reproducible for the same input.
 6. Invalid values must fail validation before CSS emission.
+7. Current FT100/TF100Web scene CSS must be emitted through the page namespace helper. Page dimensions must be concrete page-scoped declarations, not package-global CSS variables.
+8. Scene element ids may be exported as `data-scada-element-id` metadata, but runtime DOM ids must be page-prefixed so two composed pages can both contain `Button1` without duplicate DOM ids or cross-page CSS/action targeting.
 
 ## 10. Asset Resolution
 
@@ -417,6 +443,7 @@ A preview/build implementation satisfies this contract when:
 6. Validation reports blocking errors before build export.
 7. Generated build output can run without editor-only services.
 8. Diagnostics can prove which render package and CSS files were used.
+9. Header/footer fragment composition preserves authored coordinates for HTML source-layer, SVG source-shape, and modern Element+ objects when rendered from the exported page root and page CSS.
 
 ## 15. Open Decisions
 
