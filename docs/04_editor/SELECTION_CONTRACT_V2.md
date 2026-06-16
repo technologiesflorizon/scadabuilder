@@ -1,0 +1,47 @@
+# SCADA Builder V2 - Selection Contract
+
+Date: 2026-06-16
+Status: Active editor selection contract
+Document version: `V2.1.2.0002`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-06-16 | `V2.1.2.0002` | `PENDING` | Clarification que le groupement de scene consomme uniquement la selection Element+ moderne. |
+| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat actif de selection SCADA Builder V2. |
+
+## 1. Contract
+
+SCADA Builder V2 selection is polymorphic.
+
+The editor can select:
+
+1. Imported source DOM nodes with `data-id`.
+2. Managed source projections.
+3. SVG source shapes with `data-id`.
+4. Modern Element+ scene objects.
+5. Groups according to scene object rules.
+
+## 2. Rules
+
+1. Selection scope cannot be narrowed to materialization inventory.
+2. Present source nodes must remain selectable unless hidden, locked, or editor-only by contract.
+3. Commands resolve selected target type after hit-testing.
+4. Durable source deletion uses `RemovedSourceElementIds`.
+5. CSS masking, `display:none`, WebView-only flags, and inventory omission are not durable delete state.
+6. Undo/redo and export omission must use the same scene state.
+7. A source/legacy selection can be converted, moved, hidden, deleted, or opened in Studio Element+ according to command contracts, but it cannot be grouped directly in the scene.
+8. A scene group can be created only from two or more selected Element+ scene object ids.
+
+## 3. Related Decision
+
+1. `DEC-0006` - Polymorphic Selection And Durable Source Delete.
+2. `DEC-0010` - Scene Grouping Is Element+ Only.
+
+## 4. Related Tests
+
+1. `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`
+2. `tests/ScadaBuilderV2.Tests/EditorHistoryServiceTests.cs`
+3. `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+4. `tests/ScadaBuilderV2.Tests/ScadaSceneGroupTests.cs`

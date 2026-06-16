@@ -9,7 +9,8 @@ public enum ElementPlusConversionTarget
     Text,
     TextInput,
     NumericReadOnly,
-    NumericEditable
+    NumericEditable,
+    Button
 }
 
 public sealed record ElementPlusConversionOptions(
@@ -21,11 +22,55 @@ public sealed record ElementPlusConversionOptions(
 
 public static class ElementPlusLegacyConverter
 {
+    public static IReadOnlyList<ElementPlusConversionTarget> GetPlausibleTargets(EditorObject source)
+    {
+        if (source is not LegacyDetectedObject legacy)
+        {
+            return Array.Empty<ElementPlusConversionTarget>();
+        }
+
+        var targets = new List<ElementPlusConversionTarget>();
+        if (IsLegacyButton(legacy))
+        {
+            targets.Add(ElementPlusConversionTarget.Button);
+        }
+
+        if (IsLegacyText(legacy))
+        {
+            targets.Add(ElementPlusConversionTarget.Text);
+            if (LooksNumeric(legacy.Text))
+            {
+                targets.Add(ElementPlusConversionTarget.NumericReadOnly);
+                targets.Add(ElementPlusConversionTarget.NumericEditable);
+            }
+            else
+            {
+                targets.Add(ElementPlusConversionTarget.TextInput);
+            }
+        }
+
+        return targets
+            .Where(target => CanConvert(legacy, target))
+            .Distinct()
+            .ToArray();
+    }
+
     public static bool CanConvert(EditorObject source, ElementPlusConversionTarget target)
     {
-        return source is LegacyDetectedObject legacy &&
-            IsLegacyText(legacy) &&
-            Enum.IsDefined(target);
+        if (source is not LegacyDetectedObject legacy || !Enum.IsDefined(target))
+        {
+            return false;
+        }
+
+        return target switch
+        {
+            ElementPlusConversionTarget.Button => IsLegacyButton(legacy),
+            ElementPlusConversionTarget.Text or
+            ElementPlusConversionTarget.TextInput or
+            ElementPlusConversionTarget.NumericReadOnly or
+            ElementPlusConversionTarget.NumericEditable => IsLegacyText(legacy),
+            _ => false
+        };
     }
 
     public static ScadaElement Convert(LegacyDetectedObject source, ElementPlusConversionTarget target, ElementPlusConversionOptions options)
@@ -44,9 +89,10 @@ public static class ElementPlusLegacyConverter
         {
             ElementPlusConversionTarget.Text => ScadaElementKind.Text,
             ElementPlusConversionTarget.TextInput => ScadaElementKind.InputText,
+            ElementPlusConversionTarget.Button => ScadaElementKind.Button,
             _ => throw new ArgumentOutOfRangeException(nameof(target), target, null)
         };
-        var text = string.IsNullOrWhiteSpace(source.Text) ? source.DisplayName : source.Text.Trim();
+        var text = GetDisplayText(source);
         var width = source.Bounds.Width > 0 ? source.Bounds.Width : DefaultWidth(kind);
         var height = source.Bounds.Height > 0 ? source.Bounds.Height : DefaultHeight(kind);
         var fontSize = source.Style.FontSize > 0 ? source.Style.FontSize : DefaultStyle(kind).FontSize;
@@ -91,7 +137,15 @@ public static class ElementPlusLegacyConverter
     {
         return source.IsTextLike ||
             source.LegacyType.Contains("text", StringComparison.OrdinalIgnoreCase) ||
+            source.LegacyType.Contains("input", StringComparison.OrdinalIgnoreCase) ||
+            source.LegacyType.Contains("button", StringComparison.OrdinalIgnoreCase) ||
             source.DisplayName.Contains("text", StringComparison.OrdinalIgnoreCase);
+    }
+
+    public static bool IsLegacyButton(LegacyDetectedObject source)
+    {
+        return source.LegacyType.Contains("button", StringComparison.OrdinalIgnoreCase) ||
+            source.DisplayName.Contains("button", StringComparison.OrdinalIgnoreCase);
     }
 
     private static ScadaElementStyle DefaultStyle(ScadaElementKind kind)
@@ -145,8 +199,27 @@ public static class ElementPlusLegacyConverter
         {
             ScadaElementKind.Text => new ScadaElementData(text, null, null, null, null, null, null, null, null, false),
             ScadaElementKind.InputText => new ScadaElementData(text, text, null, null, null, null, null, null, null, false),
+            ScadaElementKind.Button => new ScadaElementData(text, null, null, null, null, null, null, null, null, false),
             _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, null)
         };
+    }
+
+    private static string GetDisplayText(LegacyDetectedObject source)
+    {
+        return string.IsNullOrWhiteSpace(source.Text) ? source.DisplayName : source.Text.Trim();
+    }
+
+    private static bool LooksNumeric(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return false;
+        }
+
+        var trimmed = text.Trim();
+        return double.TryParse(trimmed, out _) ||
+            trimmed.Any(character => character == '#') ||
+            trimmed.All(character => char.IsDigit(character) || character is '.' or ',' or '-' or '+' or ' ');
     }
 
     private static double? ParseNumericValue(string text)

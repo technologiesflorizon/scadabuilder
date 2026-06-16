@@ -1,0 +1,41 @@
+# SCADA Builder V2 - Module Boundaries
+
+Date: 2026-06-16
+Status: Active module boundary contract
+Document version: `V2.1.1.0039`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation de la matrice de responsabilites par module logiciel. |
+
+## 1. Boundary Matrix
+
+| Module | Owns | Must not own |
+| --- | --- | --- |
+| Domain | Durable model and pure rules | WPF controls, WebView DOM, file dialogs |
+| Application | Commands, history, conversion, Studio workflows | Runtime HTML details, UI styling |
+| Infrastructure | Persistence and adapters | Business decisions, UI commands |
+| Rendering | Preview/export output | Editor selection state ownership |
+| App | User surfaces and WebView bridge | Durable contracts without commands/domain |
+| ElementStudio.App | Studio UI and source editing surface | SCADA project persistence |
+| Tests | Regression contracts | Production behavior |
+
+## 2. Dependency Direction
+
+```mermaid
+flowchart TD
+  App --> Application
+  ElementStudioApp[ElementStudio.App] --> Application
+  Application --> Domain
+  Infrastructure --> Domain
+  Rendering --> Domain
+  App --> Infrastructure
+  App --> Rendering
+  Tests --> App
+  Tests --> Application
+  Tests --> Domain
+  Tests --> Infrastructure
+  Tests --> Rendering
+```

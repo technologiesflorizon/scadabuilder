@@ -37,9 +37,63 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "source.convert-to-element-plus.numeric-readonly");
         StringAssert.Contains(source, "source.convert-to-element-plus.input-text");
         StringAssert.Contains(source, "source.convert-to-element-plus.numeric-editable");
+        StringAssert.Contains(source, "source.convert-to-element-plus.button");
         StringAssert.Contains(source, "\"Conversion Element+\"");
         StringAssert.Contains(source, "\"Affichage numerique\"");
+        StringAssert.Contains(source, "\"Bouton\"");
         StringAssert.Contains(source, "Children:");
+    }
+
+    [TestMethod]
+    public void ContextMenuShowsDisabledPropertiesForLegacySources()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "new EditorCommandDescriptor(");
+        StringAssert.Contains(source, "\"source.properties\"");
+        StringAssert.Contains(source, "\"object.properties\"");
+        StringAssert.Contains(source, "Convertir l'element en Element+ avant d'ouvrir ses proprietes.");
+        StringAssert.Contains(source, "button.disabled = true;");
+        StringAssert.Contains(source, "button.setAttribute('aria-disabled', 'true');");
+        StringAssert.Contains(source, "button.title = reason;");
+        StringAssert.Contains(source, ".filter(command => command && command.Id)");
+        Assert.IsFalse(
+            source.Contains(".filter(command => command && command.Id && command.IsEnabled !== false)", StringComparison.Ordinal),
+            "Disabled context-menu commands must remain visible so the hover warning can be shown.");
+    }
+
+    [TestMethod]
+    public void LegacyButtonTextEditingUsesVisibleButtonText()
+    {
+        var source = NormalizeNewLines(ReadMainWindowSource());
+
+        StringAssert.Contains(source, "if ((el.tagName || '').toLowerCase() === 'button') return el.textContent || el.value || '';");
+        StringAssert.Contains(source, "if ((el.tagName || '').toLowerCase() === 'button') {\n      el.textContent = text;");
+    }
+
+    [TestMethod]
+    public void ModernButtonRendersTextAndUsesPropertyText()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "element.Kind === 'Button'");
+        StringAssert.Contains(source, "button.textContent = data.Text || data.Placeholder || element.DisplayName || 'Bouton';");
+        StringAssert.Contains(source, "current.Kind is ScadaElementKind.InputText or ScadaElementKind.Text or ScadaElementKind.Button");
+    }
+
+    [TestMethod]
+    public void WebViewKeyboardShortcutsDoNotDeleteOnBackspaceOrInsideEditors()
+    {
+        var source = NormalizeNewLines(ReadMainWindowSource());
+
+        StringAssert.Contains(source, "function isEditableKeyboardTarget(target)");
+        StringAssert.Contains(source, "if (activeTextEditor?.editor === target) return true;");
+        StringAssert.Contains(source, "if (activeModernEditor?.contains?.(target)) return true;");
+        StringAssert.Contains(source, "if (isEditableKeyboardTarget(event.target)) {\n      return;\n    }");
+        StringAssert.Contains(source, "if (event.key === 'Backspace') {\n      event.preventDefault();\n      event.stopPropagation();\n      return;\n    }\n\n    if (event.key === 'Delete') {");
+        Assert.IsFalse(
+            source.Contains("event.key === 'Delete' || event.key === 'Backspace'", StringComparison.Ordinal),
+            "Backspace must not be treated as an Element+ delete shortcut.");
     }
 
     [TestMethod]
@@ -243,35 +297,31 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
-    public void LegacyGroupingDoesNotHideOrRepaintLegacyElements()
+    public void LegacyGroupingRequiresElementPlusConversion()
     {
         var source = ReadMainWindowSource();
-        var groupMethod = ExtractMethod(source, "private async Task GroupSelectedLegacyElementsAsync()");
+        var groupMethod = ExtractMethod(source, "private Task GroupSelectedLegacyElementsAsync()");
 
-        StringAssert.Contains(groupMethod, "CreateGroupFrameFromLegacySelection(selectedLegacy)");
-        StringAssert.Contains(groupMethod, "_activeScene.WithElement(group)");
-        Assert.IsFalse(groupMethod.Contains("WithCommittedElementPlusConversion", StringComparison.Ordinal));
-        Assert.IsFalse(groupMethod.Contains("_hiddenLegacyElementIds.Add", StringComparison.Ordinal));
-        Assert.IsFalse(groupMethod.Contains("HideLegacyElementsInViewerAsync", StringComparison.Ordinal));
-        Assert.IsFalse(source.Contains("ResolveVisibleLegacyShapeBackground", StringComparison.Ordinal));
-        Assert.IsFalse(source.Contains("visibleShapeFill", StringComparison.Ordinal));
-        StringAssert.Contains(source, "shape.style.background = cssText(style.Background, 'transparent');");
-        StringAssert.Contains(source, ".scada-modern-group {");
-        StringAssert.Contains(source, "background: transparent !important;");
+        StringAssert.Contains(groupMethod, "WarnLegacyGroupingRequiresConversion();");
+        Assert.IsFalse(groupMethod.Contains("CreateGroupFrameFromLegacySelection", StringComparison.Ordinal));
+        Assert.IsFalse(groupMethod.Contains("_activeScene.WithElement(group)", StringComparison.Ordinal));
+        StringAssert.Contains(source, "source.group-requires-conversion");
+        StringAssert.Contains(source, "Convertir les elements legacy en Element+ avant de les grouper.");
     }
 
     [TestMethod]
     public void ElementGroupUiExposesGroupAndUngroupCommands()
     {
         var source = ReadMainWindowSource();
-        var groupMethod = ExtractMethod(source, "private async Task GroupSelectedLegacyElementsAsync()");
+        var groupMethod = ExtractMethod(source, "private async Task GroupSelectedModernElementsAsync()");
         var ungroupMethod = ExtractMethod(source, "private void UngroupSelectedModernElement()");
 
-        StringAssert.Contains(source, "source.group-to-element-plus");
+        StringAssert.Contains(source, "object.group");
         StringAssert.Contains(source, "object.ungroup");
-        StringAssert.Contains(source, "GroupSelectedLegacyElementsAsync");
+        StringAssert.Contains(source, "GroupSelectedModernElementsAsync");
         StringAssert.Contains(source, "UngroupSelectedModernElement");
         StringAssert.Contains(source, "targetKind: 'object'");
+        StringAssert.Contains(groupMethod, "_activeScene.WithGroupedElements(groupId, groupName, selectedModernIds)");
         StringAssert.Contains(groupMethod, "new SceneSnapshotChangedAction(");
         StringAssert.Contains(ungroupMethod, "new SceneSnapshotChangedAction(");
     }

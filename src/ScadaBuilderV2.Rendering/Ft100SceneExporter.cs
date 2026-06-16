@@ -570,8 +570,16 @@ public sealed partial class Ft100SceneExporter
                 data.Value?.ToString(CultureInfo.InvariantCulture) ?? data.DisplayFormat ?? data.Placeholder ?? ""),
             ScadaElementKind.InputNumeric => BuildInput(element, "number"),
             ScadaElementKind.InputText => BuildInput(element, "text"),
+            ScadaElementKind.Button => BuildButton(element),
             _ => ""
         };
+    }
+
+    private static string BuildButton(ScadaElement element)
+    {
+        var data = element.Data ?? new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
+        var label = HtmlEncoder.Default.Encode(data.Text ?? data.Placeholder ?? element.DisplayName);
+        return $"""<button type="button" style="width:100%;height:100%;box-sizing:border-box;font:inherit;color:inherit;background:transparent;border:0;">{label}</button>""";
     }
 
     private static string BuildInput(ScadaElement element, string type)
@@ -653,6 +661,7 @@ public sealed partial class Ft100SceneExporter
         css.AppendLine($"{scope.Descendant(".ft100-element")} {{ position: absolute; box-sizing: border-box; overflow: visible; pointer-events: auto; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element svg")} {{ display: block; width: 100%; height: 100%; overflow: visible; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element input")} {{ width: 100%; height: 100%; box-sizing: border-box; }}");
+        css.AppendLine($"{scope.Descendant(".ft100-element button")} {{ width: 100%; height: 100%; box-sizing: border-box; font: inherit; color: inherit; }}");
 
         foreach (var legacyId in scene.GetSuppressedSourceElementIds().OrderBy(id => id, StringComparer.Ordinal))
         {

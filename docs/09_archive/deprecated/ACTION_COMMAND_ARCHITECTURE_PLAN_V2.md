@@ -1,20 +1,21 @@
 # SCADA Builder V2 - Action/Command Architecture Plan
 
-Date: 2026-06-15
+Date: 2026-06-16
 Status: Approved direction to implement
-Document version: `V2.1.1.0036`
+Document version: `V2.1.1.0039`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Correction de l'historique documentaire: l'entree de correction suppression source precede la normalisation documentaire et ne doit pas dupliquer `V2.1.1.0030`. |
 | 2026-06-15 | `V2.1.1.0036` | `63c2475` | Generalisation du namespace CSS/DOM/runtime FT100 pour supprimer les collisions de selecteurs en composition TF100Web. |
 | 2026-06-15 | `V2.1.1.0035` | `63c2475` | Scoping des CSS source `data-id` par page pour corriger les collisions runtime TF100Web footer. |
 | 2026-06-15 | `V2.1.1.0034` | `63c2475` | Durcissement du contrat selection polymorphe et suppression globale source/objet sans masquage persistant. |
 | 2026-06-15 | `V2.1.1.0033` | `63c2475` | Restauration de la selection large des elements source `data-id`, incluant SVG, et restriction de l'injection inline FT100 aux couches HTML legacy. |
 | 2026-06-15 | `V2.1.1.0032` | `63c2475` | Injection de la geometrie persistante dans les styles inline des objets source legacy exportes. |
 | 2026-06-15 | `V2.1.1.0031` | `63c2475` | Durcissement de l'export FT100 pour la composition header/footer avec geometrie inline critique et regression dediee. |
-| 2026-06-15 | `V2.1.1.0030` | `63c2475` | Correction de l'etat de suppression source `win00002` pour les textes decommissionnes `1` et `5`, avec regression d'export HTML. |
+| 2026-06-15 | `V2.1.1.0029` | `63c2475` | Correction de l'etat de suppression source `win00002` pour les textes decommissionnes `1` et `5`, avec regression d'export HTML. |
 | 2026-06-15 | `V2.1.1.0030` | `72350e3` | Normalisation du header documentaire et rattachement a l'arbre documentaire stable. |
 | 2026-06-15 | `V2.1.1.0026` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 

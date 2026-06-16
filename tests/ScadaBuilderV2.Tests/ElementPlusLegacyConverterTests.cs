@@ -98,4 +98,34 @@ public sealed class ElementPlusLegacyConverterTests
         Assert.AreEqual("####", adapter.Data?.DisplayFormat);
         Assert.IsTrue(adapter.Data?.IsReadOnly ?? false);
     }
+
+    [TestMethod]
+    public void Button1CanBeConvertedToButtonElement()
+    {
+        var source = new LegacyDetectedObject(
+            "1",
+            "Button1",
+            "Button",
+            "",
+            true,
+            new SceneBounds(2, 32, 138, 43),
+            new LegacyObjectStyle("\"Microsoft Sans Serif\", Arial, sans-serif", 10, "rgb(211, 211, 211)", "rgb(211, 211, 211)"));
+
+        var targets = ElementPlusLegacyConverter.GetPlausibleTargets(source);
+        CollectionAssert.Contains(targets.ToList(), ElementPlusConversionTarget.Button);
+
+        var element = ElementPlusLegacyConverter.Convert(
+            source,
+            ElementPlusConversionTarget.Button,
+            new ElementPlusConversionOptions("elementplus_button_1", "Element+ Button1", "Wonderware/ArchestrA", "win00003", null));
+
+        Assert.AreEqual(ScadaElementKind.Button, element.Kind);
+        Assert.AreEqual("Button1", element.Data?.Text);
+        Assert.AreEqual(2, element.Bounds.X);
+        Assert.AreEqual(32, element.Bounds.Y);
+        Assert.AreEqual(138, element.Bounds.Width);
+        Assert.AreEqual(43, element.Bounds.Height);
+        Assert.AreEqual("1", element.LegacySource?.SourceElementId);
+        Assert.AreEqual("Button1", element.LegacySource?.SourceElementName);
+    }
 }

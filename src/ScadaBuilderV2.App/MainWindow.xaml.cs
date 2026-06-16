@@ -1240,16 +1240,6 @@ public partial class MainWindow : Window
         }
     }
 
-    private static SceneBounds CalculateOuterBounds(IEnumerable<SceneBounds> bounds)
-    {
-        var items = bounds.ToArray();
-        var left = items.Min(item => item.X);
-        var top = items.Min(item => item.Y);
-        var right = items.Max(item => item.X + item.Width);
-        var bottom = items.Max(item => item.Y + item.Height);
-        return new SceneBounds(left, top, right - left, bottom - top);
-    }
-
     private async void OnHideSelectedClick(object sender, RoutedEventArgs e)
     {
         await HideSelectedLegacyElementsAsync();
@@ -1338,6 +1328,7 @@ public partial class MainWindow : Window
         AddConversionMenuItem(menu, "Affichage numerique", ElementPlusConversionTarget.NumericReadOnly);
         AddConversionMenuItem(menu, "Champ d'entree texte", ElementPlusConversionTarget.TextInput);
         AddConversionMenuItem(menu, "Champ numerique editable", ElementPlusConversionTarget.NumericEditable);
+        AddConversionMenuItem(menu, "Bouton", ElementPlusConversionTarget.Button);
         menu.PlacementTarget = placementTarget;
         menu.IsOpen = true;
     }
@@ -1936,21 +1927,21 @@ public partial class MainWindow : Window
         var selectedLegacy = _sourceObjects
             .Where(element => _selectedSourceObjectIds.Contains(element.Id))
             .ToArray();
-        var textCandidates = selectedLegacy
-            .Where(IsConvertibleLegacyText)
+        var conversionCandidates = selectedLegacy
+            .Where(element => ElementPlusLegacyConverter.CanConvert(ToLegacyDetectedObject(element), target))
             .ToArray();
 
-        if (textCandidates.Length == 0)
+        if (conversionCandidates.Length == 0)
         {
-            SetStatus("Aucun element Text legacy convertible dans la selection.");
+            SetStatus($"Aucun element legacy convertible vers {GetConversionTargetLabel(target)} dans la selection.");
             return;
         }
 
-        var convertedElements = textCandidates
+        var convertedElements = conversionCandidates
             .Select(element => CreateElementPlusFromLegacy(element, target))
             .ToArray();
 
-        var convertedLegacyIds = textCandidates
+        var convertedLegacyIds = conversionCandidates
             .Select(element => element.Id)
             .ToArray();
         var sourceSceneElements = convertedLegacyIds
@@ -1967,7 +1958,7 @@ public partial class MainWindow : Window
             }
         }
 
-        var sourceSnapshots = textCandidates.Select(ToLegacyDetectedObject).ToArray();
+        var sourceSnapshots = conversionCandidates.Select(ToLegacyDetectedObject).ToArray();
         var convertedSnapshots = convertedElements.ToArray();
         var sourceElementSnapshots = sourceSceneElements.ToArray();
         var targetLabel = GetConversionTargetLabel(target);
@@ -1988,9 +1979,9 @@ public partial class MainWindow : Window
         RefreshModernSceneUi();
         await RenderModernSceneAsync();
 
-        var skippedCount = selectedLegacy.Length - textCandidates.Length;
-        var skippedMessage = skippedCount > 0 ? $" {skippedCount} element(s) ignore(s): type non Text." : "";
-        SetStatus($"{convertedElements.Length} Text legacy converti(s) en Element+ ({GetConversionTargetLabel(target)}). Undo disponible jusqu'a fermeture.{skippedMessage}");
+        var skippedCount = selectedLegacy.Length - conversionCandidates.Length;
+        var skippedMessage = skippedCount > 0 ? $" {skippedCount} element(s) ignore(s): conversion non plausible vers {GetConversionTargetLabel(target)}." : "";
+        SetStatus($"{convertedElements.Length} element(s) legacy converti(s) en Element+ ({GetConversionTargetLabel(target)}). Undo disponible jusqu'a fermeture.{skippedMessage}");
     }
 
     // Scene grouping is Element+ only; legacy source nodes must be converted before they can become group children.
@@ -2470,34 +2461,6 @@ public partial class MainWindow : Window
         return Directory.Exists(fromBaseDirectory) ? fromBaseDirectory : null;
     }
 
-    private ScadaElement CreateGroupFrameFromLegacySelection(IReadOnlyList<LegacyElementListItem> selectedLegacy)
-    {
-        var groupBounds = CalculateOuterBounds(selectedLegacy.Select(element => new SceneBounds(
-            element.X,
-            element.Y,
-            Math.Max(4, element.Width),
-            Math.Max(4, element.Height))));
-        var sequence = _nextGroupSequence++;
-        var groupId = $"group_{sequence:000}";
-
-        return new ScadaElement(
-            groupId,
-            $"Group{sequence:000}",
-            ScadaElementKind.Group,
-            groupBounds,
-            null,
-            ScadaElementLayout.Absolute,
-            ScadaElementStyle.DefaultText with
-            {
-                Background = "Transparent",
-                BorderColor = "#2090A0",
-                BorderWidth = 1,
-                BorderStyle = "Dashed"
-            },
-            new ScadaElementData(string.Join(",", selectedLegacy.Select(element => element.Id)), null, null, null, null, null, null, null, null, false),
-            Array.Empty<ScadaElement>());
-    }
-
     private void UngroupSelectedModernElement()
     {
         if (_activeScene is null || _selectedSceneObject is null)
@@ -2544,18 +2507,14 @@ public partial class MainWindow : Window
         _sourceObjects.RemoveAll(element => idsToRemove.Contains(element.Id));
     }
 
-    private static bool IsConvertibleLegacyText(LegacyElementListItem element)
+    private static IReadOnlyList<ElementPlusConversionTarget> GetPlausibleConversionTargets(LegacyElementListItem element)
     {
-        return element.IsTextLike ||
-            element.ElementType.Contains("text", StringComparison.OrdinalIgnoreCase) ||
-            element.DisplayName.Contains("text", StringComparison.OrdinalIgnoreCase);
+        return ElementPlusLegacyConverter.GetPlausibleTargets(ToLegacyDetectedObject(element));
     }
 
-    private static bool IsConvertibleLegacyText(LegacyViewerElementMessage element)
+    private static IReadOnlyList<ElementPlusConversionTarget> GetPlausibleConversionTargets(LegacyViewerElementMessage element)
     {
-        return element.IsTextLike ||
-            element.ElementType.Contains("text", StringComparison.OrdinalIgnoreCase) ||
-            element.Name.Contains("text", StringComparison.OrdinalIgnoreCase);
+        return ElementPlusLegacyConverter.GetPlausibleTargets(ToLegacyDetectedObject(ToLegacyElementListItem(element)));
     }
 
     private void MaterializeLegacyElementsFromInventory(IReadOnlyList<LegacyViewerElementMessage> items)
@@ -2623,6 +2582,7 @@ public partial class MainWindow : Window
             ElementPlusConversionTarget.TextInput => "elementplus_input_text",
             ElementPlusConversionTarget.NumericReadOnly => "elementplus_numeric_display",
             ElementPlusConversionTarget.NumericEditable => "elementplus_numeric",
+            ElementPlusConversionTarget.Button => "elementplus_button",
             _ => "elementplus"
         };
         var id = CreateUniqueElementId($"{idPrefix}_{SanitizeElementIdPart(legacy.Id)}");
@@ -2730,7 +2690,29 @@ public partial class MainWindow : Window
             ElementPlusConversionTarget.TextInput => "Champ d'entree texte",
             ElementPlusConversionTarget.NumericReadOnly => "Affichage numerique",
             ElementPlusConversionTarget.NumericEditable => "Champ numerique editable",
+            ElementPlusConversionTarget.Button => "Bouton",
             _ => target.ToString()
+        };
+    }
+
+    private static EditorCommandDescriptor CreateConversionCommandDescriptor(ElementPlusConversionTarget target)
+    {
+        return new EditorCommandDescriptor(
+            $"source.convert-to-element-plus.{GetConversionTargetCommandSuffix(target)}",
+            GetConversionTargetLabel(target),
+            "conversion");
+    }
+
+    private static string GetConversionTargetCommandSuffix(ElementPlusConversionTarget target)
+    {
+        return target switch
+        {
+            ElementPlusConversionTarget.Text => "text",
+            ElementPlusConversionTarget.TextInput => "input-text",
+            ElementPlusConversionTarget.NumericReadOnly => "numeric-readonly",
+            ElementPlusConversionTarget.NumericEditable => "numeric-editable",
+            ElementPlusConversionTarget.Button => "button",
+            _ => target.ToString().ToLowerInvariant()
         };
     }
 
@@ -3265,8 +3247,14 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
             var modernCommands = new List<EditorCommandDescriptor>
             {
+                new("object.properties", "Propriete", "object"),
                 new("object.delete", "Supprimer la selection", "object")
             };
+            if (_selectedSceneObjectIds.Count > 1)
+            {
+                modernCommands.Insert(0, new EditorCommandDescriptor("object.group", "Grouper", "group"));
+            }
+
             if (selected.Kind == ScadaElementKind.Group)
             {
                 modernCommands.Insert(0, new EditorCommandDescriptor("object.ungroup", "Degrouper", "group"));
@@ -3287,25 +3275,37 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         {
             new("source.open-in-element-studio", "Ouvrir dans Studio Element+", "element-studio")
         };
-        if (selectedLegacy.Any(IsConvertibleLegacyText))
+        commands.Add(new EditorCommandDescriptor(
+            "source.properties",
+            "Propriete",
+            "source",
+            IsEnabled: false,
+            DisabledReason: "Convertir l'element en Element+ avant d'ouvrir ses proprietes."));
+
+        var targets = selectedLegacy
+            .SelectMany(GetPlausibleConversionTargets)
+            .Distinct()
+            .ToArray();
+        if (targets.Length > 0)
         {
             commands.Add(new EditorCommandDescriptor(
                 "source.convert-to-element-plus",
                 "Conversion Element+",
                 "conversion",
-                Children:
-                [
-                    new EditorCommandDescriptor("source.convert-to-element-plus.text", "Texte", "conversion"),
-                    new EditorCommandDescriptor("source.convert-to-element-plus.numeric-readonly", "Affichage numerique", "conversion"),
-                    new EditorCommandDescriptor("source.convert-to-element-plus.input-text", "Champ d'entree texte", "conversion"),
-                    new EditorCommandDescriptor("source.convert-to-element-plus.numeric-editable", "Champ numerique editable", "conversion")
-                ]));
+                Children: targets
+                    .Select(CreateConversionCommandDescriptor)
+                    .ToArray()));
         }
 
         commands.Add(new EditorCommandDescriptor("source.mask", "Masquer la selection", "source"));
         if (selectedLegacy.Length > 1)
         {
-            commands.Add(new EditorCommandDescriptor("source.group-to-element-plus", "Grouper Element+", "group"));
+            commands.Add(new EditorCommandDescriptor(
+                "source.group-requires-conversion",
+                "Grouper",
+                "group",
+                IsEnabled: false,
+                DisabledReason: "Convertir les elements legacy en Element+ avant de les grouper."));
         }
 
         commands.Add(new EditorCommandDescriptor("selection.delete", "Supprimer la selection", "selection"));
@@ -3346,13 +3346,31 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             case "legacy.convert-to-element-plus.numeric-editable":
                 await ConvertSelectedLegacyTextToElementPlusAsync(ElementPlusConversionTarget.NumericEditable);
                 break;
+            case "source.convert-to-element-plus.button":
+            case "legacy.convert-to-element-plus.button":
+                await ConvertSelectedLegacyTextToElementPlusAsync(ElementPlusConversionTarget.Button);
+                break;
+            case "object.properties":
+            case "element-plus.properties":
+                ShowModernElementProperties(message.Id);
+                break;
+            case "source.properties":
+            case "legacy.properties":
+                SetStatus("Proprietes indisponibles: convertir l'element en Element+ avant d'ouvrir ses proprietes.");
+                break;
             case "source.mask":
             case "legacy.mask":
                 await HideSelectedLegacyElementsAsync();
                 break;
             case "source.group-to-element-plus":
             case "legacy.group-to-element-plus":
+            case "source.group-requires-conversion":
+            case "legacy.group-requires-conversion":
                 await GroupSelectedLegacyElementsAsync();
+                break;
+            case "object.group":
+            case "element-plus.group":
+                await GroupSelectedModernElementsAsync();
                 break;
             case "source.open-in-element-studio":
             case "legacy.open-in-element-studio":
@@ -3408,6 +3426,22 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         RightContextTabs.SelectedItem = PageContextTab;
         SetStatus("Edition CSS du fond active. La modification reste en session legacy.");
+    }
+
+    private void ShowModernElementProperties(string? elementId)
+    {
+        var targetId = string.IsNullOrWhiteSpace(elementId)
+            ? _selectedSceneObject?.Id
+            : elementId;
+        if (string.IsNullOrWhiteSpace(targetId))
+        {
+            SetStatus("Aucun Element+ selectionne pour les proprietes.");
+            return;
+        }
+
+        SelectModernElement(targetId);
+        RightContextTabs.SelectedItem = PropertiesContextTab;
+        SetStatus("Proprietes Element+ ouvertes.");
     }
 
     private async void OnSaveSceneClick(object sender, RoutedEventArgs e)
@@ -4061,7 +4095,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             Data = data with
             {
                 Placeholder = string.IsNullOrWhiteSpace(message.Placeholder) ? data.Placeholder : message.Placeholder,
-                Text = current.Kind is ScadaElementKind.InputText or ScadaElementKind.Text ? message.Text ?? data.Text : data.Text,
+                Text = current.Kind is ScadaElementKind.InputText or ScadaElementKind.Text or ScadaElementKind.Button ? message.Text ?? data.Text : data.Text,
                 Value = current.Kind == ScadaElementKind.InputNumeric ? ParseNullableDouble(message.ValueText ?? "") : data.Value,
                 Minimum = ParseNullableDouble(message.MinimumText ?? ""),
                 Maximum = ParseNullableDouble(message.MaximumText ?? ""),
@@ -4277,7 +4311,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             Data = data with
             {
                 Placeholder = string.IsNullOrWhiteSpace(ElementPlaceholderTextBox.Text) ? null : ElementPlaceholderTextBox.Text,
-                Text = (current.Kind is ScadaElementKind.InputText or ScadaElementKind.Text) && !string.IsNullOrWhiteSpace(ElementValueTextBox.Text) ? ElementValueTextBox.Text : data.Text,
+                Text = (current.Kind is ScadaElementKind.InputText or ScadaElementKind.Text or ScadaElementKind.Button) && !string.IsNullOrWhiteSpace(ElementValueTextBox.Text) ? ElementValueTextBox.Text : data.Text,
                 Value = current.Kind == ScadaElementKind.InputNumeric ? ParseNullableDouble(ElementValueTextBox.Text) : data.Value,
                 Minimum = ParseNullableDouble(ElementMinTextBox.Text),
                 Maximum = ParseNullableDouble(ElementMaxTextBox.Text),
@@ -5279,6 +5313,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       cursor: pointer;
     }
     #scada-extract-menu button:hover { background: #e0f2d0; }
+    #scada-extract-menu button:disabled,
+    #scada-extract-menu button[aria-disabled="true"] {
+      color: #8a9aa0;
+      cursor: not-allowed;
+      background: transparent;
+    }
     #scada-extract-menu .submenu {
       position: relative;
     }
@@ -5836,12 +5876,17 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
   function getEditableText(el) {
     if (!el) return '';
+    if ((el.tagName || '').toLowerCase() === 'button') return el.textContent || el.value || '';
     if ('value' in el && typeof el.value === 'string') return el.value;
     return el.textContent || '';
   }
 
   function setEditableText(el, text) {
     if (!el) return;
+    if ((el.tagName || '').toLowerCase() === 'button') {
+      el.textContent = text;
+      return;
+    }
     if ('value' in el && typeof el.value === 'string') {
       el.value = text;
       return;
@@ -6000,6 +6045,14 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       button.type = 'button';
       button.dataset.commandId = command.Id;
       button.textContent = command.Label || command.Id;
+      if (command.IsEnabled === false || command.isEnabled === false) {
+        button.disabled = true;
+        button.setAttribute('aria-disabled', 'true');
+        const reason = command.DisabledReason || command.disabledReason || '';
+        if (reason) {
+          button.title = reason;
+        }
+      }
       return button;
     };
 
@@ -6016,7 +6069,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         const panel = document.createElement('div');
         panel.className = 'submenu-panel';
         children
-          .filter(child => child && child.Id && child.IsEnabled !== false)
+          .filter(child => child && child.Id)
           .forEach(child => panel.appendChild(createCommandButton(child)));
         wrapper.appendChild(panel);
         wrapper.addEventListener('mouseenter', () => positionSubmenuPanel(wrapper));
@@ -6028,7 +6081,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     };
 
     (Array.isArray(commands) ? commands : [])
-      .filter(command => command && command.Id && command.IsEnabled !== false)
+      .filter(command => command && command.Id)
       .forEach(command => menu.appendChild(createCommandNode(command)));
   }
 
@@ -6275,7 +6328,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
   function openModernEditor(element, clientX, clientY) {
     if (!element) return;
     closeModernEditor();
-    const isTextObject = element.Kind === 'Text';
+    const isTextObject = element.Kind === 'Text' || element.Kind === 'Button';
     const isNumeric = element.Kind === 'InputNumeric';
     const style = element.Style || {};
     const data = element.Data || {};
@@ -6549,6 +6602,22 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         text.style.textOverflow = 'ellipsis';
         text.style.whiteSpace = 'nowrap';
         wrapper.appendChild(text);
+      } else if (element.Kind === 'Button') {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = data.Text || data.Placeholder || element.DisplayName || 'Bouton';
+        button.style.width = '100%';
+        button.style.height = '100%';
+        button.style.boxSizing = 'border-box';
+        button.style.font = 'inherit';
+        button.style.color = 'inherit';
+        button.style.background = 'transparent';
+        button.style.border = '0';
+        button.style.overflow = 'hidden';
+        button.style.textOverflow = 'ellipsis';
+        button.style.whiteSpace = 'nowrap';
+        button.style.pointerEvents = 'none';
+        wrapper.appendChild(button);
       } else if (element.Kind === 'InputNumeric' && data.IsReadOnly === true) {
         const value = document.createElement('span');
         value.textContent = data.Value ?? data.DisplayFormat ?? data.Placeholder ?? '';
@@ -6682,7 +6751,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         } else if (event.ctrlKey || event.shiftKey) {
           toggleModernElementInSelection(element.Id);
         }
-        window.chrome?.webview?.postMessage({ type: 'openSceneObjectProperties', id: element.Id });
         window.chrome?.webview?.postMessage({
           type: 'contextMenuRequest',
           targetKind: 'object',
@@ -6717,6 +6785,19 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
   function rectsIntersect(a, b) {
     return !(a.right < b.left || a.left > b.right || a.bottom < b.top || a.top > b.bottom);
+  }
+
+  function isEditableKeyboardTarget(target) {
+    if (!target) return false;
+    if (activeTextEditor?.editor === target) return true;
+    if (activeModernEditor?.contains?.(target)) return true;
+    const editable = target.closest?.('input, textarea, select, [contenteditable]');
+    if (!editable) return false;
+    const tag = (editable.tagName || '').toLowerCase();
+    if (tag === 'input' || tag === 'textarea' || tag === 'select') {
+      return editable.disabled !== true && editable.readOnly !== true;
+    }
+    return editable.getAttribute('contenteditable') !== 'false';
   }
 
   let drag = null;
@@ -7029,6 +7110,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
   }, true);
 
   document.addEventListener('keydown', event => {
+    if (isEditableKeyboardTarget(event.target)) {
+      return;
+    }
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') {
       window.chrome?.webview?.postMessage({ type: event.shiftKey ? 'redo' : 'undo' });
       event.preventDefault();
@@ -7047,7 +7131,13 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     const wrapper = document.querySelector(`.scada-modern-element[data-id="${CSS.escape(selectedModernId)}"]`);
     if (!wrapper) return;
 
-    if (event.key === 'Delete' || event.key === 'Backspace') {
+    if (event.key === 'Backspace') {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
+    if (event.key === 'Delete') {
       window.chrome?.webview?.postMessage({ type: 'deleteSceneObject', id: selectedModernId });
       selectedModernIds.delete(selectedModernId);
       selectedModernId = null;
@@ -7079,6 +7169,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
   document.addEventListener('contextmenu', openContextMenu, true);
   menu.addEventListener('click', event => {
+    if (event.target?.disabled || event.target?.getAttribute?.('aria-disabled') === 'true') {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
     const commandId = event.target?.getAttribute?.('data-command-id');
     if (!commandId) return;
     event.preventDefault();

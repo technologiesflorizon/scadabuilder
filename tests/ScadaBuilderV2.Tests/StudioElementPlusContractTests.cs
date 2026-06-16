@@ -47,16 +47,14 @@ public sealed class StudioElementPlusContractTests
     [TestMethod]
     public void SepSharedLibraryContractIsOneComponentPerFile()
     {
-        var plan = ReadProjectFile("docs", "STUDIO_ELEMENT_PLUS_PLAN_V2.md");
-        var model = ReadProjectFile("docs", "ELEMENT_OBJECT_MODEL_V2.md");
+        var sepContract = ReadProjectFile("docs", "05_studio_element_plus", "STUDIO_ELEMENT_PLUS_SEP_CONTRACT_V2.md");
 
-        StringAssert.Contains(plan, "*.sep");
-        StringAssert.Contains(plan, "projects/<project-id>/library/elements/");
-        StringAssert.Contains(plan, "`.sep` is the editable Studio source of truth.");
-        StringAssert.Contains(plan, "A `.sep` file contains exactly one Element+ component.");
-        StringAssert.Contains(plan, "The `.sep` output is the editable Element+ component source file.");
-        StringAssert.Contains(model, "One `.sep` file contains exactly one Element+ component.");
-        StringAssert.Contains(model, ".sep` is the shared library format consumed by Studio Element+ and SCADA Builder V2.");
+        StringAssert.Contains(sepContract, "*.sep");
+        StringAssert.Contains(sepContract, "projects/<project-id>/library/elements/");
+        StringAssert.Contains(sepContract, "`.sep` is the editable Studio Element+ component source format.");
+        StringAssert.Contains(sepContract, "One `.sep` file contains exactly one Element+ component.");
+        StringAssert.Contains(sepContract, "The `.sep` output is the editable Element+ component source file.");
+        StringAssert.Contains(sepContract, "`.sep` is the shared library format consumed by Studio Element+ and SCADA Builder V2.");
     }
 
     [TestMethod]
@@ -218,12 +216,12 @@ public sealed class StudioElementPlusContractTests
     [TestMethod]
     public void StudioSelectionDecisionBaseIsDocumentedAndReferenced()
     {
-        var plan = ReadProjectFile("docs", "STUDIO_ELEMENT_PLUS_PLAN_V2.md");
-        var decisions = ReadProjectFile("docs", "STUDIO_ELEMENT_PLUS_SELECTION_DECISIONS_V2.md");
+        var architecture = ReadProjectFile("docs", "05_studio_element_plus", "STUDIO_ELEMENT_PLUS_ARCHITECTURE_V2.md");
+        var decisions = ReadProjectFile("docs", "05_studio_element_plus", "STUDIO_ELEMENT_PLUS_SELECTION_CONTRACT_V2.md");
 
-        StringAssert.Contains(plan, "docs/STUDIO_ELEMENT_PLUS_SELECTION_DECISIONS_V2.md");
-        StringAssert.Contains(plan, "`Shift + clic` adds to the current selection");
-        StringAssert.Contains(plan, "`Alt + clic` removes from the current selection");
+        StringAssert.Contains(architecture, "docs/05_studio_element_plus/STUDIO_ELEMENT_PLUS_SELECTION_CONTRACT_V2.md");
+        StringAssert.Contains(architecture, "`Shift + clic` adds to the current selection");
+        StringAssert.Contains(architecture, "`Alt + clic` removes from the current selection");
         StringAssert.Contains(decisions, "Status: Approved decision base");
         StringAssert.Contains(decisions, "`Shift + clic` adds the clicked element to the current selection.");
         StringAssert.Contains(decisions, "`Alt + clic` removes the clicked element from the current selection.");
@@ -236,8 +234,7 @@ public sealed class StudioElementPlusContractTests
     public void DrawingToolContractRequiresRealComponentPrimitives()
     {
         var xaml = ReadProjectFile("src", "ScadaBuilderV2.ElementStudio.App", "MainWindow.xaml");
-        var plan = ReadProjectFile("docs", "STUDIO_ELEMENT_PLUS_PLAN_V2.md");
-        var model = ReadProjectFile("docs", "ELEMENT_OBJECT_MODEL_V2.md");
+        var sepContract = ReadProjectFile("docs", "05_studio_element_plus", "STUDIO_ELEMENT_PLUS_SEP_CONTRACT_V2.md");
 
         StringAssert.Contains(xaml, "Text=\"Outils de dessin\"");
         StringAssert.Contains(xaml, "Content=\"Ligne\"");
@@ -246,31 +243,30 @@ public sealed class StudioElementPlusContractTests
         StringAssert.Contains(xaml, "Content=\"Polygone\"");
         StringAssert.Contains(xaml, "Content=\"Image\"");
 
-        StringAssert.Contains(plan, "Make drawing tools functional:");
-        StringAssert.Contains(plan, "`Ligne`: create line primitives.");
-        StringAssert.Contains(plan, "`Polyline`: create editable polyline primitives.");
-        StringAssert.Contains(plan, "`Rectangle`: create editable rectangle primitives.");
-        StringAssert.Contains(plan, "`Polygone`: create editable polygon primitives.");
-        StringAssert.Contains(plan, "`Image`: import and embed raster images into the `.sep`.");
-        StringAssert.Contains(plan, "Ensure created primitives become part of the Element+ component model, not editor-only overlays.");
-        StringAssert.Contains(model, "Drawing tools create real component primitives, not temporary editor overlays.");
+        StringAssert.Contains(sepContract, "Make drawing tools functional:");
+        StringAssert.Contains(sepContract, "`Ligne`: create line primitives.");
+        StringAssert.Contains(sepContract, "`Polyline`: create editable polyline primitives.");
+        StringAssert.Contains(sepContract, "`Rectangle`: create editable rectangle primitives.");
+        StringAssert.Contains(sepContract, "`Polygone`: create editable polygon primitives.");
+        StringAssert.Contains(sepContract, "`Image`: import and embed raster images into the `.sep`.");
+        StringAssert.Contains(sepContract, "Ensure created primitives become part of the Element+ component model, not editor-only overlays.");
+        StringAssert.Contains(sepContract, "Drawing tools create real component primitives, not temporary editor overlays.");
     }
 
     [TestMethod]
     public void SepExportContractExcludesWorkzoneAndEditorState()
     {
         var xaml = ReadProjectFile("src", "ScadaBuilderV2.ElementStudio.App", "MainWindow.xaml");
-        var plan = ReadProjectFile("docs", "STUDIO_ELEMENT_PLUS_PLAN_V2.md");
-        var model = ReadProjectFile("docs", "ELEMENT_OBJECT_MODEL_V2.md");
+        var sepContract = ReadProjectFile("docs", "05_studio_element_plus", "STUDIO_ELEMENT_PLUS_SEP_CONTRACT_V2.md");
 
         StringAssert.Contains(xaml, "x:Name=\"WorkzoneSurface\"");
         StringAssert.Contains(xaml, "Width=\"{Binding WorkzoneScaledWidth}\"");
         StringAssert.Contains(xaml, "Height=\"{Binding WorkzoneScaledHeight}\"");
         StringAssert.Contains(xaml, "Text=\"{Binding WorkzoneSizeText}\"");
-        StringAssert.Contains(plan, "The Studio workzone/canvas/viewport is an editor surface and must not be exported as part of the Element+ payload.");
-        StringAssert.Contains(plan, "Ensure the workzone, zoom level, pan position, selection rectangle, and editor UI overlays are not exported as component geometry.");
-        StringAssert.Contains(model, "The Studio workzone is editor state and must not become exported Element+ geometry.");
-        StringAssert.Contains(model, "Legacy selection UI artifacts must not become part of the component payload.");
+        StringAssert.Contains(sepContract, "The Studio workzone/canvas/viewport is an editor surface and must not be exported as part of the Element+ payload.");
+        StringAssert.Contains(sepContract, "Ensure the workzone, zoom level, pan position, selection rectangle, and editor UI overlays are not exported as component geometry.");
+        StringAssert.Contains(sepContract, "The Studio workzone is editor state and must not become exported Element+ geometry.");
+        StringAssert.Contains(sepContract, "Legacy selection UI artifacts must not become part of the component payload.");
     }
 
     [TestMethod]
@@ -279,10 +275,10 @@ public sealed class StudioElementPlusContractTests
         var xaml = ReadProjectFile("src", "ScadaBuilderV2.ElementStudio.App", "MainWindow.xaml");
         var code = ReadProjectFile("src", "ScadaBuilderV2.ElementStudio.App", "MainWindow.xaml.cs");
         var viewModel = ReadProjectFile("src", "ScadaBuilderV2.ElementStudio.App", "ElementStudioViewModels.cs");
-        var decisions = ReadProjectFile("docs", "STUDIO_ELEMENT_PLUS_SELECTION_DECISIONS_V2.md");
+        var decisions = ReadProjectFile("docs", "05_studio_element_plus", "STUDIO_ELEMENT_PLUS_SELECTION_CONTRACT_V2.md");
         var version = ReadProjectFile("VERSION");
 
-        StringAssert.Contains(version, "V2.1.1.0038");
+        StringAssert.Contains(version, "V2.1.2.0002");
         StringAssert.Contains(code, "case \"clearSelection\":");
         StringAssert.Contains(code, "UpdateSelectionGeometryFields();");
         StringAssert.Contains(xaml, "Text=\"{Binding StructureSummary}\"");
@@ -297,7 +293,7 @@ public sealed class StudioElementPlusContractTests
         StringAssert.Contains(viewModel, "public string StructureSummary");
         StringAssert.Contains(viewModel, "public string SelectionStateSummary");
         StringAssert.Contains(viewModel, "private void NotifyEditorStateChanged()");
-        StringAssert.Contains(decisions, "## 11. Final Test And Polish Slice V2.1.0.0004");
+        StringAssert.Contains(decisions, "## 10. Final Test And Polish Slice V2.1.0.0004");
         StringAssert.Contains(decisions, "`Escape` clears the active workzone selection");
     }
 

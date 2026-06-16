@@ -1,0 +1,53 @@
+# SCADA Builder V2 - Commands Contract
+
+Date: 2026-06-16
+Status: Active editor command contract
+Document version: `V2.1.2.0002`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-06-16 | `V2.1.2.0002` | `PENDING` | Decommission du groupement legacy direct et verrouillage du groupement scene Element+ only. |
+| 2026-06-16 | `V2.1.2.0001` | `PENDING` | Ajout du contrat des raccourcis clavier WebView: Backspace est non destructif et les champs editables interceptent leurs touches. |
+| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat commandes separe du contrat etat/actions/menus. |
+
+## 1. Contract
+
+Commands are explicit application operations. A command id is the stable bridge between UI surfaces, context menus, command registry, tests, and behavior.
+
+## 2. Rules
+
+1. UI surfaces request commands; they do not own behavior.
+2. Command enablement depends on command context, not duplicated UI conditions.
+3. Commands that mutate project, scene, selection, geometry, properties, or export state must route through application/domain services and history where applicable.
+4. Context-menu commands must delete, convert, move, group, or inspect the selected runtime target type after selection resolution.
+5. Command ids must remain stable once referenced by tests or documentation.
+6. WebView keyboard shortcuts must not run scene commands while focus is inside an editable control, property editor, or inline text editor.
+7. `Delete` may delete the selected Element+ only when focus is not editable; `Backspace` must not delete Element+ objects and must be consumed when an Element+ selection is active to avoid accidental WebView navigation.
+8. Scene grouping is Element+ only: `object.group` groups two or more selected Element+ scene objects, while selected legacy/source nodes must be converted to Element+ before grouping.
+9. Legacy/source grouping attempts must warn the user to convert first and must not create legacy-only frame groups.
+
+## 3. Dispatch Flow
+
+```mermaid
+sequenceDiagram
+  participant Surface as UI Surface
+  participant Registry as Command Registry
+  participant Context as Command Context
+  participant Handler as Command Handler
+  participant Model as Scene/Project Model
+  participant History as History Stack
+  Surface->>Registry: request command id
+  Registry->>Context: build current context
+  Registry->>Handler: execute when enabled
+  Handler->>Model: validate and mutate
+  Handler->>History: push action when required
+  Handler-->>Surface: result and diagnostics
+```
+
+## 4. Related Tests
+
+1. `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`
+2. `tests/ScadaBuilderV2.Tests/EditorHistoryServiceTests.cs`
+3. `tests/ScadaBuilderV2.Tests/ScadaSceneGroupTests.cs`

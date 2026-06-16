@@ -1,13 +1,14 @@
 # SCADA Builder V2 - TF100Web Implementation Note
 
-Date: 2026-06-15
+Date: 2026-06-16
 Status: Draft implementation note
-Document version: `V2.1.1.0036`
+Document version: `V2.1.1.0039`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Correction du compteur de tests de regression documente apres verification locale: 174 tests passent. |
 | 2026-06-15 | `V2.1.1.0036` | `63c2475` | Generalisation du namespace CSS/DOM/runtime par page pour empecher les collisions de selecteurs TF100Web. |
 | 2026-06-15 | `V2.1.1.0035` | `63c2475` | Ajout du contrat de CSS source page-scopee pour eviter les collisions `data-id` en composition TF100Web. |
 | 2026-06-15 | `V2.1.1.0034` | `63c2475` | Alignement avec le contrat selection polymorphe et suppression source durable par etat scene. |
@@ -28,7 +29,7 @@ The goal is to make TF100Web consume the SCADA Builder V2 FT100 package as a sta
 Current SCADA_BUILDER_V2 status:
 
 1. The solution is organized as a .NET 8 layered application with `Domain`, `Application`, `Infrastructure`, `Rendering`, WPF editor app, separate Studio Element+ app, and MSTest regression suite.
-2. `dotnet test ScadaBuilderV2.sln --no-restore` passes with 167 tests as of the 2026-06-15 baseline audit.
+2. `dotnet test ScadaBuilderV2.sln --no-restore` passes with 174 tests as of the 2026-06-16 documentation restructuring audit.
 3. The FT100 exporter already emits a normalized project package folder named `scada-builder-v2-ft100-package`.
 4. Project export recreates the package folder on each export, removing stale files before writing new output.
 5. Per-page output includes `<page-id>/<page-id>.html`, `css/<page-id>.css`, `images/`, per-page `manifest.json`, and `README.txt`.

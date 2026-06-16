@@ -588,6 +588,8 @@ public sealed class Ft100SceneExporterTests
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             StringAssert.Contains(html, "data-scada-events=");
             StringAssert.Contains(html, "action_nav_win00009");
+            StringAssert.Contains(html, "<button type=\"button\"");
+            StringAssert.Contains(html, "Suivant");
             StringAssert.Contains(html, "const root = document.getElementById(\"ft100-win00008\");");
             StringAssert.Contains(html, "root.querySelectorAll('[data-scada-events]')");
             StringAssert.Contains(html, "root.id + '__' + sanitizeElementId(elementId)");

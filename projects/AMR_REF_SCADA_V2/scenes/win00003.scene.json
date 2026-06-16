@@ -65,528 +65,6 @@
       "Events": null
     },
     {
-      "Id": "legacy_1",
-      "DisplayName": "Button1",
-      "Kind": "LegacyStatic",
-      "Bounds": {
-        "X": 2,
-        "Y": 32,
-        "Width": 138,
-        "Height": 43
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00003",
-        "SourceElementId": "1",
-        "SourceElementName": "Button1",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00003_914fdd0dccf0.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null
-      },
-      "Data": {
-        "Text": "",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false
-      },
-      "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Button",
-        "Text": "",
-        "IsTextLike": true,
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
-      "Events": null
-    },
-    {
-      "Id": "legacy_2",
-      "DisplayName": "Button2",
-      "Kind": "LegacyStatic",
-      "Bounds": {
-        "X": 146,
-        "Y": 32,
-        "Width": 138,
-        "Height": 44
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00003",
-        "SourceElementId": "2",
-        "SourceElementName": "Button2",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00003_914fdd0dccf0.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null
-      },
-      "Data": {
-        "Text": "",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false
-      },
-      "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Button",
-        "Text": "",
-        "IsTextLike": true,
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
-      "Events": null
-    },
-    {
-      "Id": "legacy_3",
-      "DisplayName": "Button3",
-      "Kind": "LegacyStatic",
-      "Bounds": {
-        "X": 287,
-        "Y": 32,
-        "Width": 138,
-        "Height": 44
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00003",
-        "SourceElementId": "3",
-        "SourceElementName": "Button3",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00003_914fdd0dccf0.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null
-      },
-      "Data": {
-        "Text": "",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false
-      },
-      "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Button",
-        "Text": "",
-        "IsTextLike": true,
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
-      "Events": null
-    },
-    {
-      "Id": "legacy_4",
-      "DisplayName": "Button4",
-      "Kind": "LegacyStatic",
-      "Bounds": {
-        "X": 430,
-        "Y": 32,
-        "Width": 138,
-        "Height": 44
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00003",
-        "SourceElementId": "4",
-        "SourceElementName": "Button4",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00003_914fdd0dccf0.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null
-      },
-      "Data": {
-        "Text": "",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false
-      },
-      "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Button",
-        "Text": "",
-        "IsTextLike": true,
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
-      "Events": null
-    },
-    {
-      "Id": "legacy_5",
-      "DisplayName": "Button5",
-      "Kind": "LegacyStatic",
-      "Bounds": {
-        "X": 571,
-        "Y": 32,
-        "Width": 138,
-        "Height": 44
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00003",
-        "SourceElementId": "5",
-        "SourceElementName": "Button5",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00003_914fdd0dccf0.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null
-      },
-      "Data": {
-        "Text": "",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false
-      },
-      "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Button",
-        "Text": "",
-        "IsTextLike": true,
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
-      "Events": null
-    },
-    {
-      "Id": "legacy_6",
-      "DisplayName": "Button6",
-      "Kind": "LegacyStatic",
-      "Bounds": {
-        "X": 711,
-        "Y": 32,
-        "Width": 138,
-        "Height": 44
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00003",
-        "SourceElementId": "6",
-        "SourceElementName": "Button6",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00003_914fdd0dccf0.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null
-      },
-      "Data": {
-        "Text": "",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false
-      },
-      "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Button",
-        "Text": "",
-        "IsTextLike": true,
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
-      "Events": null
-    },
-    {
-      "Id": "legacy_7",
-      "DisplayName": "Button7",
-      "Kind": "LegacyStatic",
-      "Bounds": {
-        "X": 854,
-        "Y": 32,
-        "Width": 138,
-        "Height": 44
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00003",
-        "SourceElementId": "7",
-        "SourceElementName": "Button7",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00003_914fdd0dccf0.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null
-      },
-      "Data": {
-        "Text": "",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false
-      },
-      "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Button",
-        "Text": "",
-        "IsTextLike": true,
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
-      "Events": null
-    },
-    {
-      "Id": "legacy_8",
-      "DisplayName": "Button8",
-      "Kind": "LegacyStatic",
-      "Bounds": {
-        "X": 1133,
-        "Y": 3,
-        "Width": 138,
-        "Height": 72
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00003",
-        "SourceElementId": "8",
-        "SourceElementName": "Button8",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00003_914fdd0dccf0.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null
-      },
-      "Data": {
-        "Text": "",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false
-      },
-      "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Button",
-        "Text": "",
-        "IsTextLike": true,
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
-      "Events": null
-    },
-    {
-      "Id": "legacy_9",
-      "DisplayName": "Button9",
-      "Kind": "LegacyStatic",
-      "Bounds": {
-        "X": 995,
-        "Y": 32,
-        "Width": 134,
-        "Height": 44
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00003",
-        "SourceElementId": "9",
-        "SourceElementName": "Button9",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00003_914fdd0dccf0.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null
-      },
-      "Data": {
-        "Text": "",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false
-      },
-      "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Button",
-        "Text": "",
-        "IsTextLike": true,
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
-      "Events": null
-    },
-    {
       "Id": "legacy_11",
       "DisplayName": "Text1",
       "Kind": "LegacyStatic",
@@ -645,21 +123,21 @@
       "Events": null
     },
     {
-      "Id": "legacy_12",
-      "DisplayName": "Button10",
-      "Kind": "LegacyStatic",
+      "Id": "elementplus_button_1",
+      "DisplayName": "Element\u002B Button1",
+      "Kind": "Button",
       "Bounds": {
         "X": 2,
-        "Y": 2,
-        "Width": 53,
-        "Height": 28
+        "Y": 32,
+        "Width": 138,
+        "Height": 43
       },
       "LegacySource": {
         "SourceSystem": "Wonderware/ArchestrA",
         "SourceDocumentId": "win00003",
-        "SourceElementId": "12",
-        "SourceElementName": "Button10",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00003_914fdd0dccf0.html"
+        "SourceElementId": "1",
+        "SourceElementName": "Button1",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
       },
       "Layout": {
         "PositionMode": "Absolute",
@@ -670,14 +148,14 @@
         "FontSize": 10,
         "Foreground": "rgb(211, 211, 211)",
         "Background": "rgb(211, 211, 211)",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
+        "BorderColor": "#8AA0A6",
+        "BorderWidth": 1,
+        "BorderStyle": "Solid",
         "ShadowPreset": "None",
         "AdvancedCss": null
       },
       "Data": {
-        "Text": "",
+        "Text": "Button1",
         "Placeholder": null,
         "Value": null,
         "Minimum": null,
@@ -689,27 +167,444 @@
         "IsReadOnly": false
       },
       "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Button",
-        "Text": "",
-        "IsTextLike": true,
+      "LegacyPayload": null,
+      "Events": null
+    },
+    {
+      "Id": "elementplus_button_2",
+      "DisplayName": "Element\u002B Button2",
+      "Kind": "Button",
+      "Bounds": {
+        "X": 146,
+        "Y": 32,
+        "Width": 138,
+        "Height": 44
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00003",
+        "SourceElementId": "2",
+        "SourceElementName": "Button2",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
         "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
         "FontSize": 10,
         "Foreground": "rgb(211, 211, 211)",
         "Background": "rgb(211, 211, 211)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
+        "BorderColor": "#8AA0A6",
+        "BorderWidth": 1,
+        "BorderStyle": "Solid",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
       },
+      "Data": {
+        "Text": "Button2",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": null,
+      "Events": null
+    },
+    {
+      "Id": "elementplus_button_3",
+      "DisplayName": "Element\u002B Button3",
+      "Kind": "Button",
+      "Bounds": {
+        "X": 287,
+        "Y": 32,
+        "Width": 138,
+        "Height": 44
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00003",
+        "SourceElementId": "3",
+        "SourceElementName": "Button3",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "#8AA0A6",
+        "BorderWidth": 1,
+        "BorderStyle": "Solid",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "Button3",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": null,
+      "Events": null
+    },
+    {
+      "Id": "elementplus_button_4",
+      "DisplayName": "Element\u002B Button4",
+      "Kind": "Button",
+      "Bounds": {
+        "X": 430,
+        "Y": 32,
+        "Width": 138,
+        "Height": 44
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00003",
+        "SourceElementId": "4",
+        "SourceElementName": "Button4",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "#8AA0A6",
+        "BorderWidth": 1,
+        "BorderStyle": "Solid",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "Button4",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": null,
+      "Events": null
+    },
+    {
+      "Id": "elementplus_button_5",
+      "DisplayName": "Element\u002B Button5",
+      "Kind": "Button",
+      "Bounds": {
+        "X": 571,
+        "Y": 32,
+        "Width": 138,
+        "Height": 44
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00003",
+        "SourceElementId": "5",
+        "SourceElementName": "Button5",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "#8AA0A6",
+        "BorderWidth": 1,
+        "BorderStyle": "Solid",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "Button5",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": null,
+      "Events": null
+    },
+    {
+      "Id": "elementplus_button_6",
+      "DisplayName": "Element\u002B Button6",
+      "Kind": "Button",
+      "Bounds": {
+        "X": 711,
+        "Y": 32,
+        "Width": 138,
+        "Height": 44
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00003",
+        "SourceElementId": "6",
+        "SourceElementName": "Button6",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "#8AA0A6",
+        "BorderWidth": 1,
+        "BorderStyle": "Solid",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "Button6",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": null,
+      "Events": null
+    },
+    {
+      "Id": "elementplus_button_7",
+      "DisplayName": "Element\u002B Button7",
+      "Kind": "Button",
+      "Bounds": {
+        "X": 854,
+        "Y": 32,
+        "Width": 138,
+        "Height": 44
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00003",
+        "SourceElementId": "7",
+        "SourceElementName": "Button7",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "#8AA0A6",
+        "BorderWidth": 1,
+        "BorderStyle": "Solid",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "Button7",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": null,
+      "Events": null
+    },
+    {
+      "Id": "elementplus_button_9",
+      "DisplayName": "Element\u002B Button9",
+      "Kind": "Button",
+      "Bounds": {
+        "X": 995,
+        "Y": 32,
+        "Width": 134,
+        "Height": 44
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00003",
+        "SourceElementId": "9",
+        "SourceElementName": "Button9",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "#8AA0A6",
+        "BorderWidth": 1,
+        "BorderStyle": "Solid",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "Button9",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": null,
+      "Events": null
+    },
+    {
+      "Id": "elementplus_button_8",
+      "DisplayName": "Element\u002B Button8",
+      "Kind": "Button",
+      "Bounds": {
+        "X": 1133,
+        "Y": 3,
+        "Width": 138,
+        "Height": 72
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00003",
+        "SourceElementId": "8",
+        "SourceElementName": "Button8",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "#8AA0A6",
+        "BorderWidth": 1,
+        "BorderStyle": "Solid",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "Button8",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": null,
+      "Events": null
+    },
+    {
+      "Id": "elementplus_button_12",
+      "DisplayName": "Element\u002B Button10",
+      "Kind": "Button",
+      "Bounds": {
+        "X": 2,
+        "Y": 2,
+        "Width": 53,
+        "Height": 28
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00003",
+        "SourceElementId": "12",
+        "SourceElementName": "Button10",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "#8AA0A6",
+        "BorderWidth": 1,
+        "BorderStyle": "Solid",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": "Button10",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": null,
+      "LegacyPayload": null,
       "Events": null
     }
   ],
   "BackgroundColor": "#A6A6A6",
-  "LegacyTextOverrides": [
-    {
-      "SourceElementId": "1",
-      "Text": ""
-    }
-  ],
+  "LegacyTextOverrides": [],
   "LegacyElementsMaterialized": true,
   "RemovedSourceElementIds": [
     "10",
