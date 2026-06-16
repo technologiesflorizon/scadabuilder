@@ -8,7 +8,7 @@ Document version: `V2.1.1.0037`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-15 | `V2.1.1.0037` | `PENDING` | Ajout de la roadmap d'extraction des tags cote TF100Web et d'import du fichier de tags dans SCADA Builder V2. |
+| 2026-06-15 | `V2.1.1.0037` | `90c108b` | Ajout de la roadmap d'extraction des tags cote TF100Web et d'import du fichier de tags dans SCADA Builder V2. |
 | 2026-06-15 | `V2.1.1.0036` | `63c2475` | Contrat general de namespace CSS/DOM/runtime par page pour eviter toute collision de selecteurs TF100Web. |
 | 2026-06-15 | `V2.1.1.0035` | `63c2475` | Clarification que les CSS `data-id` exportees sont scopees au root de page pour proteger la composition TF100Web. |
 | 2026-06-15 | `V2.1.1.0034` | `63c2475` | Clarification que l'omission export source depend de l'etat scene `RemovedSourceElementIds`, pas du masquage WebView. |

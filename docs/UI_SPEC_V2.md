@@ -8,7 +8,7 @@ Document version: `V2.1.1.0037`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-15 | `V2.1.1.0037` | `PENDING` | Ajout de la roadmap du jeu de proprietes CSS partage entre SCADA Builder V2 et Studio Element+. |
+| 2026-06-15 | `V2.1.1.0037` | `90c108b` | Ajout de la roadmap du jeu de proprietes CSS partage entre SCADA Builder V2 et Studio Element+. |
 | 2026-06-15 | `V2.1.1.0030` | `72350e3` | Normalisation du header documentaire et rattachement a l'arbre documentaire stable. |
 | 2026-06-15 | `V2.0.0.0003` | `2b59efb` | Baseline initiale du depot SCADA Builder V2; mise a jour page properties et object actions. |
 
