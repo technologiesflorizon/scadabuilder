@@ -2,12 +2,13 @@
 
 Date: 2026-06-15
 Status: Draft implementation spec
-Document version: `V2.1.1.0030`
+Document version: `V2.1.1.0037`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0037` | `PENDING` | Ajout de la roadmap du jeu de proprietes CSS partage entre SCADA Builder V2 et Studio Element+. |
 | 2026-06-15 | `V2.1.1.0030` | `72350e3` | Normalisation du header documentaire et rattachement a l'arbre documentaire stable. |
 | 2026-06-15 | `V2.0.0.0003` | `2b59efb` | Baseline initiale du depot SCADA Builder V2; mise a jour page properties et object actions. |
 
@@ -350,6 +351,15 @@ Action property rule:
 
 Properties must be validated before applying to the model. Unsupported values should show a warning and should not silently generate invalid output.
 
+CSS property roadmap:
+
+1. The property inspector must expose a broader CSS-capable metadata set for SCADA Builder V2 and Studio Element+ instead of one-off hardcoded controls.
+2. The shared set must cover position/layout, box model, background, fill/stroke, border radius, typography, opacity, transform, shadow/glow-ready tokens, filters, cursor/interaction, visibility, and runtime state/effect classes.
+3. Every CSS-related value must have an editor type, validation rule, serialization rule, preview output rule, and export output rule.
+4. Unsupported browser/runtime values must remain blocked or warning-only until preview and TF100 export can reproduce them deterministically.
+5. Event visual effects such as blink, glow, pulse, alarm highlight, and degraded visual treatment must be represented as validated effect/state properties, not arbitrary untracked CSS text.
+6. Page-scoped CSS namespace rules remain mandatory when these properties are exported to TF100Web.
+
 ### 7.4 Librairie Context
 
 Shows reusable items:
@@ -541,6 +551,14 @@ Editor types:
 
 CSS-related values must serialize into the project/scene model and produce deterministic preview/build output.
 
+Shared CSS property metadata requirements:
+
+1. SCADA Builder V2 and Studio Element+ must consume the same property metadata catalog where possible.
+2. Each metadata entry defines allowed element/component kinds, unit support, default value, validation severity, and export behavior.
+3. Runtime effect properties must be modeled explicitly enough for events and tag conditions to target them by id.
+4. Free-form CSS can exist only as an advanced escape hatch after validation and export scoping rules are defined.
+5. The first implementation should prefer a curated property matrix over a full arbitrary CSS editor.
+
 ## 14. Preview and Build Parity
 
 Preview and build must consume the same scene model.
@@ -640,3 +658,5 @@ The UI shell is acceptable when:
 3. Define final icon set.
 4. Define exact visual treatment for global lock selection vs object lock.
 5. Define the minimum property set for the first element types: text, image, group and imported legacy element.
+6. Define the first shared CSS property matrix for SCADA Builder V2 and Studio Element+.
+7. Define which visual effects are CSS-only and which require generated runtime JavaScript.

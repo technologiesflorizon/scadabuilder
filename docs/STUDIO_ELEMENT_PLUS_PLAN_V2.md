@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Studio Element+ Plan
 
 Date: 2026-06-15
-Status: Approved direction
-Document version: `V2.1.1.0030`
+Status: Approved direction; modernization roadmap added
+Document version: `V2.1.1.0037`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0037` | `PENDING` | Ajout de la roadmap Studio Element+: modernisation d'elements, jeu CSS et effets visuels evenementiels. |
 | 2026-06-15 | `V2.1.1.0030` | `72350e3` | Normalisation du header documentaire et rattachement a l'arbre documentaire stable. |
 | 2026-06-15 | `V2.1.0.0000` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 
@@ -297,7 +298,46 @@ tests/ScadaBuilderV2.Tests/ElementStudioSourceRenderingTests.cs
 tests/ScadaBuilderV2.Tests/StudioElementPlusContractTests.cs
 ```
 
-## 11. Implementation Plan
+## 11. Roadmap - Element Modernization, CSS Properties, And Event Effects
+
+This roadmap is future development, not implemented behavior in the current slice.
+
+Studio Element+ must evolve from a source-isolation/editor tool into a modernization workspace that can improve selected material before publishing an Element+ component.
+
+Modernization goals:
+
+1. Rework selected source material into cleaner modern Element+ visuals rather than only wrapping the legacy HTML/SVG.
+2. Support enhancement of images, SVG shapes, forms, and composed industrial symbols.
+3. Preserve the promising preliminary SCADA Builder V1 experiments as product direction, while rebuilding the workflow on the V2 `.ft1`/`.sep` contracts.
+4. Offer tools to clean geometry, simplify shapes, normalize fills/strokes, replace low-quality images, and compose reusable industrial objects.
+5. Keep all generated output as real Element+ component primitives, embedded assets, or component CSS in the `.sep` model.
+6. Never export workzone overlays, selection rectangles, handles, diagnostics, or temporary helper layers as component geometry.
+
+CSS property roadmap shared with SCADA Builder V2:
+
+1. Geometry and layout: `left`, `top`, `width`, `height`, `min/max`, `box-sizing`, overflow, clipping, and transform origin.
+2. Fill, stroke, and border: background color/image, stroke color, stroke width, border, border radius, line style, and opacity.
+3. Typography: font family, size, weight, alignment, line height, wrapping, and text color.
+4. Visual depth and filters: shadow, glow-ready shadow tokens, blur/filter, brightness, contrast, saturation, and blend mode when supported.
+5. Interaction/state properties: cursor, pointer behavior, visibility, disabled/locked visual state, and runtime state classes.
+6. Effect tokens: blink, glow, pulse, alarm highlight, and degraded visual treatment.
+
+Event visual effect roadmap:
+
+1. Studio Element+ can author reusable visual effect presets on a component.
+2. SCADA Builder V2 can bind those effects to object events, tag conditions, or generated page lifecycle events.
+3. Exported effects must be page-namespaced and must not generate package-global selectors.
+4. Effects are runtime/component behavior, not editor overlay state.
+5. Effects must remain deterministic so preview, save/reload, and TF100 export use the same model.
+
+Guardrails:
+
+1. Selection, hit-testing, deletion, and movement remain governed by `STUDIO_ELEMENT_PLUS_SELECTION_DECISIONS_V2.md`.
+2. Every present source or Element+ object remains selectable according to the polymorphic selection contract.
+3. Modernization does not automatically delete source elements in SCADA Builder V2; replacement remains explicit and undoable.
+4. Source deletion still goes through the global scene history and `RemovedSourceElementIds`, never through durable CSS masking.
+
+## 12. Implementation Plan
 
 Phase 1 - Contract and launcher:
 
@@ -354,13 +394,16 @@ Phase 4 - SCADA Builder integration:
 2. Add insert Element+ from library.
 3. Add optional replace-source workflow.
 
-## 12. Open Technical Questions
+## 13. Open Technical Questions
 
 1. How much raw geometry can be extracted reliably from the current legacy HTML/SVG output?
 2. Should the first Studio scene render imported items from extracted geometry or from a clipped legacy DOM snapshot?
 3. Should `.sep` packages use plain JSON with a schema version first, or a zip/container layout immediately?
 4. How should Studio auto-generate clean internal names during import while preserving source legacy traceability?
 5. Should a visual-only Element+ component be allowed to contain no FT100 binding at all?
+6. Which Studio Element+ modernization tools from the SCADA Builder V1 experiments should be rebuilt first in V2?
+7. Which CSS properties are safe for the first shared property metadata set across SCADA Builder V2 and Studio Element+?
+8. Which visual effects must be pure CSS classes and which require generated runtime JavaScript?
 
 Default recommendation:
 

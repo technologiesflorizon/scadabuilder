@@ -282,7 +282,7 @@ public sealed class StudioElementPlusContractTests
         var decisions = ReadProjectFile("docs", "STUDIO_ELEMENT_PLUS_SELECTION_DECISIONS_V2.md");
         var version = ReadProjectFile("VERSION");
 
-        StringAssert.Contains(version, "V2.1.1.0036");
+        StringAssert.Contains(version, "V2.1.1.0037");
         StringAssert.Contains(code, "case \"clearSelection\":");
         StringAssert.Contains(code, "UpdateSelectionGeometryFields();");
         StringAssert.Contains(xaml, "Text=\"{Binding StructureSummary}\"");

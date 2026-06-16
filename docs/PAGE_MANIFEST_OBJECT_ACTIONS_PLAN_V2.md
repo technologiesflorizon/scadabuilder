@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Page Manifest And Object Actions Plan
 
 Date: 2026-06-15
-Status: First implementation slice delivered
-Document version: `V2.1.1.0030`
+Status: Runtime foundation delivered; event and tag roadmap planned
+Document version: `V2.1.1.0037`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0037` | `PENDING` | Documentation de la roadmap de developpement events: `On click -> change page`, conditions sur tags, effets visuels et scripts globaux. |
 | 2026-06-15 | `V2.1.1.0030` | `72350e3` | Normalisation du header documentaire et rattachement a l'arbre documentaire stable. |
 | 2026-06-15 | `V2.1.1.0024` | `2b59efb` | Baseline initiale du depot SCADA Builder V2; premiere tranche page manifest/actions. |
 
@@ -31,8 +32,9 @@ Required separation:
 1. Page records describe structure, routing identity, type, authored dimensions, required display dimensions, background, source path, and composition role.
 2. Object records describe object identity, geometry, style, bindings, and event bindings.
 3. Action definitions describe reusable runtime operations such as navigation or visibility changes.
-4. Only object event bindings can trigger actions.
-5. A page may be the target of an action, but it is never the owner of that action.
+4. Only object event bindings can trigger actions in the current runtime contract.
+5. A page may be the target of an action, but it is never the owner of an ad hoc object action list.
+6. Future global scripts may generate project-owned page lifecycle events, but those generated events must remain explicit model records and must not become hidden imperative code attached directly to page files.
 
 ## 3. Page Types
 
@@ -231,6 +233,30 @@ Optional future fields:
 3. `PreventDefault`.
 4. `DebounceMs`.
 5. `Parameters`.
+6. `EffectId`.
+7. `ScriptId`.
+
+Future tag condition shape:
+
+```json
+{
+  "Trigger": "tagChanged",
+  "Condition": {
+    "Kind": "tagBoolean",
+    "TagId": "tf100.pump_01.running",
+    "Operator": "isTrue"
+  },
+  "ActionId": "action_apply_effect_pump_01"
+}
+```
+
+Rules:
+
+1. `TagId` must reference the imported project tag catalog, not a free-text label.
+2. Boolean conditions must initially support `isTrue`, `isFalse`, and `isDegraded`.
+3. Degraded state must be resolved from the TF100Web tag catalog quality/diagnostic metadata, not inferred from display text.
+4. Missing or stale tags must produce validation warnings or errors before preview/export.
+5. Tag conditions are event conditions; they must not create page-owned action trigger lists.
 
 Initial supported triggers:
 
@@ -257,6 +283,10 @@ Initial supported action kinds:
 6. `toggleClass`: toggle a runtime class/state on an object.
 7. `mountFragment`: mount or display a fragment.
 8. `writeTag`: future FT100/SCADA write action placeholder.
+9. `applyEffect`: future visual effect action placeholder.
+10. `removeEffect`: future visual effect action placeholder.
+11. `toggleEffect`: future visual effect action placeholder.
+12. `runGlobalScript`: future global script action placeholder.
 
 Rules:
 
@@ -264,7 +294,9 @@ Rules:
 2. `show`, `hide`, `toggleVisibility`, `setClass`, and `toggleClass` target object ids.
 3. `mountFragment` targets a fragment page id and a host object or named region.
 4. `writeTag` must remain disabled or validation-warning-only until the FT100 write contract is approved.
-5. Build must fail or warn according to severity when an action target cannot be resolved.
+5. `applyEffect`, `removeEffect`, and `toggleEffect` must target validated visual effect definitions such as blink, glow, pulse, alarm highlight, or degraded-state treatment.
+6. `runGlobalScript` must target a project-level script definition and must remain sandboxed, deterministic, and export-visible.
+7. Build must fail or warn according to severity when an action target cannot be resolved.
 
 ## 9. Django Contract
 
@@ -358,9 +390,10 @@ Required validation:
 7. Object events reference existing action ids.
 8. Actions reference existing page ids, element ids, fragment ids, or tag placeholders.
 9. No page owns an event binding.
-10. No page owns an action trigger list.
-11. Fragment pages are not used as normal navigation targets unless explicitly allowed.
-12. Editor-only overlays, handles, drag rectangles, zoom, pan, and diagnostics are excluded from runtime/export manifests.
+10. No page owns an ad hoc object action trigger list.
+11. Project-owned generated page lifecycle events reference page ids explicitly and are visible in the exported manifest.
+12. Fragment pages are not used as normal navigation targets unless explicitly allowed.
+13. Editor-only overlays, handles, drag rectangles, zoom, pan, and diagnostics are excluded from runtime/export manifests.
 
 ## 13. Implementation Phases
 
@@ -428,8 +461,83 @@ Required tests:
 3. Confirm whether fragments can be direct navigation targets for diagnostics only.
 4. Confirm the first supported Django routing convention for `navigate`.
 5. Confirm the first full multi-page package layout once TF100Web consumes project-level manifests instead of one scene package at a time.
+6. Confirm the exact tag condition schema once TF100Web exports the first tag catalog file.
+7. Confirm the runtime meaning of `degraded`: quality flag, communication failure, stale timestamp, invalid value, or a combination.
+8. Confirm visual effect precedence when multiple tag/event conditions target the same object.
+9. Confirm the sandbox, allowed APIs, execution order, and validation model for global scripts that generate page lifecycle events.
 
-## 16. Implemented Slice V2.1.1.0012
+## 16. Next Development Slice V2.1.1.0037
+
+This is a planned feature-development slice, not a bug-correction slice.
+
+The next development step is user-authored object events, starting with:
+
+```text
+On click -> change page
+```
+
+Scope:
+
+1. The first supported authoring workflow is selecting a present object, adding an `On click` event, and choosing a target compiled/default page.
+2. The UI must expose the event from the selected object's properties, not from page properties.
+3. The event must create or reuse a `navigate` action definition with a stable id and `TargetPageId`.
+4. The selected object must receive an object-owned event binding with `Trigger = "click"` and `ActionId = <navigate action id>`.
+5. Save/reload must preserve the action definition and object event binding.
+6. Preview must execute the event against the current project page inventory.
+7. FT100 export must include the event binding and navigate action in page and root manifests and preserve the runtime script behavior already defined by the export contract.
+8. Validation must block or clearly warn when the target page is missing, not compiled, not navigable, or equal to an invalid fragment target.
+
+Out of scope for this first slice:
+
+1. Visibility/class actions.
+2. Tag writes.
+3. Conditional events.
+4. Event chaining or multiple actions per trigger.
+5. Global/page-owned events.
+6. Runtime styling changes unrelated to navigation.
+7. Bug fixes in selection, export geometry, header/footer layout, or TF100Web intake.
+8. Tag catalog import, tag conditions, visual effects, and global scripts are roadmap items after the navigation slice.
+
+Acceptance criteria:
+
+1. A user can configure `On click -> change page` without editing JSON manually.
+2. The inspector shows the existing event after reload.
+3. Undo/redo covers event creation, target-page change, and event deletion through the same scene history model as other object property changes.
+4. Duplicate event creation for the same object/trigger/target is prevented or merged deterministically.
+5. Exported manifests contain no page-owned trigger list.
+6. Runtime navigation keeps the current page namespace contract and does not target objects outside the exported page root.
+7. Regression tests cover create, edit, delete, save/reload, validation, preview/export manifest, and runtime export for `click -> navigate`.
+
+Suggested implementation order:
+
+1. Add object property panel controls for an event list and an `On click -> change page` command.
+2. Add application commands for create/update/delete object event bindings and navigate actions.
+3. Reuse existing domain records `ScadaObjectEventBinding` and `ScadaActionDefinition` before introducing new model shapes.
+4. Add validation to ensure the target page exists, is compiled, and is an approved navigation target.
+5. Persist and reload the event through `ModernProjectStore`.
+6. Refresh preview from the saved scene/project model.
+7. Extend regression coverage before expanding to other event/action types.
+
+Roadmap after the first event slice:
+
+1. Add project tag catalog support from the TF100Web tag file documented in `FT100_INTEGRATION_STRATEGY_V2.md`.
+2. Add tag-driven boolean event conditions:
+   - `If tag is true`.
+   - `If tag is false`.
+   - `If tag is degraded`.
+3. Add event-triggered visual effects:
+   - `blink`.
+   - `glow`.
+   - `pulse`.
+   - alarm/highlight state.
+   - degraded-state visual treatment.
+4. Add project-level global scripts that can generate validated page lifecycle events.
+5. Keep global scripts as project-owned model definitions with explicit exported metadata; do not hide behavior in page-local JavaScript fragments.
+6. Ensure every generated event/action/effect keeps the page namespace contract already required for TF100Web composition.
+7. Extend validation so missing tags, stale tag catalogs, invalid effect ids, script errors, and unsupported page lifecycle targets are reported before export.
+8. Add regression coverage before enabling each roadmap item in preview or TF100 export.
+
+## 17. Implemented Slice V2.1.1.0012
 
 The first implementation slice covers:
 
@@ -441,7 +549,7 @@ The first implementation slice covers:
 6. Runtime export support for object `click` event bindings that invoke `navigate`, visibility, and class actions.
 7. Regression coverage for page manifest persistence, object event persistence, structured background export CSS, Django manifest output, and object-owned `click -> navigate`.
 
-## 17. Implemented Slice V2.1.1.0020
+## 18. Implemented Slice V2.1.1.0020
 
 The second implementation slice covers:
 
@@ -453,7 +561,7 @@ The second implementation slice covers:
 6. FT100 manifest version `2.1` output with home, compile, header, and footer fields.
 7. Regression coverage in `ModernProjectStoreTests` and `Ft100SceneExporterTests`, plus a full solution build.
 
-## 18. Implemented Slice V2.1.1.0021
+## 19. Implemented Slice V2.1.1.0021
 
 The third implementation slice covers:
 
@@ -465,7 +573,7 @@ The third implementation slice covers:
 6. Non-compiled pages are omitted from the generated package.
 7. Regression coverage verifies compiled multi-page export, aggregate manifest paths, home/header/footer metadata, and omitted non-compiled pages.
 
-## 19. Implemented Slice V2.1.1.0022
+## 20. Implemented Slice V2.1.1.0022
 
 The fourth implementation slice covers:
 
@@ -476,7 +584,7 @@ The fourth implementation slice covers:
 5. The export status now reports the package folder that should be moved or copied into TF100Web.
 6. Regression coverage verifies stale package content is removed and output is written under the normalized package folder.
 
-## 20. Implemented Slice V2.1.1.0024
+## 21. Implemented Slice V2.1.1.0024
 
 The fifth implementation slice covers:
 

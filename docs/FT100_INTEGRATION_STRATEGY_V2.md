@@ -2,12 +2,13 @@
 
 Date: 2026-06-15
 Status: Draft
-Document version: `V2.1.1.0036`
+Document version: `V2.1.1.0037`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0037` | `PENDING` | Ajout de la roadmap d'extraction des tags cote TF100Web et d'import du fichier de tags dans SCADA Builder V2. |
 | 2026-06-15 | `V2.1.1.0036` | `63c2475` | Contrat general de namespace CSS/DOM/runtime par page pour eviter toute collision de selecteurs TF100Web. |
 | 2026-06-15 | `V2.1.1.0035` | `63c2475` | Clarification que les CSS `data-id` exportees sont scopees au root de page pour proteger la composition TF100Web. |
 | 2026-06-15 | `V2.1.1.0034` | `63c2475` | Clarification que l'omission export source depend de l'etat scene `RemovedSourceElementIds`, pas du masquage WebView. |
@@ -40,14 +41,17 @@ V2.00 does not need to fully automate every FT100 mapping, action, or runtime bi
 
 FT100 integration should be introduced by capability line:
 
-1. Import FT100 mapping list.
-2. Show available FT100 tags/mappings in the editor.
-3. Bind FT100 values to object properties.
-4. Generate runtime bindings.
-5. Validate missing or incompatible tags.
-6. Support action relationships.
-7. Support advanced scripting and generated JavaScript.
-8. Support full project export for FT100 deployment.
+1. Extract a TF100Web tag catalog from the runtime/mapping side.
+2. Import the TF100Web tag file into the SCADA Builder V2 project.
+3. Import FT100 mapping list.
+4. Show available FT100 tags/mappings in the editor.
+5. Bind FT100 values to object properties.
+6. Generate runtime bindings.
+7. Validate missing or incompatible tags.
+8. Support tag-conditioned events.
+9. Support action relationships.
+10. Support advanced scripting and generated JavaScript.
+11. Support full project export for FT100 deployment.
 
 ## 4. Data Contract Direction
 
@@ -57,9 +61,10 @@ The editor must distinguish:
 2. Responsive layout variants.
 3. Object style/properties.
 4. FT100 mappings.
-5. Actions.
-6. Scripts.
-7. Generated runtime output.
+5. TF100Web tag catalog.
+6. Actions.
+7. Scripts.
+8. Generated runtime output.
 
 The FT100 mapping layer should not be mixed directly into UI widgets.
 
@@ -207,6 +212,45 @@ Phase 5 - Production hardening:
 3. Add compatibility tests for previously exported `ft100-legacy-layer` packages.
 4. Document the operator deployment workflow for Windows development and FT100 unit deployment.
 
+Phase 6 - TF100Web tag catalog extraction and import:
+
+1. Add a TF100Web-side extraction mechanism that writes the available runtime tags into a versioned file.
+2. Use a deterministic JSON tag catalog as the first interchange format.
+3. Recommended file name:
+
+```text
+tf100web-tags.json
+```
+
+4. The file must be importable into a SCADA Builder V2 project without requiring manual copy/paste of tag names.
+5. SCADA Builder V2 stores the imported catalog as project metadata and treats it as the source for tag pickers, tag binding validation, and tag-conditioned events.
+6. Events must reference stable tag ids from the imported catalog, not display labels or DOM ids.
+7. Reimport must detect removed, renamed, stale, and type-changed tags without silently rewriting existing event bindings.
+8. The import workflow must produce a validation report before preview/export.
+
+Minimum tag catalog fields:
+
+1. Schema version.
+2. Extracted timestamp.
+3. TF100Web source identity or station identity.
+4. Stable tag id.
+5. Display name.
+6. Runtime path or mapping key.
+7. Data type.
+8. Unit, when available.
+9. Read/write capability.
+10. Quality/degraded metadata.
+11. Optional source trace to the TF100Web mapping model.
+12. Optional grouping/category information for editor browsing.
+
+Tag catalog rules:
+
+1. Boolean event conditions initially support `If tag is true`, `If tag is false`, and `If tag is degraded`.
+2. Numeric/string tag events remain future work until boolean conditions and degraded semantics are stable.
+3. `Degraded` must be represented explicitly by the catalog/runtime quality contract; SCADA Builder V2 must not infer it from color, CSS class, or text formatting.
+4. A tag catalog import does not grant write capability. Tag writes remain disabled until the FT100 write contract is approved.
+5. The catalog is a project input, not an editor UI cache; it must survive save/reload and participate in validation.
+
 ## 9. Near-Term Industrial USB Deployment Direction
 
 This is a future industrial deployment direction, not an implemented runtime behavior yet.
@@ -237,3 +281,6 @@ USB deployment hardening requirements:
 4. Decide whether local SCADA Builder V2 export should know the default TF100Web path or use a user-configured deployment target.
 5. Decide the exact USB filesystem layout, registry file format, and validation/checksum policy for Industrial deployments.
 6. Decide the approved sanitized-source policy for pages where `03_web_legacy`, `08_web_modernized`, inventory JSON, and saved V2 scene geometry disagree.
+7. Decide whether `tf100web-tags.json` is generated from TF100Web runtime discovery, static mapping configuration, or both.
+8. Decide the exact stale-tag policy: warning-only, blocking validation, or explicit user remap.
+9. Decide the canonical degraded-state sources and precedence when communication quality, timestamp age, and runtime diagnostics disagree.
