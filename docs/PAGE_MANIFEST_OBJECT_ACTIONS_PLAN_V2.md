@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Page Manifest And Object Actions Plan
 
 Date: 2026-06-15
-Status: Runtime foundation delivered; event and tag roadmap planned
-Document version: `V2.1.1.0037`
+Status: Runtime foundation delivered; event, popup, hover, and tag roadmap planned
+Document version: `V2.1.1.0038`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0038` | `PENDING` | Ajout de la roadmap `On click -> open popup` et `mouse hover -> show element/group border`. |
 | 2026-06-15 | `V2.1.1.0037` | `90c108b` | Documentation de la roadmap de developpement events: `On click -> change page`, conditions sur tags, effets visuels et scripts globaux. |
 | 2026-06-15 | `V2.1.1.0030` | `72350e3` | Normalisation du header documentaire et rattachement a l'arbre documentaire stable. |
 | 2026-06-15 | `V2.1.1.0024` | `2b59efb` | Baseline initiale du depot SCADA Builder V2; premiere tranche page manifest/actions. |
@@ -235,6 +236,7 @@ Optional future fields:
 5. `Parameters`.
 6. `EffectId`.
 7. `ScriptId`.
+8. `PopupId`.
 
 Future tag condition shape:
 
@@ -286,7 +288,10 @@ Initial supported action kinds:
 9. `applyEffect`: future visual effect action placeholder.
 10. `removeEffect`: future visual effect action placeholder.
 11. `toggleEffect`: future visual effect action placeholder.
-12. `runGlobalScript`: future global script action placeholder.
+12. `openPopup`: future popup action that displays a fragment in an overlay/host region.
+13. `closePopup`: future popup action that closes a specific popup instance or the active popup.
+14. `togglePopup`: future popup action that toggles a fragment-backed popup.
+15. `runGlobalScript`: future global script action placeholder.
 
 Rules:
 
@@ -295,8 +300,10 @@ Rules:
 3. `mountFragment` targets a fragment page id and a host object or named region.
 4. `writeTag` must remain disabled or validation-warning-only until the FT100 write contract is approved.
 5. `applyEffect`, `removeEffect`, and `toggleEffect` must target validated visual effect definitions such as blink, glow, pulse, alarm highlight, or degraded-state treatment.
-6. `runGlobalScript` must target a project-level script definition and must remain sandboxed, deterministic, and export-visible.
-7. Build must fail or warn according to severity when an action target cannot be resolved.
+6. `openPopup`, `closePopup`, and `togglePopup` target popup definitions whose content page is a compiled `fragment`.
+7. Popup fragments keep their internal object events and behaviors, but those behaviors must be page/popup-instance scoped so they cannot collide with the host page, header, footer, or another popup.
+8. `runGlobalScript` must target a project-level script definition and must remain sandboxed, deterministic, and export-visible.
+9. Build must fail or warn according to severity when an action target cannot be resolved.
 
 ## 9. Django Contract
 
@@ -355,6 +362,8 @@ Initial object action commands:
 3. `object.event.setTrigger`
 4. `object.event.setAction`
 5. `object.action.createNavigate`
+6. `object.action.createOpenPopup`
+7. `object.action.createHoverEffect`
 
 ## 11. Preview And Build
 
@@ -392,8 +401,10 @@ Required validation:
 9. No page owns an event binding.
 10. No page owns an ad hoc object action trigger list.
 11. Project-owned generated page lifecycle events reference page ids explicitly and are visible in the exported manifest.
-12. Fragment pages are not used as normal navigation targets unless explicitly allowed.
-13. Editor-only overlays, handles, drag rectangles, zoom, pan, and diagnostics are excluded from runtime/export manifests.
+12. Popup actions reference compiled fragment pages and validated popup definitions.
+13. Fragment pages are not used as normal navigation targets unless explicitly allowed.
+14. Runtime hover borders are visual effects, not editor selection overlays, and must not be confused with selection rectangles or handles.
+15. Editor-only overlays, handles, drag rectangles, zoom, pan, and diagnostics are excluded from runtime/export manifests.
 
 ## 13. Implementation Phases
 
@@ -436,7 +447,9 @@ Required validation:
 1. Add visibility actions.
 2. Add class/state actions.
 3. Add fragment mount/display actions.
-4. Reserve FT100 write action shape without enabling unsafe writes.
+4. Add fragment-backed popup actions.
+5. Add hover visual effect actions for element and group borders.
+6. Reserve FT100 write action shape without enabling unsafe writes.
 
 ## 14. Regression Requirements
 
@@ -450,9 +463,11 @@ Required tests:
 6. Manifest contains page records but no page-owned action triggers.
 7. Object event binding references an action id.
 8. `click -> navigate` resolves to an existing page.
-9. Missing target page creates a validation warning or error.
-10. Editor overlays are absent from Django and FT100 export manifests.
-11. Manifest page records keep authored `Width`/`Height` and report `RequiredDisplayWidth`/`RequiredDisplayHeight` from exported runtime geometry.
+9. `click -> openPopup` resolves to a compiled fragment page and a valid popup definition.
+10. `mouseenter`/`mouseleave` hover border effects resolve to an existing element or group target.
+11. Missing target page creates a validation warning or error.
+12. Editor overlays are absent from Django and FT100 export manifests.
+13. Manifest page records keep authored `Width`/`Height` and report `RequiredDisplayWidth`/`RequiredDisplayHeight` from exported runtime geometry.
 
 ## 15. Open Decisions
 
@@ -465,12 +480,15 @@ Required tests:
 7. Confirm the runtime meaning of `degraded`: quality flag, communication failure, stale timestamp, invalid value, or a combination.
 8. Confirm visual effect precedence when multiple tag/event conditions target the same object.
 9. Confirm the sandbox, allowed APIs, execution order, and validation model for global scripts that generate page lifecycle events.
+10. Confirm popup placement defaults: centered modal, anchored popup, named host region, or explicit bounds.
+11. Confirm popup lifecycle rules: close on outside click, close button requirement, single-instance vs multi-instance, and whether popup state resets on reopen.
+12. Confirm whether hover group border targets the group bounding box, each child element border, or a dedicated runtime outline layer.
 
-## 16. Next Development Slice V2.1.1.0037
+## 16. Event Development Roadmap V2.1.1.0038
 
 This is a planned feature-development slice, not a bug-correction slice.
 
-The next development step is user-authored object events, starting with:
+The first development step remains user-authored object events, starting with:
 
 ```text
 On click -> change page
@@ -521,21 +539,30 @@ Suggested implementation order:
 Roadmap after the first event slice:
 
 1. Add project tag catalog support from the TF100Web tag file documented in `FT100_INTEGRATION_STRATEGY_V2.md`.
-2. Add tag-driven boolean event conditions:
+2. Add `On click -> open popup`.
+3. Treat popups as compiled `fragment` pages displayed through an explicit popup action and popup host/overlay contract.
+4. Preserve behaviors inside popup fragments, including object events, tag conditions, local visual effects, and close actions.
+5. Validate that popup fragments are compiled, page-namespaced, and safe to mount without selector collisions.
+6. Add `mouse hover -> show element/group border` as a visual effect workflow:
+   - `mouseenter -> applyEffect(groupBorder)`.
+   - `mouseleave -> removeEffect(groupBorder)`.
+   - target can be an element id or a group id.
+   - the border is runtime feedback, not editor selection UI.
+7. Add tag-driven boolean event conditions:
    - `If tag is true`.
    - `If tag is false`.
    - `If tag is degraded`.
-3. Add event-triggered visual effects:
+8. Add event-triggered visual effects:
    - `blink`.
    - `glow`.
    - `pulse`.
    - alarm/highlight state.
    - degraded-state visual treatment.
-4. Add project-level global scripts that can generate validated page lifecycle events.
-5. Keep global scripts as project-owned model definitions with explicit exported metadata; do not hide behavior in page-local JavaScript fragments.
-6. Ensure every generated event/action/effect keeps the page namespace contract already required for TF100Web composition.
-7. Extend validation so missing tags, stale tag catalogs, invalid effect ids, script errors, and unsupported page lifecycle targets are reported before export.
-8. Add regression coverage before enabling each roadmap item in preview or TF100 export.
+9. Add project-level global scripts that can generate validated page lifecycle events.
+10. Keep global scripts as project-owned model definitions with explicit exported metadata; do not hide behavior in page-local JavaScript fragments.
+11. Ensure every generated event/action/effect/popup keeps the page namespace contract already required for TF100Web composition.
+12. Extend validation so missing tags, stale tag catalogs, invalid effect ids, invalid popup fragments, script errors, and unsupported page lifecycle targets are reported before export.
+13. Add regression coverage before enabling each roadmap item in preview or TF100 export.
 
 ## 17. Implemented Slice V2.1.1.0012
 

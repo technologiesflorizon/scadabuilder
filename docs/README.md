@@ -2,12 +2,13 @@
 
 Date: 2026-06-15
 Status: Active documentation map
-Document version: `V2.1.1.0037`
+Document version: `V2.1.1.0038`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-15 | `V2.1.1.0038` | `PENDING` | Ajout de la roadmap `On click -> open popup` et hover border sur element/groupe. |
 | 2026-06-15 | `V2.1.1.0037` | `90c108b` | Ajout de la roadmap de developpement: events, tags TF100Web, Studio Element+, proprietes CSS, effets visuels et scripts globaux. |
 | 2026-06-15 | `V2.1.1.0036` | `63c2475` | Generalisation du contrat de namespace CSS/DOM par page pour interdire les collisions de selecteurs en composition TF100Web. |
 | 2026-06-15 | `V2.1.1.0035` | `63c2475` | Clarification du scoping CSS par page pour eviter les collisions header/body/footer sur les `data-id`. |
@@ -106,7 +107,7 @@ Legacy and reference material:
 Implementation plans and status:
 
 1. `ACTION_COMMAND_ARCHITECTURE_PLAN_V2.md` - command architecture implementation history.
-2. `PAGE_MANIFEST_OBJECT_ACTIONS_PLAN_V2.md` - page manifest, object-owned action slices, tag-conditioned event roadmap, visual effects, and global script/page-event roadmap.
+2. `PAGE_MANIFEST_OBJECT_ACTIONS_PLAN_V2.md` - page manifest, object-owned action slices, popup-fragment actions, hover border effects, tag-conditioned event roadmap, visual effects, and global script/page-event roadmap.
 3. `STUDIO_ELEMENT_PLUS_PLAN_V2.md` - Studio Element+ plan, modernization roadmap, shared CSS properties, and component visual effects.
 4. `STUDIO_ELEMENT_PLUS_SELECTION_DECISIONS_V2.md` - canonical Studio Element+ selection decisions.
 5. `TF100WEB_IMPLEMENTATION_NOTE_V2.md` - TF100Web intake implementation notes.
@@ -119,11 +120,13 @@ Assets:
 Near-term development roadmap ownership:
 
 1. First event-authoring slice: `PAGE_MANIFEST_OBJECT_ACTIONS_PLAN_V2.md` owns `On click -> change page`.
-2. TF100Web tag extraction and SCADA Builder V2 tag file import: `FT100_INTEGRATION_STRATEGY_V2.md`.
-3. Tag boolean conditions (`If tag is true`, `If tag is false`, `If tag is degraded`): `PAGE_MANIFEST_OBJECT_ACTIONS_PLAN_V2.md`, dependent on the imported tag catalog.
-4. Studio Element+ modernization of images, shapes, forms, and composed elements: `STUDIO_ELEMENT_PLUS_PLAN_V2.md`.
-5. CSS property set improvement in SCADA Builder V2 and Studio Element+: `UI_SPEC_V2.md` and `STUDIO_ELEMENT_PLUS_PLAN_V2.md`.
-6. Event visual effects (`blink`, `glow`, etc.) and global scripts that generate page lifecycle events: `PAGE_MANIFEST_OBJECT_ACTIONS_PLAN_V2.md`.
+2. Popup fragment workflow: `PAGE_MANIFEST_OBJECT_ACTIONS_PLAN_V2.md` owns `On click -> open popup`; popup content is a compiled `fragment` with its own scoped behaviors.
+3. Hover feedback workflow: `PAGE_MANIFEST_OBJECT_ACTIONS_PLAN_V2.md` owns `mouse hover -> show element/group border` as an event-driven visual effect.
+4. TF100Web tag extraction and SCADA Builder V2 tag file import: `FT100_INTEGRATION_STRATEGY_V2.md`.
+5. Tag boolean conditions (`If tag is true`, `If tag is false`, `If tag is degraded`): `PAGE_MANIFEST_OBJECT_ACTIONS_PLAN_V2.md`, dependent on the imported tag catalog.
+6. Studio Element+ modernization of images, shapes, forms, and composed elements: `STUDIO_ELEMENT_PLUS_PLAN_V2.md`.
+7. CSS property set improvement in SCADA Builder V2 and Studio Element+: `UI_SPEC_V2.md` and `STUDIO_ELEMENT_PLUS_PLAN_V2.md`.
+8. Event visual effects (`blink`, `glow`, etc.) and global scripts that generate page lifecycle events: `PAGE_MANIFEST_OBJECT_ACTIONS_PLAN_V2.md`.
 
 ## 5. Mandatory Header Rule
 
