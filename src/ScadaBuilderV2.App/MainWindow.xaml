@@ -783,7 +783,7 @@
                                                Foreground="{StaticResource MutedBrush}"/>
                                 </StackPanel>
                                 <ListBox x:Name="LegacyElementsListBox"
-                                         DisplayMemberPath="DisplayName"
+                                         DisplayMemberPath="ListDisplayName"
                                          ItemContainerStyle="{StaticResource ElementListBoxItemStyle}"
                                          SelectionMode="Extended"
                                          SelectionChanged="OnLegacyElementListSelectionChanged"/>

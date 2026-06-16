@@ -2,12 +2,13 @@
 
 Date: 2026-06-16
 Status: Active implementation status
-Document version: `V2.1.2.0002`
+Document version: `V2.1.2.0003`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-16 | `V2.1.2.0003` | `PENDING` | Correction du groupement Element+: ordre visuel preserve, enfants affiches sous leur groupe et deplacement solidaire. |
 | 2026-06-16 | `V2.1.2.0002` | `PENDING` | Implementation du groupement de scene Element+ only et de l'avertissement conversion pour les selections legacy. |
 | 2026-06-16 | `V2.1.2.0001` | `PENDING` | Correction du raccourci Backspace pour les Element+ selectionnes et protection des champs editables contre les raccourcis scene. |
 | 2026-06-16 | `V2.1.2.0000` | `PENDING` | Implementation de la conversion Button plausible, du choix Propriete contextualise et du rendu/export du texte des boutons Element+. |
@@ -32,6 +33,7 @@ As of 2026-06-16, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 181 
 11. Button Element+ text rendering in editor preview and FT100 export.
 12. WebView keyboard shortcuts protect editable controls and keep `Backspace` non-destructive for selected Element+ objects.
 13. Scene-level grouping of selected Element+ objects with legacy/source grouping decommissioned behind a conversion warning.
+14. Element+ group regressions preserve sibling render order, expose group children in the Element tab hierarchy, and normalize child movement to the containing group.
 
 ## 3. Source Of Truth
 

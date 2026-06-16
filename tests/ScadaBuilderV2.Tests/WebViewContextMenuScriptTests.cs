@@ -293,7 +293,41 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "const renderElement = (element, parentWrapper = null) =>");
         StringAssert.Contains(source, "element.Kind === 'Group'");
         StringAssert.Contains(source, "wrapper.dataset.groupContext = element.IsGroupContextSelected ? 'true' : 'false';");
+        StringAssert.Contains(source, "wrapper.dataset.parentGroupId = parentWrapper.dataset.id;");
+        StringAssert.Contains(source, "wrapper.style.zIndex = `${Number(element.RenderIndex ?? element.renderIndex ?? 0)}`;");
+        StringAssert.Contains(source, "border: 1px dashed transparent !important;");
+        StringAssert.Contains(source, ".scada-modern-group[data-selected=\"true\"]");
         StringAssert.Contains(source, ".scada-modern-group[data-group-context=\"true\"]");
+    }
+
+    [TestMethod]
+    public void ElementGroupSelectionShowsOnlyMutualizedGroupAnchors()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, ".scada-modern-element[data-selected=\"true\"] > .scada-modern-handle");
+        StringAssert.Contains(source, ".scada-modern-element[data-selected=\"true\"] > .scada-modern-badge");
+        Assert.IsFalse(
+            source.Contains(".scada-modern-element[data-selected=\"true\"] .scada-modern-handle", StringComparison.Ordinal),
+            "Selection handles must not cascade into grouped children.");
+        Assert.IsFalse(
+            source.Contains(".scada-modern-element[data-selected=\"true\"] .scada-modern-badge", StringComparison.Ordinal),
+            "Selection badges must not cascade into grouped children.");
+    }
+
+    [TestMethod]
+    public void ElementGroupDragPromotesChildWrappersToGroupWrapper()
+    {
+        var source = NormalizeNewLines(ReadMainWindowSource());
+
+        StringAssert.Contains(source, "function getSceneMoveWrapper(wrapper)");
+        StringAssert.Contains(source, "return wrapper.parentElement?.closest?.('.scada-modern-group') || wrapper;");
+        StringAssert.Contains(source, "const sceneMoveWrapper = getSceneMoveWrapper(wrapper);");
+        StringAssert.Contains(source, "const sceneMoveId = sceneMoveWrapper?.dataset?.id || element.Id;");
+        StringAssert.Contains(source, "toggleModernElementInSelection(sceneMoveId);");
+        StringAssert.Contains(source, "selectModernElementInDom(sceneMoveId);");
+        StringAssert.Contains(source, "id: sceneMoveId,");
+        StringAssert.Contains(source, "wrapper: sceneMoveWrapper,");
     }
 
     [TestMethod]
@@ -492,6 +526,18 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "postModernGeometry(\n          modernDrag.id,");
         StringAssert.Contains(source, "const before = { ...geometry };");
         StringAssert.Contains(source, "postModernGeometry(selectedModernId, before, geometry);");
+    }
+
+    [TestMethod]
+    public void ModernSelectionMoveNormalizesGroupChildrenBeforeMoving()
+    {
+        var source = ReadMainWindowSource();
+        var moveMethod = ExtractMethod(source, "private async Task MoveSceneObjectSelectionByAsync(LegacyViewerMessage message)");
+
+        StringAssert.Contains(moveMethod, "NormalizeSceneObjectIdsForMove(ResolveSceneObjectSelectionIds(message))");
+        StringAssert.Contains(source, "private IReadOnlyList<string> NormalizeSceneObjectIdsForMove(IEnumerable<string> ids)");
+        StringAssert.Contains(source, "private string NormalizeSceneObjectIdForMove(string id)");
+        StringAssert.Contains(source, "return parent?.Kind == ScadaElementKind.Group ? parent.Id : id;");
     }
 
     [TestMethod]

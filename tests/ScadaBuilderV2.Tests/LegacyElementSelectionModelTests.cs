@@ -117,4 +117,25 @@ public sealed class LegacyElementSelectionModelTests
         Assert.IsTrue(snapshot.SelectedKeys.Contains("object:group-001"));
         Assert.IsTrue(snapshot.SelectedKeys.Contains("object:shape-001"));
     }
+
+    [TestMethod]
+    public void SceneElementInventoryPreservesModernHierarchyMetadata()
+    {
+        var snapshot = SceneElementInventorySnapshot.FromElements(
+            Array.Empty<LegacyElementListItem>(),
+            new[]
+            {
+                new SceneElementListItem("object:group-001", "group-001", "Group001 [Group]", "Group", "Object"),
+                new SceneElementListItem("object:shape-001", "shape-001", "Shape001 [Shape]", "Shape", "Object", "group-001", 1)
+            },
+            Array.Empty<string>(),
+            null);
+
+        Assert.AreEqual("group-001", snapshot.Elements[0].Id);
+        Assert.AreEqual("shape-001", snapshot.Elements[1].Id);
+        Assert.AreEqual("group-001", snapshot.Elements[1].ParentId);
+        Assert.AreEqual(1, snapshot.Elements[1].Depth);
+        Assert.IsTrue(snapshot.Elements[1].IsGroupChild);
+        Assert.AreEqual("  > Shape001 [Shape]", snapshot.Elements[1].ListDisplayName);
+    }
 }

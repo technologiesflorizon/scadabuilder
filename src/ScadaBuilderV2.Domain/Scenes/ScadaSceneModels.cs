@@ -473,6 +473,14 @@ public sealed record ScadaScene(
         }
 
         var parent = selected[0].Parent;
+        var siblings = parent is null ? Elements : parent.ChildElements;
+        var siblingIndexes = siblings
+            .Select((element, index) => new { element.Id, Index = index })
+            .ToDictionary(item => item.Id, item => item.Index, StringComparer.Ordinal);
+        selected = selected
+            .Select(item => item with { SiblingIndex = siblingIndexes[item.Element.Id] })
+            .OrderBy(item => item.SiblingIndex)
+            .ToArray();
         var groupBoundsAbsolute = CalculateOuterBounds(selected.Select(item => item.AbsoluteBounds));
         var parentAbsoluteBounds = parent is null ? new SceneBounds(0, 0, 0, 0) : GetAbsoluteBounds(parent.Id);
         var groupBounds = new SceneBounds(
@@ -512,11 +520,12 @@ public sealed record ScadaScene(
             children);
 
         var selectedIdSet = selectedIds.ToHashSet(StringComparer.Ordinal);
+        var groupInsertionIndex = selected.Max(item => item.SiblingIndex);
         return parent is null
-            ? this with { Elements = ReplaceSelectedSiblingsWithGroup(Elements, selectedIdSet, group) }
+            ? this with { Elements = ReplaceSelectedSiblingsWithGroup(Elements, selectedIdSet, group, groupInsertionIndex) }
             : WithReplacedElementRecursive(parent with
             {
-                Children = ReplaceSelectedSiblingsWithGroup(parent.ChildElements, selectedIdSet, group)
+                Children = ReplaceSelectedSiblingsWithGroup(parent.ChildElements, selectedIdSet, group, groupInsertionIndex)
             });
     }
 
@@ -765,23 +774,30 @@ public sealed record ScadaScene(
     private static IReadOnlyList<ScadaElement> ReplaceSelectedSiblingsWithGroup(
         IReadOnlyList<ScadaElement> siblings,
         IReadOnlySet<string> selectedIds,
-        ScadaElement group)
+        ScadaElement group,
+        int groupInsertionIndex)
     {
         var result = new List<ScadaElement>();
         var insertedGroup = false;
-        foreach (var sibling in siblings)
+        for (var index = 0; index < siblings.Count; index++)
         {
+            var sibling = siblings[index];
             if (!selectedIds.Contains(sibling.Id))
             {
                 result.Add(sibling);
                 continue;
             }
 
-            if (!insertedGroup)
+            if (!insertedGroup && index == groupInsertionIndex)
             {
                 result.Add(group);
                 insertedGroup = true;
             }
+        }
+
+        if (!insertedGroup)
+        {
+            result.Add(group);
         }
 
         return result;
@@ -876,5 +892,8 @@ public sealed record ScadaScene(
     private sealed record SceneElementSelection(
         ScadaElement Element,
         ScadaElement? Parent,
-        SceneBounds AbsoluteBounds);
+        SceneBounds AbsoluteBounds)
+    {
+        public int SiblingIndex { get; init; }
+    }
 }

@@ -1210,14 +1210,10 @@ public partial class MainWindow : Window
 
     private SceneElementInventorySnapshot CreateSceneElementInventorySnapshot()
     {
-        var modernElements = FlattenElements(_activeScene?.Elements ?? Array.Empty<ScadaElement>())
-            .Where(element => !element.IsLegacyStatic)
-            .Select(element => new SceneElementListItem(
-                $"{SceneElementInventorySnapshot.SceneObjectPrefix}{element.Id}",
-                element.Id,
-                $"{element.UserLabel} [{element.Kind}]",
-                element.Kind.ToString(),
-                SceneElementInventorySnapshot.SceneObjectKind));
+        var modernElements = CreateModernSceneElementListItems(
+            _activeScene?.Elements ?? Array.Empty<ScadaElement>(),
+            "",
+            0);
 
         return SceneElementInventorySnapshot.FromElements(
             _sourceObjects,
@@ -1226,6 +1222,32 @@ public partial class MainWindow : Window
             _selectedSceneObject?.Id,
             _activeScene?.GetSuppressedSourceElementIds() ?? _hiddenSourceObjectIds,
             selectedModernElementIds: _selectedSceneObjectIds);
+    }
+
+    private static IEnumerable<SceneElementListItem> CreateModernSceneElementListItems(
+        IEnumerable<ScadaElement> elements,
+        string parentId,
+        int depth)
+    {
+        foreach (var element in elements)
+        {
+            if (!element.IsLegacyStatic)
+            {
+                yield return new SceneElementListItem(
+                    $"{SceneElementInventorySnapshot.SceneObjectPrefix}{element.Id}",
+                    element.Id,
+                    $"{element.UserLabel} [{element.Kind}]",
+                    element.Kind.ToString(),
+                    SceneElementInventorySnapshot.SceneObjectKind,
+                    parentId,
+                    depth);
+            }
+
+            foreach (var child in CreateModernSceneElementListItems(element.ChildElements, element.Id, depth + 1))
+            {
+                yield return child;
+            }
+        }
     }
 
     private static IEnumerable<ScadaElement> FlattenElements(IEnumerable<ScadaElement> elements)
@@ -3949,7 +3971,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
-        var selectedIds = ResolveSceneObjectSelectionIds(message).ToArray();
+        var selectedIds = NormalizeSceneObjectIdsForMove(ResolveSceneObjectSelectionIds(message)).ToArray();
         var selectedElements = selectedIds
             .Select(id => _activeScene.FindElementRecursive(id))
             .Where(element => element is not null)
@@ -4042,6 +4064,38 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
 
         return _selectedSceneObjectIds.ToArray();
+    }
+
+    private IReadOnlyList<string> NormalizeSceneObjectIdsForMove(IEnumerable<string> ids)
+    {
+        if (_activeScene is null)
+        {
+            return [];
+        }
+
+        return ids
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Select(id => NormalizeSceneObjectIdForMove(id.Trim()))
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+    }
+
+    private string NormalizeSceneObjectIdForMove(string id)
+    {
+        if (_activeScene is null)
+        {
+            return id;
+        }
+
+        var element = _activeScene.FindElementRecursive(id);
+        if (element is null || element.Kind == ScadaElementKind.Group)
+        {
+            return id;
+        }
+
+        var parent = _activeScene.FindParentOf(id);
+        return parent?.Kind == ScadaElementKind.Group ? parent.Id : id;
     }
 
     private static bool HasUsableGeometrySnapshot(SceneBounds bounds)
@@ -4357,7 +4411,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         var payload = _activeScene.Elements
             .Where(element => !element.IsLegacyStatic)
-            .Select(element => ToRenderPayload(element, selectedIds));
+            .Select((element, index) => ToRenderPayload(element, selectedIds, index));
         var json = JsonSerializer.Serialize(payload);
         await PreviewWebView.ExecuteScriptAsync($"window.scadaSceneEditor && window.scadaSceneEditor.renderModernElements({json});");
         await ApplyLegacyTextOverridesAsync(_activeScene.TextOverrides);
@@ -4390,7 +4444,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         await PreviewWebView.ExecuteScriptAsync($"window.scadaSceneEditor && window.scadaSceneEditor.applySourceElementBounds({json});");
     }
 
-    private static ModernElementRenderPayload ToRenderPayload(ScadaElement element, IReadOnlySet<string> selectedIds)
+    private static ModernElementRenderPayload ToRenderPayload(ScadaElement element, IReadOnlySet<string> selectedIds, int renderIndex)
     {
         return new ModernElementRenderPayload
         {
@@ -4404,9 +4458,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             IsSelected = selectedIds.Contains(element.Id),
             IsGroupContextSelected = element.Kind == ScadaElementKind.Group &&
                 element.ChildElements.Any(child => selectedIds.Any(selectedId => ContainsElement(child, selectedId))),
+            RenderIndex = renderIndex,
             Style = element.Style,
             Data = element.Data,
-            Children = element.ChildElements.Select(child => ToRenderPayload(child, selectedIds)).ToArray()
+            Children = element.ChildElements
+                .Select((child, childIndex) => ToRenderPayload(child, selectedIds, childIndex))
+                .ToArray()
         };
     }
 
@@ -5253,6 +5310,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         public bool IsGroupContextSelected { get; set; }
 
+        public int RenderIndex { get; set; }
+
         public ScadaElementStyle? Style { get; set; }
 
         public ScadaElementData? Data { get; set; }
@@ -5398,11 +5457,15 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       align-items: stretch;
       padding: 0;
       background: transparent !important;
-      border: 1px dashed rgba(32,144,160,.85) !important;
+      border: 1px dashed transparent !important;
+    }
+    .scada-modern-group[data-selected="true"] {
+      border-color: rgba(32,144,160,.85) !important;
     }
     .scada-modern-group[data-group-context="true"] {
       outline: 2px solid #2090a0;
       outline-offset: 3px;
+      border-color: rgba(32,144,160,.55) !important;
       box-shadow: 0 0 0 4px rgba(32,144,160,.16);
     }
     .scada-modern-child[data-selected="true"] {
@@ -5437,7 +5500,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       display: none;
       pointer-events: none;
     }
-    .scada-modern-element[data-selected="true"] .scada-modern-badge {
+    .scada-modern-element[data-selected="true"] > .scada-modern-badge {
       display: block;
     }
     .scada-modern-handle {
@@ -5449,7 +5512,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       box-shadow: 0 1px 3px rgba(15,42,48,.25);
       display: none;
     }
-    .scada-modern-element[data-selected="true"] .scada-modern-handle {
+    .scada-modern-element[data-selected="true"] > .scada-modern-handle {
       display: block;
     }
     .scada-modern-handle[data-handle="nw"] { left: -6px; top: -6px; cursor: nwse-resize; }
@@ -6548,6 +6611,13 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     wrapper.style.height = `${Math.max(8, geometry.height)}px`;
   }
 
+  function getSceneMoveWrapper(wrapper) {
+    if (!wrapper?.classList?.contains('scada-modern-child')) {
+      return wrapper;
+    }
+    return wrapper.parentElement?.closest?.('.scada-modern-group') || wrapper;
+  }
+
   function renderModernElements(elements) {
     modernElements = Array.isArray(elements) ? elements : [];
     const layer = ensureModernLayer();
@@ -6562,6 +6632,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       wrapper.dataset.id = element.Id;
       wrapper.dataset.selected = element.IsSelected ? 'true' : 'false';
       wrapper.dataset.groupContext = element.IsGroupContextSelected ? 'true' : 'false';
+      if (parentWrapper?.dataset?.id) {
+        wrapper.dataset.parentGroupId = parentWrapper.dataset.id;
+      }
       if (element.IsSelected) {
         selectedModernIds.add(element.Id);
         selectedModernId = element.Id;
@@ -6570,6 +6643,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       wrapper.style.top = `${element.Y}px`;
       wrapper.style.width = `${element.Width}px`;
       wrapper.style.height = `${element.Height}px`;
+      wrapper.style.zIndex = `${Number(element.RenderIndex ?? element.renderIndex ?? 0)}`;
       wrapper.style.fontFamily = cssText(style.FontFamily, 'Segoe UI');
       wrapper.style.fontSize = `${cssText(style.FontSize, 14)}px`;
       wrapper.style.color = cssText(style.Foreground, '#0f2a30');
@@ -6676,31 +6750,35 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
         event.preventDefault();
         event.stopPropagation();
-        const preserveModernSelection = !event.ctrlKey && !event.shiftKey && selectedModernIds.has(element.Id);
+        const sceneMoveWrapper = getSceneMoveWrapper(wrapper);
+        const sceneMoveId = sceneMoveWrapper?.dataset?.id || element.Id;
+        const preserveModernSelection = !event.ctrlKey && !event.shiftKey && selectedModernIds.has(sceneMoveId);
         if (event.ctrlKey || event.shiftKey) {
-          toggleModernElementInSelection(element.Id);
+          toggleModernElementInSelection(sceneMoveId);
         } else {
           clearSelection();
           if (!preserveModernSelection) {
-            selectModernElementInDom(element.Id);
+            selectModernElementInDom(sceneMoveId);
           }
         }
         if (!preserveModernSelection) {
           window.chrome?.webview?.postMessage({
             type: 'selectSceneObject',
-            id: element.Id,
+            id: sceneMoveId,
             additive: event.ctrlKey || event.shiftKey,
             toggle: event.ctrlKey || event.shiftKey
           });
         }
-        const geometry = readWrapperGeometry(wrapper);
+        const geometry = readWrapperGeometry(sceneMoveWrapper);
         const movingWrappers = event.target?.classList?.contains('scada-modern-handle')
-          ? [wrapper]
+          ? [sceneMoveWrapper]
           : Array.from(document.querySelectorAll('.scada-modern-element'))
-              .filter(item => selectedModernIds.has(item.dataset.id));
+              .filter(item => selectedModernIds.has(item.dataset.id))
+              .map(item => getSceneMoveWrapper(item))
+              .filter((item, index, items) => item && items.indexOf(item) === index);
         modernDrag = {
-          id: element.Id,
-          wrapper,
+          id: sceneMoveId,
+          wrapper: sceneMoveWrapper,
           mode: event.target?.classList?.contains('scada-modern-handle') ? 'resize' : 'move',
           handle: event.target?.dataset?.handle || '',
           startClientX: event.clientX,
@@ -6715,7 +6793,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             geometry: readWrapperGeometry(item)
           }))
         };
-        wrapper.setPointerCapture?.(event.pointerId);
+        sceneMoveWrapper.setPointerCapture?.(event.pointerId);
       }, true);
 
       wrapper.addEventListener('dblclick', event => {

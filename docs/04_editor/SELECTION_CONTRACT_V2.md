@@ -2,12 +2,13 @@
 
 Date: 2026-06-16
 Status: Active editor selection contract
-Document version: `V2.1.2.0002`
+Document version: `V2.1.2.0003`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-16 | `V2.1.2.0003` | `PENDING` | Clarification que le deplacement normal d'un enfant de groupe Element+ cible son groupe parent. |
 | 2026-06-16 | `V2.1.2.0002` | `PENDING` | Clarification que le groupement de scene consomme uniquement la selection Element+ moderne. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat actif de selection SCADA Builder V2. |
 
@@ -33,6 +34,7 @@ The editor can select:
 6. Undo/redo and export omission must use the same scene state.
 7. A source/legacy selection can be converted, moved, hidden, deleted, or opened in Studio Element+ according to command contracts, but it cannot be grouped directly in the scene.
 8. A scene group can be created only from two or more selected Element+ scene object ids.
+9. In normal scene movement, a selected child inside an Element+ group is normalized to the containing group so grouped objects move together.
 
 ## 3. Related Decision
 

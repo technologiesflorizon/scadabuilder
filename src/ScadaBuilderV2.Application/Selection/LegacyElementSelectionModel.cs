@@ -23,7 +23,16 @@ public sealed record SceneElementListItem(
     string Id,
     string DisplayName,
     string ElementType,
-    string Source);
+    string Source,
+    string ParentId = "",
+    int Depth = 0)
+{
+    public bool IsGroupChild => !string.IsNullOrWhiteSpace(ParentId);
+
+    public string ListDisplayName => Depth <= 0
+        ? DisplayName
+        : $"{new string(' ', Depth * 2)}> {DisplayName}";
+}
 
 public sealed record SceneElementInventorySnapshot(
     IReadOnlyList<SceneElementListItem> Elements,
@@ -75,12 +84,15 @@ public sealed record SceneElementInventorySnapshot(
                 element.ElementType,
                 SourceObjectKind));
 
-        var allElements = legacyItems
-            .Concat(modernElements)
+        var modernItems = modernElements
             .GroupBy(element => element.Key, StringComparer.Ordinal)
             .Select(group => group.First())
-            .OrderBy(element => element.Source == SceneObjectKind ? 0 : 1)
-            .ThenBy(element => element.DisplayName, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        var sortedLegacyItems = legacyItems
+            .OrderBy(element => element.DisplayName, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        var allElements = modernItems
+            .Concat(sortedLegacyItems)
             .ToArray();
 
         var validKeys = allElements.Select(element => element.Key).ToHashSet(StringComparer.Ordinal);

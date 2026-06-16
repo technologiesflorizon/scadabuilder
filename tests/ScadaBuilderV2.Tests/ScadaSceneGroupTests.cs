@@ -39,6 +39,44 @@ public sealed class ScadaSceneGroupTests
     }
 
     [TestMethod]
+    public void SceneGroupSelectedModernElementsPreservesSiblingRenderOrder()
+    {
+        var lower = CreateShape("shape-lower", 100, 200);
+        var upper = CreateShape("shape-upper", 150, 240);
+        var scene = ScadaScene
+            .CreateEmpty("win-test", "Test", new(1280, 873))
+            .WithElement(lower)
+            .WithElement(upper);
+
+        scene = scene.WithGroupedElements("group-001", "Groupe pompe", ["shape-upper", "shape-lower"]);
+
+        var group = scene.FindElementRecursive("group-001");
+        Assert.IsNotNull(group);
+        CollectionAssert.AreEqual(
+            new[] { "shape-lower", "shape-upper" },
+            group.ChildElements.Select(child => child.Id).ToArray());
+    }
+
+    [TestMethod]
+    public void SceneGroupSelectedModernElementsUsesTopmostSelectedSiblingInsertion()
+    {
+        var lower = CreateShape("shape-lower", 100, 200);
+        var middle = CreateShape("shape-middle", 120, 220);
+        var upper = CreateShape("shape-upper", 150, 240);
+        var scene = ScadaScene
+            .CreateEmpty("win-test", "Test", new(1280, 873))
+            .WithElement(lower)
+            .WithElement(middle)
+            .WithElement(upper);
+
+        scene = scene.WithGroupedElements("group-001", "Groupe pompe", ["shape-lower", "shape-upper"]);
+
+        CollectionAssert.AreEqual(
+            new[] { "shape-middle", "group-001" },
+            scene.Elements.Select(element => element.Id).ToArray());
+    }
+
+    [TestMethod]
     public void SceneGroupSelectedModernElementsRejectsLegacyStaticSource()
     {
         var modern = CreateShape("shape-001", 100, 200);

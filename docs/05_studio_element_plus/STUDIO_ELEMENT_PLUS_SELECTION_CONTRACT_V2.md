@@ -2,12 +2,13 @@
 
 Date: 2026-06-16
 Status: Approved decision base
-Document version: `V2.1.1.0039`
+Document version: `V2.1.2.0003`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-16 | `V2.1.2.0003` | `PENDING` | Ajout des regressions de groupement scene Element+: ordre visuel, hierarchie Element et deplacement solidaire. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Migration du contrat de selection Studio Element+ vers le nouveau module documentaire. |
 
 ## 1. Contract
@@ -81,3 +82,6 @@ The final validation and polish slice covers:
 1. `tests/ScadaBuilderV2.Tests/ElementStudioEditorStateTests.cs`
 2. `tests/ScadaBuilderV2.Tests/ElementStudioSourceRenderingTests.cs`
 3. `tests/ScadaBuilderV2.Tests/StudioElementPlusContractTests.cs`
+4. `tests/ScadaBuilderV2.Tests/ScadaSceneGroupTests.cs`
+5. `tests/ScadaBuilderV2.Tests/LegacyElementSelectionModelTests.cs`
+6. `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`

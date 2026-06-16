@@ -2,12 +2,13 @@
 
 Date: 2026-06-16
 Status: Active editor command contract
-Document version: `V2.1.2.0002`
+Document version: `V2.1.2.0003`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-16 | `V2.1.2.0003` | `PENDING` | Clarification du groupement Element+: ordre de rendu preserve et deplacement solidaire des enfants de groupe. |
 | 2026-06-16 | `V2.1.2.0002` | `PENDING` | Decommission du groupement legacy direct et verrouillage du groupement scene Element+ only. |
 | 2026-06-16 | `V2.1.2.0001` | `PENDING` | Ajout du contrat des raccourcis clavier WebView: Backspace est non destructif et les champs editables interceptent leurs touches. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat commandes separe du contrat etat/actions/menus. |
@@ -27,6 +28,8 @@ Commands are explicit application operations. A command id is the stable bridge 
 7. `Delete` may delete the selected Element+ only when focus is not editable; `Backspace` must not delete Element+ objects and must be consumed when an Element+ selection is active to avoid accidental WebView navigation.
 8. Scene grouping is Element+ only: `object.group` groups two or more selected Element+ scene objects, while selected legacy/source nodes must be converted to Element+ before grouping.
 9. Legacy/source grouping attempts must warn the user to convert first and must not create legacy-only frame groups.
+10. Element+ grouping preserves child render order from the original scene sibling order, not from click or selection order.
+11. In normal scene movement, dragging or moving a child of an Element+ group targets the containing group so grouped objects remain solidary.
 
 ## 3. Dispatch Flow
 

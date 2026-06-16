@@ -2,12 +2,13 @@
 
 Date: 2026-06-16
 Status: Active editor menu and surface contract
-Document version: `V2.1.2.0002`
+Document version: `V2.1.2.0003`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-16 | `V2.1.2.0003` | `PENDING` | Ajout de la hierarchie parent/enfant dans l'onglet Element pour les groupes Element+. |
 | 2026-06-16 | `V2.1.2.0002` | `PENDING` | Ajout du contrat menu pour `object.group` et avertissement de conversion avant groupement legacy. |
 | 2026-06-16 | `V2.1.2.0000` | `PENDING` | Ajout du contrat du choix contextuel Propriete et des commandes desactivees avec raison visible au survol. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat menus/surfaces separe des commandes et de l'UI generale. |
@@ -47,6 +48,7 @@ flowchart TD
 6. The `Propriete` context-menu entry opens Element+ properties for converted objects and remains disabled for non-converted source objects with a conversion warning.
 7. The Element+ context menu exposes `Grouper` only for multi-selection of modern scene objects.
 8. The source/legacy context menu must not expose a destructive legacy frame-group workflow; when group intent is visible for source nodes, it must direct the user to convert to Element+ first.
+9. The Element tab must preserve Element+ group hierarchy by displaying group children as child rows rather than independent flat siblings.
 
 ## 4. Related Tests
 

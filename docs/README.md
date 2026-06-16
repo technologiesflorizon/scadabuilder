@@ -2,12 +2,13 @@
 
 Date: 2026-06-16
 Status: Active enterprise documentation map
-Document version: `V2.1.2.0002`
+Document version: `V2.1.2.0003`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-16 | `V2.1.2.0003` | `PENDING` | Correction du groupement Element+: preservation de l'ordre visuel, hierarchie Element et mouvement solidaire. |
 | 2026-06-16 | `V2.1.2.0002` | `PENDING` | Ajout du contrat de groupement scene Element+ only et de l'avertissement conversion legacy. |
 | 2026-06-16 | `V2.1.2.0001` | `PENDING` | Correction du raccourci clavier WebView: Backspace ne supprime plus un Element+ selectionne et les champs editables ne declenchent pas les raccourcis scene. |
 | 2026-06-16 | `V2.1.2.0000` | `PENDING` | Bump feature pour la conversion dynamique Element+ des boutons legacy, le menu Propriete contextualise et le rendu/export du texte des boutons. |
