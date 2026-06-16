@@ -8,12 +8,12 @@ Document version: `V2.1.1.0036`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-15 | `V2.1.1.0036` | `PENDING` | Contrat general de namespace CSS/DOM/runtime par page pour eviter toute collision de selecteurs TF100Web. |
-| 2026-06-15 | `V2.1.1.0035` | `PENDING` | Clarification que les CSS `data-id` exportees sont scopees au root de page pour proteger la composition TF100Web. |
-| 2026-06-15 | `V2.1.1.0034` | `PENDING` | Clarification que l'omission export source depend de l'etat scene `RemovedSourceElementIds`, pas du masquage WebView. |
-| 2026-06-15 | `V2.1.1.0033` | `PENDING` | Clarification que la geometrie inline FT100 vise les couches HTML legacy et ne doit pas muter les formes SVG source. |
-| 2026-06-15 | `V2.1.1.0032` | `PENDING` | Extension de la geometrie inline FT100 aux objets source legacy avec positions persistantes. |
-| 2026-06-15 | `V2.1.1.0031` | `PENDING` | Decision de composition header/body/footer par manifeste et ajout de la geometrie inline critique dans les exports FT100. |
+| 2026-06-15 | `V2.1.1.0036` | `63c2475` | Contrat general de namespace CSS/DOM/runtime par page pour eviter toute collision de selecteurs TF100Web. |
+| 2026-06-15 | `V2.1.1.0035` | `63c2475` | Clarification que les CSS `data-id` exportees sont scopees au root de page pour proteger la composition TF100Web. |
+| 2026-06-15 | `V2.1.1.0034` | `63c2475` | Clarification que l'omission export source depend de l'etat scene `RemovedSourceElementIds`, pas du masquage WebView. |
+| 2026-06-15 | `V2.1.1.0033` | `63c2475` | Clarification que la geometrie inline FT100 vise les couches HTML legacy et ne doit pas muter les formes SVG source. |
+| 2026-06-15 | `V2.1.1.0032` | `63c2475` | Extension de la geometrie inline FT100 aux objets source legacy avec positions persistantes. |
+| 2026-06-15 | `V2.1.1.0031` | `63c2475` | Decision de composition header/body/footer par manifeste et ajout de la geometrie inline critique dans les exports FT100. |
 | 2026-06-15 | `V2.1.1.0030` | `72350e3` | Deprecation explicite de `index.html`, clarification source legacy/modernized et ajout du risque `win00008` vs `win00009`. |
 | 2026-06-15 | `V2.1.1.0029` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 

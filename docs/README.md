@@ -8,12 +8,12 @@ Document version: `V2.1.1.0036`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-15 | `V2.1.1.0036` | `PENDING` | Generalisation du contrat de namespace CSS/DOM par page pour interdire les collisions de selecteurs en composition TF100Web. |
-| 2026-06-15 | `V2.1.1.0035` | `PENDING` | Clarification du scoping CSS par page pour eviter les collisions header/body/footer sur les `data-id`. |
-| 2026-06-15 | `V2.1.1.0034` | `PENDING` | Documentation du contrat selection polymorphe et suppression globale source/objet sans masquage durable. |
-| 2026-06-15 | `V2.1.1.0033` | `PENDING` | Clarification du contrat de selection source `data-id`, incluant SVG, et du garde-fou inline limite aux couches HTML legacy. |
-| 2026-06-15 | `V2.1.1.0032` | `PENDING` | Extension du garde-fou de geometrie inline aux objets source legacy persistants. |
-| 2026-06-15 | `V2.1.1.0031` | `PENDING` | Documentation du contrat de composition header/body/footer TF100Web et du garde-fou de geometrie inline FT100. |
+| 2026-06-15 | `V2.1.1.0036` | `63c2475` | Generalisation du contrat de namespace CSS/DOM par page pour interdire les collisions de selecteurs en composition TF100Web. |
+| 2026-06-15 | `V2.1.1.0035` | `63c2475` | Clarification du scoping CSS par page pour eviter les collisions header/body/footer sur les `data-id`. |
+| 2026-06-15 | `V2.1.1.0034` | `63c2475` | Documentation du contrat selection polymorphe et suppression globale source/objet sans masquage durable. |
+| 2026-06-15 | `V2.1.1.0033` | `63c2475` | Clarification du contrat de selection source `data-id`, incluant SVG, et du garde-fou inline limite aux couches HTML legacy. |
+| 2026-06-15 | `V2.1.1.0032` | `63c2475` | Extension du garde-fou de geometrie inline aux objets source legacy persistants. |
+| 2026-06-15 | `V2.1.1.0031` | `63c2475` | Documentation du contrat de composition header/body/footer TF100Web et du garde-fou de geometrie inline FT100. |
 | 2026-06-15 | `V2.1.1.0030` | `72350e3` | Creation de l'arbre documentaire stable, des regles de header et des decisions de deprecation `index.html`. |
 
 ## 1. Role

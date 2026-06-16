@@ -8,12 +8,12 @@ Document version: `V2.1.1.0036`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-15 | `V2.1.1.0036` | `PENDING` | Generalisation du namespace CSS/DOM/runtime par page pour empecher les collisions de selecteurs TF100Web. |
-| 2026-06-15 | `V2.1.1.0035` | `PENDING` | Ajout du contrat de CSS source page-scopee pour eviter les collisions `data-id` en composition TF100Web. |
-| 2026-06-15 | `V2.1.1.0034` | `PENDING` | Alignement avec le contrat selection polymorphe et suppression source durable par etat scene. |
-| 2026-06-15 | `V2.1.1.0033` | `PENDING` | Clarification de l'intake footer: styles legacy preserves et formes SVG non mutees par le garde-fou inline. |
-| 2026-06-15 | `V2.1.1.0032` | `PENDING` | Precision que les objets source legacy exportes portent aussi leur geometrie inline persistante. |
-| 2026-06-15 | `V2.1.1.0031` | `PENDING` | Formalisation du choix de composition header/body/footer et du garde-fou inline HTML cote export SCADA Builder V2. |
+| 2026-06-15 | `V2.1.1.0036` | `63c2475` | Generalisation du namespace CSS/DOM/runtime par page pour empecher les collisions de selecteurs TF100Web. |
+| 2026-06-15 | `V2.1.1.0035` | `63c2475` | Ajout du contrat de CSS source page-scopee pour eviter les collisions `data-id` en composition TF100Web. |
+| 2026-06-15 | `V2.1.1.0034` | `63c2475` | Alignement avec le contrat selection polymorphe et suppression source durable par etat scene. |
+| 2026-06-15 | `V2.1.1.0033` | `63c2475` | Clarification de l'intake footer: styles legacy preserves et formes SVG non mutees par le garde-fou inline. |
+| 2026-06-15 | `V2.1.1.0032` | `63c2475` | Precision que les objets source legacy exportes portent aussi leur geometrie inline persistante. |
+| 2026-06-15 | `V2.1.1.0031` | `63c2475` | Formalisation du choix de composition header/body/footer et du garde-fou inline HTML cote export SCADA Builder V2. |
 | 2026-06-15 | `V2.1.1.0030` | `72350e3` | Deprecation explicite de `index.html`, mise a jour hygiene depot/tests et clarification du prochain travail TF100Web. |
 | 2026-06-15 | `V2.1.1.0025` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 

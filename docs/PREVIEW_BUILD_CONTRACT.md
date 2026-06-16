@@ -8,12 +8,12 @@ Document version: `V2.1.1.0036`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-15 | `V2.1.1.0036` | `PENDING` | Generalisation du contrat de namespace CSS/DOM/runtime par page pour tous les selecteurs exportes TF100Web. |
-| 2026-06-15 | `V2.1.1.0035` | `PENDING` | Ajout du contrat de CSS page-scopee pour les regles source `data-id` dans les compositions header/body/footer. |
-| 2026-06-15 | `V2.1.1.0034` | `PENDING` | Clarification que la selection preview est polymorphe et que la suppression source durable passe par `RemovedSourceElementIds`, pas par masquage. |
-| 2026-06-15 | `V2.1.1.0033` | `PENDING` | Limitation du garde-fou inline aux couches HTML legacy et verrouillage de la selection large des elements source `data-id`, incluant SVG. |
-| 2026-06-15 | `V2.1.1.0032` | `PENDING` | Ajout du contrat de geometrie inline pour les source-projection legacy persistants. |
-| 2026-06-15 | `V2.1.1.0031` | `PENDING` | Ajout du contrat de composition header/body/footer et du garde-fou HTML inline pour la geometrie critique des fragments FT100. |
+| 2026-06-15 | `V2.1.1.0036` | `63c2475` | Generalisation du contrat de namespace CSS/DOM/runtime par page pour tous les selecteurs exportes TF100Web. |
+| 2026-06-15 | `V2.1.1.0035` | `63c2475` | Ajout du contrat de CSS page-scopee pour les regles source `data-id` dans les compositions header/body/footer. |
+| 2026-06-15 | `V2.1.1.0034` | `63c2475` | Clarification que la selection preview est polymorphe et que la suppression source durable passe par `RemovedSourceElementIds`, pas par masquage. |
+| 2026-06-15 | `V2.1.1.0033` | `63c2475` | Limitation du garde-fou inline aux couches HTML legacy et verrouillage de la selection large des elements source `data-id`, incluant SVG. |
+| 2026-06-15 | `V2.1.1.0032` | `63c2475` | Ajout du contrat de geometrie inline pour les source-projection legacy persistants. |
+| 2026-06-15 | `V2.1.1.0031` | `63c2475` | Ajout du contrat de composition header/body/footer et du garde-fou HTML inline pour la geometrie critique des fragments FT100. |
 | 2026-06-15 | `V2.1.1.0030` | `72350e3` | Deprecation explicite de `index.html`, clarification preview/export source-of-truth et ajout du repere `win00009` correct / `win00008` divergent. |
 | 2026-06-15 | `V2.1.1.0029` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 

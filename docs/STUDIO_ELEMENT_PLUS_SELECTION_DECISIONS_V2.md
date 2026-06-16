@@ -8,8 +8,8 @@ Document version: `V2.1.1.0034`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-15 | `V2.1.1.0034` | `PENDING` | Verrouillage du contrat selection polymorphe: tout element present est selectable, et suppression durable via pile globale uniquement. |
-| 2026-06-15 | `V2.1.1.0033` | `PENDING` | Ajout du contrat de selection large des elements source `data-id`, incluant les formes SVG, et de leur mouvement par attributs SVG natifs. |
+| 2026-06-15 | `V2.1.1.0034` | `63c2475` | Verrouillage du contrat selection polymorphe: tout element present est selectable, et suppression durable via pile globale uniquement. |
+| 2026-06-15 | `V2.1.1.0033` | `63c2475` | Ajout du contrat de selection large des elements source `data-id`, incluant les formes SVG, et de leur mouvement par attributs SVG natifs. |
 | 2026-06-15 | `V2.1.1.0030` | `72350e3` | Normalisation du header documentaire et rattachement a l'arbre documentaire stable. |
 | 2026-06-15 | `V2.1.0.0000` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 

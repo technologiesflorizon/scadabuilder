@@ -8,7 +8,7 @@ Document version: `V2.1.1.0034`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-15 | `V2.1.1.0034` | `PENDING` | Clarification du contrat de selection polymorphe et de la pile globale de suppression source/objet. |
+| 2026-06-15 | `V2.1.1.0034` | `63c2475` | Clarification du contrat de selection polymorphe et de la pile globale de suppression source/objet. |
 | 2026-06-15 | `V2.1.1.0030` | `72350e3` | Normalisation du header documentaire et rattachement a l'arbre documentaire stable. |
 | 2026-06-15 | `V2.1.1.0026` | `2b59efb` | Baseline initiale du depot SCADA Builder V2. |
 
