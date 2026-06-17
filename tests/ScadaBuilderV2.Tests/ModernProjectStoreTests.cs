@@ -118,6 +118,38 @@ public sealed class ModernProjectStoreTests
     }
 
     [TestMethod]
+    public async Task SaveAndLoadScenePreservesCloseAndTogglePopupActions()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var store = new ModernProjectStore();
+        var scene = ScadaScene
+            .CreateEmpty("win-popup", "Popup scene", new(1280, 873))
+            .WithElement(ScadaElement.CreateText("btn_close", "Fermer", 10, 20))
+            .WithElement(ScadaElement.CreateText("btn_toggle", "Basculer", 10, 60))
+            .WithClosePopupEvent("btn_close", ScadaEventRegistry.ClickKey, "popup_pump")
+            .WithTogglePopupEvent("btn_toggle", ScadaEventRegistry.ClickKey, "popup_pump");
+
+        try
+        {
+            await store.SaveSceneAsync(root, scene);
+
+            var loaded = await store.LoadOrCreateSceneAsync(root, "win-popup", "Popup scene", new(1280, 873));
+
+            Assert.IsTrue(loaded.ActionDefinitions.Any(action => action.Kind == ScadaActionKind.ClosePopup && action.TargetPageId == "popup_pump"));
+            Assert.IsTrue(loaded.ActionDefinitions.Any(action => action.Kind == ScadaActionKind.TogglePopup && action.TargetPageId == "popup_pump"));
+            Assert.AreEqual(1, loaded.FindElementRecursive("btn_close")?.EventBindings.Count);
+            Assert.AreEqual(1, loaded.FindElementRecursive("btn_toggle")?.EventBindings.Count);
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task SaveAndReloadPreservesText22NumericConversionAndHidesLegacySource()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

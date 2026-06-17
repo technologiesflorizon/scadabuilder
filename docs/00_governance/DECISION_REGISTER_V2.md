@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.2.0014`
+Document version: `V2.1.2.0015`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0015` | `PENDING` | Ajout de DEC-0020 pour `Fermer popup` et `Basculer popup`. |
 | 2026-06-17 | `V2.1.2.0014` | `PENDING` | Ajout de DEC-0019 pour l'action runtime `Ouvrir popup`. |
 | 2026-06-17 | `V2.1.2.0012` | `PENDING` | Ajout de DEC-0018 pour l'application runtime des valeurs de tags lues. |
 | 2026-06-17 | `V2.1.2.0010` | `PENDING` | Ajout de DEC-0017 pour les actions objet conditionnelles basees sur tags importes. |
@@ -484,7 +485,33 @@ Decision:
 
 Consequences:
 
-The fragment keeps its exported page namespace and internal behaviors because it is loaded as its own compiled page. Advanced popup placement, named host regions, lifecycle state reset rules, close-popup/toggle-popup action functions, and multi-instance management remain future revisions.
+The fragment keeps its exported page namespace and internal behaviors because it is loaded as its own compiled page. Close/toggle action functions are covered by DEC-0020. Advanced popup placement, named host regions, lifecycle state reset rules, and multi-instance management remain future revisions.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+
+### DEC-0020 - Popup Close And Toggle Runtime Actions
+
+Status: Active
+Created: 2026-06-17 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
+
+Context:
+
+After `Ouvrir popup`, HMI screens need model-backed actions to close a specific popup fragment and to toggle that fragment from a host page or from controls inside the loaded fragment.
+
+Decision:
+
+`Fermer popup` is persisted as `ScadaActionKind.ClosePopup`, and `Basculer popup` is persisted as `ScadaActionKind.TogglePopup`. Both use `TargetPageId` and the same compiled `Fragment` validation contract as `Ouvrir popup`. Exported runtime closes or toggles the page-local popup overlay when the action runs in the host page. When the action runs inside an iframe-loaded fragment, the runtime posts a `scada-builder-v2` popup request to the parent page so the parent can close or toggle the owning overlay.
+
+Consequences:
+
+The popup cycle now covers open, close, and toggle without adding popup instances or host-region model fields. Explicit placement, named host regions, lifecycle reset policy, multi-instance policy, and popup sizing presets remain future revisions.
 
 Regression coverage:
 

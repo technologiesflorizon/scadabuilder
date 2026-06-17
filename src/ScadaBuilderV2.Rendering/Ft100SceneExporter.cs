@@ -1041,19 +1041,48 @@ Apply any viewport scale to the composed page container, not independently to he
     window.location.href = '../' + encodeURIComponent(targetPageId) + '/' + encodeURIComponent(targetPageId) + '.html';
   }
 
+  function getPopupId(targetPageId) {
+    return root.id + '__popup_' + sanitizeElementId(targetPageId);
+  }
+
+  function getPopupOverlay(targetPageId) {
+    return document.getElementById(getPopupId(targetPageId));
+  }
+
+  function closePopupLocal(targetPageId) {
+    const existing = getPopupOverlay(targetPageId);
+    if (!existing) {
+      return false;
+    }
+
+    existing.remove();
+    window.dispatchEvent(new CustomEvent('scada-builder-popup-closed', {
+      detail: { pageId: targetPageId }
+    }));
+    return true;
+  }
+
+  function postPopupRequestToParent(action, targetPageId) {
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        source: 'scada-builder-v2',
+        action: action,
+        pageId: targetPageId
+      }, '*');
+      return true;
+    }
+
+    return false;
+  }
+
   function openPopup(targetPageId) {
     if (!targetPageId) {
       return;
     }
 
-    const popupId = root.id + '__popup_' + sanitizeElementId(targetPageId);
-    const existing = document.getElementById(popupId);
-    if (existing) {
-      existing.remove();
-    }
-
+    closePopupLocal(targetPageId);
     const overlay = document.createElement('div');
-    overlay.id = popupId;
+    overlay.id = getPopupId(targetPageId);
     overlay.setAttribute('data-scada-popup-page-id', targetPageId);
     overlay.style.position = 'absolute';
     overlay.style.inset = '0';
@@ -1082,10 +1111,7 @@ Apply any viewport scale to the composed page container, not independently to he
     close.style.right = '8px';
     close.style.zIndex = '1';
     close.addEventListener('click', function () {
-      overlay.remove();
-      window.dispatchEvent(new CustomEvent('scada-builder-popup-closed', {
-        detail: { pageId: targetPageId }
-      }));
+      closePopupLocal(targetPageId);
     });
 
     const iframe = document.createElement('iframe');
@@ -1108,6 +1134,45 @@ Apply any viewport scale to the composed page container, not independently to he
       detail: { pageId: targetPageId, elementId: root.getAttribute('data-scada-page-id') }
     }));
   }
+
+  function closePopup(targetPageId) {
+    if (!targetPageId) {
+      return;
+    }
+
+    if (!closePopupLocal(targetPageId)) {
+      postPopupRequestToParent('closePopup', targetPageId);
+    }
+  }
+
+  function togglePopup(targetPageId) {
+    if (!targetPageId) {
+      return;
+    }
+
+    if (closePopupLocal(targetPageId)) {
+      return;
+    }
+
+    if (!postPopupRequestToParent('togglePopup', targetPageId)) {
+      openPopup(targetPageId);
+    }
+  }
+
+  window.addEventListener('message', function (event) {
+    const detail = event.data || {};
+    if (detail.source !== 'scada-builder-v2' || !detail.pageId) {
+      return;
+    }
+
+    if (detail.action === 'closePopup') {
+      closePopupLocal(detail.pageId);
+    } else if (detail.action === 'togglePopup') {
+      if (!closePopupLocal(detail.pageId)) {
+        openPopup(detail.pageId);
+      }
+    }
+  });
 
   function sanitizeElementId(value) {
     return String(value || '').replace(/[^a-zA-Z0-9_-]/g, '_');
@@ -1319,6 +1384,16 @@ Apply any viewport scale to the composed page container, not independently to he
 
     if (kind === 'mountfragment') {
       openPopup(action.TargetPageId);
+      return;
+    }
+
+    if (kind === 'closepopup') {
+      closePopup(action.TargetPageId);
+      return;
+    }
+
+    if (kind === 'togglepopup') {
+      togglePopup(action.TargetPageId);
       return;
     }
 

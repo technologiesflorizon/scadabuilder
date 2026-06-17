@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active regression coverage map
-Document version: `V2.1.2.0014`
+Document version: `V2.1.2.0015`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0015` | `PENDING` | Ajout de la couverture domaine, persistance et export pour `Fermer popup` et `Basculer popup`. |
 | 2026-06-17 | `V2.1.2.0014` | `PENDING` | Ajout de la couverture domaine, persistance, validation et export pour `Ouvrir popup`. |
 | 2026-06-17 | `V2.1.2.0013` | `PENDING` | Ajout de la couverture de contrat pour le panneau `Catalogue Tags` filtre. |
 | 2026-06-17 | `V2.1.2.0012` | `PENDING` | Ajout de la couverture export runtime pour l'application des valeurs `Lire valeur`. |
@@ -28,7 +29,7 @@ Document version: `V2.1.2.0014`
 
 ```text
 dotnet test ScadaBuilderV2.sln --no-restore
-209 passed, 0 failed, 0 skipped
+212 passed, 0 failed, 0 skipped
 ```
 
 ## 2. Coverage Map

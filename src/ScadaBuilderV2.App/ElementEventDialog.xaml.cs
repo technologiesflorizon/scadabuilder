@@ -151,12 +151,12 @@ public partial class ElementEventDialog : Window
 
         var isPageTargetAction =
             string.Equals(action.FunctionName, ScadaEventRegistry.ChangePageFunction, StringComparison.Ordinal) ||
-            string.Equals(action.FunctionName, ScadaEventRegistry.OpenPopupFunction, StringComparison.Ordinal);
+            IsPopupFunction(action.FunctionName);
         if (isPageTargetAction)
         {
             if (TargetPageComboBox.SelectedItem is not TargetPageItem targetPage)
             {
-                ValidationText.Text = string.Equals(action.FunctionName, ScadaEventRegistry.OpenPopupFunction, StringComparison.Ordinal)
+                ValidationText.Text = IsPopupFunction(action.FunctionName)
                     ? "Selectionnez un fragment compile pour la popup."
                     : "Selectionnez une page cible compilee de type Defaut.";
                 return;
@@ -241,7 +241,7 @@ public partial class ElementEventDialog : Window
         var isChangePage = ActionComboBox.SelectedItem is ScadaActionFunctionContract action &&
             string.Equals(action.FunctionName, ScadaEventRegistry.ChangePageFunction, StringComparison.Ordinal);
         var isOpenPopup = ActionComboBox.SelectedItem is ScadaActionFunctionContract popupAction &&
-            string.Equals(popupAction.FunctionName, ScadaEventRegistry.OpenPopupFunction, StringComparison.Ordinal);
+            IsPopupFunction(popupAction.FunctionName);
         var isObjectVisibilityAction = ActionComboBox.SelectedItem is ScadaActionFunctionContract objectAction &&
             (string.Equals(objectAction.FunctionName, ScadaEventRegistry.ShowFunction, StringComparison.Ordinal) ||
              string.Equals(objectAction.FunctionName, ScadaEventRegistry.HideFunction, StringComparison.Ordinal) ||
@@ -292,7 +292,8 @@ public partial class ElementEventDialog : Window
         var target = action?.Kind switch
         {
             ScadaActionKind.Navigate when !string.IsNullOrWhiteSpace(action.TargetPageId) => $" -> {action.TargetPageId}",
-            ScadaActionKind.MountFragment when !string.IsNullOrWhiteSpace(action.TargetPageId) => $" -> {action.TargetPageId}",
+            ScadaActionKind.MountFragment or ScadaActionKind.ClosePopup or ScadaActionKind.TogglePopup when !string.IsNullOrWhiteSpace(action.TargetPageId) =>
+                $" -> {action.TargetPageId}",
             ScadaActionKind.Show or ScadaActionKind.Hide or ScadaActionKind.ToggleVisibility when !string.IsNullOrWhiteSpace(action.TargetElementId) =>
                 $" -> {action.TargetElementId}{FormatCondition(action.Condition)}",
             ScadaActionKind.WriteTag when !string.IsNullOrWhiteSpace(action.TagId) => $" -> {action.TagId} = {action.Value}",
@@ -351,6 +352,14 @@ public partial class ElementEventDialog : Window
     private string FormatTag(string tagId)
     {
         return tagsById.TryGetValue(tagId, out var tag) ? tag.AuthoringLabel : tagId;
+    }
+
+    // Groups popup functions so authoring keeps the same fragment target selector for each popup action.
+    private static bool IsPopupFunction(string? functionName)
+    {
+        return string.Equals(functionName, ScadaEventRegistry.OpenPopupFunction, StringComparison.Ordinal) ||
+            string.Equals(functionName, ScadaEventRegistry.ClosePopupFunction, StringComparison.Ordinal) ||
+            string.Equals(functionName, ScadaEventRegistry.TogglePopupFunction, StringComparison.Ordinal);
     }
 
     // Keeps page target choices aligned with the selected runtime function contract.

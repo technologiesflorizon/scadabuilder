@@ -401,7 +401,7 @@ public static class ScadaProjectBuildValidator
                 }
             }
 
-            if (action.Kind == ScadaActionKind.MountFragment)
+            if (action.Kind is ScadaActionKind.MountFragment or ScadaActionKind.ClosePopup or ScadaActionKind.TogglePopup)
             {
                 ValidatePopupFragmentTarget(issues, scene, action, pagesById);
             }

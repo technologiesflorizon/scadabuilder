@@ -4676,6 +4676,16 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                     current.Id,
                     result.RuntimeTrigger ?? "",
                     result.TargetPageId ?? ""),
+            var functionName when string.Equals(functionName, ScadaEventRegistry.ClosePopupFunction, StringComparison.Ordinal) =>
+                _activeScene.WithClosePopupEvent(
+                    current.Id,
+                    result.RuntimeTrigger ?? "",
+                    result.TargetPageId ?? ""),
+            var functionName when string.Equals(functionName, ScadaEventRegistry.TogglePopupFunction, StringComparison.Ordinal) =>
+                _activeScene.WithTogglePopupEvent(
+                    current.Id,
+                    result.RuntimeTrigger ?? "",
+                    result.TargetPageId ?? ""),
             var functionName when string.Equals(functionName, ScadaEventRegistry.ReadValueFunction, StringComparison.Ordinal) =>
                 _activeScene.WithValueBinding(
                     current.Id,

@@ -80,6 +80,16 @@ public static class ScadaEventRegistry
     public const string OpenPopupFunction = "OpenPopup";
 
     /// <summary>
+    /// Runtime function name for closing a compiled fragment popup.
+    /// </summary>
+    public const string ClosePopupFunction = "ClosePopup";
+
+    /// <summary>
+    /// Runtime function name for toggling a compiled fragment popup.
+    /// </summary>
+    public const string TogglePopupFunction = "TogglePopup";
+
+    /// <summary>
     /// Runtime function name for showing a target Element+ object.
     /// </summary>
     public const string ShowFunction = "Show";
@@ -154,6 +164,20 @@ public static class ScadaEventRegistry
             ["TargetPageId"],
             true,
             "Ouvre une page fragment compilee dans une popup runtime."),
+        new(
+            ClosePopupFunction,
+            ScadaActionKind.ClosePopup,
+            "Fermer popup",
+            ["TargetPageId"],
+            true,
+            "Ferme une popup runtime ouverte pour un fragment compile."),
+        new(
+            TogglePopupFunction,
+            ScadaActionKind.TogglePopup,
+            "Basculer popup",
+            ["TargetPageId"],
+            true,
+            "Ouvre ou ferme une popup runtime pour un fragment compile."),
         new(ReadValueFunction, ScadaActionKind.ReadValue, "Lire valeur", ["TagId"], true, "Lie un tag runtime a la valeur affichee par un Element+."),
         new(WriteValueFunction, ScadaActionKind.WriteValue, "Ecrire valeur", ["TagId"], true, "Lie la valeur saisie par l'operateur a un tag runtime."),
         new(ShowFunction, ScadaActionKind.Show, "Afficher objet", ["TargetElementId"], true, "Affiche un Element+ cible."),

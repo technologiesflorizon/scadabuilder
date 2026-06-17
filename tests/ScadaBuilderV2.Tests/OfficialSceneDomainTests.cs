@@ -172,6 +172,8 @@ public sealed class OfficialSceneDomainTests
         var hover = ScadaEventRegistry.FindTrigger(ScadaEventRegistry.HoverKey);
         var changePage = ScadaEventRegistry.FindAction(ScadaEventRegistry.ChangePageFunction);
         var openPopup = ScadaEventRegistry.FindAction(ScadaEventRegistry.OpenPopupFunction);
+        var closePopup = ScadaEventRegistry.FindAction(ScadaEventRegistry.ClosePopupFunction);
+        var togglePopup = ScadaEventRegistry.FindAction(ScadaEventRegistry.TogglePopupFunction);
         var show = ScadaEventRegistry.FindAction(ScadaEventRegistry.ShowFunction);
         var hide = ScadaEventRegistry.FindAction(ScadaEventRegistry.HideFunction);
         var toggleVisibility = ScadaEventRegistry.FindAction(ScadaEventRegistry.ToggleVisibilityFunction);
@@ -192,6 +194,12 @@ public sealed class OfficialSceneDomainTests
         Assert.AreEqual(ScadaActionKind.MountFragment, openPopup?.Kind);
         Assert.IsTrue(openPopup?.Implemented ?? false);
         CollectionAssert.Contains(openPopup?.RequiredArguments.ToArray(), "TargetPageId");
+        Assert.AreEqual(ScadaActionKind.ClosePopup, closePopup?.Kind);
+        Assert.IsTrue(closePopup?.Implemented ?? false);
+        CollectionAssert.Contains(closePopup?.RequiredArguments.ToArray(), "TargetPageId");
+        Assert.AreEqual(ScadaActionKind.TogglePopup, togglePopup?.Kind);
+        Assert.IsTrue(togglePopup?.Implemented ?? false);
+        CollectionAssert.Contains(togglePopup?.RequiredArguments.ToArray(), "TargetPageId");
         Assert.AreEqual(ScadaActionKind.Show, show?.Kind);
         Assert.IsTrue(show?.Implemented ?? false);
         CollectionAssert.Contains(show?.RequiredArguments.ToArray(), "TargetElementId");
@@ -271,6 +279,27 @@ public sealed class OfficialSceneDomainTests
         Assert.AreEqual("popup_pump", action.TargetPageId);
         Assert.AreEqual(action.Id, updated.EventBindings.Single().ActionId);
         Assert.AreEqual(ScadaEventRegistry.ClickRuntimeTrigger, updated.EventBindings.Single().Trigger);
+    }
+
+    [TestMethod]
+    public void SceneCanAttachCloseAndTogglePopupEvents()
+    {
+        var closeButton = ScadaElement.CreateText("btn_close", "Fermer details", 10, 20);
+        var toggleButton = ScadaElement.CreateText("btn_toggle", "Basculer details", 10, 60);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "win00008", new CanvasSize(1280, 873))
+            .WithElement(closeButton)
+            .WithElement(toggleButton)
+            .WithClosePopupEvent("btn_close", ScadaEventRegistry.ClickKey, "popup_pump")
+            .WithTogglePopupEvent("btn_toggle", ScadaEventRegistry.ClickKey, "popup_pump");
+
+        var closeAction = scene.ActionDefinitions.Single(action => action.Kind == ScadaActionKind.ClosePopup);
+        var toggleAction = scene.ActionDefinitions.Single(action => action.Kind == ScadaActionKind.TogglePopup);
+
+        Assert.AreEqual("popup_pump", closeAction.TargetPageId);
+        Assert.AreEqual("popup_pump", toggleAction.TargetPageId);
+        Assert.AreEqual(closeAction.Id, scene.FindElementRecursive("btn_close")?.EventBindings.Single().ActionId);
+        Assert.AreEqual(toggleAction.Id, scene.FindElementRecursive("btn_toggle")?.EventBindings.Single().ActionId);
     }
 
     [TestMethod]

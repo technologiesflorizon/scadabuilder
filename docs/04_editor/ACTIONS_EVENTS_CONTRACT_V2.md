@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active editor/runtime actions contract
-Document version: `V2.1.2.0014`
+Document version: `V2.1.2.0015`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0015` | `PENDING` | Implementation de `Fermer popup` et `Basculer popup` vers fragments compiles. |
 | 2026-06-17 | `V2.1.2.0014` | `PENDING` | Implementation de `Ouvrir popup` vers fragments compiles. |
 | 2026-06-17 | `V2.1.2.0012` | `PENDING` | Clarification de l'application runtime des valeurs recues par `Lire valeur`. |
 | 2026-06-17 | `V2.1.2.0010` | `PENDING` | Implementation des actions objet `Afficher`, `Masquer`, `Basculer visibilite` avec condition tag deterministe. |
@@ -35,7 +36,7 @@ Object events and runtime actions are model-owned behavior. UI controls may auth
 9. `Lire valeur` and `Ecrire valeur` persist tag ids as Element+ data bindings, not triggered scene events. `Ecrire valeur` writes the operator-entered runtime value and never stores a literal design-time value.
 10. `Afficher objet`, `Masquer objet`, and `Basculer visibilite` are authorable against Element+ targets and may use one deterministic tag condition.
 11. Exported runtime applies values pushed by TF100Web to every Element+ using the matching `Lire valeur` tag binding.
-12. `Ouvrir popup` is authorable against compiled `Fragment` pages and persists as `MountFragment`.
+12. `Ouvrir popup`, `Fermer popup`, and `Basculer popup` are authorable against compiled `Fragment` pages and persist as popup runtime actions.
 
 ## 3. Event Registry
 
@@ -55,6 +56,8 @@ Runtime function contracts are centralized in `ScadaEventRegistry`:
 | --- | --- | --- | --- | --- |
 | `ChangePage` | `Changer de page` | `Navigate` | `TargetPageId` | Implemented |
 | `OpenPopup` | `Ouvrir popup` | `MountFragment` | `TargetPageId` fragment | Implemented |
+| `ClosePopup` | `Fermer popup` | `ClosePopup` | `TargetPageId` fragment | Implemented |
+| `TogglePopup` | `Basculer popup` | `TogglePopup` | `TargetPageId` fragment | Implemented |
 | `Show` | `Afficher objet` | `Show` | `TargetElementId`, optional `Condition` | Implemented |
 | `Hide` | `Masquer objet` | `Hide` | `TargetElementId`, optional `Condition` | Implemented |
 | `ToggleVisibility` | `Basculer visibilite` | `ToggleVisibility` | `TargetElementId`, optional `Condition` | Implemented |
@@ -116,20 +119,21 @@ The current slice does not yet implement degraded state semantics, expression au
 
 The current implemented popup slice covers:
 
-1. Selecting `Ouvrir popup` in the Element+ event dialog.
+1. Selecting `Ouvrir popup`, `Fermer popup`, or `Basculer popup` in the Element+ event dialog.
 2. Selecting only pages marked `Fragment` and included in build.
-3. Persisting the action as `ScadaActionKind.MountFragment` with `TargetPageId`.
+3. Persisting the actions as `ScadaActionKind.MountFragment`, `ClosePopup`, or `TogglePopup` with `TargetPageId`.
 4. Validating missing, non-fragment, or excluded popup targets before build/export.
 5. Exporting runtime that opens the compiled fragment page in a centered iframe popup with close behavior.
+6. Closing or toggling the popup from the host page, or from an iframe-loaded fragment through a parent `postMessage` popup request.
 
-The current slice does not yet implement `Fermer popup`, `Basculer popup`, named popup host regions, explicit placement, multi-instance policy, or lifecycle reset options.
+The current slice does not yet implement named popup host regions, explicit placement, multi-instance policy, sizing presets, or lifecycle reset options.
 
 ## 8. Roadmap Boundary
 
 The following are roadmap items until implemented and covered by tests:
 
 1. `mouse hover -> show element/group border`.
-2. Popup close/toggle action functions and advanced popup lifecycle policy.
+2. Advanced popup lifecycle policy, named host regions, sizing presets, and multi-instance policy.
 3. Degraded tag conditions and compound conditions.
 4. Global scripts generating lifecycle events.
 5. Visual effects such as blink, glow, pulse, alarm highlight, degraded treatment.

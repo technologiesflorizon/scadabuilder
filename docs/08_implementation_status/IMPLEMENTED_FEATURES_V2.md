@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active implementation status
-Document version: `V2.1.2.0014`
+Document version: `V2.1.2.0015`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0015` | `PENDING` | Implementation des actions `Fermer popup` et `Basculer popup`. |
 | 2026-06-17 | `V2.1.2.0014` | `PENDING` | Implementation de l'action `Ouvrir popup` vers fragments compiles. |
 | 2026-06-17 | `V2.1.2.0013` | `PENDING` | Implementation des filtres et du resume de catalogue tags dans l'editeur. |
 | 2026-06-17 | `V2.1.2.0012` | `PENDING` | Implementation de l'application runtime des valeurs de tags lues. |
@@ -26,7 +27,7 @@ Document version: `V2.1.2.0014`
 
 ## 1. Current Verified Baseline
 
-As of 2026-06-17, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 209 tests.
+As of 2026-06-17, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 212 tests.
 
 ## 2. Implemented Areas
 
@@ -53,7 +54,7 @@ As of 2026-06-17, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 209 
 21. The editor exposes a project-level `Catalogue Tags` panel listing imported tags and records local tag creation as a future protocol-import revision. The panel can filter by text, device, datatype, access, and active state, and reports the visible subset against the full imported catalog.
 22. Element+ events can author `Afficher objet`, `Masquer objet`, and `Basculer visibilite` against Element+ targets, with one optional imported-tag condition using `Vrai`, `Faux`, `=`, `<>`, `>`, `>=`, `<`, or `<=`. Build/export validation rejects invalid condition tags, missing comparison values, missing target objects, and boolean operators on non-boolean tags.
 23. FT100/TF100Web runtime can apply pushed tag values to all `Lire valeur` Element+ bindings through `window.scadaBuilderSetTagValue` or `scada-builder-tag-value`, while updating the shared runtime tag cache used by conditions.
-24. Element+ events can author `Ouvrir popup` against compiled `Fragment` pages. Build/export validation rejects invalid popup targets, and FT100/TF100Web runtime opens the fragment in a centered iframe popup with close diagnostics.
+24. Element+ events can author `Ouvrir popup`, `Fermer popup`, and `Basculer popup` against compiled `Fragment` pages. Build/export validation rejects invalid popup targets, and FT100/TF100Web runtime opens, closes, or toggles the fragment in a centered iframe popup with close diagnostics and iframe-to-parent close/toggle requests.
 
 ## 3. Source Of Truth
 

@@ -169,6 +169,8 @@ public enum ScadaActionKind
     SetClass,
     ToggleClass,
     MountFragment,
+    ClosePopup,
+    TogglePopup,
     WriteTag,
     ReadValue,
     WriteValue
@@ -905,15 +907,62 @@ public sealed record ScadaScene(
     /// </remarks>
     public ScadaScene WithOpenPopupEvent(string elementId, string triggerKeyOrRuntimeName, string targetPageId)
     {
+        return WithPopupEvent(elementId, triggerKeyOrRuntimeName, ScadaActionKind.MountFragment, targetPageId);
+    }
+
+    /// <summary>
+    /// Adds a model-backed Element+ event that closes a compiled fragment runtime popup.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0020.
+    /// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
+    /// </remarks>
+    public ScadaScene WithClosePopupEvent(string elementId, string triggerKeyOrRuntimeName, string targetPageId)
+    {
+        return WithPopupEvent(elementId, triggerKeyOrRuntimeName, ScadaActionKind.ClosePopup, targetPageId);
+    }
+
+    /// <summary>
+    /// Adds a model-backed Element+ event that toggles a compiled fragment runtime popup.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0020.
+    /// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
+    /// </remarks>
+    public ScadaScene WithTogglePopupEvent(string elementId, string triggerKeyOrRuntimeName, string targetPageId)
+    {
+        return WithPopupEvent(elementId, triggerKeyOrRuntimeName, ScadaActionKind.TogglePopup, targetPageId);
+    }
+
+    // Centralizes popup action creation so every popup function keeps the same fragment target contract.
+    private ScadaScene WithPopupEvent(
+        string elementId,
+        string triggerKeyOrRuntimeName,
+        ScadaActionKind actionKind,
+        string targetPageId)
+    {
         ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
         ArgumentException.ThrowIfNullOrWhiteSpace(triggerKeyOrRuntimeName);
         ArgumentException.ThrowIfNullOrWhiteSpace(targetPageId);
 
+        if (actionKind is not (ScadaActionKind.MountFragment or ScadaActionKind.ClosePopup or ScadaActionKind.TogglePopup))
+        {
+            throw new InvalidOperationException($"Action kind '{actionKind}' is not a popup action.");
+        }
+
         var trigger = ScadaEventRegistry.FindTrigger(triggerKeyOrRuntimeName) ??
             throw new InvalidOperationException($"Event trigger '{triggerKeyOrRuntimeName}' is not registered.");
+        var functionName = actionKind switch
+        {
+            ScadaActionKind.ClosePopup => ScadaEventRegistry.ClosePopupFunction,
+            ScadaActionKind.TogglePopup => ScadaEventRegistry.TogglePopupFunction,
+            _ => ScadaEventRegistry.OpenPopupFunction
+        };
         var action = new ScadaActionDefinition(
-            CreateActionId(elementId, trigger.RuntimeTrigger, ScadaEventRegistry.OpenPopupFunction, targetPageId),
-            ScadaActionKind.MountFragment,
+            CreateActionId(elementId, trigger.RuntimeTrigger, functionName, targetPageId),
+            actionKind,
             TargetPageId: targetPageId.Trim());
 
         return WithAction(action)
