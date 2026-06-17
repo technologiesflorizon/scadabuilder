@@ -48,7 +48,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -62,7 +64,8 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null
     },
     {
       "Id": "legacy_7",
@@ -106,7 +109,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -120,7 +125,8 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null
     },
     {
       "Id": "legacy_8",
@@ -164,7 +170,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -178,7 +186,8 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null
     },
     {
       "Id": "legacy_10",
@@ -222,7 +231,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -236,7 +247,8 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null
     },
     {
       "Id": "legacy_11",
@@ -280,7 +292,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -294,7 +308,8 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null
     },
     {
       "Id": "legacy_12",
@@ -338,7 +353,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -352,7 +369,8 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null
     },
     {
       "Id": "elementplus_text_2",
@@ -396,11 +414,14 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": null,
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null
     },
     {
       "Id": "elementplus_text_9",
@@ -444,11 +465,14 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": null,
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null
     },
     {
       "Id": "input_numeric_001",
@@ -486,11 +510,14 @@
         "Unit": "2",
         "DisplayFormat": "00.0",
         "TagBinding": null,
-        "IsReadOnly": true
+        "IsReadOnly": true,
+        "ReadTagId": "tf100.mapping.165",
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": null,
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null
     },
     {
       "Id": "text_001",
@@ -528,11 +555,14 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": true
+        "IsReadOnly": true,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": null,
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null
     }
   ],
   "BackgroundColor": "#ADADAD",

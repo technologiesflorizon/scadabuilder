@@ -82,23 +82,16 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
-    public void ModernDoubleClickEditorExposesEventButtonAfterStyle()
+    public void ModernDoubleClickOpensWpfPropertiesDialog()
     {
         var source = ReadMainWindowSource();
 
-        StringAssert.Contains(source, "const stylePanel = createPanel('style', 'Style');");
-        StringAssert.Contains(source, "buttonPanel = createPanel('button', 'Bouton');");
-        StringAssert.Contains(source, "eventButton.textContent = 'Evenement';");
-        StringAssert.Contains(source, "type: 'openSceneObjectEvents'");
-        Assert.IsTrue(
-            source.IndexOf("const stylePanel = createPanel('style', 'Style');", StringComparison.Ordinal) <
-            source.IndexOf("buttonPanel = createPanel('button', 'Bouton');", StringComparison.Ordinal),
-            "The Bouton tab must be placed to the right of the Style tab in the double-click editor.");
-        Assert.IsTrue(
-            source.IndexOf("buttonPanel = createPanel('button', 'Bouton');", StringComparison.Ordinal) <
-            source.IndexOf("eventButton.textContent = 'Evenement';", StringComparison.Ordinal),
-            "The Evenement button must remain to the right of the Bouton tab in the double-click editor.");
-        StringAssert.Contains(source, "buttonHoverEnabled: field('ButtonHoverEnabled')?.checked !== false");
+        StringAssert.Contains(source, "window.chrome?.webview?.postMessage({ type: 'openSceneObjectProperties', id: element.Id });");
+        StringAssert.Contains(source, "ShowModernElementProperties(message.Id);");
+        StringAssert.Contains(source, "var dialog = new ElementPropertiesDialog(current, FormatElementEventsSummary(current))");
+        Assert.IsFalse(
+            source.Contains("openModernEditor(", StringComparison.Ordinal),
+            "Double-click properties must use the WPF ElementPropertiesDialog, not the old WebView floating editor.");
         StringAssert.Contains(source, "button.dataset.scadaButtonBehavior = JSON.stringify(buttonBehavior || {});");
         Assert.IsFalse(
             source.Contains("wrapper.style.background = cssText(buttonHover.Background", StringComparison.Ordinal),
@@ -109,13 +102,44 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void ElementPropertiesDialogUsesEventDialogVisualTokens()
+    {
+        var xaml = ReadMainWindowFile("ElementPropertiesDialog.xaml");
+
+        StringAssert.Contains(xaml, "Title=\"Proprietes Element+\"");
+        StringAssert.Contains(xaml, "Width=\"620\"");
+        StringAssert.Contains(xaml, "Height=\"680\"");
+        StringAssert.Contains(xaml, "<SolidColorBrush x:Key=\"PanelBrush\" Color=\"#F7FBF5\"/>");
+        StringAssert.Contains(xaml, "<SolidColorBrush x:Key=\"BorderBrushSoft\" Color=\"#DCE8DD\"/>");
+        StringAssert.Contains(xaml, "<Setter Property=\"Background\" Value=\"#2090A0\"/>");
+        StringAssert.Contains(xaml, "<Setter Property=\"BorderBrush\" Value=\"#0F7280\"/>");
+    }
+
+    [TestMethod]
+    public void ElementPropertiesDialogKeepsEventEntryPoint()
+    {
+        var xaml = ReadMainWindowFile("ElementPropertiesDialog.xaml");
+        var dialogCode = ReadMainWindowFile("ElementPropertiesDialog.xaml.cs");
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(xaml, "<TabItem Header=\"Evenement\">");
+        StringAssert.Contains(xaml, "x:Name=\"EventSummaryText\"");
+        StringAssert.Contains(xaml, "x:Name=\"OpenEventsButton\"");
+        StringAssert.Contains(xaml, "Click=\"OnOpenEventsClick\"");
+        StringAssert.Contains(dialogCode, "public Action? OpenEvents { get; set; }");
+        StringAssert.Contains(dialogCode, "OpenEvents?.Invoke();");
+        StringAssert.Contains(source, "dialog.OpenEvents = () =>");
+        StringAssert.Contains(source, "OpenElementEventDialog(current.Id, dialog);");
+        StringAssert.Contains(source, "dialog.SetEventSummary(FormatElementEventsSummary(latestWithEvents));");
+    }
+
+    [TestMethod]
     public void WebViewKeyboardShortcutsDoNotDeleteOnBackspaceOrInsideEditors()
     {
         var source = NormalizeNewLines(ReadMainWindowSource());
 
         StringAssert.Contains(source, "function isEditableKeyboardTarget(target)");
         StringAssert.Contains(source, "if (activeTextEditor?.editor === target) return true;");
-        StringAssert.Contains(source, "if (activeModernEditor?.contains?.(target)) return true;");
         StringAssert.Contains(source, "if (isEditableKeyboardTarget(event.target)) {\n      return;\n    }");
         StringAssert.Contains(source, "if (event.key === 'Backspace') {\n      event.preventDefault();\n      event.stopPropagation();\n      return;\n    }\n\n    if (event.key === 'Delete') {");
         Assert.IsFalse(
@@ -532,9 +556,11 @@ public sealed class WebViewContextMenuScriptTests
         var source = ReadMainWindowSource();
         var webViewMethod = ExtractMethod(source, "private void UpdateModernElementProperties(LegacyViewerMessage message)");
         var panelMethod = ExtractMethod(source, "private void OnElementPropertyChanged(object sender, RoutedEventArgs e)");
+        var commitMethod = ExtractMethod(source, "private void CommitModernElementProperties(ScadaElement current, ScadaElement updated)");
 
-        StringAssert.Contains(webViewMethod, "new ModernElementChangedAction(");
-        StringAssert.Contains(panelMethod, "new ModernElementChangedAction(");
+        StringAssert.Contains(webViewMethod, "CommitModernElementProperties(current, updated);");
+        StringAssert.Contains(panelMethod, "CommitModernElementProperties(current, updated);");
+        StringAssert.Contains(commitMethod, "new ModernElementChangedAction(");
         StringAssert.Contains(webViewMethod, "Equals(current, updated)");
         StringAssert.Contains(panelMethod, "Equals(current, updated)");
     }
@@ -751,31 +777,31 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
-    public void ModernEditorTabsDoNotTriggerCanvasSelectionClear()
+    public void ModernPropertiesDialogCommitsThroughSceneHistory()
     {
-        var source = NormalizeNewLines(ReadMainWindowSource());
+        var source = ReadMainWindowSource();
+        var dialogCode = ReadMainWindowFile("ElementPropertiesDialog.xaml.cs");
 
-        StringAssert.Contains(source, "if (activeModernEditor && activeModernEditor.contains(event.target))");
-        StringAssert.Contains(source, "event.stopPropagation();\n      return;\n    }\n    if (event.target && menu.contains(event.target))");
-        Assert.IsTrue(
-            source.IndexOf("if (activeModernEditor && activeModernEditor.contains(event.target))", StringComparison.Ordinal) <
-            source.IndexOf("hideMenu();\n\n    if (placementKind)", StringComparison.Ordinal),
-            "The global pointerdown handler must ignore property editor clicks before it starts drag selection or clears modern selection.");
+        StringAssert.Contains(source, "BuildUpdatedElementFromDialog(latest, dialog.Result)");
+        StringAssert.Contains(source, "CommitModernElementProperties(latest, updated);");
+        StringAssert.Contains(source, "new ModernElementChangedAction(");
+        StringAssert.Contains(dialogCode, "public ElementPropertiesDialogResult? Result { get; private set; }");
+        StringAssert.Contains(dialogCode, "DialogResult = true;");
     }
 
     [TestMethod]
-    public void ModernEditorReadsElementDataBeforeReadOnlyNumericTitle()
+    public void ElementPropertiesDialogReadsElementDataBeforeRuntimeFlags()
     {
-        var source = NormalizeNewLines(ReadMainWindowSource());
+        var source = NormalizeNewLines(ReadMainWindowFile("ElementPropertiesDialog.xaml.cs"));
 
-        var dataIndex = source.IndexOf("const data = element.Data || {};", StringComparison.Ordinal);
-        var readOnlyIndex = source.IndexOf("const isReadOnlyNumeric = isNumeric && data.IsReadOnly === true;", StringComparison.Ordinal);
+        var dataIndex = source.IndexOf("var data = current.Data ?? new ScadaElementData", StringComparison.Ordinal);
+        var buttonIndex = source.IndexOf("var buttonBehavior = current.EffectiveButtonBehavior;", StringComparison.Ordinal);
 
-        Assert.IsTrue(dataIndex >= 0, "Modern editor data initialization was not found.");
-        Assert.IsTrue(readOnlyIndex >= 0, "Modern editor read-only numeric flag was not found.");
+        Assert.IsTrue(dataIndex >= 0, "ElementPropertiesDialog data initialization was not found.");
+        Assert.IsTrue(buttonIndex >= 0, "ElementPropertiesDialog button behavior initialization was not found.");
         Assert.IsTrue(
-            dataIndex < readOnlyIndex,
-            "The modern editor must initialize data before reading data.IsReadOnly.");
+            dataIndex < buttonIndex,
+            "The properties dialog must initialize Element+ data before applying runtime-specific fields.");
     }
 
     [TestMethod]
@@ -792,15 +818,15 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
-    public void BeginPlacementClosesModernEditorState()
+    public void BeginPlacementClearsModernSelectionState()
     {
         var source = NormalizeNewLines(ReadMainWindowSource());
 
-        StringAssert.Contains(source, "if (action === 'beginPlacement') {\n        closeModernEditor();\n        clearModernSelection(false);");
+        StringAssert.Contains(source, "if (action === 'beginPlacement') {\n        clearModernSelection(false);");
         Assert.IsTrue(
-            source.IndexOf("closeModernEditor();\n        clearModernSelection(false);", StringComparison.Ordinal) <
+            source.IndexOf("clearModernSelection(false);", StringComparison.Ordinal) <
             source.IndexOf("placementKind = command?.Kind || null;", StringComparison.Ordinal),
-            "Starting placement must clear the floating box/editor before the next canvas click creates the element.");
+            "Starting placement must clear modern selection before the next canvas click creates the element.");
     }
 
     [TestMethod]

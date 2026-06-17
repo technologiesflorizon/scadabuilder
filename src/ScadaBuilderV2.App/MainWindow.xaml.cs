@@ -1087,7 +1087,7 @@ public partial class MainWindow : Window
                     break;
                 case "openSceneObjectProperties":
                 case "openModernElementProperties":
-                    SelectModernElement(message.Id);
+                    ShowModernElementProperties(message.Id);
                     break;
                 case "openSceneObjectEvents":
                 case "openModernElementEvents":
@@ -3298,6 +3298,27 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         return tag?.AuthoringLabel ?? tagId;
     }
 
+    private string FormatElementEventsSummary(ScadaElement element)
+    {
+        var data = element.Data ?? new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
+        var bindingSummaries = new List<string>();
+        if (!string.IsNullOrWhiteSpace(data.ReadTagId))
+        {
+            bindingSummaries.Add($"Lire valeur: {FormatProjectTag(data.ReadTagId)}");
+        }
+
+        if (!string.IsNullOrWhiteSpace(data.WriteTagId))
+        {
+            bindingSummaries.Add($"Ecrire valeur: {FormatProjectTag(data.WriteTagId)}");
+        }
+
+        bindingSummaries.AddRange(element.EventBindings
+            .Select(binding => ScadaEventRegistry.FindTrigger(binding.Trigger)?.FrenchLabel ?? binding.Trigger));
+        return bindingSummaries.Count == 0
+            ? "Aucun evenement"
+            : string.Join(", ", bindingSummaries);
+    }
+
     private void OnCreateProjectTagClick(object sender, RoutedEventArgs e)
     {
         SetStatus("Creation de tags disponible dans une prochaine revision apres import des protocoles projet.");
@@ -3628,15 +3649,47 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         var targetId = string.IsNullOrWhiteSpace(elementId)
             ? _selectedSceneObject?.Id
             : elementId;
-        if (string.IsNullOrWhiteSpace(targetId))
+        if (_activeScene is null || string.IsNullOrWhiteSpace(targetId))
         {
             SetStatus("Aucun Element+ selectionne pour les proprietes.");
             return;
         }
 
         SelectModernElement(targetId);
-        RightContextTabs.SelectedItem = PropertiesContextTab;
-        SetStatus("Proprietes Element+ ouvertes.");
+        var current = _activeScene.FindElementRecursive(targetId);
+        if (current is null || current.IsLegacyStatic)
+        {
+            SetStatus("Les proprietes modales sont disponibles sur les objets Element+ convertis.");
+            return;
+        }
+
+        var dialog = new ElementPropertiesDialog(current, FormatElementEventsSummary(current))
+        {
+            Owner = this
+        };
+        dialog.OpenEvents = () =>
+        {
+            OpenElementEventDialog(current.Id, dialog);
+            var latestWithEvents = _activeScene?.FindElementRecursive(current.Id);
+            if (latestWithEvents is not null)
+            {
+                dialog.SetEventSummary(FormatElementEventsSummary(latestWithEvents));
+            }
+        };
+        if (dialog.ShowDialog() != true || dialog.Result is null)
+        {
+            return;
+        }
+
+        var latest = _activeScene.FindElementRecursive(current.Id);
+        if (latest is null)
+        {
+            SetStatus("Element+ introuvable pour appliquer les proprietes.");
+            return;
+        }
+
+        var updated = BuildUpdatedElementFromDialog(latest, dialog.Result);
+        CommitModernElementProperties(latest, updated);
     }
 
     private void ShowModernElementEvents(string? elementId)
@@ -4481,19 +4534,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
-        _activeScene = _activeScene.WithReplacedElementRecursive(updated);
-        _selectedSceneObject = updated;
-        _selectedSceneObjectIds.Add(updated.Id);
-        _activeSceneTab?.History.Push(new ModernElementChangedAction(
-            _activeScene.Id,
-            current,
-            updated,
-            "proprietes Element+"));
-        MarkActiveSceneDirty();
-        RefreshSelectionUi();
-        RefreshModernSceneUi();
-        _ = RenderModernSceneAsync();
-        SetStatus($"{updated.UserLabel} mis a jour. Sauvegarde requise.");
+        CommitModernElementProperties(current, updated);
     }
 
     private void OnDeleteSelectedModernElementClick(object sender, RoutedEventArgs e)
@@ -4659,22 +4700,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ElementUnitTextBox.Text = data.Unit ?? "";
             ElementFormatTextBox.Text = data.DisplayFormat ?? "";
             ElementTagBindingTextBox.Text = data.TagBinding ?? "";
-            var bindingSummaries = new List<string>();
-            if (!string.IsNullOrWhiteSpace(data.ReadTagId))
-            {
-                bindingSummaries.Add($"Lire valeur: {FormatProjectTag(data.ReadTagId)}");
-            }
-
-            if (!string.IsNullOrWhiteSpace(data.WriteTagId))
-            {
-                bindingSummaries.Add($"Ecrire valeur: {FormatProjectTag(data.WriteTagId)}");
-            }
-
-            bindingSummaries.AddRange(element.EventBindings
-                .Select(binding => ScadaEventRegistry.FindTrigger(binding.Trigger)?.FrenchLabel ?? binding.Trigger));
-            ElementEventsSummaryText.Text = bindingSummaries.Count == 0
-                ? "Aucun evenement"
-                : string.Join(", ", bindingSummaries);
+            ElementEventsSummaryText.Text = FormatElementEventsSummary(element);
         }
         finally
         {
@@ -4687,7 +4713,77 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         OpenElementEventDialog(_selectedSceneObject?.Id);
     }
 
-    private void OpenElementEventDialog(string? elementId)
+    private static ScadaElement BuildUpdatedElementFromDialog(
+        ScadaElement current,
+        ElementPropertiesDialogResult result)
+    {
+        var style = current.Style ?? (current.Kind == ScadaElementKind.Text ? ScadaElementStyle.DefaultText : ScadaElementStyle.DefaultInput);
+        var data = current.Data ?? new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
+        return current with
+        {
+            DisplayName = result.DisplayName,
+            Bounds = result.Bounds,
+            Layout = new ScadaElementLayout(result.PositionMode, current.Layout?.RelativeToElementId),
+            Style = style with
+            {
+                FontFamily = result.FontFamily,
+                FontSize = result.FontSize,
+                Background = result.Background,
+                BorderStyle = result.BorderStyle,
+                BorderWidth = result.BorderWidth,
+                ShadowPreset = result.ShadowPreset,
+                AdvancedCss = result.AdvancedCss
+            },
+            ButtonBehavior = current.Kind == ScadaElementKind.Button
+                ? new ScadaButtonBehavior(
+                    result.ButtonDisabled,
+                    new ScadaButtonHoverStyle(
+                        result.ButtonHoverEnabled,
+                        result.ButtonHoverBackground,
+                        result.ButtonHoverForeground,
+                        result.ButtonHoverBorderColor))
+                : current.ButtonBehavior,
+            Data = data with
+            {
+                Placeholder = result.Placeholder,
+                Text = current.Kind is ScadaElementKind.InputText or ScadaElementKind.Text or ScadaElementKind.Button
+                    ? result.Text
+                    : data.Text,
+                Value = current.Kind == ScadaElementKind.InputNumeric ? result.Value : data.Value,
+                Minimum = result.Minimum,
+                Maximum = result.Maximum,
+                Decimals = result.Decimals,
+                Unit = result.Unit,
+                DisplayFormat = result.DisplayFormat,
+                TagBinding = result.TagBinding,
+                IsReadOnly = result.IsReadOnly
+            }
+        };
+    }
+
+    private void CommitModernElementProperties(ScadaElement current, ScadaElement updated)
+    {
+        if (_activeScene is null || Equals(current, updated))
+        {
+            return;
+        }
+
+        _activeScene = _activeScene.WithReplacedElementRecursive(updated);
+        _selectedSceneObject = updated;
+        _selectedSceneObjectIds.Add(updated.Id);
+        _activeSceneTab?.History.Push(new ModernElementChangedAction(
+            _activeScene.Id,
+            current,
+            updated,
+            "proprietes Element+"));
+        MarkActiveSceneDirty();
+        RefreshSelectionUi();
+        RefreshModernSceneUi();
+        _ = RenderModernSceneAsync();
+        SetStatus($"{updated.UserLabel} mis a jour. Sauvegarde requise.");
+    }
+
+    private void OpenElementEventDialog(string? elementId, Window? owner = null)
     {
         if (_activeScene is null || string.IsNullOrWhiteSpace(elementId))
         {
@@ -4709,7 +4805,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             GetCurrentSceneReferences(),
             _modernProject?.TagCatalog)
         {
-            Owner = this
+            Owner = owner ?? this
         };
 
         dialog.AddEvent = result => AddElementEventFromDialog(current.Id, result, dialog);
@@ -4957,18 +5053,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
-        _activeScene = _activeScene.WithReplacedElementRecursive(updated);
-        _selectedSceneObject = updated;
-        _selectedSceneObjectIds.Add(updated.Id);
-        _activeSceneTab?.History.Push(new ModernElementChangedAction(
-            _activeScene.Id,
-            current,
-            updated,
-            "proprietes Element+"));
-        MarkActiveSceneDirty();
-        RefreshSelectionUi();
-        RefreshModernSceneUi();
-        _ = RenderModernSceneAsync();
+        CommitModernElementProperties(current, updated);
     }
 
     private async Task RenderModernSceneAsync()
@@ -6135,122 +6220,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       font: 14px Segoe UI, Arial, sans-serif;
       outline: 0;
     }
-    #scada-modern-editor {
-      position: fixed;
-      z-index: 2147483647;
-      width: 300px;
-      max-height: min(430px, calc(100vh - 24px));
-      overflow: hidden;
-      padding: 0;
-      border: 1px solid rgba(15,42,48,.20);
-      background: #ffffff;
-      color: #0f2a30;
-      box-shadow: 0 18px 42px rgba(15,42,48,.24);
-      font: 13px Segoe UI, Arial, sans-serif;
-    }
-    #scada-modern-editor .editor-titlebar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 36px;
-      padding: 6px 8px 6px 10px;
-      border-bottom: 1px solid rgba(15,42,48,.14);
-      background: #f2f8ef;
-    }
-    #scada-modern-editor h3 {
-      flex: 1;
-      margin: 0;
-      font-size: 14px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    #scada-modern-editor .close {
-      width: 32px;
-      height: 28px;
-      min-height: 28px;
-      padding: 0;
-      border: 0;
-      background: transparent;
-      color: #0f2a30;
-      font: 16px "Segoe UI Symbol", "Segoe UI", Arial, sans-serif;
-      line-height: 28px;
-      text-align: center;
-      border-radius: 2px;
-    }
-    #scada-modern-editor .close:hover {
-      background: #c42b1c;
-      color: #ffffff;
-    }
-    #scada-modern-editor label {
-      display: block;
-      margin: 7px 0 3px;
-      color: #4e6a71;
-      font-size: 12px;
-    }
-    #scada-modern-editor input,
-    #scada-modern-editor select {
-      width: 100%;
-      box-sizing: border-box;
-      min-height: 28px;
-      border: 1px solid rgba(15,42,48,.24);
-      padding: 4px 6px;
-      font: 13px Segoe UI, Arial, sans-serif;
-    }
-    #scada-modern-editor .row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-    }
-    #scada-modern-editor .tabs {
-      display: flex;
-      padding: 8px 8px 0;
-      gap: 4px;
-      border-bottom: 1px solid rgba(15,42,48,.14);
-    }
-    #scada-modern-editor .tab {
-      min-height: 28px;
-      padding: 4px 9px;
-      border: 1px solid rgba(15,42,48,.16);
-      border-bottom: 0;
-      background: #ffffff;
-      color: #4e6a71;
-    }
-    #scada-modern-editor .tab.active {
-      background: #2090a0;
-      border-color: #2090a0;
-      color: #ffffff;
-    }
-    #scada-modern-editor .panel {
-      display: none;
-      max-height: 270px;
-      overflow: auto;
-      padding: 8px 10px 0;
-    }
-    #scada-modern-editor .panel.active {
-      display: block;
-    }
-    #scada-modern-editor .actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 6px;
-      padding: 10px;
-      border-top: 1px solid rgba(15,42,48,.12);
-      margin-top: 0;
-    }
-    #scada-modern-editor button {
-      min-height: 30px;
-      border: 1px solid rgba(15,42,48,.20);
-      background: #ffffff;
-      color: #0f2a30;
-      padding: 5px 10px;
-      cursor: pointer;
-    }
-    #scada-modern-editor button.primary {
-      background: #2090a0;
-      border-color: #2090a0;
-      color: #ffffff;
-    }
     #scada-scene-resize-handle {
       position: absolute;
       right: -1px;
@@ -6288,7 +6257,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
   let sourceDrag = null;
   let modernDrag = null;
   let activeTextEditor = null;
-  let activeModernEditor = null;
 
   document.querySelectorAll('button.layer[disabled], input.layer[disabled], select.layer[disabled], textarea.layer[disabled]')
     .forEach(el => {
@@ -6646,7 +6614,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     document.querySelectorAll('.scada-modern-element').forEach(element => {
       element.dataset.selected = 'false';
     });
-    closeModernEditor();
     if (post) {
       window.chrome?.webview?.postMessage({ type: 'clearObjectSelection' });
     }
@@ -6941,259 +6908,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     });
   }
 
-  function closeModernEditor() {
-    activeModernEditor?.remove?.();
-    activeModernEditor = null;
-  }
-
-  function appendField(container, labelText, value, name, type = 'text') {
-    const label = document.createElement('label');
-    label.textContent = labelText;
-    const input = document.createElement('input');
-    input.name = name;
-    input.type = type;
-    input.value = value ?? '';
-    container.appendChild(label);
-    container.appendChild(input);
-    return input;
-  }
-
-  function appendSelect(container, labelText, value, name, options) {
-    const label = document.createElement('label');
-    label.textContent = labelText;
-    const select = document.createElement('select');
-    select.name = name;
-    options.forEach(option => {
-      const item = document.createElement('option');
-      item.value = option;
-      item.textContent = option;
-      if (String(option).toLowerCase() === String(value || '').toLowerCase()) {
-        item.selected = true;
-      }
-      select.appendChild(item);
-    });
-    container.appendChild(label);
-    container.appendChild(select);
-    return select;
-  }
-
-  function appendRow(container, fields) {
-    const row = document.createElement('div');
-    row.className = 'row';
-    fields.forEach(field => {
-      const cell = document.createElement('div');
-      field(cell);
-      row.appendChild(cell);
-    });
-    container.appendChild(row);
-  }
-
-  function openModernEditor(element, clientX, clientY) {
-    if (!element) return;
-    closeModernEditor();
-    const isTextObject = element.Kind === 'Text' || element.Kind === 'Button';
-    const isNumeric = element.Kind === 'InputNumeric';
-    const style = element.Style || {};
-    const data = element.Data || {};
-    const isReadOnlyNumeric = isNumeric && data.IsReadOnly === true;
-    const editor = document.createElement('div');
-    editor.id = 'scada-modern-editor';
-    editor.style.left = `${Math.min(clientX, Math.max(12, window.innerWidth - 320))}px`;
-    editor.style.top = `${Math.min(clientY, Math.max(12, window.innerHeight - 450))}px`;
-
-    const titlebar = document.createElement('div');
-    titlebar.className = 'editor-titlebar';
-    const title = document.createElement('h3');
-    title.textContent = isTextObject
-      ? `${element.DisplayName || element.Id} - champ texte`
-      : isNumeric
-        ? `${element.DisplayName || element.Id} - ${isReadOnlyNumeric ? 'affichage numerique' : 'entree numerique'}`
-        : `${element.DisplayName || element.Id} - entree texte`;
-    const close = document.createElement('button');
-    close.type = 'button';
-    close.className = 'close';
-    close.textContent = 'X';
-    close.title = 'Fermer';
-    close.setAttribute('aria-label', 'Fermer');
-    titlebar.appendChild(title);
-    titlebar.appendChild(close);
-    editor.appendChild(titlebar);
-
-    const tabs = document.createElement('div');
-    tabs.className = 'tabs';
-    editor.appendChild(tabs);
-
-    function createPanel(id, label, active = false) {
-      const tab = document.createElement('button');
-      tab.type = 'button';
-      tab.className = `tab${active ? ' active' : ''}`;
-      tab.textContent = label;
-      const panel = document.createElement('div');
-      panel.className = `panel${active ? ' active' : ''}`;
-      panel.dataset.panel = id;
-      tab.addEventListener('click', () => {
-        editor.querySelectorAll('.tab').forEach(item => item.classList.remove('active'));
-        editor.querySelectorAll('.panel').forEach(item => item.classList.remove('active'));
-        tab.classList.add('active');
-        panel.classList.add('active');
-      });
-      tabs.appendChild(tab);
-      editor.appendChild(panel);
-      return panel;
-    }
-
-    const generalPanel = createPanel('general', 'General', true);
-    const dataPanel = createPanel('data', 'Donnees');
-    const stylePanel = createPanel('style', 'Style');
-    const buttonBehavior = element.ButtonBehavior || {};
-    const buttonHover = buttonBehavior.Hover || {};
-    let buttonPanel = null;
-    if (element.Kind === 'Button') {
-      buttonPanel = createPanel('button', 'Bouton');
-    }
-    const eventButton = document.createElement('button');
-    eventButton.type = 'button';
-    eventButton.className = 'tab';
-    eventButton.textContent = 'Evenement';
-    eventButton.addEventListener('click', () => {
-      window.chrome?.webview?.postMessage({ type: 'openSceneObjectEvents', id: element.Id });
-    });
-    tabs.appendChild(eventButton);
-
-    appendField(generalPanel, 'Nom', element.DisplayName || element.Id, 'DisplayName');
-    appendRow(generalPanel, [
-      cell => appendField(cell, 'X', element.X, 'X', 'number'),
-      cell => appendField(cell, 'Y', element.Y, 'Y', 'number')
-    ]);
-    appendRow(generalPanel, [
-      cell => appendField(cell, 'Largeur', element.Width, 'Width', 'number'),
-      cell => appendField(cell, 'Hauteur', element.Height, 'Height', 'number')
-    ]);
-
-    if (!isTextObject) {
-      appendField(dataPanel, 'Placeholder', data.Placeholder || '', 'Placeholder');
-    }
-    if (isNumeric) {
-      appendField(dataPanel, 'Valeur', data.Value ?? '', 'ValueText', 'number');
-      appendRow(dataPanel, [
-        cell => appendField(cell, 'Min', data.Minimum ?? '', 'MinimumText', 'number'),
-        cell => appendField(cell, 'Max', data.Maximum ?? '', 'MaximumText', 'number')
-      ]);
-      appendRow(dataPanel, [
-        cell => appendField(cell, 'Decimales', data.Decimals ?? '', 'DecimalsText', 'number'),
-        cell => appendField(cell, 'Unite', data.Unit || '', 'Unit')
-      ]);
-      appendField(dataPanel, 'Format affichage', data.DisplayFormat || '', 'DisplayFormat');
-    } else {
-      appendField(dataPanel, 'Texte', data.Text ?? '', 'Text');
-    }
-    if (!isTextObject) {
-      appendField(dataPanel, 'Mapping / Tag', data.TagBinding || '', 'TagBinding');
-    }
-
-    appendRow(stylePanel, [
-      cell => appendField(cell, 'Fond', style.Background || '#FFFFFF', 'Background'),
-      cell => appendField(cell, 'Taille police', style.FontSize || 14, 'FontSize', 'number')
-    ]);
-    appendRow(stylePanel, [
-      cell => appendSelect(cell, 'Bordure', style.BorderStyle || 'Solid', 'BorderStyle', ['Solid', 'Dashed', 'Dotted', 'None']),
-      cell => appendField(cell, 'Largeur bordure', style.BorderWidth ?? 1, 'BorderWidth', 'number')
-    ]);
-    if (buttonPanel) {
-      const disabledLabel = document.createElement('label');
-      const disabled = document.createElement('input');
-      disabled.type = 'checkbox';
-      disabled.name = 'ButtonDisabled';
-      disabled.checked = buttonBehavior.IsDisabled === true;
-      disabledLabel.appendChild(disabled);
-      disabledLabel.appendChild(document.createTextNode(' Bouton desactive'));
-      buttonPanel.appendChild(disabledLabel);
-
-      const hoverLabel = document.createElement('label');
-      const hoverEnabled = document.createElement('input');
-      hoverEnabled.type = 'checkbox';
-      hoverEnabled.name = 'ButtonHoverEnabled';
-      hoverEnabled.checked = buttonHover.Enabled !== false;
-      hoverLabel.appendChild(hoverEnabled);
-      hoverLabel.appendChild(document.createTextNode(' Survol automatique'));
-      buttonPanel.appendChild(hoverLabel);
-      appendField(buttonPanel, 'Fond survol', buttonHover.Background || '#EAF5F7', 'ButtonHoverBackground');
-      appendField(buttonPanel, 'Texte survol', buttonHover.Foreground || '#0F2A30', 'ButtonHoverForeground');
-      appendField(buttonPanel, 'Bordure survol', buttonHover.BorderColor || '#2090A0', 'ButtonHoverBorderColor');
-    }
-
-    const readOnlyLabel = document.createElement('label');
-    const readOnly = document.createElement('input');
-    readOnly.type = 'checkbox';
-    readOnly.name = 'IsReadOnly';
-    readOnly.checked = data.IsReadOnly === true;
-    readOnlyLabel.appendChild(readOnly);
-    readOnlyLabel.appendChild(document.createTextNode(' Lecture seulement'));
-    if (!isTextObject) {
-      dataPanel.appendChild(readOnlyLabel);
-    }
-
-    const actions = document.createElement('div');
-    actions.className = 'actions';
-    const cancel = document.createElement('button');
-    cancel.type = 'button';
-    cancel.textContent = 'Annuler';
-    const apply = document.createElement('button');
-    apply.type = 'button';
-    apply.className = 'primary';
-    apply.textContent = 'Appliquer';
-    actions.appendChild(cancel);
-    actions.appendChild(apply);
-    editor.appendChild(actions);
-
-    close.addEventListener('click', closeModernEditor);
-    cancel.addEventListener('click', closeModernEditor);
-    editor.addEventListener('keydown', event => {
-      if (event.key === 'Escape') {
-        closeModernEditor();
-        event.preventDefault();
-        event.stopPropagation();
-      }
-    });
-    apply.addEventListener('click', () => {
-      const field = name => editor.querySelector(`[name="${name}"]`);
-      window.chrome?.webview?.postMessage({
-        type: 'updateSceneObjectProperties',
-        id: element.Id,
-        displayName: field('DisplayName')?.value || '',
-        placeholder: field('Placeholder')?.value || '',
-        text: field('Text')?.value || '',
-        valueText: field('ValueText')?.value || '',
-        x: Number(field('X')?.value || element.X),
-        y: Number(field('Y')?.value || element.Y),
-        width: Number(field('Width')?.value || element.Width),
-        height: Number(field('Height')?.value || element.Height),
-        minimumText: field('MinimumText')?.value || '',
-        maximumText: field('MaximumText')?.value || '',
-        decimalsText: field('DecimalsText')?.value || '',
-        unit: field('Unit')?.value || '',
-        displayFormat: field('DisplayFormat')?.value || '',
-        tagBinding: field('TagBinding')?.value || '',
-        background: field('Background')?.value || '',
-        fontSize: Number(field('FontSize')?.value || style.FontSize || 14),
-        borderStyle: field('BorderStyle')?.value || '',
-        borderWidth: Number(field('BorderWidth')?.value || style.BorderWidth || 0),
-        buttonDisabled: field('ButtonDisabled')?.checked === true,
-        buttonHoverEnabled: field('ButtonHoverEnabled')?.checked !== false,
-        buttonHoverBackground: field('ButtonHoverBackground')?.value || '',
-        buttonHoverForeground: field('ButtonHoverForeground')?.value || '',
-        buttonHoverBorderColor: field('ButtonHoverBorderColor')?.value || '',
-        isReadOnly: field('IsReadOnly')?.checked === true
-      });
-      closeModernEditor();
-    });
-
-    document.body.appendChild(editor);
-    activeModernEditor = editor;
-    editor.tabIndex = -1;
-    editor.focus();
-  }
-
   function selectModernElementInDom(id) {
     selectedModernIds.clear();
     if (id) selectedModernIds.add(id);
@@ -7453,7 +7167,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         selectedModernId = element.Id;
         selectModernElementInDom(element.Id);
         window.chrome?.webview?.postMessage({ type: 'openSceneObjectProperties', id: element.Id });
-        openModernEditor(element, event.clientX, event.clientY);
       }, true);
 
       wrapper.addEventListener('contextmenu', event => {
@@ -7512,7 +7225,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
   function isEditableKeyboardTarget(target) {
     if (!target) return false;
     if (activeTextEditor?.editor === target) return true;
-    if (activeModernEditor?.contains?.(target)) return true;
     const editable = target.closest?.('input, textarea, select, [contenteditable]');
     if (!editable) return false;
     const tag = (editable.tagName || '').toLowerCase();
@@ -7577,10 +7289,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       return;
     }
     if (event.button !== 0) return;
-    if (activeModernEditor && activeModernEditor.contains(event.target)) {
-      event.stopPropagation();
-      return;
-    }
     if (event.target?.closest?.('#scada-scene-resize-handle')) {
       const surface = getPageSurface();
       sceneCanvasResize = {
@@ -7966,7 +7674,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     command(command) {
       const action = typeof command === 'string' ? command : command?.Action;
       if (action === 'beginPlacement') {
-        closeModernEditor();
         clearModernSelection(false);
         placementKind = command?.Kind || null;
         document.body.classList.toggle('scada-placement-active', !!placementKind);

@@ -1947,7 +1947,7 @@
     "Tags": [
       {
         "Id": "tf100.mapping.159",
-        "DisplayName": "Consigne systeme | NX102 systeme refrig\u00E9ration | opcua://ns=4;s=ConsignePressionEvapPidEvap_1A",
+        "DisplayName": "Consigne systeme",
         "KeywordLabel": "Consigne systeme",
         "KeywordType": "CONSIGNE",
         "Device": "NX102 systeme refrig\u00E9ration",
@@ -1960,7 +1960,7 @@
       },
       {
         "Id": "tf100.mapping.164",
-        "DisplayName": "PE_119 | NX102 systeme refrig\u00E9ration | opcua://ns=4;s=PE_119",
+        "DisplayName": "PE_119",
         "KeywordLabel": "PE_119",
         "KeywordType": "LECTURE",
         "Device": "NX102 systeme refrig\u00E9ration",
@@ -1973,7 +1973,7 @@
       },
       {
         "Id": "tf100.mapping.161",
-        "DisplayName": "PE_16 | NX102 systeme refrig\u00E9ration | opcua://ns=4;s=PE_16",
+        "DisplayName": "PE_16",
         "KeywordLabel": "PE_16",
         "KeywordType": "LECTURE",
         "Device": "NX102 systeme refrig\u00E9ration",
@@ -1986,7 +1986,7 @@
       },
       {
         "Id": "tf100.mapping.162",
-        "DisplayName": "PE_95 | NX102 systeme refrig\u00E9ration | opcua://ns=4;s=PE_95",
+        "DisplayName": "PE_95",
         "KeywordLabel": "PE_95",
         "KeywordType": "LECTURE",
         "Device": "NX102 systeme refrig\u00E9ration",
@@ -1999,7 +1999,7 @@
       },
       {
         "Id": "tf100.mapping.163",
-        "DisplayName": "PE_96 | NX102 systeme refrig\u00E9ration | opcua://ns=4;s=PE_96",
+        "DisplayName": "PE_96",
         "KeywordLabel": "PE_96",
         "KeywordType": "LECTURE",
         "Device": "NX102 systeme refrig\u00E9ration",
@@ -2012,7 +2012,7 @@
       },
       {
         "Id": "tf100.mapping.160",
-        "DisplayName": "PE-16 | NX102 systeme refrig\u00E9ration | opcua://ns=4;s=PE_16",
+        "DisplayName": "PE-16",
         "KeywordLabel": "PE-16",
         "KeywordType": "LECTURE",
         "Device": "NX102 systeme refrig\u00E9ration",
@@ -2025,7 +2025,7 @@
       },
       {
         "Id": "tf100.mapping.166",
-        "DisplayName": "TE_117 | NX102 systeme refrig\u00E9ration | opcua://ns=4;s=TE_117",
+        "DisplayName": "TE_117",
         "KeywordLabel": "TE_117",
         "KeywordType": "LECTURE",
         "Device": "NX102 systeme refrig\u00E9ration",
@@ -2038,7 +2038,7 @@
       },
       {
         "Id": "tf100.mapping.167",
-        "DisplayName": "TE_118 | NX102 systeme refrig\u00E9ration | opcua://ns=4;s=TE_118",
+        "DisplayName": "TE_118",
         "KeywordLabel": "TE_118",
         "KeywordType": "LECTURE",
         "Device": "NX102 systeme refrig\u00E9ration",
@@ -2051,7 +2051,7 @@
       },
       {
         "Id": "tf100.mapping.165",
-        "DisplayName": "TE_EXT | NX102 systeme refrig\u00E9ration | opcua://ns=4;s=TE_EXT",
+        "DisplayName": "TE_EXT",
         "KeywordLabel": "TE_EXT",
         "KeywordType": "LECTURE",
         "Device": "NX102 systeme refrig\u00E9ration",
@@ -2064,7 +2064,7 @@
       },
       {
         "Id": "tf100.mapping.168",
-        "DisplayName": "TE-800 | NX102 systeme refrig\u00E9ration | opcua://ns=4;s=TE_800",
+        "DisplayName": "TE-800",
         "KeywordLabel": "TE-800",
         "KeywordType": "LECTURE",
         "Device": "NX102 systeme refrig\u00E9ration",
@@ -2077,7 +2077,7 @@
       },
       {
         "Id": "tf100.mapping.169",
-        "DisplayName": "TE-900 | NX102 systeme refrig\u00E9ration | opcua://ns=4;s=TE_900",
+        "DisplayName": "TE-900",
         "KeywordLabel": "TE-900",
         "KeywordType": "LECTURE",
         "Device": "NX102 systeme refrig\u00E9ration",
@@ -2089,8 +2089,138 @@
         "Unit": ""
       },
       {
+        "Id": "tf100.mapping.182",
+        "DisplayName": "TE-C1",
+        "KeywordLabel": "TE-C1",
+        "KeywordType": "LECTURE",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=TE_C1",
+        "Datatype": "Float32",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.191",
+        "DisplayName": "TE-C10",
+        "KeywordLabel": "TE-C10",
+        "KeywordType": "LECTURE",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=TE_C10",
+        "Datatype": "Float32",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.183",
+        "DisplayName": "TE-C2",
+        "KeywordLabel": "TE-C2",
+        "KeywordType": "LECTURE",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=TE_C2",
+        "Datatype": "Float32",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.184",
+        "DisplayName": "TE-C3",
+        "KeywordLabel": "TE-C3",
+        "KeywordType": "LECTURE",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=TE_C3",
+        "Datatype": "Float32",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.185",
+        "DisplayName": "TE-C4",
+        "KeywordLabel": "TE-C4",
+        "KeywordType": "LECTURE",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=TE_C4",
+        "Datatype": "Float32",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.186",
+        "DisplayName": "TE-C5",
+        "KeywordLabel": "TE-C5",
+        "KeywordType": "LECTURE",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=TE_C5",
+        "Datatype": "Float32",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.187",
+        "DisplayName": "TE-C6",
+        "KeywordLabel": "TE-C6",
+        "KeywordType": "LECTURE",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=TE_C6",
+        "Datatype": "Float32",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.188",
+        "DisplayName": "TE-C7",
+        "KeywordLabel": "TE-C7",
+        "KeywordType": "LECTURE",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=TE_C7",
+        "Datatype": "Float32",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.189",
+        "DisplayName": "TE-C8",
+        "KeywordLabel": "TE-C8",
+        "KeywordType": "LECTURE",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=TE_C8",
+        "Datatype": "Float32",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.190",
+        "DisplayName": "TE-C9",
+        "KeywordLabel": "TE-C9",
+        "KeywordType": "LECTURE",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=TE_C9",
+        "Datatype": "Float32",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
         "Id": "tf100.mapping.170",
-        "DisplayName": "TE-Q1 | NX102 systeme refrig\u00E9ration | opcua://ns=4;s=TE_Q1",
+        "DisplayName": "TE-Q1",
         "KeywordLabel": "TE-Q1",
         "KeywordType": "LECTURE",
         "Device": "NX102 systeme refrig\u00E9ration",
@@ -2103,7 +2233,7 @@
       },
       {
         "Id": "tf100.mapping.171",
-        "DisplayName": "TE-Q2 | NX102 systeme refrig\u00E9ration | opcua://ns=4;s=TE_Q2",
+        "DisplayName": "TE-Q2",
         "KeywordLabel": "TE-Q2",
         "KeywordType": "LECTURE",
         "Device": "NX102 systeme refrig\u00E9ration",
@@ -2116,7 +2246,7 @@
       },
       {
         "Id": "tf100.mapping.172",
-        "DisplayName": "TE-Q3 | NX102 systeme refrig\u00E9ration | opcua://ns=4;s=TE_Q3",
+        "DisplayName": "TE-Q3",
         "KeywordLabel": "TE-Q3",
         "KeywordType": "LECTURE",
         "Device": "NX102 systeme refrig\u00E9ration",
@@ -2129,7 +2259,7 @@
       },
       {
         "Id": "tf100.mapping.173",
-        "DisplayName": "TE-Q4 | NX102 systeme refrig\u00E9ration | opcua://ns=4;s=TE_Q4",
+        "DisplayName": "TE-Q4",
         "KeywordLabel": "TE-Q4",
         "KeywordType": "LECTURE",
         "Device": "NX102 systeme refrig\u00E9ration",
@@ -2142,7 +2272,7 @@
       },
       {
         "Id": "tf100.mapping.174",
-        "DisplayName": "TE-Q5 | NX102 systeme refrig\u00E9ration | opcua://ns=4;s=TE_Q5",
+        "DisplayName": "TE-Q5",
         "KeywordLabel": "TE-Q5",
         "KeywordType": "LECTURE",
         "Device": "NX102 systeme refrig\u00E9ration",
@@ -2152,9 +2282,100 @@
         "Writeable": false,
         "Enabled": true,
         "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.175",
+        "DisplayName": "TE-Q6",
+        "KeywordLabel": "TE-Q6",
+        "KeywordType": "LECTURE",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=TE_Q6",
+        "Datatype": "Float32",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.176",
+        "DisplayName": "TE-Q7",
+        "KeywordLabel": "TE-Q7",
+        "KeywordType": "LECTURE",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=TE_Q7",
+        "Datatype": "Float32",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.177",
+        "DisplayName": "TE-Q8",
+        "KeywordLabel": "TE-Q8",
+        "KeywordType": "LECTURE",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=TE_Q8",
+        "Datatype": "Float32",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.178",
+        "DisplayName": "TE-R1",
+        "KeywordLabel": "TE-R1",
+        "KeywordType": "LECTURE",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=TE_R1",
+        "Datatype": "Float32",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.179",
+        "DisplayName": "TE-R2",
+        "KeywordLabel": "TE-R2",
+        "KeywordType": "LECTURE",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=TE_R2",
+        "Datatype": "Float32",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.180",
+        "DisplayName": "TE-R3",
+        "KeywordLabel": "TE-R3",
+        "KeywordType": "LECTURE",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=TE_R3",
+        "Datatype": "Float32",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.181",
+        "DisplayName": "TE-R4",
+        "KeywordLabel": "TE-R4",
+        "KeywordType": "LECTURE",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=TE_R4",
+        "Datatype": "Float32",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
       }
     ],
-    "SourceFileName": "20260617_192001_tf100web-scada-tags.json",
-    "ImportedAtUtc": "2026-06-17T19:20:01.2813933+00:00"
+    "SourceFileName": "20260617_210900_tf100web-scada-tags (1).json",
+    "ImportedAtUtc": "2026-06-17T21:09:00.9660535+00:00"
   }
 }
