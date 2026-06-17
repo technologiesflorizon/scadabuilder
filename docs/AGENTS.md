@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active agent operating contract
-Document version: `V2.1.2.0008`
+Document version: `V2.1.2.0011`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0011` | `PENDING` | Ajout de l'obligation de commit automatique apres chaque implementation validee. |
 | 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout de l'obligation de worktree propre ou commit produit, puis planification avant tout ajout fonctionnel ou contractuel. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation des regles operationnelles pour humains et agents travaillant dans la documentation SCADA Builder V2. |
 
@@ -27,6 +28,7 @@ For any change under `docs/`, or any code change that affects documented behavio
 10. Update Mermaid diagrams when flow, ownership, command dispatch, state transitions, export, or Studio Element+ paths change.
 11. Update generated documentation or run the verification script when public functions, commands, tests, or contracts change.
 12. Run `tools/docs/verify-docs.ps1`.
+13. After each implementation, once required validations pass, automatically create a commit for the implemented changes before starting another implementation or ending the turn, unless the user explicitly requests a different commit boundary or asks not to commit.
 
 ## 2. Decision Rules
 
