@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active regression coverage map
-Document version: `V2.1.2.0017`
+Document version: `V2.1.2.0018`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0018` | `PENDING` | Ajout de la reference aux tests d'intake TF100Web audites. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de la couverture domaine, persistance et export pour effets visuels runtime. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de la couverture export pour le bridge lifecycle runtime global. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de la couverture domaine, validation, persistance et export pour conditions composees. |
@@ -42,6 +43,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Contract area | Primary tests |
 | --- | --- |
 | FT100/TF100Web export | `Ft100SceneExporterTests.cs` |
+| TF100Web package intake audit | `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py` |
 | Project save/reload | `ModernProjectStoreTests.cs` |
 | Scene/domain rules | `OfficialSceneDomainTests.cs`, `ScadaSceneGroupTests.cs` |
 | Undo/redo/history | `EditorHistoryServiceTests.cs` |

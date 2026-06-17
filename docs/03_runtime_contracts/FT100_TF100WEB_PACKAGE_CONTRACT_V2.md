@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active runtime package contract
-Document version: `V2.1.2.0017`
+Document version: `V2.1.2.0018`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0018` | `PENDING` | Documentation du contrat d'intake FT100 reel audite dans TF100Web commit `7d57600`. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout des effets visuels runtime standards. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout du bridge lifecycle runtime global. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de l'evaluation runtime des groupes de conditions `All/Any`. |
@@ -65,7 +66,65 @@ scada-builder-v2-ft100-package/
 19. Each exported page exposes `window.scadaBuilderRuntime` with page id, root id, actions, and a dispatch helper. The runtime emits `scada-builder-page-ready`, `scada-builder-action-executed`, and `scada-builder-runtime-error` lifecycle events.
 20. Standard visual effect actions use page-scoped CSS classes and keyframes for blink, glow, pulse, alarm highlight, and degraded treatment. Effects are applied through `SetClass`, `RemoveClass`, and `ToggleClass`.
 
-## 3. Package Flow
+## 3. Current TF100Web Intake Contract
+
+Audit source: `F:\Projet\Git\TF100Web`, branch `implementation_scada_builder`, commit `7d57600`.
+
+TF100Web currently consumes SCADA Builder V2 packages through these Django/runtime files:
+
+1. `frontend/scada_package.py`.
+2. `frontend/scada_projects.py`.
+3. `frontend/views.py`.
+4. `templates/frontend/station/visualisation.html`.
+5. `static/asset/js/station/visualisation_import.js`.
+6. `frontend/tests_scada_package.py`.
+
+The active TF100Web intake contract is:
+
+1. The package directory name remains `scada-builder-v2-ft100-package`.
+2. TF100Web accepts uploaded `.sb2` or `.zip` packages through the SCADA Builder admin surface, extracts them into a project repository, and stores active project state outside the package.
+3. The repository root is `SCADA_BUILDER_PROJECTS_ROOT` when configured, `/var/lib/ft100/scada-builder-projects` in production, or `var/scada-builder-projects` in development.
+4. TF100Web also supports the repository-local fallback import root `F:\Projet\Git\TF100Web\import\scada-builder-v2-ft100-package` when no active uploaded project is selected.
+5. The root `manifest.json` is mandatory. Missing, unreadable, non-object, or empty compiled-page manifests invalidate the package.
+6. Compiled pages are read from `Pages` where `IncludeInBuild` is not false and each page has a non-empty `Id`.
+7. Page type is read from `PageType` or `Type`, case-insensitive, with `default`, `header`, and `footer` used for composition validation.
+8. `HomePageId` selects the initial page when present. If missing or invalid, TF100Web falls back to the first compiled default page, then to the first compiled page.
+9. Page HTML is read from `RelativePath` when present, otherwise `<page-id>/<page-id>.html`.
+10. Relative paths are normalized as package-local POSIX paths; absolute paths and `..` traversal are rejected.
+11. TF100Web extracts only the HTML fragment whose root is `<div id="ft100-<page-id>">`. It does not inject the complete page document.
+12. TF100Web loads page CSS from the sibling path `css/<page-id>.css` relative to the page HTML path. Missing CSS is a warning, not a hard validation error.
+13. Relative `src` and `href` asset references inside the extracted fragment are rewritten through the Django package asset endpoint.
+14. Header and footer composition is performed by loading the referenced header root, selected page root, and footer root as separate fragments.
+15. The composed runtime width is the maximum page width in the composition; the composed runtime height is the sum of composed page heights.
+16. TF100Web injects `--ft100-scada-width` and `--ft100-scada-height` CSS variables onto each extracted page root and onto the host.
+17. TF100Web serves page navigation through a JSON endpoint that returns the extracted fragment, CSS URLs, dimensions, actions, and warnings for a requested page id.
+18. The station visualisation page activates this runtime only when the station type is `SCADA_BUILDER_2`.
+19. TF100Web's active browser runtime handles `Navigate` actions from `data-scada-events` and legacy same-package page links; other SCADA Builder exported action kinds are not currently interpreted by `visualisation_import.js`.
+20. TF100Web extracts and renders the page root fragment only. Scripts emitted after the exported page root in `<page-id>.html`, including SCADA Builder's `window.scadaBuilderRuntime`, popup runtime, condition runtime, tag push runtime, and visual-effect runtime, are not executed by the current TF100Web intake path.
+21. TF100Web runtime value display/write is currently driven by TF100Web-injected `data-scada-role`, `data-scada-mapping-id`, `data-scada-writeable`, `data-scada-writable`, `data-scada-format`, and related mapping attributes.
+22. TF100Web derives those mapping attributes from legacy `Binding`, `RuntimeBinding`, `Bindings`, `RuntimeBindings`, `TagBinding`, manual page bindings, or `scada-runtime-overrides.json`. It does not currently consume SCADA Builder V2 `ValueBindings.ReadTagId` / `ValueBindings.WriteTagId` as the primary active binding schema.
+23. TF100Web exports tags to SCADA Builder V2 through the `tf100web-scada-tags-v1` JSON schema from `frontend/scada_tags.py`.
+
+## 4. Integration Gap
+
+SCADA Builder V2 currently exports more runtime behavior than TF100Web executes through its active fragment intake.
+
+The following SCADA Builder V2 export capabilities are implemented and regression-covered on the exporter side, but are not proven as active TF100Web behavior until TF100Web either executes the exported page script or implements equivalent host-side handlers:
+
+1. `window.scadaBuilderRuntime` lifecycle bridge.
+2. `window.scadaBuilderSetTagValue` and `scada-builder-tag-value` read-value push bridge.
+3. `window.tf100webScadaBuilder.writeTag` / `getTagValue` integration hooks from the exported page script.
+4. Popup fragment open, close, toggle, and host-region runtime behavior.
+5. Visibility, border, class/effect actions other than `Navigate`.
+6. Compound condition evaluation from exported actions.
+
+Until that integration is implemented, SCADA Builder V2 documentation must distinguish:
+
+1. Exporter contract: what `Ft100SceneExporter` writes.
+2. TF100Web intake contract: what `F:\Projet\Git\TF100Web` commit `7d57600` validates, extracts, serves, and executes.
+3. Parity gaps: exported runtime behavior not executed by the current TF100Web host.
+
+## 5. Package Flow
 
 ```mermaid
 flowchart TD
@@ -75,12 +134,14 @@ flowchart TD
   Exporter --> PageCss[page-id/css/page-id.css]
   Exporter --> Assets[page-id/images]
   RootManifest --> TF100Web[TF100Web intake]
-  PageHtml --> TF100Web
+  PageHtml --> RootFragment[div id ft100-page-id fragment]
+  RootFragment --> TF100Web
   PageCss --> TF100Web
   Assets --> TF100Web
+  PageHtml -. script outside extracted root not executed by current TF100Web intake .-> Gap[TF100Web runtime parity gap]
 ```
 
-## 4. Related Decisions
+## 6. Related Decisions
 
 1. `DEC-0003` - Current FT100/TF100Web Package Contract.
 2. `DEC-0007` - Page-Scoped Runtime Namespace.
@@ -97,7 +158,9 @@ flowchart TD
 13. `DEC-0023` - Compound Runtime Conditions And Missing Tag Policy.
 14. `DEC-0024` - Global Runtime Lifecycle Bridge.
 15. `DEC-0025` - Standard Runtime Visual Effects.
+16. `DEC-0026` - Audited TF100Web Fragment Intake Contract.
 
-## 5. Related Tests
+## 7. Related Tests
 
 1. `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+2. `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py`

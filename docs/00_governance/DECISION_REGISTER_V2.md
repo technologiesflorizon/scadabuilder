@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.2.0017`
+Document version: `V2.1.2.0018`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0018` | `PENDING` | Ajout de DEC-0026 pour le contrat d'intake fragment audite dans TF100Web. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0025 pour les effets visuels runtime standards. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0024 pour le bridge lifecycle runtime global. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0023 pour les groupes de conditions runtime et politique degradee. |
@@ -547,6 +548,32 @@ Visual effects can be authored through the same Element+ event/action model as p
 Regression coverage:
 
 `tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+
+### DEC-0026 - Audited TF100Web Fragment Intake Contract
+
+Status: Active
+Created: 2026-06-17 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md`
+
+Context:
+
+TF100Web was pulled from `origin` in `F:\Projet\Git\TF100Web` on branch `implementation_scada_builder` to commit `7d57600`. The current SCADA Builder V2 documentation described the full exporter-emitted runtime script as if TF100Web consumed it directly, but the active TF100Web code extracts only the page root fragment and runs a host-side runtime in `static/asset/js/station/visualisation_import.js`.
+
+Decision:
+
+SCADA Builder V2 documentation must record the audited TF100Web intake contract separately from the exporter contract. TF100Web currently requires `scada-builder-v2-ft100-package/manifest.json`, validates compiled page entries, extracts `<div id="ft100-<page-id>">`, loads sibling page CSS and rewritten assets, composes header/body/footer fragments, and executes host-side navigation plus mapping refresh/write behavior. Scripts emitted outside the extracted root in the SCADA Builder page HTML are not executed by this intake path.
+
+Consequences:
+
+Exporter features such as lifecycle bridge, popup runtime, condition evaluation, read/write tag page hooks, border/effect actions, and non-navigation actions remain implemented exporter behavior but are a TF100Web parity gap until TF100Web executes the exported page script or implements equivalent host-side handlers. Future SCADA Builder export changes must be tested against the audited TF100Web intake contract or documented as exporter-only.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`, `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py`
 
 ### DEC-0024 - Global Runtime Lifecycle Bridge
 
