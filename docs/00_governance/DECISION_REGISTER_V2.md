@@ -8,6 +8,7 @@ Document version: `V2.1.2.0017`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0024 pour le bridge lifecycle runtime global. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0023 pour les groupes de conditions runtime et politique degradee. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0022 pour les options runtime avancees des popup Fragment. |
 | 2026-06-17 | `V2.1.2.0016` | `PENDING` | Ajout de DEC-0021 pour les actions runtime de bordure Element+. |
@@ -519,6 +520,32 @@ The popup cycle now covers open, close, and toggle without adding popup instance
 Regression coverage:
 
 `tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+
+### DEC-0024 - Global Runtime Lifecycle Bridge
+
+Status: Active
+Created: 2026-06-17 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md`
+
+Context:
+
+TF100Web integration and future customer scripts need stable lifecycle hooks without editing exported page internals or relying on ad hoc DOM polling.
+
+Decision:
+
+Every exported page exposes `window.scadaBuilderRuntime` with page id, root id, actions, and a `dispatch` helper. The runtime emits `scada-builder-page-ready` after event bindings are registered, `scada-builder-action-executed` after a runtime action successfully applies, and `scada-builder-runtime-error` when action execution throws.
+
+Consequences:
+
+TF100Web and customer scripts can subscribe to lifecycle diagnostics consistently across pages. The bridge does not execute arbitrary imported script code; script loading and script authoring remain a future controlled extension.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
 
 ### DEC-0023 - Compound Runtime Conditions And Missing Tag Policy
 

@@ -915,6 +915,43 @@ public sealed class Ft100SceneExporterTests
     }
 
     [TestMethod]
+    public async Task ExportIncludesRuntimeLifecycleBridge()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+        var sourceHtmlPath = Path.Combine(sourceRoot, "lifecycle.html");
+        await File.WriteAllTextAsync(sourceHtmlPath, "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Lifecycle", new(1280, 873))
+            .WithElement(ScadaElement.CreateText("btn_next", "Suite", 10, 20))
+            .WithChangePageEvent("btn_next", ScadaEventRegistry.ClickKey, "win00009");
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+
+            StringAssert.Contains(html, "window.scadaBuilderRuntime");
+            StringAssert.Contains(html, "function dispatchRuntimeEvent(name, detail)");
+            StringAssert.Contains(html, "function reportRuntimeError(error, context)");
+            StringAssert.Contains(html, "scada-builder-page-ready");
+            StringAssert.Contains(html, "scada-builder-action-executed");
+            StringAssert.Contains(html, "scada-builder-runtime-error");
+            StringAssert.Contains(html, "actionCount: Object.keys(actions).length");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task ExportIncludesObjectBorderRuntimeHooks()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

@@ -8,6 +8,7 @@ Document version: `V2.1.2.0017`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout du bridge lifecycle runtime global exporte. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des groupes de conditions runtime `All/Any` et politique de tag manquant. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des options runtime avancees pour popup Fragment. |
 | 2026-06-17 | `V2.1.2.0016` | `PENDING` | Implementation des actions runtime `Afficher bordure`, `Masquer bordure` et `Basculer bordure`. |
@@ -159,7 +160,7 @@ The current slice does not yet implement custom border styling per action, blink
 The following are roadmap items until implemented and covered by tests:
 
 1. Expression/formula condition authoring.
-2. Global scripts generating lifecycle events.
+2. Controlled custom script loading and script authoring.
 3. Visual effects such as blink, glow, pulse, alarm highlight, degraded treatment.
 
 ## 10. Event Flow

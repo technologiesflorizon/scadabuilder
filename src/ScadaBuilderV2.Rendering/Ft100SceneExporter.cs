@@ -1034,6 +1034,29 @@ Apply any viewport scale to the composed page container, not independently to he
 
   const actions = {{actionsJson}};
 
+  function dispatchRuntimeEvent(name, detail) {
+    window.dispatchEvent(new CustomEvent(name, {
+      detail: Object.assign({
+        pageId: root.getAttribute('data-scada-page-id'),
+        rootId: root.id
+      }, detail || {})
+    }));
+  }
+
+  function reportRuntimeError(error, context) {
+    dispatchRuntimeEvent('scada-builder-runtime-error', {
+      message: error && error.message ? error.message : String(error),
+      context: context || null
+    });
+  }
+
+  window.scadaBuilderRuntime = Object.assign(window.scadaBuilderRuntime || {}, {
+    pageId: root.getAttribute('data-scada-page-id'),
+    rootId: root.id,
+    actions: actions,
+    dispatch: dispatchRuntimeEvent
+  });
+
   function navigate(targetPageId) {
     if (!targetPageId) {
       return;
@@ -1502,32 +1525,32 @@ Apply any viewport scale to the composed page container, not independently to he
 
   function applyAction(action) {
     if (!action || !action.Kind) {
-      return;
+      return false;
     }
 
     if (!evaluateActionConditions(action)) {
-      return;
+      return false;
     }
 
     const kind = String(action.Kind).toLowerCase();
     if (kind === 'navigate') {
       navigate(action.TargetPageId);
-      return;
+      return true;
     }
 
     if (kind === 'mountfragment') {
       openPopup(action.TargetPageId, action.PopupOptions);
-      return;
+      return true;
     }
 
     if (kind === 'closepopup') {
       closePopup(action.TargetPageId);
-      return;
+      return true;
     }
 
     if (kind === 'togglepopup') {
       togglePopup(action.TargetPageId, action.PopupOptions);
-      return;
+      return true;
     }
 
     if (kind === 'writetag') {
@@ -1536,12 +1559,12 @@ Apply any viewport scale to the composed page container, not independently to he
         window.tf100webScadaBuilder.writeTag(payload.tagId, payload.value, payload);
       }
       window.dispatchEvent(new CustomEvent('scada-builder-write-tag', { detail: payload }));
-      return;
+      return true;
     }
 
     const target = getPageElement(action.TargetElementId);
     if (!target) {
-      return;
+      return false;
     }
 
     if (kind === 'show') {
@@ -1556,7 +1579,11 @@ Apply any viewport scale to the composed page container, not independently to he
       target.classList.remove(action.ClassName);
     } else if (kind === 'toggleclass' && action.ClassName) {
       target.classList.toggle(action.ClassName);
+    } else {
+      return false;
     }
+
+    return true;
   }
 
   root.querySelectorAll('[data-scada-events]').forEach(function (element) {
@@ -1579,9 +1606,26 @@ Apply any viewport scale to the composed page container, not independently to he
         if (binding.StopPropagation) {
           event.stopPropagation();
         }
-        applyAction(actions[binding.ActionId]);
+        try {
+          if (applyAction(actions[binding.ActionId])) {
+            dispatchRuntimeEvent('scada-builder-action-executed', {
+              actionId: binding.ActionId,
+              trigger: binding.Trigger,
+              elementId: element.getAttribute('data-scada-element-id')
+            });
+          }
+        } catch (error) {
+          reportRuntimeError(error, {
+            actionId: binding.ActionId,
+            trigger: binding.Trigger,
+            elementId: element.getAttribute('data-scada-element-id')
+          });
+        }
       });
     });
+  });
+  dispatchRuntimeEvent('scada-builder-page-ready', {
+    actionCount: Object.keys(actions).length
   });
 })();
 """;
