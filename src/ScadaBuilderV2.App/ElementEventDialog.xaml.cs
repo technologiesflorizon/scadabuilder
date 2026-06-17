@@ -22,6 +22,7 @@ public partial class ElementEventDialog : Window
     public ElementEventDialog(
         ScadaElement element,
         IReadOnlyList<ScadaActionDefinition> sceneActions,
+        IReadOnlyList<ScadaElement> sceneElements,
         IReadOnlyList<ScadaSceneReference> pageReferences,
         ScadaTagCatalog? tagCatalog)
     {
@@ -47,12 +48,34 @@ public partial class ElementEventDialog : Window
             .ToArray();
         TargetPageComboBox.SelectedIndex = TargetPageComboBox.Items.Count > 0 ? 0 : -1;
 
-        TargetTagComboBox.ItemsSource = (tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
+        TargetElementComboBox.ItemsSource = FlattenElements(sceneElements)
+            .Where(target => !target.IsLegacyStatic)
+            .OrderBy(target => target.UserLabel, StringComparer.CurrentCultureIgnoreCase)
+            .Select(target => new TargetElementItem(target.Id, $"{target.UserLabel} | {target.Kind}"))
+            .ToArray();
+        TargetElementComboBox.SelectedIndex = TargetElementComboBox.Items.Count > 0 ? 0 : -1;
+
+        var tagItems = (tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
             .Where(tag => tag.Enabled)
             .OrderBy(tag => tag.DisplayName, StringComparer.CurrentCultureIgnoreCase)
             .Select(tag => new TargetTagItem(tag.Id, tag.AuthoringLabel))
             .ToArray();
+        TargetTagComboBox.ItemsSource = tagItems;
         TargetTagComboBox.SelectedIndex = TargetTagComboBox.Items.Count > 0 ? 0 : -1;
+        ConditionTagComboBox.ItemsSource = tagItems;
+        ConditionTagComboBox.SelectedIndex = ConditionTagComboBox.Items.Count > 0 ? 0 : -1;
+        ConditionOperatorComboBox.ItemsSource = new[]
+        {
+            new ConditionOperatorItem(ScadaConditionOperator.True, "Vrai"),
+            new ConditionOperatorItem(ScadaConditionOperator.False, "Faux"),
+            new ConditionOperatorItem(ScadaConditionOperator.Equals, "="),
+            new ConditionOperatorItem(ScadaConditionOperator.NotEquals, "<>"),
+            new ConditionOperatorItem(ScadaConditionOperator.GreaterThan, ">"),
+            new ConditionOperatorItem(ScadaConditionOperator.GreaterThanOrEqual, ">="),
+            new ConditionOperatorItem(ScadaConditionOperator.LessThan, "<"),
+            new ConditionOperatorItem(ScadaConditionOperator.LessThanOrEqual, "<=")
+        };
+        ConditionOperatorComboBox.SelectedIndex = 0;
         UpdateActionArgumentVisibility();
     }
 
@@ -144,13 +167,41 @@ public partial class ElementEventDialog : Window
             return;
         }
 
+        var isObjectVisibilityAction =
+            string.Equals(action.FunctionName, ScadaEventRegistry.ShowFunction, StringComparison.Ordinal) ||
+            string.Equals(action.FunctionName, ScadaEventRegistry.HideFunction, StringComparison.Ordinal) ||
+            string.Equals(action.FunctionName, ScadaEventRegistry.ToggleVisibilityFunction, StringComparison.Ordinal);
+        if (isObjectVisibilityAction)
+        {
+            if (TargetElementComboBox.SelectedItem is not TargetElementItem targetElement)
+            {
+                ValidationText.Text = "Selectionnez un objet cible.";
+                return;
+            }
+
+            var condition = BuildConditionFromUi();
+            if (ConditionCheckBox.IsChecked == true && condition is null)
+            {
+                return;
+            }
+
+            var objectResult = new ElementEventDialogResult(
+                action.FunctionName,
+                RuntimeTrigger: trigger.RuntimeTrigger,
+                TargetElementId: targetElement.ElementId,
+                Condition: condition);
+            ValidationText.Text = AddEvent?.Invoke(objectResult) ?? "Evenement ajoute.";
+            return;
+        }
+
         ValidationText.Text = "Fonction d'evenement non implementee.";
     }
 
     private void OnDeleteClick(object sender, RoutedEventArgs e)
     {
         ValidationText.Text = "";
-        if (ExistingEventsListBox.SelectedItem is not EventListItem { Index: >= 0 } selected)
+        if (ExistingEventsListBox.SelectedItem is not EventListItem selected ||
+            selected is not ({ Kind: "read" or "write" } or { Kind: "event", Index: >= 0 }))
         {
             ValidationText.Text = "Selectionnez un evenement a supprimer.";
             return;
@@ -175,10 +226,24 @@ public partial class ElementEventDialog : Window
             "Creation de tags disponible dans une prochaine revision apres import des protocoles projet.";
     }
 
+    private void OnConditionChanged(object sender, RoutedEventArgs e)
+    {
+        UpdateActionArgumentVisibility();
+    }
+
+    private void OnConditionOperatorChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    {
+        UpdateConditionValueVisibility();
+    }
+
     private void UpdateActionArgumentVisibility()
     {
         var isChangePage = ActionComboBox.SelectedItem is ScadaActionFunctionContract action &&
             string.Equals(action.FunctionName, ScadaEventRegistry.ChangePageFunction, StringComparison.Ordinal);
+        var isObjectVisibilityAction = ActionComboBox.SelectedItem is ScadaActionFunctionContract objectAction &&
+            (string.Equals(objectAction.FunctionName, ScadaEventRegistry.ShowFunction, StringComparison.Ordinal) ||
+             string.Equals(objectAction.FunctionName, ScadaEventRegistry.HideFunction, StringComparison.Ordinal) ||
+             string.Equals(objectAction.FunctionName, ScadaEventRegistry.ToggleVisibilityFunction, StringComparison.Ordinal));
         var isValueBinding = ActionComboBox.SelectedItem is ScadaActionFunctionContract tagAction &&
             (string.Equals(tagAction.FunctionName, ScadaEventRegistry.ReadValueFunction, StringComparison.Ordinal) ||
              string.Equals(tagAction.FunctionName, ScadaEventRegistry.WriteValueFunction, StringComparison.Ordinal));
@@ -187,8 +252,15 @@ public partial class ElementEventDialog : Window
         TriggerComboBox.IsEnabled = !isValueBinding;
         TargetPageLabelText.Visibility = isChangePage ? Visibility.Visible : Visibility.Collapsed;
         TargetPageComboBox.Visibility = isChangePage ? Visibility.Visible : Visibility.Collapsed;
+        TargetElementLabelText.Visibility = isObjectVisibilityAction ? Visibility.Visible : Visibility.Collapsed;
+        TargetElementComboBox.Visibility = isObjectVisibilityAction ? Visibility.Visible : Visibility.Collapsed;
         TargetTagLabelText.Visibility = isValueBinding ? Visibility.Visible : Visibility.Collapsed;
         TargetTagPanel.Visibility = isValueBinding ? Visibility.Visible : Visibility.Collapsed;
+        ConditionCheckBox.Visibility = isObjectVisibilityAction ? Visibility.Visible : Visibility.Collapsed;
+        ConditionPanel.Visibility = isObjectVisibilityAction && ConditionCheckBox.IsChecked == true
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+        UpdateConditionValueVisibility();
     }
 
     private void UpdateDeleteButtonState()
@@ -212,10 +284,59 @@ public partial class ElementEventDialog : Window
         var target = action?.Kind switch
         {
             ScadaActionKind.Navigate when !string.IsNullOrWhiteSpace(action.TargetPageId) => $" -> {action.TargetPageId}",
+            ScadaActionKind.Show or ScadaActionKind.Hide or ScadaActionKind.ToggleVisibility when !string.IsNullOrWhiteSpace(action.TargetElementId) =>
+                $" -> {action.TargetElementId}{FormatCondition(action.Condition)}",
             ScadaActionKind.WriteTag when !string.IsNullOrWhiteSpace(action.TagId) => $" -> {action.TagId} = {action.Value}",
             _ => ""
         };
         return $"{trigger?.FrenchLabel ?? binding.Trigger} | {actionContract?.FrenchLabel ?? action?.Kind.ToString() ?? binding.ActionId}{target}";
+    }
+
+    private ScadaActionCondition? BuildConditionFromUi()
+    {
+        if (ConditionCheckBox.IsChecked != true)
+        {
+            return null;
+        }
+
+        if (ConditionTagComboBox.SelectedItem is not TargetTagItem tag)
+        {
+            ValidationText.Text = "Selectionnez un tag de condition.";
+            return null;
+        }
+
+        if (ConditionOperatorComboBox.SelectedItem is not ConditionOperatorItem selectedOperator)
+        {
+            ValidationText.Text = "Selectionnez un operateur de condition.";
+            return null;
+        }
+
+        var compareValue = selectedOperator.Operator is ScadaConditionOperator.True or ScadaConditionOperator.False
+            ? null
+            : ConditionValueTextBox.Text?.Trim();
+        if (selectedOperator.Operator is not (ScadaConditionOperator.True or ScadaConditionOperator.False) &&
+            string.IsNullOrWhiteSpace(compareValue))
+        {
+            ValidationText.Text = "Entrez la valeur de comparaison.";
+            return null;
+        }
+
+        return new ScadaActionCondition(tag.TagId, selectedOperator.Operator, compareValue);
+    }
+
+    private void UpdateConditionValueVisibility()
+    {
+        var usesValue = ConditionOperatorComboBox.SelectedItem is not ConditionOperatorItem selectedOperator ||
+            selectedOperator.Operator is not (ScadaConditionOperator.True or ScadaConditionOperator.False);
+        ConditionValueLabelText.Visibility = usesValue ? Visibility.Visible : Visibility.Collapsed;
+        ConditionValueTextBox.Visibility = usesValue ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private static string FormatCondition(ScadaActionCondition? condition)
+    {
+        return condition is null
+            ? ""
+            : $" si {condition.TagId} {condition.Operator} {condition.CompareValue}".TrimEnd();
     }
 
     private string FormatTag(string tagId)
@@ -223,9 +344,25 @@ public partial class ElementEventDialog : Window
         return tagsById.TryGetValue(tagId, out var tag) ? tag.AuthoringLabel : tagId;
     }
 
+    private static IEnumerable<ScadaElement> FlattenElements(IEnumerable<ScadaElement> elements)
+    {
+        foreach (var element in elements)
+        {
+            yield return element;
+            foreach (var child in FlattenElements(element.ChildElements))
+            {
+                yield return child;
+            }
+        }
+    }
+
     private sealed record TargetPageItem(string PageId, string DisplayName);
 
+    private sealed record TargetElementItem(string ElementId, string DisplayName);
+
     private sealed record TargetTagItem(string TagId, string DisplayName);
+
+    private sealed record ConditionOperatorItem(ScadaConditionOperator Operator, string DisplayName);
 
     private sealed record EventListItem(string Kind, int Index, string DisplayName);
 }
@@ -240,7 +377,9 @@ public sealed record ElementEventDialogResult(
     string FunctionName,
     string? RuntimeTrigger = null,
     string? TargetPageId = null,
-    string? TagId = null);
+    string? TargetElementId = null,
+    string? TagId = null,
+    ScadaActionCondition? Condition = null);
 
 /// <summary>
 /// Delete request returned by the Element+ event authoring modal.

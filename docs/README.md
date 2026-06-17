@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active enterprise documentation map
-Document version: `V2.1.2.0009`
+Document version: `V2.1.2.0010`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0010` | `PENDING` | Ajout des actions objet conditionnelles `Afficher`, `Masquer` et `Basculer visibilite`. |
 | 2026-06-17 | `V2.1.2.0009` | `PENDING` | Remplacement de l'authoring `WriteTag` par les bindings Element+ `Lire valeur` et `Ecrire valeur`. |
 | 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout du catalogue tags TF100Web importe au projet et de l'authoring `WriteTag` Element+. |
 | 2026-06-16 | `V2.1.2.0007` | `PENDING` | Ajout du curseur runtime par defaut pour boutons et cibles cliquables FT100/TF100Web. |
@@ -137,6 +138,7 @@ These guardrails are active decisions in `00_governance/DECISION_REGISTER_V2.md`
 8. Exported CSS, DOM ids, and runtime action targets are page-namespaced for TF100Web composition.
 9. Scene grouping is Element+ only; legacy/source nodes must be converted to Element+ before they can be grouped.
 10. Imported TF100Web tags are project-level catalog data; Element+ value bindings use all enabled tags for `Lire valeur`, require writeable tags for `Ecrire valeur`, and export through the FT100/TF100Web manifest/runtime bridge.
+11. Element+ object visibility actions may be conditioned by imported tag values with deterministic operators; boolean `Vrai/Faux` conditions require boolean tags.
 
 ## 5. Decommissioned Legacy Documents
 

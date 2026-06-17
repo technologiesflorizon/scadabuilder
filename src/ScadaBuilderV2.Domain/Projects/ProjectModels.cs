@@ -198,6 +198,7 @@ public static class ScadaProjectBuildValidator
         foreach (var scene in scenes.Where(scene => sceneIdsToBuild.Contains(scene.Id)))
         {
             ValidateSceneValueBindings(issues, scene, tagsById);
+            ValidateSceneActions(issues, scene, tagsById);
         }
 
         return issues;
@@ -374,6 +375,85 @@ public static class ScadaProjectBuildValidator
                     scene.Id));
             }
         }
+    }
+
+    private static void ValidateSceneActions(
+        List<ScadaBuildValidationIssue> issues,
+        ScadaScene scene,
+        IReadOnlyDictionary<string, ScadaTagDefinition> tagsById)
+    {
+        var elementIds = FlattenElements(scene.Elements)
+            .Select(element => element.Id)
+            .ToHashSet(StringComparer.Ordinal);
+        foreach (var action in scene.ActionDefinitions)
+        {
+            if (action.Kind is ScadaActionKind.Show or ScadaActionKind.Hide or ScadaActionKind.ToggleVisibility)
+            {
+                if (string.IsNullOrWhiteSpace(action.TargetElementId) || !elementIds.Contains(action.TargetElementId))
+                {
+                    issues.Add(new ScadaBuildValidationIssue(
+                        ScadaBuildValidationSeverity.Error,
+                        "action.target-missing",
+                        $"Action '{action.Id}' references missing target Element+ '{action.TargetElementId}'.",
+                        scene.Id));
+                }
+            }
+
+            ValidateActionCondition(issues, scene, action, tagsById);
+        }
+    }
+
+    private static void ValidateActionCondition(
+        List<ScadaBuildValidationIssue> issues,
+        ScadaScene scene,
+        ScadaActionDefinition action,
+        IReadOnlyDictionary<string, ScadaTagDefinition> tagsById)
+    {
+        if (action.Condition is null)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(action.Condition.TagId) ||
+            !tagsById.TryGetValue(action.Condition.TagId, out var tag))
+        {
+            issues.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                "condition.tag-missing",
+                $"Action '{action.Id}' references missing condition tag '{action.Condition.TagId}'.",
+                scene.Id));
+            return;
+        }
+
+        if (action.Condition.Operator is ScadaConditionOperator.True or ScadaConditionOperator.False)
+        {
+            if (!IsBooleanDatatype(tag.Datatype))
+            {
+                issues.Add(new ScadaBuildValidationIssue(
+                    ScadaBuildValidationSeverity.Error,
+                    "condition.boolean-operator-nonboolean-tag",
+                    $"Action '{action.Id}' uses a boolean condition operator on non-boolean tag '{tag.Id}'.",
+                    scene.Id));
+            }
+
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(action.Condition.CompareValue))
+        {
+            issues.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                "condition.value-missing",
+                $"Action '{action.Id}' condition requires a comparison value.",
+                scene.Id));
+        }
+    }
+
+    private static bool IsBooleanDatatype(string? datatype)
+    {
+        return !string.IsNullOrWhiteSpace(datatype) &&
+            (string.Equals(datatype, "bool", StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(datatype, "boolean", StringComparison.OrdinalIgnoreCase));
     }
 
     private static IEnumerable<ScadaElement> FlattenElements(IEnumerable<ScadaElement> elements)

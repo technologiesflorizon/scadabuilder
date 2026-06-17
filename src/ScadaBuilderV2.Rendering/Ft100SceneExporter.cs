@@ -1086,8 +1086,97 @@ Apply any viewport scale to the composed page container, not independently to he
     });
   });
 
-    function applyAction(action) {
+  function getRuntimeTagValue(tagId) {
+    if (!tagId) {
+      return undefined;
+    }
+
+    if (window.tf100webScadaBuilder && typeof window.tf100webScadaBuilder.getTagValue === 'function') {
+      return window.tf100webScadaBuilder.getTagValue(tagId);
+    }
+
+    if (window.scadaBuilderTagValues && Object.prototype.hasOwnProperty.call(window.scadaBuilderTagValues, tagId)) {
+      return window.scadaBuilderTagValues[tagId];
+    }
+
+    return undefined;
+  }
+
+  function parseBoolean(value) {
+    if (typeof value === 'boolean') {
+      return value;
+    }
+
+    const normalized = String(value).trim().toLowerCase();
+    if (normalized === 'true' || normalized === '1' || normalized === 'on') {
+      return true;
+    }
+
+    if (normalized === 'false' || normalized === '0' || normalized === 'off') {
+      return false;
+    }
+
+    return undefined;
+  }
+
+  function evaluateCondition(condition) {
+    if (!condition || !condition.TagId || !condition.Operator) {
+      return true;
+    }
+
+    const actual = getRuntimeTagValue(condition.TagId);
+    if (actual === undefined || actual === null) {
+      return false;
+    }
+
+    const operator = String(condition.Operator).toLowerCase();
+    if (operator === 'true' || operator === 'false') {
+      const booleanValue = parseBoolean(actual);
+      if (booleanValue === undefined) {
+        return false;
+      }
+
+      return operator === 'true' ? booleanValue : !booleanValue;
+    }
+
+    const expected = condition.CompareValue;
+    const actualNumber = Number(actual);
+    const expectedNumber = Number(expected);
+    const useNumeric = Number.isFinite(actualNumber) && Number.isFinite(expectedNumber);
+    const left = useNumeric ? actualNumber : String(actual);
+    const right = useNumeric ? expectedNumber : String(expected);
+
+    if (operator === 'equals') {
+      return left === right;
+    }
+    if (operator === 'notequals') {
+      return left !== right;
+    }
+    if (!useNumeric) {
+      return false;
+    }
+    if (operator === 'greaterthan') {
+      return left > right;
+    }
+    if (operator === 'greaterthanorequal') {
+      return left >= right;
+    }
+    if (operator === 'lessthan') {
+      return left < right;
+    }
+    if (operator === 'lessthanorequal') {
+      return left <= right;
+    }
+
+    return false;
+  }
+
+  function applyAction(action) {
     if (!action || !action.Kind) {
+      return;
+    }
+
+    if (!evaluateCondition(action.Condition)) {
       return;
     }
 

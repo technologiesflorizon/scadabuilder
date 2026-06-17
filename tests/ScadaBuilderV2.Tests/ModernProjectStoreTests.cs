@@ -50,6 +50,44 @@ public sealed class ModernProjectStoreTests
     }
 
     [TestMethod]
+    public async Task SaveAndLoadScenePreservesConditionalObjectVisibilityAction()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var store = new ModernProjectStore();
+        var scene = ScadaScene
+            .CreateEmpty("win-events", "Event scene", new(1280, 873))
+            .WithElement(ScadaElement.CreateText("btn_show", "Afficher", 10, 20))
+            .WithElement(ScadaElement.CreateText("pump_status", "Pompe", 100, 20))
+            .WithObjectVisibilityEvent(
+                "btn_show",
+                ScadaEventRegistry.ClickKey,
+                ScadaActionKind.Show,
+                "pump_status",
+                new ScadaActionCondition("tf100.mapping.running", ScadaConditionOperator.True));
+
+        try
+        {
+            await store.SaveSceneAsync(root, scene);
+
+            var loaded = await store.LoadOrCreateSceneAsync(root, "win-events", "Event scene", new(1280, 873));
+            var loadedAction = loaded.ActionDefinitions.Single();
+
+            Assert.AreEqual(ScadaActionKind.Show, loadedAction.Kind);
+            Assert.AreEqual("pump_status", loadedAction.TargetElementId);
+            Assert.AreEqual("tf100.mapping.running", loadedAction.Condition?.TagId);
+            Assert.AreEqual(ScadaConditionOperator.True, loadedAction.Condition?.Operator);
+            Assert.AreEqual(loadedAction.Id, loaded.FindElementRecursive("btn_show")?.EventBindings.Single().ActionId);
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task SaveAndReloadPreservesText22NumericConversionAndHidesLegacySource()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

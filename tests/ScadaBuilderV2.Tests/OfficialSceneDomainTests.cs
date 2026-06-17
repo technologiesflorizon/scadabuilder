@@ -171,6 +171,9 @@ public sealed class OfficialSceneDomainTests
         var release = ScadaEventRegistry.FindTrigger(ScadaEventRegistry.ReleaseKey);
         var hover = ScadaEventRegistry.FindTrigger(ScadaEventRegistry.HoverKey);
         var changePage = ScadaEventRegistry.FindAction(ScadaEventRegistry.ChangePageFunction);
+        var show = ScadaEventRegistry.FindAction(ScadaEventRegistry.ShowFunction);
+        var hide = ScadaEventRegistry.FindAction(ScadaEventRegistry.HideFunction);
+        var toggleVisibility = ScadaEventRegistry.FindAction(ScadaEventRegistry.ToggleVisibilityFunction);
         var readValue = ScadaEventRegistry.FindAction(ScadaEventRegistry.ReadValueFunction);
         var writeValue = ScadaEventRegistry.FindAction(ScadaEventRegistry.WriteValueFunction);
         var writeTag = ScadaEventRegistry.FindAction(ScadaEventRegistry.WriteTagFunction);
@@ -185,6 +188,13 @@ public sealed class OfficialSceneDomainTests
         Assert.AreEqual(ScadaActionKind.Navigate, changePage?.Kind);
         Assert.IsTrue(changePage?.Implemented ?? false);
         CollectionAssert.Contains(changePage?.RequiredArguments.ToArray(), "TargetPageId");
+        Assert.AreEqual(ScadaActionKind.Show, show?.Kind);
+        Assert.IsTrue(show?.Implemented ?? false);
+        CollectionAssert.Contains(show?.RequiredArguments.ToArray(), "TargetElementId");
+        Assert.AreEqual(ScadaActionKind.Hide, hide?.Kind);
+        Assert.IsTrue(hide?.Implemented ?? false);
+        Assert.AreEqual(ScadaActionKind.ToggleVisibility, toggleVisibility?.Kind);
+        Assert.IsTrue(toggleVisibility?.Implemented ?? false);
         Assert.AreEqual(ScadaActionKind.ReadValue, readValue?.Kind);
         Assert.IsTrue(readValue?.Implemented ?? false);
         CollectionAssert.Contains(readValue?.RequiredArguments.ToArray(), "TagId");
@@ -214,6 +224,30 @@ public sealed class OfficialSceneDomainTests
         CollectionAssert.AreEquivalent(
             new[] { "win00009", "win00010" },
             scene.ActionDefinitions.Select(action => action.TargetPageId).ToArray());
+    }
+
+    [TestMethod]
+    public void SceneCanAttachConditionalObjectVisibilityEvent()
+    {
+        var button = ScadaElement.CreateText("btn_show", "Afficher", 10, 20);
+        var target = ScadaElement.CreateText("pump_status", "Pompe", 100, 20);
+        var condition = new ScadaActionCondition("tf100.mapping.running", ScadaConditionOperator.True);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "win00008", new CanvasSize(1280, 873))
+            .WithElement(button)
+            .WithElement(target)
+            .WithObjectVisibilityEvent("btn_show", ScadaEventRegistry.ClickKey, ScadaActionKind.Show, "pump_status", condition);
+
+        var updated = scene.FindElementRecursive("btn_show");
+        var action = scene.ActionDefinitions.Single();
+
+        Assert.IsNotNull(updated);
+        Assert.AreEqual(ScadaActionKind.Show, action.Kind);
+        Assert.AreEqual("pump_status", action.TargetElementId);
+        Assert.AreEqual("tf100.mapping.running", action.Condition?.TagId);
+        Assert.AreEqual(ScadaConditionOperator.True, action.Condition?.Operator);
+        Assert.AreEqual(action.Id, updated.EventBindings.Single().ActionId);
+        Assert.AreEqual(ScadaEventRegistry.ClickRuntimeTrigger, updated.EventBindings.Single().Trigger);
     }
 
     [TestMethod]
@@ -301,6 +335,41 @@ public sealed class OfficialSceneDomainTests
         Assert.IsTrue(issues.Any(issue => issue.Code == "tag.write-readonly-element"));
         Assert.IsTrue(issues.Any(issue => issue.Code == "tag.write-readonly-tag"));
         Assert.IsTrue(issues.Any(issue => issue.Code == "tag.read-missing"));
+    }
+
+    [TestMethod]
+    public void BuildValidationRejectsInvalidActionConditions()
+    {
+        var button = ScadaElement.CreateText("btn_show", "Afficher", 10, 20);
+        var target = ScadaElement.CreateText("pump_status", "Pompe", 100, 20);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "win00008", new CanvasSize(1280, 873))
+            .WithElement(button)
+            .WithElement(target)
+            .WithObjectVisibilityEvent(
+                "btn_show",
+                ScadaEventRegistry.ClickKey,
+                ScadaActionKind.Show,
+                "missing_target",
+                new ScadaActionCondition("tf100.mapping.pressure", ScadaConditionOperator.True));
+        var project = ScadaProject.CreateDefault("Validation") with
+        {
+            Scenes = [new ScadaSceneReference("win00008", "win00008", "scenes/win00008.scene.json")],
+            TagCatalog = new ScadaTagCatalog(
+                "tf100web-scada-tags-v1",
+                [
+                    new ScadaTagDefinition(
+                        "tf100.mapping.pressure",
+                        "Pression",
+                        Datatype: "Float",
+                        Device: "PLC-1")
+                ])
+        };
+
+        var issues = ScadaProjectBuildValidator.Validate(project, [scene]);
+
+        Assert.IsTrue(issues.Any(issue => issue.Code == "action.target-missing"));
+        Assert.IsTrue(issues.Any(issue => issue.Code == "condition.boolean-operator-nonboolean-tag"));
     }
 
     [TestMethod]

@@ -4503,6 +4503,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         var dialog = new ElementEventDialog(
             current,
             _activeScene.ActionDefinitions,
+            _activeScene.Elements,
             GetCurrentSceneReferences(),
             _modernProject?.TagCatalog)
         {
@@ -4550,6 +4551,27 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 _activeScene.WithValueBinding(
                     current.Id,
                     writeTagId: result.TagId ?? ""),
+            var functionName when string.Equals(functionName, ScadaEventRegistry.ShowFunction, StringComparison.Ordinal) =>
+                _activeScene.WithObjectVisibilityEvent(
+                    current.Id,
+                    result.RuntimeTrigger ?? "",
+                    ScadaActionKind.Show,
+                    result.TargetElementId ?? "",
+                    result.Condition),
+            var functionName when string.Equals(functionName, ScadaEventRegistry.HideFunction, StringComparison.Ordinal) =>
+                _activeScene.WithObjectVisibilityEvent(
+                    current.Id,
+                    result.RuntimeTrigger ?? "",
+                    ScadaActionKind.Hide,
+                    result.TargetElementId ?? "",
+                    result.Condition),
+            var functionName when string.Equals(functionName, ScadaEventRegistry.ToggleVisibilityFunction, StringComparison.Ordinal) =>
+                _activeScene.WithObjectVisibilityEvent(
+                    current.Id,
+                    result.RuntimeTrigger ?? "",
+                    ScadaActionKind.ToggleVisibility,
+                    result.TargetElementId ?? "",
+                    result.Condition),
             _ => throw new InvalidOperationException("Fonction d'evenement non implementee dans cette tranche.")
         };
         if (string.Equals(result.FunctionName, ScadaEventRegistry.ReadValueFunction, StringComparison.Ordinal) ||

@@ -174,6 +174,34 @@ public enum ScadaActionKind
     WriteValue
 }
 
+/// <summary>
+/// Supported deterministic comparison operators for tag-backed runtime conditions.
+/// </summary>
+public enum ScadaConditionOperator
+{
+    Equals,
+    NotEquals,
+    GreaterThan,
+    GreaterThanOrEqual,
+    LessThan,
+    LessThanOrEqual,
+    True,
+    False
+}
+
+/// <summary>
+/// Describes a deterministic tag condition attached to a runtime action.
+/// </summary>
+/// <remarks>
+/// Decisions: DEC-0017.
+/// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
+/// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
+/// </remarks>
+public sealed record ScadaActionCondition(
+    string TagId,
+    ScadaConditionOperator Operator,
+    string? CompareValue = null);
+
 public sealed record ScadaActionDefinition(
     string Id,
     ScadaActionKind Kind,
@@ -181,7 +209,8 @@ public sealed record ScadaActionDefinition(
     string? TargetElementId = null,
     string? ClassName = null,
     string? TagId = null,
-    string? Value = null);
+    string? Value = null,
+    ScadaActionCondition? Condition = null);
 
 public sealed record LegacyElementPayload(
     string LegacyType,
@@ -855,6 +884,58 @@ public sealed record ScadaScene(
             CreateActionId(elementId, trigger.RuntimeTrigger, ScadaEventRegistry.ChangePageFunction, targetPageId),
             ScadaActionKind.Navigate,
             TargetPageId: targetPageId.Trim());
+
+        return WithAction(action)
+            .WithObjectEvent(
+                elementId,
+                new ScadaObjectEventBinding(
+                    trigger.RuntimeTrigger,
+                    action.Id,
+                    StopPropagation: true,
+            PreventDefault: false));
+    }
+
+    /// <summary>
+    /// Adds a model-backed Element+ event that changes target object visibility.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0017.
+    /// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
+    /// </remarks>
+    public ScadaScene WithObjectVisibilityEvent(
+        string elementId,
+        string triggerKeyOrRuntimeName,
+        ScadaActionKind actionKind,
+        string targetElementId,
+        ScadaActionCondition? condition = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(triggerKeyOrRuntimeName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(targetElementId);
+
+        if (actionKind is not (ScadaActionKind.Show or ScadaActionKind.Hide or ScadaActionKind.ToggleVisibility))
+        {
+            throw new InvalidOperationException($"Action kind '{actionKind}' is not an object visibility action.");
+        }
+
+        var trigger = ScadaEventRegistry.FindTrigger(triggerKeyOrRuntimeName) ??
+            throw new InvalidOperationException($"Event trigger '{triggerKeyOrRuntimeName}' is not registered.");
+        var functionName = actionKind switch
+        {
+            ScadaActionKind.Show => ScadaEventRegistry.ShowFunction,
+            ScadaActionKind.Hide => ScadaEventRegistry.HideFunction,
+            _ => ScadaEventRegistry.ToggleVisibilityFunction
+        };
+        var conditionId = condition is null
+            ? null
+            : string.Join("_", new[] { condition.TagId, condition.Operator.ToString(), condition.CompareValue }.Where(part => !string.IsNullOrWhiteSpace(part)));
+        var targetId = string.Join("_", new[] { targetElementId, conditionId }.Where(part => !string.IsNullOrWhiteSpace(part)));
+        var action = new ScadaActionDefinition(
+            CreateActionId(elementId, trigger.RuntimeTrigger, functionName, targetId),
+            actionKind,
+            TargetElementId: targetElementId.Trim(),
+            Condition: condition);
 
         return WithAction(action)
             .WithObjectEvent(

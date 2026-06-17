@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Evenement Element+"
         Width="620"
-        Height="560"
+        Height="680"
         MinWidth="560"
         MinHeight="500"
         WindowStartupLocation="CenterOwner"
@@ -110,6 +110,10 @@
                 <ComboBox x:Name="TargetPageComboBox"
                           DisplayMemberPath="DisplayName"/>
 
+                <TextBlock x:Name="TargetElementLabelText" Text="Objet cible"/>
+                <ComboBox x:Name="TargetElementComboBox"
+                          DisplayMemberPath="DisplayName"/>
+
                 <TextBlock x:Name="TargetTagLabelText" Text="Tag cible"/>
                 <DockPanel x:Name="TargetTagPanel" Margin="0,3,0,10">
                     <Button DockPanel.Dock="Right"
@@ -126,13 +130,22 @@
                               DisplayMemberPath="DisplayName"/>
                 </DockPanel>
 
-                <TextBlock Text="Condition"/>
-                <TextBox Text="Aucune condition"
-                         IsReadOnly="True"
-                         Foreground="{StaticResource MutedBrush}"/>
-                <TextBlock Text="Les conditions sont prevues par le contrat mais restent desactivees pour cette premiere tranche."
-                           TextWrapping="Wrap"
-                           Foreground="{StaticResource MutedBrush}"/>
+                <CheckBox x:Name="ConditionCheckBox"
+                          Content="Condition tag"
+                          Margin="0,3,0,8"
+                          Checked="OnConditionChanged"
+                          Unchecked="OnConditionChanged"/>
+                <StackPanel x:Name="ConditionPanel">
+                    <TextBlock Text="Tag condition"/>
+                    <ComboBox x:Name="ConditionTagComboBox"
+                              DisplayMemberPath="DisplayName"/>
+                    <TextBlock Text="Operateur"/>
+                    <ComboBox x:Name="ConditionOperatorComboBox"
+                              DisplayMemberPath="DisplayName"
+                              SelectionChanged="OnConditionOperatorChanged"/>
+                    <TextBlock x:Name="ConditionValueLabelText" Text="Valeur"/>
+                    <TextBox x:Name="ConditionValueTextBox"/>
+                </StackPanel>
             </StackPanel>
         </Grid>
 

@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active project model contract
-Document version: `V2.1.2.0009`
+Document version: `V2.1.2.0010`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0010` | `PENDING` | Ajout du modele `ScadaActionCondition` pour actions objet conditionnelles. |
 | 2026-06-17 | `V2.1.2.0009` | `PENDING` | Ajout des bindings Element+ `ReadTagId` et `WriteTagId` et des validations de build. |
 | 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout du catalogue tags TF100Web importe au modele projet. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat actif du modele projet et scene. |
@@ -24,7 +25,8 @@ Legacy source paths and source ids are trace metadata unless explicitly converte
 2. Project owns the optional imported TF100Web tag catalog used by Element+ authoring surfaces.
 3. Scene owns canvas, page type, background, elements, actions, composition references, and removed source ids.
 4. Elements own identity, kind, bounds, data, event bindings, and optional read/write tag bindings.
-5. Runtime manifests are generated outputs, not editable source models.
+5. Actions may own one optional tag condition when the runtime function supports deterministic conditional execution.
+6. Runtime manifests are generated outputs, not editable source models.
 
 ## 3. Tag Catalog
 

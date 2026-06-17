@@ -75,6 +75,21 @@ public static class ScadaEventRegistry
     public const string ChangePageFunction = "ChangePage";
 
     /// <summary>
+    /// Runtime function name for showing a target Element+ object.
+    /// </summary>
+    public const string ShowFunction = "Show";
+
+    /// <summary>
+    /// Runtime function name for hiding a target Element+ object.
+    /// </summary>
+    public const string HideFunction = "Hide";
+
+    /// <summary>
+    /// Runtime function name for toggling a target Element+ object visibility.
+    /// </summary>
+    public const string ToggleVisibilityFunction = "ToggleVisibility";
+
+    /// <summary>
     /// Runtime function name for writing a value to a TF100Web tag.
     /// </summary>
     public const string WriteTagFunction = "WriteTag";
@@ -129,9 +144,9 @@ public static class ScadaEventRegistry
             "Navigue vers une page compilee du projet FT100/TF100Web."),
         new(ReadValueFunction, ScadaActionKind.ReadValue, "Lire valeur", ["TagId"], true, "Lie un tag runtime a la valeur affichee par un Element+."),
         new(WriteValueFunction, ScadaActionKind.WriteValue, "Ecrire valeur", ["TagId"], true, "Lie la valeur saisie par l'operateur a un tag runtime."),
-        new("Show", ScadaActionKind.Show, "Afficher objet", ["TargetElementId"], false, "Affiche un Element+ cible."),
-        new("Hide", ScadaActionKind.Hide, "Masquer objet", ["TargetElementId"], false, "Masque un Element+ cible."),
-        new("ToggleVisibility", ScadaActionKind.ToggleVisibility, "Basculer visibilite", ["TargetElementId"], false, "Bascule la visibilite d'un Element+ cible."),
+        new(ShowFunction, ScadaActionKind.Show, "Afficher objet", ["TargetElementId"], true, "Affiche un Element+ cible."),
+        new(HideFunction, ScadaActionKind.Hide, "Masquer objet", ["TargetElementId"], true, "Masque un Element+ cible."),
+        new(ToggleVisibilityFunction, ScadaActionKind.ToggleVisibility, "Basculer visibilite", ["TargetElementId"], true, "Bascule la visibilite d'un Element+ cible."),
         new(WriteTagFunction, ScadaActionKind.WriteTag, "Ecrire tag", ["TagId", "Value"], false, "Compatibilite legacy pour ecriture de valeur fixe.")
     ];
 

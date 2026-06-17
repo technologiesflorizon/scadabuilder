@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.2.0009`
+Document version: `V2.1.2.0010`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0010` | `PENDING` | Ajout de DEC-0017 pour les actions objet conditionnelles basees sur tags importes. |
 | 2026-06-17 | `V2.1.2.0009` | `PENDING` | Ajout de DEC-0016 pour les bindings Element+ `Lire valeur` et `Ecrire valeur`; DEC-0015 est supersedee. |
 | 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout de la decision d'import catalogue tags TF100Web et d'authoring `WriteTag`. |
 | 2026-06-16 | `V2.1.2.0007` | `PENDING` | Ajout de la decision de curseur runtime pour les cibles cliquables FT100/TF100Web. |
@@ -434,6 +435,32 @@ FT100/TF100Web manifests include the imported tag catalog and write-tag actions.
 Regression coverage:
 
 `tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+
+### DEC-0017 - Conditional Object Visibility Actions
+
+Status: Active
+Created: 2026-06-17 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
+
+Context:
+
+HMI operators need deterministic object visibility behavior such as showing, hiding, or toggling an Element+ only when an imported process tag satisfies a simple condition. These conditions must be persisted in the scene model and exported with the same runtime action contract as other Element+ events.
+
+Decision:
+
+`Afficher objet`, `Masquer objet`, and `Basculer visibilite` are authorable Element+ event functions. They target another Element+ object and may carry one optional `ScadaActionCondition` with an imported tag id, an operator, and an optional comparison value. Supported operators are `Vrai`, `Faux`, `=`, `<>`, `>`, `>=`, `<`, and `<=`. Boolean `Vrai/Faux` operators are valid only for boolean imported tags and are rejected by build/export validation when used on non-boolean tags.
+
+Consequences:
+
+FT100/TF100Web manifests include the condition on the action. Exported runtime evaluates conditions through `window.tf100webScadaBuilder.getTagValue(tagId)` when available, or `window.scadaBuilderTagValues[tagId]` as a simple integration dictionary. If a condition cannot be evaluated, the action does not run. Expression authoring, degraded state handling, and compound conditions remain future revisions.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
 
 ### DEC-0016 - Element Value Bindings For Imported Tags
 

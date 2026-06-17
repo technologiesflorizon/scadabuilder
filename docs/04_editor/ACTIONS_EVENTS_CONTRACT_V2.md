@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active editor/runtime actions contract
-Document version: `V2.1.2.0009`
+Document version: `V2.1.2.0010`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0010` | `PENDING` | Implementation des actions objet `Afficher`, `Masquer`, `Basculer visibilite` avec condition tag deterministe. |
 | 2026-06-17 | `V2.1.2.0009` | `PENDING` | Remplacement de l'action authorable `WriteTag` par les bindings Element+ `Lire valeur` et `Ecrire valeur`. |
 | 2026-06-17 | `V2.1.2.0008` | `PENDING` | Implementation de l'import tags TF100Web et de l'authoring Element+ `WriteTag`. |
 | 2026-06-16 | `V2.1.2.0007` | `PENDING` | Ajout du curseur runtime par defaut pour les cibles `Clic` exportees. |
@@ -30,6 +31,7 @@ Object events and runtime actions are model-owned behavior. UI controls may auth
 7. FT100 export gives `Clic` targets a default pointer cursor in hover and active click states when they are buttons or carry exported `data-scada-events`.
 8. The project can import a TF100Web `tf100web-scada-tags-v1` tag catalog. The Element+ event modal exposes enabled tags for value binding authoring.
 9. `Lire valeur` and `Ecrire valeur` persist tag ids as Element+ data bindings, not triggered scene events. `Ecrire valeur` writes the operator-entered runtime value and never stores a literal design-time value.
+10. `Afficher objet`, `Masquer objet`, and `Basculer visibilite` are authorable against Element+ targets and may use one deterministic tag condition.
 
 ## 3. Event Registry
 
@@ -48,9 +50,9 @@ Runtime function contracts are centralized in `ScadaEventRegistry`:
 | Function | French label | Persisted action kind | Required arguments | Status |
 | --- | --- | --- | --- | --- |
 | `ChangePage` | `Changer de page` | `Navigate` | `TargetPageId` | Implemented |
-| `Show` | `Afficher objet` | `Show` | `TargetElementId` | Registered, not authorable |
-| `Hide` | `Masquer objet` | `Hide` | `TargetElementId` | Registered, not authorable |
-| `ToggleVisibility` | `Basculer visibilite` | `ToggleVisibility` | `TargetElementId` | Registered, not authorable |
+| `Show` | `Afficher objet` | `Show` | `TargetElementId`, optional `Condition` | Implemented |
+| `Hide` | `Masquer objet` | `Hide` | `TargetElementId`, optional `Condition` | Implemented |
+| `ToggleVisibility` | `Basculer visibilite` | `ToggleVisibility` | `TargetElementId`, optional `Condition` | Implemented |
 | `ReadValue` | `Lire valeur` | `ReadValue` | `TagId` | Implemented |
 | `WriteValue` | `Ecrire valeur` | `WriteValue` | `TagId` | Implemented |
 | `WriteTag` | `Ecrire tag` | `WriteTag` | `TagId`, `Value` | Legacy compatibility, not authorable |
@@ -81,17 +83,15 @@ flowchart TD
 
 ## 5. Conditional Events Plan
 
-Conditional execution is part of the contract but not authorable in the first implemented slice.
+Conditional execution is implemented for object visibility actions only.
 
-Planned condition fields:
+Implemented condition fields:
 
-1. Tag id or expression id.
-2. Operator, such as equals, not equals, greater than, lower than, true, false, degraded.
-3. Comparison value.
-4. Execution mode: run when true, run when false, or run when degraded.
-5. Optional stop-on-first-match policy for ordered event chains.
+1. Imported tag id.
+2. Operator: `Vrai`, `Faux`, `=`, `<>`, `>`, `>=`, `<`, `<=`.
+3. Comparison value for non-boolean operators.
 
-The condition schema must be persisted, exported, and tested before the modal enables condition editing.
+Boolean `Vrai/Faux` operators are valid only for boolean tags. Missing target objects, missing condition tags, boolean operators on non-boolean tags, and missing comparison values are build/export errors.
 
 ## 6. Tag Authoring Boundary
 
@@ -104,7 +104,7 @@ The current implemented tag slice covers:
 5. Validating `Ecrire valeur` during build/export so read-only Element+ objects, non-input Element+ objects, read-only tags, and missing tags are rejected.
 6. Exporting tags and per-element value binding metadata in the FT100/TF100Web package.
 
-The current slice does not yet implement tag conditions, degraded state semantics, expression authoring, local tag creation, or project protocol import. Local tag creation requires a future protocol import revision.
+The current slice does not yet implement degraded state semantics, expression authoring, compound conditions, local tag creation, or project protocol import. Local tag creation requires a future protocol import revision.
 
 ## 7. Roadmap Boundary
 
@@ -112,7 +112,7 @@ The following are roadmap items until implemented and covered by tests:
 
 1. `On click -> open popup`.
 2. `mouse hover -> show element/group border`.
-3. Tag conditions: true, false, degraded.
+3. Degraded tag conditions and compound conditions.
 4. Global scripts generating lifecycle events.
 5. Visual effects such as blink, glow, pulse, alarm highlight, degraded treatment.
 

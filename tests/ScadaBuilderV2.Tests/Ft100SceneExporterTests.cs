@@ -784,6 +784,71 @@ public sealed class Ft100SceneExporterTests
     }
 
     [TestMethod]
+    public async Task ExportIncludesConditionalObjectVisibilityRuntimeHook()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+        var sourceHtmlPath = Path.Combine(sourceRoot, "conditional_visibility.html");
+        await File.WriteAllTextAsync(sourceHtmlPath, "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var button = ScadaElement.CreateText("btn_show", "Afficher", 10, 20);
+        var target = ScadaElement.CreateText("pump_status", "Pompe", 100, 20);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Conditional visibility", new(1280, 873))
+            .WithElement(button)
+            .WithElement(target)
+            .WithObjectVisibilityEvent(
+                "btn_show",
+                ScadaEventRegistry.ClickKey,
+                ScadaActionKind.Show,
+                "pump_status",
+                new ScadaActionCondition("tf100.mapping.running", ScadaConditionOperator.True));
+        var project = ScadaProject.CreateDefault("Runtime") with
+        {
+            Scenes = [new ScadaSceneReference("win00008", "Conditional visibility", "scenes/win00008.scene.json")],
+            TagCatalog = new ScadaTagCatalog(
+                "tf100web-scada-tags-v1",
+                [
+                    new ScadaTagDefinition(
+                        "tf100.mapping.running",
+                        "Pompe en marche",
+                        "Pompe en marche",
+                        "digital",
+                        "PLC-1",
+                        "modbus",
+                        "modbus://00001",
+                        "Boolean")
+                ])
+        };
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot, project);
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
+
+            StringAssert.Contains(html, "data-scada-events=");
+            StringAssert.Contains(html, "function evaluateCondition(condition)");
+            StringAssert.Contains(html, "tf100webScadaBuilder.getTagValue");
+            StringAssert.Contains(html, "window.scadaBuilderTagValues");
+            StringAssert.Contains(manifest, "\"Kind\": \"show\"");
+            StringAssert.Contains(manifest, "\"TargetElementId\": \"pump_status\"");
+            StringAssert.Contains(manifest, "\"Condition\"");
+            StringAssert.Contains(manifest, "\"TagId\": \"tf100.mapping.running\"");
+            StringAssert.Contains(manifest, "\"Operator\": \"true\"");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task ExportOmitsDisabledButtonHoverCssButKeepsMetadata()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
