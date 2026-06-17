@@ -8,6 +8,7 @@ Document version: `V2.1.2.0017`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0025 pour les effets visuels runtime standards. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0024 pour le bridge lifecycle runtime global. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0023 pour les groupes de conditions runtime et politique degradee. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0022 pour les options runtime avancees des popup Fragment. |
@@ -516,6 +517,32 @@ Decision:
 Consequences:
 
 The popup cycle now covers open, close, and toggle without adding popup instances or host-region model fields. Explicit placement, named host regions, lifecycle reset policy, multi-instance policy, and popup sizing presets remain future revisions.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+
+### DEC-0025 - Standard Runtime Visual Effects
+
+Status: Active
+Created: 2026-06-17 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
+
+Context:
+
+HMI screens need standard visual effects for operator attention and degraded/alarm states without exporting editor overlays or hand-authored page CSS. These effects must be model-backed actions and must remain scoped to the exported page root.
+
+Decision:
+
+SCADA Builder V2 implements standard visual effect functions for blink, glow, pulse, alarm highlight, and degraded treatment. Each effect has start, stop, and toggle functions that persist as `SetClass`, `RemoveClass`, or `ToggleClass` with a fixed page-scoped runtime CSS class. FT100 export emits the standard effect CSS and keyframes under the page namespace.
+
+Consequences:
+
+Visual effects can be authored through the same Element+ event/action model as popup, visibility, and border actions. Custom effect styling and a visual effect style editor remain future revisions.
 
 Regression coverage:
 

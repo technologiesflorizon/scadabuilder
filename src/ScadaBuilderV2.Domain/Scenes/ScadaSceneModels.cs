@@ -1168,6 +1168,48 @@ public sealed record ScadaScene(
     }
 
     /// <summary>
+    /// Adds a model-backed Element+ event that applies a standard runtime visual effect class to a target object.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0025.
+    /// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
+    /// </remarks>
+    public ScadaScene WithVisualEffectEvent(
+        string elementId,
+        string triggerKeyOrRuntimeName,
+        string functionName,
+        string targetElementId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(functionName);
+        if (!ScadaEventRegistry.TryResolveVisualEffectFunction(functionName, out var actionKind, out var className))
+        {
+            throw new InvalidOperationException($"Function '{functionName}' is not a standard visual effect action.");
+        }
+
+        ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(triggerKeyOrRuntimeName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(targetElementId);
+
+        var trigger = ScadaEventRegistry.FindTrigger(triggerKeyOrRuntimeName) ??
+            throw new InvalidOperationException($"Event trigger '{triggerKeyOrRuntimeName}' is not registered.");
+        var action = new ScadaActionDefinition(
+            CreateActionId(elementId, trigger.RuntimeTrigger, functionName, targetElementId),
+            actionKind,
+            TargetElementId: targetElementId.Trim(),
+            ClassName: className);
+
+        return WithAction(action)
+            .WithObjectEvent(
+                elementId,
+                new ScadaObjectEventBinding(
+                    trigger.RuntimeTrigger,
+                    action.Id,
+                    StopPropagation: true,
+                    PreventDefault: false));
+    }
+
+    /// <summary>
     /// Adds a model-backed Element+ event that writes a value to a TF100Web tag.
     /// </summary>
     /// <remarks>

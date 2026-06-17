@@ -168,6 +168,42 @@ public sealed class ModernProjectStoreTests
     }
 
     [TestMethod]
+    public async Task SaveAndLoadScenePreservesVisualEffectActions()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var store = new ModernProjectStore();
+        var scene = ScadaScene
+            .CreateEmpty("win-events", "Event scene", new(1280, 873))
+            .WithElement(ScadaElement.CreateText("btn_alarm", "Alarme", 10, 20))
+            .WithElement(ScadaElement.CreateText("pump_group", "Pompe", 100, 20))
+            .WithVisualEffectEvent("btn_alarm", ScadaEventRegistry.ClickKey, ScadaEventRegistry.StartGlowEffectFunction, "pump_group")
+            .WithVisualEffectEvent("btn_alarm", ScadaEventRegistry.ReleaseKey, ScadaEventRegistry.StopGlowEffectFunction, "pump_group");
+
+        try
+        {
+            await store.SaveSceneAsync(root, scene);
+
+            var loaded = await store.LoadOrCreateSceneAsync(root, "win-events", "Event scene", new(1280, 873));
+
+            Assert.IsTrue(loaded.ActionDefinitions.Any(action =>
+                action.Kind == ScadaActionKind.SetClass &&
+                action.TargetElementId == "pump_group" &&
+                action.ClassName == ScadaEventRegistry.RuntimeGlowEffectClass));
+            Assert.IsTrue(loaded.ActionDefinitions.Any(action =>
+                action.Kind == ScadaActionKind.RemoveClass &&
+                action.TargetElementId == "pump_group" &&
+                action.ClassName == ScadaEventRegistry.RuntimeGlowEffectClass));
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task SaveAndLoadScenePreservesOpenPopupAction()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

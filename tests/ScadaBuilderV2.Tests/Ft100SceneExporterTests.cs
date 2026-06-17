@@ -1001,6 +1001,54 @@ public sealed class Ft100SceneExporterTests
     }
 
     [TestMethod]
+    public async Task ExportIncludesStandardVisualEffectRuntimeHooks()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+        var sourceHtmlPath = Path.Combine(sourceRoot, "visual_effects.html");
+        await File.WriteAllTextAsync(sourceHtmlPath, "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Visual effects", new(1280, 873))
+            .WithElement(ScadaElement.CreateText("btn_alarm", "Alarme", 10, 20))
+            .WithElement(ScadaElement.CreateText("pump_group", "Pompe", 100, 20))
+            .WithVisualEffectEvent("btn_alarm", ScadaEventRegistry.ClickKey, ScadaEventRegistry.StartBlinkEffectFunction, "pump_group")
+            .WithVisualEffectEvent("btn_alarm", ScadaEventRegistry.ReleaseKey, ScadaEventRegistry.StopBlinkEffectFunction, "pump_group")
+            .WithVisualEffectEvent("btn_alarm", ScadaEventRegistry.ClickKey, ScadaEventRegistry.ToggleAlarmEffectFunction, "pump_group")
+            .WithVisualEffectEvent("btn_alarm", ScadaEventRegistry.ClickKey, ScadaEventRegistry.ToggleDegradedEffectFunction, "pump_group");
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+            var css = await File.ReadAllTextAsync(result.CssPath);
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
+
+            StringAssert.Contains(css, ScadaEventRegistry.RuntimeBlinkEffectClass);
+            StringAssert.Contains(css, ScadaEventRegistry.RuntimeGlowEffectClass);
+            StringAssert.Contains(css, ScadaEventRegistry.RuntimePulseEffectClass);
+            StringAssert.Contains(css, ScadaEventRegistry.RuntimeAlarmEffectClass);
+            StringAssert.Contains(css, ScadaEventRegistry.RuntimeDegradedEffectClass);
+            StringAssert.Contains(css, "@keyframes ft100-win00008-scada-blink");
+            StringAssert.Contains(html, "target.classList.add(action.ClassName)");
+            StringAssert.Contains(html, "target.classList.remove(action.ClassName)");
+            StringAssert.Contains(html, "target.classList.toggle(action.ClassName)");
+            StringAssert.Contains(manifest, $"\"ClassName\": \"{ScadaEventRegistry.RuntimeBlinkEffectClass}\"");
+            StringAssert.Contains(manifest, $"\"ClassName\": \"{ScadaEventRegistry.RuntimeAlarmEffectClass}\"");
+            StringAssert.Contains(manifest, $"\"ClassName\": \"{ScadaEventRegistry.RuntimeDegradedEffectClass}\"");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task ExportIncludesOpenPopupRuntimeHook()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

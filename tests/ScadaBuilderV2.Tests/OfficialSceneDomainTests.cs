@@ -180,6 +180,9 @@ public sealed class OfficialSceneDomainTests
         var showBorder = ScadaEventRegistry.FindAction(ScadaEventRegistry.ShowBorderFunction);
         var hideBorder = ScadaEventRegistry.FindAction(ScadaEventRegistry.HideBorderFunction);
         var toggleBorder = ScadaEventRegistry.FindAction(ScadaEventRegistry.ToggleBorderFunction);
+        var startBlink = ScadaEventRegistry.FindAction(ScadaEventRegistry.StartBlinkEffectFunction);
+        var stopGlow = ScadaEventRegistry.FindAction(ScadaEventRegistry.StopGlowEffectFunction);
+        var toggleAlarm = ScadaEventRegistry.FindAction(ScadaEventRegistry.ToggleAlarmEffectFunction);
         var readValue = ScadaEventRegistry.FindAction(ScadaEventRegistry.ReadValueFunction);
         var writeValue = ScadaEventRegistry.FindAction(ScadaEventRegistry.WriteValueFunction);
         var writeTag = ScadaEventRegistry.FindAction(ScadaEventRegistry.WriteTagFunction);
@@ -219,6 +222,12 @@ public sealed class OfficialSceneDomainTests
         Assert.AreEqual(ScadaActionKind.ToggleClass, toggleBorder?.Kind);
         Assert.IsTrue(toggleBorder?.Implemented ?? false);
         CollectionAssert.Contains(toggleBorder?.RequiredArguments.ToArray(), "TargetElementId");
+        Assert.AreEqual(ScadaActionKind.SetClass, startBlink?.Kind);
+        Assert.IsTrue(startBlink?.Implemented ?? false);
+        Assert.AreEqual(ScadaActionKind.RemoveClass, stopGlow?.Kind);
+        Assert.IsTrue(stopGlow?.Implemented ?? false);
+        Assert.AreEqual(ScadaActionKind.ToggleClass, toggleAlarm?.Kind);
+        Assert.IsTrue(toggleAlarm?.Implemented ?? false);
         Assert.AreEqual(ScadaActionKind.ReadValue, readValue?.Kind);
         Assert.IsTrue(readValue?.Implemented ?? false);
         CollectionAssert.Contains(readValue?.RequiredArguments.ToArray(), "TagId");
@@ -322,6 +331,27 @@ public sealed class OfficialSceneDomainTests
             scene.ActionDefinitions.Select(action => action.Kind).ToArray());
         Assert.IsTrue(scene.ActionDefinitions.All(action => action.TargetElementId == "pump_group"));
         Assert.IsTrue(scene.ActionDefinitions.All(action => action.ClassName == ScadaEventRegistry.RuntimeBorderHighlightClass));
+    }
+
+    [TestMethod]
+    public void SceneCanAttachStandardVisualEffectEvents()
+    {
+        var source = ScadaElement.CreateText("btn_alarm", "Alarme", 10, 20);
+        var target = ScadaElement.CreateText("pump_group", "Pompe", 100, 20);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "win00008", new CanvasSize(1280, 873))
+            .WithElement(source)
+            .WithElement(target)
+            .WithVisualEffectEvent("btn_alarm", ScadaEventRegistry.ClickKey, ScadaEventRegistry.StartBlinkEffectFunction, "pump_group")
+            .WithVisualEffectEvent("btn_alarm", ScadaEventRegistry.ReleaseKey, ScadaEventRegistry.StopBlinkEffectFunction, "pump_group")
+            .WithVisualEffectEvent("btn_alarm", ScadaEventRegistry.ClickKey, ScadaEventRegistry.ToggleAlarmEffectFunction, "pump_group");
+
+        CollectionAssert.AreEquivalent(
+            new[] { ScadaActionKind.SetClass, ScadaActionKind.RemoveClass, ScadaActionKind.ToggleClass },
+            scene.ActionDefinitions.Select(action => action.Kind).ToArray());
+        Assert.IsTrue(scene.ActionDefinitions.Any(action => action.ClassName == ScadaEventRegistry.RuntimeBlinkEffectClass));
+        Assert.IsTrue(scene.ActionDefinitions.Any(action => action.ClassName == ScadaEventRegistry.RuntimeAlarmEffectClass));
+        Assert.IsTrue(scene.ActionDefinitions.All(action => action.TargetElementId == "pump_group"));
     }
 
     [TestMethod]

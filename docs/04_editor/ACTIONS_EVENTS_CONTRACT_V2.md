@@ -8,6 +8,7 @@ Document version: `V2.1.2.0017`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des effets visuels runtime standards. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout du bridge lifecycle runtime global exporte. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des groupes de conditions runtime `All/Any` et politique de tag manquant. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des options runtime avancees pour popup Fragment. |
@@ -42,6 +43,7 @@ Object events and runtime actions are model-owned behavior. UI controls may auth
 11. Exported runtime applies values pushed by TF100Web to every Element+ using the matching `Lire valeur` tag binding.
 12. `Ouvrir popup`, `Fermer popup`, and `Basculer popup` are authorable against compiled `Fragment` pages and persist as popup runtime actions with optional advanced runtime options.
 13. `Afficher bordure`, `Masquer bordure`, and `Basculer bordure` are authorable against Element+ targets and apply the standard runtime border class.
+14. Standard visual effects are authorable against Element+ targets through start, stop, and toggle functions for blink, glow, pulse, alarm highlight, and degraded treatment.
 
 ## 3. Event Registry
 
@@ -69,6 +71,9 @@ Runtime function contracts are centralized in `ScadaEventRegistry`:
 | `ShowBorder` | `Afficher bordure` | `SetClass` | `TargetElementId`, standard border class | Implemented |
 | `HideBorder` | `Masquer bordure` | `RemoveClass` | `TargetElementId`, standard border class | Implemented |
 | `ToggleBorder` | `Basculer bordure` | `ToggleClass` | `TargetElementId`, standard border class | Implemented |
+| `Start*Effect` | `Demarrer ...` | `SetClass` | `TargetElementId`, standard effect class | Implemented |
+| `Stop*Effect` | `Arreter ...` | `RemoveClass` | `TargetElementId`, standard effect class | Implemented |
+| `Toggle*Effect` | `Basculer ...` | `ToggleClass` | `TargetElementId`, standard effect class | Implemented |
 | `ReadValue` | `Lire valeur` | `ReadValue` | `TagId` | Implemented |
 | `WriteValue` | `Ecrire valeur` | `WriteValue` | `TagId` | Implemented |
 | `WriteTag` | `Ecrire tag` | `WriteTag` | `TagId`, `Value` | Legacy compatibility, not authorable |
@@ -153,7 +158,7 @@ The current implemented visual action slice covers:
 4. Validating missing target Element+ ids before build/export.
 5. Exporting page-scoped CSS and runtime `classList.add/remove/toggle` behavior.
 
-The current slice does not yet implement custom border styling per action, blink, glow, pulse, alarm highlight, degraded treatment, or SCADA Builder-side preview of runtime visual effects.
+The current slice does not yet implement custom border/effect styling per action or SCADA Builder-side preview of runtime visual effects.
 
 ## 9. Roadmap Boundary
 
@@ -161,7 +166,7 @@ The following are roadmap items until implemented and covered by tests:
 
 1. Expression/formula condition authoring.
 2. Controlled custom script loading and script authoring.
-3. Visual effects such as blink, glow, pulse, alarm highlight, degraded treatment.
+3. Custom visual effect styling and local preview of runtime visual effects.
 
 ## 10. Event Flow
 

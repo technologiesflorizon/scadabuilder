@@ -725,6 +725,13 @@ public sealed partial class Ft100SceneExporter
         css.AppendLine($"{scope.Descendant(".ft100-element--Button *")}, {scope.Descendant("[data-scada-events] *")} {{ cursor: pointer; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element--Button:active")}, {scope.Descendant("[data-scada-events]:active")} {{ cursor: pointer; }}");
         css.AppendLine($"{scope.Descendant($".{ScadaEventRegistry.RuntimeBorderHighlightClass}")} {{ outline: 2px solid #00a3ff; outline-offset: 2px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.85), 0 0 8px rgba(0, 163, 255, 0.65); }}");
+        css.AppendLine($"@keyframes {scope.AnimationName("scada-blink")} {{ 0%, 100% {{ opacity: 1; }} 50% {{ opacity: 0.35; }} }}");
+        css.AppendLine($"@keyframes {scope.AnimationName("scada-pulse")} {{ 0%, 100% {{ transform: scale(1); }} 50% {{ transform: scale(1.035); }} }}");
+        css.AppendLine($"{scope.Descendant($".{ScadaEventRegistry.RuntimeBlinkEffectClass}")} {{ animation: {scope.AnimationName("scada-blink")} 1s steps(2, start) infinite; }}");
+        css.AppendLine($"{scope.Descendant($".{ScadaEventRegistry.RuntimeGlowEffectClass}")} {{ box-shadow: 0 0 0 2px rgba(0, 163, 255, 0.55), 0 0 18px rgba(0, 163, 255, 0.85) !important; }}");
+        css.AppendLine($"{scope.Descendant($".{ScadaEventRegistry.RuntimePulseEffectClass}")} {{ animation: {scope.AnimationName("scada-pulse")} 1.25s ease-in-out infinite; transform-origin: center; }}");
+        css.AppendLine($"{scope.Descendant($".{ScadaEventRegistry.RuntimeAlarmEffectClass}")} {{ outline: 3px solid #f43f3f; outline-offset: 2px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.85), 0 0 14px rgba(244, 63, 63, 0.8) !important; }}");
+        css.AppendLine($"{scope.Descendant($".{ScadaEventRegistry.RuntimeDegradedEffectClass}")} {{ filter: grayscale(0.75) contrast(0.9); opacity: 0.72; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element svg")} {{ display: block; width: 100%; height: 100%; overflow: visible; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element input")} {{ width: 100%; height: 100%; box-sizing: border-box; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element button")} {{ width: 100%; height: 100%; box-sizing: border-box; font: inherit; color: inherit; }}");
@@ -1735,6 +1742,11 @@ Apply any viewport scale to the composed page container, not independently to he
         public string ElementSelector(string elementId)
         {
             return $"{RootSelector} #{ElementDomId(elementId)}";
+        }
+
+        public string AnimationName(string name)
+        {
+            return $"{RootDomId}-{CssIdentifier(name)}";
         }
     }
 

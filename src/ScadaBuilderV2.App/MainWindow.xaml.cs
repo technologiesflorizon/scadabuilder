@@ -4733,6 +4733,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                     result.RuntimeTrigger ?? "",
                     ScadaActionKind.ToggleClass,
                     result.TargetElementId ?? ""),
+            var functionName when ScadaEventRegistry.IsVisualEffectFunction(functionName) =>
+                _activeScene.WithVisualEffectEvent(
+                    current.Id,
+                    result.RuntimeTrigger ?? "",
+                    result.FunctionName,
+                    result.TargetElementId ?? ""),
             _ => throw new InvalidOperationException("Fonction d'evenement non implementee dans cette tranche.")
         };
         if (string.Equals(result.FunctionName, ScadaEventRegistry.ReadValueFunction, StringComparison.Ordinal) ||
