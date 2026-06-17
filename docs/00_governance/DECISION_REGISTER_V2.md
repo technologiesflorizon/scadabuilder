@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.2.0020`
+Document version: `V2.1.2.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0022` | `PENDING` | Ajout de DEC-0029 pour l'intake TF100Web des events de binding `ValueBindings` depuis `.sb2`. |
 | 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Ajout de DEC-0028 pour l'export `.sb2` non bloquant et la validation CSS indentee. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout de DEC-0027 pour l'export `.sb2` FT100 et le gate anti-collision. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Ajout de DEC-0026 pour le contrat d'intake fragment audite dans TF100Web. |
@@ -628,6 +629,32 @@ Operators receive visible feedback during long exports and the shell remains res
 Regression coverage:
 
 `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+
+### DEC-0029 - TF100Web Host Intake For SCADA Builder Binding Events
+
+Status: Active
+Created: 2026-06-17 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md`
+
+Context:
+
+SCADA Builder V2 exports `Lire valeur` and `Ecrire valeur` as binding events on Element+ data (`ReadTagId` and `WriteTagId`) and as manifest `ValueBindings`. TF100Web imports `.sb2` through the UI, extracts only page root fragments, and runs a host-side runtime that refreshes and writes values through `data-scada-role`, `data-scada-mapping-id`, and related attributes.
+
+Decision:
+
+TF100Web host intake must consume SCADA Builder V2 `ValueBindings` directly from the `.sb2` manifest. `tf100.mapping.<id>` resolves to the TF100Web `RegisterMapping` id. TF100Web injects host-runtime mapping attributes onto the page-scoped Element+ DOM id (`ft100-<page-id>__<element-id>`) while also retaining compatibility with legacy unscoped ids. When read and write bindings target different mappings, the read mapping remains `data-scada-mapping-id` and the write mapping is carried by `data-scada-write-mapping-id`.
+
+Consequences:
+
+`win00007 / Element+ Text20 / tf100.mapping.180` is a valid production acceptance candidate for `.sb2` binding-event intake. Hardcoded `win00008` bindings are no longer the intended acceptance path for current SCADA Builder V2 packages. Page scripts outside the extracted fragment remain a separate parity topic for popup, visual, lifecycle, and conditional action events.
+
+Regression coverage:
+
+`F:\Projet\Git\TF100Web\frontend\tests_scada_package.py`
 
 ### DEC-0024 - Global Runtime Lifecycle Bridge
 

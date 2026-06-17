@@ -2,12 +2,14 @@
 
 Date: 2026-06-17
 Status: Active enterprise documentation map
-Document version: `V2.1.2.0021`
+Document version: `V2.1.2.0023`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0023` | `PENDING` | Ajout du statut de parite event SCADA Builder V2 / TF100Web et preparation de la prochaine tranche d'implementation. |
+| 2026-06-17 | `V2.1.2.0022` | `PENDING` | Harmonisation du contrat `.sb2` pour les events de binding TF100Web `ValueBindings`. |
 | 2026-06-17 | `V2.1.2.0021` | `1040889` | Correction du feedback `.sb2` pour qu'il soit applique au bon handler d'export. |
 | 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Correction du validateur CSS `.sb2` et ajout d'un indicateur de progression non bloquant pour l'export FT100. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout de l'export `.sb2` FT100 avec gate anti-collision DOM/CSS. |
@@ -163,6 +165,8 @@ These guardrails are active decisions in `00_governance/DECISION_REGISTER_V2.md`
 20. `.sb2` is the preferred FT100 transfer artifact. It is a ZIP archive whose top-level entry is `scada-builder-v2-ft100-package/`.
 21. `.sb2` export rewrites legacy source ids under `ft100-<page-id>__legacy-*` before validation, then blocks packages that still contain duplicate DOM ids, unscoped DOM ids, unsafe paths, missing page roots, invalid header/footer references, or generated global CSS selectors that could collide in TF100Web composition.
 22. FT100 `.sb2` export must keep the WPF shell responsive and show an indeterminate progress indicator in the bottom status bar while package generation and archive creation are running.
+23. `ReadTag` and `WriteTag` are runtime binding events. Current TF100Web `.sb2` intake must consume SCADA Builder V2 `ValueBindings.ReadTagId` and `ValueBindings.WriteTagId`, resolve `tf100.mapping.<id>` to TF100Web mappings, and inject host runtime attributes onto page-scoped Element+ DOM ids.
+24. Not every SCADA Builder V2 event family is currently functional in TF100Web. `03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` owns the event parity matrix and next implementation tranche; `08_implementation_status/KNOWN_GAPS_V2.md` owns the active gap list.
 
 ## 5. Decommissioned Legacy Documents
 

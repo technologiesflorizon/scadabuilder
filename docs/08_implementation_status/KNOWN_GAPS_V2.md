@@ -2,12 +2,14 @@
 
 Date: 2026-06-17
 Status: Active known gaps register
-Document version: `V2.1.2.0019`
+Document version: `V2.1.2.0023`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0023` | `PENDING` | Ajout du backlog de parite events TF100Web pour preparer la prochaine tranche d'implementation. |
+| 2026-06-17 | `V2.1.2.0022` | `PENDING` | Retrait du gap TF100Web pour l'intake host-side des events de binding `ValueBindings`; maintien des gaps page-script hors fragment. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Clarification que l'export `.sb2` ne ferme pas le gap runtime fragment TF100Web. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Ajout du gap de parite entre runtime exporte SCADA Builder et intake fragment TF100Web. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Retrait du gap effets visuels standards; le styling custom reste roadmap. |
@@ -34,9 +36,23 @@ Document version: `V2.1.2.0019`
 5. Expression binding and SCADA Builder-side tag creation remain roadmap. Local tag creation depends on a future project protocol import revision.
 6. The final `FT100`, `TF100Web`, and `tf100-web` naming convention remains to be decided.
 7. Sanitized-source approval for divergent pages such as `win00008` remains unresolved.
-8. TF100Web commit `7d57600` extracts only page root fragments and does not execute SCADA Builder exporter-emitted page scripts. Exporter-side lifecycle, popup, condition, read/write tag page hooks, border/effect, and non-navigation action runtimes must be treated as TF100Web parity gaps until host-side intake support exists.
+8. TF100Web commit `41edf45` extracts only page root fragments and does not execute SCADA Builder exporter-emitted page scripts. TF100Web now handles `.sb2` `ValueBindings` as host-side binding events, but exporter-side lifecycle, popup, condition page-script evaluation, border/effect, and other non-navigation action runtimes remain TF100Web parity gaps until host-side handlers or page-script execution exist.
 9. `.sb2` archive export validates import/package compatibility only. It does not make TF100Web execute SCADA Builder page scripts that remain outside the extracted root fragment.
 
 ## 2. Rule
 
 Known gaps must not be documented as implemented behavior.
+
+## 3. TF100Web Event Parity Backlog
+
+The following items are the active correction backlog for TF100Web after the `.sb2` binding-event intake slice:
+
+1. Validate `ReadTag` production behavior on `win00007 / Element+ Text20 / tf100.mapping.180`.
+2. Identify a writeable production candidate for `WriteTag` / `Ecrire valeur` and verify `data-scada-write-mapping-id` when read and write mappings differ.
+3. Add TF100Web host-side action dispatch for non-navigation `Actions`.
+4. Add host-side condition evaluation using TF100Web mapping/tag snapshots before executing conditioned actions.
+5. Add visibility action handlers for `Show`, `Hide`, and `ToggleVisibility`.
+6. Add class action handlers for border and standard visual effects.
+7. Add popup fragment handlers for open, close, toggle, placement, and host-region behavior.
+8. Add lifecycle diagnostics equivalent to the exporter `window.scadaBuilderRuntime` contract.
+9. Decide whether controlled execution of exporter-emitted page scripts is allowed, or whether all remaining runtime behavior must be reimplemented as TF100Web host handlers.

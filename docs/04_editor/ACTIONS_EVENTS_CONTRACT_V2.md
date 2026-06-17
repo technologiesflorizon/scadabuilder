@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active editor/runtime actions contract
-Document version: `V2.1.2.0017`
+Document version: `V2.1.2.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0022` | `PENDING` | Clarification que `Lire valeur` et `Ecrire valeur` sont des events de binding runtime sans trigger utilisateur. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des effets visuels runtime standards. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout du bridge lifecycle runtime global exporte. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des groupes de conditions runtime `All/Any` et politique de tag manquant. |
@@ -26,7 +27,9 @@ Document version: `V2.1.2.0017`
 
 ## 1. Contract
 
-Object events and runtime actions are model-owned behavior. UI controls may author them, but exported runtime behavior must come from scene actions and element event bindings.
+Object events, binding events, and runtime actions are model-owned behavior. UI controls may author them, but exported runtime behavior must come from scene actions, Element+ event bindings, or Element+ value binding events.
+
+SCADA Builder V2 treats every runtime function as an event family. Triggered events use browser triggers such as `click`; binding events such as `Lire valeur` and `Ecrire valeur` synchronize runtime tag values and do not require a user-trigger selector.
 
 ## 2. Active Implemented Baseline
 
@@ -38,7 +41,7 @@ Object events and runtime actions are model-owned behavior. UI controls may auth
 6. `Clic -> Changer de page` bindings authored on Element+ groups are exported as transparent FT100 runtime wrappers so TF100Web can hit-test the group and execute the page navigation action.
 7. FT100 export gives `Clic` targets a default pointer cursor in hover and active click states when they are buttons or carry exported `data-scada-events`.
 8. The project can import a TF100Web `tf100web-scada-tags-v1` tag catalog. The Element+ event modal exposes enabled tags for value binding authoring.
-9. `Lire valeur` and `Ecrire valeur` persist tag ids as Element+ data bindings, not triggered scene events. `Ecrire valeur` writes the operator-entered runtime value and never stores a literal design-time value.
+9. `Lire valeur` and `Ecrire valeur` are binding events. They persist tag ids as Element+ data bindings instead of triggered scene actions. `Ecrire valeur` writes the operator-entered runtime value and never stores a literal design-time value.
 10. `Afficher objet`, `Masquer objet`, and `Basculer visibilite` are authorable against Element+ targets and may use one deterministic tag condition or one compound condition group.
 11. Exported runtime applies values pushed by TF100Web to every Element+ using the matching `Lire valeur` tag binding.
 12. `Ouvrir popup`, `Fermer popup`, and `Basculer popup` are authorable against compiled `Fragment` pages and persist as popup runtime actions with optional advanced runtime options.
@@ -74,8 +77,8 @@ Runtime function contracts are centralized in `ScadaEventRegistry`:
 | `Start*Effect` | `Demarrer ...` | `SetClass` | `TargetElementId`, standard effect class | Implemented |
 | `Stop*Effect` | `Arreter ...` | `RemoveClass` | `TargetElementId`, standard effect class | Implemented |
 | `Toggle*Effect` | `Basculer ...` | `ToggleClass` | `TargetElementId`, standard effect class | Implemented |
-| `ReadValue` | `Lire valeur` | `ReadValue` | `TagId` | Implemented |
-| `WriteValue` | `Ecrire valeur` | `WriteValue` | `TagId` | Implemented |
+| `ReadValue` | `Lire valeur` | `ReadValue` binding event | `TagId` | Implemented |
+| `WriteValue` | `Ecrire valeur` | `WriteValue` binding event | `TagId` | Implemented |
 | `WriteTag` | `Ecrire tag` | `WriteTag` | `TagId`, `Value` | Legacy compatibility, not authorable |
 
 ## 4. Authoring Flow
@@ -126,8 +129,8 @@ The current implemented tag slice covers:
 
 1. Importing the TF100Web tag export into the V2 project model.
 2. Selecting any enabled tag in the Element+ event modal with labels formatted as `Nom du tag | datatype | Nom de l'appareil`.
-3. Creating `Lire valeur` bindings with no trigger.
-4. Creating `Ecrire valeur` bindings with no trigger and no design-time value field; the runtime operator input supplies the value.
+3. Creating `Lire valeur` binding events with no user trigger.
+4. Creating `Ecrire valeur` binding events with no user trigger and no design-time value field; the runtime operator input supplies the value.
 5. Validating `Ecrire valeur` during build/export so read-only Element+ objects, non-input Element+ objects, read-only tags, and missing tags are rejected.
 6. Exporting tags and per-element value binding metadata in the FT100/TF100Web package.
 7. Applying pushed runtime values to read-bound Element+ objects through the TF100Web page bridge.
