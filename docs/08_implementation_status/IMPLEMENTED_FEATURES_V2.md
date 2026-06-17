@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active implementation status
-Document version: `V2.1.2.0020`
+Document version: `V2.1.2.0021`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0021` | `PENDING` | Correction du handler `.sb2` pour afficher le statut et la progression des le clic. |
 | 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Correction du validateur CSS `.sb2` et ajout du feedback de progression non bloquant. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Implementation de l'export `.sb2` FT100 et du validateur anti-collision/compatibilite TF100Web. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Clarification que plusieurs runtimes sont exporteur-only tant que TF100Web n'execute pas les scripts de page exportes. |
@@ -70,7 +71,7 @@ As of 2026-06-17, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 232 
 29. Standard runtime visual effects can start, stop, or toggle blink, glow, pulse, alarm highlight, and degraded treatment classes on Element+ targets.
 30. TF100Web intake parity is not identical to exporter coverage. In `F:\Projet\Git\TF100Web` commit `7d57600`, TF100Web extracts root fragments and executes host-side navigation/mapping logic; it does not execute SCADA Builder page scripts emitted outside the root fragment.
 31. FT100 `.sb2` archive export generates the normalized package in staging, rewrites legacy source ids under the page namespace to prevent DOM collisions, validates TF100Web intake compatibility and page namespace rules, then writes a `.sb2` ZIP archive with `scada-builder-v2-ft100-package/` as the archive root.
-32. FT100 `.sb2` export accepts indented page-scoped CSS id selectors during validation, shows an indeterminate bottom-right status progress bar while running, and performs archive generation off the WPF UI thread.
+32. FT100 `.sb2` export accepts indented page-scoped CSS id selectors during validation, reports destination/preparation/source/compression phases in the status bar, shows an indeterminate bottom-right status progress bar while running, guards against concurrent `.sb2` clicks, and performs archive generation off the WPF UI thread.
 
 ## 3. Source Of Truth
 

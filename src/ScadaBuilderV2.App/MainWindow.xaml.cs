@@ -84,6 +84,7 @@ public partial class MainWindow : Window
     private int _nextInputNumericSequence = 1;
     private int _nextGroupSequence = 1;
     private bool _activeSceneDirty;
+    private bool _isFt100Sb2ExportRunning;
     private bool _isUpdatingPageSelection;
     private bool _isUpdatingSceneTabSelection;
     private bool _isClosingConfirmed;
@@ -3797,9 +3798,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 return;
             }
 
-            SetFt100ExportProgress(true);
-            SetStatus("Export FT100 .sb2 en cours...");
-
             var exporter = new Ft100SceneExporter();
             UpdateModernProjectFromActiveScene();
             EnsureHomePageStillValid();
@@ -3831,6 +3829,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private async void OnExportFt100Sb2Click(object sender, RoutedEventArgs e)
     {
+        if (_isFt100Sb2ExportRunning)
+        {
+            SetStatus("Export FT100 .sb2 deja en cours.");
+            return;
+        }
+
         if (_repositoryRoot is null || _activeScene is null || _activeReferencePage is null)
         {
             SetStatus("Aucune scene active a exporter vers FT100.");
@@ -3839,6 +3843,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         try
         {
+            SetStatus("Export FT100 .sb2: choix du fichier de destination...");
             var defaultExportRoot = Path.Combine(
                 ModernProjectStore.GetReferenceModernProjectRoot(_repositoryRoot),
                 "exports");
@@ -3862,6 +3867,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 return;
             }
 
+            _isFt100Sb2ExportRunning = true;
+            SetFt100ExportProgress(true);
+            SetStatus("Export FT100 .sb2 en cours: preparation des pages...");
+            await Dispatcher.Yield(DispatcherPriority.Background);
+
             var exporter = new Ft100SceneExporter();
             UpdateModernProjectFromActiveScene();
             EnsureHomePageStillValid();
@@ -3881,9 +3891,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 return;
             }
 
+            SetStatus("Export FT100 .sb2 en cours: resolution des sources...");
             var inputs = await BuildFt100ProjectExportInputsAsync(_modernProject);
             var projectSnapshot = _modernProject;
             var archivePath = dialog.FileName;
+            SetStatus("Export FT100 .sb2 en cours: generation et compression...");
             var result = await Task.Run(() => exporter.ExportProjectArchiveAsync(projectSnapshot, inputs, archivePath));
             var warningText = result.Validation.Warnings.Count == 0
                 ? ""
@@ -3896,6 +3908,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
         finally
         {
+            _isFt100Sb2ExportRunning = false;
             SetFt100ExportProgress(false);
         }
     }
