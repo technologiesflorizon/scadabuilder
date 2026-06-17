@@ -2,12 +2,16 @@
 
 Date: 2026-06-16
 Status: Active authoritative decision register
-Document version: `V2.1.2.0002`
+Document version: `V2.1.2.0007`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-16 | `V2.1.2.0007` | `PENDING` | Ajout de la decision de curseur runtime pour les cibles cliquables FT100/TF100Web. |
+| 2026-06-16 | `V2.1.2.0006` | `PENDING` | Ajout de la decision d'export runtime transparent pour les events portes par des groupes Element+. |
+| 2026-06-16 | `V2.1.2.0005` | `PENDING` | Ajout de la decision hover automatique des boutons Element+. |
+| 2026-06-16 | `V2.1.2.0004` | `PENDING` | Ajout de la decision de registre contractuel des evenements Element+ et fonctions runtime. |
 | 2026-06-16 | `V2.1.2.0002` | `PENDING` | Ajout de la decision Element+ only pour le groupement dans la scene principale. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du registre decisionnel centralise avec decisions actives, historiques et regles de deprecation. |
 
@@ -298,3 +302,107 @@ The legacy-only frame grouping workflow is decommissioned. Context menus and pan
 Regression coverage:
 
 `tests/ScadaBuilderV2.Tests/ScadaSceneGroupTests.cs`, `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`
+
+### DEC-0011 - Element+ Event Registry And Runtime Function Contracts
+
+Status: Active
+Created: 2026-06-16 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
+
+Context:
+
+Element+ objects must support industrial HMI-style runtime events without each UI surface inventing its own trigger names, function names, or action payloads.
+
+Decision:
+
+Element+ events are authored through a central registry. UI labels are French, while persisted/runtime bindings keep stable browser triggers and action function contracts. One Element+ may hold multiple bindings, including several `Clic` bindings. The first implemented function is `ChangePage`, stored as `ScadaActionKind.Navigate` plus `TargetPageId`.
+
+Consequences:
+
+New event triggers, conditional execution, tag writes, popup opening, visual effects, and scripts must be added to the registry and owner contract before becoming active UI choices.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`, `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+
+### DEC-0014 - Runtime Pointer Cursor For Clickable Targets
+
+Status: Active
+Created: 2026-06-16 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md`
+
+Context:
+
+FT100Web operators need a default button cursor on hover and click for obvious runtime affordance. The behavior must not depend on per-page manual CSS or FT100Web-specific overrides when the SCADA Builder V2 package already knows which objects are buttons or runtime event targets.
+
+Decision:
+
+FT100 export generates page-scoped `cursor: pointer` CSS for Element+ buttons and elements carrying `data-scada-events`. The cursor rule applies to descendants and active click state so nested text/buttons inside group wrappers retain the button cursor during hover and click.
+
+Consequences:
+
+TF100Web receives the pointer affordance as part of the package contract. Future disabled-state cursor behavior can extend the button behavior contract without weakening the default clickable-target cursor.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+
+### DEC-0013 - Runtime Group Event Wrapper Export
+
+Status: Active
+Created: 2026-06-16 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md`
+
+Context:
+
+Element+ groups may own runtime events such as `Clic -> Changer de page`. Flattening every group during FT100 export removes the DOM node that should carry `data-scada-events`, leaving exported `Navigate` actions unreachable in TF100Web.
+
+Decision:
+
+Groups without runtime events may remain flattened. Groups with runtime events must export a transparent, page-scoped runtime wrapper that carries `data-scada-events`, preserves child geometry relative to the group, and introduces no editor overlays or visual decoration.
+
+Consequences:
+
+TF100Web can continue to consume `data-scada-events` plus the package `Actions` list without a separate group event contract. Required display size must account for the exported runtime group surface.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+
+### DEC-0012 - Element+ Button Default Hover Behavior
+
+Status: Active
+Created: 2026-06-16 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md`
+
+Context:
+
+Industrial HMI buttons need immediate visual feedback in the deployed FT100Web runtime so operators can identify active click targets. SCADA Builder V2 authors the intent as model metadata, and the FT100 export may materialize that metadata as page-scoped runtime CSS.
+
+Decision:
+
+Every Element+ button has hover metadata by default unless the button is disabled or its hover behavior is explicitly disabled in the `Bouton` tab. The `Bouton` tab is shown between `Style` and `Evenement` for Element+ buttons and writes model-backed `ScadaButtonBehavior` state. SCADA Builder V2 preserves this metadata in the manifest and generates page-scoped FT100 CSS `:hover` rules when the metadata is enabled.
+
+Consequences:
+
+The editor preview must not apply the hover effect as an authoring-side behavior. The FT100 runtime package may include generated scoped hover CSS, while FT100Web can also consume the manifest metadata for richer runtime behavior.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`, `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`

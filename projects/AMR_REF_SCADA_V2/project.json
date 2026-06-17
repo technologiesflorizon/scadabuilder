@@ -178,9 +178,9 @@
         "Clip": "border-box",
         "BlendMode": "normal"
       },
-      "IncludeInBuild": false,
-      "HeaderPageId": null,
-      "FooterPageId": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": "win00002",
+      "FooterPageId": "win00003",
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -202,17 +202,30 @@
       "Title": "win00007",
       "RelativePath": "scenes/win00007.scene.json",
       "Type": "Default",
-      "CanvasSize": null,
-      "Background": null,
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#AFAFAF",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
       "IncludeInBuild": true,
-      "HeaderPageId": null,
-      "FooterPageId": null,
+      "HeaderPageId": "win00002",
+      "FooterPageId": "win00003",
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
       },
       "EffectiveBackground": {
-        "Color": "#000000",
+        "Color": "#AFAFAF",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
@@ -322,8 +335,8 @@
         "BlendMode": "normal"
       },
       "IncludeInBuild": false,
-      "HeaderPageId": null,
-      "FooterPageId": null,
+      "HeaderPageId": "win00002",
+      "FooterPageId": "win00003",
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1091,7 +1104,7 @@
         "Height": 873
       },
       "Background": {
-        "Color": "#000000",
+        "Color": "#BDBDBD",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
@@ -1101,15 +1114,15 @@
         "Clip": "border-box",
         "BlendMode": "normal"
       },
-      "IncludeInBuild": false,
-      "HeaderPageId": null,
-      "FooterPageId": null,
+      "IncludeInBuild": true,
+      "HeaderPageId": "win00002",
+      "FooterPageId": "win00003",
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
       },
       "EffectiveBackground": {
-        "Color": "#000000",
+        "Color": "#BDBDBD",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",

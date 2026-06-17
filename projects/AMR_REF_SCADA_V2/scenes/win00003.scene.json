@@ -62,7 +62,8 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null
     },
     {
       "Id": "legacy_11",
@@ -120,295 +121,8 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
-    },
-    {
-      "Id": "elementplus_button_1",
-      "DisplayName": "Element\u002B Button1",
-      "Kind": "Button",
-      "Bounds": {
-        "X": 2,
-        "Y": 32,
-        "Width": 138,
-        "Height": 43
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00003",
-        "SourceElementId": "1",
-        "SourceElementName": "Button1",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "BorderColor": "#8AA0A6",
-        "BorderWidth": 1,
-        "BorderStyle": "Solid",
-        "ShadowPreset": "None",
-        "AdvancedCss": null
-      },
-      "Data": {
-        "Text": "Button1",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false
-      },
-      "Children": null,
-      "LegacyPayload": null,
-      "Events": null
-    },
-    {
-      "Id": "elementplus_button_2",
-      "DisplayName": "Element\u002B Button2",
-      "Kind": "Button",
-      "Bounds": {
-        "X": 146,
-        "Y": 32,
-        "Width": 138,
-        "Height": 44
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00003",
-        "SourceElementId": "2",
-        "SourceElementName": "Button2",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "BorderColor": "#8AA0A6",
-        "BorderWidth": 1,
-        "BorderStyle": "Solid",
-        "ShadowPreset": "None",
-        "AdvancedCss": null
-      },
-      "Data": {
-        "Text": "Button2",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false
-      },
-      "Children": null,
-      "LegacyPayload": null,
-      "Events": null
-    },
-    {
-      "Id": "elementplus_button_3",
-      "DisplayName": "Element\u002B Button3",
-      "Kind": "Button",
-      "Bounds": {
-        "X": 287,
-        "Y": 32,
-        "Width": 138,
-        "Height": 44
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00003",
-        "SourceElementId": "3",
-        "SourceElementName": "Button3",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "BorderColor": "#8AA0A6",
-        "BorderWidth": 1,
-        "BorderStyle": "Solid",
-        "ShadowPreset": "None",
-        "AdvancedCss": null
-      },
-      "Data": {
-        "Text": "Button3",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false
-      },
-      "Children": null,
-      "LegacyPayload": null,
-      "Events": null
-    },
-    {
-      "Id": "elementplus_button_4",
-      "DisplayName": "Element\u002B Button4",
-      "Kind": "Button",
-      "Bounds": {
-        "X": 430,
-        "Y": 32,
-        "Width": 138,
-        "Height": 44
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00003",
-        "SourceElementId": "4",
-        "SourceElementName": "Button4",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "BorderColor": "#8AA0A6",
-        "BorderWidth": 1,
-        "BorderStyle": "Solid",
-        "ShadowPreset": "None",
-        "AdvancedCss": null
-      },
-      "Data": {
-        "Text": "Button4",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false
-      },
-      "Children": null,
-      "LegacyPayload": null,
-      "Events": null
-    },
-    {
-      "Id": "elementplus_button_5",
-      "DisplayName": "Element\u002B Button5",
-      "Kind": "Button",
-      "Bounds": {
-        "X": 571,
-        "Y": 32,
-        "Width": 138,
-        "Height": 44
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00003",
-        "SourceElementId": "5",
-        "SourceElementName": "Button5",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "BorderColor": "#8AA0A6",
-        "BorderWidth": 1,
-        "BorderStyle": "Solid",
-        "ShadowPreset": "None",
-        "AdvancedCss": null
-      },
-      "Data": {
-        "Text": "Button5",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false
-      },
-      "Children": null,
-      "LegacyPayload": null,
-      "Events": null
-    },
-    {
-      "Id": "elementplus_button_6",
-      "DisplayName": "Element\u002B Button6",
-      "Kind": "Button",
-      "Bounds": {
-        "X": 711,
-        "Y": 32,
-        "Width": 138,
-        "Height": 44
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00003",
-        "SourceElementId": "6",
-        "SourceElementName": "Button6",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "BorderColor": "#8AA0A6",
-        "BorderWidth": 1,
-        "BorderStyle": "Solid",
-        "ShadowPreset": "None",
-        "AdvancedCss": null
-      },
-      "Data": {
-        "Text": "Button6",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false
-      },
-      "Children": null,
-      "LegacyPayload": null,
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null
     },
     {
       "Id": "elementplus_button_7",
@@ -456,7 +170,8 @@
       },
       "Children": null,
       "LegacyPayload": null,
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null
     },
     {
       "Id": "elementplus_button_9",
@@ -504,7 +219,8 @@
       },
       "Children": null,
       "LegacyPayload": null,
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null
     },
     {
       "Id": "elementplus_button_8",
@@ -552,7 +268,8 @@
       },
       "Children": null,
       "LegacyPayload": null,
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null
     },
     {
       "Id": "elementplus_button_12",
@@ -600,7 +317,804 @@
       },
       "Children": null,
       "LegacyPayload": null,
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null
+    },
+    {
+      "Id": "group_001",
+      "DisplayName": "Group001",
+      "Kind": "Group",
+      "Bounds": {
+        "X": 0,
+        "Y": 32,
+        "Width": 138,
+        "Height": 43
+      },
+      "LegacySource": null,
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Segoe UI",
+        "FontSize": 16,
+        "Foreground": "#0F2A30",
+        "Background": "Transparent",
+        "BorderColor": "#2090A0",
+        "BorderWidth": 1,
+        "BorderStyle": "Dashed",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": null,
+      "Children": [
+        {
+          "Id": "elementplus_button_1",
+          "DisplayName": "Element\u002B Button1",
+          "Kind": "Button",
+          "Bounds": {
+            "X": 0,
+            "Y": 0,
+            "Width": 138,
+            "Height": 43
+          },
+          "LegacySource": {
+            "SourceSystem": "Wonderware/ArchestrA",
+            "SourceDocumentId": "win00003",
+            "SourceElementId": "1",
+            "SourceElementName": "Button1",
+            "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
+          },
+          "Layout": {
+            "PositionMode": "Relative",
+            "RelativeToElementId": "group_001"
+          },
+          "Style": {
+            "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+            "FontSize": 10,
+            "Foreground": "rgb(211, 211, 211)",
+            "Background": "rgb(211, 211, 211)",
+            "BorderColor": "#8AA0A6",
+            "BorderWidth": 1,
+            "BorderStyle": "Solid",
+            "ShadowPreset": "None",
+            "AdvancedCss": null
+          },
+          "Data": {
+            "Text": "Button1",
+            "Placeholder": null,
+            "Value": null,
+            "Minimum": null,
+            "Maximum": null,
+            "Decimals": null,
+            "Unit": null,
+            "DisplayFormat": null,
+            "TagBinding": null,
+            "IsReadOnly": false
+          },
+          "Children": null,
+          "LegacyPayload": null,
+          "Events": null,
+          "ButtonBehavior": null
+        },
+        {
+          "Id": "text_001",
+          "DisplayName": "Text001",
+          "Kind": "Text",
+          "Bounds": {
+            "X": 10,
+            "Y": 8,
+            "Width": 119,
+            "Height": 29
+          },
+          "LegacySource": null,
+          "Layout": {
+            "PositionMode": "Relative",
+            "RelativeToElementId": "group_001"
+          },
+          "Style": {
+            "FontFamily": "Segoe UI",
+            "FontSize": 16,
+            "Foreground": "#0F2A30",
+            "Background": "Transparent",
+            "BorderColor": "Transparent",
+            "BorderWidth": 0,
+            "BorderStyle": "None",
+            "ShadowPreset": "None",
+            "AdvancedCss": null
+          },
+          "Data": {
+            "Text": "Page d\u0027accueil",
+            "Placeholder": null,
+            "Value": null,
+            "Minimum": null,
+            "Maximum": null,
+            "Decimals": null,
+            "Unit": null,
+            "DisplayFormat": null,
+            "TagBinding": null,
+            "IsReadOnly": false
+          },
+          "Children": null,
+          "LegacyPayload": null,
+          "Events": null,
+          "ButtonBehavior": null
+        }
+      ],
+      "LegacyPayload": null,
+      "Events": [
+        {
+          "Trigger": "click",
+          "ActionId": "action_changepage_click_group_001_win00004",
+          "StopPropagation": true,
+          "PreventDefault": false
+        }
+      ],
+      "ButtonBehavior": null
+    },
+    {
+      "Id": "group_002",
+      "DisplayName": "Group002",
+      "Kind": "Group",
+      "Bounds": {
+        "X": 145,
+        "Y": 32,
+        "Width": 138,
+        "Height": 44
+      },
+      "LegacySource": null,
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Segoe UI",
+        "FontSize": 16,
+        "Foreground": "#0F2A30",
+        "Background": "Transparent",
+        "BorderColor": "#2090A0",
+        "BorderWidth": 1,
+        "BorderStyle": "Dashed",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": {
+        "Text": null,
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false
+      },
+      "Children": [
+        {
+          "Id": "elementplus_button_2",
+          "DisplayName": "Element\u002B Button2",
+          "Kind": "Button",
+          "Bounds": {
+            "X": 0,
+            "Y": 0,
+            "Width": 138,
+            "Height": 44
+          },
+          "LegacySource": {
+            "SourceSystem": "Wonderware/ArchestrA",
+            "SourceDocumentId": "win00003",
+            "SourceElementId": "2",
+            "SourceElementName": "Button2",
+            "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
+          },
+          "Layout": {
+            "PositionMode": "Relative",
+            "RelativeToElementId": "group_002"
+          },
+          "Style": {
+            "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+            "FontSize": 10,
+            "Foreground": "rgb(211, 211, 211)",
+            "Background": "rgb(211, 211, 211)",
+            "BorderColor": "#8AA0A6",
+            "BorderWidth": 1,
+            "BorderStyle": "Solid",
+            "ShadowPreset": "None",
+            "AdvancedCss": null
+          },
+          "Data": {
+            "Text": "Button2",
+            "Placeholder": null,
+            "Value": null,
+            "Minimum": null,
+            "Maximum": null,
+            "Decimals": null,
+            "Unit": null,
+            "DisplayFormat": null,
+            "TagBinding": null,
+            "IsReadOnly": false
+          },
+          "Children": null,
+          "LegacyPayload": null,
+          "Events": null,
+          "ButtonBehavior": null
+        },
+        {
+          "Id": "text_002",
+          "DisplayName": "Text002",
+          "Kind": "Text",
+          "Bounds": {
+            "X": 13,
+            "Y": 5,
+            "Width": 110,
+            "Height": 34
+          },
+          "LegacySource": null,
+          "Layout": {
+            "PositionMode": "Relative",
+            "RelativeToElementId": "group_002"
+          },
+          "Style": {
+            "FontFamily": "Segoe UI",
+            "FontSize": 16,
+            "Foreground": "#0F2A30",
+            "Background": "Transparent",
+            "BorderColor": "Transparent",
+            "BorderWidth": 0,
+            "BorderStyle": "None",
+            "ShadowPreset": "None",
+            "AdvancedCss": null
+          },
+          "Data": {
+            "Text": "Compresseur",
+            "Placeholder": null,
+            "Value": null,
+            "Minimum": null,
+            "Maximum": null,
+            "Decimals": null,
+            "Unit": null,
+            "DisplayFormat": null,
+            "TagBinding": null,
+            "IsReadOnly": false
+          },
+          "Children": null,
+          "LegacyPayload": null,
+          "Events": null,
+          "ButtonBehavior": null
+        }
+      ],
+      "LegacyPayload": null,
+      "Events": [
+        {
+          "Trigger": "click",
+          "ActionId": "action_changepage_click_group_002_win00059",
+          "StopPropagation": true,
+          "PreventDefault": false
+        }
+      ],
+      "ButtonBehavior": null
+    },
+    {
+      "Id": "group_003",
+      "DisplayName": "Group003",
+      "Kind": "Group",
+      "Bounds": {
+        "X": 287,
+        "Y": 32,
+        "Width": 138,
+        "Height": 44
+      },
+      "LegacySource": null,
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Segoe UI",
+        "FontSize": 16,
+        "Foreground": "#0F2A30",
+        "Background": "Transparent",
+        "BorderColor": "#2090A0",
+        "BorderWidth": 1,
+        "BorderStyle": "Dashed",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": null,
+      "Children": [
+        {
+          "Id": "elementplus_button_3",
+          "DisplayName": "Element\u002B Button3",
+          "Kind": "Button",
+          "Bounds": {
+            "X": 0,
+            "Y": 0,
+            "Width": 138,
+            "Height": 44
+          },
+          "LegacySource": {
+            "SourceSystem": "Wonderware/ArchestrA",
+            "SourceDocumentId": "win00003",
+            "SourceElementId": "3",
+            "SourceElementName": "Button3",
+            "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
+          },
+          "Layout": {
+            "PositionMode": "Relative",
+            "RelativeToElementId": "group_003"
+          },
+          "Style": {
+            "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+            "FontSize": 10,
+            "Foreground": "rgb(211, 211, 211)",
+            "Background": "rgb(211, 211, 211)",
+            "BorderColor": "#8AA0A6",
+            "BorderWidth": 1,
+            "BorderStyle": "Solid",
+            "ShadowPreset": "None",
+            "AdvancedCss": null
+          },
+          "Data": {
+            "Text": "Button3",
+            "Placeholder": null,
+            "Value": null,
+            "Minimum": null,
+            "Maximum": null,
+            "Decimals": null,
+            "Unit": null,
+            "DisplayFormat": null,
+            "TagBinding": null,
+            "IsReadOnly": false
+          },
+          "Children": null,
+          "LegacyPayload": null,
+          "Events": null,
+          "ButtonBehavior": null
+        },
+        {
+          "Id": "text_003",
+          "DisplayName": "Text003",
+          "Kind": "Text",
+          "Bounds": {
+            "X": 17,
+            "Y": 9,
+            "Width": 107,
+            "Height": 28
+          },
+          "LegacySource": null,
+          "Layout": {
+            "PositionMode": "Relative",
+            "RelativeToElementId": "group_003"
+          },
+          "Style": {
+            "FontFamily": "Segoe UI",
+            "FontSize": 16,
+            "Foreground": "#0F2A30",
+            "Background": "Transparent",
+            "BorderColor": "Transparent",
+            "BorderWidth": 0,
+            "BorderStyle": "None",
+            "ShadowPreset": "None",
+            "AdvancedCss": null
+          },
+          "Data": {
+            "Text": "Recirculation",
+            "Placeholder": null,
+            "Value": null,
+            "Minimum": null,
+            "Maximum": null,
+            "Decimals": null,
+            "Unit": null,
+            "DisplayFormat": null,
+            "TagBinding": null,
+            "IsReadOnly": false
+          },
+          "Children": null,
+          "LegacyPayload": null,
+          "Events": null,
+          "ButtonBehavior": null
+        }
+      ],
+      "LegacyPayload": null,
+      "Events": [
+        {
+          "Trigger": "click",
+          "ActionId": "action_changepage_click_group_003_win00017",
+          "StopPropagation": true,
+          "PreventDefault": false
+        }
+      ],
+      "ButtonBehavior": null
+    },
+    {
+      "Id": "group_004",
+      "DisplayName": "Group004",
+      "Kind": "Group",
+      "Bounds": {
+        "X": 430,
+        "Y": 32,
+        "Width": 138,
+        "Height": 44
+      },
+      "LegacySource": null,
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Segoe UI",
+        "FontSize": 16,
+        "Foreground": "#0F2A30",
+        "Background": "Transparent",
+        "BorderColor": "#2090A0",
+        "BorderWidth": 1,
+        "BorderStyle": "Dashed",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": null,
+      "Children": [
+        {
+          "Id": "elementplus_button_4",
+          "DisplayName": "Element\u002B Button4",
+          "Kind": "Button",
+          "Bounds": {
+            "X": 0,
+            "Y": 0,
+            "Width": 138,
+            "Height": 44
+          },
+          "LegacySource": {
+            "SourceSystem": "Wonderware/ArchestrA",
+            "SourceDocumentId": "win00003",
+            "SourceElementId": "4",
+            "SourceElementName": "Button4",
+            "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
+          },
+          "Layout": {
+            "PositionMode": "Relative",
+            "RelativeToElementId": "group_004"
+          },
+          "Style": {
+            "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+            "FontSize": 10,
+            "Foreground": "rgb(211, 211, 211)",
+            "Background": "rgb(211, 211, 211)",
+            "BorderColor": "#8AA0A6",
+            "BorderWidth": 1,
+            "BorderStyle": "Solid",
+            "ShadowPreset": "None",
+            "AdvancedCss": null
+          },
+          "Data": {
+            "Text": "Button4",
+            "Placeholder": null,
+            "Value": null,
+            "Minimum": null,
+            "Maximum": null,
+            "Decimals": null,
+            "Unit": null,
+            "DisplayFormat": null,
+            "TagBinding": null,
+            "IsReadOnly": false
+          },
+          "Children": null,
+          "LegacyPayload": null,
+          "Events": null,
+          "ButtonBehavior": null
+        },
+        {
+          "Id": "text_004",
+          "DisplayName": "Text004",
+          "Kind": "Text",
+          "Bounds": {
+            "X": 17,
+            "Y": 5,
+            "Width": 109,
+            "Height": 35
+          },
+          "LegacySource": null,
+          "Layout": {
+            "PositionMode": "Relative",
+            "RelativeToElementId": "group_004"
+          },
+          "Style": {
+            "FontFamily": "Segoe UI",
+            "FontSize": 16,
+            "Foreground": "#0F2A30",
+            "Background": "Transparent",
+            "BorderColor": "Transparent",
+            "BorderWidth": 0,
+            "BorderStyle": "None",
+            "ShadowPreset": "None",
+            "AdvancedCss": null
+          },
+          "Data": {
+            "Text": "\u00C9vaporateurs",
+            "Placeholder": null,
+            "Value": null,
+            "Minimum": null,
+            "Maximum": null,
+            "Decimals": null,
+            "Unit": null,
+            "DisplayFormat": null,
+            "TagBinding": null,
+            "IsReadOnly": false
+          },
+          "Children": null,
+          "LegacyPayload": null,
+          "Events": null,
+          "ButtonBehavior": null
+        }
+      ],
+      "LegacyPayload": null,
+      "Events": [
+        {
+          "Trigger": "click",
+          "ActionId": "action_changepage_click_group_004_win00007",
+          "StopPropagation": true,
+          "PreventDefault": false
+        }
+      ],
+      "ButtonBehavior": null
+    },
+    {
+      "Id": "group_007",
+      "DisplayName": "Group007",
+      "Kind": "Group",
+      "Bounds": {
+        "X": 711,
+        "Y": 32,
+        "Width": 138,
+        "Height": 44
+      },
+      "LegacySource": null,
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Segoe UI",
+        "FontSize": 16,
+        "Foreground": "#0F2A30",
+        "Background": "Transparent",
+        "BorderColor": "#2090A0",
+        "BorderWidth": 1,
+        "BorderStyle": "Dashed",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": null,
+      "Children": [
+        {
+          "Id": "elementplus_button_6",
+          "DisplayName": "Element\u002B Button6",
+          "Kind": "Button",
+          "Bounds": {
+            "X": 0,
+            "Y": 0,
+            "Width": 138,
+            "Height": 44
+          },
+          "LegacySource": {
+            "SourceSystem": "Wonderware/ArchestrA",
+            "SourceDocumentId": "win00003",
+            "SourceElementId": "6",
+            "SourceElementName": "Button6",
+            "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
+          },
+          "Layout": {
+            "PositionMode": "Relative",
+            "RelativeToElementId": "group_007"
+          },
+          "Style": {
+            "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+            "FontSize": 10,
+            "Foreground": "rgb(211, 211, 211)",
+            "Background": "rgb(211, 211, 211)",
+            "BorderColor": "#8AA0A6",
+            "BorderWidth": 1,
+            "BorderStyle": "Solid",
+            "ShadowPreset": "None",
+            "AdvancedCss": null
+          },
+          "Data": {
+            "Text": "Button6",
+            "Placeholder": null,
+            "Value": null,
+            "Minimum": null,
+            "Maximum": null,
+            "Decimals": null,
+            "Unit": null,
+            "DisplayFormat": null,
+            "TagBinding": null,
+            "IsReadOnly": false
+          },
+          "Children": null,
+          "LegacyPayload": null,
+          "Events": null,
+          "ButtonBehavior": null
+        },
+        {
+          "Id": "text_006",
+          "DisplayName": "Text006",
+          "Kind": "Text",
+          "Bounds": {
+            "X": 23,
+            "Y": 3,
+            "Width": 89,
+            "Height": 38
+          },
+          "LegacySource": null,
+          "Layout": {
+            "PositionMode": "Relative",
+            "RelativeToElementId": "group_007"
+          },
+          "Style": {
+            "FontFamily": "Segoe UI",
+            "FontSize": 16,
+            "Foreground": "#0F2A30",
+            "Background": "Transparent",
+            "BorderColor": "Transparent",
+            "BorderWidth": 0,
+            "BorderStyle": "None",
+            "ShadowPreset": "None",
+            "AdvancedCss": null
+          },
+          "Data": {
+            "Text": "Chauffage",
+            "Placeholder": null,
+            "Value": null,
+            "Minimum": null,
+            "Maximum": null,
+            "Decimals": null,
+            "Unit": null,
+            "DisplayFormat": null,
+            "TagBinding": null,
+            "IsReadOnly": false
+          },
+          "Children": null,
+          "LegacyPayload": null,
+          "Events": null,
+          "ButtonBehavior": null
+        }
+      ],
+      "LegacyPayload": null,
+      "Events": null,
+      "ButtonBehavior": null
+    },
+    {
+      "Id": "group_008",
+      "DisplayName": "Group008",
+      "Kind": "Group",
+      "Bounds": {
+        "X": 571,
+        "Y": 32,
+        "Width": 138,
+        "Height": 44
+      },
+      "LegacySource": null,
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Segoe UI",
+        "FontSize": 16,
+        "Foreground": "#0F2A30",
+        "Background": "Transparent",
+        "BorderColor": "#2090A0",
+        "BorderWidth": 1,
+        "BorderStyle": "Dashed",
+        "ShadowPreset": "None",
+        "AdvancedCss": null
+      },
+      "Data": null,
+      "Children": [
+        {
+          "Id": "elementplus_button_5",
+          "DisplayName": "Element\u002B Button5",
+          "Kind": "Button",
+          "Bounds": {
+            "X": 0,
+            "Y": 0,
+            "Width": 138,
+            "Height": 44
+          },
+          "LegacySource": {
+            "SourceSystem": "Wonderware/ArchestrA",
+            "SourceDocumentId": "win00003",
+            "SourceElementId": "5",
+            "SourceElementName": "Button5",
+            "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
+          },
+          "Layout": {
+            "PositionMode": "Relative",
+            "RelativeToElementId": "group_008"
+          },
+          "Style": {
+            "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+            "FontSize": 10,
+            "Foreground": "rgb(211, 211, 211)",
+            "Background": "rgb(211, 211, 211)",
+            "BorderColor": "#8AA0A6",
+            "BorderWidth": 1,
+            "BorderStyle": "Solid",
+            "ShadowPreset": "None",
+            "AdvancedCss": null
+          },
+          "Data": {
+            "Text": "Button5",
+            "Placeholder": null,
+            "Value": null,
+            "Minimum": null,
+            "Maximum": null,
+            "Decimals": null,
+            "Unit": null,
+            "DisplayFormat": null,
+            "TagBinding": null,
+            "IsReadOnly": false
+          },
+          "Children": null,
+          "LegacyPayload": null,
+          "Events": null,
+          "ButtonBehavior": null
+        },
+        {
+          "Id": "text_005",
+          "DisplayName": "Text005",
+          "Kind": "Text",
+          "Bounds": {
+            "X": 19,
+            "Y": 7,
+            "Width": 101,
+            "Height": 31
+          },
+          "LegacySource": null,
+          "Layout": {
+            "PositionMode": "Relative",
+            "RelativeToElementId": "group_008"
+          },
+          "Style": {
+            "FontFamily": "Segoe UI",
+            "FontSize": 16,
+            "Foreground": "#0F2A30",
+            "Background": "Transparent",
+            "BorderColor": "Transparent",
+            "BorderWidth": 0,
+            "BorderStyle": "None",
+            "ShadowPreset": "None",
+            "AdvancedCss": null
+          },
+          "Data": {
+            "Text": "Condenseur",
+            "Placeholder": null,
+            "Value": null,
+            "Minimum": null,
+            "Maximum": null,
+            "Decimals": null,
+            "Unit": null,
+            "DisplayFormat": null,
+            "TagBinding": null,
+            "IsReadOnly": false
+          },
+          "Children": null,
+          "LegacyPayload": null,
+          "Events": null,
+          "ButtonBehavior": null
+        }
+      ],
+      "LegacyPayload": null,
+      "Events": [
+        {
+          "Trigger": "click",
+          "ActionId": "action_changepage_click_group_008_win00008",
+          "StopPropagation": true,
+          "PreventDefault": false
+        }
+      ],
+      "ButtonBehavior": null
     }
   ],
   "BackgroundColor": "#A6A6A6",
@@ -622,7 +1136,53 @@
   ],
   "PageType": "Footer",
   "Background": null,
-  "Actions": null,
+  "Actions": [
+    {
+      "Id": "action_changepage_click_group_003_win00017",
+      "Kind": "Navigate",
+      "TargetPageId": "win00017",
+      "TargetElementId": null,
+      "ClassName": null,
+      "TagId": null,
+      "Value": null
+    },
+    {
+      "Id": "action_changepage_click_group_002_win00059",
+      "Kind": "Navigate",
+      "TargetPageId": "win00059",
+      "TargetElementId": null,
+      "ClassName": null,
+      "TagId": null,
+      "Value": null
+    },
+    {
+      "Id": "action_changepage_click_group_008_win00008",
+      "Kind": "Navigate",
+      "TargetPageId": "win00008",
+      "TargetElementId": null,
+      "ClassName": null,
+      "TagId": null,
+      "Value": null
+    },
+    {
+      "Id": "action_changepage_click_group_004_win00007",
+      "Kind": "Navigate",
+      "TargetPageId": "win00007",
+      "TargetElementId": null,
+      "ClassName": null,
+      "TagId": null,
+      "Value": null
+    },
+    {
+      "Id": "action_changepage_click_group_001_win00004",
+      "Kind": "Navigate",
+      "TargetPageId": "win00004",
+      "TargetElementId": null,
+      "ClassName": null,
+      "TagId": null,
+      "Value": null
+    }
+  ],
   "IncludeInBuild": true,
   "HeaderPageId": null,
   "FooterPageId": null

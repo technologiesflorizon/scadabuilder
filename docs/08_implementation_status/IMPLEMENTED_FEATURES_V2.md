@@ -2,12 +2,16 @@
 
 Date: 2026-06-16
 Status: Active implementation status
-Document version: `V2.1.2.0003`
+Document version: `V2.1.2.0007`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-16 | `V2.1.2.0007` | `PENDING` | Implementation du curseur runtime par defaut pour boutons et cibles cliquables FT100. |
+| 2026-06-16 | `V2.1.2.0006` | `PENDING` | Implementation de l'export FT100 des events `Clic -> Changer de page` portes par des groupes Element+. |
+| 2026-06-16 | `V2.1.2.0005` | `PENDING` | Implementation des metadonnees hover automatique des boutons Element+ et de la tab Bouton. |
+| 2026-06-16 | `V2.1.2.0004` | `PENDING` | Implementation du registre evenements Element+ et de la modale Clic -> Changer de page. |
 | 2026-06-16 | `V2.1.2.0003` | `PENDING` | Correction du groupement Element+: ordre visuel preserve, enfants affiches sous leur groupe et deplacement solidaire. |
 | 2026-06-16 | `V2.1.2.0002` | `PENDING` | Implementation du groupement de scene Element+ only et de l'avertissement conversion pour les selections legacy. |
 | 2026-06-16 | `V2.1.2.0001` | `PENDING` | Correction du raccourci Backspace pour les Element+ selectionnes et protection des champs editables contre les raccourcis scene. |
@@ -34,6 +38,10 @@ As of 2026-06-16, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 181 
 12. WebView keyboard shortcuts protect editable controls and keep `Backspace` non-destructive for selected Element+ objects.
 13. Scene-level grouping of selected Element+ objects with legacy/source grouping decommissioned behind a conversion warning.
 14. Element+ group regressions preserve sibling render order, expose group children in the Element tab hierarchy, and normalize child movement to the containing group.
+15. Element+ event registry with French trigger labels and the first authoring modal for `Clic -> Changer de page`, persisted as scene actions plus Element+ event bindings.
+16. Element+ buttons have default hover metadata, a `Bouton` properties tab for hover/disabled configuration, save/reload persistence, FT100 manifest export for FT100Web consumption, and scoped FT100 CSS hover generation when enabled.
+17. FT100 export preserves `Clic -> Changer de page` events carried by Element+ groups through transparent runtime wrappers with page-scoped `data-scada-events`.
+18. FT100 export emits default page-scoped pointer cursor CSS for Element+ buttons and any exported target carrying `data-scada-events`, including descendants and active click state.
 
 ## 3. Source Of Truth
 

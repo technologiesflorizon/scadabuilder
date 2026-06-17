@@ -82,6 +82,45 @@ public sealed record ScadaElementData(
     string? TagBinding,
     bool IsReadOnly);
 
+/// <summary>
+/// Defines the hover visual style for an Element+ button.
+/// </summary>
+/// <param name="Enabled">Whether hover styling is active for the button when the button is not disabled.</param>
+/// <param name="Background">CSS background applied on hover.</param>
+/// <param name="Foreground">CSS foreground applied on hover.</param>
+/// <param name="BorderColor">CSS border color applied on hover.</param>
+public sealed record ScadaButtonHoverStyle(
+    bool Enabled,
+    string Background,
+    string Foreground,
+    string BorderColor)
+{
+    /// <summary>
+    /// Gets the default industrial HMI hover treatment for active Element+ buttons.
+    /// </summary>
+    public static ScadaButtonHoverStyle Default { get; } = new(true, "#EAF5F7", "#0F2A30", "#2090A0");
+}
+
+/// <summary>
+/// Defines button-specific runtime behavior for an Element+ button.
+/// </summary>
+/// <param name="IsDisabled">Whether the button is disabled in preview/export runtime.</param>
+/// <param name="Hover">Optional hover style override. A null value uses the default hover style.</param>
+public sealed record ScadaButtonBehavior(
+    bool IsDisabled,
+    ScadaButtonHoverStyle? Hover = null)
+{
+    /// <summary>
+    /// Gets the default behavior for enabled Element+ buttons.
+    /// </summary>
+    public static ScadaButtonBehavior Default { get; } = new(false, ScadaButtonHoverStyle.Default);
+
+    /// <summary>
+    /// Gets the effective hover style, including defaults for older scenes.
+    /// </summary>
+    public ScadaButtonHoverStyle EffectiveHover => Hover ?? ScadaButtonHoverStyle.Default;
+}
+
 public sealed record LegacySourceTrace(
     string SourceSystem,
     string SourceDocumentId,
@@ -146,7 +185,8 @@ public sealed record ScadaElement(
     ScadaElementData? Data = null,
     IReadOnlyList<ScadaElement>? Children = null,
     LegacyElementPayload? LegacyPayload = null,
-    IReadOnlyList<ScadaObjectEventBinding>? Events = null)
+    IReadOnlyList<ScadaObjectEventBinding>? Events = null,
+    ScadaButtonBehavior? ButtonBehavior = null)
 {
     [JsonIgnore]
     public string UserLabel => string.IsNullOrWhiteSpace(DisplayName) ? Id : DisplayName;
@@ -162,6 +202,14 @@ public sealed record ScadaElement(
 
     [JsonIgnore]
     public IReadOnlyList<ScadaObjectEventBinding> EventBindings => Events ?? Array.Empty<ScadaObjectEventBinding>();
+
+    /// <summary>
+    /// Gets the effective button behavior, including default hover feedback for older scenes.
+    /// </summary>
+    [JsonIgnore]
+    public ScadaButtonBehavior EffectiveButtonBehavior => Kind == ScadaElementKind.Button
+        ? ButtonBehavior ?? ScadaButtonBehavior.Default
+        : ScadaButtonBehavior.Default;
 
     public static ScadaElement CreateText(string id, string displayName, double x, double y)
     {
@@ -671,6 +719,73 @@ public sealed record ScadaScene(
         return WithReplacedElementRecursive(element with { Events = events });
     }
 
+    /// <summary>
+    /// Removes one model-backed Element+ event by index and prunes its generated action when no event references it.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0011.
+    /// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs.
+    /// </remarks>
+    public ScadaScene WithoutObjectEventAt(string elementId, int eventIndex)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
+
+        var element = FindElementRecursive(elementId);
+        if (element is null || eventIndex < 0 || eventIndex >= element.EventBindings.Count)
+        {
+            return this;
+        }
+
+        var removed = element.EventBindings[eventIndex];
+        var events = element.EventBindings
+            .Where((_, index) => index != eventIndex)
+            .ToArray();
+        var updatedScene = WithReplacedElementRecursive(element with { Events = events });
+        var removedActionStillReferenced = FlattenElements(updatedScene.Elements)
+            .SelectMany(existing => existing.EventBindings)
+            .Any(binding => string.Equals(binding.ActionId, removed.ActionId, StringComparison.Ordinal));
+        return removedActionStillReferenced
+            ? updatedScene
+            : updatedScene with
+            {
+                Actions = updatedScene.ActionDefinitions
+                    .Where(action => !string.Equals(action.Id, removed.ActionId, StringComparison.Ordinal))
+                    .ToArray()
+            };
+    }
+
+    /// <summary>
+    /// Adds a model-backed Element+ event that navigates to another compiled page.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0011.
+    /// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
+    /// </remarks>
+    public ScadaScene WithChangePageEvent(string elementId, string triggerKeyOrRuntimeName, string targetPageId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(triggerKeyOrRuntimeName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(targetPageId);
+
+        var trigger = ScadaEventRegistry.FindTrigger(triggerKeyOrRuntimeName) ??
+            throw new InvalidOperationException($"Event trigger '{triggerKeyOrRuntimeName}' is not registered.");
+        var action = new ScadaActionDefinition(
+            CreateActionId(elementId, trigger.RuntimeTrigger, ScadaEventRegistry.ChangePageFunction, targetPageId),
+            ScadaActionKind.Navigate,
+            TargetPageId: targetPageId.Trim());
+
+        return WithAction(action)
+            .WithObjectEvent(
+                elementId,
+                new ScadaObjectEventBinding(
+                    trigger.RuntimeTrigger,
+                    action.Id,
+                    StopPropagation: true,
+                    PreventDefault: false));
+    }
+
     public ScadaScene WithoutLegacyTextOverrides(IEnumerable<string> sourceElementIds)
     {
         var ids = sourceElementIds
@@ -808,6 +923,23 @@ public sealed record ScadaScene(
         return current.ChildElements.Any(child =>
             string.Equals(child.Id, elementId, StringComparison.Ordinal) ||
             ContainsElement(child, elementId));
+    }
+
+    private static string CreateActionId(string elementId, string trigger, string functionName, string targetId)
+    {
+        return string.Join(
+            "_",
+            new[] { "action", SanitizeIdPart(functionName), SanitizeIdPart(trigger), SanitizeIdPart(elementId), SanitizeIdPart(targetId) }
+                .Where(part => !string.IsNullOrWhiteSpace(part)));
+    }
+
+    private static string SanitizeIdPart(string value)
+    {
+        var normalized = new string(value
+            .Trim()
+            .Select(character => char.IsLetterOrDigit(character) ? character : '_')
+            .ToArray());
+        return normalized.Trim('_').ToLowerInvariant();
     }
 
     private static IEnumerable<ScadaElement> FlattenElements(IEnumerable<ScadaElement> elements)

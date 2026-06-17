@@ -82,6 +82,33 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void ModernDoubleClickEditorExposesEventButtonAfterStyle()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "const stylePanel = createPanel('style', 'Style');");
+        StringAssert.Contains(source, "buttonPanel = createPanel('button', 'Bouton');");
+        StringAssert.Contains(source, "eventButton.textContent = 'Evenement';");
+        StringAssert.Contains(source, "type: 'openSceneObjectEvents'");
+        Assert.IsTrue(
+            source.IndexOf("const stylePanel = createPanel('style', 'Style');", StringComparison.Ordinal) <
+            source.IndexOf("buttonPanel = createPanel('button', 'Bouton');", StringComparison.Ordinal),
+            "The Bouton tab must be placed to the right of the Style tab in the double-click editor.");
+        Assert.IsTrue(
+            source.IndexOf("buttonPanel = createPanel('button', 'Bouton');", StringComparison.Ordinal) <
+            source.IndexOf("eventButton.textContent = 'Evenement';", StringComparison.Ordinal),
+            "The Evenement button must remain to the right of the Bouton tab in the double-click editor.");
+        StringAssert.Contains(source, "buttonHoverEnabled: field('ButtonHoverEnabled')?.checked !== false");
+        StringAssert.Contains(source, "button.dataset.scadaButtonBehavior = JSON.stringify(buttonBehavior || {});");
+        Assert.IsFalse(
+            source.Contains("wrapper.style.background = cssText(buttonHover.Background", StringComparison.Ordinal),
+            "Button hover metadata must not be applied inside SCADA Builder V2 preview.");
+        Assert.IsFalse(
+            source.Contains("button.disabled = buttonBehavior.IsDisabled === true;", StringComparison.Ordinal),
+            "Button disabled state is FT100Web metadata in this slice, not an editor-preview runtime behavior.");
+    }
+
+    [TestMethod]
     public void WebViewKeyboardShortcutsDoNotDeleteOnBackspaceOrInsideEditors()
     {
         var source = NormalizeNewLines(ReadMainWindowSource());

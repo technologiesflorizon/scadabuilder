@@ -164,6 +164,90 @@ public sealed class OfficialSceneDomainTests
         Assert.IsTrue(restored.RemovedSourceIds.Contains("4"));
     }
 
+    [TestMethod]
+    public void EventRegistryDefinesFrenchTriggerLabelsAndChangePageContract()
+    {
+        var click = ScadaEventRegistry.FindTrigger(ScadaEventRegistry.ClickKey);
+        var release = ScadaEventRegistry.FindTrigger(ScadaEventRegistry.ReleaseKey);
+        var hover = ScadaEventRegistry.FindTrigger(ScadaEventRegistry.HoverKey);
+        var changePage = ScadaEventRegistry.FindAction(ScadaEventRegistry.ChangePageFunction);
+
+        Assert.IsNotNull(click);
+        Assert.AreEqual("Clic", click.FrenchLabel);
+        Assert.AreEqual("click", click.RuntimeTrigger);
+        Assert.IsTrue(click.AllowsMultiple);
+        Assert.IsTrue(click.SupportsConditions);
+        Assert.AreEqual("Relachement", release?.FrenchLabel);
+        Assert.AreEqual("Survol", hover?.FrenchLabel);
+        Assert.AreEqual(ScadaActionKind.Navigate, changePage?.Kind);
+        Assert.IsTrue(changePage?.Implemented ?? false);
+        CollectionAssert.Contains(changePage?.RequiredArguments.ToArray(), "TargetPageId");
+    }
+
+    [TestMethod]
+    public void SceneCanAttachMultipleClickChangePageEventsToOneElement()
+    {
+        var button = ScadaElement.CreateText("btn_next", "Bouton navigation", 10, 20);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "win00008", new CanvasSize(1280, 873))
+            .WithElement(button)
+            .WithChangePageEvent("btn_next", ScadaEventRegistry.ClickKey, "win00009")
+            .WithChangePageEvent("btn_next", ScadaEventRegistry.ClickKey, "win00010");
+
+        var updated = scene.FindElementRecursive("btn_next");
+
+        Assert.IsNotNull(updated);
+        Assert.AreEqual(2, updated.EventBindings.Count);
+        Assert.IsTrue(updated.EventBindings.All(binding => binding.Trigger == ScadaEventRegistry.ClickRuntimeTrigger));
+        Assert.AreEqual(2, scene.ActionDefinitions.Count);
+        CollectionAssert.AreEquivalent(
+            new[] { "win00009", "win00010" },
+            scene.ActionDefinitions.Select(action => action.TargetPageId).ToArray());
+    }
+
+    [TestMethod]
+    public void SceneCanRemoveOneElementEventAndPruneOrphanAction()
+    {
+        var button = ScadaElement.CreateText("btn_next", "Bouton navigation", 10, 20);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "win00008", new CanvasSize(1280, 873))
+            .WithElement(button)
+            .WithChangePageEvent("btn_next", ScadaEventRegistry.ClickKey, "win00009")
+            .WithChangePageEvent("btn_next", ScadaEventRegistry.ClickKey, "win00010");
+
+        var updated = scene.WithoutObjectEventAt("btn_next", 0);
+        var element = updated.FindElementRecursive("btn_next");
+
+        Assert.IsNotNull(element);
+        Assert.AreEqual(1, element.EventBindings.Count);
+        Assert.AreEqual(1, updated.ActionDefinitions.Count);
+        Assert.AreEqual("win00010", updated.ActionDefinitions.Single().TargetPageId);
+        Assert.AreEqual(updated.ActionDefinitions.Single().Id, element.EventBindings.Single().ActionId);
+    }
+
+    [TestMethod]
+    public void ButtonElementHasDefaultHoverUnlessExplicitlyDisabled()
+    {
+        var button = new ScadaElement(
+            "btn_ack",
+            "Acquitter",
+            ScadaElementKind.Button,
+            new SceneBounds(10, 20, 120, 32),
+            null);
+
+        Assert.IsFalse(button.EffectiveButtonBehavior.IsDisabled);
+        Assert.IsTrue(button.EffectiveButtonBehavior.EffectiveHover.Enabled);
+        Assert.AreEqual("#EAF5F7", button.EffectiveButtonBehavior.EffectiveHover.Background);
+
+        var disabled = button with
+        {
+            ButtonBehavior = new ScadaButtonBehavior(true, ScadaButtonHoverStyle.Default with { Enabled = false })
+        };
+
+        Assert.IsTrue(disabled.EffectiveButtonBehavior.IsDisabled);
+        Assert.IsFalse(disabled.EffectiveButtonBehavior.EffectiveHover.Enabled);
+    }
+
     private static ScadaElement CreateLegacyStatic(string sourceId, string name)
     {
         return ScadaElement.CreateLegacyStatic(

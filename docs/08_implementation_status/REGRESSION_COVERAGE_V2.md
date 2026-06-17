@@ -2,12 +2,16 @@
 
 Date: 2026-06-16
 Status: Active regression coverage map
-Document version: `V2.1.2.0003`
+Document version: `V2.1.2.0007`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-16 | `V2.1.2.0007` | `PENDING` | Ajout de la couverture du curseur runtime par defaut des cibles cliquables FT100. |
+| 2026-06-16 | `V2.1.2.0006` | `PENDING` | Ajout de la couverture des wrappers runtime transparents pour events de groupe Element+. |
+| 2026-06-16 | `V2.1.2.0005` | `PENDING` | Ajout de la couverture metadonnees hover automatique, CSS FT100 et disabled des boutons Element+. |
+| 2026-06-16 | `V2.1.2.0004` | `PENDING` | Ajout de la couverture du registre evenements Element+ et du bouton Evenement de l'editeur double-clic. |
 | 2026-06-16 | `V2.1.2.0003` | `PENDING` | Ajout de la couverture pour ordre visuel, inventaire hierarchique et mouvement solidaire des groupes Element+. |
 | 2026-06-16 | `V2.1.2.0002` | `PENDING` | Ajout de la couverture regression pour le groupement de scene Element+ only. |
 | 2026-06-16 | `V2.1.2.0001` | `PENDING` | Ajout de la couverture regression du raccourci Backspace non destructif et du garde-fou clavier pour champs editables. |
@@ -18,7 +22,7 @@ Document version: `V2.1.2.0003`
 
 ```text
 dotnet test ScadaBuilderV2.sln --no-restore
-181 passed, 0 failed, 0 skipped
+193 passed, 0 failed, 0 skipped
 ```
 
 ## 2. Coverage Map
@@ -32,6 +36,10 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | WebView bridge/context menu | `WebViewContextMenuScriptTests.cs` |
 | Element inventory hierarchy | `LegacyElementSelectionModelTests.cs` |
 | Element+ legacy conversion | `ElementPlusLegacyConverterTests.cs` |
+| Element+ events/actions | `OfficialSceneDomainTests.cs`, `WebViewContextMenuScriptTests.cs`, `ModernProjectStoreTests.cs`, `Ft100SceneExporterTests.cs` |
+| Element+ group click navigation export | `Ft100SceneExporterTests.cs` |
+| FT100 clickable target pointer cursor | `Ft100SceneExporterTests.cs` |
+| Element+ button hover metadata and FT100 CSS | `OfficialSceneDomainTests.cs`, `WebViewContextMenuScriptTests.cs`, `ModernProjectStoreTests.cs`, `Ft100SceneExporterTests.cs` |
 | Studio Element+ editor state | `ElementStudioEditorStateTests.cs` |
 | Studio Element+ contract | `StudioElementPlusContractTests.cs` |
 | Studio source rendering | `ElementStudioSourceRenderingTests.cs` |

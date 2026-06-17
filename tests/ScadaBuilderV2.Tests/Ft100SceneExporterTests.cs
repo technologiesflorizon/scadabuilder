@@ -583,6 +583,13 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(css, "background-color: #123456;");
             StringAssert.Contains(css, "background-size: contain;");
             StringAssert.Contains(css, "background-repeat: repeat-x;");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__btn_next:hover {");
+            StringAssert.Contains(css, "#ft100-win00008 .ft100-element--Button, #ft100-win00008 [data-scada-events] { cursor: pointer; }");
+            StringAssert.Contains(css, "#ft100-win00008 .ft100-element--Button *, #ft100-win00008 [data-scada-events] * { cursor: pointer; }");
+            StringAssert.Contains(css, "#ft100-win00008 .ft100-element--Button:active, #ft100-win00008 [data-scada-events]:active { cursor: pointer; }");
+            StringAssert.Contains(css, "background: #EAF5F7;");
+            StringAssert.Contains(css, "color: #0F2A30;");
+            StringAssert.Contains(css, "border-color: #2090A0;");
             AssertExportCssHasNoGlobalRuntimeSelectors(css);
 
             var html = await File.ReadAllTextAsync(result.HtmlPath);
@@ -609,10 +616,140 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(manifest, "\"RequiredDisplayWidth\": 1440");
             StringAssert.Contains(manifest, "\"RequiredDisplayHeight\": 900");
             StringAssert.Contains(manifest, "\"Events\"");
+            StringAssert.Contains(manifest, "\"ButtonBehavior\"");
+            StringAssert.Contains(manifest, "\"IsDisabled\": false");
+            StringAssert.Contains(manifest, "\"Background\": \"#EAF5F7\"");
+            StringAssert.Contains(manifest, "\"BorderColor\": \"#2090A0\"");
             StringAssert.Contains(manifest, "\"Trigger\": \"click\"");
             StringAssert.Contains(manifest, "\"Kind\": \"navigate\"");
             StringAssert.Contains(manifest, "\"TargetPageId\": \"win00009\"");
             Assert.IsFalse(manifest.Contains("\"PageEvents\"", StringComparison.Ordinal));
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public async Task ExportPreservesGroupClickNavigateEventAsRuntimeWrapper()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+        var sourceHtmlPath = Path.Combine(sourceRoot, "group_navigation.html");
+        await File.WriteAllTextAsync(sourceHtmlPath, "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var child = new ScadaElement(
+            "btn_child",
+            "Bouton enfant",
+            ScadaElementKind.Button,
+            new SceneBounds(5, 6, 80, 24),
+            null,
+            new ScadaElementLayout(ElementPositionMode.Relative, "group_nav"),
+            ScadaElementStyle.DefaultInput,
+            new ScadaElementData("Ouvrir", null, null, null, null, null, null, null, null, false));
+        var group = new ScadaElement(
+            "group_nav",
+            "Groupe navigation",
+            ScadaElementKind.Group,
+            new SceneBounds(100, 200, 160, 70),
+            null,
+            ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultText,
+            Children: [child]);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Navigation groupe", new(120, 120))
+            .WithElement(group)
+            .WithChangePageEvent("group_nav", ScadaEventRegistry.ClickKey, "win00009");
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            var css = await File.ReadAllTextAsync(result.CssPath);
+            var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
+
+            StringAssert.Contains(html, "id=\"ft100-win00008__group_nav\"");
+            StringAssert.Contains(html, "class=\"ft100-element ft100-element--Group\"");
+            StringAssert.Contains(html, "data-scada-events=");
+            StringAssert.Contains(html, "action_changepage_click_group_nav_win00009");
+            StringAssert.Contains(html, "id=\"ft100-win00008__btn_child\"");
+            StringAssert.Contains(html, "left:5px;");
+            StringAssert.Contains(html, "top:6px;");
+            StringAssert.Contains(html, "background:transparent;");
+            StringAssert.Contains(html, "border:0;");
+
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__group_nav {");
+            StringAssert.Contains(css, "#ft100-win00008 .ft100-element--Button, #ft100-win00008 [data-scada-events] { cursor: pointer; }");
+            StringAssert.Contains(css, "left: 100px;");
+            StringAssert.Contains(css, "top: 200px;");
+            StringAssert.Contains(css, "width: 160px;");
+            StringAssert.Contains(css, "height: 70px;");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__btn_child {");
+            StringAssert.Contains(css, "left: 5px;");
+            StringAssert.Contains(css, "top: 6px;");
+
+            StringAssert.Contains(manifest, "\"Id\": \"group_nav\"");
+            StringAssert.Contains(manifest, "\"Kind\": \"Group\"");
+            StringAssert.Contains(manifest, "\"Trigger\": \"click\"");
+            StringAssert.Contains(manifest, "\"ActionId\": \"action_changepage_click_group_nav_win00009\"");
+            StringAssert.Contains(manifest, "\"Kind\": \"navigate\"");
+            StringAssert.Contains(manifest, "\"TargetPageId\": \"win00009\"");
+            StringAssert.Contains(manifest, "\"RequiredDisplayWidth\": 260");
+            StringAssert.Contains(manifest, "\"RequiredDisplayHeight\": 270");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public async Task ExportOmitsDisabledButtonHoverCssButKeepsMetadata()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+        var sourceHtmlPath = Path.Combine(sourceRoot, "disabled_button.html");
+        await File.WriteAllTextAsync(sourceHtmlPath, "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var button = new ScadaElement(
+            "btn_disabled",
+            "Desactive",
+            ScadaElementKind.Button,
+            new SceneBounds(10, 20, 120, 30),
+            null,
+            ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultInput,
+            new ScadaElementData("Stop", null, null, null, null, null, null, null, null, false),
+            ButtonBehavior: new ScadaButtonBehavior(true, ScadaButtonHoverStyle.Default));
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Disabled", new(1440, 900))
+            .WithElement(button);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+            var css = await File.ReadAllTextAsync(result.CssPath);
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
+
+            StringAssert.Contains(html, "<button type=\"button\"");
+            Assert.IsFalse(html.Contains("data-scada-disabled", StringComparison.Ordinal));
+            Assert.IsFalse(html.Contains(" disabled", StringComparison.Ordinal));
+            Assert.IsFalse(css.Contains("#ft100-win00008 #ft100-win00008__btn_disabled:hover", StringComparison.Ordinal));
+            StringAssert.Contains(manifest, "\"ButtonBehavior\"");
+            StringAssert.Contains(manifest, "\"IsDisabled\": true");
+            StringAssert.Contains(manifest, "\"Enabled\": true");
         }
         finally
         {

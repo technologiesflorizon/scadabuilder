@@ -896,6 +896,62 @@
                                                          TextChanged="OnElementPropertyChanged"/>
                                             </StackPanel>
                                         </TabItem>
+                                        <TabItem x:Name="ButtonContextTab" Header="Bouton">
+                                            <StackPanel Margin="8">
+                                                <TextBlock Text="Comportement bouton"/>
+                                                <CheckBox x:Name="ButtonDisabledCheckBox"
+                                                          Content="Bouton desactive"
+                                                          Margin="0,6,0,8"
+                                                          Checked="OnElementPropertyChanged"
+                                                          Unchecked="OnElementPropertyChanged"/>
+                                                <CheckBox x:Name="ButtonHoverEnabledCheckBox"
+                                                          Content="Survol automatique"
+                                                          Margin="0,0,0,8"
+                                                          Checked="OnElementPropertyChanged"
+                                                          Unchecked="OnElementPropertyChanged"/>
+                                                <TextBlock Text="Fond survol"/>
+                                                <ComboBox x:Name="ButtonHoverBackgroundComboBox"
+                                                          Margin="0,3,0,8"
+                                                          SelectionChanged="OnElementPropertyChanged">
+                                                    <ComboBoxItem Content="#EAF5F7"/>
+                                                    <ComboBoxItem Content="#F7FBF5"/>
+                                                    <ComboBoxItem Content="#DFF3E7"/>
+                                                    <ComboBoxItem Content="#2090A0"/>
+                                                    <ComboBoxItem Content="#90C030"/>
+                                                </ComboBox>
+                                                <TextBlock Text="Texte survol"/>
+                                                <ComboBox x:Name="ButtonHoverForegroundComboBox"
+                                                          Margin="0,3,0,8"
+                                                          SelectionChanged="OnElementPropertyChanged">
+                                                    <ComboBoxItem Content="#0F2A30"/>
+                                                    <ComboBoxItem Content="#FFFFFF"/>
+                                                    <ComboBoxItem Content="#2090A0"/>
+                                                </ComboBox>
+                                                <TextBlock Text="Bordure survol"/>
+                                                <ComboBox x:Name="ButtonHoverBorderColorComboBox"
+                                                          Margin="0,3,0,8"
+                                                          SelectionChanged="OnElementPropertyChanged">
+                                                    <ComboBoxItem Content="#2090A0"/>
+                                                    <ComboBoxItem Content="#90C030"/>
+                                                    <ComboBoxItem Content="#0F7280"/>
+                                                    <ComboBoxItem Content="#8AA0A6"/>
+                                                </ComboBox>
+                                            </StackPanel>
+                                        </TabItem>
+                                        <TabItem Header="Evenement">
+                                            <StackPanel Margin="8">
+                                                <TextBlock Text="Evenements runtime"/>
+                                                <TextBlock x:Name="ElementEventsSummaryText"
+                                                           Text="Aucun evenement"
+                                                           Margin="0,3,0,8"
+                                                           TextWrapping="Wrap"
+                                                           Foreground="{StaticResource MutedBrush}"/>
+                                                <Button x:Name="OpenElementEventsButton"
+                                                        Content="Evenement"
+                                                        HorizontalAlignment="Left"
+                                                        Click="OnOpenSelectedElementEventsClick"/>
+                                            </StackPanel>
+                                        </TabItem>
                                         <TabItem Header="Donnees">
                                             <StackPanel Margin="8">
                                                 <TextBlock Text="Placeholder"/>

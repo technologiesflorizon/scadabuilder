@@ -1076,6 +1076,10 @@ public partial class MainWindow : Window
                 case "openModernElementProperties":
                     SelectModernElement(message.Id);
                     break;
+                case "openSceneObjectEvents":
+                case "openModernElementEvents":
+                    ShowModernElementEvents(message.Id);
+                    break;
                 case "updateSceneObjectProperties":
                 case "updateModernElementProperties":
                     UpdateModernElementProperties(message);
@@ -3466,6 +3470,22 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         SetStatus("Proprietes Element+ ouvertes.");
     }
 
+    private void ShowModernElementEvents(string? elementId)
+    {
+        var targetId = string.IsNullOrWhiteSpace(elementId)
+            ? _selectedSceneObject?.Id
+            : elementId;
+        if (string.IsNullOrWhiteSpace(targetId))
+        {
+            SetStatus("Aucun Element+ selectionne pour les evenements.");
+            return;
+        }
+
+        SelectModernElement(targetId);
+        RightContextTabs.SelectedItem = PropertiesContextTab;
+        OpenElementEventDialog(targetId);
+    }
+
     private async void OnSaveSceneClick(object sender, RoutedEventArgs e)
     {
         if (_repositoryRoot is null || _activeScene is null || _activeSceneTab is null)
@@ -4158,7 +4178,16 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 DisplayFormat = string.IsNullOrWhiteSpace(message.DisplayFormat) ? null : message.DisplayFormat,
                 TagBinding = string.IsNullOrWhiteSpace(message.TagBinding) ? null : message.TagBinding,
                 IsReadOnly = message.IsReadOnly
-            }
+            },
+            ButtonBehavior = current.Kind == ScadaElementKind.Button
+                ? new ScadaButtonBehavior(
+                    message.ButtonDisabled,
+                    new ScadaButtonHoverStyle(
+                        message.ButtonHoverEnabled,
+                        string.IsNullOrWhiteSpace(message.ButtonHoverBackground) ? ScadaButtonHoverStyle.Default.Background : message.ButtonHoverBackground,
+                        string.IsNullOrWhiteSpace(message.ButtonHoverForeground) ? ScadaButtonHoverStyle.Default.Foreground : message.ButtonHoverForeground,
+                        string.IsNullOrWhiteSpace(message.ButtonHoverBorderColor) ? ScadaButtonHoverStyle.Default.BorderColor : message.ButtonHoverBorderColor))
+                : current.ButtonBehavior
         };
 
         if (Equals(current, updated))
@@ -4261,6 +4290,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ElementBorderStyleComboBox.IsEnabled = isEnabled;
             ElementBorderWidthTextBox.IsEnabled = isEnabled;
             ElementAdvancedCssTextBox.IsEnabled = isEnabled;
+            ButtonContextTab.Visibility = element?.Kind == ScadaElementKind.Button ? Visibility.Visible : Visibility.Collapsed;
+            ButtonDisabledCheckBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
+            ButtonHoverEnabledCheckBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
+            ButtonHoverBackgroundComboBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
+            ButtonHoverForegroundComboBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
+            ButtonHoverBorderColorComboBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
             ElementPlaceholderTextBox.IsEnabled = isEnabled;
             ElementValueTextBox.IsEnabled = isEnabled;
             ElementMinTextBox.IsEnabled = isEnabled;
@@ -4269,6 +4304,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ElementUnitTextBox.IsEnabled = isEnabled;
             ElementFormatTextBox.IsEnabled = isEnabled;
             ElementTagBindingTextBox.IsEnabled = isEnabled;
+            OpenElementEventsButton.IsEnabled = isEnabled;
 
             if (element is null)
             {
@@ -4286,6 +4322,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 ElementBorderWidthTextBox.Text = "";
                 ShadowNoneRadio.IsChecked = true;
                 ElementAdvancedCssTextBox.Text = "";
+                ButtonDisabledCheckBox.IsChecked = false;
+                ButtonHoverEnabledCheckBox.IsChecked = true;
+                SelectComboBoxText(ButtonHoverBackgroundComboBox, ScadaButtonHoverStyle.Default.Background);
+                SelectComboBoxText(ButtonHoverForegroundComboBox, ScadaButtonHoverStyle.Default.Foreground);
+                SelectComboBoxText(ButtonHoverBorderColorComboBox, ScadaButtonHoverStyle.Default.BorderColor);
                 ElementPlaceholderTextBox.Text = "";
                 ElementValueTextBox.Text = "";
                 ElementMinTextBox.Text = "";
@@ -4294,6 +4335,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 ElementUnitTextBox.Text = "";
                 ElementFormatTextBox.Text = "";
                 ElementTagBindingTextBox.Text = "";
+                ElementEventsSummaryText.Text = "Aucun evenement";
                 return;
             }
 
@@ -4316,6 +4358,13 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ShadowRaisedRadio.IsChecked = style.ShadowPreset == "Raised";
             ShadowInsetRadio.IsChecked = style.ShadowPreset == "Inset";
             ElementAdvancedCssTextBox.Text = style.AdvancedCss ?? "";
+            var buttonBehavior = element.EffectiveButtonBehavior;
+            var hoverStyle = buttonBehavior.EffectiveHover;
+            ButtonDisabledCheckBox.IsChecked = buttonBehavior.IsDisabled;
+            ButtonHoverEnabledCheckBox.IsChecked = hoverStyle.Enabled;
+            SelectComboBoxText(ButtonHoverBackgroundComboBox, hoverStyle.Background);
+            SelectComboBoxText(ButtonHoverForegroundComboBox, hoverStyle.Foreground);
+            SelectComboBoxText(ButtonHoverBorderColorComboBox, hoverStyle.BorderColor);
             ElementPlaceholderTextBox.Text = data.Placeholder ?? "";
             ElementValueTextBox.Text = data.Value?.ToString("0.##") ?? data.Text ?? "";
             ElementMinTextBox.Text = data.Minimum?.ToString("0.##") ?? "";
@@ -4324,11 +4373,146 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ElementUnitTextBox.Text = data.Unit ?? "";
             ElementFormatTextBox.Text = data.DisplayFormat ?? "";
             ElementTagBindingTextBox.Text = data.TagBinding ?? "";
+            ElementEventsSummaryText.Text = element.EventBindings.Count == 0
+                ? "Aucun evenement"
+                : $"{element.EventBindings.Count} evenement(s): {string.Join(", ", element.EventBindings.Select(binding => ScadaEventRegistry.FindTrigger(binding.Trigger)?.FrenchLabel ?? binding.Trigger))}";
         }
         finally
         {
             _isUpdatingElementProperties = false;
         }
+    }
+
+    private void OnOpenSelectedElementEventsClick(object sender, RoutedEventArgs e)
+    {
+        OpenElementEventDialog(_selectedSceneObject?.Id);
+    }
+
+    private void OpenElementEventDialog(string? elementId)
+    {
+        if (_activeScene is null || string.IsNullOrWhiteSpace(elementId))
+        {
+            SetStatus("Aucun Element+ selectionne pour les evenements.");
+            return;
+        }
+
+        var current = _activeScene.FindElementRecursive(elementId);
+        if (current is null || current.IsLegacyStatic)
+        {
+            SetStatus("Les evenements runtime sont disponibles sur les objets Element+ convertis.");
+            return;
+        }
+
+        var dialog = new ElementEventDialog(
+            current,
+            _activeScene.ActionDefinitions,
+            GetCurrentSceneReferences())
+        {
+            Owner = this
+        };
+
+        dialog.AddEvent = result => AddElementEventFromDialog(current.Id, result, dialog);
+        dialog.DeleteEvent = eventIndex => DeleteElementEventFromDialog(current.Id, eventIndex, dialog);
+        dialog.ShowDialog();
+    }
+
+    private string AddElementEventFromDialog(
+        string elementId,
+        ElementEventDialogResult result,
+        ElementEventDialog? dialog)
+    {
+        if (_activeScene is null)
+        {
+            SetStatus("Aucune scene active pour ajouter l'evenement.");
+            return "Aucune scene active.";
+        }
+
+        if (!string.Equals(result.FunctionName, ScadaEventRegistry.ChangePageFunction, StringComparison.Ordinal))
+        {
+            SetStatus("Fonction d'evenement non implementee dans cette tranche.");
+            return "Fonction d'evenement non implementee dans cette tranche.";
+        }
+
+        var current = _activeScene.FindElementRecursive(elementId);
+        if (current is null || current.IsLegacyStatic)
+        {
+            SetStatus("Element+ introuvable pour ajouter l'evenement.");
+            return "Element+ introuvable.";
+        }
+
+        var beforeScene = _activeScene;
+        var updated = _activeScene.WithChangePageEvent(
+            current.Id,
+            result.RuntimeTrigger,
+            result.TargetPageId);
+        if (Equals(beforeScene, updated))
+        {
+            SetStatus("Evenement deja configure.");
+            return "Evenement deja configure.";
+        }
+
+        _activeScene = updated;
+        _selectedSceneObject = _activeScene.FindElementRecursive(current.Id);
+        _selectedSceneObjectIds.Add(current.Id);
+        _activeSceneTab?.History.Push(new SceneSnapshotChangedAction(
+            updated.Id,
+            beforeScene,
+            updated,
+            "evenement Element+"));
+        MarkActiveSceneDirty();
+        RefreshSelectionUi();
+        RefreshModernSceneUi();
+        _ = RenderModernSceneAsync();
+        dialog?.RefreshExistingEvents(
+            _activeScene.FindElementRecursive(current.Id) ?? current,
+            _activeScene.ActionDefinitions);
+        SetStatus($"Evenement Clic -> Changer de page ajoute sur {_selectedSceneObject?.UserLabel ?? current.UserLabel}. Sauvegarde requise.");
+        return "Evenement ajoute. Vous pouvez en ajouter un autre ou fermer la fenetre.";
+    }
+
+    private string DeleteElementEventFromDialog(
+        string elementId,
+        int eventIndex,
+        ElementEventDialog dialog)
+    {
+        if (_activeScene is null)
+        {
+            SetStatus("Aucune scene active pour supprimer l'evenement.");
+            return "Aucune scene active.";
+        }
+
+        var current = _activeScene.FindElementRecursive(elementId);
+        if (current is null || current.IsLegacyStatic)
+        {
+            SetStatus("Element+ introuvable pour supprimer l'evenement.");
+            return "Element+ introuvable.";
+        }
+
+        var beforeScene = _activeScene;
+        var updated = _activeScene.WithoutObjectEventAt(current.Id, eventIndex);
+        if (Equals(beforeScene, updated))
+        {
+            SetStatus("Aucun evenement selectionne a supprimer.");
+            return "Aucun evenement selectionne a supprimer.";
+        }
+
+        _activeScene = updated;
+        _selectedSceneObject = _activeScene.FindElementRecursive(current.Id);
+        _selectedSceneObjectIds.Add(current.Id);
+        _activeSceneTab?.History.Push(new SceneSnapshotChangedAction(
+            updated.Id,
+            beforeScene,
+            updated,
+            "suppression evenement Element+"));
+        MarkActiveSceneDirty();
+        RefreshSelectionUi();
+        RefreshModernSceneUi();
+        _ = RenderModernSceneAsync();
+        dialog.RefreshExistingEvents(
+            _activeScene.FindElementRecursive(current.Id) ?? current,
+            _activeScene.ActionDefinitions);
+        SetStatus($"Evenement supprime sur {_selectedSceneObject?.UserLabel ?? current.UserLabel}. Sauvegarde requise.");
+        return "Evenement supprime. Vous pouvez continuer ou fermer la fenetre.";
     }
 
     private void OnElementPropertyChanged(object sender, RoutedEventArgs e)
@@ -4362,6 +4546,15 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 ShadowPreset = GetSelectedShadowPreset(),
                 AdvancedCss = string.IsNullOrWhiteSpace(ElementAdvancedCssTextBox.Text) ? null : ElementAdvancedCssTextBox.Text
             },
+            ButtonBehavior = current.Kind == ScadaElementKind.Button
+                ? new ScadaButtonBehavior(
+                    ButtonDisabledCheckBox.IsChecked == true,
+                    new ScadaButtonHoverStyle(
+                        ButtonHoverEnabledCheckBox.IsChecked == true,
+                        GetComboBoxText(ButtonHoverBackgroundComboBox, ScadaButtonHoverStyle.Default.Background),
+                        GetComboBoxText(ButtonHoverForegroundComboBox, ScadaButtonHoverStyle.Default.Foreground),
+                        GetComboBoxText(ButtonHoverBorderColorComboBox, ScadaButtonHoverStyle.Default.BorderColor)))
+                : current.ButtonBehavior,
             Data = data with
             {
                 Placeholder = string.IsNullOrWhiteSpace(ElementPlaceholderTextBox.Text) ? null : ElementPlaceholderTextBox.Text,
@@ -4461,6 +4654,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             RenderIndex = renderIndex,
             Style = element.Style,
             Data = element.Data,
+            ButtonBehavior = element.ButtonBehavior,
             Children = element.ChildElements
                 .Select((child, childIndex) => ToRenderPayload(child, selectedIds, childIndex))
                 .ToArray()
@@ -5224,6 +5418,16 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         public string? BorderStyle { get; set; }
 
+        public bool ButtonDisabled { get; set; }
+
+        public bool ButtonHoverEnabled { get; set; } = true;
+
+        public string? ButtonHoverBackground { get; set; }
+
+        public string? ButtonHoverForeground { get; set; }
+
+        public string? ButtonHoverBorderColor { get; set; }
+
         public bool IsReadOnly { get; set; }
 
         public bool Additive { get; set; }
@@ -5315,6 +5519,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         public ScadaElementStyle? Style { get; set; }
 
         public ScadaElementData? Data { get; set; }
+
+        public ScadaButtonBehavior? ButtonBehavior { get; set; }
 
         public IReadOnlyList<ModernElementRenderPayload> Children { get; set; } = [];
     }
@@ -6445,6 +6651,20 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     const generalPanel = createPanel('general', 'General', true);
     const dataPanel = createPanel('data', 'Donnees');
     const stylePanel = createPanel('style', 'Style');
+    const buttonBehavior = element.ButtonBehavior || {};
+    const buttonHover = buttonBehavior.Hover || {};
+    let buttonPanel = null;
+    if (element.Kind === 'Button') {
+      buttonPanel = createPanel('button', 'Bouton');
+    }
+    const eventButton = document.createElement('button');
+    eventButton.type = 'button';
+    eventButton.className = 'tab';
+    eventButton.textContent = 'Evenement';
+    eventButton.addEventListener('click', () => {
+      window.chrome?.webview?.postMessage({ type: 'openSceneObjectEvents', id: element.Id });
+    });
+    tabs.appendChild(eventButton);
 
     appendField(generalPanel, 'Nom', element.DisplayName || element.Id, 'DisplayName');
     appendRow(generalPanel, [
@@ -6485,6 +6705,28 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       cell => appendSelect(cell, 'Bordure', style.BorderStyle || 'Solid', 'BorderStyle', ['Solid', 'Dashed', 'Dotted', 'None']),
       cell => appendField(cell, 'Largeur bordure', style.BorderWidth ?? 1, 'BorderWidth', 'number')
     ]);
+    if (buttonPanel) {
+      const disabledLabel = document.createElement('label');
+      const disabled = document.createElement('input');
+      disabled.type = 'checkbox';
+      disabled.name = 'ButtonDisabled';
+      disabled.checked = buttonBehavior.IsDisabled === true;
+      disabledLabel.appendChild(disabled);
+      disabledLabel.appendChild(document.createTextNode(' Bouton desactive'));
+      buttonPanel.appendChild(disabledLabel);
+
+      const hoverLabel = document.createElement('label');
+      const hoverEnabled = document.createElement('input');
+      hoverEnabled.type = 'checkbox';
+      hoverEnabled.name = 'ButtonHoverEnabled';
+      hoverEnabled.checked = buttonHover.Enabled !== false;
+      hoverLabel.appendChild(hoverEnabled);
+      hoverLabel.appendChild(document.createTextNode(' Survol automatique'));
+      buttonPanel.appendChild(hoverLabel);
+      appendField(buttonPanel, 'Fond survol', buttonHover.Background || '#EAF5F7', 'ButtonHoverBackground');
+      appendField(buttonPanel, 'Texte survol', buttonHover.Foreground || '#0F2A30', 'ButtonHoverForeground');
+      appendField(buttonPanel, 'Bordure survol', buttonHover.BorderColor || '#2090A0', 'ButtonHoverBorderColor');
+    }
 
     const readOnlyLabel = document.createElement('label');
     const readOnly = document.createElement('input');
@@ -6542,6 +6784,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         fontSize: Number(field('FontSize')?.value || style.FontSize || 14),
         borderStyle: field('BorderStyle')?.value || '',
         borderWidth: Number(field('BorderWidth')?.value || style.BorderWidth || 0),
+        buttonDisabled: field('ButtonDisabled')?.checked === true,
+        buttonHoverEnabled: field('ButtonHoverEnabled')?.checked !== false,
+        buttonHoverBackground: field('ButtonHoverBackground')?.value || '',
+        buttonHoverForeground: field('ButtonHoverForeground')?.value || '',
+        buttonHoverBorderColor: field('ButtonHoverBorderColor')?.value || '',
         isReadOnly: field('IsReadOnly')?.checked === true
       });
       closeModernEditor();
@@ -6625,6 +6872,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     const renderElement = (element, parentWrapper = null) => {
       const style = element.Style || {};
       const data = element.Data || {};
+      const buttonBehavior = element.ButtonBehavior || {};
       const wrapper = document.createElement('div');
       const isGroup = element.Kind === 'Group';
       wrapper.className = `scada-modern-element${isGroup ? ' scada-modern-group' : ''}${parentWrapper ? ' scada-modern-child' : ''}`;
@@ -6655,7 +6903,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       if (style.AdvancedCss) {
         wrapper.style.cssText += ';' + style.AdvancedCss;
       }
-
       if (isGroup) {
         (element.Children || element.children || []).forEach(child => {
           wrapper.appendChild(renderElement(child, wrapper));
@@ -6679,6 +6926,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       } else if (element.Kind === 'Button') {
         const button = document.createElement('button');
         button.type = 'button';
+        button.dataset.scadaButtonBehavior = JSON.stringify(buttonBehavior || {});
         button.textContent = data.Text || data.Placeholder || element.DisplayName || 'Bouton';
         button.style.width = '100%';
         button.style.height = '100%';

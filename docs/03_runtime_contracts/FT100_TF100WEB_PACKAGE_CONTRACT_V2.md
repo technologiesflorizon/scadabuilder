@@ -2,12 +2,14 @@
 
 Date: 2026-06-16
 Status: Active runtime package contract
-Document version: `V2.1.1.0039`
+Document version: `V2.1.2.0007`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-16 | `V2.1.2.0007` | `PENDING` | Ajout du contrat `cursor: pointer` pour les boutons et elements avec events runtime. |
+| 2026-06-16 | `V2.1.2.0006` | `PENDING` | Ajout du contrat de wrapper runtime transparent pour les groupes Element+ portant des events. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat actif FT100/TF100Web avec namespace, manifest et deprecation `index.html`. |
 
 ## 1. Package Shape
@@ -39,6 +41,9 @@ scada-builder-v2-ft100-package/
 6. HTML source-layer elements with saved bounds may carry inline geometry as a deployment guardrail.
 7. SVG source shapes keep SVG geometry attributes and must not receive HTML absolute-position inline styles.
 8. CSS, DOM ids, and runtime action lookup must be page-namespaced under the exported root id.
+9. Element+ groups without runtime events may be flattened in exported HTML.
+10. Element+ groups with runtime events must export a transparent page-scoped runtime wrapper carrying `data-scada-events`; the wrapper is runtime hit-test geometry only and must not add editor overlays, selection handles, labels, or visual decoration.
+11. Element+ buttons and any exported element carrying `data-scada-events` must expose `cursor: pointer` by default, including descendants and active click state, so TF100Web operators see a button cursor on hover and click.
 
 ## 3. Package Flow
 
@@ -59,6 +64,8 @@ flowchart TD
 
 1. `DEC-0003` - Current FT100/TF100Web Package Contract.
 2. `DEC-0007` - Page-Scoped Runtime Namespace.
+3. `DEC-0013` - Runtime Group Event Wrapper Export.
+4. `DEC-0014` - Runtime Pointer Cursor For Clickable Targets.
 
 ## 5. Related Tests
 

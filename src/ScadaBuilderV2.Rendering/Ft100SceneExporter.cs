@@ -539,6 +539,23 @@ public sealed partial class Ft100SceneExporter
         var absoluteY = parentY + element.Bounds.Y;
         if (element.Kind == ScadaElementKind.Group)
         {
+            if (element.EventBindings.Count > 0)
+            {
+                var groupId = HtmlEncoder.Default.Encode(scope.ElementDomId(element.Id));
+                var groupSceneElementId = HtmlEncoder.Default.Encode(element.Id);
+                var groupName = HtmlEncoder.Default.Encode(element.DisplayName);
+                var groupKind = HtmlEncoder.Default.Encode(element.Kind.ToString());
+                var groupInlineStyle = HtmlEncoder.Default.Encode(BuildRuntimeGroupInlineStyle(element, absoluteX, absoluteY));
+                var groupEventAttribute = BuildEventAttribute(element);
+                var children = string.Concat(element.ChildElements.Select(child => BuildElementHtml(child, 0, 0, scope)));
+
+                return $$"""
+<div id="{{groupId}}" class="ft100-element ft100-element--{{groupKind}}" data-scada-element-id="{{groupSceneElementId}}" data-name="{{groupName}}" style="{{groupInlineStyle}}"{{groupEventAttribute}}>
+{{Indent(children, 2)}}
+</div>
+""";
+            }
+
             return string.Concat(element.ChildElements.Select(child => BuildElementHtml(child, absoluteX, absoluteY, scope)));
         }
 
@@ -548,15 +565,20 @@ public sealed partial class Ft100SceneExporter
         var kind = HtmlEncoder.Default.Encode(element.Kind.ToString());
         var inlineStyle = HtmlEncoder.Default.Encode(BuildElementInlineStyle(element, absoluteX, absoluteY));
         var content = BuildElementContent(element);
-        var eventAttribute = element.EventBindings.Count == 0
-            ? ""
-            : $" data-scada-events=\"{HtmlEncoder.Default.Encode(JsonSerializer.Serialize(element.EventBindings, ManifestJsonOptions))}\"";
+        var eventAttribute = BuildEventAttribute(element);
 
         return $$"""
 <div id="{{id}}" class="ft100-element ft100-element--{{kind}}" data-scada-element-id="{{sceneElementId}}" data-name="{{name}}" style="{{inlineStyle}}"{{eventAttribute}}>
   {{content}}
 </div>
 """;
+    }
+
+    private static string BuildEventAttribute(ScadaElement element)
+    {
+        return element.EventBindings.Count == 0
+            ? ""
+            : $" data-scada-events=\"{HtmlEncoder.Default.Encode(JsonSerializer.Serialize(element.EventBindings, ManifestJsonOptions))}\"";
     }
 
     private static string BuildElementContent(ScadaElement element)
@@ -602,6 +624,22 @@ public sealed partial class Ft100SceneExporter
         style.Append($"height:{Format(scene.CanvasSize.Height)}px;");
         style.Append("overflow:hidden;");
         style.Append($"background-color:{scene.EffectiveBackground.Color};");
+        return style.ToString();
+    }
+
+    private static string BuildRuntimeGroupInlineStyle(ScadaElement element, double absoluteX, double absoluteY)
+    {
+        var style = new StringBuilder();
+        style.Append("position:absolute;");
+        style.Append("box-sizing:border-box;");
+        style.Append("overflow:visible;");
+        style.Append("pointer-events:auto;");
+        style.Append($"left:{Format(absoluteX)}px;");
+        style.Append($"top:{Format(absoluteY)}px;");
+        style.Append($"width:{Format(element.Bounds.Width)}px;");
+        style.Append($"height:{Format(element.Bounds.Height)}px;");
+        style.Append("background:transparent;");
+        style.Append("border:0;");
         return style.ToString();
     }
 
@@ -659,6 +697,9 @@ public sealed partial class Ft100SceneExporter
         css.AppendLine($"{scope.Descendant(".ft100-source-layer .shape-layer")}, {scope.Descendant(".ft100-legacy-layer .shape-layer")} {{ position: absolute; left: 0; top: 0; pointer-events: none; }}");
         css.AppendLine($"{scope.Descendant(".ft100-source-layer .layer")}, {scope.Descendant(".ft100-legacy-layer .layer")} {{ position: absolute; margin: 0; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element")} {{ position: absolute; box-sizing: border-box; overflow: visible; pointer-events: auto; }}");
+        css.AppendLine($"{scope.Descendant(".ft100-element--Button")}, {scope.Descendant("[data-scada-events]")} {{ cursor: pointer; }}");
+        css.AppendLine($"{scope.Descendant(".ft100-element--Button *")}, {scope.Descendant("[data-scada-events] *")} {{ cursor: pointer; }}");
+        css.AppendLine($"{scope.Descendant(".ft100-element--Button:active")}, {scope.Descendant("[data-scada-events]:active")} {{ cursor: pointer; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element svg")} {{ display: block; width: 100%; height: 100%; overflow: visible; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element input")} {{ width: 100%; height: 100%; box-sizing: border-box; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element button")} {{ width: 100%; height: 100%; box-sizing: border-box; font: inherit; color: inherit; }}");
@@ -698,6 +739,27 @@ public sealed partial class Ft100SceneExporter
         var absoluteY = parentY + element.Bounds.Y;
         if (element.Kind == ScadaElementKind.Group)
         {
+            if (element.EventBindings.Count > 0)
+            {
+                css.AppendLine();
+                css.AppendLine($"{scope.ElementSelector(element.Id)} {{");
+                css.AppendLine($"  left: {Format(absoluteX)}px;");
+                css.AppendLine($"  top: {Format(absoluteY)}px;");
+                css.AppendLine($"  width: {Format(element.Bounds.Width)}px;");
+                css.AppendLine($"  height: {Format(element.Bounds.Height)}px;");
+                css.AppendLine("  background: transparent;");
+                css.AppendLine("  border: 0;");
+                css.AppendLine("  box-shadow: none;");
+                css.AppendLine("}");
+
+                foreach (var child in element.ChildElements)
+                {
+                    AppendElementCss(css, child, 0, 0, scope);
+                }
+
+                return;
+            }
+
             foreach (var child in element.ChildElements)
             {
                 AppendElementCss(css, child, absoluteX, absoluteY, scope);
@@ -736,6 +798,28 @@ public sealed partial class Ft100SceneExporter
         {
             css.AppendLine($"  {style.AdvancedCss}");
         }
+        css.AppendLine("}");
+
+        if (element.Kind == ScadaElementKind.Button)
+        {
+            AppendButtonHoverCss(css, element, scope);
+        }
+    }
+
+    private static void AppendButtonHoverCss(StringBuilder css, ScadaElement element, Ft100ExportScope scope)
+    {
+        var behavior = element.EffectiveButtonBehavior;
+        var hover = behavior.EffectiveHover;
+        if (behavior.IsDisabled || !hover.Enabled)
+        {
+            return;
+        }
+
+        css.AppendLine();
+        css.AppendLine($"{scope.ElementSelector(element.Id)}:hover {{");
+        css.AppendLine($"  background: {hover.Background};");
+        css.AppendLine($"  color: {hover.Foreground};");
+        css.AppendLine($"  border-color: {hover.BorderColor};");
         css.AppendLine("}");
     }
 
@@ -820,16 +904,22 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
             RequiredDisplayHeight = requiredDisplaySize.Height,
             Background = scene.EffectiveBackground,
             Objects = FlattenElements(scene.Elements)
-                .Where(element => element.Kind != ScadaElementKind.Group)
+                .Where(ShouldExportManifestObject)
                 .Select(element => new
                 {
                     element.Id,
                     element.DisplayName,
                     Kind = element.Kind.ToString(),
+                    ButtonBehavior = element.Kind == ScadaElementKind.Button ? element.EffectiveButtonBehavior : null,
                     Events = element.EventBindings
                 })
                 .ToArray()
         };
+    }
+
+    private static bool ShouldExportManifestObject(ScadaElement element)
+    {
+        return element.Kind != ScadaElementKind.Group || element.EventBindings.Count > 0;
     }
 
     private static CanvasSize CalculateRequiredDisplaySize(ScadaScene scene)
@@ -859,6 +949,11 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
             var absoluteY = parentY + element.Bounds.Y;
             if (element.Kind == ScadaElementKind.Group)
             {
+                if (element.EventBindings.Count > 0)
+                {
+                    yield return new SceneBounds(absoluteX, absoluteY, element.Bounds.Width, element.Bounds.Height);
+                }
+
                 foreach (var childBounds in FlattenExportedElementBounds(element.ChildElements, absoluteX, absoluteY))
                 {
                     yield return childBounds;
