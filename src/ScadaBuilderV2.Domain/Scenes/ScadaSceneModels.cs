@@ -205,6 +205,49 @@ public sealed record ScadaActionCondition(
     ScadaConditionOperator Operator,
     string? CompareValue = null);
 
+/// <summary>
+/// Supported popup placement presets for FT100/TF100Web runtime overlays.
+/// </summary>
+public enum ScadaPopupPosition
+{
+    Center,
+    TopLeft,
+    TopRight,
+    BottomLeft,
+    BottomRight,
+    DockLeft,
+    DockRight,
+    DockTop,
+    DockBottom,
+    HostRegion
+}
+
+/// <summary>
+/// Supported popup size presets for compiled fragment popup actions.
+/// </summary>
+public enum ScadaPopupSizePreset
+{
+    Small,
+    Medium,
+    Large,
+    Fullscreen
+}
+
+/// <summary>
+/// Describes advanced runtime behavior for popup fragment actions.
+/// </summary>
+/// <remarks>
+/// Decisions: DEC-0022.
+/// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md, docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md.
+/// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs, tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
+/// </remarks>
+public sealed record ScadaPopupOptions(
+    ScadaPopupPosition Position = ScadaPopupPosition.Center,
+    ScadaPopupSizePreset SizePreset = ScadaPopupSizePreset.Large,
+    bool AllowMultiple = false,
+    bool ResetOnOpen = true,
+    string? HostRegionId = null);
+
 public sealed record ScadaActionDefinition(
     string Id,
     ScadaActionKind Kind,
@@ -213,7 +256,8 @@ public sealed record ScadaActionDefinition(
     string? ClassName = null,
     string? TagId = null,
     string? Value = null,
-    ScadaActionCondition? Condition = null);
+    ScadaActionCondition? Condition = null,
+    ScadaPopupOptions? PopupOptions = null);
 
 public sealed record LegacyElementPayload(
     string LegacyType,
@@ -906,9 +950,13 @@ public sealed record ScadaScene(
     /// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
     /// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
     /// </remarks>
-    public ScadaScene WithOpenPopupEvent(string elementId, string triggerKeyOrRuntimeName, string targetPageId)
+    public ScadaScene WithOpenPopupEvent(
+        string elementId,
+        string triggerKeyOrRuntimeName,
+        string targetPageId,
+        ScadaPopupOptions? popupOptions = null)
     {
-        return WithPopupEvent(elementId, triggerKeyOrRuntimeName, ScadaActionKind.MountFragment, targetPageId);
+        return WithPopupEvent(elementId, triggerKeyOrRuntimeName, ScadaActionKind.MountFragment, targetPageId, popupOptions);
     }
 
     /// <summary>
@@ -919,9 +967,13 @@ public sealed record ScadaScene(
     /// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
     /// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
     /// </remarks>
-    public ScadaScene WithClosePopupEvent(string elementId, string triggerKeyOrRuntimeName, string targetPageId)
+    public ScadaScene WithClosePopupEvent(
+        string elementId,
+        string triggerKeyOrRuntimeName,
+        string targetPageId,
+        ScadaPopupOptions? popupOptions = null)
     {
-        return WithPopupEvent(elementId, triggerKeyOrRuntimeName, ScadaActionKind.ClosePopup, targetPageId);
+        return WithPopupEvent(elementId, triggerKeyOrRuntimeName, ScadaActionKind.ClosePopup, targetPageId, popupOptions);
     }
 
     /// <summary>
@@ -932,9 +984,13 @@ public sealed record ScadaScene(
     /// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
     /// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
     /// </remarks>
-    public ScadaScene WithTogglePopupEvent(string elementId, string triggerKeyOrRuntimeName, string targetPageId)
+    public ScadaScene WithTogglePopupEvent(
+        string elementId,
+        string triggerKeyOrRuntimeName,
+        string targetPageId,
+        ScadaPopupOptions? popupOptions = null)
     {
-        return WithPopupEvent(elementId, triggerKeyOrRuntimeName, ScadaActionKind.TogglePopup, targetPageId);
+        return WithPopupEvent(elementId, triggerKeyOrRuntimeName, ScadaActionKind.TogglePopup, targetPageId, popupOptions);
     }
 
     // Centralizes popup action creation so every popup function keeps the same fragment target contract.
@@ -942,7 +998,8 @@ public sealed record ScadaScene(
         string elementId,
         string triggerKeyOrRuntimeName,
         ScadaActionKind actionKind,
-        string targetPageId)
+        string targetPageId,
+        ScadaPopupOptions? popupOptions)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
         ArgumentException.ThrowIfNullOrWhiteSpace(triggerKeyOrRuntimeName);
@@ -964,7 +1021,8 @@ public sealed record ScadaScene(
         var action = new ScadaActionDefinition(
             CreateActionId(elementId, trigger.RuntimeTrigger, functionName, targetPageId),
             actionKind,
-            TargetPageId: targetPageId.Trim());
+            TargetPageId: targetPageId.Trim(),
+            PopupOptions: popupOptions);
 
         return WithAction(action)
             .WithObjectEvent(

@@ -187,6 +187,48 @@ public sealed class ModernProjectStoreTests
     }
 
     [TestMethod]
+    public async Task SaveAndLoadScenePreservesAdvancedPopupOptions()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var store = new ModernProjectStore();
+        var scene = ScadaScene
+            .CreateEmpty("win-popup", "Popup scene", new(1280, 873))
+            .WithElement(ScadaElement.CreateText("btn_popup", "Details", 10, 20))
+            .WithElement(ScadaElement.CreateText("host_faceplate", "Host", 100, 20))
+            .WithOpenPopupEvent(
+                "btn_popup",
+                ScadaEventRegistry.ClickKey,
+                "popup_pump",
+                new ScadaPopupOptions(
+                    ScadaPopupPosition.HostRegion,
+                    ScadaPopupSizePreset.Small,
+                    AllowMultiple: true,
+                    ResetOnOpen: false,
+                    HostRegionId: "host_faceplate"));
+
+        try
+        {
+            await store.SaveSceneAsync(root, scene);
+
+            var loaded = await store.LoadOrCreateSceneAsync(root, "win-popup", "Popup scene", new(1280, 873));
+            var popupOptions = loaded.ActionDefinitions.Single().PopupOptions;
+
+            Assert.AreEqual(ScadaPopupPosition.HostRegion, popupOptions?.Position);
+            Assert.AreEqual(ScadaPopupSizePreset.Small, popupOptions?.SizePreset);
+            Assert.IsTrue(popupOptions?.AllowMultiple ?? false);
+            Assert.IsFalse(popupOptions?.ResetOnOpen ?? true);
+            Assert.AreEqual("host_faceplate", popupOptions?.HostRegionId);
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task SaveAndReloadPreservesText22NumericConversionAndHidesLegacySource()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

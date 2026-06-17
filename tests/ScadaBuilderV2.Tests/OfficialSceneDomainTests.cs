@@ -339,6 +339,34 @@ public sealed class OfficialSceneDomainTests
     }
 
     [TestMethod]
+    public void SceneCanAttachAdvancedPopupOptions()
+    {
+        var button = ScadaElement.CreateText("btn_popup", "Details", 10, 20);
+        var host = ScadaElement.CreateText("host_faceplate", "Host", 100, 20);
+        var options = new ScadaPopupOptions(
+            ScadaPopupPosition.HostRegion,
+            ScadaPopupSizePreset.Medium,
+            AllowMultiple: true,
+            ResetOnOpen: false,
+            HostRegionId: "host_faceplate");
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "win00008", new CanvasSize(1280, 873))
+            .WithElement(button)
+            .WithElement(host)
+            .WithOpenPopupEvent("btn_popup", ScadaEventRegistry.ClickKey, "popup_pump", options);
+
+        var action = scene.ActionDefinitions.Single();
+
+        Assert.AreEqual(ScadaActionKind.MountFragment, action.Kind);
+        Assert.AreEqual("popup_pump", action.TargetPageId);
+        Assert.AreEqual(ScadaPopupPosition.HostRegion, action.PopupOptions?.Position);
+        Assert.AreEqual(ScadaPopupSizePreset.Medium, action.PopupOptions?.SizePreset);
+        Assert.IsTrue(action.PopupOptions?.AllowMultiple ?? false);
+        Assert.IsFalse(action.PopupOptions?.ResetOnOpen ?? true);
+        Assert.AreEqual("host_faceplate", action.PopupOptions?.HostRegionId);
+    }
+
+    [TestMethod]
     public void SceneCanRemoveOneElementEventAndPruneOrphanAction()
     {
         var button = ScadaElement.CreateText("btn_next", "Bouton navigation", 10, 20);
@@ -515,6 +543,32 @@ public sealed class OfficialSceneDomainTests
         Assert.IsTrue(issues.Any(issue => issue.Code == "popup.fragment-missing"));
         Assert.IsTrue(issues.Any(issue => issue.Code == "popup.target-not-fragment"));
         Assert.IsTrue(issues.Any(issue => issue.Code == "popup.fragment-not-compiled"));
+    }
+
+    [TestMethod]
+    public void BuildValidationRejectsInvalidPopupHostRegion()
+    {
+        var button = ScadaElement.CreateText("btn_popup", "Details", 10, 20);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "win00008", new CanvasSize(1280, 873))
+            .WithElement(button)
+            .WithOpenPopupEvent(
+                "btn_popup",
+                ScadaEventRegistry.ClickKey,
+                "popup_pump",
+                new ScadaPopupOptions(ScadaPopupPosition.HostRegion, HostRegionId: "missing_host"));
+        var project = ScadaProject.CreateDefault("Validation") with
+        {
+            Scenes =
+            [
+                new ScadaSceneReference("win00008", "win00008", "scenes/win00008.scene.json"),
+                new ScadaSceneReference("popup_pump", "Popup", "scenes/popup_pump.scene.json", ScadaPageType.Fragment)
+            ]
+        };
+
+        var issues = ScadaProjectBuildValidator.Validate(project, [scene]);
+
+        Assert.IsTrue(issues.Any(issue => issue.Code == "popup.host-region-missing"));
     }
 
 

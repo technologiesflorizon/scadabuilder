@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active editor/runtime actions contract
-Document version: `V2.1.2.0016`
+Document version: `V2.1.2.0017`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des options runtime avancees pour popup Fragment. |
 | 2026-06-17 | `V2.1.2.0016` | `PENDING` | Implementation des actions runtime `Afficher bordure`, `Masquer bordure` et `Basculer bordure`. |
 | 2026-06-17 | `V2.1.2.0015` | `PENDING` | Implementation de `Fermer popup` et `Basculer popup` vers fragments compiles. |
 | 2026-06-17 | `V2.1.2.0014` | `PENDING` | Implementation de `Ouvrir popup` vers fragments compiles. |
@@ -37,7 +38,7 @@ Object events and runtime actions are model-owned behavior. UI controls may auth
 9. `Lire valeur` and `Ecrire valeur` persist tag ids as Element+ data bindings, not triggered scene events. `Ecrire valeur` writes the operator-entered runtime value and never stores a literal design-time value.
 10. `Afficher objet`, `Masquer objet`, and `Basculer visibilite` are authorable against Element+ targets and may use one deterministic tag condition.
 11. Exported runtime applies values pushed by TF100Web to every Element+ using the matching `Lire valeur` tag binding.
-12. `Ouvrir popup`, `Fermer popup`, and `Basculer popup` are authorable against compiled `Fragment` pages and persist as popup runtime actions.
+12. `Ouvrir popup`, `Fermer popup`, and `Basculer popup` are authorable against compiled `Fragment` pages and persist as popup runtime actions with optional advanced runtime options.
 13. `Afficher bordure`, `Masquer bordure`, and `Basculer bordure` are authorable against Element+ targets and apply the standard runtime border class.
 
 ## 3. Event Registry
@@ -127,11 +128,12 @@ The current implemented popup slice covers:
 1. Selecting `Ouvrir popup`, `Fermer popup`, or `Basculer popup` in the Element+ event dialog.
 2. Selecting only pages marked `Fragment` and included in build.
 3. Persisting the actions as `ScadaActionKind.MountFragment`, `ClosePopup`, or `TogglePopup` with `TargetPageId`.
-4. Validating missing, non-fragment, or excluded popup targets before build/export.
-5. Exporting runtime that opens the compiled fragment page in a centered iframe popup with close behavior.
-6. Closing or toggling the popup from the host page, or from an iframe-loaded fragment through a parent `postMessage` popup request.
+4. Persisting optional `ScadaPopupOptions`: `Position`, `SizePreset`, `AllowMultiple`, `ResetOnOpen`, and `HostRegionId`.
+5. Validating missing, non-fragment, excluded popup targets, and missing host-region Element+ targets before build/export.
+6. Exporting runtime that opens the compiled fragment page in a centered iframe popup by default or applies model-backed position, size, multi-instance, reset, and host-region options when present.
+7. Closing or toggling the popup from the host page, or from an iframe-loaded fragment through a parent `postMessage` popup request.
 
-The current slice does not yet implement named popup host regions, explicit placement, multi-instance policy, sizing presets, or lifecycle reset options.
+The current slice does not yet implement a visual placement editor or a separate named host-region registry. Host-region popups target an existing Element+ id.
 
 ## 8. Visual Runtime Action Boundary
 
@@ -149,10 +151,9 @@ The current slice does not yet implement custom border styling per action, blink
 
 The following are roadmap items until implemented and covered by tests:
 
-1. Advanced popup lifecycle policy, named host regions, sizing presets, and multi-instance policy.
-2. Degraded tag conditions and compound conditions.
-3. Global scripts generating lifecycle events.
-4. Visual effects such as blink, glow, pulse, alarm highlight, degraded treatment.
+1. Degraded tag conditions and compound conditions.
+2. Global scripts generating lifecycle events.
+3. Visual effects such as blink, glow, pulse, alarm highlight, degraded treatment.
 
 ## 10. Event Flow
 

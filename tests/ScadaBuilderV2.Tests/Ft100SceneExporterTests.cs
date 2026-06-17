@@ -933,7 +933,7 @@ public sealed class Ft100SceneExporterTests
             var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
 
             StringAssert.Contains(html, "data-scada-events=");
-            StringAssert.Contains(html, "function openPopup(targetPageId)");
+            StringAssert.Contains(html, "function openPopup(targetPageId, popupOptions)");
             StringAssert.Contains(html, "data-scada-popup-page-id");
             StringAssert.Contains(html, "scada-builder-popup-opened");
             StringAssert.Contains(html, "scada-builder-popup-closed");
@@ -981,7 +981,7 @@ public sealed class Ft100SceneExporterTests
             var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
 
             StringAssert.Contains(html, "function closePopup(targetPageId)");
-            StringAssert.Contains(html, "function togglePopup(targetPageId)");
+            StringAssert.Contains(html, "function togglePopup(targetPageId, popupOptions)");
             StringAssert.Contains(html, "postPopupRequestToParent('closePopup', targetPageId)");
             StringAssert.Contains(html, "postPopupRequestToParent('togglePopup', targetPageId)");
             StringAssert.Contains(html, "detail.action === 'closePopup'");
@@ -989,6 +989,67 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(manifest, "\"Kind\": \"closePopup\"");
             StringAssert.Contains(manifest, "\"Kind\": \"togglePopup\"");
             StringAssert.Contains(manifest, "\"TargetPageId\": \"popup_pump\"");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public async Task ExportIncludesAdvancedPopupRuntimeOptions()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+        var sourceHtmlPath = Path.Combine(sourceRoot, "advanced_popup.html");
+        await File.WriteAllTextAsync(sourceHtmlPath, "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Advanced popup", new(1280, 873))
+            .WithElement(ScadaElement.CreateText("btn_popup", "Details", 10, 20))
+            .WithElement(ScadaElement.CreateText("host_faceplate", "Host", 100, 20))
+            .WithOpenPopupEvent(
+                "btn_popup",
+                ScadaEventRegistry.ClickKey,
+                "popup_pump",
+                new ScadaPopupOptions(
+                    ScadaPopupPosition.HostRegion,
+                    ScadaPopupSizePreset.Medium,
+                    AllowMultiple: true,
+                    ResetOnOpen: false,
+                    HostRegionId: "host_faceplate"));
+        var project = ScadaProject.CreateDefault("Runtime") with
+        {
+            Scenes =
+            [
+                new ScadaSceneReference("win00008", "Advanced popup", "scenes/win00008.scene.json"),
+                new ScadaSceneReference("popup_pump", "Popup pompe", "scenes/popup_pump.scene.json", ScadaPageType.Fragment)
+            ]
+        };
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot, project);
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
+
+            StringAssert.Contains(html, "function normalizePopupOptions(options)");
+            StringAssert.Contains(html, "function applyPopupPlacement(overlay, panel, options)");
+            StringAssert.Contains(html, "function applyPopupSize(panel, options)");
+            StringAssert.Contains(html, "options.AllowMultiple");
+            StringAssert.Contains(html, "scadaPopupInstance");
+            StringAssert.Contains(html, "getPopupHost(options)");
+            StringAssert.Contains(manifest, "\"PopupOptions\"");
+            StringAssert.Contains(manifest, "\"Position\": \"hostRegion\"");
+            StringAssert.Contains(manifest, "\"SizePreset\": \"medium\"");
+            StringAssert.Contains(manifest, "\"AllowMultiple\": true");
+            StringAssert.Contains(manifest, "\"ResetOnOpen\": false");
+            StringAssert.Contains(manifest, "\"HostRegionId\": \"host_faceplate\"");
         }
         finally
         {

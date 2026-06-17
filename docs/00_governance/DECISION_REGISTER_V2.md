@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.2.0016`
+Document version: `V2.1.2.0017`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0022 pour les options runtime avancees des popup Fragment. |
 | 2026-06-17 | `V2.1.2.0016` | `PENDING` | Ajout de DEC-0021 pour les actions runtime de bordure Element+. |
 | 2026-06-17 | `V2.1.2.0015` | `PENDING` | Ajout de DEC-0020 pour `Fermer popup` et `Basculer popup`. |
 | 2026-06-17 | `V2.1.2.0014` | `PENDING` | Ajout de DEC-0019 pour l'action runtime `Ouvrir popup`. |
@@ -513,6 +514,32 @@ Decision:
 Consequences:
 
 The popup cycle now covers open, close, and toggle without adding popup instances or host-region model fields. Explicit placement, named host regions, lifecycle reset policy, multi-instance policy, and popup sizing presets remain future revisions.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+
+### DEC-0022 - Advanced Fragment Popup Runtime Options
+
+Status: Active
+Created: 2026-06-17 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
+
+Context:
+
+Fragment popup actions need deterministic HMI layout behavior beyond the centered default popup. Operators need faceplates to open in predictable positions, docked surfaces, or a model-backed host region while preserving backward compatibility for existing popup actions.
+
+Decision:
+
+Popup actions may carry optional `ScadaPopupOptions` with `Position`, `SizePreset`, `AllowMultiple`, `ResetOnOpen`, and `HostRegionId`. Existing popup actions without options keep the centered large single-instance behavior. `HostRegion` placement requires a valid Element+ target and is rejected by build/export validation when missing. Exported runtime applies placement, size preset, multi-instance behavior, and iframe reset policy from the action options.
+
+Consequences:
+
+Popup placement and sizing are now model-backed and exportable without introducing editor overlays or custom per-page scripts. Named host regions are represented by Element+ host ids in the current slice; richer named host registries and drag-authored placement editors can build on the same options model.
 
 Regression coverage:
 

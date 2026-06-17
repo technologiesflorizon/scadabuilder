@@ -405,9 +405,32 @@ public static class ScadaProjectBuildValidator
             if (action.Kind is ScadaActionKind.MountFragment or ScadaActionKind.ClosePopup or ScadaActionKind.TogglePopup)
             {
                 ValidatePopupFragmentTarget(issues, scene, action, pagesById);
+                ValidatePopupOptions(issues, scene, action, elementIds);
             }
 
             ValidateActionCondition(issues, scene, action, tagsById);
+        }
+    }
+
+    // Keeps advanced popup placement model-backed and rejects stale host region targets before export.
+    private static void ValidatePopupOptions(
+        List<ScadaBuildValidationIssue> issues,
+        ScadaScene scene,
+        ScadaActionDefinition action,
+        IReadOnlySet<string> elementIds)
+    {
+        if (action.PopupOptions is not { Position: ScadaPopupPosition.HostRegion } popupOptions)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(popupOptions.HostRegionId) || !elementIds.Contains(popupOptions.HostRegionId))
+        {
+            issues.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                "popup.host-region-missing",
+                $"Action '{action.Id}' references missing popup host Element+ '{popupOptions.HostRegionId}'.",
+                scene.Id));
         }
     }
 

@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active implementation status
-Document version: `V2.1.2.0016`
+Document version: `V2.1.2.0017`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des options runtime avancees pour popup Fragment. |
 | 2026-06-17 | `V2.1.2.0016` | `PENDING` | Implementation des actions runtime de bordure Element+. |
 | 2026-06-17 | `V2.1.2.0015` | `PENDING` | Implementation des actions `Fermer popup` et `Basculer popup`. |
 | 2026-06-17 | `V2.1.2.0014` | `PENDING` | Implementation de l'action `Ouvrir popup` vers fragments compiles. |
@@ -28,7 +29,7 @@ Document version: `V2.1.2.0016`
 
 ## 1. Current Verified Baseline
 
-As of 2026-06-17, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 216 tests.
+As of 2026-06-17, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 220 tests.
 
 ## 2. Implemented Areas
 
@@ -57,6 +58,7 @@ As of 2026-06-17, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 216 
 23. FT100/TF100Web runtime can apply pushed tag values to all `Lire valeur` Element+ bindings through `window.scadaBuilderSetTagValue` or `scada-builder-tag-value`, while updating the shared runtime tag cache used by conditions.
 24. Element+ events can author `Ouvrir popup`, `Fermer popup`, and `Basculer popup` against compiled `Fragment` pages. Build/export validation rejects invalid popup targets, and FT100/TF100Web runtime opens, closes, or toggles the fragment in a centered iframe popup with close diagnostics and iframe-to-parent close/toggle requests.
 25. Element+ events can author `Afficher bordure`, `Masquer bordure`, and `Basculer bordure` against Element+ targets. Build/export validation rejects missing targets, and FT100/TF100Web runtime adds, removes, or toggles the standard page-scoped border class.
+26. Popup actions can persist `ScadaPopupOptions` for position, size preset, multi-instance behavior, iframe reset policy, and Element+ host-region placement. Build/export validation rejects missing host-region targets.
 
 ## 3. Source Of Truth
 

@@ -1042,16 +1042,26 @@ Apply any viewport scale to the composed page container, not independently to he
     window.location.href = '../' + encodeURIComponent(targetPageId) + '/' + encodeURIComponent(targetPageId) + '.html';
   }
 
-  function getPopupId(targetPageId) {
+  function normalizePopupOptions(options) {
+    return Object.assign({
+      Position: 'center',
+      SizePreset: 'large',
+      AllowMultiple: false,
+      ResetOnOpen: true,
+      HostRegionId: null
+    }, options || {});
+  }
+
+  function getPopupBaseId(targetPageId) {
     return root.id + '__popup_' + sanitizeElementId(targetPageId);
   }
 
-  function getPopupOverlay(targetPageId) {
-    return document.getElementById(getPopupId(targetPageId));
+  function getPopupOverlays(targetPageId) {
+    return Array.from(root.querySelectorAll('[data-scada-popup-page-id="' + cssEscape(targetPageId) + '"]'));
   }
 
   function closePopupLocal(targetPageId) {
-    const existing = getPopupOverlay(targetPageId);
+    const existing = getPopupOverlays(targetPageId).pop();
     if (!existing) {
       return false;
     }
@@ -1076,33 +1086,121 @@ Apply any viewport scale to the composed page container, not independently to he
     return false;
   }
 
-  function openPopup(targetPageId) {
+  function getPopupHost(options) {
+    if (String(options.Position || '').toLowerCase() !== 'hostregion' || !options.HostRegionId) {
+      return root;
+    }
+
+    const host = getPageElement(options.HostRegionId) || root;
+    if (host !== root && window.getComputedStyle(host).position === 'static') {
+      host.style.position = 'relative';
+    }
+
+    return host;
+  }
+
+  function applyPopupSize(panel, options) {
+    const size = String(options.SizePreset || 'large').toLowerCase();
+    if (size === 'small') {
+      panel.style.width = '360px';
+      panel.style.height = '240px';
+      panel.style.maxWidth = '60%';
+      panel.style.maxHeight = '60%';
+    } else if (size === 'medium') {
+      panel.style.width = '560px';
+      panel.style.height = '420px';
+      panel.style.maxWidth = '75%';
+      panel.style.maxHeight = '75%';
+    } else if (size === 'fullscreen') {
+      panel.style.width = '100%';
+      panel.style.height = '100%';
+      panel.style.maxWidth = '100%';
+      panel.style.maxHeight = '100%';
+    } else {
+      panel.style.width = '80%';
+      panel.style.height = '80%';
+      panel.style.maxWidth = '960px';
+      panel.style.maxHeight = '720px';
+    }
+  }
+
+  function applyPopupPlacement(overlay, panel, options) {
+    const position = String(options.Position || 'center').toLowerCase();
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    if (position === 'topleft') {
+      overlay.style.alignItems = 'flex-start';
+      overlay.style.justifyContent = 'flex-start';
+    } else if (position === 'topright') {
+      overlay.style.alignItems = 'flex-start';
+      overlay.style.justifyContent = 'flex-end';
+    } else if (position === 'bottomleft') {
+      overlay.style.alignItems = 'flex-end';
+      overlay.style.justifyContent = 'flex-start';
+    } else if (position === 'bottomright') {
+      overlay.style.alignItems = 'flex-end';
+      overlay.style.justifyContent = 'flex-end';
+    } else if (position === 'dockleft') {
+      overlay.style.alignItems = 'stretch';
+      overlay.style.justifyContent = 'flex-start';
+      panel.style.height = '100%';
+      panel.style.maxHeight = '100%';
+    } else if (position === 'dockright') {
+      overlay.style.alignItems = 'stretch';
+      overlay.style.justifyContent = 'flex-end';
+      panel.style.height = '100%';
+      panel.style.maxHeight = '100%';
+    } else if (position === 'docktop') {
+      overlay.style.alignItems = 'flex-start';
+      overlay.style.justifyContent = 'stretch';
+      panel.style.width = '100%';
+      panel.style.maxWidth = '100%';
+    } else if (position === 'dockbottom') {
+      overlay.style.alignItems = 'flex-end';
+      overlay.style.justifyContent = 'stretch';
+      panel.style.width = '100%';
+      panel.style.maxWidth = '100%';
+    } else if (position === 'hostregion') {
+      overlay.style.position = 'absolute';
+      overlay.style.inset = '0';
+      panel.style.width = '100%';
+      panel.style.height = '100%';
+      panel.style.maxWidth = '100%';
+      panel.style.maxHeight = '100%';
+    }
+  }
+
+  function openPopup(targetPageId, popupOptions) {
     if (!targetPageId) {
       return;
     }
 
-    closePopupLocal(targetPageId);
+    const options = normalizePopupOptions(popupOptions);
+    if (!options.AllowMultiple) {
+      while (closePopupLocal(targetPageId)) {
+      }
+    }
+
+    const host = getPopupHost(options);
     const overlay = document.createElement('div');
-    overlay.id = getPopupId(targetPageId);
+    overlay.id = options.AllowMultiple ? getPopupBaseId(targetPageId) + '_' + Date.now().toString(36) : getPopupBaseId(targetPageId);
     overlay.setAttribute('data-scada-popup-page-id', targetPageId);
+    overlay.setAttribute('data-scada-popup-position', options.Position || 'Center');
+    overlay.setAttribute('data-scada-popup-size', options.SizePreset || 'Large');
     overlay.style.position = 'absolute';
     overlay.style.inset = '0';
     overlay.style.zIndex = '10000';
-    overlay.style.display = 'flex';
-    overlay.style.alignItems = 'center';
-    overlay.style.justifyContent = 'center';
     overlay.style.background = 'rgba(0, 0, 0, 0.28)';
     overlay.style.pointerEvents = 'auto';
 
     const panel = document.createElement('div');
     panel.style.position = 'relative';
-    panel.style.width = '80%';
-    panel.style.height = '80%';
-    panel.style.maxWidth = '960px';
-    panel.style.maxHeight = '720px';
     panel.style.background = '#fff';
     panel.style.border = '1px solid rgba(15, 42, 48, 0.24)';
     panel.style.boxShadow = '0 16px 42px rgba(15, 42, 48, 0.28)';
+    applyPopupSize(panel, options);
+    applyPopupPlacement(overlay, panel, options);
 
     const close = document.createElement('button');
     close.type = 'button';
@@ -1117,7 +1215,8 @@ Apply any viewport scale to the composed page container, not independently to he
 
     const iframe = document.createElement('iframe');
     iframe.title = targetPageId;
-    iframe.src = '../' + encodeURIComponent(targetPageId) + '/' + encodeURIComponent(targetPageId) + '.html';
+    const iframeUrl = '../' + encodeURIComponent(targetPageId) + '/' + encodeURIComponent(targetPageId) + '.html';
+    iframe.src = options.ResetOnOpen === false ? iframeUrl : iframeUrl + '?scadaPopupInstance=' + encodeURIComponent(overlay.id);
     iframe.style.width = '100%';
     iframe.style.height = '100%';
     iframe.style.border = '0';
@@ -1130,9 +1229,9 @@ Apply any viewport scale to the composed page container, not independently to he
         close.click();
       }
     });
-    root.appendChild(overlay);
+    host.appendChild(overlay);
     window.dispatchEvent(new CustomEvent('scada-builder-popup-opened', {
-      detail: { pageId: targetPageId, elementId: root.getAttribute('data-scada-page-id') }
+      detail: { pageId: targetPageId, elementId: root.getAttribute('data-scada-page-id'), options: options }
     }));
   }
 
@@ -1146,7 +1245,7 @@ Apply any viewport scale to the composed page container, not independently to he
     }
   }
 
-  function togglePopup(targetPageId) {
+  function togglePopup(targetPageId, popupOptions) {
     if (!targetPageId) {
       return;
     }
@@ -1156,7 +1255,7 @@ Apply any viewport scale to the composed page container, not independently to he
     }
 
     if (!postPopupRequestToParent('togglePopup', targetPageId)) {
-      openPopup(targetPageId);
+      openPopup(targetPageId, popupOptions);
     }
   }
 
@@ -1170,13 +1269,17 @@ Apply any viewport scale to the composed page container, not independently to he
       closePopupLocal(detail.pageId);
     } else if (detail.action === 'togglePopup') {
       if (!closePopupLocal(detail.pageId)) {
-        openPopup(detail.pageId);
-      }
-    }
-  });
+            openPopup(detail.pageId, null);
+          }
+        }
+      });
 
   function sanitizeElementId(value) {
     return String(value || '').replace(/[^a-zA-Z0-9_-]/g, '_');
+  }
+
+  function cssEscape(value) {
+    return String(value || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
   }
 
   function getPageElement(elementId) {
@@ -1384,7 +1487,7 @@ Apply any viewport scale to the composed page container, not independently to he
     }
 
     if (kind === 'mountfragment') {
-      openPopup(action.TargetPageId);
+      openPopup(action.TargetPageId, action.PopupOptions);
       return;
     }
 
@@ -1394,7 +1497,7 @@ Apply any viewport scale to the composed page container, not independently to he
     }
 
     if (kind === 'togglepopup') {
-      togglePopup(action.TargetPageId);
+      togglePopup(action.TargetPageId, action.PopupOptions);
       return;
     }
 
