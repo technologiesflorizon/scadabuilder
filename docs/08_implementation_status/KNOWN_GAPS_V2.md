@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active known gaps register
-Document version: `V2.1.2.0012`
+Document version: `V2.1.2.0014`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0014` | `PENDING` | Retrait du gap `On click -> open popup`; les options avancees de popup restent roadmap. |
 | 2026-06-17 | `V2.1.2.0012` | `PENDING` | Retrait du gap d'application runtime des valeurs lues; les reponses degradees restent roadmap. |
 | 2026-06-17 | `V2.1.2.0010` | `PENDING` | Clarification que les conditions simples sont implementees pour actions objet, tandis que degrade/expressions restent roadmap. |
 | 2026-06-17 | `V2.1.2.0009` | `PENDING` | Retrait du gap binding valeur importe et ajout du gap import protocoles pour creation locale de tags. |
@@ -20,7 +21,7 @@ Document version: `V2.1.2.0012`
 
 1. Full migration from legacy top-level documentation into the new owner documents is not complete.
 2. Public C# XML documentation coverage is not yet enforced as a failing build gate.
-3. `On click -> open popup`, hover group border, degraded semantics, compound conditions, SCADA Builder-side visual effects, and global lifecycle scripts remain roadmap unless tests prove otherwise.
+3. Hover group border, popup close/toggle actions, advanced popup lifecycle policy, degraded semantics, compound conditions, SCADA Builder-side visual effects, and global lifecycle scripts remain roadmap unless tests prove otherwise.
 4. Rich Element+ button hover runtime interpretation belongs to TF100Web. SCADA Builder V2 exports metadata and scoped CSS, but the editor preview does not apply the hover behavior locally.
 5. Expression binding, degraded tag semantics, and SCADA Builder-side tag creation remain roadmap. Local tag creation depends on a future project protocol import revision.
 6. The final `FT100`, `TF100Web`, and `tf100-web` naming convention remains to be decided.

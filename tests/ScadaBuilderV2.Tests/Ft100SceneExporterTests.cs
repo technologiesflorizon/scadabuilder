@@ -854,6 +854,53 @@ public sealed class Ft100SceneExporterTests
     }
 
     [TestMethod]
+    public async Task ExportIncludesOpenPopupRuntimeHook()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+        var sourceHtmlPath = Path.Combine(sourceRoot, "open_popup.html");
+        await File.WriteAllTextAsync(sourceHtmlPath, "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var button = ScadaElement.CreateText("btn_popup", "Details", 10, 20);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Open popup", new(1280, 873))
+            .WithElement(button)
+            .WithOpenPopupEvent("btn_popup", ScadaEventRegistry.ClickKey, "popup_pump");
+        var project = ScadaProject.CreateDefault("Runtime") with
+        {
+            Scenes =
+            [
+                new ScadaSceneReference("win00008", "Open popup", "scenes/win00008.scene.json"),
+                new ScadaSceneReference("popup_pump", "Popup pompe", "scenes/popup_pump.scene.json", ScadaPageType.Fragment)
+            ]
+        };
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot, project);
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
+
+            StringAssert.Contains(html, "data-scada-events=");
+            StringAssert.Contains(html, "function openPopup(targetPageId)");
+            StringAssert.Contains(html, "data-scada-popup-page-id");
+            StringAssert.Contains(html, "scada-builder-popup-opened");
+            StringAssert.Contains(html, "scada-builder-popup-closed");
+            StringAssert.Contains(manifest, "\"Kind\": \"mountFragment\"");
+            StringAssert.Contains(manifest, "\"TargetPageId\": \"popup_pump\"");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task ExportOmitsDisabledButtonHoverCssButKeepsMetadata()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

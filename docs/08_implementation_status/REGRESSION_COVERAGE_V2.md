@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active regression coverage map
-Document version: `V2.1.2.0013`
+Document version: `V2.1.2.0014`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0014` | `PENDING` | Ajout de la couverture domaine, persistance, validation et export pour `Ouvrir popup`. |
 | 2026-06-17 | `V2.1.2.0013` | `PENDING` | Ajout de la couverture de contrat pour le panneau `Catalogue Tags` filtre. |
 | 2026-06-17 | `V2.1.2.0012` | `PENDING` | Ajout de la couverture export runtime pour l'application des valeurs `Lire valeur`. |
 | 2026-06-17 | `V2.1.2.0010` | `PENDING` | Ajout de la couverture actions objet conditionnelles, validation build et export runtime. |
@@ -27,7 +28,7 @@ Document version: `V2.1.2.0013`
 
 ```text
 dotnet test ScadaBuilderV2.sln --no-restore
-205 passed, 0 failed, 0 skipped
+209 passed, 0 failed, 0 skipped
 ```
 
 ## 2. Coverage Map
@@ -43,6 +44,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Element+ legacy conversion | `ElementPlusLegacyConverterTests.cs` |
 | Element+ events/actions | `OfficialSceneDomainTests.cs`, `WebViewContextMenuScriptTests.cs`, `ModernProjectStoreTests.cs`, `Ft100SceneExporterTests.cs` |
 | Element+ conditional object visibility actions | `OfficialSceneDomainTests.cs`, `ModernProjectStoreTests.cs`, `Ft100SceneExporterTests.cs` |
+| Element+ popup fragment actions | `OfficialSceneDomainTests.cs`, `ModernProjectStoreTests.cs`, `Ft100SceneExporterTests.cs` |
 | TF100Web tag catalog import and Element+ value bindings | `ModernProjectStoreTests.cs`, `OfficialSceneDomainTests.cs`, `Ft100SceneExporterTests.cs` |
 | Tag catalog editor panel filters | `StudioElementPlusContractTests.cs` |
 | FT100 read tag value application runtime | `Ft100SceneExporterTests.cs` |

@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active runtime package contract
-Document version: `V2.1.2.0012`
+Document version: `V2.1.2.0014`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0014` | `PENDING` | Ajout du runtime popup pour actions `MountFragment`. |
 | 2026-06-17 | `V2.1.2.0012` | `PENDING` | Ajout du protocole runtime `scadaBuilderSetTagValue` pour appliquer les valeurs lues. |
 | 2026-06-17 | `V2.1.2.0010` | `PENDING` | Ajout de l'evaluation runtime des conditions tag pour actions objet Element+. |
 | 2026-06-17 | `V2.1.2.0009` | `PENDING` | Remplacement du hook `WriteTag` authorable par les attributs runtime de binding valeur. |
@@ -53,6 +54,7 @@ scada-builder-v2-ft100-package/
 14. Exported page runtime emits `scada-builder-read-tag-request` for read-bound elements and handles write-bound input changes by calling `window.tf100webScadaBuilder.writeTag(tagId, value, payload)` when available, then emitting `scada-builder-write-value`.
 15. Object visibility actions may include one `Condition`; exported runtime evaluates it with `window.tf100webScadaBuilder.getTagValue(tagId)` or `window.scadaBuilderTagValues[tagId]` before applying `show`, `hide`, or `toggleVisibility`.
 16. TF100Web may push live values into read-bound Element+ objects with `window.scadaBuilderSetTagValue(tagId, value, meta)` or by dispatching `scada-builder-tag-value` with `{ tagId, value }`. The page updates all matching `data-scada-read-tag` elements, stores the value in `window.scadaBuilderTagValues`, and emits `scada-builder-tag-value-applied`.
+17. `MountFragment` actions open compiled `Fragment` pages in a page-local popup iframe. The runtime emits `scada-builder-popup-opened` and `scada-builder-popup-closed` diagnostics.
 
 ## 3. Package Flow
 
@@ -79,6 +81,7 @@ flowchart TD
 6. `DEC-0016` - Element Value Bindings For Imported Tags.
 7. `DEC-0017` - Conditional Object Visibility Actions.
 8. `DEC-0018` - Runtime Read Tag Value Application.
+9. `DEC-0019` - Fragment Popup Runtime Action.
 
 ## 5. Related Tests
 

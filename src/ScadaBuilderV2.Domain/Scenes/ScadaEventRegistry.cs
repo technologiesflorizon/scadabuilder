@@ -75,6 +75,11 @@ public static class ScadaEventRegistry
     public const string ChangePageFunction = "ChangePage";
 
     /// <summary>
+    /// Runtime function name for opening a compiled fragment page as a popup.
+    /// </summary>
+    public const string OpenPopupFunction = "OpenPopup";
+
+    /// <summary>
     /// Runtime function name for showing a target Element+ object.
     /// </summary>
     public const string ShowFunction = "Show";
@@ -142,6 +147,13 @@ public static class ScadaEventRegistry
             ["TargetPageId"],
             true,
             "Navigue vers une page compilee du projet FT100/TF100Web."),
+        new(
+            OpenPopupFunction,
+            ScadaActionKind.MountFragment,
+            "Ouvrir popup",
+            ["TargetPageId"],
+            true,
+            "Ouvre une page fragment compilee dans une popup runtime."),
         new(ReadValueFunction, ScadaActionKind.ReadValue, "Lire valeur", ["TagId"], true, "Lie un tag runtime a la valeur affichee par un Element+."),
         new(WriteValueFunction, ScadaActionKind.WriteValue, "Ecrire valeur", ["TagId"], true, "Lie la valeur saisie par l'operateur a un tag runtime."),
         new(ShowFunction, ScadaActionKind.Show, "Afficher objet", ["TargetElementId"], true, "Affiche un Element+ cible."),

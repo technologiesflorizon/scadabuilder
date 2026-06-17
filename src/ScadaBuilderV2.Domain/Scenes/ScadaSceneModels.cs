@@ -896,6 +896,37 @@ public sealed record ScadaScene(
     }
 
     /// <summary>
+    /// Adds a model-backed Element+ event that opens a compiled fragment page as a runtime popup.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0019.
+    /// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
+    /// </remarks>
+    public ScadaScene WithOpenPopupEvent(string elementId, string triggerKeyOrRuntimeName, string targetPageId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(triggerKeyOrRuntimeName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(targetPageId);
+
+        var trigger = ScadaEventRegistry.FindTrigger(triggerKeyOrRuntimeName) ??
+            throw new InvalidOperationException($"Event trigger '{triggerKeyOrRuntimeName}' is not registered.");
+        var action = new ScadaActionDefinition(
+            CreateActionId(elementId, trigger.RuntimeTrigger, ScadaEventRegistry.OpenPopupFunction, targetPageId),
+            ScadaActionKind.MountFragment,
+            TargetPageId: targetPageId.Trim());
+
+        return WithAction(action)
+            .WithObjectEvent(
+                elementId,
+                new ScadaObjectEventBinding(
+                    trigger.RuntimeTrigger,
+                    action.Id,
+                    StopPropagation: true,
+                    PreventDefault: false));
+    }
+
+    /// <summary>
     /// Adds a model-backed Element+ event that changes target object visibility.
     /// </summary>
     /// <remarks>

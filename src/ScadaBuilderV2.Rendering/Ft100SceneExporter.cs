@@ -1041,6 +1041,74 @@ Apply any viewport scale to the composed page container, not independently to he
     window.location.href = '../' + encodeURIComponent(targetPageId) + '/' + encodeURIComponent(targetPageId) + '.html';
   }
 
+  function openPopup(targetPageId) {
+    if (!targetPageId) {
+      return;
+    }
+
+    const popupId = root.id + '__popup_' + sanitizeElementId(targetPageId);
+    const existing = document.getElementById(popupId);
+    if (existing) {
+      existing.remove();
+    }
+
+    const overlay = document.createElement('div');
+    overlay.id = popupId;
+    overlay.setAttribute('data-scada-popup-page-id', targetPageId);
+    overlay.style.position = 'absolute';
+    overlay.style.inset = '0';
+    overlay.style.zIndex = '10000';
+    overlay.style.display = 'flex';
+    overlay.style.alignItems = 'center';
+    overlay.style.justifyContent = 'center';
+    overlay.style.background = 'rgba(0, 0, 0, 0.28)';
+    overlay.style.pointerEvents = 'auto';
+
+    const panel = document.createElement('div');
+    panel.style.position = 'relative';
+    panel.style.width = '80%';
+    panel.style.height = '80%';
+    panel.style.maxWidth = '960px';
+    panel.style.maxHeight = '720px';
+    panel.style.background = '#fff';
+    panel.style.border = '1px solid rgba(15, 42, 48, 0.24)';
+    panel.style.boxShadow = '0 16px 42px rgba(15, 42, 48, 0.28)';
+
+    const close = document.createElement('button');
+    close.type = 'button';
+    close.textContent = 'Fermer';
+    close.style.position = 'absolute';
+    close.style.top = '8px';
+    close.style.right = '8px';
+    close.style.zIndex = '1';
+    close.addEventListener('click', function () {
+      overlay.remove();
+      window.dispatchEvent(new CustomEvent('scada-builder-popup-closed', {
+        detail: { pageId: targetPageId }
+      }));
+    });
+
+    const iframe = document.createElement('iframe');
+    iframe.title = targetPageId;
+    iframe.src = '../' + encodeURIComponent(targetPageId) + '/' + encodeURIComponent(targetPageId) + '.html';
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.border = '0';
+
+    panel.appendChild(close);
+    panel.appendChild(iframe);
+    overlay.appendChild(panel);
+    overlay.addEventListener('click', function (event) {
+      if (event.target === overlay) {
+        close.click();
+      }
+    });
+    root.appendChild(overlay);
+    window.dispatchEvent(new CustomEvent('scada-builder-popup-opened', {
+      detail: { pageId: targetPageId, elementId: root.getAttribute('data-scada-page-id') }
+    }));
+  }
+
   function sanitizeElementId(value) {
     return String(value || '').replace(/[^a-zA-Z0-9_-]/g, '_');
   }
@@ -1246,6 +1314,11 @@ Apply any viewport scale to the composed page container, not independently to he
     const kind = String(action.Kind).toLowerCase();
     if (kind === 'navigate') {
       navigate(action.TargetPageId);
+      return;
+    }
+
+    if (kind === 'mountfragment') {
+      openPopup(action.TargetPageId);
       return;
     }
 

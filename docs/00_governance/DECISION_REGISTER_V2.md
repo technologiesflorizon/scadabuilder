@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.2.0012`
+Document version: `V2.1.2.0014`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0014` | `PENDING` | Ajout de DEC-0019 pour l'action runtime `Ouvrir popup`. |
 | 2026-06-17 | `V2.1.2.0012` | `PENDING` | Ajout de DEC-0018 pour l'application runtime des valeurs de tags lues. |
 | 2026-06-17 | `V2.1.2.0010` | `PENDING` | Ajout de DEC-0017 pour les actions objet conditionnelles basees sur tags importes. |
 | 2026-06-17 | `V2.1.2.0009` | `PENDING` | Ajout de DEC-0016 pour les bindings Element+ `Lire valeur` et `Ecrire valeur`; DEC-0015 est supersedee. |
@@ -462,6 +463,32 @@ Consequences:
 Regression coverage:
 
 `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+
+### DEC-0019 - Fragment Popup Runtime Action
+
+Status: Active
+Created: 2026-06-17 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
+
+Context:
+
+Industrial HMI screens need click-triggered popups for detail panels and equipment faceplates. The existing V2 project model already distinguishes page type `Fragment`, and FT100/TF100Web export already compiles each included page under its own page namespace.
+
+Decision:
+
+`Ouvrir popup` is implemented as registry function `OpenPopup` persisted as `ScadaActionKind.MountFragment` with `TargetPageId`. The authoring UI only offers compiled `Fragment` pages for this function. Build/export validation rejects missing popup fragments, non-fragment targets, and fragments excluded from build. Exported runtime mounts the target fragment page in a centered iframe popup, provides a local close button and outside-click close behavior, and emits popup opened/closed diagnostic events.
+
+Consequences:
+
+The fragment keeps its exported page namespace and internal behaviors because it is loaded as its own compiled page. Advanced popup placement, named host regions, lifecycle state reset rules, close-popup/toggle-popup action functions, and multi-instance management remain future revisions.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
 
 ### DEC-0017 - Conditional Object Visibility Actions
 

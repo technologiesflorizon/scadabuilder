@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active editor/runtime actions contract
-Document version: `V2.1.2.0012`
+Document version: `V2.1.2.0014`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0014` | `PENDING` | Implementation de `Ouvrir popup` vers fragments compiles. |
 | 2026-06-17 | `V2.1.2.0012` | `PENDING` | Clarification de l'application runtime des valeurs recues par `Lire valeur`. |
 | 2026-06-17 | `V2.1.2.0010` | `PENDING` | Implementation des actions objet `Afficher`, `Masquer`, `Basculer visibilite` avec condition tag deterministe. |
 | 2026-06-17 | `V2.1.2.0009` | `PENDING` | Remplacement de l'action authorable `WriteTag` par les bindings Element+ `Lire valeur` et `Ecrire valeur`. |
@@ -34,6 +35,7 @@ Object events and runtime actions are model-owned behavior. UI controls may auth
 9. `Lire valeur` and `Ecrire valeur` persist tag ids as Element+ data bindings, not triggered scene events. `Ecrire valeur` writes the operator-entered runtime value and never stores a literal design-time value.
 10. `Afficher objet`, `Masquer objet`, and `Basculer visibilite` are authorable against Element+ targets and may use one deterministic tag condition.
 11. Exported runtime applies values pushed by TF100Web to every Element+ using the matching `Lire valeur` tag binding.
+12. `Ouvrir popup` is authorable against compiled `Fragment` pages and persists as `MountFragment`.
 
 ## 3. Event Registry
 
@@ -52,6 +54,7 @@ Runtime function contracts are centralized in `ScadaEventRegistry`:
 | Function | French label | Persisted action kind | Required arguments | Status |
 | --- | --- | --- | --- | --- |
 | `ChangePage` | `Changer de page` | `Navigate` | `TargetPageId` | Implemented |
+| `OpenPopup` | `Ouvrir popup` | `MountFragment` | `TargetPageId` fragment | Implemented |
 | `Show` | `Afficher objet` | `Show` | `TargetElementId`, optional `Condition` | Implemented |
 | `Hide` | `Masquer objet` | `Hide` | `TargetElementId`, optional `Condition` | Implemented |
 | `ToggleVisibility` | `Basculer visibilite` | `ToggleVisibility` | `TargetElementId`, optional `Condition` | Implemented |
@@ -109,17 +112,29 @@ The current implemented tag slice covers:
 
 The current slice does not yet implement degraded state semantics, expression authoring, compound conditions, local tag creation, or project protocol import. Local tag creation requires a future protocol import revision.
 
-## 7. Roadmap Boundary
+## 7. Popup Authoring Boundary
+
+The current implemented popup slice covers:
+
+1. Selecting `Ouvrir popup` in the Element+ event dialog.
+2. Selecting only pages marked `Fragment` and included in build.
+3. Persisting the action as `ScadaActionKind.MountFragment` with `TargetPageId`.
+4. Validating missing, non-fragment, or excluded popup targets before build/export.
+5. Exporting runtime that opens the compiled fragment page in a centered iframe popup with close behavior.
+
+The current slice does not yet implement `Fermer popup`, `Basculer popup`, named popup host regions, explicit placement, multi-instance policy, or lifecycle reset options.
+
+## 8. Roadmap Boundary
 
 The following are roadmap items until implemented and covered by tests:
 
-1. `On click -> open popup`.
-2. `mouse hover -> show element/group border`.
+1. `mouse hover -> show element/group border`.
+2. Popup close/toggle action functions and advanced popup lifecycle policy.
 3. Degraded tag conditions and compound conditions.
 4. Global scripts generating lifecycle events.
 5. Visual effects such as blink, glow, pulse, alarm highlight, degraded treatment.
 
-## 8. Event Flow
+## 9. Event Flow
 
 ```mermaid
 flowchart TD
@@ -132,7 +147,7 @@ flowchart TD
   Export --> Runtime[Runtime JS action bridge]
 ```
 
-## 9. Related Tests
+## 10. Related Tests
 
 1. `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`
 2. `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`

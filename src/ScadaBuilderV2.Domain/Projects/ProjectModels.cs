@@ -194,11 +194,12 @@ public static class ScadaProjectBuildValidator
             .Where(reference => reference.IncludeInBuild)
             .Select(reference => reference.Id)
             .ToHashSet(StringComparer.Ordinal);
+        var pagesById = project.Scenes.ToDictionary(reference => reference.Id, StringComparer.Ordinal);
 
         foreach (var scene in scenes.Where(scene => sceneIdsToBuild.Contains(scene.Id)))
         {
             ValidateSceneValueBindings(issues, scene, tagsById);
-            ValidateSceneActions(issues, scene, tagsById);
+            ValidateSceneActions(issues, scene, tagsById, pagesById);
         }
 
         return issues;
@@ -380,7 +381,8 @@ public static class ScadaProjectBuildValidator
     private static void ValidateSceneActions(
         List<ScadaBuildValidationIssue> issues,
         ScadaScene scene,
-        IReadOnlyDictionary<string, ScadaTagDefinition> tagsById)
+        IReadOnlyDictionary<string, ScadaTagDefinition> tagsById,
+        IReadOnlyDictionary<string, ScadaSceneReference> pagesById)
     {
         var elementIds = FlattenElements(scene.Elements)
             .Select(element => element.Id)
@@ -399,7 +401,49 @@ public static class ScadaProjectBuildValidator
                 }
             }
 
+            if (action.Kind == ScadaActionKind.MountFragment)
+            {
+                ValidatePopupFragmentTarget(issues, scene, action, pagesById);
+            }
+
             ValidateActionCondition(issues, scene, action, tagsById);
+        }
+    }
+
+    // Enforces that popup actions can only mount compiled fragment pages.
+    private static void ValidatePopupFragmentTarget(
+        List<ScadaBuildValidationIssue> issues,
+        ScadaScene scene,
+        ScadaActionDefinition action,
+        IReadOnlyDictionary<string, ScadaSceneReference> pagesById)
+    {
+        if (string.IsNullOrWhiteSpace(action.TargetPageId) ||
+            !pagesById.TryGetValue(action.TargetPageId, out var targetPage))
+        {
+            issues.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                "popup.fragment-missing",
+                $"Action '{action.Id}' references missing popup fragment '{action.TargetPageId}'.",
+                scene.Id));
+            return;
+        }
+
+        if (targetPage.Type != ScadaPageType.Fragment)
+        {
+            issues.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                "popup.target-not-fragment",
+                $"Action '{action.Id}' references page '{targetPage.Id}' as popup, but its type is {targetPage.Type}.",
+                scene.Id));
+        }
+
+        if (!targetPage.IncludeInBuild)
+        {
+            issues.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                "popup.fragment-not-compiled",
+                $"Action '{action.Id}' references popup fragment '{targetPage.Id}', but that page is not included in build.",
+                scene.Id));
         }
     }
 

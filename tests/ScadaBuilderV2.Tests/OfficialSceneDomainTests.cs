@@ -171,6 +171,7 @@ public sealed class OfficialSceneDomainTests
         var release = ScadaEventRegistry.FindTrigger(ScadaEventRegistry.ReleaseKey);
         var hover = ScadaEventRegistry.FindTrigger(ScadaEventRegistry.HoverKey);
         var changePage = ScadaEventRegistry.FindAction(ScadaEventRegistry.ChangePageFunction);
+        var openPopup = ScadaEventRegistry.FindAction(ScadaEventRegistry.OpenPopupFunction);
         var show = ScadaEventRegistry.FindAction(ScadaEventRegistry.ShowFunction);
         var hide = ScadaEventRegistry.FindAction(ScadaEventRegistry.HideFunction);
         var toggleVisibility = ScadaEventRegistry.FindAction(ScadaEventRegistry.ToggleVisibilityFunction);
@@ -188,6 +189,9 @@ public sealed class OfficialSceneDomainTests
         Assert.AreEqual(ScadaActionKind.Navigate, changePage?.Kind);
         Assert.IsTrue(changePage?.Implemented ?? false);
         CollectionAssert.Contains(changePage?.RequiredArguments.ToArray(), "TargetPageId");
+        Assert.AreEqual(ScadaActionKind.MountFragment, openPopup?.Kind);
+        Assert.IsTrue(openPopup?.Implemented ?? false);
+        CollectionAssert.Contains(openPopup?.RequiredArguments.ToArray(), "TargetPageId");
         Assert.AreEqual(ScadaActionKind.Show, show?.Kind);
         Assert.IsTrue(show?.Implemented ?? false);
         CollectionAssert.Contains(show?.RequiredArguments.ToArray(), "TargetElementId");
@@ -246,6 +250,25 @@ public sealed class OfficialSceneDomainTests
         Assert.AreEqual("pump_status", action.TargetElementId);
         Assert.AreEqual("tf100.mapping.running", action.Condition?.TagId);
         Assert.AreEqual(ScadaConditionOperator.True, action.Condition?.Operator);
+        Assert.AreEqual(action.Id, updated.EventBindings.Single().ActionId);
+        Assert.AreEqual(ScadaEventRegistry.ClickRuntimeTrigger, updated.EventBindings.Single().Trigger);
+    }
+
+    [TestMethod]
+    public void SceneCanAttachOpenPopupEvent()
+    {
+        var button = ScadaElement.CreateText("btn_popup", "Details", 10, 20);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "win00008", new CanvasSize(1280, 873))
+            .WithElement(button)
+            .WithOpenPopupEvent("btn_popup", ScadaEventRegistry.ClickKey, "popup_pump");
+
+        var updated = scene.FindElementRecursive("btn_popup");
+        var action = scene.ActionDefinitions.Single();
+
+        Assert.IsNotNull(updated);
+        Assert.AreEqual(ScadaActionKind.MountFragment, action.Kind);
+        Assert.AreEqual("popup_pump", action.TargetPageId);
         Assert.AreEqual(action.Id, updated.EventBindings.Single().ActionId);
         Assert.AreEqual(ScadaEventRegistry.ClickRuntimeTrigger, updated.EventBindings.Single().Trigger);
     }
@@ -317,7 +340,11 @@ public sealed class OfficialSceneDomainTests
             .WithValueBinding("input_sp", readTagId: "tf100.mapping.99");
         var project = ScadaProject.CreateDefault("Validation") with
         {
-            Scenes = [new ScadaSceneReference("win00008", "win00008", "scenes/win00008.scene.json")],
+            Scenes =
+            [
+                new ScadaSceneReference("win00008", "win00008", "scenes/win00008.scene.json"),
+                new ScadaSceneReference("default_target", "Default target", "scenes/default_target.scene.json")
+            ],
             TagCatalog = new ScadaTagCatalog(
                 "tf100web-scada-tags-v1",
                 [
@@ -371,6 +398,42 @@ public sealed class OfficialSceneDomainTests
         Assert.IsTrue(issues.Any(issue => issue.Code == "action.target-missing"));
         Assert.IsTrue(issues.Any(issue => issue.Code == "condition.boolean-operator-nonboolean-tag"));
     }
+
+    [TestMethod]
+    public void BuildValidationRejectsInvalidPopupFragmentTargets()
+    {
+        var button = ScadaElement.CreateText("btn_popup", "Details", 10, 20);
+        var missingScene = ScadaScene
+            .CreateEmpty("win00008", "win00008", new CanvasSize(1280, 873))
+            .WithElement(button)
+            .WithOpenPopupEvent("btn_popup", ScadaEventRegistry.ClickKey, "missing_popup");
+        var wrongTypeScene = ScadaScene
+            .CreateEmpty("win00009", "win00009", new CanvasSize(1280, 873))
+            .WithElement(button)
+            .WithOpenPopupEvent("btn_popup", ScadaEventRegistry.ClickKey, "default_target");
+        var excludedScene = ScadaScene
+            .CreateEmpty("win00010", "win00010", new CanvasSize(1280, 873))
+            .WithElement(button)
+            .WithOpenPopupEvent("btn_popup", ScadaEventRegistry.ClickKey, "excluded_popup");
+        var project = ScadaProject.CreateDefault("Validation") with
+        {
+            Scenes =
+            [
+                new ScadaSceneReference("win00008", "win00008", "scenes/win00008.scene.json"),
+                new ScadaSceneReference("win00009", "win00009", "scenes/win00009.scene.json"),
+                new ScadaSceneReference("win00010", "win00010", "scenes/win00010.scene.json"),
+                new ScadaSceneReference("default_target", "Default target", "scenes/default_target.scene.json"),
+                new ScadaSceneReference("excluded_popup", "Excluded popup", "scenes/excluded_popup.scene.json", ScadaPageType.Fragment, IncludeInBuild: false)
+            ]
+        };
+
+        var issues = ScadaProjectBuildValidator.Validate(project, [missingScene, wrongTypeScene, excludedScene]);
+
+        Assert.IsTrue(issues.Any(issue => issue.Code == "popup.fragment-missing"));
+        Assert.IsTrue(issues.Any(issue => issue.Code == "popup.target-not-fragment"));
+        Assert.IsTrue(issues.Any(issue => issue.Code == "popup.fragment-not-compiled"));
+    }
+
 
     [TestMethod]
     public void ButtonElementHasDefaultHoverUnlessExplicitlyDisabled()

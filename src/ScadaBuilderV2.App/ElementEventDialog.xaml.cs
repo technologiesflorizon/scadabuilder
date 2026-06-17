@@ -14,6 +14,7 @@ namespace ScadaBuilderV2.App;
 public partial class ElementEventDialog : Window
 {
     private IReadOnlyList<ScadaActionDefinition> actions = Array.Empty<ScadaActionDefinition>();
+    private readonly IReadOnlyList<ScadaSceneReference> pageReferences;
     private IReadOnlyDictionary<string, ScadaTagDefinition> tagsById = new Dictionary<string, ScadaTagDefinition>(StringComparer.Ordinal);
 
     /// <summary>
@@ -29,6 +30,7 @@ public partial class ElementEventDialog : Window
         ArgumentNullException.ThrowIfNull(element);
         InitializeComponent();
 
+        this.pageReferences = pageReferences;
         ElementTitleText.Text = $"{element.UserLabel} ({element.Kind})";
         actions = sceneActions;
         tagsById = (tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
@@ -40,13 +42,6 @@ public partial class ElementEventDialog : Window
 
         ActionComboBox.ItemsSource = ScadaEventRegistry.Actions.Where(action => action.Implemented).ToArray();
         ActionComboBox.SelectedItem = ScadaEventRegistry.FindAction(ScadaEventRegistry.ChangePageFunction);
-
-        TargetPageComboBox.ItemsSource = pageReferences
-            .Where(page => page.IncludeInBuild && page.Type == ScadaPageType.Default)
-            .OrderBy(page => page.Id, StringComparer.Ordinal)
-            .Select(page => new TargetPageItem(page.Id, $"{page.Id} - {page.Title}"))
-            .ToArray();
-        TargetPageComboBox.SelectedIndex = TargetPageComboBox.Items.Count > 0 ? 0 : -1;
 
         TargetElementComboBox.ItemsSource = FlattenElements(sceneElements)
             .Where(target => !target.IsLegacyStatic)
@@ -154,11 +149,16 @@ public partial class ElementEventDialog : Window
             return;
         }
 
-        if (string.Equals(action.FunctionName, ScadaEventRegistry.ChangePageFunction, StringComparison.Ordinal))
+        var isPageTargetAction =
+            string.Equals(action.FunctionName, ScadaEventRegistry.ChangePageFunction, StringComparison.Ordinal) ||
+            string.Equals(action.FunctionName, ScadaEventRegistry.OpenPopupFunction, StringComparison.Ordinal);
+        if (isPageTargetAction)
         {
             if (TargetPageComboBox.SelectedItem is not TargetPageItem targetPage)
             {
-                ValidationText.Text = "Selectionnez une page cible compilee de type Defaut.";
+                ValidationText.Text = string.Equals(action.FunctionName, ScadaEventRegistry.OpenPopupFunction, StringComparison.Ordinal)
+                    ? "Selectionnez un fragment compile pour la popup."
+                    : "Selectionnez une page cible compilee de type Defaut.";
                 return;
             }
 
@@ -240,6 +240,8 @@ public partial class ElementEventDialog : Window
     {
         var isChangePage = ActionComboBox.SelectedItem is ScadaActionFunctionContract action &&
             string.Equals(action.FunctionName, ScadaEventRegistry.ChangePageFunction, StringComparison.Ordinal);
+        var isOpenPopup = ActionComboBox.SelectedItem is ScadaActionFunctionContract popupAction &&
+            string.Equals(popupAction.FunctionName, ScadaEventRegistry.OpenPopupFunction, StringComparison.Ordinal);
         var isObjectVisibilityAction = ActionComboBox.SelectedItem is ScadaActionFunctionContract objectAction &&
             (string.Equals(objectAction.FunctionName, ScadaEventRegistry.ShowFunction, StringComparison.Ordinal) ||
              string.Equals(objectAction.FunctionName, ScadaEventRegistry.HideFunction, StringComparison.Ordinal) ||
@@ -250,8 +252,14 @@ public partial class ElementEventDialog : Window
 
         TriggerLabelText.IsEnabled = !isValueBinding;
         TriggerComboBox.IsEnabled = !isValueBinding;
-        TargetPageLabelText.Visibility = isChangePage ? Visibility.Visible : Visibility.Collapsed;
-        TargetPageComboBox.Visibility = isChangePage ? Visibility.Visible : Visibility.Collapsed;
+        TargetPageLabelText.Text = isOpenPopup ? "Fragment popup" : "Page cible";
+        TargetPageLabelText.Visibility = isChangePage || isOpenPopup ? Visibility.Visible : Visibility.Collapsed;
+        TargetPageComboBox.Visibility = isChangePage || isOpenPopup ? Visibility.Visible : Visibility.Collapsed;
+        if (isChangePage || isOpenPopup)
+        {
+            RefreshTargetPageOptions(isOpenPopup ? ScadaPageType.Fragment : ScadaPageType.Default);
+        }
+
         TargetElementLabelText.Visibility = isObjectVisibilityAction ? Visibility.Visible : Visibility.Collapsed;
         TargetElementComboBox.Visibility = isObjectVisibilityAction ? Visibility.Visible : Visibility.Collapsed;
         TargetTagLabelText.Visibility = isValueBinding ? Visibility.Visible : Visibility.Collapsed;
@@ -284,6 +292,7 @@ public partial class ElementEventDialog : Window
         var target = action?.Kind switch
         {
             ScadaActionKind.Navigate when !string.IsNullOrWhiteSpace(action.TargetPageId) => $" -> {action.TargetPageId}",
+            ScadaActionKind.MountFragment when !string.IsNullOrWhiteSpace(action.TargetPageId) => $" -> {action.TargetPageId}",
             ScadaActionKind.Show or ScadaActionKind.Hide or ScadaActionKind.ToggleVisibility when !string.IsNullOrWhiteSpace(action.TargetElementId) =>
                 $" -> {action.TargetElementId}{FormatCondition(action.Condition)}",
             ScadaActionKind.WriteTag when !string.IsNullOrWhiteSpace(action.TagId) => $" -> {action.TagId} = {action.Value}",
@@ -342,6 +351,25 @@ public partial class ElementEventDialog : Window
     private string FormatTag(string tagId)
     {
         return tagsById.TryGetValue(tagId, out var tag) ? tag.AuthoringLabel : tagId;
+    }
+
+    // Keeps page target choices aligned with the selected runtime function contract.
+    private void RefreshTargetPageOptions(ScadaPageType pageType)
+    {
+        var previous = (TargetPageComboBox.SelectedItem as TargetPageItem)?.PageId;
+        var items = pageReferences
+            .Where(page => page.IncludeInBuild && page.Type == pageType)
+            .OrderBy(page => page.Id, StringComparer.Ordinal)
+            .Select(page => new TargetPageItem(page.Id, $"{page.Id} - {page.Title}"))
+            .ToArray();
+        TargetPageComboBox.ItemsSource = items;
+        TargetPageComboBox.SelectedItem = !string.IsNullOrWhiteSpace(previous)
+            ? items.FirstOrDefault(item => string.Equals(item.PageId, previous, StringComparison.Ordinal))
+            : null;
+        if (TargetPageComboBox.SelectedItem is null)
+        {
+            TargetPageComboBox.SelectedIndex = TargetPageComboBox.Items.Count > 0 ? 0 : -1;
+        }
     }
 
     private static IEnumerable<ScadaElement> FlattenElements(IEnumerable<ScadaElement> elements)

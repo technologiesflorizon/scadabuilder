@@ -88,6 +88,36 @@ public sealed class ModernProjectStoreTests
     }
 
     [TestMethod]
+    public async Task SaveAndLoadScenePreservesOpenPopupAction()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var store = new ModernProjectStore();
+        var scene = ScadaScene
+            .CreateEmpty("win-popup", "Popup scene", new(1280, 873))
+            .WithElement(ScadaElement.CreateText("btn_popup", "Details", 10, 20))
+            .WithOpenPopupEvent("btn_popup", ScadaEventRegistry.ClickKey, "popup_pump");
+
+        try
+        {
+            await store.SaveSceneAsync(root, scene);
+
+            var loaded = await store.LoadOrCreateSceneAsync(root, "win-popup", "Popup scene", new(1280, 873));
+            var loadedAction = loaded.ActionDefinitions.Single();
+
+            Assert.AreEqual(ScadaActionKind.MountFragment, loadedAction.Kind);
+            Assert.AreEqual("popup_pump", loadedAction.TargetPageId);
+            Assert.AreEqual(loadedAction.Id, loaded.FindElementRecursive("btn_popup")?.EventBindings.Single().ActionId);
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task SaveAndReloadPreservesText22NumericConversionAndHidesLegacySource()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
