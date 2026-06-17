@@ -8,7 +8,7 @@ Document version: `V2.1.2.0019`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-17 | `V2.1.2.0019` | `PENDING` | Ajout manuel des nouvelles API publiques d'export `.sb2` et validation FT100. |
+| 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout manuel des nouvelles API publiques d'export `.sb2` et validation FT100. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation de l'index initial des fonctions/modules pour la verification documentaire. |
 
 ## 1. Purpose

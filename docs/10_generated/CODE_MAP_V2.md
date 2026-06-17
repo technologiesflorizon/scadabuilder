@@ -8,7 +8,7 @@ Document version: `V2.1.2.0019`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-17 | `V2.1.2.0019` | `PENDING` | Ajout de la responsabilite export `.sb2` et validation FT100 au module Rendering. |
+| 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout de la responsabilite export `.sb2` et validation FT100 au module Rendering. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation de la carte code initiale pour verification documentaire. |
 
 ## 1. Modules

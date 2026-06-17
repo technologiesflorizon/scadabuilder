@@ -8,7 +8,7 @@ Document version: `V2.1.2.0019`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-17 | `V2.1.2.0019` | `PENDING` | Ajout de l'archive `.sb2` apres validation de staging. |
+| 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout de l'archive `.sb2` apres validation de staging. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Ajout du chemin d'intake fragment TF100Web audite. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du diagramme de flow export. |
 

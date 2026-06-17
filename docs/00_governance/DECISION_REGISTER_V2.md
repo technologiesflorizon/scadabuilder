@@ -8,7 +8,7 @@ Document version: `V2.1.2.0019`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-17 | `V2.1.2.0019` | `PENDING` | Ajout de DEC-0027 pour l'export `.sb2` FT100 et le gate anti-collision. |
+| 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout de DEC-0027 pour l'export `.sb2` FT100 et le gate anti-collision. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Ajout de DEC-0026 pour le contrat d'intake fragment audite dans TF100Web. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0025 pour les effets visuels runtime standards. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0024 pour le bridge lifecycle runtime global. |
@@ -424,7 +424,7 @@ Regression coverage:
 
 Status: Superseded
 Created: 2026-06-17 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `bd6515e`
 Deprecated: 2026-06-17 00:00 America/Toronto
 Deprecated in commit: `PENDING`
 Superseded by: DEC-0016
@@ -600,7 +600,7 @@ The folder export remains available for diagnostics, while `.sb2` is the preferr
 
 Regression coverage:
 
-`Ft100PackageValidator`, `Ft100SceneExporter.ExportProjectArchiveAsync`, and future targeted coverage in `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`. Tests were not executed for this implementation per user instruction.
+`Ft100PackageValidator`, `Ft100SceneExporter.ExportProjectArchiveAsync`, and targeted coverage in `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`.
 
 ### DEC-0024 - Global Runtime Lifecycle Bridge
 
