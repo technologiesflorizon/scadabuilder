@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active editor/runtime actions contract
-Document version: `V2.1.2.0010`
+Document version: `V2.1.2.0012`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0012` | `PENDING` | Clarification de l'application runtime des valeurs recues par `Lire valeur`. |
 | 2026-06-17 | `V2.1.2.0010` | `PENDING` | Implementation des actions objet `Afficher`, `Masquer`, `Basculer visibilite` avec condition tag deterministe. |
 | 2026-06-17 | `V2.1.2.0009` | `PENDING` | Remplacement de l'action authorable `WriteTag` par les bindings Element+ `Lire valeur` et `Ecrire valeur`. |
 | 2026-06-17 | `V2.1.2.0008` | `PENDING` | Implementation de l'import tags TF100Web et de l'authoring Element+ `WriteTag`. |
@@ -32,6 +33,7 @@ Object events and runtime actions are model-owned behavior. UI controls may auth
 8. The project can import a TF100Web `tf100web-scada-tags-v1` tag catalog. The Element+ event modal exposes enabled tags for value binding authoring.
 9. `Lire valeur` and `Ecrire valeur` persist tag ids as Element+ data bindings, not triggered scene events. `Ecrire valeur` writes the operator-entered runtime value and never stores a literal design-time value.
 10. `Afficher objet`, `Masquer objet`, and `Basculer visibilite` are authorable against Element+ targets and may use one deterministic tag condition.
+11. Exported runtime applies values pushed by TF100Web to every Element+ using the matching `Lire valeur` tag binding.
 
 ## 3. Event Registry
 
@@ -103,6 +105,7 @@ The current implemented tag slice covers:
 4. Creating `Ecrire valeur` bindings with no trigger and no design-time value field; the runtime operator input supplies the value.
 5. Validating `Ecrire valeur` during build/export so read-only Element+ objects, non-input Element+ objects, read-only tags, and missing tags are rejected.
 6. Exporting tags and per-element value binding metadata in the FT100/TF100Web package.
+7. Applying pushed runtime values to read-bound Element+ objects through the TF100Web page bridge.
 
 The current slice does not yet implement degraded state semantics, expression authoring, compound conditions, local tag creation, or project protocol import. Local tag creation requires a future protocol import revision.
 

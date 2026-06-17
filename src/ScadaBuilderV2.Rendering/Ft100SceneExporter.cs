@@ -1063,11 +1063,74 @@ Apply any viewport scale to the composed page container, not independently to he
     return element.textContent || '';
   }
 
+  function writeValueToElement(element, value) {
+    const input = element.matches('input, textarea, select') ? element : element.querySelector('input, textarea, select');
+    const normalized = value === undefined || value === null ? '' : String(value);
+    if (input) {
+      input.value = normalized;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      return;
+    }
+
+    const button = element.querySelector('button');
+    if (button) {
+      button.textContent = normalized;
+      return;
+    }
+
+    element.textContent = normalized;
+  }
+
+  window.scadaBuilderTagValues = window.scadaBuilderTagValues || {};
+  const readBindingsByTag = {};
+
+  function registerReadBinding(element) {
+    const tagId = element.getAttribute('data-scada-read-tag');
+    if (!tagId) {
+      return;
+    }
+
+    if (!readBindingsByTag[tagId]) {
+      readBindingsByTag[tagId] = [];
+    }
+
+    readBindingsByTag[tagId].push(element);
+  }
+
+  function applyTagValue(tagId, value, meta) {
+    if (!tagId) {
+      return;
+    }
+
+    window.scadaBuilderTagValues[tagId] = value;
+    (readBindingsByTag[tagId] || []).forEach(function (element) {
+      writeValueToElement(element, value);
+      window.dispatchEvent(new CustomEvent('scada-builder-tag-value-applied', {
+        detail: {
+          tagId: tagId,
+          value: value,
+          elementId: element.getAttribute('data-scada-element-id'),
+          meta: meta || null
+        }
+      }));
+    });
+  }
+
+  window.scadaBuilderSetTagValue = function (tagId, value, meta) {
+    applyTagValue(tagId, value, meta);
+  };
+
   root.querySelectorAll('[data-scada-read-tag]').forEach(function (element) {
+    registerReadBinding(element);
     const tagId = element.getAttribute('data-scada-read-tag');
     window.dispatchEvent(new CustomEvent('scada-builder-read-tag-request', {
       detail: { tagId: tagId, elementId: element.getAttribute('data-scada-element-id') }
     }));
+  });
+
+  window.addEventListener('scada-builder-tag-value', function (event) {
+    const detail = event.detail || {};
+    applyTagValue(detail.tagId, detail.value, detail);
   });
 
   root.querySelectorAll('[data-scada-write-tag]').forEach(function (element) {

@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.2.0010`
+Document version: `V2.1.2.0012`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0012` | `PENDING` | Ajout de DEC-0018 pour l'application runtime des valeurs de tags lues. |
 | 2026-06-17 | `V2.1.2.0010` | `PENDING` | Ajout de DEC-0017 pour les actions objet conditionnelles basees sur tags importes. |
 | 2026-06-17 | `V2.1.2.0009` | `PENDING` | Ajout de DEC-0016 pour les bindings Element+ `Lire valeur` et `Ecrire valeur`; DEC-0015 est supersedee. |
 | 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout de la decision d'import catalogue tags TF100Web et d'authoring `WriteTag`. |
@@ -435,6 +436,32 @@ FT100/TF100Web manifests include the imported tag catalog and write-tag actions.
 Regression coverage:
 
 `tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+
+### DEC-0018 - Runtime Read Tag Value Application
+
+Status: Active
+Created: 2026-06-17 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md`
+
+Context:
+
+`Lire valeur` bindings must do more than request values. TF100Web needs a page-level integration point to push live tag values into exported Element+ fields while reusing the same runtime tag value cache for conditions.
+
+Decision:
+
+Exported FT100/TF100Web pages build a read-binding index from `data-scada-read-tag`, expose `window.scadaBuilderSetTagValue(tagId, value, meta)`, and listen for `scada-builder-tag-value` browser events. When a value arrives, the runtime stores it in `window.scadaBuilderTagValues[tagId]`, applies it to every read-bound Element+ using an input/select/textarea value when present or text content otherwise, and emits `scada-builder-tag-value-applied` for integration diagnostics.
+
+Consequences:
+
+`Lire valeur` can now display runtime values in deployed pages. Conditions can evaluate freshly pushed values through the shared `window.scadaBuilderTagValues` cache. Runtime value application does not emit a `change` event, so read refreshes do not loop back into `Ecrire valeur`.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
 
 ### DEC-0017 - Conditional Object Visibility Actions
 

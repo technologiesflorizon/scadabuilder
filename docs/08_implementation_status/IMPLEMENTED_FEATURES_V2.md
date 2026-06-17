@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active implementation status
-Document version: `V2.1.2.0010`
+Document version: `V2.1.2.0012`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0012` | `PENDING` | Implementation de l'application runtime des valeurs de tags lues. |
 | 2026-06-17 | `V2.1.2.0010` | `PENDING` | Implementation des actions objet conditionnelles sur tags importes. |
 | 2026-06-17 | `V2.1.2.0009` | `PENDING` | Implementation des bindings Element+ `Lire valeur` et `Ecrire valeur` sur tags importes. |
 | 2026-06-17 | `V2.1.2.0008` | `PENDING` | Implementation de l'import catalogue tags TF100Web et de l'authoring Element+ `WriteTag`. |
@@ -49,6 +50,7 @@ As of 2026-06-17, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 204 
 20. Element+ value bindings can author `Lire valeur` and `Ecrire valeur` against enabled imported tags. The editor stores `ReadTagId` and `WriteTagId`, disables event triggers for those functions, shows tag labels as `Nom du tag | datatype | Nom de l'appareil`, validates write bindings during build/export, and FT100 export emits tag catalog metadata plus read/write value runtime hooks.
 21. The editor exposes a project-level `Catalogue Tags` panel listing imported tags and records local tag creation as a future protocol-import revision.
 22. Element+ events can author `Afficher objet`, `Masquer objet`, and `Basculer visibilite` against Element+ targets, with one optional imported-tag condition using `Vrai`, `Faux`, `=`, `<>`, `>`, `>=`, `<`, or `<=`. Build/export validation rejects invalid condition tags, missing comparison values, missing target objects, and boolean operators on non-boolean tags.
+23. FT100/TF100Web runtime can apply pushed tag values to all `Lire valeur` Element+ bindings through `window.scadaBuilderSetTagValue` or `scada-builder-tag-value`, while updating the shared runtime tag cache used by conditions.
 
 ## 3. Source Of Truth
 

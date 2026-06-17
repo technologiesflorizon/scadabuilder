@@ -766,6 +766,11 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "data-scada-read-tag=\"tf100.mapping.41\"");
             StringAssert.Contains(html, "data-scada-write-tag=\"tf100.mapping.42\"");
             StringAssert.Contains(html, "scada-builder-read-tag-request");
+            StringAssert.Contains(html, "window.scadaBuilderSetTagValue");
+            StringAssert.Contains(html, "scada-builder-tag-value");
+            StringAssert.Contains(html, "scada-builder-tag-value-applied");
+            StringAssert.Contains(html, "readBindingsByTag");
+            StringAssert.Contains(html, "writeValueToElement");
             StringAssert.Contains(html, "tf100webScadaBuilder.writeTag");
             StringAssert.Contains(html, "scada-builder-write-value");
             StringAssert.Contains(manifest, "\"ReadTagId\": \"tf100.mapping.41\"");
