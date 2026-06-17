@@ -8,7 +8,7 @@ Document version: `V2.1.2.0025`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-17 | `V2.1.2.0025` | `PENDING` | Ajout de la validation TF100Web du formatage runtime `DisplayFormat` hash mask. |
+| 2026-06-17 | `V2.1.2.0025` | `58567eb` | Ajout de la validation TF100Web du formatage runtime `DisplayFormat` hash mask. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Ajout de la couverture du refactor Donnees Element+ et du masque numerique `DisplayFormat`. |
 | 2026-06-17 | `V2.1.2.0022` | `PENDING` | Ajout de la couverture TF100Web des events de binding `ValueBindings` issus du `.sb2`. |
 | 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Ajout de la couverture du validateur CSS `.sb2` avec selecteurs page-scopes indentes. |

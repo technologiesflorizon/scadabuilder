@@ -8,7 +8,7 @@ Document version: `V2.1.2.0025`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-17 | `V2.1.2.0025` | `PENDING` | Ajout du support TF100Web des masques `DisplayFormat` `#` comme comportement implemente. |
+| 2026-06-17 | `V2.1.2.0025` | `58567eb` | Ajout du support TF100Web des masques `DisplayFormat` `#` comme comportement implemente. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Refactor de l'onglet Donnees Element+ et activation de `Format affichage` comme source du masque numerique. |
 | 2026-06-17 | `V2.1.2.0022` | `PENDING` | Harmonisation TF100Web pour consommer les events de binding `ValueBindings` depuis `.sb2`. |
 | 2026-06-17 | `V2.1.2.0021` | `1040889` | Correction du handler `.sb2` pour afficher le statut et la progression des le clic. |

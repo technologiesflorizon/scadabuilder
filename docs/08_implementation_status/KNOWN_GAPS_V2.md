@@ -8,7 +8,7 @@ Document version: `V2.1.2.0025`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-17 | `V2.1.2.0025` | `PENDING` | Retrait du gap TF100Web pour les masques `DisplayFormat` `#` apres commit `3c795c2`. |
+| 2026-06-17 | `V2.1.2.0025` | `58567eb` | Retrait du gap TF100Web pour les masques `DisplayFormat` `#` apres commit `3c795c2`. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Ajout du gap TF100Web restant pour interpreter les masques `DisplayFormat` de type `##.#`. |
 | 2026-06-17 | `V2.1.2.0023` | `PENDING` | Ajout du backlog de parite events TF100Web pour preparer la prochaine tranche d'implementation. |
 | 2026-06-17 | `V2.1.2.0022` | `PENDING` | Retrait du gap TF100Web pour l'intake host-side des events de binding `ValueBindings`; maintien des gaps page-script hors fragment. |

@@ -8,7 +8,7 @@ Document version: `V2.1.2.0025`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-17 | `V2.1.2.0025` | `PENDING` | Mise a jour de DEC-0030 apres implementation TF100Web des masques `DisplayFormat` `#`. |
+| 2026-06-17 | `V2.1.2.0025` | `58567eb` | Mise a jour de DEC-0030 apres implementation TF100Web des masques `DisplayFormat` `#`. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Ajout de DEC-0030 pour la refonte de l'onglet Donnees Element+ et le format numerique actif. |
 | 2026-06-17 | `V2.1.2.0022` | `PENDING` | Ajout de DEC-0029 pour l'intake TF100Web des events de binding `ValueBindings` depuis `.sb2`. |
 | 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Ajout de DEC-0028 pour l'export `.sb2` non bloquant et la validation CSS indentee. |

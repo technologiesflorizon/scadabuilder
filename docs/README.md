@@ -8,7 +8,7 @@ Document version: `V2.1.2.0025`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-17 | `V2.1.2.0025` | `PENDING` | Synchronisation du contrat TF100Web apres support des masques `DisplayFormat` `#` dans le runtime `.sb2`. |
+| 2026-06-17 | `V2.1.2.0025` | `58567eb` | Synchronisation du contrat TF100Web apres support des masques `DisplayFormat` `#` dans le runtime `.sb2`. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Refactor de l'onglet Donnees Element+: `Format affichage` devient le signal actif, `Mapping / Tag`, `Decimales` et `Unite` passent en legacy. |
 | 2026-06-17 | `V2.1.2.0023` | `PENDING` | Ajout du statut de parite event SCADA Builder V2 / TF100Web et preparation de la prochaine tranche d'implementation. |
 | 2026-06-17 | `V2.1.2.0022` | `PENDING` | Harmonisation du contrat `.sb2` pour les events de binding TF100Web `ValueBindings`. |
