@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active enterprise documentation map
-Document version: `V2.1.2.0024`
+Document version: `V2.1.2.0025`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0025` | `PENDING` | Synchronisation du contrat TF100Web apres support des masques `DisplayFormat` `#` dans le runtime `.sb2`. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Refactor de l'onglet Donnees Element+: `Format affichage` devient le signal actif, `Mapping / Tag`, `Decimales` et `Unite` passent en legacy. |
 | 2026-06-17 | `V2.1.2.0023` | `PENDING` | Ajout du statut de parite event SCADA Builder V2 / TF100Web et preparation de la prochaine tranche d'implementation. |
 | 2026-06-17 | `V2.1.2.0022` | `PENDING` | Harmonisation du contrat `.sb2` pour les events de binding TF100Web `ValueBindings`. |
@@ -161,14 +162,14 @@ These guardrails are active decisions in `00_governance/DECISION_REGISTER_V2.md`
 15. Runtime action conditions support optional compound groups with `All` or `Any` mode and explicit missing-tag policy.
 16. Exported pages expose `window.scadaBuilderRuntime` and lifecycle events for page ready, action executed, and runtime errors.
 17. Standard runtime visual effects include blink, glow, pulse, alarm highlight, and degraded treatment through page-scoped CSS classes.
-18. Current TF100Web intake source is `F:\Projet\Git\TF100Web` on branch `implementation_scada_builder`; as audited at commit `7d57600`, TF100Web extracts only `<div id="ft100-<page-id>">`, loads sibling CSS/assets, composes header/body/footer fragments, and executes host-side navigation plus mapping refresh/write behavior.
+18. Current TF100Web intake source is `F:\Projet\Git\TF100Web` on branch `implementation_scada_builder`; as audited through commit `3c795c2`, TF100Web extracts only `<div id="ft100-<page-id>">`, loads sibling CSS/assets, composes header/body/footer fragments, and executes host-side navigation plus mapping refresh/write behavior.
 19. SCADA Builder exporter-emitted page scripts are not executed by the current TF100Web fragment intake. Documentation must separate exporter behavior from TF100Web-executed behavior until parity is implemented.
 20. `.sb2` is the preferred FT100 transfer artifact. It is a ZIP archive whose top-level entry is `scada-builder-v2-ft100-package/`.
 21. `.sb2` export rewrites legacy source ids under `ft100-<page-id>__legacy-*` before validation, then blocks packages that still contain duplicate DOM ids, unscoped DOM ids, unsafe paths, missing page roots, invalid header/footer references, or generated global CSS selectors that could collide in TF100Web composition.
 22. FT100 `.sb2` export must keep the WPF shell responsive and show an indeterminate progress indicator in the bottom status bar while package generation and archive creation are running.
 23. `ReadTag` and `WriteTag` are runtime binding events. Current TF100Web `.sb2` intake must consume SCADA Builder V2 `ValueBindings.ReadTagId` and `ValueBindings.WriteTagId`, resolve `tf100.mapping.<id>` to TF100Web mappings, and inject host runtime attributes onto page-scoped Element+ DOM ids.
 24. Not every SCADA Builder V2 event family is currently functional in TF100Web. `03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` owns the event parity matrix and next implementation tranche; `08_implementation_status/KNOWN_GAPS_V2.md` owns the active gap list.
-25. Element+ `Donnees` authoring uses `Format affichage` as the active numeric display signal. `Mapping / Tag`, `Decimales`, and `Unite` are legacy model fields and are not active authoring controls. `Min` and `Max` are input constraints only for non-read-only numeric inputs.
+25. Element+ `Donnees` authoring uses `Format affichage` as the active numeric display signal. Hash masks such as `##.#` are exported through `DisplayFormat` and interpreted by TF100Web commit `3c795c2` as visible digit budget plus decimal placement. `Mapping / Tag`, `Decimales`, and `Unite` are legacy model fields and are not active authoring controls. `Min` and `Max` are input constraints only for non-read-only numeric inputs.
 
 ## 5. Decommissioned Legacy Documents
 

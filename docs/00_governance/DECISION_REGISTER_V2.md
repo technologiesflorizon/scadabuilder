@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.2.0024`
+Document version: `V2.1.2.0025`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0025` | `PENDING` | Mise a jour de DEC-0030 apres implementation TF100Web des masques `DisplayFormat` `#`. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Ajout de DEC-0030 pour la refonte de l'onglet Donnees Element+ et le format numerique actif. |
 | 2026-06-17 | `V2.1.2.0022` | `PENDING` | Ajout de DEC-0029 pour l'intake TF100Web des events de binding `ValueBindings` depuis `.sb2`. |
 | 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Ajout de DEC-0028 pour l'export `.sb2` non bloquant et la validation CSS indentee. |
@@ -677,11 +678,11 @@ Decision:
 
 Consequences:
 
-SCADA Builder V2 can export a single display signal to TF100Web through `DisplayFormat`. TF100Web must support hash-mask interpretation before masks such as `##.#` are production-complete on the unit; until then, `fixed:n` remains the known TF100Web-supported display mode.
+SCADA Builder V2 exports a single display signal to TF100Web through `DisplayFormat`. TF100Web commit `3c795c2` interprets hash masks such as `##.#` in its `.sb2` host runtime by applying decimal placement, visible digit budget, and display clamping; `fixed:n` remains a compatibility display mode.
 
 Regression coverage:
 
-`tests/ScadaBuilderV2.Tests/ElementGroupTests.cs`, `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`
+`tests/ScadaBuilderV2.Tests/ElementGroupTests.cs`, `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`, `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py`
 
 ### DEC-0024 - Global Runtime Lifecycle Bridge
 

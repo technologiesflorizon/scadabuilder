@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active known gaps register
-Document version: `V2.1.2.0024`
+Document version: `V2.1.2.0025`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0025` | `PENDING` | Retrait du gap TF100Web pour les masques `DisplayFormat` `#` apres commit `3c795c2`. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Ajout du gap TF100Web restant pour interpreter les masques `DisplayFormat` de type `##.#`. |
 | 2026-06-17 | `V2.1.2.0023` | `PENDING` | Ajout du backlog de parite events TF100Web pour preparer la prochaine tranche d'implementation. |
 | 2026-06-17 | `V2.1.2.0022` | `PENDING` | Retrait du gap TF100Web pour l'intake host-side des events de binding `ValueBindings`; maintien des gaps page-script hors fragment. |
@@ -37,9 +38,8 @@ Document version: `V2.1.2.0024`
 5. Expression binding and SCADA Builder-side tag creation remain roadmap. Local tag creation depends on a future project protocol import revision.
 6. The final `FT100`, `TF100Web`, and `tf100-web` naming convention remains to be decided.
 7. Sanitized-source approval for divergent pages such as `win00008` remains unresolved.
-8. TF100Web commit `7831854` extracts only page root fragments and does not execute SCADA Builder exporter-emitted page scripts. TF100Web now handles `.sb2` `ValueBindings` as host-side binding events, but exporter-side lifecycle, popup, condition page-script evaluation, border/effect, and other non-navigation action runtimes remain TF100Web parity gaps until host-side handlers or page-script execution exist.
+8. TF100Web commit `3c795c2` extracts only page root fragments and does not execute SCADA Builder exporter-emitted page scripts. TF100Web now handles `.sb2` `ValueBindings` as host-side binding events and interprets `DisplayFormat` hash masks, but exporter-side lifecycle, popup, condition page-script evaluation, border/effect, and other non-navigation action runtimes remain TF100Web parity gaps until host-side handlers or page-script execution exist.
 9. `.sb2` archive export validates import/package compatibility only. It does not make TF100Web execute SCADA Builder page scripts that remain outside the extracted root fragment.
-10. TF100Web currently interprets `DisplayFormat` values shaped as `fixed:n`; hash-mask interpretation such as `##.#` is a TF100Web runtime follow-up before that authoring style is production-complete on the unit.
 
 ## 2. Rule
 
@@ -58,4 +58,3 @@ The following items are the active correction backlog for TF100Web after the `.s
 7. Add popup fragment handlers for open, close, toggle, placement, and host-region behavior.
 8. Add lifecycle diagnostics equivalent to the exporter `window.scadaBuilderRuntime` contract.
 9. Decide whether controlled execution of exporter-emitted page scripts is allowed, or whether all remaining runtime behavior must be reimplemented as TF100Web host handlers.
-10. Add TF100Web runtime support for `DisplayFormat` hash masks such as `##.#`, including decimal placement and visible digit budget.

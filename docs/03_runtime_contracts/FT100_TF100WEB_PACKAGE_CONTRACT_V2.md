@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active runtime package contract
-Document version: `V2.1.2.0024`
+Document version: `V2.1.2.0025`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0025` | `PENDING` | Synchronisation avec TF100Web commit `3c795c2`: interpretation runtime des masques `DisplayFormat` `#`. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Clarification que `DisplayFormat` est le signal d'affichage numerique actif exporte vers TF100Web. |
 | 2026-06-17 | `V2.1.2.0023` | `PENDING` | Ajout de la matrice de parite des events SCADA Builder V2 / TF100Web et du plan de prochaine tranche runtime. |
 | 2026-06-17 | `V2.1.2.0022` | `PENDING` | Harmonisation de l'intake TF100Web `.sb2` pour consommer les events de binding `ValueBindings` exportes par SCADA Builder V2. |
@@ -66,7 +67,7 @@ SCADA Builder V2 packages this folder as a `.sb2` archive for direct FT100 uploa
 12. Root and page manifests may include `Tags` from the project tag catalog and per-element `ValueBindings` metadata.
 13. Exported page HTML emits `data-scada-read-tag` and `data-scada-write-tag` when an Element+ has value bindings.
 14. Exported page runtime emits `scada-builder-read-tag-request` for read-bound elements and handles write-bound input changes by calling `window.tf100webScadaBuilder.writeTag(tagId, value, payload)` when available, then emitting `scada-builder-write-value`.
-15. `DisplayFormat` is the active numeric display signal exported to TF100Web. Hash masks such as `##.#` define visible digit budget and decimal placement; `fixed:n` remains a compatibility format already interpreted by TF100Web.
+15. `DisplayFormat` is the active numeric display signal exported to TF100Web. Hash masks such as `##.#` define visible digit budget and decimal placement, and TF100Web commit `3c795c2` interprets those masks in the host runtime; `fixed:n` remains a compatibility format.
 16. TF100Web host intake must treat `ReadTagId` and `WriteTagId` as binding events. Current `.sb2` intake resolves `ValueBindings.ReadTagId` and `ValueBindings.WriteTagId` values shaped as `tf100.mapping.<id>` into TF100Web `RegisterMapping` ids, injects `data-scada-role`, `data-scada-mapping-id`, `data-scada-writeable`, `data-scada-writable`, and `data-scada-format`, and maps page-scoped DOM ids such as `ft100-win00007__elementplus_numeric_display_111` back to manifest object ids such as `elementplus_numeric_display_111`.
 17. If a read and write binding target different mappings, TF100Web keeps the read mapping in `data-scada-mapping-id` and carries the write mapping in `data-scada-write-mapping-id`; the host browser runtime writes to `data-scada-write-mapping-id` when present.
 18. Object visibility actions may include one `Condition` and/or one `ConditionGroup`; exported runtime evaluates them with `window.tf100webScadaBuilder.getTagValue(tagId)` or `window.scadaBuilderTagValues[tagId]` before applying `show`, `hide`, or `toggleVisibility`. Condition groups support `All`, `Any`, and explicit missing-tag policy.
@@ -84,7 +85,7 @@ SCADA Builder V2 packages this folder as a `.sb2` archive for direct FT100 uploa
 
 ## 3. Current TF100Web Intake Contract
 
-Audit source: `F:\Projet\Git\TF100Web`, branch `implementation_scada_builder`, commit `7831854`.
+Audit source: `F:\Projet\Git\TF100Web`, branch `implementation_scada_builder`, commit `3c795c2`.
 
 TF100Web currently consumes SCADA Builder V2 packages through these Django/runtime files:
 
@@ -117,7 +118,7 @@ The active TF100Web intake contract is:
 18. The station visualisation page activates this runtime only when the station type is `SCADA_BUILDER_2`.
 19. TF100Web's active browser runtime handles `Navigate` actions from `data-scada-events`, legacy same-package page links, and binding events resolved from manifest `ValueBindings`.
 20. TF100Web extracts and renders the page root fragment only. Scripts emitted after the exported page root in `<page-id>.html`, including SCADA Builder's `window.scadaBuilderRuntime`, popup runtime, condition runtime, tag push runtime, and visual-effect runtime, are not executed by the current TF100Web intake path.
-21. TF100Web runtime value display/write is driven by TF100Web-injected `data-scada-role`, `data-scada-mapping-id`, `data-scada-write-mapping-id`, `data-scada-writeable`, `data-scada-writable`, `data-scada-format`, and related mapping attributes.
+21. TF100Web runtime value display/write is driven by TF100Web-injected `data-scada-role`, `data-scada-mapping-id`, `data-scada-write-mapping-id`, `data-scada-writeable`, `data-scada-writable`, `data-scada-format`, and related mapping attributes. `data-scada-format` supports `fixed:n` and hash masks made of `#` plus an optional decimal point, for example raw `999` with `##.#` displays as `99.9`.
 22. TF100Web derives those mapping attributes from SCADA Builder V2 `ValueBindings.ReadTagId` / `ValueBindings.WriteTagId`, legacy `Binding`, `RuntimeBinding`, `Bindings`, `RuntimeBindings`, `TagBinding`, manual page bindings, or `scada-runtime-overrides.json`.
 23. TF100Web exports tags to SCADA Builder V2 through the `tf100web-scada-tags-v1` JSON schema from `frontend/scada_tags.py`.
 
@@ -151,7 +152,8 @@ The next implementation tranche should be prepared in this order:
    - Upload a fresh `.sb2` through TF100Web.
    - Open `win00007`.
    - Confirm `ft100-win00007__elementplus_numeric_display_111` has `data-scada-mapping-id="180"`.
-   - Confirm the displayed value refreshes from `tf100.mapping.180`.
+   - Confirm `data-scada-format` is injected, for example `##.#`.
+   - Confirm the displayed value refreshes from `tf100.mapping.180` and follows the format contract, for example raw `999` displays as `99.9` with `##.#`.
 2. Choose the runtime strategy for remaining events:
    - Preferred near-term path: implement TF100Web host-side handlers for SCADA Builder action kinds.
    - Alternative path: safely execute the exporter-emitted runtime script after fragment extraction.
@@ -187,7 +189,7 @@ The following SCADA Builder V2 export capabilities are implemented and regressio
 Until that integration is implemented, SCADA Builder V2 documentation must distinguish:
 
 1. Exporter contract: what `Ft100SceneExporter` writes.
-2. TF100Web intake contract: what `F:\Projet\Git\TF100Web` commit `7831854` validates, extracts, serves, and executes.
+2. TF100Web intake contract: what `F:\Projet\Git\TF100Web` commit `3c795c2` validates, extracts, serves, and executes.
 3. Parity gaps: exported runtime behavior not executed by the current TF100Web host.
 
 ## 7. Package Flow
