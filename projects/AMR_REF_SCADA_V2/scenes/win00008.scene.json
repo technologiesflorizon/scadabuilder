@@ -48,7 +48,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -107,7 +109,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -166,7 +170,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -225,7 +231,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -284,7 +292,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -343,7 +353,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -402,7 +414,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -461,7 +475,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -520,7 +536,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -579,7 +597,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -638,7 +658,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -697,7 +719,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -756,7 +780,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -815,7 +841,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -874,7 +902,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -933,7 +963,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -992,7 +1024,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1051,7 +1085,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1110,7 +1146,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1169,7 +1207,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1228,7 +1268,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1287,7 +1329,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1346,7 +1390,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1405,7 +1451,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1464,7 +1512,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1523,7 +1573,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1582,7 +1634,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1641,7 +1695,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1700,7 +1756,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1759,7 +1817,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1818,7 +1878,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1877,7 +1939,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1936,7 +2000,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1995,7 +2061,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -2054,7 +2122,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -2113,7 +2183,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -2172,7 +2244,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -2231,7 +2305,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -2290,7 +2366,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -2349,7 +2427,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -2408,7 +2488,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -2467,7 +2549,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -2526,7 +2610,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -2585,7 +2671,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -2644,7 +2732,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -2703,7 +2793,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -2762,7 +2854,9 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -2821,7 +2915,9 @@
         "Unit": null,
         "DisplayFormat": "####",
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": "tf100.mapping.159",
+        "WriteTagId": "tf100.mapping.159"
       },
       "Children": null,
       "LegacyPayload": null,
@@ -2870,7 +2966,9 @@
         "Unit": null,
         "DisplayFormat": "####",
         "TagBinding": null,
-        "IsReadOnly": true
+        "IsReadOnly": true,
+        "ReadTagId": "tf100.mapping.161",
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": null,
@@ -2919,7 +3017,9 @@
         "Unit": null,
         "DisplayFormat": "###.0",
         "TagBinding": null,
-        "IsReadOnly": true
+        "IsReadOnly": true,
+        "ReadTagId": null,
+        "WriteTagId": null
       },
       "Children": null,
       "LegacyPayload": null,
