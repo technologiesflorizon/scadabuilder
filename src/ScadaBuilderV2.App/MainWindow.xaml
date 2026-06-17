@@ -467,7 +467,6 @@
                                       BorderBrush="{StaticResource BorderBrushSoft}"
                                       BorderThickness="1">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="1.2*"/>
                                     <DataGridTextColumn Header="Nom" Binding="{Binding Name}" Width="1.4*"/>
                                     <DataGridTextColumn Header="Type" Binding="{Binding Datatype}" Width="0.8*"/>
                                     <DataGridTextColumn Header="Appareil" Binding="{Binding Device}" Width="1*"/>

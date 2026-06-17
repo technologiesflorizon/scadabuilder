@@ -194,8 +194,9 @@ public sealed class StudioElementPlusContractTests
         StringAssert.Contains(xaml, "x:Name=\"TagCatalogStateFilterComboBox\"");
         StringAssert.Contains(xaml, "TextChanged=\"OnTagCatalogFilterChanged\"");
         StringAssert.Contains(xaml, "SelectionChanged=\"OnTagCatalogFilterChanged\"");
-        StringAssert.Contains(xaml, "Header=\"Id\"");
-        StringAssert.Contains(xaml, "Binding=\"{Binding Id}\"");
+        Assert.IsFalse(
+            xaml.Contains("<DataGridTextColumn Header=\"Id\" Binding=\"{Binding Id}\"", StringComparison.Ordinal),
+            "Le panneau Catalogue Tags ne doit pas afficher la colonne Id technique.");
         StringAssert.Contains(code, "CollectionViewSource.GetDefaultView(_tagCatalogItems)");
         StringAssert.Contains(code, "_tagCatalogView.Filter = FilterTagCatalogItem");
         StringAssert.Contains(code, "RefreshTagCatalogFilterOptions();");
