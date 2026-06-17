@@ -765,6 +765,29 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void ElementDataTabDeprecatesLegacyTagDecimalsAndUnitFields()
+    {
+        var mainXaml = ReadMainWindowFile("MainWindow.xaml");
+        var dialogXaml = ReadMainWindowFile("ElementPropertiesDialog.xaml");
+        var source = ReadMainWindowSource();
+        var dialogCode = ReadMainWindowFile("ElementPropertiesDialog.xaml.cs");
+
+        StringAssert.Contains(mainXaml, "Text=\"Contraintes de saisie\"");
+        StringAssert.Contains(mainXaml, "Text=\"Format affichage\"");
+        StringAssert.Contains(mainXaml, "<StackPanel Margin=\"0,8,4,0\" Visibility=\"Collapsed\">");
+        StringAssert.Contains(mainXaml, "x:Name=\"ElementDecimalsTextBox\" TextChanged=\"OnElementPropertyChanged\"");
+        StringAssert.Contains(mainXaml, "x:Name=\"ElementUnitTextBox\" TextChanged=\"OnElementPropertyChanged\"");
+        StringAssert.Contains(mainXaml, "x:Name=\"ElementTagBindingTextBox\"");
+        StringAssert.Contains(mainXaml, "Visibility=\"Collapsed\"");
+        StringAssert.Contains(dialogXaml, "Text=\"Contraintes de saisie\"");
+        StringAssert.Contains(dialogXaml, "x:Name=\"TagBindingTextBox\" Visibility=\"Collapsed\"");
+        StringAssert.Contains(source, "canEditNumericInputConstraints");
+        StringAssert.Contains(source, "element.Data?.IsReadOnly != true");
+        StringAssert.Contains(dialogCode, "UpdateDataConstraintState();");
+        StringAssert.Contains(dialogCode, "ReadOnlyCheckBox.IsChecked != true");
+    }
+
+    [TestMethod]
     public void ConversionRemovesLegacyFromRuntimeInventoryImmediately()
     {
         var source = ReadMainWindowSource();

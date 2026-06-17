@@ -76,6 +76,19 @@ public partial class ElementPropertiesDialog : Window
         UnitTextBox.Text = data.Unit ?? "";
         DisplayFormatTextBox.Text = data.DisplayFormat ?? "";
         TagBindingTextBox.Text = data.TagBinding ?? "";
+        UpdateDataConstraintState();
+    }
+
+    private void OnReadOnlyChanged(object sender, RoutedEventArgs e)
+    {
+        UpdateDataConstraintState();
+    }
+
+    private void UpdateDataConstraintState()
+    {
+        var canEditInputConstraints = element.Kind == ScadaElementKind.InputNumeric && ReadOnlyCheckBox.IsChecked != true;
+        MinimumTextBox.IsEnabled = canEditInputConstraints;
+        MaximumTextBox.IsEnabled = canEditInputConstraints;
     }
 
     private void OnApplyClick(object sender, RoutedEventArgs e)

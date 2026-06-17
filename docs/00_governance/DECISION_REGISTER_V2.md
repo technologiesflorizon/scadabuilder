@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.2.0022`
+Document version: `V2.1.2.0024`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0024` | `PENDING` | Ajout de DEC-0030 pour la refonte de l'onglet Donnees Element+ et le format numerique actif. |
 | 2026-06-17 | `V2.1.2.0022` | `PENDING` | Ajout de DEC-0029 pour l'intake TF100Web des events de binding `ValueBindings` depuis `.sb2`. |
 | 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Ajout de DEC-0028 pour l'export `.sb2` non bloquant et la validation CSS indentee. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout de DEC-0027 pour l'export `.sb2` FT100 et le gate anti-collision. |
@@ -655,6 +656,32 @@ Consequences:
 Regression coverage:
 
 `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py`
+
+### DEC-0030 - Element+ Data Tab Active Numeric Display Contract
+
+Status: Active
+Created: 2026-06-17 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md`
+
+Context:
+
+The Element+ `Donnees` tab exposed overlapping numeric controls: `Format affichage`, `Decimales`, `Unite`, and legacy `Mapping / Tag`. Current SCADA Builder V2 binding authoring uses `Lire valeur` and `Ecrire valeur`, not raw `TagBinding`, and TF100Web receives the display instruction through exported `DisplayFormat`.
+
+Decision:
+
+`Format affichage` is the active numeric display contract for Element+ authoring and export. Hash masks such as `##.#` define visible digit budget and decimal placement; for example, value `999` with `##.#` displays as `99.9`, and the maximum visible value for that mask is `99.9`. `Min` and `Max` remain active only for non-read-only numeric inputs and represent operator-entry clamp constraints. `Mapping / Tag`, `Decimales`, and `Unite` are legacy model fields retained for save/reload compatibility but removed from active authoring.
+
+Consequences:
+
+SCADA Builder V2 can export a single display signal to TF100Web through `DisplayFormat`. TF100Web must support hash-mask interpretation before masks such as `##.#` are production-complete on the unit; until then, `fixed:n` remains the known TF100Web-supported display mode.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/ElementGroupTests.cs`, `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`
 
 ### DEC-0024 - Global Runtime Lifecycle Bridge
 

@@ -112,6 +112,37 @@ public sealed class ElementGroupTests
     }
 
     [TestMethod]
+    public void NumericDisplayFormatMaskControlsScalePrecisionAndInputStep()
+    {
+        var numeric = new NumericInput(
+            "numeric-001",
+            "Temperature",
+            new SceneBounds(120, 100, 80, 24),
+            ScadaElementStyle.DefaultInput,
+            isReadOnly: false,
+            value: 999,
+            displayFormat: "##.#");
+
+        Assert.AreEqual("99.9", numeric.DisplayText);
+        StringAssert.Contains(numeric.HtmlCode, "step=\"0.1\"");
+    }
+
+    [TestMethod]
+    public void NumericDisplayFormatMaskClampsToVisibleDigitBudget()
+    {
+        var numeric = new NumericInput(
+            "numeric-001",
+            "Temperature",
+            new SceneBounds(120, 100, 80, 24),
+            ScadaElementStyle.DefaultInput,
+            isReadOnly: true,
+            value: 9999,
+            displayFormat: "##.#");
+
+        Assert.AreEqual("99.9", numeric.DisplayText);
+    }
+
+    [TestMethod]
     public void GroupInputRejectsSelfDuplicateAndDescendantSelections()
     {
         var childA = CreateShape("shape-a", 10, 10, 20, 20);

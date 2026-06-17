@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active implementation status
-Document version: `V2.1.2.0022`
+Document version: `V2.1.2.0024`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0024` | `PENDING` | Refactor de l'onglet Donnees Element+ et activation de `Format affichage` comme source du masque numerique. |
 | 2026-06-17 | `V2.1.2.0022` | `PENDING` | Harmonisation TF100Web pour consommer les events de binding `ValueBindings` depuis `.sb2`. |
 | 2026-06-17 | `V2.1.2.0021` | `1040889` | Correction du handler `.sb2` pour afficher le statut et la progression des le clic. |
 | 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Correction du validateur CSS `.sb2` et ajout du feedback de progression non bloquant. |
@@ -70,10 +71,11 @@ As of 2026-06-17, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 232 
 27. Runtime actions can persist compound condition groups using `All` or `Any` evaluation plus explicit `BlockAction` or `AllowAction` policy when a required tag value is unavailable at runtime.
 28. Exported pages expose `window.scadaBuilderRuntime` and emit lifecycle events for page ready, action executed, and runtime errors.
 29. Standard runtime visual effects can start, stop, or toggle blink, glow, pulse, alarm highlight, and degraded treatment classes on Element+ targets.
-30. TF100Web intake parity is not identical to exporter coverage. In `F:\Projet\Git\TF100Web` commit `41edf45`, TF100Web extracts root fragments and executes host-side navigation plus `.sb2` `ValueBindings` mapping refresh/write logic; it does not execute SCADA Builder page scripts emitted outside the root fragment.
+30. TF100Web intake parity is not identical to exporter coverage. In `F:\Projet\Git\TF100Web` commit `7831854`, TF100Web extracts root fragments and executes host-side navigation plus `.sb2` `ValueBindings` mapping refresh/write logic; it does not execute SCADA Builder page scripts emitted outside the root fragment.
 31. FT100 `.sb2` archive export generates the normalized package in staging, rewrites legacy source ids under the page namespace to prevent DOM collisions, validates TF100Web intake compatibility and page namespace rules, then writes a `.sb2` ZIP archive with `scada-builder-v2-ft100-package/` as the archive root.
 32. FT100 `.sb2` export accepts indented page-scoped CSS id selectors during validation, reports destination/preparation/source/compression phases in the status bar, shows an indeterminate bottom-right status progress bar while running, guards against concurrent `.sb2` clicks, and performs archive generation off the WPF UI thread.
 33. TF100Web `.sb2` intake resolves SCADA Builder V2 `ValueBindings.ReadTagId` and `ValueBindings.WriteTagId` shaped as `tf100.mapping.<id>` into host runtime mapping attributes. Page-scoped Element+ DOM ids are matched from manifest model ids, and separate read/write mappings are supported through `data-scada-write-mapping-id`.
+34. The Element+ `Donnees` tab now treats `Format affichage` as the active numeric display signal. Legacy `Mapping / Tag`, `Decimales`, and `Unite` controls are removed from visible authoring, while legacy model fields remain preserved for compatibility. `Min` and `Max` are enabled only for non-read-only numeric inputs.
 
 ## 3. Source Of Truth
 

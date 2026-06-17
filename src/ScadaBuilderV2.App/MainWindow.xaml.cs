@@ -4654,8 +4654,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ButtonHoverBorderColorComboBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
             ElementPlaceholderTextBox.IsEnabled = isEnabled;
             ElementValueTextBox.IsEnabled = isEnabled;
-            ElementMinTextBox.IsEnabled = isEnabled;
-            ElementMaxTextBox.IsEnabled = isEnabled;
+            var canEditNumericInputConstraints = isEnabled
+                && element?.Kind == ScadaElementKind.InputNumeric
+                && element.Data?.IsReadOnly != true;
+            ElementMinTextBox.IsEnabled = canEditNumericInputConstraints;
+            ElementMaxTextBox.IsEnabled = canEditNumericInputConstraints;
             ElementDecimalsTextBox.IsEnabled = isEnabled;
             ElementUnitTextBox.IsEnabled = isEnabled;
             ElementFormatTextBox.IsEnabled = isEnabled;

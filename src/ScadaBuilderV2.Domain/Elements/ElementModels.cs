@@ -327,8 +327,9 @@ public sealed class NumericInput : Element
         var value = Attribute(Value?.ToString(CultureInfo.InvariantCulture) ?? "");
         var min = Minimum.HasValue ? $" min=\"{Minimum.Value.ToString(CultureInfo.InvariantCulture)}\"" : "";
         var max = Maximum.HasValue ? $" max=\"{Maximum.Value.ToString(CultureInfo.InvariantCulture)}\"" : "";
-        var step = Decimals.HasValue && Decimals.Value > 0
-            ? Math.Pow(10, -Decimals.Value).ToString(CultureInfo.InvariantCulture)
+        var decimals = NumericDisplayFormat.CountFractionalPlaceholders(DisplayFormat) ?? Decimals;
+        var step = decimals.HasValue && decimals.Value > 0
+            ? Math.Pow(10, -decimals.Value).ToString(CultureInfo.InvariantCulture)
             : "1";
 
         return $"""<input id="{id}" class="scada-element scada-numeric-input" data-name="{name}" type="number" value="{value}" step="{step}"{min}{max} />""";
@@ -338,11 +339,70 @@ public sealed class NumericInput : Element
     {
         if (Value.HasValue)
         {
-            return Decimals.HasValue
-                ? Value.Value.ToString($"F{Math.Max(0, Decimals.Value)}", CultureInfo.InvariantCulture)
-                : Value.Value.ToString(CultureInfo.InvariantCulture);
+            return NumericDisplayFormat.Format(Value.Value, DisplayFormat, Decimals);
         }
 
         return string.IsNullOrWhiteSpace(DisplayFormat) ? "" : DisplayFormat;
+    }
+}
+
+/// <summary>
+/// Formats Element+ numeric values from the active display-format contract.
+/// </summary>
+/// <remarks>
+/// Decisions: DEC-0030.
+/// Contracts: docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md.
+/// Tests: tests/ScadaBuilderV2.Tests/ElementGroupTests.cs.
+/// </remarks>
+internal static class NumericDisplayFormat
+{
+    /// <summary>
+    /// Applies a hash mask such as <c>##.#</c> or falls back to legacy decimal precision.
+    /// </summary>
+    public static string Format(double value, string? displayFormat, int? fallbackDecimals = null)
+    {
+        var format = string.IsNullOrWhiteSpace(displayFormat) ? null : displayFormat.Trim();
+        if (!string.IsNullOrWhiteSpace(format) && IsHashMask(format))
+        {
+            var decimals = CountFractionalPlaceholders(format) ?? 0;
+            var totalDigits = format.Count(character => character == '#');
+            var scaled = Math.Round(value / Math.Pow(10, decimals), decimals, MidpointRounding.AwayFromZero);
+            var absoluteLimit = Math.Pow(10, Math.Max(1, totalDigits - decimals)) - Math.Pow(10, -decimals);
+            var clamped = Math.Max(-absoluteLimit, Math.Min(absoluteLimit, scaled));
+            return clamped.ToString($"F{decimals}", CultureInfo.InvariantCulture);
+        }
+
+        if (fallbackDecimals.HasValue)
+        {
+            return value.ToString($"F{Math.Max(0, fallbackDecimals.Value)}", CultureInfo.InvariantCulture);
+        }
+
+        return value.ToString(CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// Returns the number of fractional hash placeholders in a display mask.
+    /// </summary>
+    public static int? CountFractionalPlaceholders(string? displayFormat)
+    {
+        if (string.IsNullOrWhiteSpace(displayFormat))
+        {
+            return null;
+        }
+
+        var separatorIndex = displayFormat.IndexOf('.', StringComparison.Ordinal);
+        if (separatorIndex < 0)
+        {
+            return 0;
+        }
+
+        return displayFormat[(separatorIndex + 1)..].Count(character => character == '#');
+    }
+
+    private static bool IsHashMask(string displayFormat)
+    {
+        return displayFormat.Length > 0
+            && displayFormat.Any(character => character == '#')
+            && displayFormat.All(character => character == '#' || character == '.');
     }
 }

@@ -178,11 +178,14 @@
                     <StackPanel Margin="0,8,8,0">
                         <CheckBox x:Name="ReadOnlyCheckBox"
                                   Content="Lecture seulement"
-                                  Margin="0,0,0,8"/>
+                                  Margin="0,0,0,8"
+                                  Checked="OnReadOnlyChanged"
+                                  Unchecked="OnReadOnlyChanged"/>
                         <TextBlock Text="Placeholder"/>
                         <TextBox x:Name="PlaceholderTextBox"/>
                         <TextBlock Text="Valeur par defaut"/>
                         <TextBox x:Name="ValueTextBox"/>
+                        <TextBlock Text="Contraintes de saisie" Margin="0,8,0,0"/>
                         <UniformGrid Columns="2">
                             <StackPanel Margin="0,0,4,0">
                                 <TextBlock Text="Min"/>
@@ -192,19 +195,19 @@
                                 <TextBlock Text="Max"/>
                                 <TextBox x:Name="MaximumTextBox"/>
                             </StackPanel>
-                            <StackPanel Margin="0,8,4,0">
+                            <StackPanel Margin="0,8,4,0" Visibility="Collapsed">
                                 <TextBlock Text="Decimales"/>
                                 <TextBox x:Name="DecimalsTextBox"/>
                             </StackPanel>
-                            <StackPanel Margin="4,8,0,0">
+                            <StackPanel Margin="4,8,0,0" Visibility="Collapsed">
                                 <TextBlock Text="Unite"/>
                                 <TextBox x:Name="UnitTextBox"/>
                             </StackPanel>
                         </UniformGrid>
                         <TextBlock Text="Format affichage" Margin="0,8,0,0"/>
                         <TextBox x:Name="DisplayFormatTextBox"/>
-                        <TextBlock Text="Mapping / Tag"/>
-                        <TextBox x:Name="TagBindingTextBox"/>
+                        <TextBlock Text="Mapping / Tag" Visibility="Collapsed"/>
+                        <TextBox x:Name="TagBindingTextBox" Visibility="Collapsed"/>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

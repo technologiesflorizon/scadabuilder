@@ -1067,6 +1067,7 @@
                                                 <TextBox x:Name="ElementValueTextBox"
                                                          Margin="0,3,0,8"
                                                          TextChanged="OnElementPropertyChanged"/>
+                                                <TextBlock Text="Contraintes de saisie" Margin="0,4,0,0"/>
                                                 <UniformGrid Columns="2">
                                                     <StackPanel Margin="0,0,4,0">
                                                         <TextBlock Text="Min"/>
@@ -1076,11 +1077,11 @@
                                                         <TextBlock Text="Max"/>
                                                         <TextBox x:Name="ElementMaxTextBox" TextChanged="OnElementPropertyChanged"/>
                                                     </StackPanel>
-                                                    <StackPanel Margin="0,8,4,0">
+                                                    <StackPanel Margin="0,8,4,0" Visibility="Collapsed">
                                                         <TextBlock Text="Decimales"/>
                                                         <TextBox x:Name="ElementDecimalsTextBox" TextChanged="OnElementPropertyChanged"/>
                                                     </StackPanel>
-                                                    <StackPanel Margin="4,8,0,0">
+                                                    <StackPanel Margin="4,8,0,0" Visibility="Collapsed">
                                                         <TextBlock Text="Unite"/>
                                                         <TextBox x:Name="ElementUnitTextBox" TextChanged="OnElementPropertyChanged"/>
                                                     </StackPanel>
@@ -1089,9 +1090,10 @@
                                                 <TextBox x:Name="ElementFormatTextBox"
                                                          Margin="0,3,0,8"
                                                          TextChanged="OnElementPropertyChanged"/>
-                                                <TextBlock Text="Mapping / Tag"/>
+                                                <TextBlock Text="Mapping / Tag" Visibility="Collapsed"/>
                                                 <TextBox x:Name="ElementTagBindingTextBox"
                                                          Margin="0,3,0,8"
+                                                         Visibility="Collapsed"
                                                          TextChanged="OnElementPropertyChanged"/>
                                             </StackPanel>
                                         </TabItem>

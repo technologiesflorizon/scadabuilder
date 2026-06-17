@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active project model contract
-Document version: `V2.1.2.0010`
+Document version: `V2.1.2.0024`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0024` | `PENDING` | Clarification du role actif de `DisplayFormat` et de la deprecation authoring de `TagBinding`, `Decimals` et `Unit`. |
 | 2026-06-17 | `V2.1.2.0010` | `PENDING` | Ajout du modele `ScadaActionCondition` pour actions objet conditionnelles. |
 | 2026-06-17 | `V2.1.2.0009` | `PENDING` | Ajout des bindings Element+ `ReadTagId` et `WriteTagId` et des validations de build. |
 | 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout du catalogue tags TF100Web importe au modele projet. |
@@ -27,6 +28,14 @@ Legacy source paths and source ids are trace metadata unless explicitly converte
 4. Elements own identity, kind, bounds, data, event bindings, and optional read/write tag bindings.
 5. Actions may own one optional tag condition when the runtime function supports deterministic conditional execution.
 6. Runtime manifests are generated outputs, not editable source models.
+
+Element numeric data keeps compatibility fields for older projects, but active authoring uses:
+
+1. `DisplayFormat` as the single display-format signal exported to TF100Web.
+2. `Minimum` and `Maximum` only as clamp constraints for non-read-only numeric inputs.
+3. `ReadTagId` and `WriteTagId` for runtime value bindings.
+
+`TagBinding`, `Decimals`, and `Unit` are legacy model fields. They may be preserved by save/reload, but they are not active Element+ authoring controls.
 
 ## 3. Tag Catalog
 
