@@ -8,7 +8,7 @@ Document version: `V2.1.2.0018`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-17 | `V2.1.2.0018` | `PENDING` | Ajout de DEC-0026 pour le contrat d'intake fragment audite dans TF100Web. |
+| 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Ajout de DEC-0026 pour le contrat d'intake fragment audite dans TF100Web. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0025 pour les effets visuels runtime standards. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0024 pour le bridge lifecycle runtime global. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0023 pour les groupes de conditions runtime et politique degradee. |
@@ -59,7 +59,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-16 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `ad364a6`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A

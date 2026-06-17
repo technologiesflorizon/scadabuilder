@@ -8,7 +8,7 @@ Document version: `V2.1.2.0018`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-17 | `V2.1.2.0018` | `PENDING` | Ajout de la reference aux tests d'intake TF100Web audites. |
+| 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Ajout de la reference aux tests d'intake TF100Web audites. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de la couverture domaine, persistance et export pour effets visuels runtime. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de la couverture export pour le bridge lifecycle runtime global. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de la couverture domaine, validation, persistance et export pour conditions composees. |

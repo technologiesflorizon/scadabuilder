@@ -8,7 +8,7 @@ Document version: `V2.1.2.0018`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-17 | `V2.1.2.0018` | `PENDING` | Clarification que plusieurs runtimes sont exporteur-only tant que TF100Web n'execute pas les scripts de page exportes. |
+| 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Clarification que plusieurs runtimes sont exporteur-only tant que TF100Web n'execute pas les scripts de page exportes. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des effets visuels runtime standards. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation du bridge lifecycle runtime global. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des groupes de conditions runtime et politique de tag manquant. |
