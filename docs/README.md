@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active enterprise documentation map
-Document version: `V2.1.2.0012`
+Document version: `V2.1.2.0013`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0013` | `PENDING` | Ajout des filtres et du resume de catalogue tags dans l'editeur. |
 | 2026-06-17 | `V2.1.2.0012` | `PENDING` | Ajout de l'application runtime des valeurs de tags lues aux Element+ lies. |
 | 2026-06-17 | `V2.1.2.0010` | `PENDING` | Ajout des actions objet conditionnelles `Afficher`, `Masquer` et `Basculer visibilite`. |
 | 2026-06-17 | `V2.1.2.0009` | `PENDING` | Remplacement de l'authoring `WriteTag` par les bindings Element+ `Lire valeur` et `Ecrire valeur`. |
@@ -138,7 +139,7 @@ These guardrails are active decisions in `00_governance/DECISION_REGISTER_V2.md`
 7. Durable source deletion uses scene state and `RemovedSourceElementIds`, not WebView masking or inventory omission.
 8. Exported CSS, DOM ids, and runtime action targets are page-namespaced for TF100Web composition.
 9. Scene grouping is Element+ only; legacy/source nodes must be converted to Element+ before they can be grouped.
-10. Imported TF100Web tags are project-level catalog data; Element+ value bindings use all enabled tags for `Lire valeur`, require writeable tags for `Ecrire valeur`, and export through the FT100/TF100Web manifest/runtime bridge.
+10. Imported TF100Web tags are project-level catalog data; Element+ value bindings use all enabled tags for `Lire valeur`, require writeable tags for `Ecrire valeur`, and export through the FT100/TF100Web manifest/runtime bridge. The editor `Catalogue Tags` panel exposes search, device, datatype, access, and state filters plus a filtered summary.
 11. Element+ object visibility actions may be conditioned by imported tag values with deterministic operators; boolean `Vrai/Faux` conditions require boolean tags.
 12. Runtime TF100Web can push tag values into read-bound Element+ objects through `window.scadaBuilderSetTagValue(tagId, value, meta)` or the `scada-builder-tag-value` browser event.
 

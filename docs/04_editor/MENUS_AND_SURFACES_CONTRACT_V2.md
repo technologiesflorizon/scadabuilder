@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Menus And Surfaces Contract
 
-Date: 2026-06-16
+Date: 2026-06-17
 Status: Active editor menu and surface contract
-Document version: `V2.1.2.0003`
+Document version: `V2.1.2.0013`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0013` | `PENDING` | Ajout du contrat de surface pour le panneau `Catalogue Tags` filtre. |
 | 2026-06-16 | `V2.1.2.0003` | `PENDING` | Ajout de la hierarchie parent/enfant dans l'onglet Element pour les groupes Element+. |
 | 2026-06-16 | `V2.1.2.0002` | `PENDING` | Ajout du contrat menu pour `object.group` et avertissement de conversion avant groupement legacy. |
 | 2026-06-16 | `V2.1.2.0000` | `PENDING` | Ajout du contrat du choix contextuel Propriete et des commandes desactivees avec raison visible au survol. |
@@ -26,6 +27,7 @@ Surfaces include:
 5. Status bar diagnostics.
 6. WebView bridge menus.
 7. Studio Element+ ribbon and structure surfaces.
+8. Project tag catalog panel.
 
 ## 2. Menu Flow
 
@@ -49,7 +51,12 @@ flowchart TD
 7. The Element+ context menu exposes `Grouper` only for multi-selection of modern scene objects.
 8. The source/legacy context menu must not expose a destructive legacy frame-group workflow; when group intent is visible for source nodes, it must direct the user to convert to Element+ first.
 9. The Element tab must preserve Element+ group hierarchy by displaying group children as child rows rather than independent flat siblings.
+10. The `Catalogue Tags` panel is a read-oriented project catalog surface. It lists imported tags with id, name, datatype, device, address, access, and state.
+11. The `Catalogue Tags` panel must expose filters for text search, device, datatype, access, and state. These filters affect the displayed list only and must not mutate `ScadaProject.TagCatalog`.
+12. The `Catalogue Tags` panel must show a filtered summary so users can distinguish the visible filtered subset from the full imported catalog.
 
 ## 4. Related Tests
 
 `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`
+
+`tests/ScadaBuilderV2.Tests/StudioElementPlusContractTests.cs`

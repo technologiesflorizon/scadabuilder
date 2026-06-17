@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Data;
 using System.Windows.Threading;
 using Microsoft.Web.WebView2.Core;
 using ScadaBuilderV2.Application.Commands;
@@ -32,6 +33,10 @@ public partial class MainWindow : Window
     public static readonly RoutedCommand RedoSceneCommand = new(nameof(RedoSceneCommand), typeof(MainWindow));
     private const int ShowWindowRestore = 9;
     private const string ElementPlusLibraryDragFormat = "ScadaBuilderV2.ElementPlusLibraryItemPath";
+    private const string TagCatalogAllDevicesFilter = "Tous les appareils";
+    private const string TagCatalogAllDatatypesFilter = "Tous les types";
+    private const string TagCatalogAllAccessFilter = "Tous les acces";
+    private const string TagCatalogAllStatesFilter = "Tous les etats";
     private readonly IReferenceScadaProjectReader _referenceReader = new ReferenceScadaProjectReader();
     private readonly ModernProjectStore _modernProjectStore = new();
     private readonly Tf100WebTagCatalogImporter _tagCatalogImporter = new();
@@ -40,6 +45,7 @@ public partial class MainWindow : Window
     private readonly ElementPlusLibraryReader _elementPlusLibraryReader = new();
     private readonly ObservableCollection<ElementPlusLibraryItem> _elementLibraryItems = [];
     private readonly ObservableCollection<TagCatalogListItem> _tagCatalogItems = [];
+    private readonly ICollectionView _tagCatalogView;
     private readonly ObservableCollection<SceneWorkspaceTab> _openSceneTabs = [];
     private readonly HashSet<string> _hiddenSourceObjectIds = new(StringComparer.Ordinal);
     private readonly List<LegacyElementListItem> _sourceObjects = [];
@@ -97,7 +103,10 @@ public partial class MainWindow : Window
         InitializeComponent();
         DataContext = this;
         ElementLibraryListBox.ItemsSource = _elementLibraryItems;
-        TagCatalogDataGrid.ItemsSource = _tagCatalogItems;
+        _tagCatalogView = CollectionViewSource.GetDefaultView(_tagCatalogItems);
+        _tagCatalogView.Filter = FilterTagCatalogItem;
+        TagCatalogDataGrid.ItemsSource = _tagCatalogView;
+        InitializeTagCatalogFilters();
         SceneTabs.ItemsSource = _openSceneTabs;
         _pageDimensionApplyTimer.Tick += OnPageDimensionApplyTimerTick;
         StatusTextBlock.Text = $"Etat / Warning - {LoadVersionText()}";
@@ -3144,12 +3153,16 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         if (_modernProject?.TagCatalog is not { Count: > 0 } catalog)
         {
             ProjectTagsSummaryText.Text = "Aucun catalogue importe";
+            RefreshTagCatalogFilterOptions();
+            _tagCatalogView.Refresh();
+            UpdateTagCatalogFilteredSummary();
             return;
         }
 
         foreach (var tag in catalog.Tags.OrderBy(tag => tag.DisplayName, StringComparer.CurrentCultureIgnoreCase))
         {
             _tagCatalogItems.Add(new TagCatalogListItem(
+                tag.Id,
                 tag.DisplayName,
                 tag.Datatype ?? "",
                 tag.Device ?? "",
@@ -3162,6 +3175,121 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ? "source inconnue"
             : catalog.SourceFileName;
         ProjectTagsSummaryText.Text = $"{catalog.Count} tag(s) importes - {source}";
+        RefreshTagCatalogFilterOptions();
+        _tagCatalogView.Refresh();
+        UpdateTagCatalogFilteredSummary();
+    }
+
+    private void InitializeTagCatalogFilters()
+    {
+        TagCatalogDeviceFilterComboBox.ItemsSource = new[] { TagCatalogAllDevicesFilter };
+        TagCatalogDatatypeFilterComboBox.ItemsSource = new[] { TagCatalogAllDatatypesFilter };
+        TagCatalogAccessFilterComboBox.ItemsSource = new[] { TagCatalogAllAccessFilter };
+        TagCatalogStateFilterComboBox.ItemsSource = new[] { TagCatalogAllStatesFilter };
+        TagCatalogDeviceFilterComboBox.SelectedIndex = 0;
+        TagCatalogDatatypeFilterComboBox.SelectedIndex = 0;
+        TagCatalogAccessFilterComboBox.SelectedIndex = 0;
+        TagCatalogStateFilterComboBox.SelectedIndex = 0;
+    }
+
+    private void RefreshTagCatalogFilterOptions()
+    {
+        SetFilterItems(
+            TagCatalogDeviceFilterComboBox,
+            TagCatalogAllDevicesFilter,
+            _tagCatalogItems.Select(item => item.Device));
+        SetFilterItems(
+            TagCatalogDatatypeFilterComboBox,
+            TagCatalogAllDatatypesFilter,
+            _tagCatalogItems.Select(item => item.Datatype));
+        SetFilterItems(
+            TagCatalogAccessFilterComboBox,
+            TagCatalogAllAccessFilter,
+            _tagCatalogItems.Select(item => item.Access));
+        SetFilterItems(
+            TagCatalogStateFilterComboBox,
+            TagCatalogAllStatesFilter,
+            _tagCatalogItems.Select(item => item.State));
+    }
+
+    private static void SetFilterItems(ComboBox comboBox, string allLabel, IEnumerable<string> values)
+    {
+        var previous = comboBox.SelectedItem as string;
+        var items = new[] { allLabel }
+            .Concat(values.Where(value => !string.IsNullOrWhiteSpace(value))
+                .Distinct(StringComparer.CurrentCultureIgnoreCase)
+                .OrderBy(value => value, StringComparer.CurrentCultureIgnoreCase))
+            .ToArray();
+        comboBox.ItemsSource = items;
+        comboBox.SelectedItem = !string.IsNullOrWhiteSpace(previous) && items.Contains(previous)
+            ? previous
+            : allLabel;
+    }
+
+    private void OnTagCatalogFilterChanged(object sender, RoutedEventArgs e)
+    {
+        _tagCatalogView.Refresh();
+        UpdateTagCatalogFilteredSummary();
+    }
+
+    private bool FilterTagCatalogItem(object candidate)
+    {
+        return candidate is TagCatalogListItem item &&
+            TagCatalogFilterMatches(
+                item,
+                TagCatalogSearchTextBox?.Text,
+                TagCatalogDeviceFilterComboBox?.SelectedItem as string,
+                TagCatalogDatatypeFilterComboBox?.SelectedItem as string,
+                TagCatalogAccessFilterComboBox?.SelectedItem as string,
+                TagCatalogStateFilterComboBox?.SelectedItem as string);
+    }
+
+    private static bool TagCatalogFilterMatches(
+        TagCatalogListItem item,
+        string? searchText,
+        string? deviceFilter,
+        string? datatypeFilter,
+        string? accessFilter,
+        string? stateFilter)
+    {
+        if (!MatchesTextSearch(item, searchText))
+        {
+            return false;
+        }
+
+        return MatchesExactFilter(item.Device, deviceFilter, TagCatalogAllDevicesFilter) &&
+            MatchesExactFilter(item.Datatype, datatypeFilter, TagCatalogAllDatatypesFilter) &&
+            MatchesExactFilter(item.Access, accessFilter, TagCatalogAllAccessFilter) &&
+            MatchesExactFilter(item.State, stateFilter, TagCatalogAllStatesFilter);
+    }
+
+    private static bool MatchesTextSearch(TagCatalogListItem item, string? searchText)
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            return true;
+        }
+
+        return item.SearchText.Contains(searchText.Trim(), StringComparison.CurrentCultureIgnoreCase);
+    }
+
+    private static bool MatchesExactFilter(string value, string? filter, string allLabel)
+    {
+        return string.IsNullOrWhiteSpace(filter) ||
+            string.Equals(filter, allLabel, StringComparison.Ordinal) ||
+            string.Equals(value, filter, StringComparison.CurrentCultureIgnoreCase);
+    }
+
+    private void UpdateTagCatalogFilteredSummary()
+    {
+        var visibleItems = _tagCatalogItems.Where(item => FilterTagCatalogItem(item)).ToArray();
+        var total = _tagCatalogItems.Count;
+        var writeable = visibleItems.Count(item => item.Access == "Lecture/Ecriture");
+        var readOnly = visibleItems.Count(item => item.Access == "Lecture");
+        var disabled = visibleItems.Count(item => item.State == "Desactive");
+        TagCatalogFilteredSummaryText.Text = total == 0
+            ? "Aucun tag affiche"
+            : $"{visibleItems.Length}/{total} tag(s) affiche(s) - {writeable} ecriture(s), {readOnly} lecture seule, {disabled} desactive(s)";
     }
 
     private string FormatProjectTag(string tagId)
@@ -5512,12 +5640,16 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     private sealed record ElementStudioLaunchResult(bool Launched, string Message);
 
     private sealed record TagCatalogListItem(
+        string Id,
         string Name,
         string Datatype,
         string Device,
         string Address,
         string Access,
-        string State);
+        string State)
+    {
+        public string SearchText => string.Join(" ", Id, Name, Datatype, Device, Address, Access, State);
+    }
 
     private sealed record LegacyViewerCommand(
         string Action,

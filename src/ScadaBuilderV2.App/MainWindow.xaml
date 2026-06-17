@@ -423,6 +423,40 @@
                                        Foreground="{StaticResource MutedBrush}"
                                        TextWrapping="Wrap"
                                        Margin="0,0,0,8"/>
+                            <TextBlock x:Name="TagCatalogFilteredSummaryText"
+                                       DockPanel.Dock="Top"
+                                       Text="Aucun tag affiche"
+                                       Foreground="{StaticResource MutedBrush}"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,0,8"/>
+                            <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                                <TextBox x:Name="TagCatalogSearchTextBox"
+                                         MinHeight="30"
+                                         Width="170"
+                                         Margin="0,0,8,6"
+                                         ToolTip="Recherche tag"
+                                         TextChanged="OnTagCatalogFilterChanged"/>
+                                <ComboBox x:Name="TagCatalogDeviceFilterComboBox"
+                                          MinHeight="30"
+                                          Width="135"
+                                          Margin="0,0,8,6"
+                                          SelectionChanged="OnTagCatalogFilterChanged"/>
+                                <ComboBox x:Name="TagCatalogDatatypeFilterComboBox"
+                                          MinHeight="30"
+                                          Width="115"
+                                          Margin="0,0,8,6"
+                                          SelectionChanged="OnTagCatalogFilterChanged"/>
+                                <ComboBox x:Name="TagCatalogAccessFilterComboBox"
+                                          MinHeight="30"
+                                          Width="125"
+                                          Margin="0,0,8,6"
+                                          SelectionChanged="OnTagCatalogFilterChanged"/>
+                                <ComboBox x:Name="TagCatalogStateFilterComboBox"
+                                          Width="115"
+                                          MinHeight="30"
+                                          Margin="0,0,0,6"
+                                          SelectionChanged="OnTagCatalogFilterChanged"/>
+                            </WrapPanel>
                             <DataGrid x:Name="TagCatalogDataGrid"
                                       AutoGenerateColumns="False"
                                       CanUserAddRows="False"
@@ -433,6 +467,7 @@
                                       BorderBrush="{StaticResource BorderBrushSoft}"
                                       BorderThickness="1">
                                 <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="1.2*"/>
                                     <DataGridTextColumn Header="Nom" Binding="{Binding Name}" Width="1.4*"/>
                                     <DataGridTextColumn Header="Type" Binding="{Binding Datatype}" Width="0.8*"/>
                                     <DataGridTextColumn Header="Appareil" Binding="{Binding Device}" Width="1*"/>

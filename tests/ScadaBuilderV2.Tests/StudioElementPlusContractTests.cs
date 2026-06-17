@@ -179,6 +179,38 @@ public sealed class StudioElementPlusContractTests
     }
 
     [TestMethod]
+    public void TagCatalogPanelExposesSearchFiltersAndFilteredSummary()
+    {
+        var xaml = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml");
+        var code = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");
+
+        StringAssert.Contains(xaml, "<TabItem Header=\"Catalogue Tags\">");
+        StringAssert.Contains(xaml, "x:Name=\"TagCatalogFilteredSummaryText\"");
+        StringAssert.Contains(xaml, "x:Name=\"TagCatalogSearchTextBox\"");
+        StringAssert.Contains(xaml, "ToolTip=\"Recherche tag\"");
+        StringAssert.Contains(xaml, "x:Name=\"TagCatalogDeviceFilterComboBox\"");
+        StringAssert.Contains(xaml, "x:Name=\"TagCatalogDatatypeFilterComboBox\"");
+        StringAssert.Contains(xaml, "x:Name=\"TagCatalogAccessFilterComboBox\"");
+        StringAssert.Contains(xaml, "x:Name=\"TagCatalogStateFilterComboBox\"");
+        StringAssert.Contains(xaml, "TextChanged=\"OnTagCatalogFilterChanged\"");
+        StringAssert.Contains(xaml, "SelectionChanged=\"OnTagCatalogFilterChanged\"");
+        StringAssert.Contains(xaml, "Header=\"Id\"");
+        StringAssert.Contains(xaml, "Binding=\"{Binding Id}\"");
+        StringAssert.Contains(code, "CollectionViewSource.GetDefaultView(_tagCatalogItems)");
+        StringAssert.Contains(code, "_tagCatalogView.Filter = FilterTagCatalogItem");
+        StringAssert.Contains(code, "RefreshTagCatalogFilterOptions();");
+        StringAssert.Contains(code, "TagCatalogFilterMatches(");
+        StringAssert.Contains(code, "MatchesTextSearch(");
+        StringAssert.Contains(code, "MatchesExactFilter(");
+        StringAssert.Contains(code, "UpdateTagCatalogFilteredSummary();");
+        StringAssert.Contains(code, "public string SearchText => string.Join");
+        StringAssert.Contains(code, "Tous les appareils");
+        StringAssert.Contains(code, "Tous les types");
+        StringAssert.Contains(code, "Tous les acces");
+        StringAssert.Contains(code, "Tous les etats");
+    }
+
+    [TestMethod]
     public void ElementTabSelectionContractKeepsListAndWorkzoneInSync()
     {
         var xaml = ReadProjectFile("src", "ScadaBuilderV2.ElementStudio.App", "MainWindow.xaml");
@@ -278,7 +310,7 @@ public sealed class StudioElementPlusContractTests
         var decisions = ReadProjectFile("docs", "05_studio_element_plus", "STUDIO_ELEMENT_PLUS_SELECTION_CONTRACT_V2.md");
         var version = ReadProjectFile("VERSION");
 
-        StringAssert.Contains(version, "V2.1.2.0012");
+        StringAssert.Contains(version, "V2.1.2.0013");
         StringAssert.Contains(code, "case \"clearSelection\":");
         StringAssert.Contains(code, "UpdateSelectionGeometryFields();");
         StringAssert.Contains(xaml, "Text=\"{Binding StructureSummary}\"");
