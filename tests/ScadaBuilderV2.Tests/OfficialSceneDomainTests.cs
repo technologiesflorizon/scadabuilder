@@ -275,6 +275,32 @@ public sealed class OfficialSceneDomainTests
     }
 
     [TestMethod]
+    public void SceneCanAttachCompoundObjectVisibilityConditionGroup()
+    {
+        var button = ScadaElement.CreateText("btn_show", "Afficher", 10, 20);
+        var target = ScadaElement.CreateText("pump_status", "Pompe", 100, 20);
+        var group = new ScadaActionConditionGroup(
+            [
+                new ScadaActionCondition("tf100.mapping.running", ScadaConditionOperator.True),
+                new ScadaActionCondition("tf100.mapping.pressure", ScadaConditionOperator.GreaterThan, "12.5")
+            ],
+            ScadaConditionGroupMode.All,
+            ScadaMissingConditionPolicy.AllowAction);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "win00008", new CanvasSize(1280, 873))
+            .WithElement(button)
+            .WithElement(target)
+            .WithObjectVisibilityEvent("btn_show", ScadaEventRegistry.ClickKey, ScadaActionKind.Show, "pump_status", conditionGroup: group);
+
+        var action = scene.ActionDefinitions.Single();
+
+        Assert.AreEqual(ScadaConditionGroupMode.All, action.ConditionGroup?.Mode);
+        Assert.AreEqual(ScadaMissingConditionPolicy.AllowAction, action.ConditionGroup?.MissingTagPolicy);
+        Assert.AreEqual(2, action.ConditionGroup?.Conditions.Count);
+        Assert.AreEqual("tf100.mapping.pressure", action.ConditionGroup?.Conditions[1].TagId);
+    }
+
+    [TestMethod]
     public void SceneCanAttachObjectBorderEvents()
     {
         var source = ScadaElement.CreateText("btn_hover", "Survol", 10, 20);
@@ -490,6 +516,46 @@ public sealed class OfficialSceneDomainTests
 
         Assert.IsTrue(issues.Any(issue => issue.Code == "action.target-missing"));
         Assert.IsTrue(issues.Any(issue => issue.Code == "condition.boolean-operator-nonboolean-tag"));
+    }
+
+    [TestMethod]
+    public void BuildValidationRejectsInvalidCompoundActionConditions()
+    {
+        var button = ScadaElement.CreateText("btn_show", "Afficher", 10, 20);
+        var target = ScadaElement.CreateText("pump_status", "Pompe", 100, 20);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "win00008", new CanvasSize(1280, 873))
+            .WithElement(button)
+            .WithElement(target)
+            .WithObjectVisibilityEvent(
+                "btn_show",
+                ScadaEventRegistry.ClickKey,
+                ScadaActionKind.Show,
+                "pump_status",
+                conditionGroup: new ScadaActionConditionGroup(
+                    [
+                        new ScadaActionCondition("tf100.mapping.pressure", ScadaConditionOperator.False),
+                        new ScadaActionCondition("tf100.mapping.missing", ScadaConditionOperator.Equals, "1")
+                    ],
+                    ScadaConditionGroupMode.Any));
+        var project = ScadaProject.CreateDefault("Validation") with
+        {
+            Scenes = [new ScadaSceneReference("win00008", "win00008", "scenes/win00008.scene.json")],
+            TagCatalog = new ScadaTagCatalog(
+                "tf100web-scada-tags-v1",
+                [
+                    new ScadaTagDefinition(
+                        "tf100.mapping.pressure",
+                        "Pression",
+                        Datatype: "Float",
+                        Device: "PLC-1")
+                ])
+        };
+
+        var issues = ScadaProjectBuildValidator.Validate(project, [scene]);
+
+        Assert.IsTrue(issues.Any(issue => issue.Code == "condition.boolean-operator-nonboolean-tag"));
+        Assert.IsTrue(issues.Any(issue => issue.Code == "condition.tag-missing"));
     }
 
     [TestMethod]

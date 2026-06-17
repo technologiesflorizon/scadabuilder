@@ -1420,13 +1420,17 @@ Apply any viewport scale to the composed page container, not independently to he
   }
 
   function evaluateCondition(condition) {
+    return evaluateConditionResult(condition) === true;
+  }
+
+  function evaluateConditionResult(condition) {
     if (!condition || !condition.TagId || !condition.Operator) {
       return true;
     }
 
     const actual = getRuntimeTagValue(condition.TagId);
     if (actual === undefined || actual === null) {
-      return false;
+      return null;
     }
 
     const operator = String(condition.Operator).toLowerCase();
@@ -1471,12 +1475,37 @@ Apply any viewport scale to the composed page container, not independently to he
     return false;
   }
 
+  function evaluateConditionGroup(group) {
+    if (!group || !Array.isArray(group.Conditions) || group.Conditions.length === 0) {
+      return true;
+    }
+
+    const missingPolicy = String(group.MissingTagPolicy || 'blockAction').toLowerCase();
+    const results = group.Conditions.map(function (condition) {
+      return evaluateConditionResult(condition);
+    });
+    if (results.some(function (result) { return result === null; })) {
+      return missingPolicy === 'allowaction';
+    }
+
+    const mode = String(group.Mode || 'all').toLowerCase();
+    if (mode === 'any') {
+      return results.some(function (result) { return result === true; });
+    }
+
+    return results.every(function (result) { return result === true; });
+  }
+
+  function evaluateActionConditions(action) {
+    return evaluateCondition(action.Condition) && evaluateConditionGroup(action.ConditionGroup);
+  }
+
   function applyAction(action) {
     if (!action || !action.Kind) {
       return;
     }
 
-    if (!evaluateCondition(action.Condition)) {
+    if (!evaluateActionConditions(action)) {
       return;
     }
 

@@ -193,6 +193,24 @@ public enum ScadaConditionOperator
 }
 
 /// <summary>
+/// Determines how several runtime tag conditions are combined.
+/// </summary>
+public enum ScadaConditionGroupMode
+{
+    All,
+    Any
+}
+
+/// <summary>
+/// Determines how runtime condition evaluation behaves when a required tag value is unavailable.
+/// </summary>
+public enum ScadaMissingConditionPolicy
+{
+    BlockAction,
+    AllowAction
+}
+
+/// <summary>
 /// Describes a deterministic tag condition attached to a runtime action.
 /// </summary>
 /// <remarks>
@@ -204,6 +222,19 @@ public sealed record ScadaActionCondition(
     string TagId,
     ScadaConditionOperator Operator,
     string? CompareValue = null);
+
+/// <summary>
+/// Describes a deterministic group of tag conditions attached to a runtime action.
+/// </summary>
+/// <remarks>
+/// Decisions: DEC-0023.
+/// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
+/// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
+/// </remarks>
+public sealed record ScadaActionConditionGroup(
+    IReadOnlyList<ScadaActionCondition> Conditions,
+    ScadaConditionGroupMode Mode = ScadaConditionGroupMode.All,
+    ScadaMissingConditionPolicy MissingTagPolicy = ScadaMissingConditionPolicy.BlockAction);
 
 /// <summary>
 /// Supported popup placement presets for FT100/TF100Web runtime overlays.
@@ -257,7 +288,8 @@ public sealed record ScadaActionDefinition(
     string? TagId = null,
     string? Value = null,
     ScadaActionCondition? Condition = null,
-    ScadaPopupOptions? PopupOptions = null);
+    ScadaPopupOptions? PopupOptions = null,
+    ScadaActionConditionGroup? ConditionGroup = null);
 
 public sealed record LegacyElementPayload(
     string LegacyType,
@@ -1047,7 +1079,8 @@ public sealed record ScadaScene(
         string triggerKeyOrRuntimeName,
         ScadaActionKind actionKind,
         string targetElementId,
-        ScadaActionCondition? condition = null)
+        ScadaActionCondition? condition = null,
+        ScadaActionConditionGroup? conditionGroup = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
         ArgumentException.ThrowIfNullOrWhiteSpace(triggerKeyOrRuntimeName);
@@ -1074,7 +1107,8 @@ public sealed record ScadaScene(
             CreateActionId(elementId, trigger.RuntimeTrigger, functionName, targetId),
             actionKind,
             TargetElementId: targetElementId.Trim(),
-            Condition: condition);
+            Condition: condition,
+            ConditionGroup: conditionGroup);
 
         return WithAction(action)
             .WithObjectEvent(

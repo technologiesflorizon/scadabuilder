@@ -8,6 +8,7 @@ Document version: `V2.1.2.0017`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0023 pour les groupes de conditions runtime et politique degradee. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0022 pour les options runtime avancees des popup Fragment. |
 | 2026-06-17 | `V2.1.2.0016` | `PENDING` | Ajout de DEC-0021 pour les actions runtime de bordure Element+. |
 | 2026-06-17 | `V2.1.2.0015` | `PENDING` | Ajout de DEC-0020 pour `Fermer popup` et `Basculer popup`. |
@@ -514,6 +515,32 @@ Decision:
 Consequences:
 
 The popup cycle now covers open, close, and toggle without adding popup instances or host-region model fields. Explicit placement, named host regions, lifecycle reset policy, multi-instance policy, and popup sizing presets remain future revisions.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+
+### DEC-0023 - Compound Runtime Conditions And Missing Tag Policy
+
+Status: Active
+Created: 2026-06-17 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
+
+Context:
+
+Single tag conditions are insufficient for common HMI behavior such as showing an object when one of several states is active or only when several process constraints are simultaneously true. Runtime behavior must also be deterministic when a required tag value is unavailable.
+
+Decision:
+
+Runtime actions may carry an optional `ScadaActionConditionGroup` in addition to the legacy single `Condition`. The group contains one or more `ScadaActionCondition` entries, a `Mode` of `All` or `Any`, and a `MissingTagPolicy` of `BlockAction` or `AllowAction`. Build/export validation applies the same tag, datatype, boolean, and comparison-value checks to every condition in the group. Exported runtime evaluates the single condition and the group before applying the action.
+
+Consequences:
+
+Compound conditions and explicit missing-tag degraded behavior are now model-backed and exportable. Expression authoring and formula parsing remain out of scope; compound behavior is intentionally deterministic and limited to registered tag conditions.
 
 Regression coverage:
 

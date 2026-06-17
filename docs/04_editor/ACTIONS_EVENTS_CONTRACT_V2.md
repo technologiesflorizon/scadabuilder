@@ -8,6 +8,7 @@ Document version: `V2.1.2.0017`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des groupes de conditions runtime `All/Any` et politique de tag manquant. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des options runtime avancees pour popup Fragment. |
 | 2026-06-17 | `V2.1.2.0016` | `PENDING` | Implementation des actions runtime `Afficher bordure`, `Masquer bordure` et `Basculer bordure`. |
 | 2026-06-17 | `V2.1.2.0015` | `PENDING` | Implementation de `Fermer popup` et `Basculer popup` vers fragments compiles. |
@@ -36,7 +37,7 @@ Object events and runtime actions are model-owned behavior. UI controls may auth
 7. FT100 export gives `Clic` targets a default pointer cursor in hover and active click states when they are buttons or carry exported `data-scada-events`.
 8. The project can import a TF100Web `tf100web-scada-tags-v1` tag catalog. The Element+ event modal exposes enabled tags for value binding authoring.
 9. `Lire valeur` and `Ecrire valeur` persist tag ids as Element+ data bindings, not triggered scene events. `Ecrire valeur` writes the operator-entered runtime value and never stores a literal design-time value.
-10. `Afficher objet`, `Masquer objet`, and `Basculer visibilite` are authorable against Element+ targets and may use one deterministic tag condition.
+10. `Afficher objet`, `Masquer objet`, and `Basculer visibilite` are authorable against Element+ targets and may use one deterministic tag condition or one compound condition group.
 11. Exported runtime applies values pushed by TF100Web to every Element+ using the matching `Lire valeur` tag binding.
 12. `Ouvrir popup`, `Fermer popup`, and `Basculer popup` are authorable against compiled `Fragment` pages and persist as popup runtime actions with optional advanced runtime options.
 13. `Afficher bordure`, `Masquer bordure`, and `Basculer bordure` are authorable against Element+ targets and apply the standard runtime border class.
@@ -107,6 +108,12 @@ Implemented condition fields:
 
 Boolean `Vrai/Faux` operators are valid only for boolean tags. Missing target objects, missing condition tags, boolean operators on non-boolean tags, and missing comparison values are build/export errors.
 
+Compound condition groups are implemented with:
+
+1. `Mode`: `All` requires all conditions to be true; `Any` requires at least one true condition.
+2. `MissingTagPolicy`: `BlockAction` prevents the action when a required runtime value is unavailable; `AllowAction` allows the action as an explicit fail-open degraded policy.
+3. The same deterministic condition operators as single conditions.
+
 ## 6. Tag Authoring Boundary
 
 The current implemented tag slice covers:
@@ -119,7 +126,7 @@ The current implemented tag slice covers:
 6. Exporting tags and per-element value binding metadata in the FT100/TF100Web package.
 7. Applying pushed runtime values to read-bound Element+ objects through the TF100Web page bridge.
 
-The current slice does not yet implement degraded state semantics, expression authoring, compound conditions, local tag creation, or project protocol import. Local tag creation requires a future protocol import revision.
+The current slice does not yet implement expression authoring, local tag creation, or project protocol import. Local tag creation requires a future protocol import revision.
 
 ## 7. Popup Authoring Boundary
 
@@ -151,7 +158,7 @@ The current slice does not yet implement custom border styling per action, blink
 
 The following are roadmap items until implemented and covered by tests:
 
-1. Degraded tag conditions and compound conditions.
+1. Expression/formula condition authoring.
 2. Global scripts generating lifecycle events.
 3. Visual effects such as blink, glow, pulse, alarm highlight, degraded treatment.
 

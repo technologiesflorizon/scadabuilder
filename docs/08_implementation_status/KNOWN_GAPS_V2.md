@@ -8,6 +8,7 @@ Document version: `V2.1.2.0017`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Retrait du gap conditions composees et politique degradee simple. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Retrait du gap politique popup avancee; le placement visuel authorable reste roadmap. |
 | 2026-06-17 | `V2.1.2.0016` | `PENDING` | Retrait du gap hover group border; les effets visuels avances restent roadmap. |
 | 2026-06-17 | `V2.1.2.0015` | `PENDING` | Retrait du gap actions popup close/toggle; les politiques avancees restent roadmap. |
@@ -24,9 +25,9 @@ Document version: `V2.1.2.0017`
 
 1. Full migration from legacy top-level documentation into the new owner documents is not complete.
 2. Public C# XML documentation coverage is not yet enforced as a failing build gate.
-3. Visual authoring for popup placement, degraded semantics, compound conditions, custom visual effects, and global lifecycle scripts remain roadmap unless tests prove otherwise.
+3. Visual authoring for popup placement, expression/formula conditions, custom visual effects, and global lifecycle scripts remain roadmap unless tests prove otherwise.
 4. Rich Element+ button hover runtime interpretation belongs to TF100Web. SCADA Builder V2 exports metadata and scoped CSS, but the editor preview does not apply the hover behavior locally.
-5. Expression binding, degraded tag semantics, and SCADA Builder-side tag creation remain roadmap. Local tag creation depends on a future project protocol import revision.
+5. Expression binding and SCADA Builder-side tag creation remain roadmap. Local tag creation depends on a future project protocol import revision.
 6. The final `FT100`, `TF100Web`, and `tf100-web` naming convention remains to be decided.
 7. Sanitized-source approval for divergent pages such as `win00008` remains unresolved.
 

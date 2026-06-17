@@ -88,6 +88,49 @@ public sealed class ModernProjectStoreTests
     }
 
     [TestMethod]
+    public async Task SaveAndLoadScenePreservesCompoundConditionGroup()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var store = new ModernProjectStore();
+        var scene = ScadaScene
+            .CreateEmpty("win-events", "Event scene", new(1280, 873))
+            .WithElement(ScadaElement.CreateText("btn_show", "Afficher", 10, 20))
+            .WithElement(ScadaElement.CreateText("pump_status", "Pompe", 100, 20))
+            .WithObjectVisibilityEvent(
+                "btn_show",
+                ScadaEventRegistry.ClickKey,
+                ScadaActionKind.Show,
+                "pump_status",
+                conditionGroup: new ScadaActionConditionGroup(
+                    [
+                        new ScadaActionCondition("tf100.mapping.running", ScadaConditionOperator.True),
+                        new ScadaActionCondition("tf100.mapping.pressure", ScadaConditionOperator.GreaterThanOrEqual, "10")
+                    ],
+                    ScadaConditionGroupMode.Any,
+                    ScadaMissingConditionPolicy.AllowAction));
+
+        try
+        {
+            await store.SaveSceneAsync(root, scene);
+
+            var loaded = await store.LoadOrCreateSceneAsync(root, "win-events", "Event scene", new(1280, 873));
+            var group = loaded.ActionDefinitions.Single().ConditionGroup;
+
+            Assert.AreEqual(ScadaConditionGroupMode.Any, group?.Mode);
+            Assert.AreEqual(ScadaMissingConditionPolicy.AllowAction, group?.MissingTagPolicy);
+            Assert.AreEqual(2, group?.Conditions.Count);
+            Assert.AreEqual(ScadaConditionOperator.GreaterThanOrEqual, group?.Conditions[1].Operator);
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task SaveAndLoadScenePreservesObjectBorderActions()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

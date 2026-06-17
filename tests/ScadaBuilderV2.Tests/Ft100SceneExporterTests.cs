@@ -854,6 +854,67 @@ public sealed class Ft100SceneExporterTests
     }
 
     [TestMethod]
+    public async Task ExportIncludesCompoundConditionRuntimeHook()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+        var sourceHtmlPath = Path.Combine(sourceRoot, "compound_conditions.html");
+        await File.WriteAllTextAsync(sourceHtmlPath, "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Compound conditions", new(1280, 873))
+            .WithElement(ScadaElement.CreateText("btn_show", "Afficher", 10, 20))
+            .WithElement(ScadaElement.CreateText("pump_status", "Pompe", 100, 20))
+            .WithObjectVisibilityEvent(
+                "btn_show",
+                ScadaEventRegistry.ClickKey,
+                ScadaActionKind.Show,
+                "pump_status",
+                conditionGroup: new ScadaActionConditionGroup(
+                    [
+                        new ScadaActionCondition("tf100.mapping.running", ScadaConditionOperator.True),
+                        new ScadaActionCondition("tf100.mapping.pressure", ScadaConditionOperator.GreaterThan, "12.5")
+                    ],
+                    ScadaConditionGroupMode.Any,
+                    ScadaMissingConditionPolicy.AllowAction));
+        var project = ScadaProject.CreateDefault("Runtime") with
+        {
+            Scenes = [new ScadaSceneReference("win00008", "Compound conditions", "scenes/win00008.scene.json")],
+            TagCatalog = new ScadaTagCatalog(
+                "tf100web-scada-tags-v1",
+                [
+                    new ScadaTagDefinition("tf100.mapping.running", "Pompe en marche", Datatype: "Boolean", Device: "PLC-1"),
+                    new ScadaTagDefinition("tf100.mapping.pressure", "Pression", Datatype: "Float", Device: "PLC-1")
+                ])
+        };
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot, project);
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
+
+            StringAssert.Contains(html, "function evaluateConditionResult(condition)");
+            StringAssert.Contains(html, "function evaluateConditionGroup(group)");
+            StringAssert.Contains(html, "function evaluateActionConditions(action)");
+            StringAssert.Contains(html, "missingPolicy === 'allowaction'");
+            StringAssert.Contains(manifest, "\"ConditionGroup\"");
+            StringAssert.Contains(manifest, "\"Mode\": \"any\"");
+            StringAssert.Contains(manifest, "\"MissingTagPolicy\": \"allowAction\"");
+            StringAssert.Contains(manifest, "\"TagId\": \"tf100.mapping.pressure\"");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task ExportIncludesObjectBorderRuntimeHooks()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

@@ -8,6 +8,7 @@ Document version: `V2.1.2.0017`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de la couverture domaine, validation, persistance et export pour conditions composees. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de la couverture domaine, validation, persistance et export pour options popup avancees. |
 | 2026-06-17 | `V2.1.2.0016` | `PENDING` | Ajout de la couverture domaine, validation, persistance et export pour les actions bordure Element+. |
 | 2026-06-17 | `V2.1.2.0015` | `PENDING` | Ajout de la couverture domaine, persistance et export pour `Fermer popup` et `Basculer popup`. |
@@ -31,7 +32,7 @@ Document version: `V2.1.2.0017`
 
 ```text
 dotnet test ScadaBuilderV2.sln --no-restore
-220 passed, 0 failed, 0 skipped
+224 passed, 0 failed, 0 skipped
 ```
 
 ## 2. Coverage Map
@@ -47,6 +48,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Element+ legacy conversion | `ElementPlusLegacyConverterTests.cs` |
 | Element+ events/actions | `OfficialSceneDomainTests.cs`, `WebViewContextMenuScriptTests.cs`, `ModernProjectStoreTests.cs`, `Ft100SceneExporterTests.cs` |
 | Element+ conditional object visibility actions | `OfficialSceneDomainTests.cs`, `ModernProjectStoreTests.cs`, `Ft100SceneExporterTests.cs` |
+| Element+ compound condition groups | `OfficialSceneDomainTests.cs`, `ModernProjectStoreTests.cs`, `Ft100SceneExporterTests.cs` |
 | Element+ runtime border actions | `OfficialSceneDomainTests.cs`, `ModernProjectStoreTests.cs`, `Ft100SceneExporterTests.cs` |
 | Element+ popup fragment actions | `OfficialSceneDomainTests.cs`, `ModernProjectStoreTests.cs`, `Ft100SceneExporterTests.cs` |
 | Element+ advanced popup options | `OfficialSceneDomainTests.cs`, `ModernProjectStoreTests.cs`, `Ft100SceneExporterTests.cs` |

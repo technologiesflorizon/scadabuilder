@@ -477,23 +477,52 @@ public static class ScadaProjectBuildValidator
         ScadaActionDefinition action,
         IReadOnlyDictionary<string, ScadaTagDefinition> tagsById)
     {
-        if (action.Condition is null)
+        if (action.Condition is not null)
+        {
+            ValidateSingleActionCondition(issues, scene, action, action.Condition, tagsById);
+        }
+
+        if (action.ConditionGroup is null)
         {
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(action.Condition.TagId) ||
-            !tagsById.TryGetValue(action.Condition.TagId, out var tag))
+        if (action.ConditionGroup.Conditions.Count == 0)
         {
             issues.Add(new ScadaBuildValidationIssue(
                 ScadaBuildValidationSeverity.Error,
-                "condition.tag-missing",
-                $"Action '{action.Id}' references missing condition tag '{action.Condition.TagId}'.",
+                "condition.group-empty",
+                $"Action '{action.Id}' condition group must contain at least one condition.",
                 scene.Id));
             return;
         }
 
-        if (action.Condition.Operator is ScadaConditionOperator.True or ScadaConditionOperator.False)
+        foreach (var condition in action.ConditionGroup.Conditions)
+        {
+            ValidateSingleActionCondition(issues, scene, action, condition, tagsById);
+        }
+    }
+
+    // Keeps single and compound condition validation consistent.
+    private static void ValidateSingleActionCondition(
+        List<ScadaBuildValidationIssue> issues,
+        ScadaScene scene,
+        ScadaActionDefinition action,
+        ScadaActionCondition condition,
+        IReadOnlyDictionary<string, ScadaTagDefinition> tagsById)
+    {
+        if (string.IsNullOrWhiteSpace(condition.TagId) ||
+            !tagsById.TryGetValue(condition.TagId, out var tag))
+        {
+            issues.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                "condition.tag-missing",
+                $"Action '{action.Id}' references missing condition tag '{condition.TagId}'.",
+                scene.Id));
+            return;
+        }
+
+        if (condition.Operator is ScadaConditionOperator.True or ScadaConditionOperator.False)
         {
             if (!IsBooleanDatatype(tag.Datatype))
             {
@@ -507,7 +536,7 @@ public static class ScadaProjectBuildValidator
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(action.Condition.CompareValue))
+        if (string.IsNullOrWhiteSpace(condition.CompareValue))
         {
             issues.Add(new ScadaBuildValidationIssue(
                 ScadaBuildValidationSeverity.Error,
