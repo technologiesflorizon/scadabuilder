@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.IO.Compression;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -11,7 +12,15 @@ namespace ScadaBuilderV2.Rendering;
 
 public sealed partial class Ft100SceneExporter
 {
+    /// <summary>
+    /// Directory name expected at the top level of FT100 project packages.
+    /// </summary>
     public const string ProjectPackageDirectoryName = "scada-builder-v2-ft100-package";
+
+    /// <summary>
+    /// FT100 SCADA Builder V2 archive extension imported by TF100Web.
+    /// </summary>
+    public const string ProjectArchiveExtension = ".sb2";
 
     private static readonly JsonSerializerOptions ManifestJsonOptions = new()
     {
@@ -71,6 +80,7 @@ public sealed partial class Ft100SceneExporter
             RepairLegacyTextEncoding(rewrittenSourceContent),
             scene.TextOverrides);
         normalizedSourceContent = ApplyLegacySourceInlineBounds(normalizedSourceContent, scene);
+        normalizedSourceContent = ScopeSourceDomIds(normalizedSourceContent, Ft100ExportScope.ForScene(scene));
 
         var cssFileName = $"{scene.Id}.css";
         var htmlFileName = $"{scene.Id}.html";
@@ -169,6 +179,75 @@ public sealed partial class Ft100SceneExporter
             manifestPath,
             pageResults,
             pageResults.Sum(result => result.CopiedImageCount));
+    }
+
+    /// <summary>
+    /// Exports the project as a FT100-compatible .sb2 archive.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0003, DEC-0007, DEC-0026, DEC-0027.
+    /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md.
+    /// </remarks>
+    public async Task<Ft100ProjectArchiveExportResult> ExportProjectArchiveAsync(
+        ScadaProject project,
+        IReadOnlyList<Ft100ProjectPageExportInput> pages,
+        string archivePath,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(project);
+        ArgumentNullException.ThrowIfNull(pages);
+        ArgumentException.ThrowIfNullOrWhiteSpace(archivePath);
+
+        var fullArchivePath = Path.GetFullPath(archivePath);
+        if (!string.Equals(Path.GetExtension(fullArchivePath), ProjectArchiveExtension, StringComparison.OrdinalIgnoreCase))
+        {
+            fullArchivePath += ProjectArchiveExtension;
+        }
+
+        var archiveDirectory = Path.GetDirectoryName(fullArchivePath);
+        if (string.IsNullOrWhiteSpace(archiveDirectory))
+        {
+            throw new InvalidOperationException("Invalid FT100 .sb2 archive destination.");
+        }
+
+        Directory.CreateDirectory(archiveDirectory);
+        var stagingRoot = Path.Combine(Path.GetTempPath(), "scada-builder-v2-sb2", Guid.NewGuid().ToString("N"));
+        try
+        {
+            Directory.CreateDirectory(stagingRoot);
+            var packageResult = await ExportProjectAsync(project, pages, stagingRoot, cancellationToken);
+            var validation = Ft100PackageValidator.ValidatePackageDirectory(packageResult.ExportDirectory);
+            if (!validation.IsValid)
+            {
+                throw new InvalidOperationException(validation.Errors[0].Message);
+            }
+
+            if (File.Exists(fullArchivePath))
+            {
+                File.Delete(fullArchivePath);
+            }
+
+            ZipFile.CreateFromDirectory(
+                stagingRoot,
+                fullArchivePath,
+                CompressionLevel.Optimal,
+                includeBaseDirectory: false);
+
+            return new Ft100ProjectArchiveExportResult(
+                fullArchivePath,
+                ProjectPackageDirectoryName,
+                $"{ProjectPackageDirectoryName}/manifest.json",
+                packageResult.PageResults.Count,
+                packageResult.CopiedImageCount,
+                validation);
+        }
+        finally
+        {
+            if (Directory.Exists(stagingRoot))
+            {
+                Directory.Delete(stagingRoot, recursive: true);
+            }
+        }
     }
 
     private static string ResolveProjectPackageDirectory(string selectedDirectory)
@@ -425,6 +504,62 @@ public sealed partial class Ft100SceneExporter
         }
 
         return updated;
+    }
+
+    private static string ScopeSourceDomIds(string html, Ft100ExportScope scope)
+    {
+        var occurrenceCounts = new Dictionary<string, int>(StringComparer.Ordinal);
+        var referenceRewrites = new Dictionary<string, string>(StringComparer.Ordinal);
+        var updated = SourceIdAttributeRegex().Replace(html, match =>
+        {
+            var id = match.Groups["value"].Value.Trim();
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return match.Value;
+            }
+
+            var occurrence = occurrenceCounts.TryGetValue(id, out var currentCount)
+                ? currentCount + 1
+                : 1;
+            occurrenceCounts[id] = occurrence;
+
+            var scopedId = CreateScopedSourceDomId(scope, id, occurrence);
+            referenceRewrites.TryAdd(id, scopedId);
+            return $"{match.Groups["prefix"].Value}{match.Groups["quote"].Value}{HtmlEncoder.Default.Encode(scopedId)}{match.Groups["quote"].Value}";
+        });
+
+        foreach (var rewrite in referenceRewrites)
+        {
+            updated = RewriteSourceDomIdReference(updated, rewrite.Key, rewrite.Value);
+        }
+
+        return updated;
+    }
+
+    private static string CreateScopedSourceDomId(Ft100ExportScope scope, string sourceId, int occurrence)
+    {
+        var baseId = CssIdentifier(sourceId);
+        if (string.IsNullOrWhiteSpace(baseId))
+        {
+            baseId = "source";
+        }
+
+        var suffix = occurrence <= 1
+            ? ""
+            : $"-{occurrence.ToString(CultureInfo.InvariantCulture)}";
+        return $"{scope.RootDomId}__legacy-{baseId}{suffix}";
+    }
+
+    private static string RewriteSourceDomIdReference(string html, string sourceId, string scopedId)
+    {
+        return html
+            .Replace($"url(#{sourceId})", $"url(#{scopedId})", StringComparison.Ordinal)
+            .Replace($"url('#{sourceId}')", $"url('#{scopedId}')", StringComparison.Ordinal)
+            .Replace($"url(\"#{sourceId}\")", $"url(\"#{scopedId}\")", StringComparison.Ordinal)
+            .Replace($"href=\"#{sourceId}\"", $"href=\"#{scopedId}\"", StringComparison.Ordinal)
+            .Replace($"href='#{sourceId}'", $"href='#{scopedId}'", StringComparison.Ordinal)
+            .Replace($"xlink:href=\"#{sourceId}\"", $"xlink:href=\"#{scopedId}\"", StringComparison.Ordinal)
+            .Replace($"xlink:href='#{sourceId}'", $"xlink:href='#{scopedId}'", StringComparison.Ordinal);
     }
 
     private static bool ShouldApplyLegacyInlineBounds(string tag)
@@ -1768,6 +1903,9 @@ Apply any viewport scale to the composed page container, not independently to he
 
     [GeneratedRegex("""src=(?<quote>["'])(?<value>[^"']+)\k<quote>""", RegexOptions.IgnoreCase)]
     private static partial Regex SrcAttributeRegex();
+
+    [GeneratedRegex("""(?<prefix>(?<![\w:-])id\s*=\s*)(?<quote>["'])(?<value>[^"']+)\k<quote>""", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
+    private static partial Regex SourceIdAttributeRegex();
 
     [GeneratedRegex("""\sstyle\s*=\s*(?<quote>["'])(?<value>.*?)\k<quote>""", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex StyleAttributeRegex();

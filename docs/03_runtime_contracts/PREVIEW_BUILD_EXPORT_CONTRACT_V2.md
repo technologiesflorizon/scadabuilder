@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Preview Build Export Contract
 
-Date: 2026-06-16
+Date: 2026-06-17
 Status: Active runtime contract
-Document version: `V2.1.2.0007`
+Document version: `V2.1.2.0019`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0019` | `PENDING` | Ajout de l'export archive `.sb2` FT100 avec validation de compatibilite avant packaging. |
 | 2026-06-16 | `V2.1.2.0007` | `PENDING` | Clarification du curseur FT100 runtime par defaut sur boutons et cibles avec events. |
 | 2026-06-16 | `V2.1.2.0006` | `PENDING` | Clarification de la parite export des events runtime portes par des groupes Element+. |
 | 2026-06-16 | `V2.1.2.0005` | `PENDING` | Ajout des metadonnees preview/export du hover automatique des boutons Element+. |
@@ -33,6 +34,8 @@ Element+ group runtime events are model behavior, not editor overlay geometry. F
 
 Runtime click affordance is export-owned styling. FT100 export must generate page-scoped `cursor: pointer` CSS for Element+ buttons and elements carrying `data-scada-events`, including descendants and active click state.
 
+FT100 `.sb2` export is a packaging layer over the same V2 project export model. It must first generate the normalized `scada-builder-v2-ft100-package` folder in a staging directory, validate TF100Web intake compatibility and page namespace rules, then create a ZIP archive with `.sb2` extension. The `.sb2` archive must not change scene geometry, runtime markup, CSS scoping, or page composition semantics compared with the validated folder package.
+
 ## 2. Flow
 
 ```mermaid
@@ -41,6 +44,8 @@ flowchart TD
   Model --> Build[Build/export renderer]
   Preview --> Diff[Preview/build difference detection]
   Build --> Package[Runtime package]
+  Package --> Validate[TF100Web intake and namespace validation]
+  Validate --> Archive[.sb2 archive]
   Package --> Tests[Regression tests]
   Diff --> Tests
 ```

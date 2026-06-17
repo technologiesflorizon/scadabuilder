@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.2.0018`
+Document version: `V2.1.2.0019`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0019` | `PENDING` | Ajout de DEC-0027 pour l'export `.sb2` FT100 et le gate anti-collision. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Ajout de DEC-0026 pour le contrat d'intake fragment audite dans TF100Web. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0025 pour les effets visuels runtime standards. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0024 pour le bridge lifecycle runtime global. |
@@ -59,7 +60,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-16 00:00 America/Toronto
-Created in commit: `ad364a6`
+Created in commit: `PENDING`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -553,7 +554,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-17 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `ad364a6`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -574,6 +575,32 @@ Exporter features such as lifecycle bridge, popup runtime, condition evaluation,
 Regression coverage:
 
 `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`, `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py`
+
+### DEC-0027 - FT100 .sb2 Archive Export And Collision Gate
+
+Status: Active
+Created: 2026-06-17 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md`
+
+Context:
+
+FT100 imports SCADA Builder V2 packages through `.sb2` uploads. The audited TF100Web intake treats `.sb2` as a ZIP archive, extracts `scada-builder-v2-ft100-package`, validates the root manifest and page fragments, then composes header/body/footer roots in a single DOM. A valid transfer format must therefore protect both archive shape and page-local identity.
+
+Decision:
+
+SCADA Builder V2 exports `.sb2` archives by generating the existing normalized FT100 package in a staging directory, rewriting legacy source ids into the page namespace, validating that package against the TF100Web intake contract, and zipping the staging root so the archive top-level entry is `scada-builder-v2-ft100-package/`. The validation gate blocks missing manifests, unsafe paths, missing page roots, invalid header/footer references, duplicate DOM ids, unscoped DOM ids, and global CSS selectors that can collide during TF100Web composition.
+
+Consequences:
+
+The folder export remains available for diagnostics, while `.sb2` is the preferred FT100 transfer artifact. SCADA Builder V2 may refuse to create `.sb2` archives for pages that still contain raw global ids or unscoped CSS, even if the folder export can be generated. Runtime parity gaps documented in DEC-0026 remain separate from archive/import compatibility.
+
+Regression coverage:
+
+`Ft100PackageValidator`, `Ft100SceneExporter.ExportProjectArchiveAsync`, and future targeted coverage in `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`. Tests were not executed for this implementation per user instruction.
 
 ### DEC-0024 - Global Runtime Lifecycle Bridge
 

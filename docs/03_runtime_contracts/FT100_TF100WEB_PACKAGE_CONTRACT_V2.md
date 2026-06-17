@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active runtime package contract
-Document version: `V2.1.2.0018`
+Document version: `V2.1.2.0019`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0019` | `PENDING` | Ajout de l'export `.sb2` FT100 et du validateur anti-collision/compatibilite TF100Web. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Documentation du contrat d'intake FT100 reel audite dans TF100Web commit `7d57600`. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout des effets visuels runtime standards. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout du bridge lifecycle runtime global. |
@@ -43,6 +44,8 @@ scada-builder-v2-ft100-package/
 
 `index.html` is deprecated for current packages.
 
+SCADA Builder V2 may package this folder as a `.sb2` archive for direct FT100 upload. A `.sb2` file is a ZIP archive whose top-level entry is `scada-builder-v2-ft100-package/`; it must not contain an arbitrary parent folder above that package root.
+
 ## 2. Runtime Rules
 
 1. Root `manifest.json` is the authoritative package inventory.
@@ -65,6 +68,11 @@ scada-builder-v2-ft100-package/
 18. `SetClass`, `RemoveClass`, and `ToggleClass` actions with the standard `scada-runtime-border-highlight` class add, remove, or toggle a page-scoped runtime border on the target Element+. This visual class is runtime-only and must not represent editor selection overlays or `.sep` geometry.
 19. Each exported page exposes `window.scadaBuilderRuntime` with page id, root id, actions, and a dispatch helper. The runtime emits `scada-builder-page-ready`, `scada-builder-action-executed`, and `scada-builder-runtime-error` lifecycle events.
 20. Standard visual effect actions use page-scoped CSS classes and keyframes for blink, glow, pulse, alarm highlight, and degraded treatment. Effects are applied through `SetClass`, `RemoveClass`, and `ToggleClass`.
+21. `.sb2` archive export must validate the generated staging package before writing the archive. Blocking validation errors include missing root manifest, unsafe relative paths, missing page root `ft100-<page-id>`, duplicate DOM ids in a page, unscoped DOM ids, unscoped CSS selectors, invalid header/footer references, and wrong header/footer page types.
+22. Missing page CSS is a compatibility warning because TF100Web accepts the package but reports `missing-css:<page-id>`.
+23. DOM ids emitted by SCADA Builder V2 must be page-scoped. The only accepted page root id is `ft100-<page-id>` and Element+ DOM ids must use `ft100-<page-id>__<element-id>`. Raw global ids such as `Button1`, `group_001`, or `text_001` are invalid in `.sb2` export.
+24. Legacy source fragment ids must be rewritten during export under `ft100-<page-id>__legacy-*` before validation. Duplicate legacy source ids receive deterministic occurrence suffixes so the final fragment contains no duplicate DOM id.
+25. Generated CSS must not emit package-global `:root`, `html`, `body`, raw `[data-id="..."]`, raw `.ft100-*`, or raw `#Button1`-style selectors. Selectors must remain rooted under `#ft100-<page-id>` for TF100Web header/body/footer composition.
 
 ## 3. Current TF100Web Intake Contract
 
@@ -82,7 +90,7 @@ TF100Web currently consumes SCADA Builder V2 packages through these Django/runti
 The active TF100Web intake contract is:
 
 1. The package directory name remains `scada-builder-v2-ft100-package`.
-2. TF100Web accepts uploaded `.sb2` or `.zip` packages through the SCADA Builder admin surface, extracts them into a project repository, and stores active project state outside the package.
+2. TF100Web accepts uploaded `.sb2` or `.zip` packages through the SCADA Builder admin surface, extracts them into a project repository, and stores active project state outside the package. SCADA Builder V2 `.sb2` export is the preferred current transfer format.
 3. The repository root is `SCADA_BUILDER_PROJECTS_ROOT` when configured, `/var/lib/ft100/scada-builder-projects` in production, or `var/scada-builder-projects` in development.
 4. TF100Web also supports the repository-local fallback import root `F:\Projet\Git\TF100Web\import\scada-builder-v2-ft100-package` when no active uploaded project is selected.
 5. The root `manifest.json` is mandatory. Missing, unreadable, non-object, or empty compiled-page manifests invalidate the package.
@@ -138,6 +146,8 @@ flowchart TD
   RootFragment --> TF100Web
   PageCss --> TF100Web
   Assets --> TF100Web
+  Package --> Sb2[.sb2 zip archive]
+  Sb2 --> TF100Web
   PageHtml -. script outside extracted root not executed by current TF100Web intake .-> Gap[TF100Web runtime parity gap]
 ```
 
@@ -159,6 +169,7 @@ flowchart TD
 14. `DEC-0024` - Global Runtime Lifecycle Bridge.
 15. `DEC-0025` - Standard Runtime Visual Effects.
 16. `DEC-0026` - Audited TF100Web Fragment Intake Contract.
+17. `DEC-0027` - FT100 .sb2 Archive Export And Collision Gate.
 
 ## 7. Related Tests
 

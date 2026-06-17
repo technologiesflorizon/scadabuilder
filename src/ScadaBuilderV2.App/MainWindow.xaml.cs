@@ -3766,6 +3766,80 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
     }
 
+    private async void OnExportFt100Sb2Click(object sender, RoutedEventArgs e)
+    {
+        if (_repositoryRoot is null || _activeScene is null || _activeReferencePage is null)
+        {
+            SetStatus("Aucune scene active a exporter vers FT100.");
+            return;
+        }
+
+        try
+        {
+            var defaultExportRoot = Path.Combine(
+                ModernProjectStore.GetReferenceModernProjectRoot(_repositoryRoot),
+                "exports");
+            Directory.CreateDirectory(defaultExportRoot);
+
+            var projectName = _modernProject?.Name ?? "scada-builder-v2";
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Title = "Exporter le package FT100 .sb2",
+                InitialDirectory = defaultExportRoot,
+                FileName = $"{SanitizeFileName(projectName)}.sb2",
+                Filter = "Package SCADA Builder FT100 (*.sb2)|*.sb2|Tous les fichiers (*.*)|*.*",
+                AddExtension = true,
+                DefaultExt = ".sb2",
+                OverwritePrompt = true
+            };
+
+            if (dialog.ShowDialog(this) != true)
+            {
+                SetStatus("Export FT100 .sb2 annule.");
+                return;
+            }
+
+            var exporter = new Ft100SceneExporter();
+            UpdateModernProjectFromActiveScene();
+            EnsureHomePageStillValid();
+            if (_modernProject is null)
+            {
+                SetStatus("Export FT100 .sb2 impossible: projet V2 introuvable.");
+                return;
+            }
+
+            _modernProject = _modernProject with { Scenes = GetCurrentSceneReferences() };
+            var errors = ScadaProjectBuildValidator.Validate(_modernProject)
+                .Where(issue => issue.Severity == ScadaBuildValidationSeverity.Error)
+                .ToArray();
+            if (errors.Length > 0)
+            {
+                SetStatus($"Export FT100 .sb2 bloque: {errors[0].Message}");
+                return;
+            }
+
+            var inputs = await BuildFt100ProjectExportInputsAsync(_modernProject);
+            var result = await exporter.ExportProjectArchiveAsync(_modernProject, inputs, dialog.FileName);
+            var warningText = result.Validation.Warnings.Count == 0
+                ? ""
+                : $" {result.Validation.Warnings.Count} warning(s) compatibilite FT100.";
+            SetStatus($"Export FT100 .sb2 cree: {result.ArchivePath} ({result.PageCount} page(s), {result.CopiedImageCount} image(s)).{warningText}");
+        }
+        catch (Exception ex) when (ex is IOException or InvalidOperationException or UnauthorizedAccessException or ArgumentException)
+        {
+            SetStatus($"Export FT100 .sb2 impossible: {ex.Message}");
+        }
+    }
+
+    private static string SanitizeFileName(string value)
+    {
+        var invalidChars = Path.GetInvalidFileNameChars().ToHashSet();
+        var sanitized = new string(value.Select(ch => invalidChars.Contains(ch) ? '_' : ch).ToArray()).Trim();
+        return string.IsNullOrWhiteSpace(sanitized)
+            ? "scada-builder-v2"
+            : sanitized;
+    }
+
     private async Task<IReadOnlyList<Ft100ProjectPageExportInput>> BuildFt100ProjectExportInputsAsync(ScadaProject project)
     {
         if (_repositoryRoot is null || _referenceProject is null)

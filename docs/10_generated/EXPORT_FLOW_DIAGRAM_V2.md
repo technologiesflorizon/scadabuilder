@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Generated baseline
-Document version: `V2.1.2.0018`
+Document version: `V2.1.2.0019`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0019` | `PENDING` | Ajout de l'archive `.sb2` apres validation de staging. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Ajout du chemin d'intake fragment TF100Web audite. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du diagramme de flow export. |
 
@@ -23,7 +24,10 @@ flowchart TD
   Html --> Package
   Css --> Package
   Images --> Package
+  Package --> Validate[SCADA Builder validates TF100Web intake and namespace]
+  Validate --> Sb2[.sb2 zip archive]
   Package --> TfManifest[TF100Web reads root manifest]
+  Sb2 --> TfManifest
   TfManifest --> TfPages[Compiled Pages entries]
   TfPages --> TfFragment[Extract div id ft100-page-id]
   TfPages --> TfCss[Load page sibling CSS]

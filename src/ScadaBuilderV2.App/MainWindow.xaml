@@ -193,6 +193,12 @@
                                     <TextBlock Text="Build" FontSize="12"/>
                                 </StackPanel>
                             </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Exporter package FT100 .sb2" Click="OnExportFt100Sb2Click">
+                                <StackPanel>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Build.FT100}"/>
+                                    <TextBlock Text=".sb2" FontSize="12"/>
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
 
                         <StackPanel x:Name="EditRibbon" Orientation="Horizontal" Visibility="Collapsed">

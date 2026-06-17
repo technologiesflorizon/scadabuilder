@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active enterprise documentation map
-Document version: `V2.1.2.0018`
+Document version: `V2.1.2.0019`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0019` | `PENDING` | Ajout de l'export `.sb2` FT100 avec gate anti-collision DOM/CSS. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Ajout du contrat d'intake FT100 audite dans TF100Web et de la reference source locale. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout des effets visuels runtime standards. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout du bridge lifecycle runtime global. |
@@ -157,6 +158,8 @@ These guardrails are active decisions in `00_governance/DECISION_REGISTER_V2.md`
 17. Standard runtime visual effects include blink, glow, pulse, alarm highlight, and degraded treatment through page-scoped CSS classes.
 18. Current TF100Web intake source is `F:\Projet\Git\TF100Web` on branch `implementation_scada_builder`; as audited at commit `7d57600`, TF100Web extracts only `<div id="ft100-<page-id>">`, loads sibling CSS/assets, composes header/body/footer fragments, and executes host-side navigation plus mapping refresh/write behavior.
 19. SCADA Builder exporter-emitted page scripts are not executed by the current TF100Web fragment intake. Documentation must separate exporter behavior from TF100Web-executed behavior until parity is implemented.
+20. `.sb2` is the preferred FT100 transfer artifact. It is a ZIP archive whose top-level entry is `scada-builder-v2-ft100-package/`.
+21. `.sb2` export rewrites legacy source ids under `ft100-<page-id>__legacy-*` before validation, then blocks packages that still contain duplicate DOM ids, unscoped DOM ids, unsafe paths, missing page roots, invalid header/footer references, or generated global CSS selectors that could collide in TF100Web composition.
 
 ## 5. Decommissioned Legacy Documents
 

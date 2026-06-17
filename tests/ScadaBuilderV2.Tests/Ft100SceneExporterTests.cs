@@ -1,3 +1,4 @@
+using System.IO.Compression;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
 using ScadaBuilderV2.Rendering;
@@ -1516,6 +1517,85 @@ public sealed class Ft100SceneExporterTests
             if (Directory.Exists(Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", "composition-css-source")))
             {
                 Directory.Delete(Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", "composition-css-source"), recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public async Task ExportProjectArchiveWritesSb2RootAndScopesLegacyDomIds()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+        Directory.CreateDirectory(exportRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "win00008.html");
+        await File.WriteAllTextAsync(
+            sourceHtmlPath,
+            """
+<!doctype html>
+<html>
+<body>
+  <div class="page">
+    <svg class="shape-layer">
+      <defs><clipPath id="Mask"><rect width="10" height="10" /></clipPath></defs>
+      <rect id="Mask" clip-path="url(#Mask)" />
+    </svg>
+    <div id="Button1" class="layer" data-id="1"><a href="#Button1">Start</a></div>
+  </div>
+</body>
+</html>
+""");
+
+        var scene = ScadaScene.CreateEmpty("win00008", "Home", new(1280, 873));
+        var project = ScadaProject.CreateDefault("Runtime") with
+        {
+            HomePageId = "win00008",
+            Scenes =
+            [
+                new ScadaSceneReference("win00008", "Home", "scenes/win00008.scene.json")
+            ]
+        };
+
+        try
+        {
+            var archivePath = Path.Combine(exportRoot, "runtime.sb2");
+            var result = await new Ft100SceneExporter().ExportProjectArchiveAsync(
+                project,
+                [new Ft100ProjectPageExportInput(scene, sourceHtmlPath)],
+                archivePath);
+
+            Assert.AreEqual(archivePath, result.ArchivePath);
+            Assert.AreEqual(Ft100SceneExporter.ProjectPackageDirectoryName, result.PackageRootName);
+            Assert.AreEqual($"{Ft100SceneExporter.ProjectPackageDirectoryName}/manifest.json", result.ManifestRelativePath);
+            Assert.AreEqual(1, result.PageCount);
+            Assert.IsTrue(result.Validation.IsValid);
+            Assert.IsTrue(File.Exists(archivePath));
+
+            using var archive = ZipFile.OpenRead(archivePath);
+            Assert.IsNotNull(archive.GetEntry($"{Ft100SceneExporter.ProjectPackageDirectoryName}/manifest.json"));
+            var htmlEntry = archive.GetEntry($"{Ft100SceneExporter.ProjectPackageDirectoryName}/win00008/win00008.html");
+            Assert.IsNotNull(htmlEntry);
+
+            using var htmlStream = htmlEntry.Open();
+            using var reader = new StreamReader(htmlStream);
+            var html = await reader.ReadToEndAsync();
+
+            StringAssert.Contains(html, "id=\"ft100-win00008\"");
+            StringAssert.Contains(html, "id=\"ft100-win00008__legacy-Mask\"");
+            StringAssert.Contains(html, "id=\"ft100-win00008__legacy-Mask-2\"");
+            StringAssert.Contains(html, "id=\"ft100-win00008__legacy-Button1\"");
+            StringAssert.Contains(html, "clip-path=\"url(#ft100-win00008__legacy-Mask)\"");
+            StringAssert.Contains(html, "href=\"#ft100-win00008__legacy-Button1\"");
+            Assert.IsFalse(html.Contains("id=\"Mask\"", StringComparison.Ordinal));
+            Assert.IsFalse(html.Contains("id=\"Button1\"", StringComparison.Ordinal));
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
             }
         }
     }

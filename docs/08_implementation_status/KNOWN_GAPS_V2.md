@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active known gaps register
-Document version: `V2.1.2.0018`
+Document version: `V2.1.2.0019`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0019` | `PENDING` | Clarification que l'export `.sb2` ne ferme pas le gap runtime fragment TF100Web. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Ajout du gap de parite entre runtime exporte SCADA Builder et intake fragment TF100Web. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Retrait du gap effets visuels standards; le styling custom reste roadmap. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Retrait du gap lifecycle runtime global; le chargement de scripts custom reste roadmap. |
@@ -34,6 +35,7 @@ Document version: `V2.1.2.0018`
 6. The final `FT100`, `TF100Web`, and `tf100-web` naming convention remains to be decided.
 7. Sanitized-source approval for divergent pages such as `win00008` remains unresolved.
 8. TF100Web commit `7d57600` extracts only page root fragments and does not execute SCADA Builder exporter-emitted page scripts. Exporter-side lifecycle, popup, condition, read/write tag page hooks, border/effect, and non-navigation action runtimes must be treated as TF100Web parity gaps until host-side intake support exists.
+9. `.sb2` archive export validates import/package compatibility only. It does not make TF100Web execute SCADA Builder page scripts that remain outside the extracted root fragment.
 
 ## 2. Rule
 
