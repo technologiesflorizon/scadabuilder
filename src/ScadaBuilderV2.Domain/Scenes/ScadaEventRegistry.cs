@@ -105,6 +105,26 @@ public static class ScadaEventRegistry
     public const string ToggleVisibilityFunction = "ToggleVisibility";
 
     /// <summary>
+    /// Runtime function name for showing the standard runtime border on a target Element+ object.
+    /// </summary>
+    public const string ShowBorderFunction = "ShowBorder";
+
+    /// <summary>
+    /// Runtime function name for hiding the standard runtime border on a target Element+ object.
+    /// </summary>
+    public const string HideBorderFunction = "HideBorder";
+
+    /// <summary>
+    /// Runtime function name for toggling the standard runtime border on a target Element+ object.
+    /// </summary>
+    public const string ToggleBorderFunction = "ToggleBorder";
+
+    /// <summary>
+    /// Page-scoped CSS class used by runtime border highlight actions.
+    /// </summary>
+    public const string RuntimeBorderHighlightClass = "scada-runtime-border-highlight";
+
+    /// <summary>
     /// Runtime function name for writing a value to a TF100Web tag.
     /// </summary>
     public const string WriteTagFunction = "WriteTag";
@@ -183,6 +203,9 @@ public static class ScadaEventRegistry
         new(ShowFunction, ScadaActionKind.Show, "Afficher objet", ["TargetElementId"], true, "Affiche un Element+ cible."),
         new(HideFunction, ScadaActionKind.Hide, "Masquer objet", ["TargetElementId"], true, "Masque un Element+ cible."),
         new(ToggleVisibilityFunction, ScadaActionKind.ToggleVisibility, "Basculer visibilite", ["TargetElementId"], true, "Bascule la visibilite d'un Element+ cible."),
+        new(ShowBorderFunction, ScadaActionKind.SetClass, "Afficher bordure", ["TargetElementId"], true, "Affiche la bordure runtime standard sur un Element+ cible."),
+        new(HideBorderFunction, ScadaActionKind.RemoveClass, "Masquer bordure", ["TargetElementId"], true, "Masque la bordure runtime standard sur un Element+ cible."),
+        new(ToggleBorderFunction, ScadaActionKind.ToggleClass, "Basculer bordure", ["TargetElementId"], true, "Bascule la bordure runtime standard sur un Element+ cible."),
         new(WriteTagFunction, ScadaActionKind.WriteTag, "Ecrire tag", ["TagId", "Value"], false, "Compatibilite legacy pour ecriture de valeur fixe.")
     ];
 

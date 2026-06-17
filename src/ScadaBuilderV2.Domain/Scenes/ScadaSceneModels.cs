@@ -167,6 +167,7 @@ public enum ScadaActionKind
     Hide,
     ToggleVisibility,
     SetClass,
+    RemoveClass,
     ToggleClass,
     MountFragment,
     ClosePopup,
@@ -894,7 +895,7 @@ public sealed record ScadaScene(
                     trigger.RuntimeTrigger,
                     action.Id,
                     StopPropagation: true,
-            PreventDefault: false));
+                    PreventDefault: false));
     }
 
     /// <summary>
@@ -1016,6 +1017,53 @@ public sealed record ScadaScene(
             actionKind,
             TargetElementId: targetElementId.Trim(),
             Condition: condition);
+
+        return WithAction(action)
+            .WithObjectEvent(
+                elementId,
+                new ScadaObjectEventBinding(
+                    trigger.RuntimeTrigger,
+                    action.Id,
+                    StopPropagation: true,
+            PreventDefault: false));
+    }
+
+    /// <summary>
+    /// Adds a model-backed Element+ event that applies the standard runtime border highlight class to a target object.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0021.
+    /// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
+    /// </remarks>
+    public ScadaScene WithObjectBorderEvent(
+        string elementId,
+        string triggerKeyOrRuntimeName,
+        ScadaActionKind actionKind,
+        string targetElementId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(triggerKeyOrRuntimeName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(targetElementId);
+
+        if (actionKind is not (ScadaActionKind.SetClass or ScadaActionKind.RemoveClass or ScadaActionKind.ToggleClass))
+        {
+            throw new InvalidOperationException($"Action kind '{actionKind}' is not an object border action.");
+        }
+
+        var trigger = ScadaEventRegistry.FindTrigger(triggerKeyOrRuntimeName) ??
+            throw new InvalidOperationException($"Event trigger '{triggerKeyOrRuntimeName}' is not registered.");
+        var functionName = actionKind switch
+        {
+            ScadaActionKind.RemoveClass => ScadaEventRegistry.HideBorderFunction,
+            ScadaActionKind.ToggleClass => ScadaEventRegistry.ToggleBorderFunction,
+            _ => ScadaEventRegistry.ShowBorderFunction
+        };
+        var action = new ScadaActionDefinition(
+            CreateActionId(elementId, trigger.RuntimeTrigger, functionName, targetElementId),
+            actionKind,
+            TargetElementId: targetElementId.Trim(),
+            ClassName: ScadaEventRegistry.RuntimeBorderHighlightClass);
 
         return WithAction(action)
             .WithObjectEvent(

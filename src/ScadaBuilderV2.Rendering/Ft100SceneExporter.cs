@@ -724,6 +724,7 @@ public sealed partial class Ft100SceneExporter
         css.AppendLine($"{scope.Descendant(".ft100-element--Button")}, {scope.Descendant("[data-scada-events]")} {{ cursor: pointer; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element--Button *")}, {scope.Descendant("[data-scada-events] *")} {{ cursor: pointer; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element--Button:active")}, {scope.Descendant("[data-scada-events]:active")} {{ cursor: pointer; }}");
+        css.AppendLine($"{scope.Descendant($".{ScadaEventRegistry.RuntimeBorderHighlightClass}")} {{ outline: 2px solid #00a3ff; outline-offset: 2px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.85), 0 0 8px rgba(0, 163, 255, 0.65); }}");
         css.AppendLine($"{scope.Descendant(".ft100-element svg")} {{ display: block; width: 100%; height: 100%; overflow: visible; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element input")} {{ width: 100%; height: 100%; box-sizing: border-box; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element button")} {{ width: 100%; height: 100%; box-sizing: border-box; font: inherit; color: inherit; }}");
@@ -1419,6 +1420,8 @@ Apply any viewport scale to the composed page container, not independently to he
       target.hidden = !target.hidden;
     } else if (kind === 'setclass' && action.ClassName) {
       target.classList.add(action.ClassName);
+    } else if (kind === 'removeclass' && action.ClassName) {
+      target.classList.remove(action.ClassName);
     } else if (kind === 'toggleclass' && action.ClassName) {
       target.classList.toggle(action.ClassName);
     }

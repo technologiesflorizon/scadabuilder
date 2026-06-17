@@ -4715,6 +4715,24 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                     ScadaActionKind.ToggleVisibility,
                     result.TargetElementId ?? "",
                     result.Condition),
+            var functionName when string.Equals(functionName, ScadaEventRegistry.ShowBorderFunction, StringComparison.Ordinal) =>
+                _activeScene.WithObjectBorderEvent(
+                    current.Id,
+                    result.RuntimeTrigger ?? "",
+                    ScadaActionKind.SetClass,
+                    result.TargetElementId ?? ""),
+            var functionName when string.Equals(functionName, ScadaEventRegistry.HideBorderFunction, StringComparison.Ordinal) =>
+                _activeScene.WithObjectBorderEvent(
+                    current.Id,
+                    result.RuntimeTrigger ?? "",
+                    ScadaActionKind.RemoveClass,
+                    result.TargetElementId ?? ""),
+            var functionName when string.Equals(functionName, ScadaEventRegistry.ToggleBorderFunction, StringComparison.Ordinal) =>
+                _activeScene.WithObjectBorderEvent(
+                    current.Id,
+                    result.RuntimeTrigger ?? "",
+                    ScadaActionKind.ToggleClass,
+                    result.TargetElementId ?? ""),
             _ => throw new InvalidOperationException("Fonction d'evenement non implementee dans cette tranche.")
         };
         if (string.Equals(result.FunctionName, ScadaEventRegistry.ReadValueFunction, StringComparison.Ordinal) ||

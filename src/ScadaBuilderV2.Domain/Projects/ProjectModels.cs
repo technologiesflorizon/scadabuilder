@@ -389,7 +389,8 @@ public static class ScadaProjectBuildValidator
             .ToHashSet(StringComparer.Ordinal);
         foreach (var action in scene.ActionDefinitions)
         {
-            if (action.Kind is ScadaActionKind.Show or ScadaActionKind.Hide or ScadaActionKind.ToggleVisibility)
+            if (action.Kind is ScadaActionKind.Show or ScadaActionKind.Hide or ScadaActionKind.ToggleVisibility or
+                ScadaActionKind.SetClass or ScadaActionKind.RemoveClass or ScadaActionKind.ToggleClass)
             {
                 if (string.IsNullOrWhiteSpace(action.TargetElementId) || !elementIds.Contains(action.TargetElementId))
                 {

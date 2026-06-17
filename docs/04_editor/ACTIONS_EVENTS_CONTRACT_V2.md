@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active editor/runtime actions contract
-Document version: `V2.1.2.0015`
+Document version: `V2.1.2.0016`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0016` | `PENDING` | Implementation des actions runtime `Afficher bordure`, `Masquer bordure` et `Basculer bordure`. |
 | 2026-06-17 | `V2.1.2.0015` | `PENDING` | Implementation de `Fermer popup` et `Basculer popup` vers fragments compiles. |
 | 2026-06-17 | `V2.1.2.0014` | `PENDING` | Implementation de `Ouvrir popup` vers fragments compiles. |
 | 2026-06-17 | `V2.1.2.0012` | `PENDING` | Clarification de l'application runtime des valeurs recues par `Lire valeur`. |
@@ -37,6 +38,7 @@ Object events and runtime actions are model-owned behavior. UI controls may auth
 10. `Afficher objet`, `Masquer objet`, and `Basculer visibilite` are authorable against Element+ targets and may use one deterministic tag condition.
 11. Exported runtime applies values pushed by TF100Web to every Element+ using the matching `Lire valeur` tag binding.
 12. `Ouvrir popup`, `Fermer popup`, and `Basculer popup` are authorable against compiled `Fragment` pages and persist as popup runtime actions.
+13. `Afficher bordure`, `Masquer bordure`, and `Basculer bordure` are authorable against Element+ targets and apply the standard runtime border class.
 
 ## 3. Event Registry
 
@@ -61,6 +63,9 @@ Runtime function contracts are centralized in `ScadaEventRegistry`:
 | `Show` | `Afficher objet` | `Show` | `TargetElementId`, optional `Condition` | Implemented |
 | `Hide` | `Masquer objet` | `Hide` | `TargetElementId`, optional `Condition` | Implemented |
 | `ToggleVisibility` | `Basculer visibilite` | `ToggleVisibility` | `TargetElementId`, optional `Condition` | Implemented |
+| `ShowBorder` | `Afficher bordure` | `SetClass` | `TargetElementId`, standard border class | Implemented |
+| `HideBorder` | `Masquer bordure` | `RemoveClass` | `TargetElementId`, standard border class | Implemented |
+| `ToggleBorder` | `Basculer bordure` | `ToggleClass` | `TargetElementId`, standard border class | Implemented |
 | `ReadValue` | `Lire valeur` | `ReadValue` | `TagId` | Implemented |
 | `WriteValue` | `Ecrire valeur` | `WriteValue` | `TagId` | Implemented |
 | `WriteTag` | `Ecrire tag` | `WriteTag` | `TagId`, `Value` | Legacy compatibility, not authorable |
@@ -128,17 +133,28 @@ The current implemented popup slice covers:
 
 The current slice does not yet implement named popup host regions, explicit placement, multi-instance policy, sizing presets, or lifecycle reset options.
 
-## 8. Roadmap Boundary
+## 8. Visual Runtime Action Boundary
+
+The current implemented visual action slice covers:
+
+1. Selecting `Afficher bordure`, `Masquer bordure`, or `Basculer bordure` in the Element+ event dialog.
+2. Selecting any Element+ target, including groups.
+3. Persisting the actions as `ScadaActionKind.SetClass`, `RemoveClass`, or `ToggleClass` with `TargetElementId` and `scada-runtime-border-highlight`.
+4. Validating missing target Element+ ids before build/export.
+5. Exporting page-scoped CSS and runtime `classList.add/remove/toggle` behavior.
+
+The current slice does not yet implement custom border styling per action, blink, glow, pulse, alarm highlight, degraded treatment, or SCADA Builder-side preview of runtime visual effects.
+
+## 9. Roadmap Boundary
 
 The following are roadmap items until implemented and covered by tests:
 
-1. `mouse hover -> show element/group border`.
-2. Advanced popup lifecycle policy, named host regions, sizing presets, and multi-instance policy.
-3. Degraded tag conditions and compound conditions.
-4. Global scripts generating lifecycle events.
-5. Visual effects such as blink, glow, pulse, alarm highlight, degraded treatment.
+1. Advanced popup lifecycle policy, named host regions, sizing presets, and multi-instance policy.
+2. Degraded tag conditions and compound conditions.
+3. Global scripts generating lifecycle events.
+4. Visual effects such as blink, glow, pulse, alarm highlight, degraded treatment.
 
-## 9. Event Flow
+## 10. Event Flow
 
 ```mermaid
 flowchart TD
@@ -151,7 +167,7 @@ flowchart TD
   Export --> Runtime[Runtime JS action bridge]
 ```
 
-## 10. Related Tests
+## 11. Related Tests
 
 1. `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`
 2. `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`

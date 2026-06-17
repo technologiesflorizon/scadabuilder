@@ -177,6 +177,9 @@ public sealed class OfficialSceneDomainTests
         var show = ScadaEventRegistry.FindAction(ScadaEventRegistry.ShowFunction);
         var hide = ScadaEventRegistry.FindAction(ScadaEventRegistry.HideFunction);
         var toggleVisibility = ScadaEventRegistry.FindAction(ScadaEventRegistry.ToggleVisibilityFunction);
+        var showBorder = ScadaEventRegistry.FindAction(ScadaEventRegistry.ShowBorderFunction);
+        var hideBorder = ScadaEventRegistry.FindAction(ScadaEventRegistry.HideBorderFunction);
+        var toggleBorder = ScadaEventRegistry.FindAction(ScadaEventRegistry.ToggleBorderFunction);
         var readValue = ScadaEventRegistry.FindAction(ScadaEventRegistry.ReadValueFunction);
         var writeValue = ScadaEventRegistry.FindAction(ScadaEventRegistry.WriteValueFunction);
         var writeTag = ScadaEventRegistry.FindAction(ScadaEventRegistry.WriteTagFunction);
@@ -207,6 +210,15 @@ public sealed class OfficialSceneDomainTests
         Assert.IsTrue(hide?.Implemented ?? false);
         Assert.AreEqual(ScadaActionKind.ToggleVisibility, toggleVisibility?.Kind);
         Assert.IsTrue(toggleVisibility?.Implemented ?? false);
+        Assert.AreEqual(ScadaActionKind.SetClass, showBorder?.Kind);
+        Assert.IsTrue(showBorder?.Implemented ?? false);
+        CollectionAssert.Contains(showBorder?.RequiredArguments.ToArray(), "TargetElementId");
+        Assert.AreEqual(ScadaActionKind.RemoveClass, hideBorder?.Kind);
+        Assert.IsTrue(hideBorder?.Implemented ?? false);
+        CollectionAssert.Contains(hideBorder?.RequiredArguments.ToArray(), "TargetElementId");
+        Assert.AreEqual(ScadaActionKind.ToggleClass, toggleBorder?.Kind);
+        Assert.IsTrue(toggleBorder?.Implemented ?? false);
+        CollectionAssert.Contains(toggleBorder?.RequiredArguments.ToArray(), "TargetElementId");
         Assert.AreEqual(ScadaActionKind.ReadValue, readValue?.Kind);
         Assert.IsTrue(readValue?.Implemented ?? false);
         CollectionAssert.Contains(readValue?.RequiredArguments.ToArray(), "TagId");
@@ -260,6 +272,30 @@ public sealed class OfficialSceneDomainTests
         Assert.AreEqual(ScadaConditionOperator.True, action.Condition?.Operator);
         Assert.AreEqual(action.Id, updated.EventBindings.Single().ActionId);
         Assert.AreEqual(ScadaEventRegistry.ClickRuntimeTrigger, updated.EventBindings.Single().Trigger);
+    }
+
+    [TestMethod]
+    public void SceneCanAttachObjectBorderEvents()
+    {
+        var source = ScadaElement.CreateText("btn_hover", "Survol", 10, 20);
+        var target = ScadaElement.CreateText("pump_group", "Pompe", 100, 20);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "win00008", new CanvasSize(1280, 873))
+            .WithElement(source)
+            .WithElement(target)
+            .WithObjectBorderEvent("btn_hover", ScadaEventRegistry.HoverEnterKey, ScadaActionKind.SetClass, "pump_group")
+            .WithObjectBorderEvent("btn_hover", ScadaEventRegistry.HoverExitKey, ScadaActionKind.RemoveClass, "pump_group")
+            .WithObjectBorderEvent("btn_hover", ScadaEventRegistry.ClickKey, ScadaActionKind.ToggleClass, "pump_group");
+
+        var updated = scene.FindElementRecursive("btn_hover");
+
+        Assert.IsNotNull(updated);
+        Assert.AreEqual(3, updated.EventBindings.Count);
+        CollectionAssert.AreEquivalent(
+            new[] { ScadaActionKind.SetClass, ScadaActionKind.RemoveClass, ScadaActionKind.ToggleClass },
+            scene.ActionDefinitions.Select(action => action.Kind).ToArray());
+        Assert.IsTrue(scene.ActionDefinitions.All(action => action.TargetElementId == "pump_group"));
+        Assert.IsTrue(scene.ActionDefinitions.All(action => action.ClassName == ScadaEventRegistry.RuntimeBorderHighlightClass));
     }
 
     [TestMethod]
@@ -426,6 +462,24 @@ public sealed class OfficialSceneDomainTests
 
         Assert.IsTrue(issues.Any(issue => issue.Code == "action.target-missing"));
         Assert.IsTrue(issues.Any(issue => issue.Code == "condition.boolean-operator-nonboolean-tag"));
+    }
+
+    [TestMethod]
+    public void BuildValidationRejectsInvalidClassActionTarget()
+    {
+        var button = ScadaElement.CreateText("btn_hover", "Survol", 10, 20);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "win00008", new CanvasSize(1280, 873))
+            .WithElement(button)
+            .WithObjectBorderEvent("btn_hover", ScadaEventRegistry.HoverEnterKey, ScadaActionKind.SetClass, "missing_target");
+        var project = ScadaProject.CreateDefault("Validation") with
+        {
+            Scenes = [new ScadaSceneReference("win00008", "win00008", "scenes/win00008.scene.json")]
+        };
+
+        var issues = ScadaProjectBuildValidator.Validate(project, [scene]);
+
+        Assert.IsTrue(issues.Any(issue => issue.Code == "action.target-missing"));
     }
 
     [TestMethod]

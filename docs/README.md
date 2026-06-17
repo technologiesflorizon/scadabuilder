@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active enterprise documentation map
-Document version: `V2.1.2.0015`
+Document version: `V2.1.2.0016`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0016` | `PENDING` | Ajout des actions runtime de bordure Element+ ciblee. |
 | 2026-06-17 | `V2.1.2.0015` | `PENDING` | Ajout des actions runtime `Fermer popup` et `Basculer popup`. |
 | 2026-06-17 | `V2.1.2.0014` | `PENDING` | Ajout de l'action runtime `Ouvrir popup` pour fragments compiles. |
 | 2026-06-17 | `V2.1.2.0013` | `PENDING` | Ajout des filtres et du resume de catalogue tags dans l'editeur. |
@@ -145,6 +146,7 @@ These guardrails are active decisions in `00_governance/DECISION_REGISTER_V2.md`
 11. Element+ object visibility actions may be conditioned by imported tag values with deterministic operators; boolean `Vrai/Faux` conditions require boolean tags.
 12. Runtime TF100Web can push tag values into read-bound Element+ objects through `window.scadaBuilderSetTagValue(tagId, value, meta)` or the `scada-builder-tag-value` browser event.
 13. Popup actions `Ouvrir popup`, `Fermer popup`, and `Basculer popup` target compiled `Fragment` pages only; build/export validation rejects missing, non-fragment, or excluded popup targets.
+14. Runtime border actions `Afficher bordure`, `Masquer bordure`, and `Basculer bordure` target Element+ objects through the standard page-scoped `scada-runtime-border-highlight` CSS class.
 
 ## 5. Decommissioned Legacy Documents
 

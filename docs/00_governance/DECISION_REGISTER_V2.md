@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.2.0015`
+Document version: `V2.1.2.0016`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0016` | `PENDING` | Ajout de DEC-0021 pour les actions runtime de bordure Element+. |
 | 2026-06-17 | `V2.1.2.0015` | `PENDING` | Ajout de DEC-0020 pour `Fermer popup` et `Basculer popup`. |
 | 2026-06-17 | `V2.1.2.0014` | `PENDING` | Ajout de DEC-0019 pour l'action runtime `Ouvrir popup`. |
 | 2026-06-17 | `V2.1.2.0012` | `PENDING` | Ajout de DEC-0018 pour l'application runtime des valeurs de tags lues. |
@@ -512,6 +513,32 @@ Decision:
 Consequences:
 
 The popup cycle now covers open, close, and toggle without adding popup instances or host-region model fields. Explicit placement, named host regions, lifecycle reset policy, multi-instance policy, and popup sizing presets remain future revisions.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+
+### DEC-0021 - Runtime Object Border Actions
+
+Status: Active
+Created: 2026-06-17 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
+
+Context:
+
+HMI authors need simple hover and click feedback that can highlight a target Element+ object or group without turning editor overlays into runtime geometry. The behavior must be authored through the same Element+ event/action model as navigation, visibility, popup, and tag bindings.
+
+Decision:
+
+`Afficher bordure`, `Masquer bordure`, and `Basculer bordure` are authorable Element+ event functions targeting another Element+ object. They persist as `ScadaActionKind.SetClass`, `RemoveClass`, and `ToggleClass` with `TargetElementId` and the standard `scada-runtime-border-highlight` class. Exported runtime applies the class with page-scoped CSS using `classList.add`, `classList.remove`, or `classList.toggle`.
+
+Consequences:
+
+Hover-enter and hover-exit can now show and hide a runtime border on an Element+ target. This is a runtime visual action only; it does not create editor selection overlays, modify `.sep` geometry, or introduce custom per-action CSS authoring. Richer blink, glow, pulse, alarm, and degraded visual effects remain future actions.
 
 Regression coverage:
 
