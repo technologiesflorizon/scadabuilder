@@ -8,7 +8,7 @@ Document version: `V2.1.2.0020`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-17 | `V2.1.2.0020` | `PENDING` | Ajout de l'indicateur de progression statut pour l'export FT100 `.sb2`. |
+| 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Ajout de l'indicateur de progression statut pour l'export FT100 `.sb2`. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du nouveau document proprietaire UI spec avec lien de migration vers l'ancien document. |
 
 ## 1. Active Direction

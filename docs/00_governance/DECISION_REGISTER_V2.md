@@ -8,7 +8,7 @@ Document version: `V2.1.2.0020`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-17 | `V2.1.2.0020` | `PENDING` | Ajout de DEC-0028 pour l'export `.sb2` non bloquant et la validation CSS indentee. |
+| 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Ajout de DEC-0028 pour l'export `.sb2` non bloquant et la validation CSS indentee. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout de DEC-0027 pour l'export `.sb2` FT100 et le gate anti-collision. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Ajout de DEC-0026 pour le contrat d'intake fragment audite dans TF100Web. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0025 pour les effets visuels runtime standards. |
@@ -451,7 +451,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-17 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `c2f0b6f`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A

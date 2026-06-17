@@ -8,7 +8,7 @@ Document version: `V2.1.2.0020`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-17 | `V2.1.2.0020` | `PENDING` | Correction du validateur CSS `.sb2` et ajout du feedback de progression non bloquant. |
+| 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Correction du validateur CSS `.sb2` et ajout du feedback de progression non bloquant. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Implementation de l'export `.sb2` FT100 et du validateur anti-collision/compatibilite TF100Web. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Clarification que plusieurs runtimes sont exporteur-only tant que TF100Web n'execute pas les scripts de page exportes. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des effets visuels runtime standards. |
