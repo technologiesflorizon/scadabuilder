@@ -317,19 +317,34 @@
                 Background="{StaticResource PanelBrush}"
                 BorderBrush="{StaticResource BorderBrushSoft}"
                 BorderThickness="0,1,0,0">
-            <DockPanel Margin="12,0">
+            <Grid Margin="12,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
                 <TextBlock x:Name="StatusTextBlock"
+                           Grid.Column="0"
                            Text="{Binding StatusText}"
                            VerticalAlignment="Center"
+                           TextTrimming="CharacterEllipsis"
                            Foreground="{StaticResource MutedBrush}"/>
-                <Button DockPanel.Dock="Right"
+                <ProgressBar x:Name="Ft100ExportProgressBar"
+                             Grid.Column="1"
+                             Width="160"
+                             Height="6"
+                             Margin="12,0,10,0"
+                             VerticalAlignment="Center"
+                             IsIndeterminate="True"
+                             Visibility="Collapsed"/>
+                <Button Grid.Column="2"
                         Width="28"
                         Height="26"
                         Padding="0"
                         Content="!"
                         ToolTip="Afficher les diagnostics"
                         Click="OnStatusDiagnosticsClick"/>
-            </DockPanel>
+            </Grid>
         </Border>
 
         <Grid>

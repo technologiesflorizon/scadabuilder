@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active runtime package contract
-Document version: `V2.1.2.0019`
+Document version: `V2.1.2.0020`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0020` | `PENDING` | Correction de la validation CSS page-scopee indentee et de l'export `.sb2` non bloquant cote WPF. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout de l'export `.sb2` FT100 et du validateur anti-collision/compatibilite TF100Web. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Documentation du contrat d'intake FT100 reel audite dans TF100Web commit `7d57600`. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout des effets visuels runtime standards. |
@@ -72,7 +73,8 @@ SCADA Builder V2 may package this folder as a `.sb2` archive for direct FT100 up
 22. Missing page CSS is a compatibility warning because TF100Web accepts the package but reports `missing-css:<page-id>`.
 23. DOM ids emitted by SCADA Builder V2 must be page-scoped. The only accepted page root id is `ft100-<page-id>` and Element+ DOM ids must use `ft100-<page-id>__<element-id>`. Raw global ids such as `Button1`, `group_001`, or `text_001` are invalid in `.sb2` export.
 24. Legacy source fragment ids must be rewritten during export under `ft100-<page-id>__legacy-*` before validation. Duplicate legacy source ids receive deterministic occurrence suffixes so the final fragment contains no duplicate DOM id.
-25. Generated CSS must not emit package-global `:root`, `html`, `body`, raw `[data-id="..."]`, raw `.ft100-*`, or raw `#Button1`-style selectors. Selectors must remain rooted under `#ft100-<page-id>` for TF100Web header/body/footer composition.
+25. Generated CSS must not emit package-global `:root`, `html`, `body`, raw `[data-id="..."]`, raw `.ft100-*`, or raw `#Button1`-style selectors. Selectors must remain rooted under `#ft100-<page-id>` for TF100Web header/body/footer composition. Leading whitespace before a page-scoped id selector is formatting only and must not make a valid scoped selector fail `.sb2` validation.
+26. The WPF `.sb2` export command must show bottom status-bar progress while export is running and must run archive generation asynchronously enough to keep the editor shell responsive.
 
 ## 3. Current TF100Web Intake Contract
 
@@ -170,6 +172,7 @@ flowchart TD
 15. `DEC-0025` - Standard Runtime Visual Effects.
 16. `DEC-0026` - Audited TF100Web Fragment Intake Contract.
 17. `DEC-0027` - FT100 .sb2 Archive Export And Collision Gate.
+18. `DEC-0028` - Nonblocking FT100 .sb2 Export Feedback.
 
 ## 7. Related Tests
 

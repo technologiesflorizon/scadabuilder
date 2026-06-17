@@ -312,7 +312,7 @@ public static partial class Ft100PackageValidator
         AddCssErrorIf(CssHtmlBodySelectorRegex().IsMatch(css), "global-html-body-selector", "CSS must not emit package-global html/body selectors.");
         AddCssErrorIf(CssDataIdSelectorRegex().IsMatch(css), "global-data-id-selector", "CSS data-id selectors must be scoped to the page root.");
         AddCssErrorIf(CssFt100ClassSelectorRegex().IsMatch(css), "global-ft100-class-selector", "CSS ft100 class selectors must be scoped to the page root.");
-        AddCssErrorIf(CssRawIdSelectorRegex().Matches(css).Cast<Match>().Any(match => !match.Value.StartsWith(rootSelector, StringComparison.Ordinal)), "global-id-selector", "CSS id selectors must use the page root namespace.");
+        AddCssErrorIf(CssRawIdSelectorRegex().Matches(css).Cast<Match>().Any(match => !IsPageScopedIdSelector(match.Value, rootSelector)), "global-id-selector", "CSS id selectors must use the page root namespace.");
 
         void AddCssErrorIf(bool condition, string code, string message)
         {
@@ -321,6 +321,14 @@ public static partial class Ft100PackageValidator
                 issues.Add(Error(code, $"Page '{page.Id}': {message}", page.Id));
             }
         }
+    }
+
+    // CSS authors and formatters may indent selectors; validation only cares about the emitted id token.
+    private static bool IsPageScopedIdSelector(string selector, string rootSelector)
+    {
+        var normalizedSelector = selector.TrimStart();
+        return string.Equals(normalizedSelector, rootSelector, StringComparison.Ordinal)
+            || normalizedSelector.StartsWith($"{rootSelector}__", StringComparison.Ordinal);
     }
 
     private static void ValidatePageReference(

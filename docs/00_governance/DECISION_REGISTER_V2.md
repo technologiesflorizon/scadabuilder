@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.2.0019`
+Document version: `V2.1.2.0020`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0020` | `PENDING` | Ajout de DEC-0028 pour l'export `.sb2` non bloquant et la validation CSS indentee. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout de DEC-0027 pour l'export `.sb2` FT100 et le gate anti-collision. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Ajout de DEC-0026 pour le contrat d'intake fragment audite dans TF100Web. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0025 pour les effets visuels runtime standards. |
@@ -580,7 +581,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-17 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `bd6515e`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -601,6 +602,32 @@ The folder export remains available for diagnostics, while `.sb2` is the preferr
 Regression coverage:
 
 `Ft100PackageValidator`, `Ft100SceneExporter.ExportProjectArchiveAsync`, and targeted coverage in `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`.
+
+### DEC-0028 - Nonblocking FT100 .sb2 Export Feedback
+
+Status: Active
+Created: 2026-06-17 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md`
+
+Context:
+
+FT100 `.sb2` export can copy many source assets, write page folders, validate the package, and compress the staging directory. Running that archive generation on the WPF UI thread makes SCADA Builder V2 appear frozen. The `.sb2` validator also rejected otherwise valid page-scoped CSS when a generated or author-provided selector line was indented before `#ft100-<page-id>`.
+
+Decision:
+
+SCADA Builder V2 shows an indeterminate progress bar in the bottom status bar while `.sb2` export is active and runs archive generation off the WPF UI thread. The validation gate normalizes leading whitespace before checking CSS id selectors, accepting `#ft100-<page-id>` and `#ft100-<page-id>__*` id tokens while still rejecting package-global ids.
+
+Consequences:
+
+Operators receive visible feedback during long exports and the shell remains responsive while package generation runs. The `.sb2` gate remains strict against unscoped CSS but no longer fails valid indented page-scoped selectors.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
 
 ### DEC-0024 - Global Runtime Lifecycle Bridge
 

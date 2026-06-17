@@ -641,6 +641,13 @@ public partial class MainWindow : Window
         StatusTextBlock.Text = text;
     }
 
+    private void SetFt100ExportProgress(bool isVisible)
+    {
+        Ft100ExportProgressBar.Visibility = isVisible
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+    }
+
     private async void OnRefreshElementLibraryClick(object sender, RoutedEventArgs e)
     {
         await RefreshElementLibraryAsync();
@@ -3790,6 +3797,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 return;
             }
 
+            SetFt100ExportProgress(true);
+            SetStatus("Export FT100 .sb2 en cours...");
+
             var exporter = new Ft100SceneExporter();
             UpdateModernProjectFromActiveScene();
             EnsureHomePageStillValid();
@@ -3872,7 +3882,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             }
 
             var inputs = await BuildFt100ProjectExportInputsAsync(_modernProject);
-            var result = await exporter.ExportProjectArchiveAsync(_modernProject, inputs, dialog.FileName);
+            var projectSnapshot = _modernProject;
+            var archivePath = dialog.FileName;
+            var result = await Task.Run(() => exporter.ExportProjectArchiveAsync(projectSnapshot, inputs, archivePath));
             var warningText = result.Validation.Warnings.Count == 0
                 ? ""
                 : $" {result.Validation.Warnings.Count} warning(s) compatibilite FT100.";
@@ -3881,6 +3893,10 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         catch (Exception ex) when (ex is IOException or InvalidOperationException or UnauthorizedAccessException or ArgumentException)
         {
             SetStatus($"Export FT100 .sb2 impossible: {ex.Message}");
+        }
+        finally
+        {
+            SetFt100ExportProgress(false);
         }
     }
 
