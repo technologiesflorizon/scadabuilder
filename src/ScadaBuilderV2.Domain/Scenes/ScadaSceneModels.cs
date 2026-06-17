@@ -786,6 +786,39 @@ public sealed record ScadaScene(
                     PreventDefault: false));
     }
 
+    /// <summary>
+    /// Adds a model-backed Element+ event that writes a value to a TF100Web tag.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0011.
+    /// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
+    /// </remarks>
+    public ScadaScene WithWriteTagEvent(string elementId, string triggerKeyOrRuntimeName, string tagId, string value)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(triggerKeyOrRuntimeName);
+        ArgumentException.ThrowIfNullOrWhiteSpace(tagId);
+
+        var trigger = ScadaEventRegistry.FindTrigger(triggerKeyOrRuntimeName) ??
+            throw new InvalidOperationException($"Event trigger '{triggerKeyOrRuntimeName}' is not registered.");
+        var normalizedValue = value.Trim();
+        var action = new ScadaActionDefinition(
+            CreateActionId(elementId, trigger.RuntimeTrigger, ScadaEventRegistry.WriteTagFunction, $"{tagId}_{normalizedValue}"),
+            ScadaActionKind.WriteTag,
+            TagId: tagId.Trim(),
+            Value: normalizedValue);
+
+        return WithAction(action)
+            .WithObjectEvent(
+                elementId,
+                new ScadaObjectEventBinding(
+                    trigger.RuntimeTrigger,
+                    action.Id,
+                    StopPropagation: true,
+                    PreventDefault: false));
+    }
+
     public ScadaScene WithoutLegacyTextOverrides(IEnumerable<string> sourceElementIds)
     {
         var ids = sourceElementIds

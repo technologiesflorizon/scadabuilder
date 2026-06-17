@@ -103,11 +103,20 @@
 
                 <TextBlock Text="Fonction"/>
                 <ComboBox x:Name="ActionComboBox"
-                          DisplayMemberPath="FrenchLabel"/>
+                          DisplayMemberPath="FrenchLabel"
+                          SelectionChanged="OnActionSelectionChanged"/>
 
-                <TextBlock Text="Page cible"/>
+                <TextBlock x:Name="TargetPageLabelText" Text="Page cible"/>
                 <ComboBox x:Name="TargetPageComboBox"
                           DisplayMemberPath="DisplayName"/>
+
+                <TextBlock x:Name="TargetTagLabelText" Text="Tag cible"/>
+                <ComboBox x:Name="TargetTagComboBox"
+                          DisplayMemberPath="DisplayName"/>
+
+                <TextBlock x:Name="TagValueLabelText" Text="Valeur a ecrire"/>
+                <TextBox x:Name="TagValueTextBox"
+                         Text="1"/>
 
                 <TextBlock Text="Condition"/>
                 <TextBox Text="Aucune condition"

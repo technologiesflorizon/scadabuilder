@@ -21,7 +21,8 @@ public partial class ElementEventDialog : Window
     public ElementEventDialog(
         ScadaElement element,
         IReadOnlyList<ScadaActionDefinition> sceneActions,
-        IReadOnlyList<ScadaSceneReference> pageReferences)
+        IReadOnlyList<ScadaSceneReference> pageReferences,
+        ScadaTagCatalog? tagCatalog)
     {
         ArgumentNullException.ThrowIfNull(element);
         InitializeComponent();
@@ -42,6 +43,14 @@ public partial class ElementEventDialog : Window
             .Select(page => new TargetPageItem(page.Id, $"{page.Id} - {page.Title}"))
             .ToArray();
         TargetPageComboBox.SelectedIndex = TargetPageComboBox.Items.Count > 0 ? 0 : -1;
+
+        TargetTagComboBox.ItemsSource = (tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
+            .Where(tag => tag.Enabled && tag.Writeable)
+            .OrderBy(tag => tag.DisplayName, StringComparer.CurrentCultureIgnoreCase)
+            .Select(tag => new TargetTagItem(tag.Id, $"{tag.DisplayName} [{tag.Id}]"))
+            .ToArray();
+        TargetTagComboBox.SelectedIndex = TargetTagComboBox.Items.Count > 0 ? 0 : -1;
+        UpdateActionArgumentVisibility();
     }
 
     /// <summary>
@@ -80,21 +89,46 @@ public partial class ElementEventDialog : Window
             return;
         }
 
-        if (ActionComboBox.SelectedItem is not ScadaActionFunctionContract action ||
-            !string.Equals(action.FunctionName, ScadaEventRegistry.ChangePageFunction, StringComparison.Ordinal))
+        if (ActionComboBox.SelectedItem is not ScadaActionFunctionContract action)
         {
-            ValidationText.Text = "La premiere fonction disponible est Changer de page.";
+            ValidationText.Text = "Selectionnez une fonction.";
             return;
         }
 
-        if (TargetPageComboBox.SelectedItem is not TargetPageItem targetPage)
+        if (string.Equals(action.FunctionName, ScadaEventRegistry.ChangePageFunction, StringComparison.Ordinal))
         {
-            ValidationText.Text = "Selectionnez une page cible compilee de type Defaut.";
+            if (TargetPageComboBox.SelectedItem is not TargetPageItem targetPage)
+            {
+                ValidationText.Text = "Selectionnez une page cible compilee de type Defaut.";
+                return;
+            }
+
+            var pageResult = new ElementEventDialogResult(trigger.RuntimeTrigger, action.FunctionName, TargetPageId: targetPage.PageId);
+            ValidationText.Text = AddEvent?.Invoke(pageResult) ?? "Evenement ajoute.";
             return;
         }
 
-        var result = new ElementEventDialogResult(trigger.RuntimeTrigger, action.FunctionName, targetPage.PageId);
-        ValidationText.Text = AddEvent?.Invoke(result) ?? "Evenement ajoute.";
+        if (!string.Equals(action.FunctionName, ScadaEventRegistry.WriteTagFunction, StringComparison.Ordinal))
+        {
+            ValidationText.Text = "Fonction d'evenement non implementee.";
+            return;
+        }
+
+        if (TargetTagComboBox.SelectedItem is not TargetTagItem targetTag)
+        {
+            ValidationText.Text = "Importez un catalogue contenant au moins un tag ecrivable.";
+            return;
+        }
+
+        var value = TagValueTextBox.Text?.Trim() ?? "";
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            ValidationText.Text = "Entrez la valeur a ecrire.";
+            return;
+        }
+
+        var tagResult = new ElementEventDialogResult(trigger.RuntimeTrigger, action.FunctionName, TagId: targetTag.TagId, Value: value);
+        ValidationText.Text = AddEvent?.Invoke(tagResult) ?? "Evenement ajoute.";
     }
 
     private void OnDeleteClick(object sender, RoutedEventArgs e)
@@ -114,6 +148,26 @@ public partial class ElementEventDialog : Window
         UpdateDeleteButtonState();
     }
 
+    private void OnActionSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    {
+        UpdateActionArgumentVisibility();
+    }
+
+    private void UpdateActionArgumentVisibility()
+    {
+        var isChangePage = ActionComboBox.SelectedItem is ScadaActionFunctionContract action &&
+            string.Equals(action.FunctionName, ScadaEventRegistry.ChangePageFunction, StringComparison.Ordinal);
+        var isWriteTag = ActionComboBox.SelectedItem is ScadaActionFunctionContract tagAction &&
+            string.Equals(tagAction.FunctionName, ScadaEventRegistry.WriteTagFunction, StringComparison.Ordinal);
+
+        TargetPageLabelText.Visibility = isChangePage ? Visibility.Visible : Visibility.Collapsed;
+        TargetPageComboBox.Visibility = isChangePage ? Visibility.Visible : Visibility.Collapsed;
+        TargetTagLabelText.Visibility = isWriteTag ? Visibility.Visible : Visibility.Collapsed;
+        TargetTagComboBox.Visibility = isWriteTag ? Visibility.Visible : Visibility.Collapsed;
+        TagValueLabelText.Visibility = isWriteTag ? Visibility.Visible : Visibility.Collapsed;
+        TagValueTextBox.Visibility = isWriteTag ? Visibility.Visible : Visibility.Collapsed;
+    }
+
     private void UpdateDeleteButtonState()
     {
         DeleteEventButton.IsEnabled = ExistingEventsListBox.SelectedItem is EventListItem { Index: >= 0 };
@@ -131,11 +185,18 @@ public partial class ElementEventDialog : Window
         var trigger = ScadaEventRegistry.FindTrigger(binding.Trigger);
         var action = sceneActions.FirstOrDefault(action => string.Equals(action.Id, binding.ActionId, StringComparison.Ordinal));
         var actionContract = ScadaEventRegistry.FindAction(action?.Kind.ToString());
-        var target = string.IsNullOrWhiteSpace(action?.TargetPageId) ? "" : $" -> {action.TargetPageId}";
+        var target = action?.Kind switch
+        {
+            ScadaActionKind.Navigate when !string.IsNullOrWhiteSpace(action.TargetPageId) => $" -> {action.TargetPageId}",
+            ScadaActionKind.WriteTag when !string.IsNullOrWhiteSpace(action.TagId) => $" -> {action.TagId} = {action.Value}",
+            _ => ""
+        };
         return $"{trigger?.FrenchLabel ?? binding.Trigger} | {actionContract?.FrenchLabel ?? action?.Kind.ToString() ?? binding.ActionId}{target}";
     }
 
     private sealed record TargetPageItem(string PageId, string DisplayName);
+
+    private sealed record TargetTagItem(string TagId, string DisplayName);
 
     private sealed record EventListItem(int Index, string DisplayName);
 }
@@ -149,4 +210,6 @@ public partial class ElementEventDialog : Window
 public sealed record ElementEventDialogResult(
     string RuntimeTrigger,
     string FunctionName,
-    string TargetPageId);
+    string? TargetPageId = null,
+    string? TagId = null,
+    string? Value = null);

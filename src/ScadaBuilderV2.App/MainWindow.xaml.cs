@@ -34,6 +34,7 @@ public partial class MainWindow : Window
     private const string ElementPlusLibraryDragFormat = "ScadaBuilderV2.ElementPlusLibraryItemPath";
     private readonly IReferenceScadaProjectReader _referenceReader = new ReferenceScadaProjectReader();
     private readonly ModernProjectStore _modernProjectStore = new();
+    private readonly Tf100WebTagCatalogImporter _tagCatalogImporter = new();
     private readonly IElementStudioImportPackageWriter _elementStudioPackageWriter = new ElementStudioImportPackageWriter();
     private readonly ElementStudioComponentPackageStore _elementStudioComponentPackageStore = new();
     private readonly ElementPlusLibraryReader _elementPlusLibraryReader = new();
@@ -140,6 +141,7 @@ public partial class MainWindow : Window
         await RefreshElementLibraryAsync();
 
         ProjectNameText.Text = $"{_referenceProject.Name} ({_referenceProject.Pages.Count} pages)";
+        RefreshProjectTagSummary();
         PagesListBox.ItemsSource = _referenceProject.Pages;
 
         var preferredPageId = _modernProject.EffectiveHomePageId;
@@ -3134,6 +3136,20 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         _modernProject = _modernProject with { Scenes = scenes };
     }
 
+    private void RefreshProjectTagSummary()
+    {
+        if (_modernProject?.TagCatalog is not { Count: > 0 } catalog)
+        {
+            ProjectTagsSummaryText.Text = "Aucun catalogue importe";
+            return;
+        }
+
+        var source = string.IsNullOrWhiteSpace(catalog.SourceFileName)
+            ? "source inconnue"
+            : catalog.SourceFileName;
+        ProjectTagsSummaryText.Text = $"{catalog.Count} tag(s) importes - {source}";
+    }
+
     private void SetHomePageId(string? pageId)
     {
         if (_modernProject is null)
@@ -3495,6 +3511,49 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
 
         await SaveSceneTabAsync(_activeSceneTab);
+    }
+
+    private async void OnImportTagsClick(object sender, RoutedEventArgs e)
+    {
+        if (_repositoryRoot is null || _modernProject is null)
+        {
+            SetStatus("Aucun projet V2 actif pour importer les tags.");
+            return;
+        }
+
+        try
+        {
+            var importDirectory = ModernProjectStore.GetTagImportDirectory(_repositoryRoot);
+            Directory.CreateDirectory(importDirectory);
+            var dialog = new Microsoft.Win32.OpenFileDialog
+            {
+                Title = "Importer les tags SCADA",
+                InitialDirectory = importDirectory,
+                Filter = "Fichier tags SCADA (*.json)|*.json|Tous les fichiers (*.*)|*.*",
+                Multiselect = false
+            };
+
+            if (dialog.ShowDialog(this) != true)
+            {
+                SetStatus("Import des tags annule.");
+                return;
+            }
+
+            var catalog = await _tagCatalogImporter.ImportAsync(dialog.FileName);
+            var snapshotPath = Path.Combine(
+                importDirectory,
+                $"{DateTime.UtcNow:yyyyMMdd_HHmmss}_{Path.GetFileName(dialog.FileName)}");
+            File.Copy(dialog.FileName, snapshotPath, overwrite: true);
+
+            _modernProject = _modernProject with { TagCatalog = catalog with { SourceFileName = Path.GetFileName(snapshotPath) } };
+            await _modernProjectStore.SaveProjectAsync(_repositoryRoot, _modernProject);
+            RefreshProjectTagSummary();
+            SetStatus($"Tags SCADA importes: {_modernProject.TagCatalog.Count} tag(s).");
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or InvalidOperationException or JsonException)
+        {
+            SetStatus($"Import des tags impossible: {ex.Message}");
+        }
     }
 
     private async void OnExportFt100Click(object sender, RoutedEventArgs e)
@@ -4406,7 +4465,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         var dialog = new ElementEventDialog(
             current,
             _activeScene.ActionDefinitions,
-            GetCurrentSceneReferences())
+            GetCurrentSceneReferences(),
+            _modernProject?.TagCatalog)
         {
             Owner = this
         };
@@ -4427,12 +4487,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return "Aucune scene active.";
         }
 
-        if (!string.Equals(result.FunctionName, ScadaEventRegistry.ChangePageFunction, StringComparison.Ordinal))
-        {
-            SetStatus("Fonction d'evenement non implementee dans cette tranche.");
-            return "Fonction d'evenement non implementee dans cette tranche.";
-        }
-
         var current = _activeScene.FindElementRecursive(elementId);
         if (current is null || current.IsLegacyStatic)
         {
@@ -4441,10 +4495,21 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
 
         var beforeScene = _activeScene;
-        var updated = _activeScene.WithChangePageEvent(
-            current.Id,
-            result.RuntimeTrigger,
-            result.TargetPageId);
+        var updated = result.FunctionName switch
+        {
+            var functionName when string.Equals(functionName, ScadaEventRegistry.ChangePageFunction, StringComparison.Ordinal) =>
+                _activeScene.WithChangePageEvent(
+                    current.Id,
+                    result.RuntimeTrigger,
+                    result.TargetPageId ?? ""),
+            var functionName when string.Equals(functionName, ScadaEventRegistry.WriteTagFunction, StringComparison.Ordinal) =>
+                _activeScene.WithWriteTagEvent(
+                    current.Id,
+                    result.RuntimeTrigger,
+                    result.TagId ?? "",
+                    result.Value ?? ""),
+            _ => throw new InvalidOperationException("Fonction d'evenement non implementee dans cette tranche.")
+        };
         if (Equals(beforeScene, updated))
         {
             SetStatus("Evenement deja configure.");
@@ -4466,7 +4531,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         dialog?.RefreshExistingEvents(
             _activeScene.FindElementRecursive(current.Id) ?? current,
             _activeScene.ActionDefinitions);
-        SetStatus($"Evenement Clic -> Changer de page ajoute sur {_selectedSceneObject?.UserLabel ?? current.UserLabel}. Sauvegarde requise.");
+        SetStatus($"Evenement Element+ ajoute sur {_selectedSceneObject?.UserLabel ?? current.UserLabel}. Sauvegarde requise.");
         return "Evenement ajoute. Vous pouvez en ajouter un autre ou fermer la fenetre.";
     }
 

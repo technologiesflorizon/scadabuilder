@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Documentation Agent Rules
 
-Date: 2026-06-16
+Date: 2026-06-17
 Status: Active agent operating contract
-Document version: `V2.1.1.0039`
+Document version: `V2.1.2.0008`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout de l'obligation de worktree propre ou commit produit, puis planification avant tout ajout fonctionnel ou contractuel. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation des regles operationnelles pour humains et agents travaillant dans la documentation SCADA Builder V2. |
 
 ## 1. Required Workflow
@@ -16,13 +17,16 @@ For any change under `docs/`, or any code change that affects documented behavio
 
 1. Read `docs/README.md`.
 2. Read `docs/00_governance/DECISION_REGISTER_V2.md`.
-3. Identify the owner document for the touched behavior.
-4. Update the owner document only; do not add active contracts to historical files.
-5. Add or update a `DEC-xxxx` entry when a decision is created, changed, deprecated, or superseded.
-6. Keep previous decisions present. Mark them `Deprecated` or `Superseded`; never erase them.
-7. Update Mermaid diagrams when flow, ownership, command dispatch, state transitions, export, or Studio Element+ paths change.
-8. Update generated documentation or run the verification script when public functions, commands, tests, or contracts change.
-9. Run `tools/docs/verify-docs.ps1`.
+3. Before any new implementation, validate that `git status --short` is clean. If the worktree is not clean, produce a commit for the existing work before starting the new implementation, unless the user explicitly instructs a different staging or commit boundary.
+4. Before any additive change, complete a planning step that identifies scope, owner documents, expected files, tests, and rollback or migration impact. Additive changes include new features, new UI surfaces, new contracts, new model fields, new export behavior, new scripts, and new dependencies.
+5. Iterative bug fixes may skip the formal planning step only when they correct an already implemented behavior without adding a new capability, contract, dependency, persistent model field, or deployment surface.
+6. Identify the owner document for the touched behavior.
+7. Update the owner document only; do not add active contracts to historical files.
+8. Add or update a `DEC-xxxx` entry when a decision is created, changed, deprecated, or superseded.
+9. Keep previous decisions present. Mark them `Deprecated` or `Superseded`; never erase them.
+10. Update Mermaid diagrams when flow, ownership, command dispatch, state transitions, export, or Studio Element+ paths change.
+11. Update generated documentation or run the verification script when public functions, commands, tests, or contracts change.
+12. Run `tools/docs/verify-docs.ps1`.
 
 ## 2. Decision Rules
 

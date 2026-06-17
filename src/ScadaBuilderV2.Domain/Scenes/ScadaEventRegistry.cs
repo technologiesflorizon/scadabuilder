@@ -75,6 +75,11 @@ public static class ScadaEventRegistry
     public const string ChangePageFunction = "ChangePage";
 
     /// <summary>
+    /// Runtime function name for writing a value to a TF100Web tag.
+    /// </summary>
+    public const string WriteTagFunction = "WriteTag";
+
+    /// <summary>
     /// Browser runtime trigger for click events.
     /// </summary>
     public const string ClickRuntimeTrigger = "click";
@@ -115,7 +120,7 @@ public static class ScadaEventRegistry
         new("Show", ScadaActionKind.Show, "Afficher objet", ["TargetElementId"], false, "Affiche un Element+ cible."),
         new("Hide", ScadaActionKind.Hide, "Masquer objet", ["TargetElementId"], false, "Masque un Element+ cible."),
         new("ToggleVisibility", ScadaActionKind.ToggleVisibility, "Basculer visibilite", ["TargetElementId"], false, "Bascule la visibilite d'un Element+ cible."),
-        new("WriteTag", ScadaActionKind.WriteTag, "Ecrire tag", ["TagId", "Value"], false, "Ecrit une valeur dans un tag runtime.")
+        new(WriteTagFunction, ScadaActionKind.WriteTag, "Ecrire tag", ["TagId", "Value"], true, "Ecrit une valeur dans un tag runtime.")
     ];
 
     /// <summary>

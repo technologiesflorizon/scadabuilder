@@ -68,7 +68,8 @@ public sealed record ScadaProject(
     IReadOnlyList<DevicePreset> DevicePresets,
     IReadOnlyList<ScadaSceneReference> Scenes,
     string ManifestVersion = "2.0",
-    string? HomePageId = null)
+    string? HomePageId = null,
+    ScadaTagCatalog? TagCatalog = null)
 {
     [JsonIgnore]
     public IReadOnlyList<ScadaSceneReference> Pages => Scenes;
@@ -105,6 +106,43 @@ public sealed record ScadaProject(
             scene.IncludeInBuild)?.Id;
     }
 }
+
+/// <summary>
+/// Project-level catalog of TF100Web tags imported for Element+ binding authoring.
+/// </summary>
+/// <remarks>
+/// Decisions: DEC-0015.
+/// Contracts: docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md, docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
+/// Tests: tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs.
+/// </remarks>
+public sealed record ScadaTagCatalog(
+    string Schema,
+    IReadOnlyList<ScadaTagDefinition> Tags,
+    string? SourceFileName = null,
+    DateTimeOffset? ImportedAtUtc = null)
+{
+    /// <summary>
+    /// Gets the number of imported tags available to authoring surfaces.
+    /// </summary>
+    [JsonIgnore]
+    public int Count => Tags.Count;
+}
+
+/// <summary>
+/// Describes one imported TF100Web tag that can be linked to Element+ inputs or events.
+/// </summary>
+public sealed record ScadaTagDefinition(
+    string Id,
+    string DisplayName,
+    string? KeywordLabel = null,
+    string? KeywordType = null,
+    string? Device = null,
+    string? Protocol = null,
+    string? AddressUri = null,
+    string? Datatype = null,
+    bool Writeable = false,
+    bool Enabled = true,
+    string? Unit = null);
 
 public enum ScadaBuildValidationSeverity
 {

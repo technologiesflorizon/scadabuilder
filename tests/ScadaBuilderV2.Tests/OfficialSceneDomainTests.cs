@@ -171,6 +171,7 @@ public sealed class OfficialSceneDomainTests
         var release = ScadaEventRegistry.FindTrigger(ScadaEventRegistry.ReleaseKey);
         var hover = ScadaEventRegistry.FindTrigger(ScadaEventRegistry.HoverKey);
         var changePage = ScadaEventRegistry.FindAction(ScadaEventRegistry.ChangePageFunction);
+        var writeTag = ScadaEventRegistry.FindAction(ScadaEventRegistry.WriteTagFunction);
 
         Assert.IsNotNull(click);
         Assert.AreEqual("Clic", click.FrenchLabel);
@@ -182,6 +183,9 @@ public sealed class OfficialSceneDomainTests
         Assert.AreEqual(ScadaActionKind.Navigate, changePage?.Kind);
         Assert.IsTrue(changePage?.Implemented ?? false);
         CollectionAssert.Contains(changePage?.RequiredArguments.ToArray(), "TargetPageId");
+        Assert.AreEqual(ScadaActionKind.WriteTag, writeTag?.Kind);
+        Assert.IsTrue(writeTag?.Implemented ?? false);
+        CollectionAssert.Contains(writeTag?.RequiredArguments.ToArray(), "TagId");
     }
 
     [TestMethod]
@@ -223,6 +227,26 @@ public sealed class OfficialSceneDomainTests
         Assert.AreEqual(1, updated.ActionDefinitions.Count);
         Assert.AreEqual("win00010", updated.ActionDefinitions.Single().TargetPageId);
         Assert.AreEqual(updated.ActionDefinitions.Single().Id, element.EventBindings.Single().ActionId);
+    }
+
+    [TestMethod]
+    public void SceneCanAttachWriteTagEventToElement()
+    {
+        var button = ScadaElement.CreateText("btn_ack", "Acquitter", 10, 20);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "win00008", new CanvasSize(1280, 873))
+            .WithElement(button)
+            .WithWriteTagEvent("btn_ack", ScadaEventRegistry.ClickKey, "tf100.mapping.42", "1");
+
+        var updated = scene.FindElementRecursive("btn_ack");
+        var action = scene.ActionDefinitions.Single();
+
+        Assert.IsNotNull(updated);
+        Assert.AreEqual(ScadaActionKind.WriteTag, action.Kind);
+        Assert.AreEqual("tf100.mapping.42", action.TagId);
+        Assert.AreEqual("1", action.Value);
+        Assert.AreEqual(action.Id, updated.EventBindings.Single().ActionId);
+        Assert.AreEqual(ScadaEventRegistry.ClickRuntimeTrigger, updated.EventBindings.Single().Trigger);
     }
 
     [TestMethod]

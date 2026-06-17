@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Implemented Features
 
-Date: 2026-06-16
+Date: 2026-06-17
 Status: Active implementation status
-Document version: `V2.1.2.0007`
+Document version: `V2.1.2.0008`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0008` | `PENDING` | Implementation de l'import catalogue tags TF100Web et de l'authoring Element+ `WriteTag`. |
 | 2026-06-16 | `V2.1.2.0007` | `PENDING` | Implementation du curseur runtime par defaut pour boutons et cibles cliquables FT100. |
 | 2026-06-16 | `V2.1.2.0006` | `PENDING` | Implementation de l'export FT100 des events `Clic -> Changer de page` portes par des groupes Element+. |
 | 2026-06-16 | `V2.1.2.0005` | `PENDING` | Implementation des metadonnees hover automatique des boutons Element+ et de la tab Bouton. |
@@ -20,7 +21,7 @@ Document version: `V2.1.2.0007`
 
 ## 1. Current Verified Baseline
 
-As of 2026-06-16, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 181 tests.
+As of 2026-06-17, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 199 tests.
 
 ## 2. Implemented Areas
 
@@ -42,6 +43,8 @@ As of 2026-06-16, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 181 
 16. Element+ buttons have default hover metadata, a `Bouton` properties tab for hover/disabled configuration, save/reload persistence, FT100 manifest export for FT100Web consumption, and scoped FT100 CSS hover generation when enabled.
 17. FT100 export preserves `Clic -> Changer de page` events carried by Element+ groups through transparent runtime wrappers with page-scoped `data-scada-events`.
 18. FT100 export emits default page-scoped pointer cursor CSS for Element+ buttons and any exported target carrying `data-scada-events`, including descendants and active click state.
+19. TF100Web tag exports using schema `tf100web-scada-tags-v1` can be imported into the project catalog, persisted through save/reload, and snapshotted under `imports/tags`.
+20. Element+ events can author `WriteTag` actions against enabled writeable imported tags with a literal value, and FT100 export emits the tag catalog plus the write-tag runtime hook.
 
 ## 3. Source Of Truth
 

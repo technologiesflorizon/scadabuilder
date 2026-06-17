@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Actions Events Contract
 
-Date: 2026-06-16
+Date: 2026-06-17
 Status: Active editor/runtime actions contract
-Document version: `V2.1.2.0007`
+Document version: `V2.1.2.0008`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0008` | `PENDING` | Implementation de l'import tags TF100Web et de l'authoring Element+ `WriteTag`. |
 | 2026-06-16 | `V2.1.2.0007` | `PENDING` | Ajout du curseur runtime par defaut pour les cibles `Clic` exportees. |
 | 2026-06-16 | `V2.1.2.0006` | `PENDING` | Clarification de l'export FT100 des events `Clic -> Changer de page` portes par des groupes Element+. |
 | 2026-06-16 | `V2.1.2.0004` | `PENDING` | Ajout du registre contractuel Element+ events/actions et de la premiere modale Clic -> Changer de page. |
@@ -26,6 +27,8 @@ Object events and runtime actions are model-owned behavior. UI controls may auth
 5. One Element+ may hold several event bindings, including several `Clic` bindings.
 6. `Clic -> Changer de page` bindings authored on Element+ groups are exported as transparent FT100 runtime wrappers so TF100Web can hit-test the group and execute the page navigation action.
 7. FT100 export gives `Clic` targets a default pointer cursor in hover and active click states when they are buttons or carry exported `data-scada-events`.
+8. The project can import a TF100Web `tf100web-scada-tags-v1` tag catalog. The Element+ event modal exposes enabled writeable tags for `WriteTag` actions.
+9. `WriteTag` creates a scene action with `ScadaActionKind.WriteTag`, `TagId`, and `Value`, and exports it through the FT100/TF100Web runtime bridge.
 
 ## 3. Event Registry
 
@@ -47,7 +50,7 @@ Runtime function contracts are centralized in `ScadaEventRegistry`:
 | `Show` | `Afficher objet` | `Show` | `TargetElementId` | Registered, not authorable |
 | `Hide` | `Masquer objet` | `Hide` | `TargetElementId` | Registered, not authorable |
 | `ToggleVisibility` | `Basculer visibilite` | `ToggleVisibility` | `TargetElementId` | Registered, not authorable |
-| `WriteTag` | `Ecrire tag` | `WriteTag` | `TagId`, `Value` | Registered, not authorable |
+| `WriteTag` | `Ecrire tag` | `WriteTag` | `TagId`, `Value` | Implemented |
 
 ## 4. Authoring Flow
 
@@ -59,8 +62,10 @@ flowchart TD
   EventButton --> Modal[Event modal]
   EventTab --> Modal
   Modal --> Registry[ScadaEventRegistry]
+  Modal --> Tags[Project tag catalog]
   Registry --> Scene[Scene action catalog]
   Registry --> Binding[Element+ event binding]
+  Tags --> Scene
   Scene --> History[Scene history]
   Binding --> History
   History --> Save[Project save/reload]
@@ -82,7 +87,18 @@ Planned condition fields:
 
 The condition schema must be persisted, exported, and tested before the modal enables condition editing.
 
-## 6. Roadmap Boundary
+## 6. Tag Authoring Boundary
+
+The current implemented tag slice covers:
+
+1. Importing the TF100Web tag export into the V2 project model.
+2. Selecting enabled writeable tags in the Element+ event modal.
+3. Creating `WriteTag` actions with a literal value.
+4. Exporting tags and write actions in the FT100/TF100Web package.
+
+The current slice does not yet implement read/display bindings, tag conditions, degraded state semantics, or expression authoring.
+
+## 7. Roadmap Boundary
 
 The following are roadmap items until implemented and covered by tests:
 
@@ -92,7 +108,7 @@ The following are roadmap items until implemented and covered by tests:
 4. Global scripts generating lifecycle events.
 5. Visual effects such as blink, glow, pulse, alarm highlight, degraded treatment.
 
-## 7. Event Flow
+## 8. Event Flow
 
 ```mermaid
 flowchart TD
@@ -105,7 +121,7 @@ flowchart TD
   Export --> Runtime[Runtime JS action bridge]
 ```
 
-## 8. Related Tests
+## 9. Related Tests
 
 1. `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`
 2. `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`

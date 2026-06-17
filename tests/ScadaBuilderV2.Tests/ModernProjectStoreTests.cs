@@ -306,6 +306,104 @@ public sealed class ModernProjectStoreTests
     }
 
     [TestMethod]
+    public async Task SaveAndReloadPreservesImportedTagCatalog()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var store = new ModernProjectStore();
+
+        try
+        {
+            var project = await store.EnsureReferenceModernProjectAsync(
+                root,
+                [
+                    new ScadaSceneReference("win00008", "win00008", "scenes/win00008.scene.json")
+                ]);
+            await store.SaveProjectAsync(root, project with
+            {
+                TagCatalog = new ScadaTagCatalog(
+                    "tf100web-scada-tags-v1",
+                    [
+                        new ScadaTagDefinition(
+                            "tf100.mapping.42",
+                            "Pompe P-101 | PLC-1 | modbus://40001",
+                            "Pompe P-101",
+                            "analog",
+                            "PLC-1",
+                            "modbus",
+                            "modbus://40001",
+                            "Float",
+                            Writeable: true)
+                    ],
+                    "tags.json")
+            });
+
+            var loaded = await store.LoadProjectAsync(root);
+
+            Assert.IsNotNull(loaded);
+            Assert.AreEqual(1, loaded.TagCatalog?.Count);
+            Assert.AreEqual("tf100.mapping.42", loaded.TagCatalog?.Tags.Single().Id);
+            Assert.IsTrue(loaded.TagCatalog?.Tags.Single().Writeable ?? false);
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public async Task Tf100WebTagCatalogImporterReadsExportedTagSchema()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        var path = Path.Combine(root, "tags.json");
+        await File.WriteAllTextAsync(
+            path,
+            """
+{
+  "schema": "tf100web-scada-tags-v1",
+  "count": 1,
+  "tags": [
+    {
+      "id": "tf100.mapping.42",
+      "keyword_label": "Pompe P-101",
+      "keyword_type": "analog",
+      "device": "PLC-1",
+      "protocol": "modbus",
+      "address_uri": "modbus://40001",
+      "datatype_label": "Float",
+      "writeable": true,
+      "enabled": true,
+      "unit": "bar"
+    }
+  ]
+}
+""");
+
+        try
+        {
+            var catalog = await new Tf100WebTagCatalogImporter().ImportAsync(path);
+
+            Assert.AreEqual("tf100web-scada-tags-v1", catalog.Schema);
+            Assert.AreEqual(1, catalog.Count);
+            var tag = catalog.Tags.Single();
+            Assert.AreEqual("tf100.mapping.42", tag.Id);
+            Assert.AreEqual("Pompe P-101 | PLC-1 | modbus://40001", tag.DisplayName);
+            Assert.AreEqual("Float", tag.Datatype);
+            Assert.IsTrue(tag.Writeable);
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public void BuildValidationRejectsCompiledPageReferencingUncompiledHeader()
     {
         var project = ScadaProject.CreateDefault("test") with

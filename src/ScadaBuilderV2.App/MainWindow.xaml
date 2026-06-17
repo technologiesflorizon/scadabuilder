@@ -181,6 +181,12 @@
                                     <TextBlock Text="Legacy" FontSize="12"/>
                                 </StackPanel>
                             </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Importer les tags SCADA" Click="OnImportTagsClick">
+                                <StackPanel>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Import.Legacy}"/>
+                                    <TextBlock Text="Tags" FontSize="12"/>
+                                </StackPanel>
+                            </Button>
                             <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Exporter dossier FT100" Click="OnExportFt100Click">
                                 <StackPanel>
                                     <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Build.FT100}"/>
@@ -385,6 +391,13 @@
                                        Text="(chargement...)"
                                        Margin="0,4,0,12"
                                        Foreground="{StaticResource MutedBrush}"/>
+                            <TextBlock Text="Tags SCADA"
+                                       FontWeight="SemiBold"/>
+                            <TextBlock x:Name="ProjectTagsSummaryText"
+                                       Text="Aucun catalogue importe"
+                                       Margin="0,4,0,12"
+                                       Foreground="{StaticResource MutedBrush}"
+                                       TextWrapping="Wrap"/>
                             <TextBlock Text="Pages"
                                        FontWeight="SemiBold"/>
                             <ListBox x:Name="PagesListBox"

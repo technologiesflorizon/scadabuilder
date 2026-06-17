@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Project Model Contract
 
-Date: 2026-06-16
+Date: 2026-06-17
 Status: Active project model contract
-Document version: `V2.1.1.0039`
+Document version: `V2.1.2.0008`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout du catalogue tags TF100Web importe au modele projet. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat actif du modele projet et scene. |
 
 ## 1. Contract
@@ -19,11 +20,24 @@ Legacy source paths and source ids are trace metadata unless explicitly converte
 ## 2. Ownership
 
 1. Project owns identity, scene inventory, home page, and build composition.
-2. Scene owns canvas, page type, background, elements, actions, composition references, and removed source ids.
-3. Elements own identity, kind, bounds, data, event bindings, and optional tag binding.
-4. Runtime manifests are generated outputs, not editable source models.
+2. Project owns the optional imported TF100Web tag catalog used by Element+ authoring surfaces.
+3. Scene owns canvas, page type, background, elements, actions, composition references, and removed source ids.
+4. Elements own identity, kind, bounds, data, event bindings, and optional tag binding.
+5. Runtime manifests are generated outputs, not editable source models.
 
-## 3. Related Tests
+## 3. Tag Catalog
+
+Imported tags are stored as `ScadaProject.TagCatalog` with schema `tf100web-scada-tags-v1`. The catalog is project-level data, not scene-level geometry.
+
+The catalog preserves:
+
+1. Stable tag id.
+2. Display label for authoring UI.
+3. TF100Web source metadata such as keyword label, device, protocol, address, datatype, unit, enabled state, and writeable state.
+
+Only enabled writeable tags are currently exposed by the Element+ `WriteTag` event authoring flow. Future read/display bindings may use enabled read-only tags.
+
+## 4. Related Tests
 
 1. `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`
 2. `tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`

@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Regression Coverage
 
-Date: 2026-06-16
+Date: 2026-06-17
 Status: Active regression coverage map
-Document version: `V2.1.2.0007`
+Document version: `V2.1.2.0008`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout de la couverture import tags TF100Web, persistance catalogue et export `WriteTag`. |
 | 2026-06-16 | `V2.1.2.0007` | `PENDING` | Ajout de la couverture du curseur runtime par defaut des cibles cliquables FT100. |
 | 2026-06-16 | `V2.1.2.0006` | `PENDING` | Ajout de la couverture des wrappers runtime transparents pour events de groupe Element+. |
 | 2026-06-16 | `V2.1.2.0005` | `PENDING` | Ajout de la couverture metadonnees hover automatique, CSS FT100 et disabled des boutons Element+. |
@@ -22,7 +23,7 @@ Document version: `V2.1.2.0007`
 
 ```text
 dotnet test ScadaBuilderV2.sln --no-restore
-193 passed, 0 failed, 0 skipped
+199 passed, 0 failed, 0 skipped
 ```
 
 ## 2. Coverage Map
@@ -37,6 +38,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Element inventory hierarchy | `LegacyElementSelectionModelTests.cs` |
 | Element+ legacy conversion | `ElementPlusLegacyConverterTests.cs` |
 | Element+ events/actions | `OfficialSceneDomainTests.cs`, `WebViewContextMenuScriptTests.cs`, `ModernProjectStoreTests.cs`, `Ft100SceneExporterTests.cs` |
+| TF100Web tag catalog import and WriteTag export | `ModernProjectStoreTests.cs`, `OfficialSceneDomainTests.cs`, `Ft100SceneExporterTests.cs` |
 | Element+ group click navigation export | `Ft100SceneExporterTests.cs` |
 | FT100 clickable target pointer cursor | `Ft100SceneExporterTests.cs` |
 | Element+ button hover metadata and FT100 CSS | `OfficialSceneDomainTests.cs`, `WebViewContextMenuScriptTests.cs`, `ModernProjectStoreTests.cs`, `Ft100SceneExporterTests.cs` |

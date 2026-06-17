@@ -852,7 +852,8 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
             ManifestVersion = "2.1",
             HomePageId = homePageId,
             Pages = new[] { BuildManifestPage(scene, homePageId, projectRelativePath: false) },
-            Actions = scene.ActionDefinitions
+            Actions = scene.ActionDefinitions,
+            Tags = project?.TagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>()
         };
 
         return JsonSerializer.Serialize(manifest, ManifestJsonOptions);
@@ -879,7 +880,8 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
             Pages = exportedScenes
                 .Select(scene => BuildManifestPage(scene, homePageId, projectRelativePath: true))
                 .ToArray(),
-            Actions = actions
+            Actions = actions,
+            Tags = project.TagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>()
         };
 
         return JsonSerializer.Serialize(manifest, ManifestJsonOptions);
@@ -1023,7 +1025,7 @@ Apply any viewport scale to the composed page container, not independently to he
     return target && root.contains(target) ? target : null;
   }
 
-  function applyAction(action) {
+    function applyAction(action) {
     if (!action || !action.Kind) {
       return;
     }
@@ -1031,6 +1033,15 @@ Apply any viewport scale to the composed page container, not independently to he
     const kind = String(action.Kind).toLowerCase();
     if (kind === 'navigate') {
       navigate(action.TargetPageId);
+      return;
+    }
+
+    if (kind === 'writetag') {
+      const payload = { tagId: action.TagId, value: action.Value };
+      if (window.tf100webScadaBuilder && typeof window.tf100webScadaBuilder.writeTag === 'function') {
+        window.tf100webScadaBuilder.writeTag(payload.tagId, payload.value, payload);
+      }
+      window.dispatchEvent(new CustomEvent('scada-builder-write-tag', { detail: payload }));
       return;
     }
 

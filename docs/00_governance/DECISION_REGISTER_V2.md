@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Decision Register
 
-Date: 2026-06-16
+Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.2.0007`
+Document version: `V2.1.2.0008`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout de la decision d'import catalogue tags TF100Web et d'authoring `WriteTag`. |
 | 2026-06-16 | `V2.1.2.0007` | `PENDING` | Ajout de la decision de curseur runtime pour les cibles cliquables FT100/TF100Web. |
 | 2026-06-16 | `V2.1.2.0006` | `PENDING` | Ajout de la decision d'export runtime transparent pour les events portes par des groupes Element+. |
 | 2026-06-16 | `V2.1.2.0005` | `PENDING` | Ajout de la decision hover automatique des boutons Element+. |
@@ -406,3 +407,29 @@ The editor preview must not apply the hover effect as an authoring-side behavior
 Regression coverage:
 
 `tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`, `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+
+### DEC-0015 - TF100Web Tag Catalog Import And WriteTag Authoring
+
+Status: Active
+Created: 2026-06-17 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
+
+Context:
+
+TF100Web exports a `tf100web-scada-tags-v1` tag file that SCADA Builder V2 must consume so designers can bind Element+ events and future inputs to real industrial tags instead of raw free-form `TagBinding` placeholders.
+
+Decision:
+
+SCADA Builder V2 imports the TF100Web tag export into a project-level `ScadaTagCatalog`. The WPF editor stores an import snapshot under `imports/tags`, persists the catalog in `project.json`, and exposes writeable enabled tags to the Element+ event modal. `WriteTag` is now an authorable runtime action stored as `ScadaActionKind.WriteTag` with `TagId` and `Value`.
+
+Consequences:
+
+FT100/TF100Web manifests include the imported tag catalog and write-tag actions. The exported runtime script calls `window.tf100webScadaBuilder.writeTag` when available and emits `scada-builder-write-tag` as an integration event. Read/display bindings, conditions, degraded semantics, and richer TF100Web server write behavior remain future slices.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`

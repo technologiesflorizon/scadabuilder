@@ -24,6 +24,7 @@ public sealed class ModernProjectStore
         Directory.CreateDirectory(Path.Combine(projectRoot, "library", "elements"));
         Directory.CreateDirectory(Path.Combine(projectRoot, "libraries"));
         Directory.CreateDirectory(Path.Combine(projectRoot, "imports", "legacy"));
+        Directory.CreateDirectory(Path.Combine(projectRoot, "imports", "tags"));
         Directory.CreateDirectory(Path.Combine(projectRoot, "exports"));
 
         var projectPath = Path.Combine(projectRoot, "project.json");
@@ -99,6 +100,14 @@ public sealed class ModernProjectStore
     public static string GetReferenceModernProjectRoot(string repositoryRoot)
     {
         return Path.Combine(repositoryRoot, "SCADA_BUILDER_V2", "projects", "AMR_REF_SCADA_V2");
+    }
+
+    /// <summary>
+    /// Gets the project-local directory where imported tag export snapshots are stored.
+    /// </summary>
+    public static string GetTagImportDirectory(string repositoryRoot)
+    {
+        return Path.Combine(GetReferenceModernProjectRoot(repositoryRoot), "imports", "tags");
     }
 
     private static string GetScenePath(string repositoryRoot, string sceneId)
