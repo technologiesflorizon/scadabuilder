@@ -80,6 +80,16 @@ public static class ScadaEventRegistry
     public const string WriteTagFunction = "WriteTag";
 
     /// <summary>
+    /// Authoring function name for binding an Element+ value display to a tag.
+    /// </summary>
+    public const string ReadValueFunction = "ReadValue";
+
+    /// <summary>
+    /// Authoring function name for binding an editable Element+ input to a tag write.
+    /// </summary>
+    public const string WriteValueFunction = "WriteValue";
+
+    /// <summary>
     /// Browser runtime trigger for click events.
     /// </summary>
     public const string ClickRuntimeTrigger = "click";
@@ -117,10 +127,12 @@ public static class ScadaEventRegistry
             ["TargetPageId"],
             true,
             "Navigue vers une page compilee du projet FT100/TF100Web."),
+        new(ReadValueFunction, ScadaActionKind.ReadValue, "Lire valeur", ["TagId"], true, "Lie un tag runtime a la valeur affichee par un Element+."),
+        new(WriteValueFunction, ScadaActionKind.WriteValue, "Ecrire valeur", ["TagId"], true, "Lie la valeur saisie par l'operateur a un tag runtime."),
         new("Show", ScadaActionKind.Show, "Afficher objet", ["TargetElementId"], false, "Affiche un Element+ cible."),
         new("Hide", ScadaActionKind.Hide, "Masquer objet", ["TargetElementId"], false, "Masque un Element+ cible."),
         new("ToggleVisibility", ScadaActionKind.ToggleVisibility, "Basculer visibilite", ["TargetElementId"], false, "Bascule la visibilite d'un Element+ cible."),
-        new(WriteTagFunction, ScadaActionKind.WriteTag, "Ecrire tag", ["TagId", "Value"], true, "Ecrit une valeur dans un tag runtime.")
+        new(WriteTagFunction, ScadaActionKind.WriteTag, "Ecrire tag", ["TagId", "Value"], false, "Compatibilite legacy pour ecriture de valeur fixe.")
     ];
 
     /// <summary>

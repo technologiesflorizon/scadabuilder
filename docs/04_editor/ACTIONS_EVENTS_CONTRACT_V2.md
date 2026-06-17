@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active editor/runtime actions contract
-Document version: `V2.1.2.0008`
+Document version: `V2.1.2.0009`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0009` | `PENDING` | Remplacement de l'action authorable `WriteTag` par les bindings Element+ `Lire valeur` et `Ecrire valeur`. |
 | 2026-06-17 | `V2.1.2.0008` | `PENDING` | Implementation de l'import tags TF100Web et de l'authoring Element+ `WriteTag`. |
 | 2026-06-16 | `V2.1.2.0007` | `PENDING` | Ajout du curseur runtime par defaut pour les cibles `Clic` exportees. |
 | 2026-06-16 | `V2.1.2.0006` | `PENDING` | Clarification de l'export FT100 des events `Clic -> Changer de page` portes par des groupes Element+. |
@@ -27,8 +28,8 @@ Object events and runtime actions are model-owned behavior. UI controls may auth
 5. One Element+ may hold several event bindings, including several `Clic` bindings.
 6. `Clic -> Changer de page` bindings authored on Element+ groups are exported as transparent FT100 runtime wrappers so TF100Web can hit-test the group and execute the page navigation action.
 7. FT100 export gives `Clic` targets a default pointer cursor in hover and active click states when they are buttons or carry exported `data-scada-events`.
-8. The project can import a TF100Web `tf100web-scada-tags-v1` tag catalog. The Element+ event modal exposes enabled writeable tags for `WriteTag` actions.
-9. `WriteTag` creates a scene action with `ScadaActionKind.WriteTag`, `TagId`, and `Value`, and exports it through the FT100/TF100Web runtime bridge.
+8. The project can import a TF100Web `tf100web-scada-tags-v1` tag catalog. The Element+ event modal exposes enabled tags for value binding authoring.
+9. `Lire valeur` and `Ecrire valeur` persist tag ids as Element+ data bindings, not triggered scene events. `Ecrire valeur` writes the operator-entered runtime value and never stores a literal design-time value.
 
 ## 3. Event Registry
 
@@ -50,7 +51,9 @@ Runtime function contracts are centralized in `ScadaEventRegistry`:
 | `Show` | `Afficher objet` | `Show` | `TargetElementId` | Registered, not authorable |
 | `Hide` | `Masquer objet` | `Hide` | `TargetElementId` | Registered, not authorable |
 | `ToggleVisibility` | `Basculer visibilite` | `ToggleVisibility` | `TargetElementId` | Registered, not authorable |
-| `WriteTag` | `Ecrire tag` | `WriteTag` | `TagId`, `Value` | Implemented |
+| `ReadValue` | `Lire valeur` | `ReadValue` | `TagId` | Implemented |
+| `WriteValue` | `Ecrire valeur` | `WriteValue` | `TagId` | Implemented |
+| `WriteTag` | `Ecrire tag` | `WriteTag` | `TagId`, `Value` | Legacy compatibility, not authorable |
 
 ## 4. Authoring Flow
 
@@ -65,9 +68,12 @@ flowchart TD
   Modal --> Tags[Project tag catalog]
   Registry --> Scene[Scene action catalog]
   Registry --> Binding[Element+ event binding]
+  Registry --> ValueBinding[Element+ value binding]
   Tags --> Scene
+  Tags --> ValueBinding
   Scene --> History[Scene history]
   Binding --> History
+  ValueBinding --> History
   History --> Save[Project save/reload]
   Save --> Export[FT100/TF100Web export]
   Export --> Runtime[Runtime JS action bridge]
@@ -92,11 +98,13 @@ The condition schema must be persisted, exported, and tested before the modal en
 The current implemented tag slice covers:
 
 1. Importing the TF100Web tag export into the V2 project model.
-2. Selecting enabled writeable tags in the Element+ event modal.
-3. Creating `WriteTag` actions with a literal value.
-4. Exporting tags and write actions in the FT100/TF100Web package.
+2. Selecting any enabled tag in the Element+ event modal with labels formatted as `Nom du tag | datatype | Nom de l'appareil`.
+3. Creating `Lire valeur` bindings with no trigger.
+4. Creating `Ecrire valeur` bindings with no trigger and no design-time value field; the runtime operator input supplies the value.
+5. Validating `Ecrire valeur` during build/export so read-only Element+ objects, non-input Element+ objects, read-only tags, and missing tags are rejected.
+6. Exporting tags and per-element value binding metadata in the FT100/TF100Web package.
 
-The current slice does not yet implement read/display bindings, tag conditions, degraded state semantics, or expression authoring.
+The current slice does not yet implement tag conditions, degraded state semantics, expression authoring, local tag creation, or project protocol import. Local tag creation requires a future protocol import revision.
 
 ## 7. Roadmap Boundary
 

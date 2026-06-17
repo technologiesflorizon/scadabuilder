@@ -406,6 +406,43 @@
                                      SelectionChanged="OnPageSelectionChanged"/>
                         </StackPanel>
                     </TabItem>
+                    <TabItem Header="Catalogue Tags">
+                        <DockPanel Margin="12">
+                            <Button DockPanel.Dock="Top"
+                                    HorizontalAlignment="Left"
+                                    Width="34"
+                                    MinHeight="32"
+                                    Padding="0"
+                                    Margin="0,0,0,8"
+                                    Content="+"
+                                    FontWeight="Bold"
+                                    ToolTip="Creer un tag"
+                                    Click="OnCreateProjectTagClick"/>
+                            <TextBlock DockPanel.Dock="Top"
+                                       Text="Creation locale disponible apres import des protocoles projet."
+                                       Foreground="{StaticResource MutedBrush}"
+                                       TextWrapping="Wrap"
+                                       Margin="0,0,0,8"/>
+                            <DataGrid x:Name="TagCatalogDataGrid"
+                                      AutoGenerateColumns="False"
+                                      CanUserAddRows="False"
+                                      CanUserDeleteRows="False"
+                                      IsReadOnly="True"
+                                      HeadersVisibility="Column"
+                                      GridLinesVisibility="Horizontal"
+                                      BorderBrush="{StaticResource BorderBrushSoft}"
+                                      BorderThickness="1">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Nom" Binding="{Binding Name}" Width="1.4*"/>
+                                    <DataGridTextColumn Header="Type" Binding="{Binding Datatype}" Width="0.8*"/>
+                                    <DataGridTextColumn Header="Appareil" Binding="{Binding Device}" Width="1*"/>
+                                    <DataGridTextColumn Header="Adresse" Binding="{Binding Address}" Width="1.2*"/>
+                                    <DataGridTextColumn Header="Acces" Binding="{Binding Access}" Width="0.9*"/>
+                                    <DataGridTextColumn Header="Etat" Binding="{Binding State}" Width="0.8*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </DockPanel>
+                    </TabItem>
                 </TabControl>
             </Border>
 

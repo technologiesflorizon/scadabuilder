@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.2.0008`
+Document version: `V2.1.2.0009`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0009` | `PENDING` | Ajout de DEC-0016 pour les bindings Element+ `Lire valeur` et `Ecrire valeur`; DEC-0015 est supersedee. |
 | 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout de la decision d'import catalogue tags TF100Web et d'authoring `WriteTag`. |
 | 2026-06-16 | `V2.1.2.0007` | `PENDING` | Ajout de la decision de curseur runtime pour les cibles cliquables FT100/TF100Web. |
 | 2026-06-16 | `V2.1.2.0006` | `PENDING` | Ajout de la decision d'export runtime transparent pour les events portes par des groupes Element+. |
@@ -410,12 +411,12 @@ Regression coverage:
 
 ### DEC-0015 - TF100Web Tag Catalog Import And WriteTag Authoring
 
-Status: Active
+Status: Superseded
 Created: 2026-06-17 00:00 America/Toronto
 Created in commit: `PENDING`
-Deprecated: N/A
-Deprecated in commit: N/A
-Superseded by: N/A
+Deprecated: 2026-06-17 00:00 America/Toronto
+Deprecated in commit: `PENDING`
+Superseded by: DEC-0016
 Owner document: `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
 
 Context:
@@ -429,6 +430,32 @@ SCADA Builder V2 imports the TF100Web tag export into a project-level `ScadaTagC
 Consequences:
 
 FT100/TF100Web manifests include the imported tag catalog and write-tag actions. The exported runtime script calls `window.tf100webScadaBuilder.writeTag` when available and emits `scada-builder-write-tag` as an integration event. Read/display bindings, conditions, degraded semantics, and richer TF100Web server write behavior remain future slices.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+
+### DEC-0016 - Element Value Bindings For Imported Tags
+
+Status: Active
+Created: 2026-06-17 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
+
+Context:
+
+Operator-entered values are runtime data and must not be persisted as literal design-time action values. SCADA Builder V2 needs to bind Element+ inputs to imported TF100Web tags for read and write behavior while keeping event triggers separate from value synchronization.
+
+Decision:
+
+SCADA Builder V2 persists Element+ value bindings on element data as optional `ReadTagId` and `WriteTagId`. The Element+ event modal exposes `Lire valeur` and `Ecrire valeur` as authorable functions before the trigger selector. These functions require a target tag, do not use event triggers, and disable the trigger control in the UI. The target tag selector lists enabled imported tags as `Nom du tag | datatype | Nom de l'appareil`. `Ecrire valeur` is valid only for editable input Element+ objects and writeable tags; build/export validation rejects read-only elements, non-inputs, read-only tags, and missing tag references. `WriteTag` remains a legacy action kind for compatibility, but it is not the active authoring path.
+
+Consequences:
+
+FT100/TF100Web manifests include imported tags and per-element value binding metadata. Exported HTML emits `data-scada-read-tag` and `data-scada-write-tag`; runtime script emits read requests and writes the operator-entered input value through `window.tf100webScadaBuilder.writeTag` when available. Local SCADA Builder tag creation is intentionally deferred until project protocol import exists.
 
 Regression coverage:
 

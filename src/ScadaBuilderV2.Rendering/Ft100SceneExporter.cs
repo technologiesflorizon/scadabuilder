@@ -37,7 +37,7 @@ public sealed partial class Ft100SceneExporter
 
         if (project is not null)
         {
-            var errors = ScadaProjectBuildValidator.Validate(project)
+            var errors = ScadaProjectBuildValidator.Validate(project, [scene])
                 .Where(issue => issue.Severity == ScadaBuildValidationSeverity.Error)
                 .ToArray();
             if (errors.Length > 0)
@@ -115,14 +115,6 @@ public sealed partial class Ft100SceneExporter
         ArgumentNullException.ThrowIfNull(pages);
         ArgumentException.ThrowIfNullOrWhiteSpace(exportDirectory);
 
-        var errors = ScadaProjectBuildValidator.Validate(project)
-            .Where(issue => issue.Severity == ScadaBuildValidationSeverity.Error)
-            .ToArray();
-        if (errors.Length > 0)
-        {
-            throw new InvalidOperationException(errors[0].Message);
-        }
-
         var compiledPageIds = project.Scenes
             .Where(page => page.IncludeInBuild)
             .Select(page => page.Id)
@@ -137,6 +129,16 @@ public sealed partial class Ft100SceneExporter
         if (missingPageIds.Length > 0)
         {
             throw new InvalidOperationException($"Compiled page '{missingPageIds[0]}' has no export input.");
+        }
+
+        var errors = ScadaProjectBuildValidator.Validate(
+                project,
+                pageInputsById.Values.Select(input => input.Scene).ToArray())
+            .Where(issue => issue.Severity == ScadaBuildValidationSeverity.Error)
+            .ToArray();
+        if (errors.Length > 0)
+        {
+            throw new InvalidOperationException(errors[0].Message);
         }
 
         var packageDirectory = ResolveProjectPackageDirectory(exportDirectory);
@@ -547,10 +549,11 @@ public sealed partial class Ft100SceneExporter
                 var groupKind = HtmlEncoder.Default.Encode(element.Kind.ToString());
                 var groupInlineStyle = HtmlEncoder.Default.Encode(BuildRuntimeGroupInlineStyle(element, absoluteX, absoluteY));
                 var groupEventAttribute = BuildEventAttribute(element);
+                var groupValueBindingAttributes = BuildValueBindingAttributes(element);
                 var children = string.Concat(element.ChildElements.Select(child => BuildElementHtml(child, 0, 0, scope)));
 
                 return $$"""
-<div id="{{groupId}}" class="ft100-element ft100-element--{{groupKind}}" data-scada-element-id="{{groupSceneElementId}}" data-name="{{groupName}}" style="{{groupInlineStyle}}"{{groupEventAttribute}}>
+<div id="{{groupId}}" class="ft100-element ft100-element--{{groupKind}}" data-scada-element-id="{{groupSceneElementId}}" data-name="{{groupName}}" style="{{groupInlineStyle}}"{{groupEventAttribute}}{{groupValueBindingAttributes}}>
 {{Indent(children, 2)}}
 </div>
 """;
@@ -566,9 +569,10 @@ public sealed partial class Ft100SceneExporter
         var inlineStyle = HtmlEncoder.Default.Encode(BuildElementInlineStyle(element, absoluteX, absoluteY));
         var content = BuildElementContent(element);
         var eventAttribute = BuildEventAttribute(element);
+        var valueBindingAttributes = BuildValueBindingAttributes(element);
 
         return $$"""
-<div id="{{id}}" class="ft100-element ft100-element--{{kind}}" data-scada-element-id="{{sceneElementId}}" data-name="{{name}}" style="{{inlineStyle}}"{{eventAttribute}}>
+<div id="{{id}}" class="ft100-element ft100-element--{{kind}}" data-scada-element-id="{{sceneElementId}}" data-name="{{name}}" style="{{inlineStyle}}"{{eventAttribute}}{{valueBindingAttributes}}>
   {{content}}
 </div>
 """;
@@ -579,6 +583,26 @@ public sealed partial class Ft100SceneExporter
         return element.EventBindings.Count == 0
             ? ""
             : $" data-scada-events=\"{HtmlEncoder.Default.Encode(JsonSerializer.Serialize(element.EventBindings, ManifestJsonOptions))}\"";
+    }
+
+    private static string BuildValueBindingAttributes(ScadaElement element)
+    {
+        var attributes = new StringBuilder();
+        if (!string.IsNullOrWhiteSpace(element.Data?.ReadTagId))
+        {
+            attributes.Append(" data-scada-read-tag=\"");
+            attributes.Append(HtmlEncoder.Default.Encode(element.Data.ReadTagId));
+            attributes.Append('"');
+        }
+
+        if (!string.IsNullOrWhiteSpace(element.Data?.WriteTagId))
+        {
+            attributes.Append(" data-scada-write-tag=\"");
+            attributes.Append(HtmlEncoder.Default.Encode(element.Data.WriteTagId));
+            attributes.Append('"');
+        }
+
+        return attributes.ToString();
     }
 
     private static string BuildElementContent(ScadaElement element)
@@ -913,7 +937,12 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
                     element.DisplayName,
                     Kind = element.Kind.ToString(),
                     ButtonBehavior = element.Kind == ScadaElementKind.Button ? element.EffectiveButtonBehavior : null,
-                    Events = element.EventBindings
+                    Events = element.EventBindings,
+                    ValueBindings = new
+                    {
+                        ReadTagId = element.Data?.ReadTagId,
+                        WriteTagId = element.Data?.WriteTagId
+                    }
                 })
                 .ToArray()
         };
@@ -1024,6 +1053,38 @@ Apply any viewport scale to the composed page container, not independently to he
     const target = document.getElementById(root.id + '__' + sanitizeElementId(elementId));
     return target && root.contains(target) ? target : null;
   }
+
+  function readValueFromElement(element) {
+    const input = element.matches('input, textarea, select') ? element : element.querySelector('input, textarea, select');
+    if (input) {
+      return input.value;
+    }
+
+    return element.textContent || '';
+  }
+
+  root.querySelectorAll('[data-scada-read-tag]').forEach(function (element) {
+    const tagId = element.getAttribute('data-scada-read-tag');
+    window.dispatchEvent(new CustomEvent('scada-builder-read-tag-request', {
+      detail: { tagId: tagId, elementId: element.getAttribute('data-scada-element-id') }
+    }));
+  });
+
+  root.querySelectorAll('[data-scada-write-tag]').forEach(function (element) {
+    const target = element.matches('input, textarea, select') ? element : element.querySelector('input, textarea, select');
+    const eventTarget = target || element;
+    eventTarget.addEventListener('change', function () {
+      const payload = {
+        tagId: element.getAttribute('data-scada-write-tag'),
+        value: readValueFromElement(element),
+        elementId: element.getAttribute('data-scada-element-id')
+      };
+      if (window.tf100webScadaBuilder && typeof window.tf100webScadaBuilder.writeTag === 'function') {
+        window.tf100webScadaBuilder.writeTag(payload.tagId, payload.value, payload);
+      }
+      window.dispatchEvent(new CustomEvent('scada-builder-write-value', { detail: payload }));
+    });
+  });
 
     function applyAction(action) {
     if (!action || !action.Kind) {

@@ -171,6 +171,8 @@ public sealed class OfficialSceneDomainTests
         var release = ScadaEventRegistry.FindTrigger(ScadaEventRegistry.ReleaseKey);
         var hover = ScadaEventRegistry.FindTrigger(ScadaEventRegistry.HoverKey);
         var changePage = ScadaEventRegistry.FindAction(ScadaEventRegistry.ChangePageFunction);
+        var readValue = ScadaEventRegistry.FindAction(ScadaEventRegistry.ReadValueFunction);
+        var writeValue = ScadaEventRegistry.FindAction(ScadaEventRegistry.WriteValueFunction);
         var writeTag = ScadaEventRegistry.FindAction(ScadaEventRegistry.WriteTagFunction);
 
         Assert.IsNotNull(click);
@@ -183,9 +185,14 @@ public sealed class OfficialSceneDomainTests
         Assert.AreEqual(ScadaActionKind.Navigate, changePage?.Kind);
         Assert.IsTrue(changePage?.Implemented ?? false);
         CollectionAssert.Contains(changePage?.RequiredArguments.ToArray(), "TargetPageId");
+        Assert.AreEqual(ScadaActionKind.ReadValue, readValue?.Kind);
+        Assert.IsTrue(readValue?.Implemented ?? false);
+        CollectionAssert.Contains(readValue?.RequiredArguments.ToArray(), "TagId");
+        Assert.AreEqual(ScadaActionKind.WriteValue, writeValue?.Kind);
+        Assert.IsTrue(writeValue?.Implemented ?? false);
+        CollectionAssert.Contains(writeValue?.RequiredArguments.ToArray(), "TagId");
         Assert.AreEqual(ScadaActionKind.WriteTag, writeTag?.Kind);
-        Assert.IsTrue(writeTag?.Implemented ?? false);
-        CollectionAssert.Contains(writeTag?.RequiredArguments.ToArray(), "TagId");
+        Assert.IsFalse(writeTag?.Implemented ?? true);
     }
 
     [TestMethod]
@@ -230,23 +237,70 @@ public sealed class OfficialSceneDomainTests
     }
 
     [TestMethod]
-    public void SceneCanAttachWriteTagEventToElement()
+    public void SceneCanAttachReadAndWriteValueBindingsToElement()
     {
-        var button = ScadaElement.CreateText("btn_ack", "Acquitter", 10, 20);
+        var input = ScadaElement.CreateInputNumeric("input_sp", "Consigne", 10, 20);
         var scene = ScadaScene
             .CreateEmpty("win00008", "win00008", new CanvasSize(1280, 873))
-            .WithElement(button)
-            .WithWriteTagEvent("btn_ack", ScadaEventRegistry.ClickKey, "tf100.mapping.42", "1");
+            .WithElement(input)
+            .WithValueBinding("input_sp", readTagId: "tf100.mapping.41")
+            .WithValueBinding("input_sp", writeTagId: "tf100.mapping.42");
 
-        var updated = scene.FindElementRecursive("btn_ack");
-        var action = scene.ActionDefinitions.Single();
+        var updated = scene.FindElementRecursive("input_sp");
 
         Assert.IsNotNull(updated);
-        Assert.AreEqual(ScadaActionKind.WriteTag, action.Kind);
-        Assert.AreEqual("tf100.mapping.42", action.TagId);
-        Assert.AreEqual("1", action.Value);
-        Assert.AreEqual(action.Id, updated.EventBindings.Single().ActionId);
-        Assert.AreEqual(ScadaEventRegistry.ClickRuntimeTrigger, updated.EventBindings.Single().Trigger);
+        Assert.AreEqual("tf100.mapping.41", updated.Data?.ReadTagId);
+        Assert.AreEqual("tf100.mapping.42", updated.Data?.WriteTagId);
+        Assert.AreEqual(0, updated.EventBindings.Count);
+        Assert.AreEqual(0, scene.ActionDefinitions.Count);
+    }
+
+    [TestMethod]
+    public void BuildValidationRejectsInvalidWriteValueBindings()
+    {
+        var text = ScadaElement.CreateText("txt_value", "Valeur", 10, 20)
+            with
+            {
+                Data = new ScadaElementData(
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    null,
+                    false,
+                    WriteTagId: "tf100.mapping.41")
+            };
+        var input = ScadaElement.CreateInputNumeric("input_sp", "Consigne", 10, 60);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "win00008", new CanvasSize(1280, 873))
+            .WithElement(text)
+            .WithElement(input)
+            .WithValueBinding("input_sp", writeTagId: "tf100.mapping.41")
+            .WithValueBinding("input_sp", readTagId: "tf100.mapping.99");
+        var project = ScadaProject.CreateDefault("Validation") with
+        {
+            Scenes = [new ScadaSceneReference("win00008", "win00008", "scenes/win00008.scene.json")],
+            TagCatalog = new ScadaTagCatalog(
+                "tf100web-scada-tags-v1",
+                [
+                    new ScadaTagDefinition(
+                        "tf100.mapping.41",
+                        "Pression",
+                        Datatype: "Float",
+                        Device: "PLC-1",
+                        Writeable: false)
+                ])
+        };
+
+        var issues = ScadaProjectBuildValidator.Validate(project, [scene]);
+
+        Assert.IsTrue(issues.Any(issue => issue.Code == "tag.write-readonly-element"));
+        Assert.IsTrue(issues.Any(issue => issue.Code == "tag.write-readonly-tag"));
+        Assert.IsTrue(issues.Any(issue => issue.Code == "tag.read-missing"));
     }
 
     [TestMethod]

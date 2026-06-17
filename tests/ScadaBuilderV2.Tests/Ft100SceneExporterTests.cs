@@ -713,42 +713,45 @@ public sealed class Ft100SceneExporterTests
     }
 
     [TestMethod]
-    public async Task ExportIncludesImportedTagsAndWriteTagRuntimeHook()
+    public async Task ExportIncludesImportedTagsAndValueBindingRuntimeHook()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
         var sourceRoot = Path.Combine(root, "source");
         var exportRoot = Path.Combine(root, "export");
         Directory.CreateDirectory(sourceRoot);
-        var sourceHtmlPath = Path.Combine(sourceRoot, "write_tag.html");
+        var sourceHtmlPath = Path.Combine(sourceRoot, "value_binding.html");
         await File.WriteAllTextAsync(sourceHtmlPath, "<!doctype html><html><body><div class=\"page\"></div></body></html>");
 
-        var button = new ScadaElement(
-            "btn_ack",
-            "Acquitter",
-            ScadaElementKind.Button,
-            new SceneBounds(10, 20, 120, 30),
-            null,
-            ScadaElementLayout.Absolute,
-            ScadaElementStyle.DefaultInput,
-            new ScadaElementData("Ack", null, null, null, null, null, null, null, null, false));
+        var input = ScadaElement.CreateInputNumeric("input_sp", "Consigne", 10, 20);
         var scene = ScadaScene
-            .CreateEmpty("win00008", "Write tag", new(1280, 873))
-            .WithElement(button)
-            .WithWriteTagEvent("btn_ack", ScadaEventRegistry.ClickKey, "tf100.mapping.42", "1");
+            .CreateEmpty("win00008", "Value binding", new(1280, 873))
+            .WithElement(input)
+            .WithValueBinding("input_sp", readTagId: "tf100.mapping.41")
+            .WithValueBinding("input_sp", writeTagId: "tf100.mapping.42");
         var project = ScadaProject.CreateDefault("Runtime") with
         {
-            Scenes = [new ScadaSceneReference("win00008", "Write tag", "scenes/win00008.scene.json")],
+            Scenes = [new ScadaSceneReference("win00008", "Value binding", "scenes/win00008.scene.json")],
             TagCatalog = new ScadaTagCatalog(
                 "tf100web-scada-tags-v1",
                 [
                     new ScadaTagDefinition(
-                        "tf100.mapping.42",
-                        "Pompe P-101 | PLC-1 | modbus://40001",
-                        "Pompe P-101",
+                        "tf100.mapping.41",
+                        "Pression",
+                        "Pression",
                         "analog",
                         "PLC-1",
                         "modbus",
                         "modbus://40001",
+                        "Float",
+                        Writeable: false),
+                    new ScadaTagDefinition(
+                        "tf100.mapping.42",
+                        "Consigne",
+                        "Consigne",
+                        "analog",
+                        "PLC-1",
+                        "modbus",
+                        "modbus://40002",
                         "Float",
                         Writeable: true)
                 ])
@@ -760,14 +763,15 @@ public sealed class Ft100SceneExporterTests
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
 
-            StringAssert.Contains(html, "data-scada-events=");
+            StringAssert.Contains(html, "data-scada-read-tag=\"tf100.mapping.41\"");
+            StringAssert.Contains(html, "data-scada-write-tag=\"tf100.mapping.42\"");
+            StringAssert.Contains(html, "scada-builder-read-tag-request");
             StringAssert.Contains(html, "tf100webScadaBuilder.writeTag");
-            StringAssert.Contains(html, "scada-builder-write-tag");
-            StringAssert.Contains(manifest, "\"Kind\": \"writeTag\"");
-            StringAssert.Contains(manifest, "\"TagId\": \"tf100.mapping.42\"");
-            StringAssert.Contains(manifest, "\"Value\": \"1\"");
+            StringAssert.Contains(html, "scada-builder-write-value");
+            StringAssert.Contains(manifest, "\"ReadTagId\": \"tf100.mapping.41\"");
+            StringAssert.Contains(manifest, "\"WriteTagId\": \"tf100.mapping.42\"");
             StringAssert.Contains(manifest, "\"Tags\"");
-            StringAssert.Contains(manifest, "\"DisplayName\": \"Pompe P-101 | PLC-1 | modbus://40001\"");
+            StringAssert.Contains(manifest, "\"DisplayName\": \"Consigne\"");
             StringAssert.Contains(manifest, "\"Writeable\": true");
         }
         finally

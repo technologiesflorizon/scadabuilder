@@ -39,6 +39,7 @@ public partial class MainWindow : Window
     private readonly ElementStudioComponentPackageStore _elementStudioComponentPackageStore = new();
     private readonly ElementPlusLibraryReader _elementPlusLibraryReader = new();
     private readonly ObservableCollection<ElementPlusLibraryItem> _elementLibraryItems = [];
+    private readonly ObservableCollection<TagCatalogListItem> _tagCatalogItems = [];
     private readonly ObservableCollection<SceneWorkspaceTab> _openSceneTabs = [];
     private readonly HashSet<string> _hiddenSourceObjectIds = new(StringComparer.Ordinal);
     private readonly List<LegacyElementListItem> _sourceObjects = [];
@@ -96,6 +97,7 @@ public partial class MainWindow : Window
         InitializeComponent();
         DataContext = this;
         ElementLibraryListBox.ItemsSource = _elementLibraryItems;
+        TagCatalogDataGrid.ItemsSource = _tagCatalogItems;
         SceneTabs.ItemsSource = _openSceneTabs;
         _pageDimensionApplyTimer.Tick += OnPageDimensionApplyTimerTick;
         StatusTextBlock.Text = $"Etat / Warning - {LoadVersionText()}";
@@ -3138,16 +3140,39 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private void RefreshProjectTagSummary()
     {
+        _tagCatalogItems.Clear();
         if (_modernProject?.TagCatalog is not { Count: > 0 } catalog)
         {
             ProjectTagsSummaryText.Text = "Aucun catalogue importe";
             return;
         }
 
+        foreach (var tag in catalog.Tags.OrderBy(tag => tag.DisplayName, StringComparer.CurrentCultureIgnoreCase))
+        {
+            _tagCatalogItems.Add(new TagCatalogListItem(
+                tag.DisplayName,
+                tag.Datatype ?? "",
+                tag.Device ?? "",
+                tag.AddressUri ?? "",
+                tag.Writeable ? "Lecture/Ecriture" : "Lecture",
+                tag.Enabled ? "Actif" : "Desactive"));
+        }
+
         var source = string.IsNullOrWhiteSpace(catalog.SourceFileName)
             ? "source inconnue"
             : catalog.SourceFileName;
         ProjectTagsSummaryText.Text = $"{catalog.Count} tag(s) importes - {source}";
+    }
+
+    private string FormatProjectTag(string tagId)
+    {
+        var tag = _modernProject?.TagCatalog?.Tags.FirstOrDefault(tag => string.Equals(tag.Id, tagId, StringComparison.Ordinal));
+        return tag?.AuthoringLabel ?? tagId;
+    }
+
+    private void OnCreateProjectTagClick(object sender, RoutedEventArgs e)
+    {
+        SetStatus("Creation de tags disponible dans une prochaine revision apres import des protocoles projet.");
     }
 
     private void SetHomePageId(string? pageId)
@@ -4432,9 +4457,22 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ElementUnitTextBox.Text = data.Unit ?? "";
             ElementFormatTextBox.Text = data.DisplayFormat ?? "";
             ElementTagBindingTextBox.Text = data.TagBinding ?? "";
-            ElementEventsSummaryText.Text = element.EventBindings.Count == 0
+            var bindingSummaries = new List<string>();
+            if (!string.IsNullOrWhiteSpace(data.ReadTagId))
+            {
+                bindingSummaries.Add($"Lire valeur: {FormatProjectTag(data.ReadTagId)}");
+            }
+
+            if (!string.IsNullOrWhiteSpace(data.WriteTagId))
+            {
+                bindingSummaries.Add($"Ecrire valeur: {FormatProjectTag(data.WriteTagId)}");
+            }
+
+            bindingSummaries.AddRange(element.EventBindings
+                .Select(binding => ScadaEventRegistry.FindTrigger(binding.Trigger)?.FrenchLabel ?? binding.Trigger));
+            ElementEventsSummaryText.Text = bindingSummaries.Count == 0
                 ? "Aucun evenement"
-                : $"{element.EventBindings.Count} evenement(s): {string.Join(", ", element.EventBindings.Select(binding => ScadaEventRegistry.FindTrigger(binding.Trigger)?.FrenchLabel ?? binding.Trigger))}";
+                : string.Join(", ", bindingSummaries);
         }
         finally
         {
@@ -4472,7 +4510,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         };
 
         dialog.AddEvent = result => AddElementEventFromDialog(current.Id, result, dialog);
-        dialog.DeleteEvent = eventIndex => DeleteElementEventFromDialog(current.Id, eventIndex, dialog);
+        dialog.DeleteEvent = request => DeleteElementEventFromDialog(current.Id, request, dialog);
+        dialog.CreateTag = () => "Creation de tags disponible dans une prochaine revision apres import des protocoles projet.";
         dialog.ShowDialog();
     }
 
@@ -4495,25 +4534,34 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
 
         var beforeScene = _activeScene;
+        var changeLabel = "evenement Element+";
         var updated = result.FunctionName switch
         {
             var functionName when string.Equals(functionName, ScadaEventRegistry.ChangePageFunction, StringComparison.Ordinal) =>
                 _activeScene.WithChangePageEvent(
                     current.Id,
-                    result.RuntimeTrigger,
+                    result.RuntimeTrigger ?? "",
                     result.TargetPageId ?? ""),
-            var functionName when string.Equals(functionName, ScadaEventRegistry.WriteTagFunction, StringComparison.Ordinal) =>
-                _activeScene.WithWriteTagEvent(
+            var functionName when string.Equals(functionName, ScadaEventRegistry.ReadValueFunction, StringComparison.Ordinal) =>
+                _activeScene.WithValueBinding(
                     current.Id,
-                    result.RuntimeTrigger,
-                    result.TagId ?? "",
-                    result.Value ?? ""),
+                    readTagId: result.TagId ?? ""),
+            var functionName when string.Equals(functionName, ScadaEventRegistry.WriteValueFunction, StringComparison.Ordinal) =>
+                _activeScene.WithValueBinding(
+                    current.Id,
+                    writeTagId: result.TagId ?? ""),
             _ => throw new InvalidOperationException("Fonction d'evenement non implementee dans cette tranche.")
         };
+        if (string.Equals(result.FunctionName, ScadaEventRegistry.ReadValueFunction, StringComparison.Ordinal) ||
+            string.Equals(result.FunctionName, ScadaEventRegistry.WriteValueFunction, StringComparison.Ordinal))
+        {
+            changeLabel = "binding valeur Element+";
+        }
+
         if (Equals(beforeScene, updated))
         {
-            SetStatus("Evenement deja configure.");
-            return "Evenement deja configure.";
+            SetStatus("Binding deja configure.");
+            return "Binding deja configure.";
         }
 
         _activeScene = updated;
@@ -4523,7 +4571,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             updated.Id,
             beforeScene,
             updated,
-            "evenement Element+"));
+            changeLabel));
         MarkActiveSceneDirty();
         RefreshSelectionUi();
         RefreshModernSceneUi();
@@ -4531,13 +4579,13 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         dialog?.RefreshExistingEvents(
             _activeScene.FindElementRecursive(current.Id) ?? current,
             _activeScene.ActionDefinitions);
-        SetStatus($"Evenement Element+ ajoute sur {_selectedSceneObject?.UserLabel ?? current.UserLabel}. Sauvegarde requise.");
-        return "Evenement ajoute. Vous pouvez en ajouter un autre ou fermer la fenetre.";
+        SetStatus($"Binding Element+ ajoute sur {_selectedSceneObject?.UserLabel ?? current.UserLabel}. Sauvegarde requise.");
+        return "Binding ajoute. Vous pouvez en ajouter un autre ou fermer la fenetre.";
     }
 
     private string DeleteElementEventFromDialog(
         string elementId,
-        int eventIndex,
+        ElementEventDialogDeleteRequest request,
         ElementEventDialog dialog)
     {
         if (_activeScene is null)
@@ -4554,11 +4602,17 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
 
         var beforeScene = _activeScene;
-        var updated = _activeScene.WithoutObjectEventAt(current.Id, eventIndex);
+        var updated = request.Kind switch
+        {
+            "read" => _activeScene.WithoutValueBinding(current.Id, ScadaValueBindingKind.Read),
+            "write" => _activeScene.WithoutValueBinding(current.Id, ScadaValueBindingKind.Write),
+            "event" => _activeScene.WithoutObjectEventAt(current.Id, request.EventIndex),
+            _ => _activeScene
+        };
         if (Equals(beforeScene, updated))
         {
-            SetStatus("Aucun evenement selectionne a supprimer.");
-            return "Aucun evenement selectionne a supprimer.";
+            SetStatus("Aucun binding selectionne a supprimer.");
+            return "Aucun binding selectionne a supprimer.";
         }
 
         _activeScene = updated;
@@ -4568,7 +4622,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             updated.Id,
             beforeScene,
             updated,
-            "suppression evenement Element+"));
+            "suppression binding Element+"));
         MarkActiveSceneDirty();
         RefreshSelectionUi();
         RefreshModernSceneUi();
@@ -4576,8 +4630,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         dialog.RefreshExistingEvents(
             _activeScene.FindElementRecursive(current.Id) ?? current,
             _activeScene.ActionDefinitions);
-        SetStatus($"Evenement supprime sur {_selectedSceneObject?.UserLabel ?? current.UserLabel}. Sauvegarde requise.");
-        return "Evenement supprime. Vous pouvez continuer ou fermer la fenetre.";
+        SetStatus($"Binding supprime sur {_selectedSceneObject?.UserLabel ?? current.UserLabel}. Sauvegarde requise.");
+        return "Binding supprime. Vous pouvez continuer ou fermer la fenetre.";
     }
 
     private void OnElementPropertyChanged(object sender, RoutedEventArgs e)
@@ -5434,6 +5488,14 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     private sealed record LegacyViewerSource(string RootPath, string RelativeHtmlSource, string Kind);
 
     private sealed record ElementStudioLaunchResult(bool Launched, string Message);
+
+    private sealed record TagCatalogListItem(
+        string Name,
+        string Datatype,
+        string Device,
+        string Address,
+        string Access,
+        string State);
 
     private sealed record LegacyViewerCommand(
         string Action,

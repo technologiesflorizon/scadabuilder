@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active data model overview
-Document version: `V2.1.2.0008`
+Document version: `V2.1.2.0009`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0009` | `PENDING` | Ajout des relations `ReadTagId` et `WriteTagId` sur les donnees Element+. |
 | 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout du catalogue tags TF100Web au modele projet et aux relations runtime. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation de la vue d'ensemble du modele projet, scene, elements, actions, Studio et export. |
 
@@ -53,7 +54,8 @@ classDiagram
     Id
     Kind
     Bounds
-    TagBinding
+    ReadTagId
+    WriteTagId
     Events
   }
   class ScadaActionDefinition {
@@ -72,6 +74,7 @@ classDiagram
   ScadaScene "1" --> "*" ScadaElement
   ScadaScene "1" --> "*" ScadaActionDefinition
   ScadaElement "1" --> "*" ScadaActionDefinition : references
-  ScadaActionDefinition "*" --> "0..1" ScadaTagDefinition : WriteTag
+  ScadaElement "*" --> "0..1" ScadaTagDefinition : ReadTagId
+  ScadaElement "*" --> "0..1" ScadaTagDefinition : WriteTagId
   ScadaElement "*" --> "0..1" SepComponent : published from
 ```

@@ -80,7 +80,25 @@ public sealed record ScadaElementData(
     string? Unit,
     string? DisplayFormat,
     string? TagBinding,
-    bool IsReadOnly);
+    bool IsReadOnly,
+    string? ReadTagId = null,
+    string? WriteTagId = null);
+
+/// <summary>
+/// Identifies which runtime tag value binding is edited on an Element+ object.
+/// </summary>
+public enum ScadaValueBindingKind
+{
+    /// <summary>
+    /// Runtime binding that reads a tag value into the Element+ object.
+    /// </summary>
+    Read,
+
+    /// <summary>
+    /// Runtime binding that writes the operator-entered Element+ value to a tag.
+    /// </summary>
+    Write
+}
 
 /// <summary>
 /// Defines the hover visual style for an Element+ button.
@@ -151,7 +169,9 @@ public enum ScadaActionKind
     SetClass,
     ToggleClass,
     MountFragment,
-    WriteTag
+    WriteTag,
+    ReadValue,
+    WriteValue
 }
 
 public sealed record ScadaActionDefinition(
@@ -202,6 +222,13 @@ public sealed record ScadaElement(
 
     [JsonIgnore]
     public IReadOnlyList<ScadaObjectEventBinding> EventBindings => Events ?? Array.Empty<ScadaObjectEventBinding>();
+
+    /// <summary>
+    /// Gets whether this Element+ can provide an operator-entered runtime value.
+    /// </summary>
+    [JsonIgnore]
+    public bool IsWritableInput => (Kind == ScadaElementKind.InputText || Kind == ScadaElementKind.InputNumeric) &&
+        Data?.IsReadOnly != true;
 
     /// <summary>
     /// Gets the effective button behavior, including default hover feedback for older scenes.
@@ -720,6 +747,59 @@ public sealed record ScadaScene(
     }
 
     /// <summary>
+    /// Adds or replaces model-backed runtime value tag bindings on one Element+ object.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0016.
+    /// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs.
+    /// </remarks>
+    public ScadaScene WithValueBinding(string elementId, string? readTagId = null, string? writeTagId = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
+
+        var element = FindElementRecursive(elementId);
+        if (element is null)
+        {
+            return this;
+        }
+
+        var data = element.Data ?? CreateDefaultElementData(element);
+        var updatedData = data with
+        {
+            ReadTagId = NormalizeOptionalTagId(readTagId, data.ReadTagId),
+            WriteTagId = NormalizeOptionalTagId(writeTagId, data.WriteTagId)
+        };
+
+        return WithReplacedElementRecursive(element with { Data = updatedData });
+    }
+
+    /// <summary>
+    /// Removes one model-backed runtime value binding from one Element+ object.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0016.
+    /// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs.
+    /// </remarks>
+    public ScadaScene WithoutValueBinding(string elementId, ScadaValueBindingKind bindingKind)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
+
+        var element = FindElementRecursive(elementId);
+        if (element?.Data is null)
+        {
+            return this;
+        }
+
+        var updatedData = bindingKind == ScadaValueBindingKind.Read
+            ? element.Data with { ReadTagId = null }
+            : element.Data with { WriteTagId = null };
+
+        return WithReplacedElementRecursive(element with { Data = updatedData });
+    }
+
+    /// <summary>
     /// Removes one model-backed Element+ event by index and prunes its generated action when no event references it.
     /// </summary>
     /// <remarks>
@@ -964,6 +1044,26 @@ public sealed record ScadaScene(
             "_",
             new[] { "action", SanitizeIdPart(functionName), SanitizeIdPart(trigger), SanitizeIdPart(elementId), SanitizeIdPart(targetId) }
                 .Where(part => !string.IsNullOrWhiteSpace(part)));
+    }
+
+    private static ScadaElementData CreateDefaultElementData(ScadaElement element)
+    {
+        return element.Kind switch
+        {
+            ScadaElementKind.Text => new ScadaElementData("Texte", null, null, null, null, null, null, null, null, false),
+            ScadaElementKind.InputText => new ScadaElementData(null, "Texte", null, null, null, null, null, null, null, false),
+            ScadaElementKind.InputNumeric => new ScadaElementData(null, "0", 0, null, null, 0, null, "0", null, false),
+            _ => new ScadaElementData(null, null, null, null, null, null, null, null, null, false)
+        };
+    }
+
+    private static string? NormalizeOptionalTagId(string? candidate, string? current)
+    {
+        return candidate is null
+            ? current
+            : string.IsNullOrWhiteSpace(candidate)
+                ? null
+                : candidate.Trim();
     }
 
     private static string SanitizeIdPart(string value)

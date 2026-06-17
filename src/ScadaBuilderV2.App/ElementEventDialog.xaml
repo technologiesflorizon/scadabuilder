@@ -96,27 +96,35 @@
                 <TextBlock Text="Nouveau flow"
                            FontWeight="SemiBold"
                            Foreground="{StaticResource InkBrush}"/>
-                <TextBlock Text="Declencheur"
+                <TextBlock Text="Fonction"
                            Margin="0,12,0,0"/>
-                <ComboBox x:Name="TriggerComboBox"
-                          DisplayMemberPath="FrenchLabel"/>
-
-                <TextBlock Text="Fonction"/>
                 <ComboBox x:Name="ActionComboBox"
                           DisplayMemberPath="FrenchLabel"
                           SelectionChanged="OnActionSelectionChanged"/>
+
+                <TextBlock x:Name="TriggerLabelText" Text="Declencheur"/>
+                <ComboBox x:Name="TriggerComboBox"
+                          DisplayMemberPath="FrenchLabel"/>
 
                 <TextBlock x:Name="TargetPageLabelText" Text="Page cible"/>
                 <ComboBox x:Name="TargetPageComboBox"
                           DisplayMemberPath="DisplayName"/>
 
                 <TextBlock x:Name="TargetTagLabelText" Text="Tag cible"/>
-                <ComboBox x:Name="TargetTagComboBox"
-                          DisplayMemberPath="DisplayName"/>
-
-                <TextBlock x:Name="TagValueLabelText" Text="Valeur a ecrire"/>
-                <TextBox x:Name="TagValueTextBox"
-                         Text="1"/>
+                <DockPanel x:Name="TargetTagPanel" Margin="0,3,0,10">
+                    <Button DockPanel.Dock="Right"
+                            Width="34"
+                            MinHeight="32"
+                            Margin="6,0,0,0"
+                            Padding="0"
+                            Content="+"
+                            FontWeight="Bold"
+                            ToolTip="Creer un tag"
+                            Click="OnCreateTagClick"/>
+                    <ComboBox x:Name="TargetTagComboBox"
+                              Margin="0"
+                              DisplayMemberPath="DisplayName"/>
+                </DockPanel>
 
                 <TextBlock Text="Condition"/>
                 <TextBox Text="Aucune condition"

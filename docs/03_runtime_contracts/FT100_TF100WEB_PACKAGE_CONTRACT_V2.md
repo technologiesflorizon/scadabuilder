@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active runtime package contract
-Document version: `V2.1.2.0008`
+Document version: `V2.1.2.0009`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0009` | `PENDING` | Remplacement du hook `WriteTag` authorable par les attributs runtime de binding valeur. |
 | 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout du catalogue tags et du hook runtime `WriteTag` au contrat FT100/TF100Web. |
 | 2026-06-16 | `V2.1.2.0007` | `PENDING` | Ajout du contrat `cursor: pointer` pour les boutons et elements avec events runtime. |
 | 2026-06-16 | `V2.1.2.0006` | `PENDING` | Ajout du contrat de wrapper runtime transparent pour les groupes Element+ portant des events. |
@@ -45,8 +46,9 @@ scada-builder-v2-ft100-package/
 9. Element+ groups without runtime events may be flattened in exported HTML.
 10. Element+ groups with runtime events must export a transparent page-scoped runtime wrapper carrying `data-scada-events`; the wrapper is runtime hit-test geometry only and must not add editor overlays, selection handles, labels, or visual decoration.
 11. Element+ buttons and any exported element carrying `data-scada-events` must expose `cursor: pointer` by default, including descendants and active click state, so TF100Web operators see a button cursor on hover and click.
-12. Root and page manifests may include `Tags` from the project tag catalog. Runtime actions with kind `writeTag` carry `TagId` and `Value`.
-13. Exported page runtime handles `writeTag` by calling `window.tf100webScadaBuilder.writeTag(tagId, value, payload)` when available and by emitting a `scada-builder-write-tag` browser event for TF100Web integration.
+12. Root and page manifests may include `Tags` from the project tag catalog and per-element `ValueBindings` metadata.
+13. Exported page HTML emits `data-scada-read-tag` and `data-scada-write-tag` when an Element+ has value bindings.
+14. Exported page runtime emits `scada-builder-read-tag-request` for read-bound elements and handles write-bound input changes by calling `window.tf100webScadaBuilder.writeTag(tagId, value, payload)` when available, then emitting `scada-builder-write-value`.
 
 ## 3. Package Flow
 
@@ -70,6 +72,7 @@ flowchart TD
 3. `DEC-0013` - Runtime Group Event Wrapper Export.
 4. `DEC-0014` - Runtime Pointer Cursor For Clickable Targets.
 5. `DEC-0015` - TF100Web Tag Catalog Import And WriteTag Authoring.
+6. `DEC-0016` - Element Value Bindings For Imported Tags.
 
 ## 5. Related Tests
 

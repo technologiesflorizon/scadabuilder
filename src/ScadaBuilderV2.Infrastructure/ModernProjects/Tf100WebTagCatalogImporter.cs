@@ -65,22 +65,18 @@ public sealed class Tf100WebTagCatalogImporter
     {
         var id = GetString(tag, "id") ?? "";
         var keywordLabel = GetString(tag, "keyword_label");
-        var addressUri = GetString(tag, "address_uri");
         var device = GetString(tag, "device");
         var datatype = GetString(tag, "datatype_label") ?? GetString(tag, "datatype");
-        var displayName = string.Join(
-            " | ",
-            new[] { keywordLabel, device, addressUri }
-                .Where(part => !string.IsNullOrWhiteSpace(part)));
+        var displayName = string.IsNullOrWhiteSpace(keywordLabel) ? id.Trim() : keywordLabel;
 
         return new ScadaTagDefinition(
             id.Trim(),
-            string.IsNullOrWhiteSpace(displayName) ? id.Trim() : displayName,
+            displayName,
             keywordLabel,
             GetString(tag, "keyword_type"),
             device,
             GetString(tag, "protocol"),
-            addressUri,
+            GetString(tag, "address_uri"),
             datatype,
             GetBoolean(tag, "writeable"),
             GetBoolean(tag, "enabled", defaultValue: true),

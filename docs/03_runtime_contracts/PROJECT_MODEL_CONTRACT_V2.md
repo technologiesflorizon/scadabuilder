@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active project model contract
-Document version: `V2.1.2.0008`
+Document version: `V2.1.2.0009`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0009` | `PENDING` | Ajout des bindings Element+ `ReadTagId` et `WriteTagId` et des validations de build. |
 | 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout du catalogue tags TF100Web importe au modele projet. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat actif du modele projet et scene. |
 
@@ -22,7 +23,7 @@ Legacy source paths and source ids are trace metadata unless explicitly converte
 1. Project owns identity, scene inventory, home page, and build composition.
 2. Project owns the optional imported TF100Web tag catalog used by Element+ authoring surfaces.
 3. Scene owns canvas, page type, background, elements, actions, composition references, and removed source ids.
-4. Elements own identity, kind, bounds, data, event bindings, and optional tag binding.
+4. Elements own identity, kind, bounds, data, event bindings, and optional read/write tag bindings.
 5. Runtime manifests are generated outputs, not editable source models.
 
 ## 3. Tag Catalog
@@ -35,7 +36,7 @@ The catalog preserves:
 2. Display label for authoring UI.
 3. TF100Web source metadata such as keyword label, device, protocol, address, datatype, unit, enabled state, and writeable state.
 
-Only enabled writeable tags are currently exposed by the Element+ `WriteTag` event authoring flow. Future read/display bindings may use enabled read-only tags.
+All enabled tags are exposed for `Lire valeur` authoring. `Ecrire valeur` may target only writeable tags and only editable input Element+ objects. Build/export validation rejects missing tag references, write bindings on non-input or read-only Element+ objects, and write bindings to read-only tags.
 
 ## 4. Related Tests
 

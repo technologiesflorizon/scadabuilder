@@ -20,7 +20,9 @@ public sealed class ModernProjectStoreTests
             .WithBackgroundColor("#2090A0")
             .WithLegacyTextOverride("legacy:texte-001", "Température entrée été")
             .WithElement(ScadaElement.CreateInputText("input_text_001", "InputText001", 10, 20))
-            .WithElement(ScadaElement.CreateInputNumeric("input_numeric_001", "InputNumeric001", 30, 40));
+            .WithElement(ScadaElement.CreateInputNumeric("input_numeric_001", "InputNumeric001", 30, 40))
+            .WithValueBinding("input_numeric_001", readTagId: "tf100.mapping.41")
+            .WithValueBinding("input_numeric_001", writeTagId: "tf100.mapping.42");
 
         try
         {
@@ -33,6 +35,8 @@ public sealed class ModernProjectStoreTests
             Assert.AreEqual(ScadaElementKind.InputNumeric, loaded.Elements[1].Kind);
             Assert.AreEqual("Texte", loaded.Elements[0].Data?.Placeholder);
             Assert.AreEqual("0", loaded.Elements[1].Data?.DisplayFormat);
+            Assert.AreEqual("tf100.mapping.41", loaded.Elements[1].Data?.ReadTagId);
+            Assert.AreEqual("tf100.mapping.42", loaded.Elements[1].Data?.WriteTagId);
             Assert.AreEqual("#2090A0", loaded.BackgroundColor);
             Assert.AreEqual("Température entrée été", loaded.TextOverrides.Single().Text);
         }
@@ -390,7 +394,8 @@ public sealed class ModernProjectStoreTests
             Assert.AreEqual(1, catalog.Count);
             var tag = catalog.Tags.Single();
             Assert.AreEqual("tf100.mapping.42", tag.Id);
-            Assert.AreEqual("Pompe P-101 | PLC-1 | modbus://40001", tag.DisplayName);
+            Assert.AreEqual("Pompe P-101", tag.DisplayName);
+            Assert.AreEqual("Pompe P-101 | Float | PLC-1", tag.AuthoringLabel);
             Assert.AreEqual("Float", tag.Datatype);
             Assert.IsTrue(tag.Writeable);
         }

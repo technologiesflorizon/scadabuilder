@@ -1,4 +1,5 @@
 using ScadaBuilderV2.Domain.Versioning;
+using ScadaBuilderV2.Domain.Scenes;
 using System.Text.Json.Serialization;
 
 namespace ScadaBuilderV2.Domain.Projects;
@@ -111,7 +112,7 @@ public sealed record ScadaProject(
 /// Project-level catalog of TF100Web tags imported for Element+ binding authoring.
 /// </summary>
 /// <remarks>
-/// Decisions: DEC-0015.
+/// Decisions: DEC-0015, DEC-0016.
 /// Contracts: docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md, docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
 /// Tests: tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs.
 /// </remarks>
@@ -142,7 +143,21 @@ public sealed record ScadaTagDefinition(
     string? Datatype = null,
     bool Writeable = false,
     bool Enabled = true,
-    string? Unit = null);
+    string? Unit = null)
+{
+    /// <summary>
+    /// Gets the tag label used in authoring selectors.
+    /// </summary>
+    [JsonIgnore]
+    public string AuthoringLabel => string.Join(
+        " | ",
+        new[]
+        {
+            string.IsNullOrWhiteSpace(DisplayName) ? Id : DisplayName,
+            string.IsNullOrWhiteSpace(Datatype) ? null : Datatype,
+            string.IsNullOrWhiteSpace(Device) ? null : Device
+        }.Where(part => !string.IsNullOrWhiteSpace(part)));
+}
 
 public enum ScadaBuildValidationSeverity
 {
@@ -162,6 +177,30 @@ public static class ScadaProjectBuildValidator
     {
         ArgumentNullException.ThrowIfNull(project);
         return Validate(project.Scenes, project.HomePageId);
+    }
+
+    public static IReadOnlyList<ScadaBuildValidationIssue> Validate(
+        ScadaProject project,
+        IReadOnlyList<ScadaScene> scenes)
+    {
+        ArgumentNullException.ThrowIfNull(project);
+        ArgumentNullException.ThrowIfNull(scenes);
+
+        var issues = Validate(project.Scenes, project.HomePageId).ToList();
+        var tagsById = (project.TagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
+            .Where(tag => !string.IsNullOrWhiteSpace(tag.Id))
+            .ToDictionary(tag => tag.Id, StringComparer.Ordinal);
+        var sceneIdsToBuild = project.Scenes
+            .Where(reference => reference.IncludeInBuild)
+            .Select(reference => reference.Id)
+            .ToHashSet(StringComparer.Ordinal);
+
+        foreach (var scene in scenes.Where(scene => sceneIdsToBuild.Contains(scene.Id)))
+        {
+            ValidateSceneValueBindings(issues, scene, tagsById);
+        }
+
+        return issues;
     }
 
     public static IReadOnlyList<ScadaBuildValidationIssue> Validate(
@@ -281,6 +320,71 @@ public static class ScadaProjectBuildValidator
                 $"build.{role}-not-compiled",
                 $"Page '{page.Id}' references {role} page '{referencedPage.Id}', but that page is not included in build.",
                 page.Id));
+        }
+    }
+
+    private static void ValidateSceneValueBindings(
+        List<ScadaBuildValidationIssue> issues,
+        ScadaScene scene,
+        IReadOnlyDictionary<string, ScadaTagDefinition> tagsById)
+    {
+        foreach (var element in FlattenElements(scene.Elements))
+        {
+            var readTagId = element.Data?.ReadTagId;
+            if (!string.IsNullOrWhiteSpace(readTagId) && !tagsById.ContainsKey(readTagId))
+            {
+                issues.Add(new ScadaBuildValidationIssue(
+                    ScadaBuildValidationSeverity.Error,
+                    "tag.read-missing",
+                    $"Element '{element.Id}' references missing read tag '{readTagId}'.",
+                    scene.Id));
+            }
+
+            var writeTagId = element.Data?.WriteTagId;
+            if (string.IsNullOrWhiteSpace(writeTagId))
+            {
+                continue;
+            }
+
+            if (!tagsById.TryGetValue(writeTagId, out var tag))
+            {
+                issues.Add(new ScadaBuildValidationIssue(
+                    ScadaBuildValidationSeverity.Error,
+                    "tag.write-missing",
+                    $"Element '{element.Id}' references missing write tag '{writeTagId}'.",
+                    scene.Id));
+                continue;
+            }
+
+            if (!element.IsWritableInput)
+            {
+                issues.Add(new ScadaBuildValidationIssue(
+                    ScadaBuildValidationSeverity.Error,
+                    "tag.write-readonly-element",
+                    $"Element '{element.Id}' cannot write tag '{writeTagId}' because it is not an editable input.",
+                    scene.Id));
+            }
+
+            if (!tag.Writeable)
+            {
+                issues.Add(new ScadaBuildValidationIssue(
+                    ScadaBuildValidationSeverity.Error,
+                    "tag.write-readonly-tag",
+                    $"Element '{element.Id}' cannot write tag '{writeTagId}' because the tag is read-only.",
+                    scene.Id));
+            }
+        }
+    }
+
+    private static IEnumerable<ScadaElement> FlattenElements(IEnumerable<ScadaElement> elements)
+    {
+        foreach (var element in elements)
+        {
+            yield return element;
+            foreach (var child in FlattenElements(element.ChildElements))
+            {
+                yield return child;
+            }
         }
     }
 }
