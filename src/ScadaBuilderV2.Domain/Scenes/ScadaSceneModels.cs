@@ -60,7 +60,32 @@ public enum ScadaShapeKind
     /// <summary>
     /// Vertical HMI/SCADA value bar using data value as a percentage.
     /// </summary>
-    VerticalBar
+    VerticalBar,
+
+    /// <summary>
+    /// HMI/SCADA process tank symbol using data value as a fill percentage.
+    /// </summary>
+    Tank,
+
+    /// <summary>
+    /// Horizontal HMI/SCADA pipe segment.
+    /// </summary>
+    PipeHorizontal,
+
+    /// <summary>
+    /// Vertical HMI/SCADA pipe segment.
+    /// </summary>
+    PipeVertical,
+
+    /// <summary>
+    /// HMI/SCADA valve symbol.
+    /// </summary>
+    Valve,
+
+    /// <summary>
+    /// HMI/SCADA pump symbol.
+    /// </summary>
+    Pump
 }
 
 public enum ElementPositionMode
@@ -456,10 +481,15 @@ public sealed record ScadaElement(
             ScadaShapeKind.IndicatorLamp => new SceneBounds(x, y, 64, 64),
             ScadaShapeKind.HorizontalBar => new SceneBounds(x, y, 160, 32),
             ScadaShapeKind.VerticalBar => new SceneBounds(x, y, 48, 140),
+            ScadaShapeKind.Tank => new SceneBounds(x, y, 96, 140),
+            ScadaShapeKind.PipeHorizontal => new SceneBounds(x, y, 160, 32),
+            ScadaShapeKind.PipeVertical => new SceneBounds(x, y, 32, 160),
+            ScadaShapeKind.Valve => new SceneBounds(x, y, 96, 64),
+            ScadaShapeKind.Pump => new SceneBounds(x, y, 96, 72),
             ScadaShapeKind.Ellipse => new SceneBounds(x, y, 96, 72),
             _ => new SceneBounds(x, y, 120, 72)
         };
-        var data = shapeKind is ScadaShapeKind.HorizontalBar or ScadaShapeKind.VerticalBar
+        var data = shapeKind is ScadaShapeKind.HorizontalBar or ScadaShapeKind.VerticalBar or ScadaShapeKind.Tank
             ? new ScadaElementData(null, null, 65, 0, 100, null, null, "0", null, false)
             : new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
         return new ScadaElement(

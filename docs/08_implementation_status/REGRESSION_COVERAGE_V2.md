@@ -2,12 +2,13 @@
 
 Date: 2026-06-18
 Status: Active regression coverage map
-Document version: `V2.1.2.0028`
+Document version: `V2.1.2.0029`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-18 | `V2.1.2.0029` | `PENDING` | Ajout de la couverture des primitives process HMI Element+ reservoir, tuyaux, vanne et pompe. |
 | 2026-06-18 | `V2.1.2.0028` | `PENDING` | Ajout de la couverture des primitives HMI Element+ voyant et barres de valeur. |
 | 2026-06-18 | `V2.1.2.0027` | `PENDING` | Ajout de la couverture des formes standards Element+ et de l'insertion manuelle des boutons Element+. |
 | 2026-06-17 | `V2.1.2.0025` | `58567eb` | Ajout de la validation TF100Web du formatage runtime `DisplayFormat` hash mask. |
@@ -42,7 +43,7 @@ Document version: `V2.1.2.0028`
 
 ```text
 dotnet test ScadaBuilderV2.sln --no-restore
-235 passed, 0 failed, 0 skipped
+239 passed, 0 failed, 0 skipped
 ```
 
 ## 2. Coverage Map
@@ -74,7 +75,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Element+ group click navigation export | `Ft100SceneExporterTests.cs` |
 | FT100 clickable target pointer cursor | `Ft100SceneExporterTests.cs` |
 | Element+ button hover metadata and FT100 CSS | `OfficialSceneDomainTests.cs`, `WebViewContextMenuScriptTests.cs`, `ModernProjectStoreTests.cs`, `Ft100SceneExporterTests.cs` |
-| Element+ standard and HMI shapes with manual insertion | `OfficialSceneDomainTests.ShapeElementDefaultsAndFactoriesPreserveShapeKind`, `ModernProjectStoreTests.SaveAndReloadPreservesPageManifestBackgroundAndObjectEvents`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.ModernShapePreviewUsesSvgShapeKind`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
+| Element+ standard, HMI, and process shapes with manual insertion | `OfficialSceneDomainTests.ShapeElementDefaultsAndFactoriesPreserveShapeKind`, `ModernProjectStoreTests.SaveAndReloadPreservesPageManifestBackgroundAndObjectEvents`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.ModernShapePreviewUsesSvgShapeKind`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
 | Element+ `Donnees` authoring and `DisplayFormat` masks | `ElementGroupTests.NumericDisplayFormatMaskControlsScalePrecisionAndInputStep`, `ElementGroupTests.NumericDisplayFormatMaskClampsToVisibleDigitBudget`, `WebViewContextMenuScriptTests.ElementDataTabDeprecatesLegacyTagDecimalsAndUnitFields` |
 | Studio Element+ editor state | `ElementStudioEditorStateTests.cs` |
 | Studio Element+ contract | `StudioElementPlusContractTests.cs` |

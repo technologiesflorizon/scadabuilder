@@ -785,6 +785,16 @@ public sealed partial class Ft100SceneExporter
                 BuildBarShape(width, height, strokeWidth, halfStroke, stroke, fill, data.Value, vertical: false, common),
             ScadaShapeKind.VerticalBar =>
                 BuildBarShape(width, height, strokeWidth, halfStroke, stroke, fill, data.Value, vertical: true, common),
+            ScadaShapeKind.Tank =>
+                BuildTankShape(width, height, strokeWidth, halfStroke, fill, data.Value, common),
+            ScadaShapeKind.PipeHorizontal =>
+                BuildPipeShape(width, height, strokeWidth, halfStroke, fill, vertical: false, common),
+            ScadaShapeKind.PipeVertical =>
+                BuildPipeShape(width, height, strokeWidth, halfStroke, fill, vertical: true, common),
+            ScadaShapeKind.Valve =>
+                BuildValveShape(width, height, halfStroke, fill, common),
+            ScadaShapeKind.Pump =>
+                BuildPumpShape(width, height, halfStroke, stroke, fill, common),
             ScadaShapeKind.Ellipse =>
                 $"""<ellipse cx="{Format(width / 2)}" cy="{Format(height / 2)}" rx="{Format(Math.Max(0, (width / 2) - halfStroke))}" ry="{Format(Math.Max(0, (height / 2) - halfStroke))}" fill="{fill}" {common}/>""",
             ScadaShapeKind.Line =>
@@ -823,6 +833,85 @@ public sealed partial class Ft100SceneExporter
             ? $"""<rect x="{Format(innerX)}" y="{Format(innerY + innerHeight - (innerHeight * percent / 100))}" width="{Format(innerWidth)}" height="{Format(innerHeight * percent / 100)}" rx="{fillCornerRadius}" fill="{fill}"/>"""
             : $"""<rect x="{Format(innerX)}" y="{Format(innerY)}" width="{Format(innerWidth * percent / 100)}" height="{Format(innerHeight)}" rx="{fillCornerRadius}" fill="{fill}"/>""";
         return track + fillRect;
+    }
+
+    private static string BuildTankShape(
+        double width,
+        double height,
+        double strokeWidth,
+        double halfStroke,
+        string fill,
+        double? value,
+        string common)
+    {
+        var percent = ClampPercent(value);
+        var bodyTop = halfStroke + 8;
+        var bodyHeight = Math.Max(0, height - strokeWidth - 16);
+        var bodyWidth = Math.Max(0, width - strokeWidth);
+        var innerX = halfStroke + 6;
+        var innerY = bodyTop + 6;
+        var innerWidth = Math.Max(0, bodyWidth - 12);
+        var innerHeight = Math.Max(0, bodyHeight - 12);
+        var fillHeight = innerHeight * percent / 100;
+        var radius = Format(Math.Min(10, width * 0.12));
+        var topRadiusY = Format(Math.Max(3, Math.Min(12, height * 0.08)));
+
+        return
+            $"""<rect x="{Format(halfStroke)}" y="{Format(bodyTop)}" width="{Format(bodyWidth)}" height="{Format(bodyHeight)}" rx="{radius}" fill="#f7fbf5" {common}/>""" +
+            $"""<rect x="{Format(innerX)}" y="{Format(innerY + innerHeight - fillHeight)}" width="{Format(innerWidth)}" height="{Format(fillHeight)}" rx="{Format(Math.Min(5, width * 0.06))}" fill="{fill}"/>""" +
+            $"""<ellipse cx="{Format(width / 2)}" cy="{Format(bodyTop)}" rx="{Format(Math.Max(0, bodyWidth / 2))}" ry="{topRadiusY}" fill="#f7fbf5" {common}/>""";
+    }
+
+    private static string BuildPipeShape(
+        double width,
+        double height,
+        double strokeWidth,
+        double halfStroke,
+        string fill,
+        bool vertical,
+        string common)
+    {
+        var x = vertical ? width * 0.25 : halfStroke;
+        var y = vertical ? halfStroke : height * 0.25;
+        var pipeWidth = vertical ? width * 0.5 : Math.Max(0, width - strokeWidth);
+        var pipeHeight = vertical ? Math.Max(0, height - strokeWidth) : height * 0.5;
+        var radius = Format(Math.Min(8, Math.Min(width, height) * 0.2));
+        return $"""<rect x="{Format(x)}" y="{Format(y)}" width="{Format(pipeWidth)}" height="{Format(pipeHeight)}" rx="{radius}" fill="{fill}" {common}/>""";
+    }
+
+    private static string BuildValveShape(
+        double width,
+        double height,
+        double halfStroke,
+        string fill,
+        string common)
+    {
+        return
+            $"""<polygon points="{Format(halfStroke)},{Format(halfStroke)} {Format(width / 2)},{Format(height / 2)} {Format(halfStroke)},{Format(height - halfStroke)}" fill="{fill}" {common}/>""" +
+            $"""<polygon points="{Format(width - halfStroke)},{Format(halfStroke)} {Format(width / 2)},{Format(height / 2)} {Format(width - halfStroke)},{Format(height - halfStroke)}" fill="{fill}" {common}/>""" +
+            $"""<line x1="{Format(width / 2)}" y1="{Format(halfStroke)}" x2="{Format(width / 2)}" y2="{Format(height / 2)}" {common}/>""";
+    }
+
+    private static string BuildPumpShape(
+        double width,
+        double height,
+        double halfStroke,
+        string stroke,
+        string fill,
+        string common)
+    {
+        var radius = Math.Max(0, Math.Min(width, height) * 0.38 - halfStroke);
+        var cx = width * 0.42;
+        var cy = height / 2;
+        var outletX = cx + radius * 0.65;
+        var outletY = cy - Math.Max(5, radius * 0.22);
+        var outletWidth = Math.Max(8, width - outletX - halfStroke);
+        var outletHeight = Math.Max(10, radius * 0.44);
+
+        return
+            $"""<circle cx="{Format(cx)}" cy="{Format(cy)}" r="{Format(radius)}" fill="{fill}" {common}/>""" +
+            $"""<rect x="{Format(outletX)}" y="{Format(outletY)}" width="{Format(outletWidth)}" height="{Format(outletHeight)}" fill="{fill}" {common}/>""" +
+            $"""<path d="M {Format(cx - radius * 0.35)} {Format(cy - radius * 0.25)} L {Format(cx + radius * 0.42)} {Format(cy)} L {Format(cx - radius * 0.35)} {Format(cy + radius * 0.25)} Z" fill="{stroke}"/>""";
     }
 
     private static string BuildButton(ScadaElement element)

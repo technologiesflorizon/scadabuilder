@@ -1374,11 +1374,24 @@ public sealed class Ft100SceneExporterTests
         {
             Data = new ScadaElementData(null, null, 42, 0, 100, null, null, "0", null, false)
         };
+        var tank = ScadaElement.CreateShape("shape_tank_001", "Reservoir001", ScadaShapeKind.Tank, 220, 120) with
+        {
+            Data = new ScadaElementData(null, null, 75, 0, 100, null, null, "0", null, false)
+        };
+        var pipe = ScadaElement.CreateShape("shape_pipe_001", "TuyauHorizontal001", ScadaShapeKind.PipeHorizontal, 340, 150);
+        var pipeVertical = ScadaElement.CreateShape("shape_pipe_v_001", "TuyauVertical001", ScadaShapeKind.PipeVertical, 460, 120);
+        var valve = ScadaElement.CreateShape("shape_valve_001", "Vanne001", ScadaShapeKind.Valve, 520, 150);
+        var pump = ScadaElement.CreateShape("shape_pump_001", "Pompe001", ScadaShapeKind.Pump, 640, 150);
         var scene = ScadaScene
             .CreateEmpty("win00008", "Formes", new(1280, 873))
             .WithElement(arrow)
             .WithElement(lamp)
-            .WithElement(bar);
+            .WithElement(bar)
+            .WithElement(tank)
+            .WithElement(pipe)
+            .WithElement(pipeVertical)
+            .WithElement(valve)
+            .WithElement(pump);
 
         try
         {
@@ -1396,11 +1409,26 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_bar_001\"");
             StringAssert.Contains(html, "width=\"63.84\"");
             StringAssert.Contains(html, "height=\"24\"");
+            StringAssert.Contains(html, "id=\"ft100-win00008__shape_tank_001\"");
+            StringAssert.Contains(html, "<svg id=\"shape-shape_tank_001\"");
+            StringAssert.Contains(html, "id=\"ft100-win00008__shape_pipe_001\"");
+            StringAssert.Contains(html, "<svg id=\"shape-shape_pipe_001\"");
+            StringAssert.Contains(html, "id=\"ft100-win00008__shape_pipe_v_001\"");
+            StringAssert.Contains(html, "<svg id=\"shape-shape_pipe_v_001\"");
+            StringAssert.Contains(html, "id=\"ft100-win00008__shape_valve_001\"");
+            StringAssert.Contains(html, "<polygon points=");
+            StringAssert.Contains(html, "id=\"ft100-win00008__shape_pump_001\"");
+            StringAssert.Contains(html, "<circle cx=");
 
             var css = await File.ReadAllTextAsync(result.CssPath);
             StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_arrow_001");
             StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_lamp_001");
             StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_bar_001");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_tank_001");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_pipe_001");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_pipe_v_001");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_valve_001");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_pump_001");
             StringAssert.Contains(css, "background: transparent;");
             StringAssert.Contains(css, "border: 0 none transparent;");
             AssertExportCssHasNoGlobalRuntimeSelectors(css);
@@ -1410,6 +1438,11 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(manifest, "\"ShapeKind\": \"Arrow\"");
             StringAssert.Contains(manifest, "\"ShapeKind\": \"IndicatorLamp\"");
             StringAssert.Contains(manifest, "\"ShapeKind\": \"HorizontalBar\"");
+            StringAssert.Contains(manifest, "\"ShapeKind\": \"Tank\"");
+            StringAssert.Contains(manifest, "\"ShapeKind\": \"PipeHorizontal\"");
+            StringAssert.Contains(manifest, "\"ShapeKind\": \"PipeVertical\"");
+            StringAssert.Contains(manifest, "\"ShapeKind\": \"Valve\"");
+            StringAssert.Contains(manifest, "\"ShapeKind\": \"Pump\"");
         }
         finally
         {

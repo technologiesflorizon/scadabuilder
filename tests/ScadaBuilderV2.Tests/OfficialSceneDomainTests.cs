@@ -717,6 +717,24 @@ public sealed class OfficialSceneDomainTests
         Assert.AreEqual(65, bar.Data?.Value);
         Assert.AreEqual(0, bar.Data?.Minimum);
         Assert.AreEqual(100, bar.Data?.Maximum);
+
+        var tank = ScadaElement.CreateShape("shape_tank", "Reservoir001", ScadaShapeKind.Tank, 10, 20);
+        Assert.AreEqual(new SceneBounds(10, 20, 96, 140), tank.Bounds);
+        Assert.AreEqual(65, tank.Data?.Value);
+        Assert.AreEqual(0, tank.Data?.Minimum);
+        Assert.AreEqual(100, tank.Data?.Maximum);
+
+        var pipeHorizontal = ScadaElement.CreateShape("shape_pipe_h", "TuyauHorizontal001", ScadaShapeKind.PipeHorizontal, 10, 20);
+        Assert.AreEqual(new SceneBounds(10, 20, 160, 32), pipeHorizontal.Bounds);
+
+        var pipeVertical = ScadaElement.CreateShape("shape_pipe_v", "TuyauVertical001", ScadaShapeKind.PipeVertical, 10, 20);
+        Assert.AreEqual(new SceneBounds(10, 20, 32, 160), pipeVertical.Bounds);
+
+        var valve = ScadaElement.CreateShape("shape_valve", "Vanne001", ScadaShapeKind.Valve, 10, 20);
+        Assert.AreEqual(new SceneBounds(10, 20, 96, 64), valve.Bounds);
+
+        var pump = ScadaElement.CreateShape("shape_pump", "Pompe001", ScadaShapeKind.Pump, 10, 20);
+        Assert.AreEqual(new SceneBounds(10, 20, 96, 72), pump.Bounds);
     }
 
     private static ScadaElement CreateLegacyStatic(string sourceId, string name)

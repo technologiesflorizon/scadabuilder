@@ -855,6 +855,11 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(xaml, "Click=\"OnInsertIndicatorLampClick\"");
         StringAssert.Contains(xaml, "Click=\"OnInsertHorizontalBarClick\"");
         StringAssert.Contains(xaml, "Click=\"OnInsertVerticalBarClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertTankClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertPipeHorizontalClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertPipeVerticalClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertValveClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertPumpClick\"");
         StringAssert.Contains(xaml, "Click=\"OnInsertButtonClick\"");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Rectangle);");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Ellipse);");
@@ -863,6 +868,11 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.IndicatorLamp);");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.HorizontalBar);");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.VerticalBar);");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Tank);");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.PipeHorizontal);");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.PipeVertical);");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Valve);");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Pump);");
         StringAssert.Contains(source, "BeginModernElementPlacement(ScadaElementKind.Button);");
     }
 
@@ -878,6 +888,10 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "shapeKind === 'line' || shapeKind === 'arrow'");
         StringAssert.Contains(source, "shapeKind === 'indicatorlamp'");
         StringAssert.Contains(source, "shapeKind === 'horizontalbar' || shapeKind === 'verticalbar'");
+        StringAssert.Contains(source, "shapeKind === 'tank'");
+        StringAssert.Contains(source, "shapeKind === 'pipehorizontal' || shapeKind === 'pipevertical'");
+        StringAssert.Contains(source, "shapeKind === 'valve'");
+        StringAssert.Contains(source, "shapeKind === 'pump'");
         StringAssert.Contains(source, "const clampPercent = value =>");
         StringAssert.Contains(source, "wrapper.appendChild(renderShapeElement(element, style));");
         StringAssert.Contains(source, "ShapeKind = element.ShapeKind");

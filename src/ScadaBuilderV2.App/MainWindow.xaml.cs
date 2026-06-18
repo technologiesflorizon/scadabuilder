@@ -4034,6 +4034,31 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         BeginShapePlacement(ScadaShapeKind.VerticalBar);
     }
 
+    private void OnInsertTankClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.Tank);
+    }
+
+    private void OnInsertPipeHorizontalClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.PipeHorizontal);
+    }
+
+    private void OnInsertPipeVerticalClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.PipeVertical);
+    }
+
+    private void OnInsertValveClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.Valve);
+    }
+
+    private void OnInsertPumpClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.Pump);
+    }
+
     private void OnInsertButtonClick(object sender, RoutedEventArgs e)
     {
         BeginModernElementPlacement(ScadaElementKind.Button);
@@ -4246,6 +4271,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ScadaShapeKind.IndicatorLamp => "Voyant",
             ScadaShapeKind.HorizontalBar => "BarreHorizontale",
             ScadaShapeKind.VerticalBar => "BarreVerticale",
+            ScadaShapeKind.Tank => "Reservoir",
+            ScadaShapeKind.PipeHorizontal => "TuyauHorizontal",
+            ScadaShapeKind.PipeVertical => "TuyauVertical",
+            ScadaShapeKind.Valve => "Vanne",
+            ScadaShapeKind.Pump => "Pompe",
             _ => "Rectangle"
         };
     }
@@ -4261,6 +4291,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ScadaShapeKind.IndicatorLamp => "voyant HMI",
             ScadaShapeKind.HorizontalBar => "barre horizontale HMI",
             ScadaShapeKind.VerticalBar => "barre verticale HMI",
+            ScadaShapeKind.Tank => "reservoir HMI",
+            ScadaShapeKind.PipeHorizontal => "tuyau horizontal HMI",
+            ScadaShapeKind.PipeVertical => "tuyau vertical HMI",
+            ScadaShapeKind.Valve => "vanne HMI",
+            ScadaShapeKind.Pump => "pompe HMI",
             _ => "rectangle"
         };
     }
@@ -7221,6 +7256,112 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         fillRect.setAttribute('height', `${fillHeight}`);
       }
       svg.appendChild(fillRect);
+      return svg;
+    }
+
+    if (shapeKind === 'tank') {
+      const percent = clampPercent(data.Value ?? data.value);
+      const bodyTop = halfStroke + 8;
+      const bodyHeight = Math.max(0, element.Height - strokeWidth - 16);
+      const bodyWidth = Math.max(0, element.Width - strokeWidth);
+      const innerX = halfStroke + 6;
+      const innerY = bodyTop + 6;
+      const innerWidth = Math.max(0, bodyWidth - 12);
+      const innerHeight = Math.max(0, bodyHeight - 12);
+      const fillHeight = innerHeight * (percent / 100);
+
+      const body = document.createElementNS(svg.namespaceURI, 'rect');
+      body.setAttribute('x', `${halfStroke}`);
+      body.setAttribute('y', `${bodyTop}`);
+      body.setAttribute('width', `${bodyWidth}`);
+      body.setAttribute('height', `${bodyHeight}`);
+      body.setAttribute('rx', `${Math.min(10, element.Width * 0.12)}`);
+      body.setAttribute('fill', '#f7fbf5');
+      setStroke(body);
+      svg.appendChild(body);
+
+      const level = document.createElementNS(svg.namespaceURI, 'rect');
+      level.setAttribute('x', `${innerX}`);
+      level.setAttribute('y', `${innerY + innerHeight - fillHeight}`);
+      level.setAttribute('width', `${innerWidth}`);
+      level.setAttribute('height', `${fillHeight}`);
+      level.setAttribute('rx', `${Math.min(5, element.Width * 0.06)}`);
+      level.setAttribute('fill', fill);
+      svg.appendChild(level);
+
+      const top = document.createElementNS(svg.namespaceURI, 'ellipse');
+      top.setAttribute('cx', `${element.Width / 2}`);
+      top.setAttribute('cy', `${bodyTop}`);
+      top.setAttribute('rx', `${Math.max(0, bodyWidth / 2)}`);
+      top.setAttribute('ry', `${Math.max(3, Math.min(12, element.Height * 0.08))}`);
+      top.setAttribute('fill', '#f7fbf5');
+      setStroke(top);
+      svg.appendChild(top);
+      return svg;
+    }
+
+    if (shapeKind === 'pipehorizontal' || shapeKind === 'pipevertical') {
+      const pipe = document.createElementNS(svg.namespaceURI, 'rect');
+      const isVertical = shapeKind === 'pipevertical';
+      pipe.setAttribute('x', `${isVertical ? element.Width * 0.25 : halfStroke}`);
+      pipe.setAttribute('y', `${isVertical ? halfStroke : element.Height * 0.25}`);
+      pipe.setAttribute('width', `${isVertical ? element.Width * 0.5 : Math.max(0, element.Width - strokeWidth)}`);
+      pipe.setAttribute('height', `${isVertical ? Math.max(0, element.Height - strokeWidth) : element.Height * 0.5}`);
+      pipe.setAttribute('rx', `${Math.min(8, Math.min(element.Width, element.Height) * 0.2)}`);
+      pipe.setAttribute('fill', fill);
+      setStroke(pipe);
+      svg.appendChild(pipe);
+      return svg;
+    }
+
+    if (shapeKind === 'valve') {
+      const left = document.createElementNS(svg.namespaceURI, 'polygon');
+      left.setAttribute('points', `${halfStroke},${halfStroke} ${element.Width / 2},${element.Height / 2} ${halfStroke},${element.Height - halfStroke}`);
+      left.setAttribute('fill', fill);
+      setStroke(left);
+      svg.appendChild(left);
+
+      const right = document.createElementNS(svg.namespaceURI, 'polygon');
+      right.setAttribute('points', `${element.Width - halfStroke},${halfStroke} ${element.Width / 2},${element.Height / 2} ${element.Width - halfStroke},${element.Height - halfStroke}`);
+      right.setAttribute('fill', fill);
+      setStroke(right);
+      svg.appendChild(right);
+
+      const stem = document.createElementNS(svg.namespaceURI, 'line');
+      stem.setAttribute('x1', `${element.Width / 2}`);
+      stem.setAttribute('y1', `${halfStroke}`);
+      stem.setAttribute('x2', `${element.Width / 2}`);
+      stem.setAttribute('y2', `${element.Height / 2}`);
+      setStroke(stem);
+      svg.appendChild(stem);
+      return svg;
+    }
+
+    if (shapeKind === 'pump') {
+      const radius = Math.max(0, Math.min(element.Width, element.Height) * 0.38 - halfStroke);
+      const cx = element.Width * 0.42;
+      const cy = element.Height / 2;
+      const casing = document.createElementNS(svg.namespaceURI, 'circle');
+      casing.setAttribute('cx', `${cx}`);
+      casing.setAttribute('cy', `${cy}`);
+      casing.setAttribute('r', `${radius}`);
+      casing.setAttribute('fill', fill);
+      setStroke(casing);
+      svg.appendChild(casing);
+
+      const outlet = document.createElementNS(svg.namespaceURI, 'rect');
+      outlet.setAttribute('x', `${cx + radius * 0.65}`);
+      outlet.setAttribute('y', `${cy - Math.max(5, radius * 0.22)}`);
+      outlet.setAttribute('width', `${Math.max(8, element.Width - (cx + radius * 0.65) - halfStroke)}`);
+      outlet.setAttribute('height', `${Math.max(10, radius * 0.44)}`);
+      outlet.setAttribute('fill', fill);
+      setStroke(outlet);
+      svg.appendChild(outlet);
+
+      const impeller = document.createElementNS(svg.namespaceURI, 'path');
+      impeller.setAttribute('d', `M ${cx - radius * 0.35} ${cy - radius * 0.25} L ${cx + radius * 0.42} ${cy} L ${cx - radius * 0.35} ${cy + radius * 0.25} Z`);
+      impeller.setAttribute('fill', stroke);
+      svg.appendChild(impeller);
       return svg;
     }
 

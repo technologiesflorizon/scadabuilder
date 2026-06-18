@@ -2,12 +2,13 @@
 
 Date: 2026-06-18
 Status: Active implementation status
-Document version: `V2.1.2.0028`
+Document version: `V2.1.2.0029`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-18 | `V2.1.2.0029` | `PENDING` | Implementation des primitives process HMI Element+ reservoir, tuyaux, vanne et pompe. |
 | 2026-06-18 | `V2.1.2.0028` | `PENDING` | Implementation des primitives HMI Element+ voyant et barres de valeur. |
 | 2026-06-18 | `V2.1.2.0027` | `PENDING` | Implementation des formes standards Element+ et insertion manuelle des boutons Element+ depuis le ruban. |
 | 2026-06-17 | `V2.1.2.0026` | `876a6be` | Correction du transport manifest `Data.DisplayFormat` et alignement du formatage TF100Web sur les datatypes de mapping. |
@@ -42,7 +43,7 @@ Document version: `V2.1.2.0028`
 
 ## 1. Current Verified Baseline
 
-As of 2026-06-17, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 235 tests.
+As of 2026-06-18, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 239 tests.
 
 ## 2. Implemented Areas
 
@@ -84,6 +85,7 @@ As of 2026-06-17, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 235 
 36. TF100Web interprets SCADA Builder V2 `DisplayFormat` hash masks made of `#` plus an optional decimal point. It aligns runtime formatting with TF100Web `RegisterMapping.DataType`: `FLOAT32` and `FLOAT64` round directly, explicit integer datatypes scale by the mask decimal count, and unknown datatypes use direct rounding. For example, `39.599998474121094` with `###.#` and `FLOAT32` displays as `39.6`.
 37. The insert ribbon can create standard Element+ shapes and Element+ buttons directly in the scene. Standard shapes persist `ShapeKind` for rectangle, rounded rectangle, ellipse, line, and arrow; the WebView preview and FT100 export render them as Element+-owned SVG content with style-backed fill, stroke, border width, and dashed/dotted treatment.
 38. The insert ribbon can create HMI Element+ shapes for `IndicatorLamp`, `HorizontalBar`, and `VerticalBar`. Lamp and bar shapes persist through `ShapeKind`; bar shapes use `Data.Value` as a clamped 0-100 percentage in preview and FT100 export.
+39. The insert ribbon can create process HMI Element+ shapes for `Tank`, `PipeHorizontal`, `PipeVertical`, `Valve`, and `Pump`. These primitives persist through `ShapeKind`; tank shapes use `Data.Value` as a clamped 0-100 percentage in preview and FT100 export.
 
 ## 3. Source Of Truth
 

@@ -363,6 +363,46 @@
                                 </StackPanel>
                             </Button>
                             <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer un reservoir HMI Element+"
+                                    Click="OnInsertTankClick">
+                                <StackPanel>
+                                    <TextBlock Text="TNK" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <TextBlock Text="Reservoir" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer un tuyau horizontal HMI Element+"
+                                    Click="OnInsertPipeHorizontalClick">
+                                <StackPanel>
+                                    <TextBlock Text="==" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" Margin="0,2,0,4"/>
+                                    <TextBlock Text="Tuyau H" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer un tuyau vertical HMI Element+"
+                                    Click="OnInsertPipeVerticalClick">
+                                <StackPanel>
+                                    <TextBlock Text="II" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" Margin="0,2,0,4"/>
+                                    <TextBlock Text="Tuyau V" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer une vanne HMI Element+"
+                                    Click="OnInsertValveClick">
+                                <StackPanel>
+                                    <TextBlock Text="VLV" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <TextBlock Text="Vanne" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer une pompe HMI Element+"
+                                    Click="OnInsertPumpClick">
+                                <StackPanel>
+                                    <TextBlock Text="PMP" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <TextBlock Text="Pompe" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
                                     ToolTip="Inserer un bouton Element+"
                                     Click="OnInsertButtonClick">
                                 <StackPanel>
