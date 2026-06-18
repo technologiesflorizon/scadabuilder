@@ -2,12 +2,13 @@
 
 Date: 2026-06-18
 Status: Active implementation status
-Document version: `V2.1.2.0029`
+Document version: `V2.1.2.0030`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-18 | `V2.1.2.0030` | `PENDING` | Implementation des presets de boutons HMI Element+ `Command`, `Toggle`, `Navigation`, `AlarmAcknowledge` et `EmergencyStop`. |
 | 2026-06-18 | `V2.1.2.0029` | `b97ef16` | Implementation des primitives process HMI Element+ reservoir, tuyaux, vanne et pompe. |
 | 2026-06-18 | `V2.1.2.0028` | `PENDING` | Implementation des primitives HMI Element+ voyant et barres de valeur. |
 | 2026-06-18 | `V2.1.2.0027` | `PENDING` | Implementation des formes standards Element+ et insertion manuelle des boutons Element+ depuis le ruban. |
@@ -86,6 +87,7 @@ As of 2026-06-18, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 239 
 37. The insert ribbon can create standard Element+ shapes and Element+ buttons directly in the scene. Standard shapes persist `ShapeKind` for rectangle, rounded rectangle, ellipse, line, and arrow; the WebView preview and FT100 export render them as Element+-owned SVG content with style-backed fill, stroke, border width, and dashed/dotted treatment.
 38. The insert ribbon can create HMI Element+ shapes for `IndicatorLamp`, `HorizontalBar`, and `VerticalBar`. Lamp and bar shapes persist through `ShapeKind`; bar shapes use `Data.Value` as a clamped 0-100 percentage in preview and FT100 export.
 39. The insert ribbon can create process HMI Element+ shapes for `Tank`, `PipeHorizontal`, `PipeVertical`, `Valve`, and `Pump`. These primitives persist through `ShapeKind`; tank shapes use `Data.Value` as a clamped 0-100 percentage in preview and FT100 export.
+40. The insert ribbon can create HMI Element+ button presets for `Command`, `Toggle`, `Navigation`, `AlarmAcknowledge`, and `EmergencyStop`. Button presets persist through `ButtonKind`, provide initial size/text/style, and export `ButtonKind` in the FT100 manifest plus `data-scada-button-kind` in generated HTML.
 
 ## 3. Source Of Truth
 

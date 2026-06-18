@@ -527,7 +527,8 @@ public sealed class Ft100SceneExporterTests
             null,
             ScadaElementLayout.Absolute,
             ScadaElementStyle.DefaultInput,
-            new ScadaElementData("Suivant", null, null, null, null, null, null, null, null, false));
+            new ScadaElementData("Suivant", null, null, null, null, null, null, null, null, false),
+            ButtonKind: ScadaButtonKind.Navigation);
         var scene = ScadaScene
             .CreateEmpty("win00008", "Navigation", new(1440, 900))
             .WithPageType(ScadaPageType.Default)
@@ -597,6 +598,7 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "data-scada-events=");
             StringAssert.Contains(html, "action_nav_win00009");
             StringAssert.Contains(html, "<button type=\"button\"");
+            StringAssert.Contains(html, "data-scada-button-kind=\"Navigation\"");
             StringAssert.Contains(html, "Suivant");
             StringAssert.Contains(html, "const root = document.getElementById(\"ft100-win00008\");");
             StringAssert.Contains(html, "root.querySelectorAll('[data-scada-events]')");
@@ -617,6 +619,7 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(manifest, "\"RequiredDisplayWidth\": 1440");
             StringAssert.Contains(manifest, "\"RequiredDisplayHeight\": 900");
             StringAssert.Contains(manifest, "\"Events\"");
+            StringAssert.Contains(manifest, "\"ButtonKind\": \"Navigation\"");
             StringAssert.Contains(manifest, "\"ButtonBehavior\"");
             StringAssert.Contains(manifest, "\"IsDisabled\": false");
             StringAssert.Contains(manifest, "\"Background\": \"#EAF5F7\"");

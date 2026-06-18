@@ -410,6 +410,38 @@
                                     <TextBlock Text="Bouton" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer un bouton bascule Element+"
+                                    Click="OnInsertToggleButtonClick">
+                                <StackPanel>
+                                    <TextBlock Text="I/O" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <TextBlock Text="Toggle" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer un bouton de navigation Element+"
+                                    Click="OnInsertNavigationButtonClick">
+                                <StackPanel>
+                                    <TextBlock Text="NAV" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <TextBlock Text="Nav" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer un bouton acquittement alarme Element+"
+                                    Click="OnInsertAlarmAckButtonClick">
+                                <StackPanel>
+                                    <TextBlock Text="ACK" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <TextBlock Text="Ack" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer un bouton arret d'urgence Element+"
+                                    Click="OnInsertEmergencyStopButtonClick">
+                                <StackPanel>
+                                    <TextBlock Text="STOP" FontWeight="Bold" FontSize="12" HorizontalAlignment="Center" Margin="0,4,0,6"/>
+                                    <TextBlock Text="Arret" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
                     </Grid>
                 </Border>

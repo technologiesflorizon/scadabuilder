@@ -681,6 +681,7 @@ public sealed class OfficialSceneDomainTests
         Assert.IsFalse(button.EffectiveButtonBehavior.IsDisabled);
         Assert.IsTrue(button.EffectiveButtonBehavior.EffectiveHover.Enabled);
         Assert.AreEqual("#EAF5F7", button.EffectiveButtonBehavior.EffectiveHover.Background);
+        Assert.AreEqual(ScadaButtonKind.Command, button.EffectiveButtonKind);
 
         var disabled = button with
         {
@@ -689,6 +690,18 @@ public sealed class OfficialSceneDomainTests
 
         Assert.IsTrue(disabled.EffectiveButtonBehavior.IsDisabled);
         Assert.IsFalse(disabled.EffectiveButtonBehavior.EffectiveHover.Enabled);
+
+        var alarmAck = ScadaElement.CreateButton("btn_ack", "Acquitter001", 30, 40, ScadaButtonKind.AlarmAcknowledge);
+        Assert.AreEqual(ScadaButtonKind.AlarmAcknowledge, alarmAck.EffectiveButtonKind);
+        Assert.AreEqual("Acquitter", alarmAck.Data?.Text);
+        Assert.AreEqual("AlarmAcknowledge", alarmAck.Data?.DisplayFormat);
+        Assert.AreEqual(new SceneBounds(30, 40, 132, 40), alarmAck.Bounds);
+
+        var emergencyStop = ScadaElement.CreateButton("btn_stop", "ArretUrgence001", 30, 40, ScadaButtonKind.EmergencyStop);
+        Assert.AreEqual(ScadaButtonKind.EmergencyStop, emergencyStop.EffectiveButtonKind);
+        Assert.AreEqual("STOP", emergencyStop.Data?.Text);
+        Assert.AreEqual("#C62828", emergencyStop.Style?.Background);
+        Assert.AreEqual(new SceneBounds(30, 40, 96, 96), emergencyStop.Bounds);
     }
 
     [TestMethod]

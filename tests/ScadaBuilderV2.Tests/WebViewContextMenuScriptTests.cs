@@ -78,6 +78,8 @@ public sealed class WebViewContextMenuScriptTests
 
         StringAssert.Contains(source, "element.Kind === 'Button'");
         StringAssert.Contains(source, "button.textContent = data.Text || data.Placeholder || element.DisplayName || 'Bouton';");
+        StringAssert.Contains(source, "const buttonKind = String(element.ButtonKind || element.buttonKind || 'Command');");
+        StringAssert.Contains(source, "button.dataset.scadaButtonKind = buttonKind;");
         StringAssert.Contains(source, "current.Kind is ScadaElementKind.InputText or ScadaElementKind.Text or ScadaElementKind.Button");
     }
 
@@ -861,6 +863,10 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(xaml, "Click=\"OnInsertValveClick\"");
         StringAssert.Contains(xaml, "Click=\"OnInsertPumpClick\"");
         StringAssert.Contains(xaml, "Click=\"OnInsertButtonClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertToggleButtonClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertNavigationButtonClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertAlarmAckButtonClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertEmergencyStopButtonClick\"");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Rectangle);");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Ellipse);");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Line);");
@@ -873,7 +879,11 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.PipeVertical);");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Valve);");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Pump);");
-        StringAssert.Contains(source, "BeginModernElementPlacement(ScadaElementKind.Button);");
+        StringAssert.Contains(source, "BeginButtonPlacement(ScadaButtonKind.Command);");
+        StringAssert.Contains(source, "BeginButtonPlacement(ScadaButtonKind.Toggle);");
+        StringAssert.Contains(source, "BeginButtonPlacement(ScadaButtonKind.Navigation);");
+        StringAssert.Contains(source, "BeginButtonPlacement(ScadaButtonKind.AlarmAcknowledge);");
+        StringAssert.Contains(source, "BeginButtonPlacement(ScadaButtonKind.EmergencyStop);");
     }
 
     [TestMethod]

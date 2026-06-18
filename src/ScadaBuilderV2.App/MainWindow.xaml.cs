@@ -80,6 +80,7 @@ public partial class MainWindow : Window
     private double _backgroundValue;
     private ScadaElementKind? _pendingInsertKind;
     private ScadaShapeKind? _pendingInsertShapeKind;
+    private ScadaButtonKind? _pendingInsertButtonKind;
     private int _nextTextSequence = 1;
     private int _nextInputTextSequence = 1;
     private int _nextInputNumericSequence = 1;
@@ -4061,13 +4062,39 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private void OnInsertButtonClick(object sender, RoutedEventArgs e)
     {
-        BeginModernElementPlacement(ScadaElementKind.Button);
+        BeginButtonPlacement(ScadaButtonKind.Command);
+    }
+
+    private void OnInsertToggleButtonClick(object sender, RoutedEventArgs e)
+    {
+        BeginButtonPlacement(ScadaButtonKind.Toggle);
+    }
+
+    private void OnInsertNavigationButtonClick(object sender, RoutedEventArgs e)
+    {
+        BeginButtonPlacement(ScadaButtonKind.Navigation);
+    }
+
+    private void OnInsertAlarmAckButtonClick(object sender, RoutedEventArgs e)
+    {
+        BeginButtonPlacement(ScadaButtonKind.AlarmAcknowledge);
+    }
+
+    private void OnInsertEmergencyStopButtonClick(object sender, RoutedEventArgs e)
+    {
+        BeginButtonPlacement(ScadaButtonKind.EmergencyStop);
     }
 
     private void BeginShapePlacement(ScadaShapeKind shapeKind)
     {
         _pendingInsertShapeKind = shapeKind;
         BeginModernElementPlacement(ScadaElementKind.Shape);
+    }
+
+    private void BeginButtonPlacement(ScadaButtonKind buttonKind)
+    {
+        _pendingInsertButtonKind = buttonKind;
+        BeginModernElementPlacement(ScadaElementKind.Button);
     }
 
     private async void BeginModernElementPlacement(ScadaElementKind kind)
@@ -4077,6 +4104,10 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         {
             _pendingInsertShapeKind = null;
         }
+        if (kind != ScadaElementKind.Button)
+        {
+            _pendingInsertButtonKind = null;
+        }
 
         await ExecuteLegacyViewerCommandAsync(new LegacyViewerCommand("beginPlacement", kind.ToString()));
         var label = kind switch
@@ -4084,7 +4115,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ScadaElementKind.InputText => "champ d'entree texte",
             ScadaElementKind.InputNumeric => "champ d'entree numerique",
             ScadaElementKind.Shape => FormatShapeLabel(_pendingInsertShapeKind ?? ScadaShapeKind.Rectangle),
-            ScadaElementKind.Button => "bouton",
+            ScadaElementKind.Button => FormatButtonLabel(_pendingInsertButtonKind ?? ScadaButtonKind.Command),
             _ => "champ texte"
         };
         SetStatus($"Insertion active: cliquez dans la scene pour placer un {label}.");
@@ -4120,6 +4151,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         _selectedSourceObjectIds.Clear();
         _pendingInsertKind = null;
         _pendingInsertShapeKind = null;
+        _pendingInsertButtonKind = null;
         MarkActiveSceneDirty();
         RefreshSelectionUi();
         RefreshModernSceneUi();
@@ -4251,8 +4283,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         if (kind == ScadaElementKind.Button)
         {
             var sequence = _nextButtonSequence++;
+            var buttonKind = _pendingInsertButtonKind ?? ScadaButtonKind.Command;
             var id = CreateUniqueElementId($"button_{sequence:000}");
-            return ScadaElement.CreateButton(id, $"Bouton{sequence:000}", x, y);
+            return ScadaElement.CreateButton(id, $"{FormatButtonName(buttonKind)}{sequence:000}", x, y, buttonKind);
         }
 
         var textSequence = _nextInputTextSequence++;
@@ -4297,6 +4330,30 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ScadaShapeKind.Valve => "vanne HMI",
             ScadaShapeKind.Pump => "pompe HMI",
             _ => "rectangle"
+        };
+    }
+
+    private static string FormatButtonName(ScadaButtonKind buttonKind)
+    {
+        return buttonKind switch
+        {
+            ScadaButtonKind.Toggle => "Toggle",
+            ScadaButtonKind.Navigation => "Navigation",
+            ScadaButtonKind.AlarmAcknowledge => "Acquitter",
+            ScadaButtonKind.EmergencyStop => "ArretUrgence",
+            _ => "Bouton"
+        };
+    }
+
+    private static string FormatButtonLabel(ScadaButtonKind buttonKind)
+    {
+        return buttonKind switch
+        {
+            ScadaButtonKind.Toggle => "bouton bascule",
+            ScadaButtonKind.Navigation => "bouton navigation",
+            ScadaButtonKind.AlarmAcknowledge => "bouton acquittement alarme",
+            ScadaButtonKind.EmergencyStop => "bouton arret d'urgence",
+            _ => "bouton"
         };
     }
 
@@ -5298,6 +5355,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             Data = element.Data,
             ButtonBehavior = element.ButtonBehavior,
             ShapeKind = element.ShapeKind,
+            ButtonKind = element.ButtonKind,
             Children = element.ChildElements
                 .Select((child, childIndex) => ToRenderPayload(child, selectedIds, childIndex))
                 .ToArray()
@@ -6178,6 +6236,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         public ScadaButtonBehavior? ButtonBehavior { get; set; }
 
         public ScadaShapeKind? ShapeKind { get; set; }
+
+        public ScadaButtonKind? ButtonKind { get; set; }
 
         public IReadOnlyList<ModernElementRenderPayload> Children { get; set; } = [];
     }
@@ -7430,6 +7490,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       const style = element.Style || {};
       const data = element.Data || {};
       const buttonBehavior = element.ButtonBehavior || {};
+      const buttonKind = String(element.ButtonKind || element.buttonKind || 'Command');
       const wrapper = document.createElement('div');
       const isGroup = element.Kind === 'Group';
       wrapper.className = `scada-modern-element${isGroup ? ' scada-modern-group' : ''}${parentWrapper ? ' scada-modern-child' : ''}`;
@@ -7479,6 +7540,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       } else if (element.Kind === 'Button') {
         const button = document.createElement('button');
         button.type = 'button';
+        button.dataset.scadaButtonKind = buttonKind;
         button.dataset.scadaButtonBehavior = JSON.stringify(buttonBehavior || {});
         button.textContent = data.Text || data.Placeholder || element.DisplayName || 'Bouton';
         button.style.width = '100%';

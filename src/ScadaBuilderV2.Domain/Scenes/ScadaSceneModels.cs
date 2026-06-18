@@ -88,6 +88,37 @@ public enum ScadaShapeKind
     Pump
 }
 
+/// <summary>
+/// Identifies the standard HMI/SCADA button preset rendered by preview and FT100 export.
+/// </summary>
+public enum ScadaButtonKind
+{
+    /// <summary>
+    /// Generic command button.
+    /// </summary>
+    Command,
+
+    /// <summary>
+    /// Toggle button used for on/off operator commands.
+    /// </summary>
+    Toggle,
+
+    /// <summary>
+    /// Navigation button used to move between screens or popups.
+    /// </summary>
+    Navigation,
+
+    /// <summary>
+    /// Alarm acknowledgement button.
+    /// </summary>
+    AlarmAcknowledge,
+
+    /// <summary>
+    /// Emergency stop style button.
+    /// </summary>
+    EmergencyStop
+}
+
 public enum ElementPositionMode
 {
     Absolute,
@@ -386,7 +417,8 @@ public sealed record ScadaElement(
     LegacyElementPayload? LegacyPayload = null,
     IReadOnlyList<ScadaObjectEventBinding>? Events = null,
     ScadaButtonBehavior? ButtonBehavior = null,
-    ScadaShapeKind? ShapeKind = null)
+    ScadaShapeKind? ShapeKind = null,
+    ScadaButtonKind? ButtonKind = null)
 {
     [JsonIgnore]
     public string UserLabel => string.IsNullOrWhiteSpace(DisplayName) ? Id : DisplayName;
@@ -417,6 +449,14 @@ public sealed record ScadaElement(
     public ScadaButtonBehavior EffectiveButtonBehavior => Kind == ScadaElementKind.Button
         ? ButtonBehavior ?? ScadaButtonBehavior.Default
         : ScadaButtonBehavior.Default;
+
+    /// <summary>
+    /// Gets the persisted button preset, defaulting older button elements to command buttons.
+    /// </summary>
+    [JsonIgnore]
+    public ScadaButtonKind EffectiveButtonKind => Kind == ScadaElementKind.Button
+        ? ButtonKind ?? ScadaButtonKind.Command
+        : ScadaButtonKind.Command;
 
     /// <summary>
     /// Gets the persisted shape primitive, defaulting older shape elements to rectangles.
@@ -521,18 +561,74 @@ public sealed record ScadaElement(
     /// Contracts: docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md.
     /// Tests: tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs.
     /// </remarks>
-    public static ScadaElement CreateButton(string id, string displayName, double x, double y)
+    public static ScadaElement CreateButton(string id, string displayName, double x, double y, ScadaButtonKind buttonKind = ScadaButtonKind.Command)
     {
+        var (bounds, style, text) = CreateButtonDefaults(buttonKind, displayName, x, y);
         return new ScadaElement(
             id,
             displayName,
             ScadaElementKind.Button,
-            new SceneBounds(x, y, 120, 40),
+            bounds,
             null,
             ScadaElementLayout.Absolute,
-            ScadaElementStyle.DefaultInput,
-            new ScadaElementData(displayName, null, null, null, null, null, null, null, null, false),
-            ButtonBehavior: ScadaButtonBehavior.Default);
+            style,
+            new ScadaElementData(text, null, null, null, null, null, null, buttonKind.ToString(), null, false),
+            ButtonBehavior: ScadaButtonBehavior.Default,
+            ButtonKind: buttonKind);
+    }
+
+    private static (SceneBounds Bounds, ScadaElementStyle Style, string Text) CreateButtonDefaults(
+        ScadaButtonKind buttonKind,
+        string displayName,
+        double x,
+        double y)
+    {
+        var bounds = buttonKind switch
+        {
+            ScadaButtonKind.Navigation => new SceneBounds(x, y, 140, 40),
+            ScadaButtonKind.AlarmAcknowledge => new SceneBounds(x, y, 132, 40),
+            ScadaButtonKind.EmergencyStop => new SceneBounds(x, y, 96, 96),
+            _ => new SceneBounds(x, y, 120, 40)
+        };
+        var style = buttonKind switch
+        {
+            ScadaButtonKind.Toggle => ScadaElementStyle.DefaultInput with
+            {
+                Background = "#DFF3E7",
+                BorderColor = "#2090A0",
+                BorderWidth = 2
+            },
+            ScadaButtonKind.Navigation => ScadaElementStyle.DefaultInput with
+            {
+                Background = "#EAF5F7",
+                BorderColor = "#2090A0",
+                BorderWidth = 2
+            },
+            ScadaButtonKind.AlarmAcknowledge => ScadaElementStyle.DefaultInput with
+            {
+                Background = "#FFF7D6",
+                BorderColor = "#C78A00",
+                BorderWidth = 2
+            },
+            ScadaButtonKind.EmergencyStop => ScadaElementStyle.DefaultInput with
+            {
+                Foreground = "#FFFFFF",
+                Background = "#C62828",
+                BorderColor = "#7F1515",
+                BorderWidth = 3,
+                ShadowPreset = "Raised"
+            },
+            _ => ScadaElementStyle.DefaultInput
+        };
+        var text = buttonKind switch
+        {
+            ScadaButtonKind.Toggle => "Marche / Arret",
+            ScadaButtonKind.Navigation => "Navigation",
+            ScadaButtonKind.AlarmAcknowledge => "Acquitter",
+            ScadaButtonKind.EmergencyStop => "STOP",
+            _ => displayName
+        };
+        return (bounds, style, text);
     }
 
     public static ScadaElement CreateLegacyStatic(

@@ -918,7 +918,8 @@ public sealed partial class Ft100SceneExporter
     {
         var data = element.Data ?? new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
         var label = HtmlEncoder.Default.Encode(data.Text ?? data.Placeholder ?? element.DisplayName);
-        return $"""<button type="button" style="width:100%;height:100%;box-sizing:border-box;font:inherit;color:inherit;background:transparent;border:0;">{label}</button>""";
+        var buttonKind = HtmlEncoder.Default.Encode(element.EffectiveButtonKind.ToString());
+        return $"""<button type="button" data-scada-button-kind="{buttonKind}" style="width:100%;height:100%;box-sizing:border-box;font:inherit;color:inherit;background:transparent;border:0;">{label}</button>""";
     }
 
     private static string BuildInput(ScadaElement element, string type)
@@ -1242,6 +1243,7 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
                     element.DisplayName,
                     Kind = element.Kind.ToString(),
                     ShapeKind = element.Kind == ScadaElementKind.Shape ? element.EffectiveShapeKind.ToString() : null,
+                    ButtonKind = element.Kind == ScadaElementKind.Button ? element.EffectiveButtonKind.ToString() : null,
                     ButtonBehavior = element.Kind == ScadaElementKind.Button ? element.EffectiveButtonBehavior : null,
                     Data = BuildManifestElementData(element),
                     Events = element.EventBindings,

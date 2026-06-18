@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Properties Panel Contract
 
-Date: 2026-06-17
+Date: 2026-06-18
 Status: Active properties panel contract
-Document version: `V2.1.2.0024`
+Document version: `V2.1.2.0030`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-18 | `V2.1.2.0030` | `PENDING` | Ajout des presets de boutons HMI Element+ persistants via `ScadaButtonKind`. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Refactor de l'onglet Donnees Element+: retrait authoring de `Mapping / Tag`, `Decimales` et `Unite`; `Format affichage` devient le signal actif. |
 | 2026-06-16 | `V2.1.2.0005` | `PENDING` | Ajout de la tab Bouton pour hover automatique, style de survol et etat desactive. |
 | 2026-06-16 | `V2.1.2.0004` | `PENDING` | Ajout de l'entree Evenement pour l'edition des bindings runtime Element+. |
@@ -31,9 +32,10 @@ The properties panel edits model-backed properties through commands or applicati
 9. Element+ buttons have model-backed hover metadata by default unless disabled or explicitly disabled in the `Bouton` tab.
 10. The `Bouton` tab appears between `Style` and `Evenement` for buttons and owns disabled state, hover enablement, hover background, hover foreground, and hover border color.
 11. SCADA Builder V2 authors and persists button hover metadata; FT100 export may generate scoped CSS from it, and FT100Web owns the deployed runtime interpretation.
-12. The Element+ `Donnees` tab exposes `Format affichage` as the active display-format field. `Decimales` and `Unite` are legacy model fields and must not be visible active authoring controls.
-13. `Format affichage` may use hash masks such as `##.#`; the mask defines visible digit budget and decimal placement. Example: raw numeric value `999` with `##.#` displays as `99.9`, and the maximum visible value for the mask is `99.9`.
-14. `Min` and `Max` are operator-entry clamp constraints only for numeric inputs that are not `Lecture seulement`; they are disabled for read-only displays.
+12. Inserted Element+ buttons persist `ScadaButtonKind` for `Command`, `Toggle`, `Navigation`, `AlarmAcknowledge`, and `EmergencyStop`; the preset supplies initial size, text, and style only. Hover, disabled state, events, and later property edits remain independently model-backed.
+13. The Element+ `Donnees` tab exposes `Format affichage` as the active display-format field. `Decimales` and `Unite` are legacy model fields and must not be visible active authoring controls.
+14. `Format affichage` may use hash masks such as `##.#`; the mask defines visible digit budget and decimal placement. Example: raw numeric value `999` with `##.#` displays as `99.9`, and the maximum visible value for the mask is `99.9`.
+15. `Min` and `Max` are operator-entry clamp constraints only for numeric inputs that are not `Lecture seulement`; they are disabled for read-only displays.
 
 ## 3. Related Tests
 
