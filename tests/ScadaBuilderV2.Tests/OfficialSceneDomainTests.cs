@@ -691,6 +691,26 @@ public sealed class OfficialSceneDomainTests
         Assert.IsFalse(disabled.EffectiveButtonBehavior.EffectiveHover.Enabled);
     }
 
+    [TestMethod]
+    public void ShapeElementDefaultsAndFactoriesPreserveShapeKind()
+    {
+        var legacyShape = new ScadaElement(
+            "shape_legacy",
+            "Legacy rectangle",
+            ScadaElementKind.Shape,
+            new SceneBounds(10, 20, 120, 72),
+            null);
+
+        Assert.AreEqual(ScadaShapeKind.Rectangle, legacyShape.EffectiveShapeKind);
+
+        var arrow = ScadaElement.CreateShape("shape_arrow", "Fleche001", ScadaShapeKind.Arrow, 30, 40);
+
+        Assert.AreEqual(ScadaElementKind.Shape, arrow.Kind);
+        Assert.AreEqual(ScadaShapeKind.Arrow, arrow.EffectiveShapeKind);
+        Assert.AreEqual("Transparent", arrow.Style?.Background);
+        Assert.AreEqual(140, arrow.Bounds.Width);
+    }
+
     private static ScadaElement CreateLegacyStatic(string sourceId, string name)
     {
         return ScadaElement.CreateLegacyStatic(

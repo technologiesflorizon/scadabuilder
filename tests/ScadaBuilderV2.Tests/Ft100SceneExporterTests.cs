@@ -1340,6 +1340,71 @@ public sealed class Ft100SceneExporterTests
     }
 
     [TestMethod]
+    public async Task ExportRendersStandardShapeElementAsScopedSvg()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "win00008_shapes.html");
+        await File.WriteAllTextAsync(
+            sourceHtmlPath,
+            """
+<!doctype html>
+<html>
+<body>
+  <div class="page"></div>
+</body>
+</html>
+""");
+
+        var arrow = ScadaElement.CreateShape("shape_arrow_001", "Fleche001", ScadaShapeKind.Arrow, 40, 50) with
+        {
+            Style = ScadaElementStyle.DefaultInput with
+            {
+                Background = "Transparent",
+                BorderColor = "#90C030",
+                BorderWidth = 3,
+                BorderStyle = "Dashed"
+            }
+        };
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Formes", new(1280, 873))
+            .WithElement(arrow);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            StringAssert.Contains(html, "id=\"ft100-win00008__shape_arrow_001\"");
+            StringAssert.Contains(html, "data-scada-element-id=\"shape_arrow_001\"");
+            StringAssert.Contains(html, "<svg id=\"shape-shape_arrow_001\"");
+            StringAssert.Contains(html, "marker-end=\"url(#arrow-shape_arrow_001)\"");
+            StringAssert.Contains(html, "stroke=\"#90C030\"");
+            StringAssert.Contains(html, "stroke-dasharray=\"8 5\"");
+
+            var css = await File.ReadAllTextAsync(result.CssPath);
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_arrow_001");
+            StringAssert.Contains(css, "background: transparent;");
+            StringAssert.Contains(css, "border: 0 none transparent;");
+            AssertExportCssHasNoGlobalRuntimeSelectors(css);
+
+            var manifest = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "manifest.json"));
+            StringAssert.Contains(manifest, "\"Kind\": \"Shape\"");
+            StringAssert.Contains(manifest, "\"ShapeKind\": \"Arrow\"");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task ExportProjectWritesCompiledPagesAndAggregateManifest()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

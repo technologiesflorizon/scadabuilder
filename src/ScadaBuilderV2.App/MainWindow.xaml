@@ -306,6 +306,46 @@
                                     <TextBlock Text="Entree num." FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer un rectangle Element+"
+                                    Click="OnInsertRectangleClick">
+                                <StackPanel>
+                                    <TextBlock Text="[ ]" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center" Margin="0,0,0,2"/>
+                                    <TextBlock Text="Rectangle" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer une ellipse Element+"
+                                    Click="OnInsertEllipseClick">
+                                <StackPanel>
+                                    <TextBlock Text="O" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,0,0,2"/>
+                                    <TextBlock Text="Ellipse" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer une ligne Element+"
+                                    Click="OnInsertLineClick">
+                                <StackPanel>
+                                    <TextBlock Text="--" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,0,0,2"/>
+                                    <TextBlock Text="Ligne" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer une fleche Element+"
+                                    Click="OnInsertArrowClick">
+                                <StackPanel>
+                                    <TextBlock Text="-&gt;" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,0,0,2"/>
+                                    <TextBlock Text="Fleche" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer un bouton Element+"
+                                    Click="OnInsertButtonClick">
+                                <StackPanel>
+                                    <TextBlock Text="BTN" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <TextBlock Text="Bouton" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
                         </StackPanel>
                     </Grid>
                 </Border>

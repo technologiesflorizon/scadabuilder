@@ -79,9 +79,12 @@ public partial class MainWindow : Window
     private double _backgroundSaturation;
     private double _backgroundValue;
     private ScadaElementKind? _pendingInsertKind;
+    private ScadaShapeKind? _pendingInsertShapeKind;
     private int _nextTextSequence = 1;
     private int _nextInputTextSequence = 1;
     private int _nextInputNumericSequence = 1;
+    private int _nextShapeSequence = 1;
+    private int _nextButtonSequence = 1;
     private int _nextGroupSequence = 1;
     private bool _activeSceneDirty;
     private bool _isFt100Sb2ExportRunning;
@@ -3996,14 +3999,52 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         BeginModernElementPlacement(ScadaElementKind.InputNumeric);
     }
 
+    private void OnInsertRectangleClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.Rectangle);
+    }
+
+    private void OnInsertEllipseClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.Ellipse);
+    }
+
+    private void OnInsertLineClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.Line);
+    }
+
+    private void OnInsertArrowClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.Arrow);
+    }
+
+    private void OnInsertButtonClick(object sender, RoutedEventArgs e)
+    {
+        BeginModernElementPlacement(ScadaElementKind.Button);
+    }
+
+    private void BeginShapePlacement(ScadaShapeKind shapeKind)
+    {
+        _pendingInsertShapeKind = shapeKind;
+        BeginModernElementPlacement(ScadaElementKind.Shape);
+    }
+
     private async void BeginModernElementPlacement(ScadaElementKind kind)
     {
         _pendingInsertKind = kind;
+        if (kind != ScadaElementKind.Shape)
+        {
+            _pendingInsertShapeKind = null;
+        }
+
         await ExecuteLegacyViewerCommandAsync(new LegacyViewerCommand("beginPlacement", kind.ToString()));
         var label = kind switch
         {
             ScadaElementKind.InputText => "champ d'entree texte",
             ScadaElementKind.InputNumeric => "champ d'entree numerique",
+            ScadaElementKind.Shape => FormatShapeLabel(_pendingInsertShapeKind ?? ScadaShapeKind.Rectangle),
+            ScadaElementKind.Button => "bouton",
             _ => "champ texte"
         };
         SetStatus($"Insertion active: cliquez dans la scene pour placer un {label}.");
@@ -4038,6 +4079,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         _selectedSceneObjectIds.Add(element.Id);
         _selectedSourceObjectIds.Clear();
         _pendingInsertKind = null;
+        _pendingInsertShapeKind = null;
         MarkActiveSceneDirty();
         RefreshSelectionUi();
         RefreshModernSceneUi();
@@ -4133,7 +4175,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     private static ScadaElementKind? ParseInsertKind(string? kind)
     {
         return Enum.TryParse<ScadaElementKind>(kind, ignoreCase: true, out var parsed) &&
-            (parsed == ScadaElementKind.Text || parsed == ScadaElementKind.InputText || parsed == ScadaElementKind.InputNumeric)
+            (parsed == ScadaElementKind.Text ||
+                parsed == ScadaElementKind.InputText ||
+                parsed == ScadaElementKind.InputNumeric ||
+                parsed == ScadaElementKind.Shape ||
+                parsed == ScadaElementKind.Button)
                 ? parsed
                 : null;
     }
@@ -4154,9 +4200,48 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return ScadaElement.CreateInputNumeric(id, $"InputNumeric{sequence:000}", x, y);
         }
 
+        if (kind == ScadaElementKind.Shape)
+        {
+            var sequence = _nextShapeSequence++;
+            var shapeKind = _pendingInsertShapeKind ?? ScadaShapeKind.Rectangle;
+            var id = CreateUniqueElementId($"shape_{sequence:000}");
+            return ScadaElement.CreateShape(id, $"{FormatShapeName(shapeKind)}{sequence:000}", shapeKind, x, y);
+        }
+
+        if (kind == ScadaElementKind.Button)
+        {
+            var sequence = _nextButtonSequence++;
+            var id = CreateUniqueElementId($"button_{sequence:000}");
+            return ScadaElement.CreateButton(id, $"Bouton{sequence:000}", x, y);
+        }
+
         var textSequence = _nextInputTextSequence++;
         var inputTextId = CreateUniqueElementId($"input_text_{textSequence:000}");
         return ScadaElement.CreateInputText(inputTextId, $"InputText{textSequence:000}", x, y);
+    }
+
+    private static string FormatShapeName(ScadaShapeKind shapeKind)
+    {
+        return shapeKind switch
+        {
+            ScadaShapeKind.RoundedRectangle => "RectangleArrondi",
+            ScadaShapeKind.Ellipse => "Ellipse",
+            ScadaShapeKind.Line => "Ligne",
+            ScadaShapeKind.Arrow => "Fleche",
+            _ => "Rectangle"
+        };
+    }
+
+    private static string FormatShapeLabel(ScadaShapeKind shapeKind)
+    {
+        return shapeKind switch
+        {
+            ScadaShapeKind.RoundedRectangle => "rectangle arrondi",
+            ScadaShapeKind.Ellipse => "ellipse",
+            ScadaShapeKind.Line => "ligne",
+            ScadaShapeKind.Arrow => "fleche",
+            _ => "rectangle"
+        };
     }
 
     private void ResetElementSequences(ScadaScene scene)
@@ -4165,6 +4250,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         _nextTextSequence = elements.Count(element => element.Kind == ScadaElementKind.Text && !element.IsImportedFromLegacy) + 1;
         _nextInputTextSequence = elements.Count(element => element.Kind == ScadaElementKind.InputText) + 1;
         _nextInputNumericSequence = elements.Count(element => element.Kind == ScadaElementKind.InputNumeric) + 1;
+        _nextShapeSequence = elements.Count(element => element.Kind == ScadaElementKind.Shape && !element.IsImportedFromLegacy) + 1;
+        _nextButtonSequence = elements.Count(element => element.Kind == ScadaElementKind.Button && !element.IsImportedFromLegacy) + 1;
         _nextGroupSequence = elements.Count(element => element.Kind == ScadaElementKind.Group) + 1;
     }
 
@@ -5154,6 +5241,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             Style = element.Style,
             Data = element.Data,
             ButtonBehavior = element.ButtonBehavior,
+            ShapeKind = element.ShapeKind,
             Children = element.ChildElements
                 .Select((child, childIndex) => ToRenderPayload(child, selectedIds, childIndex))
                 .ToArray()
@@ -6032,6 +6120,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         public ScadaElementData? Data { get; set; }
 
         public ScadaButtonBehavior? ButtonBehavior { get; set; }
+
+        public ScadaShapeKind? ShapeKind { get; set; }
 
         public IReadOnlyList<ModernElementRenderPayload> Children { get; set; } = [];
     }
@@ -7005,6 +7095,96 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     return wrapper.parentElement?.closest?.('.scada-modern-group') || wrapper;
   }
 
+  function svgDashArray(style) {
+    const borderStyle = String(style.BorderStyle || 'Solid').toLowerCase();
+    if (borderStyle === 'dashed') return '8 5';
+    if (borderStyle === 'dotted') return '2 4';
+    return '';
+  }
+
+  function renderShapeElement(element, style) {
+    const shapeKind = String(element.ShapeKind || element.shapeKind || 'Rectangle').toLowerCase();
+    const strokeWidth = Math.max(0, Number(style.BorderWidth ?? 2));
+    const halfStroke = Math.max(1, strokeWidth / 2);
+    const stroke = cssText(style.BorderColor, '#2090a0');
+    const fill = shapeKind === 'line' || shapeKind === 'arrow'
+      ? 'transparent'
+      : cssText(style.Background, '#dff3e7');
+    const dashArray = svgDashArray(style);
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', `0 0 ${Math.max(1, element.Width)} ${Math.max(1, element.Height)}`);
+    svg.setAttribute('width', '100%');
+    svg.setAttribute('height', '100%');
+    svg.setAttribute('preserveAspectRatio', 'none');
+    svg.style.display = 'block';
+    svg.style.pointerEvents = 'none';
+
+    const setStroke = node => {
+      node.setAttribute('stroke', stroke);
+      node.setAttribute('stroke-width', `${strokeWidth}`);
+      if (dashArray) {
+        node.setAttribute('stroke-dasharray', dashArray);
+      }
+      node.setAttribute('vector-effect', 'non-scaling-stroke');
+    };
+
+    if (shapeKind === 'ellipse') {
+      const ellipse = document.createElementNS(svg.namespaceURI, 'ellipse');
+      ellipse.setAttribute('cx', `${element.Width / 2}`);
+      ellipse.setAttribute('cy', `${element.Height / 2}`);
+      ellipse.setAttribute('rx', `${Math.max(0, (element.Width / 2) - halfStroke)}`);
+      ellipse.setAttribute('ry', `${Math.max(0, (element.Height / 2) - halfStroke)}`);
+      ellipse.setAttribute('fill', fill);
+      setStroke(ellipse);
+      svg.appendChild(ellipse);
+      return svg;
+    }
+
+    if (shapeKind === 'line' || shapeKind === 'arrow') {
+      if (shapeKind === 'arrow') {
+        const marker = document.createElementNS(svg.namespaceURI, 'marker');
+        marker.setAttribute('id', `arrow-${element.Id}`);
+        marker.setAttribute('viewBox', '0 0 10 10');
+        marker.setAttribute('refX', '10');
+        marker.setAttribute('refY', '5');
+        marker.setAttribute('markerWidth', '7');
+        marker.setAttribute('markerHeight', '7');
+        marker.setAttribute('orient', 'auto-start-reverse');
+        const arrowHead = document.createElementNS(svg.namespaceURI, 'path');
+        arrowHead.setAttribute('d', 'M 0 0 L 10 5 L 0 10 z');
+        arrowHead.setAttribute('fill', stroke);
+        marker.appendChild(arrowHead);
+        svg.appendChild(marker);
+      }
+
+      const line = document.createElementNS(svg.namespaceURI, 'line');
+      line.setAttribute('x1', `${halfStroke}`);
+      line.setAttribute('y1', `${element.Height / 2}`);
+      line.setAttribute('x2', `${Math.max(halfStroke, element.Width - halfStroke - (shapeKind === 'arrow' ? 7 : 0))}`);
+      line.setAttribute('y2', `${element.Height / 2}`);
+      if (shapeKind === 'arrow') {
+        line.setAttribute('marker-end', `url(#arrow-${element.Id})`);
+      }
+      setStroke(line);
+      svg.appendChild(line);
+      return svg;
+    }
+
+    const rect = document.createElementNS(svg.namespaceURI, 'rect');
+    rect.setAttribute('x', `${halfStroke}`);
+    rect.setAttribute('y', `${halfStroke}`);
+    rect.setAttribute('width', `${Math.max(0, element.Width - strokeWidth)}`);
+    rect.setAttribute('height', `${Math.max(0, element.Height - strokeWidth)}`);
+    if (shapeKind === 'roundedrectangle') {
+      rect.setAttribute('rx', `${Math.min(element.Width, element.Height) * 0.12}`);
+      rect.setAttribute('ry', `${Math.min(element.Width, element.Height) * 0.12}`);
+    }
+    rect.setAttribute('fill', fill);
+    setStroke(rect);
+    svg.appendChild(rect);
+    return svg;
+  }
+
   function renderModernElements(elements) {
     modernElements = Array.isArray(elements) ? elements : [];
     const layer = ensureModernLayer();
@@ -7048,13 +7228,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
           wrapper.appendChild(renderElement(child, wrapper));
         });
       } else if (element.Kind === 'Shape') {
-        const shape = document.createElement('div');
-        shape.style.width = '100%';
-        shape.style.height = '100%';
-        shape.style.background = cssText(style.Background, 'transparent');
-        shape.style.border = '0';
-        shape.style.pointerEvents = 'none';
-        wrapper.appendChild(shape);
+        wrapper.style.background = 'transparent';
+        wrapper.style.border = '0';
+        wrapper.appendChild(renderShapeElement(element, style));
       } else if (element.Kind === 'Text') {
         const text = document.createElement('span');
         text.textContent = data.Text || element.DisplayName || 'Texte';

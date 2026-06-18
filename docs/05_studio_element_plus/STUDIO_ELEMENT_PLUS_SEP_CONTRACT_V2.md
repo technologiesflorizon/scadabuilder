@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Studio Element+ SEP Contract
 
-Date: 2026-06-16
+Date: 2026-06-18
 Status: Active `.sep` package contract
-Document version: `V2.1.1.0039`
+Document version: `V2.1.2.0027`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-18 | `V2.1.2.0027` | `PENDING` | Ajout du contrat des formes standards Element+ creees depuis SCADA Builder V2 et exportees en SVG runtime. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat `.sep` Studio Element+. |
 
 ## 1. Contract
@@ -43,14 +44,25 @@ Drawing tools create real component primitives, not temporary editor overlays.
 Required drawing tool behavior:
 
 1. Make drawing tools functional:
-2. `Ligne`: create line primitives.
-3. `Polyline`: create editable polyline primitives.
-4. `Rectangle`: create editable rectangle primitives.
-5. `Polygone`: create editable polygon primitives.
-6. `Image`: import and embed raster images into the `.sep`.
-7. Ensure created primitives become part of the Element+ component model, not editor-only overlays.
+2. `Rectangle`: create editable rectangle primitives.
+3. `Rectangle arrondi`: create editable rounded rectangle primitives.
+4. `Ellipse`: create editable ellipse primitives.
+5. `Ligne`: create line primitives.
+6. `Fleche`: create editable arrow primitives.
+7. `Polyline`: create editable polyline primitives.
+8. `Polygone`: create editable polygon primitives.
+9. `Image`: import and embed raster images into the `.sep`.
+10. Ensure created primitives become part of the Element+ component model, not editor-only overlays.
+
+SCADA Builder V2 scene insertions persist standard shape type through `ScadaElement.ShapeKind`.
+The implemented standard shape slice covers `Rectangle`, `RoundedRectangle`, `Ellipse`, `Line`, and `Arrow`.
+Preview and FT100 export render these shapes as Element+-owned SVG content inside the Element+ wrapper; selection overlays, handles, drag rectangles, workzone state, zoom, and pan remain editor-only.
 
 ## 4. Related Tests
 
 1. `tests/ScadaBuilderV2.Tests/StudioElementPlusContractTests.cs`
 2. `tests/ScadaBuilderV2.Tests/ElementStudioImportPackageWriterTests.cs`
+3. `tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`
+4. `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`
+5. `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`
+6. `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`

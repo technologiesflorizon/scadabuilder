@@ -835,9 +835,43 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "var id = CreateUniqueElementId($\"text_{sequence:000}\");");
         StringAssert.Contains(source, "var id = CreateUniqueElementId($\"input_numeric_{sequence:000}\");");
         StringAssert.Contains(source, "var inputTextId = CreateUniqueElementId($\"input_text_{textSequence:000}\");");
+        StringAssert.Contains(source, "var id = CreateUniqueElementId($\"shape_{sequence:000}\");");
+        StringAssert.Contains(source, "var id = CreateUniqueElementId($\"button_{sequence:000}\");");
         Assert.IsFalse(
             source.Contains("return ScadaElement.CreateText($\"text_{sequence:000}\"", StringComparison.Ordinal),
             "Manual text insertion must not reuse an existing id when sequences are non-contiguous.");
+    }
+
+    [TestMethod]
+    public void InsertRibbonExposesStandardShapesAndButtons()
+    {
+        var xaml = ReadMainWindowFile("MainWindow.xaml");
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(xaml, "Click=\"OnInsertRectangleClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertEllipseClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertLineClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertArrowClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertButtonClick\"");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Rectangle);");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Ellipse);");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Line);");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Arrow);");
+        StringAssert.Contains(source, "BeginModernElementPlacement(ScadaElementKind.Button);");
+    }
+
+    [TestMethod]
+    public void ModernShapePreviewUsesSvgShapeKind()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "function renderShapeElement(element, style)");
+        StringAssert.Contains(source, "String(element.ShapeKind || element.shapeKind || 'Rectangle').toLowerCase()");
+        StringAssert.Contains(source, "document.createElementNS('http://www.w3.org/2000/svg', 'svg')");
+        StringAssert.Contains(source, "shapeKind === 'ellipse'");
+        StringAssert.Contains(source, "shapeKind === 'line' || shapeKind === 'arrow'");
+        StringAssert.Contains(source, "wrapper.appendChild(renderShapeElement(element, style));");
+        StringAssert.Contains(source, "ShapeKind = element.ShapeKind");
     }
 
     [TestMethod]

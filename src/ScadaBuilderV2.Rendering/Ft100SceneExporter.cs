@@ -751,9 +751,45 @@ public sealed partial class Ft100SceneExporter
                 data.Value?.ToString(CultureInfo.InvariantCulture) ?? data.DisplayFormat ?? data.Placeholder ?? ""),
             ScadaElementKind.InputNumeric => BuildInput(element, "number"),
             ScadaElementKind.InputText => BuildInput(element, "text"),
+            ScadaElementKind.Shape => BuildShape(element),
             ScadaElementKind.Button => BuildButton(element),
             _ => ""
         };
+    }
+
+    private static string BuildShape(ScadaElement element)
+    {
+        var style = element.Style ?? ScadaElementStyle.DefaultText;
+        var width = Math.Max(1, element.Bounds.Width);
+        var height = Math.Max(1, element.Bounds.Height);
+        var strokeWidth = Math.Max(0, style.BorderWidth);
+        var halfStroke = Math.Max(1, strokeWidth / 2);
+        var stroke = HtmlEncoder.Default.Encode(style.BorderColor);
+        var fill = element.EffectiveShapeKind is ScadaShapeKind.Line or ScadaShapeKind.Arrow
+            ? "transparent"
+            : HtmlEncoder.Default.Encode(style.Background);
+        var dashArray = ShapeDashArray(style.BorderStyle);
+        var dashAttribute = string.IsNullOrWhiteSpace(dashArray)
+            ? ""
+            : $" stroke-dasharray=\"{dashArray}\"";
+        var svgId = HtmlEncoder.Default.Encode($"shape-{CssIdentifier(element.Id)}");
+        var markerId = HtmlEncoder.Default.Encode($"arrow-{CssIdentifier(element.Id)}");
+        var common = $"stroke=\"{stroke}\" stroke-width=\"{Format(strokeWidth)}\"{dashAttribute} vector-effect=\"non-scaling-stroke\"";
+        var body = element.EffectiveShapeKind switch
+        {
+            ScadaShapeKind.Ellipse =>
+                $"""<ellipse cx="{Format(width / 2)}" cy="{Format(height / 2)}" rx="{Format(Math.Max(0, (width / 2) - halfStroke))}" ry="{Format(Math.Max(0, (height / 2) - halfStroke))}" fill="{fill}" {common}/>""",
+            ScadaShapeKind.Line =>
+                $"""<line x1="{Format(halfStroke)}" y1="{Format(height / 2)}" x2="{Format(Math.Max(halfStroke, width - halfStroke))}" y2="{Format(height / 2)}" {common}/>""",
+            ScadaShapeKind.Arrow =>
+                $"""<defs><marker id="{markerId}" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="{stroke}"/></marker></defs><line x1="{Format(halfStroke)}" y1="{Format(height / 2)}" x2="{Format(Math.Max(halfStroke, width - halfStroke - 7))}" y2="{Format(height / 2)}" marker-end="url(#{markerId})" {common}/>""",
+            ScadaShapeKind.RoundedRectangle =>
+                $"""<rect x="{Format(halfStroke)}" y="{Format(halfStroke)}" width="{Format(Math.Max(0, width - strokeWidth))}" height="{Format(Math.Max(0, height - strokeWidth))}" rx="{Format(Math.Min(width, height) * 0.12)}" ry="{Format(Math.Min(width, height) * 0.12)}" fill="{fill}" {common}/>""",
+            _ =>
+                $"""<rect x="{Format(halfStroke)}" y="{Format(halfStroke)}" width="{Format(Math.Max(0, width - strokeWidth))}" height="{Format(Math.Max(0, height - strokeWidth))}" fill="{fill}" {common}/>"""
+        };
+
+        return $"""<svg id="{svgId}" viewBox="0 0 {Format(width)} {Format(height)}" width="100%" height="100%" preserveAspectRatio="none" style="display:block;pointer-events:none;">{body}</svg>""";
     }
 
     private static string BuildButton(ScadaElement element)
@@ -815,10 +851,12 @@ public sealed partial class Ft100SceneExporter
         css.Append($"width:{Format(element.Bounds.Width)}px;");
         css.Append($"height:{Format(element.Bounds.Height)}px;");
         css.Append($"color:{style.Foreground};");
-        css.Append($"background:{style.Background};");
+        css.Append($"background:{(element.Kind == ScadaElementKind.Shape ? "transparent" : style.Background)};");
         css.Append($"font-family:{style.FontFamily};");
         css.Append($"font-size:{Format(style.FontSize)}px;");
-        css.Append($"border:{Format(style.BorderWidth)}px {NormalizeBorderStyle(style.BorderStyle)} {style.BorderColor};");
+        css.Append(element.Kind == ScadaElementKind.Shape
+            ? "border:0 none transparent;"
+            : $"border:{Format(style.BorderWidth)}px {NormalizeBorderStyle(style.BorderStyle)} {style.BorderColor};");
         css.Append($"box-shadow:{ShadowCss(style.ShadowPreset)};");
         if (!string.IsNullOrWhiteSpace(style.AdvancedCss))
         {
@@ -956,10 +994,12 @@ public sealed partial class Ft100SceneExporter
         css.AppendLine($"  width: {Format(element.Bounds.Width)}px;");
         css.AppendLine($"  height: {Format(element.Bounds.Height)}px;");
         css.AppendLine($"  color: {style.Foreground};");
-        css.AppendLine($"  background: {style.Background};");
+        css.AppendLine($"  background: {(element.Kind == ScadaElementKind.Shape ? "transparent" : style.Background)};");
         css.AppendLine($"  font-family: {style.FontFamily};");
         css.AppendLine($"  font-size: {Format(style.FontSize)}px;");
-        css.AppendLine($"  border: {Format(style.BorderWidth)}px {NormalizeBorderStyle(style.BorderStyle)} {style.BorderColor};");
+        css.AppendLine(element.Kind == ScadaElementKind.Shape
+            ? "  border: 0 none transparent;"
+            : $"  border: {Format(style.BorderWidth)}px {NormalizeBorderStyle(style.BorderStyle)} {style.BorderColor};");
         css.AppendLine($"  box-shadow: {ShadowCss(style.ShadowPreset)};");
         if (!string.IsNullOrWhiteSpace(style.AdvancedCss))
         {
@@ -1079,6 +1119,7 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
                     element.Id,
                     element.DisplayName,
                     Kind = element.Kind.ToString(),
+                    ShapeKind = element.Kind == ScadaElementKind.Shape ? element.EffectiveShapeKind.ToString() : null,
                     ButtonBehavior = element.Kind == ScadaElementKind.Button ? element.EffectiveButtonBehavior : null,
                     Data = BuildManifestElementData(element),
                     Events = element.EventBindings,
@@ -1846,6 +1887,16 @@ Apply any viewport scale to the composed page container, not independently to he
         return string.Equals(value, "None", StringComparison.OrdinalIgnoreCase)
             ? "none"
             : value.ToLowerInvariant();
+    }
+
+    private static string ShapeDashArray(string value)
+    {
+        return value switch
+        {
+            "Dashed" => "8 5",
+            "Dotted" => "2 4",
+            _ => ""
+        };
     }
 
     private static string ShadowCss(string preset)

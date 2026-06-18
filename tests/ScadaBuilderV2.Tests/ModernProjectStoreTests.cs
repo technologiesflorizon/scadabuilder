@@ -500,6 +500,11 @@ public sealed class ModernProjectStoreTests
             Assert.AreEqual("#90C030", loaded.Elements.Single().EffectiveButtonBehavior.EffectiveHover.BorderColor);
             Assert.AreEqual(ScadaActionKind.Navigate, loaded.ActionDefinitions.Single().Kind);
 
+            var shapeScene = scene.WithElement(ScadaElement.CreateShape("shape_arrow", "Fleche001", ScadaShapeKind.Arrow, 20, 30));
+            await store.SaveSceneAsync(root, shapeScene);
+            var loadedShapeScene = await store.LoadOrCreateSceneAsync(root, "win00008", "win00008", new(1280, 873));
+            Assert.AreEqual(ScadaShapeKind.Arrow, loadedShapeScene.Elements.Single(element => element.Id == "shape_arrow").EffectiveShapeKind);
+
             var projectJson = await File.ReadAllTextAsync(Path.Combine(
                 root,
                 "SCADA_BUILDER_V2",

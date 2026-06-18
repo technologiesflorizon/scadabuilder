@@ -17,6 +17,37 @@ public enum ScadaElementKind
     Custom
 }
 
+/// <summary>
+/// Identifies the standard Element+ shape primitive rendered by preview and FT100 export.
+/// </summary>
+public enum ScadaShapeKind
+{
+    /// <summary>
+    /// Rectangular Element+ shape.
+    /// </summary>
+    Rectangle,
+
+    /// <summary>
+    /// Rectangular Element+ shape with rounded corners.
+    /// </summary>
+    RoundedRectangle,
+
+    /// <summary>
+    /// Ellipse or circle Element+ shape.
+    /// </summary>
+    Ellipse,
+
+    /// <summary>
+    /// Straight line Element+ shape.
+    /// </summary>
+    Line,
+
+    /// <summary>
+    /// Straight arrow Element+ shape.
+    /// </summary>
+    Arrow
+}
+
 public enum ElementPositionMode
 {
     Absolute,
@@ -314,7 +345,8 @@ public sealed record ScadaElement(
     IReadOnlyList<ScadaElement>? Children = null,
     LegacyElementPayload? LegacyPayload = null,
     IReadOnlyList<ScadaObjectEventBinding>? Events = null,
-    ScadaButtonBehavior? ButtonBehavior = null)
+    ScadaButtonBehavior? ButtonBehavior = null,
+    ScadaShapeKind? ShapeKind = null)
 {
     [JsonIgnore]
     public string UserLabel => string.IsNullOrWhiteSpace(DisplayName) ? Id : DisplayName;
@@ -345,6 +377,14 @@ public sealed record ScadaElement(
     public ScadaButtonBehavior EffectiveButtonBehavior => Kind == ScadaElementKind.Button
         ? ButtonBehavior ?? ScadaButtonBehavior.Default
         : ScadaButtonBehavior.Default;
+
+    /// <summary>
+    /// Gets the persisted shape primitive, defaulting older shape elements to rectangles.
+    /// </summary>
+    [JsonIgnore]
+    public ScadaShapeKind EffectiveShapeKind => Kind == ScadaElementKind.Shape
+        ? ShapeKind ?? ScadaShapeKind.Rectangle
+        : ScadaShapeKind.Rectangle;
 
     public static ScadaElement CreateText(string id, string displayName, double x, double y)
     {
@@ -383,6 +423,65 @@ public sealed record ScadaElement(
             ScadaElementLayout.Absolute,
             ScadaElementStyle.DefaultInput,
             new ScadaElementData(null, "0", 0, null, null, 0, null, "0", null, isReadOnly));
+    }
+
+    /// <summary>
+    /// Creates a model-backed standard Element+ shape for scene insertion.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0004, DEC-0008.
+    /// Contracts: docs/05_studio_element_plus/STUDIO_ELEMENT_PLUS_SEP_CONTRACT_V2.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
+    /// </remarks>
+    public static ScadaElement CreateShape(string id, string displayName, ScadaShapeKind shapeKind, double x, double y)
+    {
+        var bounds = shapeKind switch
+        {
+            ScadaShapeKind.Line or ScadaShapeKind.Arrow => new SceneBounds(x, y, 140, 32),
+            ScadaShapeKind.Ellipse => new SceneBounds(x, y, 96, 72),
+            _ => new SceneBounds(x, y, 120, 72)
+        };
+        return new ScadaElement(
+            id,
+            displayName,
+            ScadaElementKind.Shape,
+            bounds,
+            null,
+            ScadaElementLayout.Absolute,
+            new ScadaElementStyle(
+                "Segoe UI",
+                14,
+                "#0F2A30",
+                shapeKind is ScadaShapeKind.Line or ScadaShapeKind.Arrow ? "Transparent" : "#DFF3E7",
+                "#2090A0",
+                2,
+                "Solid",
+                "None",
+                null),
+            new ScadaElementData(null, null, null, null, null, null, null, null, null, false),
+            ShapeKind: shapeKind);
+    }
+
+    /// <summary>
+    /// Creates a model-backed Element+ button for scene insertion.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0012.
+    /// Contracts: docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs.
+    /// </remarks>
+    public static ScadaElement CreateButton(string id, string displayName, double x, double y)
+    {
+        return new ScadaElement(
+            id,
+            displayName,
+            ScadaElementKind.Button,
+            new SceneBounds(x, y, 120, 40),
+            null,
+            ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultInput,
+            new ScadaElementData(displayName, null, null, null, null, null, null, null, null, false),
+            ButtonBehavior: ScadaButtonBehavior.Default);
     }
 
     public static ScadaElement CreateLegacyStatic(
