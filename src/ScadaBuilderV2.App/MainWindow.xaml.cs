@@ -4873,6 +4873,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ElementBackgroundComboBox.IsEnabled = isEnabled;
             ElementBorderStyleComboBox.IsEnabled = isEnabled;
             ElementBorderWidthTextBox.IsEnabled = isEnabled;
+            ElementOpacityTextBox.IsEnabled = isEnabled;
+            ElementRotationTextBox.IsEnabled = isEnabled;
             ElementAdvancedCssTextBox.IsEnabled = isEnabled;
             ButtonContextTab.Visibility = element?.Kind == ScadaElementKind.Button ? Visibility.Visible : Visibility.Collapsed;
             ButtonDisabledCheckBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
@@ -4908,6 +4910,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 ElementBorderStyleComboBox.SelectedIndex = 0;
                 ElementBorderWidthTextBox.Text = "";
                 ShadowNoneRadio.IsChecked = true;
+                ElementOpacityTextBox.Text = "";
+                ElementRotationTextBox.Text = "";
                 ElementAdvancedCssTextBox.Text = "";
                 ButtonDisabledCheckBox.IsChecked = false;
                 ButtonHoverEnabledCheckBox.IsChecked = true;
@@ -4944,6 +4948,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ShadowSoftRadio.IsChecked = style.ShadowPreset == "Soft";
             ShadowRaisedRadio.IsChecked = style.ShadowPreset == "Raised";
             ShadowInsetRadio.IsChecked = style.ShadowPreset == "Inset";
+            ElementOpacityTextBox.Text = style.Opacity.ToString("0.##");
+            ElementRotationTextBox.Text = style.Rotation.ToString("0.##");
             ElementAdvancedCssTextBox.Text = style.AdvancedCss ?? "";
             var buttonBehavior = element.EffectiveButtonBehavior;
             var hoverStyle = buttonBehavior.EffectiveHover;
@@ -4992,6 +4998,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 BorderStyle = result.BorderStyle,
                 BorderWidth = result.BorderWidth,
                 ShadowPreset = result.ShadowPreset,
+                Opacity = result.Opacity,
+                Rotation = result.Rotation,
                 AdvancedCss = result.AdvancedCss
             },
             ButtonBehavior = current.Kind == ScadaElementKind.Button
@@ -5282,6 +5290,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 BorderStyle = GetComboBoxText(ElementBorderStyleComboBox, style.BorderStyle),
                 BorderWidth = Math.Max(0, ParseDoubleOrDefault(ElementBorderWidthTextBox.Text, style.BorderWidth)),
                 ShadowPreset = GetSelectedShadowPreset(),
+                Opacity = Math.Clamp(ParseDoubleOrDefault(ElementOpacityTextBox.Text, style.Opacity), 0, 1),
+                Rotation = ParseDoubleOrDefault(ElementRotationTextBox.Text, style.Rotation),
                 AdvancedCss = string.IsNullOrWhiteSpace(ElementAdvancedCssTextBox.Text) ? null : ElementAdvancedCssTextBox.Text
             },
             ButtonBehavior = current.Kind == ScadaElementKind.Button
@@ -7673,6 +7683,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       wrapper.style.borderWidth = `${cssText(style.BorderWidth, 1)}px`;
       wrapper.style.borderColor = cssText(style.BorderColor, '#8aa0a6');
       wrapper.style.boxShadow = shadowCss(style.ShadowPreset);
+      wrapper.style.opacity = `${Math.max(0, Math.min(1, Number(style.Opacity ?? 1)))}`;
+      wrapper.style.transformOrigin = 'center center';
+      wrapper.style.transform = `rotate(${Number(style.Rotation ?? 0)}deg)`;
       if (style.AdvancedCss) {
         wrapper.style.cssText += ';' + style.AdvancedCss;
       }

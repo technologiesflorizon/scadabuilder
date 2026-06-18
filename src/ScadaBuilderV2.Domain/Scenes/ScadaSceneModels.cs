@@ -167,7 +167,9 @@ public sealed record ScadaElementStyle(
     double BorderWidth,
     string BorderStyle,
     string ShadowPreset,
-    string? AdvancedCss)
+    string? AdvancedCss,
+    double Opacity = 1,
+    double Rotation = 0)
 {
     public static ScadaElementStyle DefaultText { get; } = new(
         "Segoe UI",

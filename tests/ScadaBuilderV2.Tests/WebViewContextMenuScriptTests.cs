@@ -136,6 +136,26 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void ElementPropertiesExposeAdvancedShapeStyleFields()
+    {
+        var mainXaml = ReadMainWindowFile("MainWindow.xaml");
+        var dialogXaml = ReadMainWindowFile("ElementPropertiesDialog.xaml");
+        var source = ReadMainWindowSource();
+        var dialogCode = ReadMainWindowFile("ElementPropertiesDialog.xaml.cs");
+
+        StringAssert.Contains(mainXaml, "x:Name=\"ElementOpacityTextBox\"");
+        StringAssert.Contains(mainXaml, "x:Name=\"ElementRotationTextBox\"");
+        StringAssert.Contains(dialogXaml, "x:Name=\"OpacityTextBox\"");
+        StringAssert.Contains(dialogXaml, "x:Name=\"RotationTextBox\"");
+        StringAssert.Contains(source, "Opacity = Math.Clamp(ParseDoubleOrDefault(ElementOpacityTextBox.Text, style.Opacity), 0, 1)");
+        StringAssert.Contains(source, "Rotation = ParseDoubleOrDefault(ElementRotationTextBox.Text, style.Rotation)");
+        StringAssert.Contains(source, "wrapper.style.opacity = `${Math.max(0, Math.min(1, Number(style.Opacity ?? 1)))}`;");
+        StringAssert.Contains(source, "wrapper.style.transform = `rotate(${Number(style.Rotation ?? 0)}deg)`;");
+        StringAssert.Contains(dialogCode, "Opacity: Math.Clamp(opacity, 0, 1)");
+        StringAssert.Contains(dialogCode, "Rotation: rotation");
+    }
+
+    [TestMethod]
     public void WebViewKeyboardShortcutsDoNotDeleteOnBackspaceOrInsideEditors()
     {
         var source = NormalizeNewLines(ReadMainWindowSource());

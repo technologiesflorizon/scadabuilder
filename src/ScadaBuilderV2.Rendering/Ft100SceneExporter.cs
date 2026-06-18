@@ -1059,6 +1059,9 @@ public sealed partial class Ft100SceneExporter
             ? "border:0 none transparent;"
             : $"border:{Format(style.BorderWidth)}px {NormalizeBorderStyle(style.BorderStyle)} {style.BorderColor};");
         css.Append($"box-shadow:{ShadowCss(style.ShadowPreset)};");
+        css.Append($"opacity:{Format(Math.Clamp(style.Opacity, 0, 1))};");
+        css.Append("transform-origin:center center;");
+        css.Append($"transform:rotate({Format(style.Rotation)}deg);");
         if (!string.IsNullOrWhiteSpace(style.AdvancedCss))
         {
             css.Append(style.AdvancedCss);

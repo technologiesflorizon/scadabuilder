@@ -58,6 +58,8 @@ public partial class ElementPropertiesDialog : Window
         ShadowSoftRadio.IsChecked = style.ShadowPreset == "Soft";
         ShadowRaisedRadio.IsChecked = style.ShadowPreset == "Raised";
         ShadowInsetRadio.IsChecked = style.ShadowPreset == "Inset";
+        OpacityTextBox.Text = style.Opacity.ToString("0.##");
+        RotationTextBox.Text = style.Rotation.ToString("0.##");
         AdvancedCssTextBox.Text = style.AdvancedCss ?? "";
 
         ButtonTab.Visibility = current.Kind == ScadaElementKind.Button ? Visibility.Visible : Visibility.Collapsed;
@@ -100,7 +102,9 @@ public partial class ElementPropertiesDialog : Window
             !TryReadDouble(ElementWidthTextBox.Text, "Largeur", out var width) ||
             !TryReadDouble(ElementHeightTextBox.Text, "Hauteur", out var height) ||
             !TryReadDouble(FontSizeTextBox.Text, "Taille police", out var fontSize) ||
-            !TryReadDouble(BorderWidthTextBox.Text, "Largeur bordure", out var borderWidth))
+            !TryReadDouble(BorderWidthTextBox.Text, "Largeur bordure", out var borderWidth) ||
+            !TryReadDouble(OpacityTextBox.Text, "Opacite", out var opacity) ||
+            !TryReadDouble(RotationTextBox.Text, "Rotation", out var rotation))
         {
             return;
         }
@@ -126,6 +130,8 @@ public partial class ElementPropertiesDialog : Window
             BorderStyle: GetComboBoxText(BorderStyleComboBox, "Solid"),
             BorderWidth: Math.Max(0, borderWidth),
             ShadowPreset: GetSelectedShadowPreset(),
+            Opacity: Math.Clamp(opacity, 0, 1),
+            Rotation: rotation,
             AdvancedCss: string.IsNullOrWhiteSpace(AdvancedCssTextBox.Text) ? null : AdvancedCssTextBox.Text,
             ButtonDisabled: ButtonDisabledCheckBox.IsChecked == true,
             ButtonHoverEnabled: ButtonHoverEnabledCheckBox.IsChecked == true,
@@ -226,6 +232,8 @@ public sealed record ElementPropertiesDialogResult(
     string BorderStyle,
     double BorderWidth,
     string ShadowPreset,
+    double Opacity,
+    double Rotation,
     string? AdvancedCss,
     bool ButtonDisabled,
     bool ButtonHoverEnabled,

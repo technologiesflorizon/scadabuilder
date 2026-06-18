@@ -1369,7 +1369,9 @@ public sealed class Ft100SceneExporterTests
                 Background = "Transparent",
                 BorderColor = "#90C030",
                 BorderWidth = 3,
-                BorderStyle = "Dashed"
+                BorderStyle = "Dashed",
+                Opacity = 0.42,
+                Rotation = 17
             }
         };
         var lamp = ScadaElement.CreateShape("shape_lamp_001", "Voyant001", ScadaShapeKind.IndicatorLamp, 80, 120);
@@ -1418,6 +1420,8 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "marker-end=\"url(#arrow-shape_arrow_001)\"");
             StringAssert.Contains(html, "stroke=\"#90C030\"");
             StringAssert.Contains(html, "stroke-dasharray=\"8 5\"");
+            StringAssert.Contains(html, "opacity:0.42;");
+            StringAssert.Contains(html, "transform:rotate(17deg);");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_lamp_001\"");
             StringAssert.Contains(html, "radialGradient id=\"lamp-gradient-shape_lamp_001\"");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_bar_001\"");

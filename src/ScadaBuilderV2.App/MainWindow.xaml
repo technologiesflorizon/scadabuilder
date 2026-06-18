@@ -1161,6 +1161,18 @@
                                                     <RadioButton x:Name="ShadowRaisedRadio" Content="Lift" GroupName="ShadowPreset" Checked="OnElementPropertyChanged"/>
                                                     <RadioButton x:Name="ShadowInsetRadio" Content="Inset" GroupName="ShadowPreset" Checked="OnElementPropertyChanged"/>
                                                 </UniformGrid>
+                                                <UniformGrid Columns="2" Margin="0,0,0,8">
+                                                    <StackPanel Margin="0,0,4,0">
+                                                        <TextBlock Text="Opacite (0-1)"/>
+                                                        <TextBox x:Name="ElementOpacityTextBox"
+                                                                 TextChanged="OnElementPropertyChanged"/>
+                                                    </StackPanel>
+                                                    <StackPanel Margin="4,0,0,0">
+                                                        <TextBlock Text="Rotation (deg)"/>
+                                                        <TextBox x:Name="ElementRotationTextBox"
+                                                                 TextChanged="OnElementPropertyChanged"/>
+                                                    </StackPanel>
+                                                </UniformGrid>
                                                 <TextBlock Text="CSS avance"/>
                                                 <TextBox x:Name="ElementAdvancedCssTextBox"
                                                          AcceptsReturn="True"

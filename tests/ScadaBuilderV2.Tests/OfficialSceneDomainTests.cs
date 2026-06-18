@@ -74,6 +74,8 @@ public sealed class OfficialSceneDomainTests
         Assert.AreEqual(ElementPositionMode.Absolute, element.Layout?.PositionMode);
         Assert.AreEqual("Segoe UI", element.Style?.FontFamily);
         Assert.AreEqual("#FFFFFF", element.Style?.Background);
+        Assert.AreEqual(1, element.Style?.Opacity);
+        Assert.AreEqual(0, element.Style?.Rotation);
         Assert.AreEqual("Texte", element.Data?.Placeholder);
         Assert.IsFalse(element.Data?.IsReadOnly ?? true);
     }

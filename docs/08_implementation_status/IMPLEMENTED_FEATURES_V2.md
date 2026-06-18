@@ -2,12 +2,13 @@
 
 Date: 2026-06-18
 Status: Active implementation status
-Document version: `V2.1.2.0031`
+Document version: `V2.1.2.0032`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-18 | `V2.1.2.0032` | `PENDING` | Implementation des proprietes avancees Element+ opacite et rotation. |
 | 2026-06-18 | `V2.1.2.0031` | `f6a85ed` | Implementation des symboles HMI Element+ moteur, ventilateur, convoyeur et jauge. |
 | 2026-06-18 | `V2.1.2.0030` | `cae57c9` | Implementation des presets de boutons HMI Element+ `Command`, `Toggle`, `Navigation`, `AlarmAcknowledge` et `EmergencyStop`. |
 | 2026-06-18 | `V2.1.2.0029` | `b97ef16` | Implementation des primitives process HMI Element+ reservoir, tuyaux, vanne et pompe. |
@@ -45,7 +46,7 @@ Document version: `V2.1.2.0031`
 
 ## 1. Current Verified Baseline
 
-As of 2026-06-18, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 239 tests.
+As of 2026-06-18, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 240 tests.
 
 ## 2. Implemented Areas
 
@@ -90,6 +91,7 @@ As of 2026-06-18, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 239 
 39. The insert ribbon can create process HMI Element+ shapes for `Tank`, `PipeHorizontal`, `PipeVertical`, `Valve`, and `Pump`. These primitives persist through `ShapeKind`; tank shapes use `Data.Value` as a clamped 0-100 percentage in preview and FT100 export.
 40. The insert ribbon can create HMI Element+ button presets for `Command`, `Toggle`, `Navigation`, `AlarmAcknowledge`, and `EmergencyStop`. Button presets persist through `ButtonKind`, provide initial size/text/style, and export `ButtonKind` in the FT100 manifest plus `data-scada-button-kind` in generated HTML.
 41. The insert ribbon can create machine and measurement HMI Element+ symbols for `Motor`, `Fan`, `Conveyor`, and `Gauge`. These primitives persist through `ShapeKind`; gauge symbols use `Data.Value` as a clamped 0-100 percentage in preview and FT100 export.
+42. The `Style` tab can author model-backed `Opacity` and `Rotation` for Element+ objects. Preview and FT100 export apply `opacity` and `rotate(...deg)`, save/reload preserves them, and `AdvancedCss` remains a later override point.
 
 ## 3. Source Of Truth
 

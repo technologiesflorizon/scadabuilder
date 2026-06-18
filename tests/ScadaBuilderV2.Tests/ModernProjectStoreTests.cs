@@ -502,10 +502,21 @@ public sealed class ModernProjectStoreTests
             Assert.AreEqual(ScadaButtonKind.Navigation, loaded.Elements.Single().EffectiveButtonKind);
             Assert.AreEqual(ScadaActionKind.Navigate, loaded.ActionDefinitions.Single().Kind);
 
-            var shapeScene = scene.WithElement(ScadaElement.CreateShape("shape_arrow", "Fleche001", ScadaShapeKind.Arrow, 20, 30));
+            var shapedArrow = ScadaElement.CreateShape("shape_arrow", "Fleche001", ScadaShapeKind.Arrow, 20, 30) with
+            {
+                Style = ScadaElementStyle.DefaultInput with
+                {
+                    Opacity = 0.42,
+                    Rotation = 17
+                }
+            };
+            var shapeScene = scene.WithElement(shapedArrow);
             await store.SaveSceneAsync(root, shapeScene);
             var loadedShapeScene = await store.LoadOrCreateSceneAsync(root, "win00008", "win00008", new(1280, 873));
-            Assert.AreEqual(ScadaShapeKind.Arrow, loadedShapeScene.Elements.Single(element => element.Id == "shape_arrow").EffectiveShapeKind);
+            var loadedShape = loadedShapeScene.Elements.Single(element => element.Id == "shape_arrow");
+            Assert.AreEqual(ScadaShapeKind.Arrow, loadedShape.EffectiveShapeKind);
+            Assert.AreEqual(0.42, loadedShape.Style?.Opacity);
+            Assert.AreEqual(17, loadedShape.Style?.Rotation);
 
             var projectJson = await File.ReadAllTextAsync(Path.Combine(
                 root,
