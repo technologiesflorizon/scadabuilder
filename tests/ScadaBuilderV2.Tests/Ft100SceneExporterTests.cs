@@ -1369,9 +1369,16 @@ public sealed class Ft100SceneExporterTests
                 BorderStyle = "Dashed"
             }
         };
+        var lamp = ScadaElement.CreateShape("shape_lamp_001", "Voyant001", ScadaShapeKind.IndicatorLamp, 80, 120);
+        var bar = ScadaElement.CreateShape("shape_bar_001", "BarreHorizontale001", ScadaShapeKind.HorizontalBar, 140, 120) with
+        {
+            Data = new ScadaElementData(null, null, 42, 0, 100, null, null, "0", null, false)
+        };
         var scene = ScadaScene
             .CreateEmpty("win00008", "Formes", new(1280, 873))
-            .WithElement(arrow);
+            .WithElement(arrow)
+            .WithElement(lamp)
+            .WithElement(bar);
 
         try
         {
@@ -1384,9 +1391,16 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "marker-end=\"url(#arrow-shape_arrow_001)\"");
             StringAssert.Contains(html, "stroke=\"#90C030\"");
             StringAssert.Contains(html, "stroke-dasharray=\"8 5\"");
+            StringAssert.Contains(html, "id=\"ft100-win00008__shape_lamp_001\"");
+            StringAssert.Contains(html, "radialGradient id=\"lamp-gradient-shape_lamp_001\"");
+            StringAssert.Contains(html, "id=\"ft100-win00008__shape_bar_001\"");
+            StringAssert.Contains(html, "width=\"63.84\"");
+            StringAssert.Contains(html, "height=\"24\"");
 
             var css = await File.ReadAllTextAsync(result.CssPath);
             StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_arrow_001");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_lamp_001");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_bar_001");
             StringAssert.Contains(css, "background: transparent;");
             StringAssert.Contains(css, "border: 0 none transparent;");
             AssertExportCssHasNoGlobalRuntimeSelectors(css);
@@ -1394,6 +1408,8 @@ public sealed class Ft100SceneExporterTests
             var manifest = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "manifest.json"));
             StringAssert.Contains(manifest, "\"Kind\": \"Shape\"");
             StringAssert.Contains(manifest, "\"ShapeKind\": \"Arrow\"");
+            StringAssert.Contains(manifest, "\"ShapeKind\": \"IndicatorLamp\"");
+            StringAssert.Contains(manifest, "\"ShapeKind\": \"HorizontalBar\"");
         }
         finally
         {

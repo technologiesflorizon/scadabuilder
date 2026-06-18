@@ -339,6 +339,30 @@
                                 </StackPanel>
                             </Button>
                             <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer un voyant HMI Element+"
+                                    Click="OnInsertIndicatorLampClick">
+                                <StackPanel>
+                                    <TextBlock Text="LED" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <TextBlock Text="Voyant" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer une barre horizontale HMI Element+"
+                                    Click="OnInsertHorizontalBarClick">
+                                <StackPanel>
+                                    <TextBlock Text="[=]" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" Margin="0,2,0,4"/>
+                                    <TextBlock Text="Barre H" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer une barre verticale HMI Element+"
+                                    Click="OnInsertVerticalBarClick">
+                                <StackPanel>
+                                    <TextBlock Text="||" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" Margin="0,2,0,4"/>
+                                    <TextBlock Text="Barre V" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
                                     ToolTip="Inserer un bouton Element+"
                                     Click="OnInsertButtonClick">
                                 <StackPanel>

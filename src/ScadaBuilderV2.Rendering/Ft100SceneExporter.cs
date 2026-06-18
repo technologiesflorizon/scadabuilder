@@ -760,6 +760,7 @@ public sealed partial class Ft100SceneExporter
     private static string BuildShape(ScadaElement element)
     {
         var style = element.Style ?? ScadaElementStyle.DefaultText;
+        var data = element.Data ?? new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
         var width = Math.Max(1, element.Bounds.Width);
         var height = Math.Max(1, element.Bounds.Height);
         var strokeWidth = Math.Max(0, style.BorderWidth);
@@ -774,9 +775,16 @@ public sealed partial class Ft100SceneExporter
             : $" stroke-dasharray=\"{dashArray}\"";
         var svgId = HtmlEncoder.Default.Encode($"shape-{CssIdentifier(element.Id)}");
         var markerId = HtmlEncoder.Default.Encode($"arrow-{CssIdentifier(element.Id)}");
+        var gradientId = HtmlEncoder.Default.Encode($"lamp-gradient-{CssIdentifier(element.Id)}");
         var common = $"stroke=\"{stroke}\" stroke-width=\"{Format(strokeWidth)}\"{dashAttribute} vector-effect=\"non-scaling-stroke\"";
         var body = element.EffectiveShapeKind switch
         {
+            ScadaShapeKind.IndicatorLamp =>
+                $"""<defs><radialGradient id="{gradientId}" cx="35%" cy="28%" r="70%"><stop offset="0%" stop-color="#ffffff" stop-opacity="0.85"/><stop offset="42%" stop-color="{fill}"/><stop offset="100%" stop-color="{stroke}"/></radialGradient></defs><circle cx="{Format(width / 2)}" cy="{Format(height / 2)}" r="{Format(Math.Max(0, Math.Min(width, height) / 2 - halfStroke))}" fill="url(#{gradientId})" {common}/>""",
+            ScadaShapeKind.HorizontalBar =>
+                BuildBarShape(width, height, strokeWidth, halfStroke, stroke, fill, data.Value, vertical: false, common),
+            ScadaShapeKind.VerticalBar =>
+                BuildBarShape(width, height, strokeWidth, halfStroke, stroke, fill, data.Value, vertical: true, common),
             ScadaShapeKind.Ellipse =>
                 $"""<ellipse cx="{Format(width / 2)}" cy="{Format(height / 2)}" rx="{Format(Math.Max(0, (width / 2) - halfStroke))}" ry="{Format(Math.Max(0, (height / 2) - halfStroke))}" fill="{fill}" {common}/>""",
             ScadaShapeKind.Line =>
@@ -790,6 +798,31 @@ public sealed partial class Ft100SceneExporter
         };
 
         return $"""<svg id="{svgId}" viewBox="0 0 {Format(width)} {Format(height)}" width="100%" height="100%" preserveAspectRatio="none" style="display:block;pointer-events:none;">{body}</svg>""";
+    }
+
+    private static string BuildBarShape(
+        double width,
+        double height,
+        double strokeWidth,
+        double halfStroke,
+        string stroke,
+        string fill,
+        double? value,
+        bool vertical,
+        string common)
+    {
+        var percent = ClampPercent(value);
+        var innerX = halfStroke + 3;
+        var innerY = halfStroke + 3;
+        var innerWidth = Math.Max(0, width - strokeWidth - 6);
+        var innerHeight = Math.Max(0, height - strokeWidth - 6);
+        var cornerRadius = Format(Math.Min(8, Math.Min(width, height) * 0.2));
+        var fillCornerRadius = Format(Math.Min(5, Math.Min(innerWidth, innerHeight) * 0.18));
+        var track = $"""<rect x="{Format(halfStroke)}" y="{Format(halfStroke)}" width="{Format(Math.Max(0, width - strokeWidth))}" height="{Format(Math.Max(0, height - strokeWidth))}" rx="{cornerRadius}" fill="#f7fbf5" {common}/>""";
+        var fillRect = vertical
+            ? $"""<rect x="{Format(innerX)}" y="{Format(innerY + innerHeight - (innerHeight * percent / 100))}" width="{Format(innerWidth)}" height="{Format(innerHeight * percent / 100)}" rx="{fillCornerRadius}" fill="{fill}"/>"""
+            : $"""<rect x="{Format(innerX)}" y="{Format(innerY)}" width="{Format(innerWidth * percent / 100)}" height="{Format(innerHeight)}" rx="{fillCornerRadius}" fill="{fill}"/>""";
+        return track + fillRect;
     }
 
     private static string BuildButton(ScadaElement element)
@@ -1897,6 +1930,11 @@ Apply any viewport scale to the composed page container, not independently to he
             "Dotted" => "2 4",
             _ => ""
         };
+    }
+
+    private static double ClampPercent(double? value)
+    {
+        return Math.Max(0, Math.Min(100, value ?? 65));
     }
 
     private static string ShadowCss(string preset)

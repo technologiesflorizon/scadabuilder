@@ -709,6 +709,14 @@ public sealed class OfficialSceneDomainTests
         Assert.AreEqual(ScadaShapeKind.Arrow, arrow.EffectiveShapeKind);
         Assert.AreEqual("Transparent", arrow.Style?.Background);
         Assert.AreEqual(140, arrow.Bounds.Width);
+
+        var lamp = ScadaElement.CreateShape("shape_lamp", "Voyant001", ScadaShapeKind.IndicatorLamp, 10, 20);
+        Assert.AreEqual(new SceneBounds(10, 20, 64, 64), lamp.Bounds);
+
+        var bar = ScadaElement.CreateShape("shape_bar", "BarreHorizontale001", ScadaShapeKind.HorizontalBar, 10, 20);
+        Assert.AreEqual(65, bar.Data?.Value);
+        Assert.AreEqual(0, bar.Data?.Minimum);
+        Assert.AreEqual(100, bar.Data?.Maximum);
     }
 
     private static ScadaElement CreateLegacyStatic(string sourceId, string name)

@@ -852,11 +852,17 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(xaml, "Click=\"OnInsertEllipseClick\"");
         StringAssert.Contains(xaml, "Click=\"OnInsertLineClick\"");
         StringAssert.Contains(xaml, "Click=\"OnInsertArrowClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertIndicatorLampClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertHorizontalBarClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertVerticalBarClick\"");
         StringAssert.Contains(xaml, "Click=\"OnInsertButtonClick\"");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Rectangle);");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Ellipse);");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Line);");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Arrow);");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.IndicatorLamp);");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.HorizontalBar);");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.VerticalBar);");
         StringAssert.Contains(source, "BeginModernElementPlacement(ScadaElementKind.Button);");
     }
 
@@ -870,6 +876,9 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "document.createElementNS('http://www.w3.org/2000/svg', 'svg')");
         StringAssert.Contains(source, "shapeKind === 'ellipse'");
         StringAssert.Contains(source, "shapeKind === 'line' || shapeKind === 'arrow'");
+        StringAssert.Contains(source, "shapeKind === 'indicatorlamp'");
+        StringAssert.Contains(source, "shapeKind === 'horizontalbar' || shapeKind === 'verticalbar'");
+        StringAssert.Contains(source, "const clampPercent = value =>");
         StringAssert.Contains(source, "wrapper.appendChild(renderShapeElement(element, style));");
         StringAssert.Contains(source, "ShapeKind = element.ShapeKind");
     }

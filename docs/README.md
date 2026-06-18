@@ -2,12 +2,13 @@
 
 Date: 2026-06-18
 Status: Active enterprise documentation map
-Document version: `V2.1.2.0027`
+Document version: `V2.1.2.0028`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-18 | `V2.1.2.0028` | `PENDING` | Ajout des formes HMI Element+ voyant et barres de valeur. |
 | 2026-06-18 | `V2.1.2.0027` | `PENDING` | Ajout de la tranche formes standards Element+ et insertion de boutons depuis le ruban. |
 | 2026-06-17 | `V2.1.2.0026` | `876a6be` | Correction du contrat `DisplayFormat` manifest et alignement TF100Web sur les datatypes de mapping. |
 | 2026-06-17 | `V2.1.2.0025` | `58567eb` | Synchronisation du contrat TF100Web apres support des masques `DisplayFormat` `#` dans le runtime `.sb2`. |
@@ -172,7 +173,7 @@ These guardrails are active decisions in `00_governance/DECISION_REGISTER_V2.md`
 23. `ReadTag` and `WriteTag` are runtime binding events. Current TF100Web `.sb2` intake must consume SCADA Builder V2 `ValueBindings.ReadTagId` and `ValueBindings.WriteTagId`, resolve `tf100.mapping.<id>` to TF100Web mappings, and inject host runtime attributes onto page-scoped Element+ DOM ids.
 24. Not every SCADA Builder V2 event family is currently functional in TF100Web. `03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` owns the event parity matrix and next implementation tranche; `08_implementation_status/KNOWN_GAPS_V2.md` owns the active gap list.
 25. Element+ `Donnees` authoring uses `Format affichage` as the active numeric display signal. Hash masks such as `##.#` and `###.#` are exported through `Objects[].Data.DisplayFormat` and interpreted by TF100Web against `RegisterMapping.DataType`: `FLOAT32` and `FLOAT64` round raw values directly, integer datatypes scale by mask decimals, and unknown datatypes fall back to direct rounding. `Mapping / Tag`, `Decimales`, and `Unite` are legacy model fields and are not active authoring controls. `Min` and `Max` are input constraints only for non-read-only numeric inputs.
-26. Standard Element+ shapes created from SCADA Builder V2 persist `ShapeKind` and render/export as Element+-owned SVG content. They remain real scene objects; editor-only selection overlays, handles, drag rectangles, workzone state, zoom, and pan must not be exported.
+26. Standard and HMI Element+ shapes created from SCADA Builder V2 persist `ShapeKind` and render/export as Element+-owned SVG content. They remain real scene objects; editor-only selection overlays, handles, drag rectangles, workzone state, zoom, and pan must not be exported.
 
 ## 5. Decommissioned Legacy Documents
 

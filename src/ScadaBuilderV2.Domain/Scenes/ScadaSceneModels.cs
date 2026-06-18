@@ -45,7 +45,22 @@ public enum ScadaShapeKind
     /// <summary>
     /// Straight arrow Element+ shape.
     /// </summary>
-    Arrow
+    Arrow,
+
+    /// <summary>
+    /// Round HMI/SCADA status indicator lamp.
+    /// </summary>
+    IndicatorLamp,
+
+    /// <summary>
+    /// Horizontal HMI/SCADA value bar using data value as a percentage.
+    /// </summary>
+    HorizontalBar,
+
+    /// <summary>
+    /// Vertical HMI/SCADA value bar using data value as a percentage.
+    /// </summary>
+    VerticalBar
 }
 
 public enum ElementPositionMode
@@ -438,9 +453,15 @@ public sealed record ScadaElement(
         var bounds = shapeKind switch
         {
             ScadaShapeKind.Line or ScadaShapeKind.Arrow => new SceneBounds(x, y, 140, 32),
+            ScadaShapeKind.IndicatorLamp => new SceneBounds(x, y, 64, 64),
+            ScadaShapeKind.HorizontalBar => new SceneBounds(x, y, 160, 32),
+            ScadaShapeKind.VerticalBar => new SceneBounds(x, y, 48, 140),
             ScadaShapeKind.Ellipse => new SceneBounds(x, y, 96, 72),
             _ => new SceneBounds(x, y, 120, 72)
         };
+        var data = shapeKind is ScadaShapeKind.HorizontalBar or ScadaShapeKind.VerticalBar
+            ? new ScadaElementData(null, null, 65, 0, 100, null, null, "0", null, false)
+            : new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
         return new ScadaElement(
             id,
             displayName,
@@ -458,7 +479,7 @@ public sealed record ScadaElement(
                 "Solid",
                 "None",
                 null),
-            new ScadaElementData(null, null, null, null, null, null, null, null, null, false),
+            data,
             ShapeKind: shapeKind);
     }
 

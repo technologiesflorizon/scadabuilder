@@ -4019,6 +4019,21 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         BeginShapePlacement(ScadaShapeKind.Arrow);
     }
 
+    private void OnInsertIndicatorLampClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.IndicatorLamp);
+    }
+
+    private void OnInsertHorizontalBarClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.HorizontalBar);
+    }
+
+    private void OnInsertVerticalBarClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.VerticalBar);
+    }
+
     private void OnInsertButtonClick(object sender, RoutedEventArgs e)
     {
         BeginModernElementPlacement(ScadaElementKind.Button);
@@ -4228,6 +4243,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ScadaShapeKind.Ellipse => "Ellipse",
             ScadaShapeKind.Line => "Ligne",
             ScadaShapeKind.Arrow => "Fleche",
+            ScadaShapeKind.IndicatorLamp => "Voyant",
+            ScadaShapeKind.HorizontalBar => "BarreHorizontale",
+            ScadaShapeKind.VerticalBar => "BarreVerticale",
             _ => "Rectangle"
         };
     }
@@ -4240,6 +4258,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ScadaShapeKind.Ellipse => "ellipse",
             ScadaShapeKind.Line => "ligne",
             ScadaShapeKind.Arrow => "fleche",
+            ScadaShapeKind.IndicatorLamp => "voyant HMI",
+            ScadaShapeKind.HorizontalBar => "barre horizontale HMI",
+            ScadaShapeKind.VerticalBar => "barre verticale HMI",
             _ => "rectangle"
         };
     }
@@ -7104,6 +7125,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
   function renderShapeElement(element, style) {
     const shapeKind = String(element.ShapeKind || element.shapeKind || 'Rectangle').toLowerCase();
+    const data = element.Data || {};
     const strokeWidth = Math.max(0, Number(style.BorderWidth ?? 2));
     const halfStroke = Math.max(1, strokeWidth / 2);
     const stroke = cssText(style.BorderColor, '#2090a0');
@@ -7127,6 +7149,80 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       }
       node.setAttribute('vector-effect', 'non-scaling-stroke');
     };
+
+    const clampPercent = value => {
+      const parsed = Number(value);
+      if (!Number.isFinite(parsed)) return 65;
+      return Math.max(0, Math.min(100, parsed));
+    };
+
+    if (shapeKind === 'indicatorlamp') {
+      const gradient = document.createElementNS(svg.namespaceURI, 'radialGradient');
+      gradient.setAttribute('id', `lamp-gradient-${element.Id}`);
+      gradient.setAttribute('cx', '35%');
+      gradient.setAttribute('cy', '28%');
+      gradient.setAttribute('r', '70%');
+      const highlight = document.createElementNS(svg.namespaceURI, 'stop');
+      highlight.setAttribute('offset', '0%');
+      highlight.setAttribute('stop-color', '#ffffff');
+      highlight.setAttribute('stop-opacity', '0.85');
+      const color = document.createElementNS(svg.namespaceURI, 'stop');
+      color.setAttribute('offset', '42%');
+      color.setAttribute('stop-color', fill);
+      const shade = document.createElementNS(svg.namespaceURI, 'stop');
+      shade.setAttribute('offset', '100%');
+      shade.setAttribute('stop-color', stroke);
+      gradient.appendChild(highlight);
+      gradient.appendChild(color);
+      gradient.appendChild(shade);
+      const defs = document.createElementNS(svg.namespaceURI, 'defs');
+      defs.appendChild(gradient);
+      svg.appendChild(defs);
+
+      const lamp = document.createElementNS(svg.namespaceURI, 'circle');
+      lamp.setAttribute('cx', `${element.Width / 2}`);
+      lamp.setAttribute('cy', `${element.Height / 2}`);
+      lamp.setAttribute('r', `${Math.max(0, Math.min(element.Width, element.Height) / 2 - halfStroke)}`);
+      lamp.setAttribute('fill', `url(#lamp-gradient-${element.Id})`);
+      setStroke(lamp);
+      svg.appendChild(lamp);
+      return svg;
+    }
+
+    if (shapeKind === 'horizontalbar' || shapeKind === 'verticalbar') {
+      const percent = clampPercent(data.Value ?? data.value);
+      const track = document.createElementNS(svg.namespaceURI, 'rect');
+      track.setAttribute('x', `${halfStroke}`);
+      track.setAttribute('y', `${halfStroke}`);
+      track.setAttribute('width', `${Math.max(0, element.Width - strokeWidth)}`);
+      track.setAttribute('height', `${Math.max(0, element.Height - strokeWidth)}`);
+      track.setAttribute('rx', `${Math.min(8, Math.min(element.Width, element.Height) * 0.2)}`);
+      track.setAttribute('fill', '#f7fbf5');
+      setStroke(track);
+      svg.appendChild(track);
+
+      const fillRect = document.createElementNS(svg.namespaceURI, 'rect');
+      const innerX = halfStroke + 3;
+      const innerY = halfStroke + 3;
+      const innerWidth = Math.max(0, element.Width - strokeWidth - 6);
+      const innerHeight = Math.max(0, element.Height - strokeWidth - 6);
+      fillRect.setAttribute('fill', fill);
+      fillRect.setAttribute('rx', `${Math.min(5, Math.min(innerWidth, innerHeight) * 0.18)}`);
+      if (shapeKind === 'horizontalbar') {
+        fillRect.setAttribute('x', `${innerX}`);
+        fillRect.setAttribute('y', `${innerY}`);
+        fillRect.setAttribute('width', `${innerWidth * (percent / 100)}`);
+        fillRect.setAttribute('height', `${innerHeight}`);
+      } else {
+        const fillHeight = innerHeight * (percent / 100);
+        fillRect.setAttribute('x', `${innerX}`);
+        fillRect.setAttribute('y', `${innerY + innerHeight - fillHeight}`);
+        fillRect.setAttribute('width', `${innerWidth}`);
+        fillRect.setAttribute('height', `${fillHeight}`);
+      }
+      svg.appendChild(fillRect);
+      return svg;
+    }
 
     if (shapeKind === 'ellipse') {
       const ellipse = document.createElementNS(svg.namespaceURI, 'ellipse');
