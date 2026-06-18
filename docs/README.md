@@ -2,12 +2,13 @@
 
 Date: 2026-06-18
 Status: Active enterprise documentation map
-Document version: `V2.1.2.0030`
+Document version: `V2.1.2.0031`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-18 | `V2.1.2.0031` | `PENDING` | Ajout des symboles HMI Element+ moteur, ventilateur, convoyeur et jauge. |
 | 2026-06-18 | `V2.1.2.0030` | `cae57c9` | Ajout des presets de boutons HMI Element+ et du champ exporte `ButtonKind`. |
 | 2026-06-18 | `V2.1.2.0029` | `b97ef16` | Ajout des formes process HMI Element+ reservoir, tuyaux, vanne et pompe. |
 | 2026-06-18 | `V2.1.2.0028` | `PENDING` | Ajout des formes HMI Element+ voyant et barres de valeur. |

@@ -2,12 +2,13 @@
 
 Date: 2026-06-18
 Status: Active implementation status
-Document version: `V2.1.2.0030`
+Document version: `V2.1.2.0031`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-18 | `V2.1.2.0031` | `PENDING` | Implementation des symboles HMI Element+ moteur, ventilateur, convoyeur et jauge. |
 | 2026-06-18 | `V2.1.2.0030` | `cae57c9` | Implementation des presets de boutons HMI Element+ `Command`, `Toggle`, `Navigation`, `AlarmAcknowledge` et `EmergencyStop`. |
 | 2026-06-18 | `V2.1.2.0029` | `b97ef16` | Implementation des primitives process HMI Element+ reservoir, tuyaux, vanne et pompe. |
 | 2026-06-18 | `V2.1.2.0028` | `PENDING` | Implementation des primitives HMI Element+ voyant et barres de valeur. |
@@ -88,6 +89,7 @@ As of 2026-06-18, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 239 
 38. The insert ribbon can create HMI Element+ shapes for `IndicatorLamp`, `HorizontalBar`, and `VerticalBar`. Lamp and bar shapes persist through `ShapeKind`; bar shapes use `Data.Value` as a clamped 0-100 percentage in preview and FT100 export.
 39. The insert ribbon can create process HMI Element+ shapes for `Tank`, `PipeHorizontal`, `PipeVertical`, `Valve`, and `Pump`. These primitives persist through `ShapeKind`; tank shapes use `Data.Value` as a clamped 0-100 percentage in preview and FT100 export.
 40. The insert ribbon can create HMI Element+ button presets for `Command`, `Toggle`, `Navigation`, `AlarmAcknowledge`, and `EmergencyStop`. Button presets persist through `ButtonKind`, provide initial size/text/style, and export `ButtonKind` in the FT100 manifest plus `data-scada-button-kind` in generated HTML.
+41. The insert ribbon can create machine and measurement HMI Element+ symbols for `Motor`, `Fan`, `Conveyor`, and `Gauge`. These primitives persist through `ShapeKind`; gauge symbols use `Data.Value` as a clamped 0-100 percentage in preview and FT100 export.
 
 ## 3. Source Of Truth
 

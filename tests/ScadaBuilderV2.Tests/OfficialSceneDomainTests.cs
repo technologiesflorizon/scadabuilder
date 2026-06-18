@@ -748,6 +748,21 @@ public sealed class OfficialSceneDomainTests
 
         var pump = ScadaElement.CreateShape("shape_pump", "Pompe001", ScadaShapeKind.Pump, 10, 20);
         Assert.AreEqual(new SceneBounds(10, 20, 96, 72), pump.Bounds);
+
+        var motor = ScadaElement.CreateShape("shape_motor", "Moteur001", ScadaShapeKind.Motor, 10, 20);
+        Assert.AreEqual(new SceneBounds(10, 20, 96, 72), motor.Bounds);
+
+        var fan = ScadaElement.CreateShape("shape_fan", "Ventilateur001", ScadaShapeKind.Fan, 10, 20);
+        Assert.AreEqual(new SceneBounds(10, 20, 88, 88), fan.Bounds);
+
+        var conveyor = ScadaElement.CreateShape("shape_conveyor", "Convoyeur001", ScadaShapeKind.Conveyor, 10, 20);
+        Assert.AreEqual(new SceneBounds(10, 20, 180, 56), conveyor.Bounds);
+
+        var gauge = ScadaElement.CreateShape("shape_gauge", "Jauge001", ScadaShapeKind.Gauge, 10, 20);
+        Assert.AreEqual(new SceneBounds(10, 20, 88, 88), gauge.Bounds);
+        Assert.AreEqual(65, gauge.Data?.Value);
+        Assert.AreEqual(0, gauge.Data?.Minimum);
+        Assert.AreEqual(100, gauge.Data?.Maximum);
     }
 
     private static ScadaElement CreateLegacyStatic(string sourceId, string name)

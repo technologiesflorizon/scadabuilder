@@ -403,6 +403,38 @@
                                 </StackPanel>
                             </Button>
                             <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer un moteur HMI Element+"
+                                    Click="OnInsertMotorClick">
+                                <StackPanel>
+                                    <TextBlock Text="MTR" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <TextBlock Text="Moteur" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer un ventilateur HMI Element+"
+                                    Click="OnInsertFanClick">
+                                <StackPanel>
+                                    <TextBlock Text="FAN" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <TextBlock Text="Ventil." FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer un convoyeur HMI Element+"
+                                    Click="OnInsertConveyorClick">
+                                <StackPanel>
+                                    <TextBlock Text="CVY" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <TextBlock Text="Convoy." FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer une jauge HMI Element+"
+                                    Click="OnInsertGaugeClick">
+                                <StackPanel>
+                                    <TextBlock Text="GAU" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <TextBlock Text="Jauge" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
                                     ToolTip="Inserer un bouton Element+"
                                     Click="OnInsertButtonClick">
                                 <StackPanel>

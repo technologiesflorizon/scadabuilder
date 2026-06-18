@@ -85,7 +85,27 @@ public enum ScadaShapeKind
     /// <summary>
     /// HMI/SCADA pump symbol.
     /// </summary>
-    Pump
+    Pump,
+
+    /// <summary>
+    /// HMI/SCADA electric motor symbol.
+    /// </summary>
+    Motor,
+
+    /// <summary>
+    /// HMI/SCADA fan symbol.
+    /// </summary>
+    Fan,
+
+    /// <summary>
+    /// HMI/SCADA conveyor symbol.
+    /// </summary>
+    Conveyor,
+
+    /// <summary>
+    /// HMI/SCADA gauge or meter symbol.
+    /// </summary>
+    Gauge
 }
 
 /// <summary>
@@ -526,10 +546,14 @@ public sealed record ScadaElement(
             ScadaShapeKind.PipeVertical => new SceneBounds(x, y, 32, 160),
             ScadaShapeKind.Valve => new SceneBounds(x, y, 96, 64),
             ScadaShapeKind.Pump => new SceneBounds(x, y, 96, 72),
+            ScadaShapeKind.Motor => new SceneBounds(x, y, 96, 72),
+            ScadaShapeKind.Fan => new SceneBounds(x, y, 88, 88),
+            ScadaShapeKind.Conveyor => new SceneBounds(x, y, 180, 56),
+            ScadaShapeKind.Gauge => new SceneBounds(x, y, 88, 88),
             ScadaShapeKind.Ellipse => new SceneBounds(x, y, 96, 72),
             _ => new SceneBounds(x, y, 120, 72)
         };
-        var data = shapeKind is ScadaShapeKind.HorizontalBar or ScadaShapeKind.VerticalBar or ScadaShapeKind.Tank
+        var data = shapeKind is ScadaShapeKind.HorizontalBar or ScadaShapeKind.VerticalBar or ScadaShapeKind.Tank or ScadaShapeKind.Gauge
             ? new ScadaElementData(null, null, 65, 0, 100, null, null, "0", null, false)
             : new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
         return new ScadaElement(

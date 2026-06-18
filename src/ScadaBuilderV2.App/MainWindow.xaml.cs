@@ -4060,6 +4060,26 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         BeginShapePlacement(ScadaShapeKind.Pump);
     }
 
+    private void OnInsertMotorClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.Motor);
+    }
+
+    private void OnInsertFanClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.Fan);
+    }
+
+    private void OnInsertConveyorClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.Conveyor);
+    }
+
+    private void OnInsertGaugeClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.Gauge);
+    }
+
     private void OnInsertButtonClick(object sender, RoutedEventArgs e)
     {
         BeginButtonPlacement(ScadaButtonKind.Command);
@@ -4309,6 +4329,10 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ScadaShapeKind.PipeVertical => "TuyauVertical",
             ScadaShapeKind.Valve => "Vanne",
             ScadaShapeKind.Pump => "Pompe",
+            ScadaShapeKind.Motor => "Moteur",
+            ScadaShapeKind.Fan => "Ventilateur",
+            ScadaShapeKind.Conveyor => "Convoyeur",
+            ScadaShapeKind.Gauge => "Jauge",
             _ => "Rectangle"
         };
     }
@@ -4329,6 +4353,10 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ScadaShapeKind.PipeVertical => "tuyau vertical HMI",
             ScadaShapeKind.Valve => "vanne HMI",
             ScadaShapeKind.Pump => "pompe HMI",
+            ScadaShapeKind.Motor => "moteur HMI",
+            ScadaShapeKind.Fan => "ventilateur HMI",
+            ScadaShapeKind.Conveyor => "convoyeur HMI",
+            ScadaShapeKind.Gauge => "jauge HMI",
             _ => "rectangle"
         };
     }
@@ -7422,6 +7450,133 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       impeller.setAttribute('d', `M ${cx - radius * 0.35} ${cy - radius * 0.25} L ${cx + radius * 0.42} ${cy} L ${cx - radius * 0.35} ${cy + radius * 0.25} Z`);
       impeller.setAttribute('fill', stroke);
       svg.appendChild(impeller);
+      return svg;
+    }
+
+    if (shapeKind === 'motor') {
+      const body = document.createElementNS(svg.namespaceURI, 'rect');
+      body.setAttribute('x', `${halfStroke + element.Width * 0.08}`);
+      body.setAttribute('y', `${halfStroke + element.Height * 0.18}`);
+      body.setAttribute('width', `${Math.max(0, element.Width * 0.7 - strokeWidth)}`);
+      body.setAttribute('height', `${Math.max(0, element.Height * 0.58 - strokeWidth)}`);
+      body.setAttribute('rx', `${Math.min(10, element.Height * 0.16)}`);
+      body.setAttribute('fill', fill);
+      setStroke(body);
+      svg.appendChild(body);
+
+      const shaft = document.createElementNS(svg.namespaceURI, 'rect');
+      shaft.setAttribute('x', `${element.Width * 0.78}`);
+      shaft.setAttribute('y', `${element.Height * 0.42}`);
+      shaft.setAttribute('width', `${Math.max(6, element.Width * 0.16 - halfStroke)}`);
+      shaft.setAttribute('height', `${Math.max(6, element.Height * 0.16)}`);
+      shaft.setAttribute('fill', '#f7fbf5');
+      setStroke(shaft);
+      svg.appendChild(shaft);
+
+      const label = document.createElementNS(svg.namespaceURI, 'text');
+      label.setAttribute('x', `${element.Width * 0.42}`);
+      label.setAttribute('y', `${element.Height * 0.56}`);
+      label.setAttribute('text-anchor', 'middle');
+      label.setAttribute('font-size', `${Math.max(12, Math.min(element.Width, element.Height) * 0.24)}`);
+      label.setAttribute('font-family', 'Segoe UI, Arial, sans-serif');
+      label.setAttribute('font-weight', '700');
+      label.setAttribute('fill', stroke);
+      label.textContent = 'M';
+      svg.appendChild(label);
+      return svg;
+    }
+
+    if (shapeKind === 'fan') {
+      const cx = element.Width / 2;
+      const cy = element.Height / 2;
+      const radius = Math.max(0, Math.min(element.Width, element.Height) * 0.44 - halfStroke);
+      const housing = document.createElementNS(svg.namespaceURI, 'circle');
+      housing.setAttribute('cx', `${cx}`);
+      housing.setAttribute('cy', `${cy}`);
+      housing.setAttribute('r', `${radius}`);
+      housing.setAttribute('fill', '#f7fbf5');
+      setStroke(housing);
+      svg.appendChild(housing);
+
+      [[0, -1], [0.86, 0.5], [-0.86, 0.5]].forEach(([dx, dy]) => {
+        const blade = document.createElementNS(svg.namespaceURI, 'path');
+        blade.setAttribute('d', `M ${cx} ${cy} Q ${cx + dx * radius * 0.48} ${cy + dy * radius * 0.48} ${cx + dx * radius * 0.18 - dy * radius * 0.28} ${cy + dy * radius * 0.18 + dx * radius * 0.28} Q ${cx + dx * radius * 0.72} ${cy + dy * radius * 0.72} ${cx + dx * radius * 0.86 - dy * radius * 0.14} ${cy + dy * radius * 0.86 + dx * radius * 0.14} Q ${cx + dx * radius * 0.45} ${cy + dy * radius * 0.45} ${cx} ${cy} Z`);
+        blade.setAttribute('fill', fill);
+        setStroke(blade);
+        svg.appendChild(blade);
+      });
+
+      const hub = document.createElementNS(svg.namespaceURI, 'circle');
+      hub.setAttribute('cx', `${cx}`);
+      hub.setAttribute('cy', `${cy}`);
+      hub.setAttribute('r', `${Math.max(4, radius * 0.16)}`);
+      hub.setAttribute('fill', stroke);
+      svg.appendChild(hub);
+      return svg;
+    }
+
+    if (shapeKind === 'conveyor') {
+      const belt = document.createElementNS(svg.namespaceURI, 'rect');
+      belt.setAttribute('x', `${halfStroke}`);
+      belt.setAttribute('y', `${element.Height * 0.25}`);
+      belt.setAttribute('width', `${Math.max(0, element.Width - strokeWidth)}`);
+      belt.setAttribute('height', `${element.Height * 0.42}`);
+      belt.setAttribute('rx', `${Math.min(8, element.Height * 0.18)}`);
+      belt.setAttribute('fill', fill);
+      setStroke(belt);
+      svg.appendChild(belt);
+
+      [0.18, 0.5, 0.82].forEach(position => {
+        const roller = document.createElementNS(svg.namespaceURI, 'circle');
+        roller.setAttribute('cx', `${element.Width * position}`);
+        roller.setAttribute('cy', `${element.Height * 0.72}`);
+        roller.setAttribute('r', `${Math.max(4, element.Height * 0.1)}`);
+        roller.setAttribute('fill', '#f7fbf5');
+        setStroke(roller);
+        svg.appendChild(roller);
+      });
+
+      const topLine = document.createElementNS(svg.namespaceURI, 'line');
+      topLine.setAttribute('x1', `${halfStroke + 6}`);
+      topLine.setAttribute('y1', `${element.Height * 0.36}`);
+      topLine.setAttribute('x2', `${element.Width - halfStroke - 6}`);
+      topLine.setAttribute('y2', `${element.Height * 0.36}`);
+      setStroke(topLine);
+      svg.appendChild(topLine);
+      return svg;
+    }
+
+    if (shapeKind === 'gauge') {
+      const percent = clampPercent(data.Value ?? data.value);
+      const cx = element.Width / 2;
+      const cy = element.Height * 0.58;
+      const radius = Math.max(0, Math.min(element.Width, element.Height) * 0.42 - halfStroke);
+      const face = document.createElementNS(svg.namespaceURI, 'circle');
+      face.setAttribute('cx', `${cx}`);
+      face.setAttribute('cy', `${cy}`);
+      face.setAttribute('r', `${radius}`);
+      face.setAttribute('fill', '#f7fbf5');
+      setStroke(face);
+      svg.appendChild(face);
+
+      const angle = (-140 + (percent * 280 / 100)) * Math.PI / 180;
+      const needle = document.createElementNS(svg.namespaceURI, 'line');
+      needle.setAttribute('x1', `${cx}`);
+      needle.setAttribute('y1', `${cy}`);
+      needle.setAttribute('x2', `${cx + Math.cos(angle) * radius * 0.72}`);
+      needle.setAttribute('y2', `${cy + Math.sin(angle) * radius * 0.72}`);
+      needle.setAttribute('stroke', stroke);
+      needle.setAttribute('stroke-width', `${Math.max(2, strokeWidth + 1)}`);
+      needle.setAttribute('vector-effect', 'non-scaling-stroke');
+      svg.appendChild(needle);
+
+      const hub = document.createElementNS(svg.namespaceURI, 'circle');
+      hub.setAttribute('cx', `${cx}`);
+      hub.setAttribute('cy', `${cy}`);
+      hub.setAttribute('r', `${Math.max(3, radius * 0.08)}`);
+      hub.setAttribute('fill', fill);
+      setStroke(hub);
+      svg.appendChild(hub);
       return svg;
     }
 

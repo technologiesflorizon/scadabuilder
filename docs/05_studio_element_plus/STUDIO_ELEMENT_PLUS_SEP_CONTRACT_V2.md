@@ -2,12 +2,13 @@
 
 Date: 2026-06-18
 Status: Active `.sep` package contract
-Document version: `V2.1.2.0029`
+Document version: `V2.1.2.0031`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-18 | `V2.1.2.0031` | `PENDING` | Ajout des primitives machines/mesure HMI Element+ `Motor`, `Fan`, `Conveyor` et `Gauge`. |
 | 2026-06-18 | `V2.1.2.0029` | `b97ef16` | Ajout des primitives process HMI Element+ `Tank`, `PipeHorizontal`, `PipeVertical`, `Valve` et `Pump`. |
 | 2026-06-18 | `V2.1.2.0028` | `PENDING` | Ajout des primitives HMI Element+ `IndicatorLamp`, `HorizontalBar` et `VerticalBar`. |
 | 2026-06-18 | `V2.1.2.0027` | `PENDING` | Ajout du contrat des formes standards Element+ creees depuis SCADA Builder V2 et exportees en SVG runtime. |
@@ -60,6 +61,7 @@ SCADA Builder V2 scene insertions persist standard shape type through `ScadaElem
 The implemented standard shape slice covers `Rectangle`, `RoundedRectangle`, `Ellipse`, `Line`, and `Arrow`.
 The implemented HMI shape slice covers `IndicatorLamp`, `HorizontalBar`, and `VerticalBar`; bar shapes use `ScadaElement.Data.Value` as a 0-100 percentage for preview and FT100 export.
 The implemented process shape slice covers `Tank`, `PipeHorizontal`, `PipeVertical`, `Valve`, and `Pump`; tank shapes use `ScadaElement.Data.Value` as a 0-100 percentage for preview and FT100 export.
+The implemented machine and measurement symbol slice covers `Motor`, `Fan`, `Conveyor`, and `Gauge`; gauge shapes use `ScadaElement.Data.Value` as a 0-100 percentage for preview and FT100 export.
 Preview and FT100 export render these shapes as Element+-owned SVG content inside the Element+ wrapper; selection overlays, handles, drag rectangles, workzone state, zoom, and pan remain editor-only.
 
 ## 4. Related Tests

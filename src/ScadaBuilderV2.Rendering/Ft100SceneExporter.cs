@@ -795,6 +795,14 @@ public sealed partial class Ft100SceneExporter
                 BuildValveShape(width, height, halfStroke, fill, common),
             ScadaShapeKind.Pump =>
                 BuildPumpShape(width, height, halfStroke, stroke, fill, common),
+            ScadaShapeKind.Motor =>
+                BuildMotorShape(width, height, strokeWidth, halfStroke, stroke, fill, common),
+            ScadaShapeKind.Fan =>
+                BuildFanShape(width, height, halfStroke, stroke, fill, common),
+            ScadaShapeKind.Conveyor =>
+                BuildConveyorShape(width, height, strokeWidth, halfStroke, fill, common),
+            ScadaShapeKind.Gauge =>
+                BuildGaugeShape(width, height, strokeWidth, halfStroke, stroke, fill, data.Value, common),
             ScadaShapeKind.Ellipse =>
                 $"""<ellipse cx="{Format(width / 2)}" cy="{Format(height / 2)}" rx="{Format(Math.Max(0, (width / 2) - halfStroke))}" ry="{Format(Math.Max(0, (height / 2) - halfStroke))}" fill="{fill}" {common}/>""",
             ScadaShapeKind.Line =>
@@ -912,6 +920,76 @@ public sealed partial class Ft100SceneExporter
             $"""<circle cx="{Format(cx)}" cy="{Format(cy)}" r="{Format(radius)}" fill="{fill}" {common}/>""" +
             $"""<rect x="{Format(outletX)}" y="{Format(outletY)}" width="{Format(outletWidth)}" height="{Format(outletHeight)}" fill="{fill}" {common}/>""" +
             $"""<path d="M {Format(cx - radius * 0.35)} {Format(cy - radius * 0.25)} L {Format(cx + radius * 0.42)} {Format(cy)} L {Format(cx - radius * 0.35)} {Format(cy + radius * 0.25)} Z" fill="{stroke}"/>""";
+    }
+
+    private static string BuildMotorShape(
+        double width,
+        double height,
+        double strokeWidth,
+        double halfStroke,
+        string stroke,
+        string fill,
+        string common)
+    {
+        return
+            $"""<rect x="{Format(halfStroke + width * 0.08)}" y="{Format(halfStroke + height * 0.18)}" width="{Format(Math.Max(0, width * 0.7 - strokeWidth))}" height="{Format(Math.Max(0, height * 0.58 - strokeWidth))}" rx="{Format(Math.Min(10, height * 0.16))}" fill="{fill}" {common}/>""" +
+            $"""<rect x="{Format(width * 0.78)}" y="{Format(height * 0.42)}" width="{Format(Math.Max(6, width * 0.16 - halfStroke))}" height="{Format(Math.Max(6, height * 0.16))}" fill="#f7fbf5" {common}/>""" +
+            $"""<text x="{Format(width * 0.42)}" y="{Format(height * 0.56)}" text-anchor="middle" font-size="{Format(Math.Max(12, Math.Min(width, height) * 0.24))}" font-family="Segoe UI, Arial, sans-serif" font-weight="700" fill="{stroke}">M</text>""";
+    }
+
+    private static string BuildFanShape(
+        double width,
+        double height,
+        double halfStroke,
+        string stroke,
+        string fill,
+        string common)
+    {
+        var cx = width / 2;
+        var cy = height / 2;
+        var radius = Math.Max(0, Math.Min(width, height) * 0.44 - halfStroke);
+        var body = $"""<circle cx="{Format(cx)}" cy="{Format(cy)}" r="{Format(radius)}" fill="#f7fbf5" {common}/>""";
+        var bladeVectors = new[] { (Dx: 0d, Dy: -1d), (Dx: 0.86, Dy: 0.5), (Dx: -0.86, Dy: 0.5) };
+        var blades = string.Concat(bladeVectors.Select(vector =>
+            $"""<path d="M {Format(cx)} {Format(cy)} Q {Format(cx + vector.Dx * radius * 0.48)} {Format(cy + vector.Dy * radius * 0.48)} {Format(cx + vector.Dx * radius * 0.18 - vector.Dy * radius * 0.28)} {Format(cy + vector.Dy * radius * 0.18 + vector.Dx * radius * 0.28)} Q {Format(cx + vector.Dx * radius * 0.72)} {Format(cy + vector.Dy * radius * 0.72)} {Format(cx + vector.Dx * radius * 0.86 - vector.Dy * radius * 0.14)} {Format(cy + vector.Dy * radius * 0.86 + vector.Dx * radius * 0.14)} Q {Format(cx + vector.Dx * radius * 0.45)} {Format(cy + vector.Dy * radius * 0.45)} {Format(cx)} {Format(cy)} Z" fill="{fill}" {common}/>"""));
+        var hub = $"""<circle cx="{Format(cx)}" cy="{Format(cy)}" r="{Format(Math.Max(4, radius * 0.16))}" fill="{stroke}"/>""";
+        return body + blades + hub;
+    }
+
+    private static string BuildConveyorShape(
+        double width,
+        double height,
+        double strokeWidth,
+        double halfStroke,
+        string fill,
+        string common)
+    {
+        var belt = $"""<rect x="{Format(halfStroke)}" y="{Format(height * 0.25)}" width="{Format(Math.Max(0, width - strokeWidth))}" height="{Format(height * 0.42)}" rx="{Format(Math.Min(8, height * 0.18))}" fill="{fill}" {common}/>""";
+        var rollers = string.Concat(new[] { 0.18, 0.5, 0.82 }.Select(position =>
+            $"""<circle cx="{Format(width * position)}" cy="{Format(height * 0.72)}" r="{Format(Math.Max(4, height * 0.1))}" fill="#f7fbf5" {common}/>"""));
+        var topLine = $"""<line x1="{Format(halfStroke + 6)}" y1="{Format(height * 0.36)}" x2="{Format(width - halfStroke - 6)}" y2="{Format(height * 0.36)}" {common}/>""";
+        return belt + rollers + topLine;
+    }
+
+    private static string BuildGaugeShape(
+        double width,
+        double height,
+        double strokeWidth,
+        double halfStroke,
+        string stroke,
+        string fill,
+        double? value,
+        string common)
+    {
+        var percent = ClampPercent(value);
+        var cx = width / 2;
+        var cy = height * 0.58;
+        var radius = Math.Max(0, Math.Min(width, height) * 0.42 - halfStroke);
+        var angle = (-140 + (percent * 280 / 100)) * Math.PI / 180;
+        return
+            $"""<circle cx="{Format(cx)}" cy="{Format(cy)}" r="{Format(radius)}" fill="#f7fbf5" {common}/>""" +
+            $"""<line x1="{Format(cx)}" y1="{Format(cy)}" x2="{Format(cx + Math.Cos(angle) * radius * 0.72)}" y2="{Format(cy + Math.Sin(angle) * radius * 0.72)}" stroke="{stroke}" stroke-width="{Format(Math.Max(2, strokeWidth + 1))}" vector-effect="non-scaling-stroke"/>""" +
+            $"""<circle cx="{Format(cx)}" cy="{Format(cy)}" r="{Format(Math.Max(3, radius * 0.08))}" fill="{fill}" {common}/>""";
     }
 
     private static string BuildButton(ScadaElement element)

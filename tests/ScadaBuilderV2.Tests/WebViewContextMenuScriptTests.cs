@@ -862,6 +862,10 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(xaml, "Click=\"OnInsertPipeVerticalClick\"");
         StringAssert.Contains(xaml, "Click=\"OnInsertValveClick\"");
         StringAssert.Contains(xaml, "Click=\"OnInsertPumpClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertMotorClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertFanClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertConveyorClick\"");
+        StringAssert.Contains(xaml, "Click=\"OnInsertGaugeClick\"");
         StringAssert.Contains(xaml, "Click=\"OnInsertButtonClick\"");
         StringAssert.Contains(xaml, "Click=\"OnInsertToggleButtonClick\"");
         StringAssert.Contains(xaml, "Click=\"OnInsertNavigationButtonClick\"");
@@ -879,6 +883,10 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.PipeVertical);");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Valve);");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Pump);");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Motor);");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Fan);");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Conveyor);");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Gauge);");
         StringAssert.Contains(source, "BeginButtonPlacement(ScadaButtonKind.Command);");
         StringAssert.Contains(source, "BeginButtonPlacement(ScadaButtonKind.Toggle);");
         StringAssert.Contains(source, "BeginButtonPlacement(ScadaButtonKind.Navigation);");
@@ -902,6 +910,10 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "shapeKind === 'pipehorizontal' || shapeKind === 'pipevertical'");
         StringAssert.Contains(source, "shapeKind === 'valve'");
         StringAssert.Contains(source, "shapeKind === 'pump'");
+        StringAssert.Contains(source, "shapeKind === 'motor'");
+        StringAssert.Contains(source, "shapeKind === 'fan'");
+        StringAssert.Contains(source, "shapeKind === 'conveyor'");
+        StringAssert.Contains(source, "shapeKind === 'gauge'");
         StringAssert.Contains(source, "const clampPercent = value =>");
         StringAssert.Contains(source, "wrapper.appendChild(renderShapeElement(element, style));");
         StringAssert.Contains(source, "ShapeKind = element.ShapeKind");
