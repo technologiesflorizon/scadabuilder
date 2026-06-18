@@ -723,12 +723,34 @@ public sealed class Ft100SceneExporterTests
         var sourceHtmlPath = Path.Combine(sourceRoot, "value_binding.html");
         await File.WriteAllTextAsync(sourceHtmlPath, "<!doctype html><html><body><div class=\"page\"></div></body></html>");
 
-        var input = ScadaElement.CreateInputNumeric("input_sp", "Consigne", 10, 20);
+        var baseInput = ScadaElement.CreateInputNumeric("input_sp", "Consigne", 10, 20);
+        var input = baseInput with
+        {
+            Data = baseInput.Data! with
+            {
+                DisplayFormat = "fixed:1",
+                IsReadOnly = false,
+                Minimum = 10,
+                Maximum = 99
+            }
+        };
+        var baseDisplay = ScadaElement.CreateInputNumeric("display_temperature", "Temperature", 30, 60, isReadOnly: true);
+        var display = baseDisplay with
+        {
+            Data = baseDisplay.Data! with
+            {
+                DisplayFormat = "###.#",
+                Minimum = 10,
+                Maximum = 99
+            }
+        };
         var scene = ScadaScene
             .CreateEmpty("win00008", "Value binding", new(1280, 873))
             .WithElement(input)
+            .WithElement(display)
             .WithValueBinding("input_sp", readTagId: "tf100.mapping.41")
-            .WithValueBinding("input_sp", writeTagId: "tf100.mapping.42");
+            .WithValueBinding("input_sp", writeTagId: "tf100.mapping.42")
+            .WithValueBinding("display_temperature", readTagId: "tf100.mapping.41");
         var project = ScadaProject.CreateDefault("Runtime") with
         {
             Scenes = [new ScadaSceneReference("win00008", "Value binding", "scenes/win00008.scene.json")],
@@ -776,6 +798,11 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "scada-builder-write-value");
             StringAssert.Contains(manifest, "\"ReadTagId\": \"tf100.mapping.41\"");
             StringAssert.Contains(manifest, "\"WriteTagId\": \"tf100.mapping.42\"");
+            StringAssert.Contains(manifest, "\"DisplayFormat\": \"fixed:1\"");
+            StringAssert.Contains(manifest, "\"DisplayFormat\": \"###.#\"");
+            StringAssert.Contains(manifest, "\"IsReadOnly\": true");
+            StringAssert.Contains(manifest, "\"Min\": 10");
+            StringAssert.Contains(manifest, "\"Max\": 99");
             StringAssert.Contains(manifest, "\"Tags\"");
             StringAssert.Contains(manifest, "\"DisplayName\": \"Consigne\"");
             StringAssert.Contains(manifest, "\"Writeable\": true");

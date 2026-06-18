@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active implementation status
-Document version: `V2.1.2.0025`
+Document version: `V2.1.2.0026`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-17 | `V2.1.2.0026` | `PENDING` | Correction du transport manifest `Data.DisplayFormat` et alignement du formatage TF100Web sur les datatypes de mapping. |
 | 2026-06-17 | `V2.1.2.0025` | `58567eb` | Ajout du support TF100Web des masques `DisplayFormat` `#` comme comportement implemente. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Refactor de l'onglet Donnees Element+ et activation de `Format affichage` comme source du masque numerique. |
 | 2026-06-17 | `V2.1.2.0022` | `PENDING` | Harmonisation TF100Web pour consommer les events de binding `ValueBindings` depuis `.sb2`. |
@@ -77,7 +78,8 @@ As of 2026-06-17, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 235 
 32. FT100 `.sb2` export accepts indented page-scoped CSS id selectors during validation, reports destination/preparation/source/compression phases in the status bar, shows an indeterminate bottom-right status progress bar while running, guards against concurrent `.sb2` clicks, and performs archive generation off the WPF UI thread.
 33. TF100Web `.sb2` intake resolves SCADA Builder V2 `ValueBindings.ReadTagId` and `ValueBindings.WriteTagId` shaped as `tf100.mapping.<id>` into host runtime mapping attributes. Page-scoped Element+ DOM ids are matched from manifest model ids, and separate read/write mappings are supported through `data-scada-write-mapping-id`.
 34. The Element+ `Donnees` tab now treats `Format affichage` as the active numeric display signal. Legacy `Mapping / Tag`, `Decimales`, and `Unite` controls are removed from visible authoring, while legacy model fields remain preserved for compatibility. `Min` and `Max` are enabled only for non-read-only numeric inputs.
-35. TF100Web commit `3c795c2` interprets SCADA Builder V2 `DisplayFormat` hash masks made of `#` plus an optional decimal point. For example, raw value `999` with `##.#` displays as `99.9`, while larger values clamp to the visible mask budget.
+35. FT100 `.sb2` manifests export `InputNumeric` display metadata under `Objects[].Data`, including `DisplayFormat`, `IsReadOnly`, `Min`, and `Max`, so TF100Web does not have to infer numeric masks from page text for newly compiled packages.
+36. TF100Web interprets SCADA Builder V2 `DisplayFormat` hash masks made of `#` plus an optional decimal point. It aligns runtime formatting with TF100Web `RegisterMapping.DataType`: `FLOAT32` and `FLOAT64` round directly, explicit integer datatypes scale by the mask decimal count, and unknown datatypes use direct rounding. For example, `39.599998474121094` with `###.#` and `FLOAT32` displays as `39.6`.
 
 ## 3. Source Of Truth
 

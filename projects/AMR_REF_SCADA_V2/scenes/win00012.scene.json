@@ -14102,8 +14102,8 @@
     },
     {
       "Id": "legacy_24",
-      "DisplayName": "Text2",
-      "Kind": "LegacyStatic",
+      "DisplayName": "Element+ Text2",
+      "Kind": "InputNumeric",
       "Bounds": {
         "X": 89,
         "Y": 54,
@@ -14133,16 +14133,16 @@
         "AdvancedCss": null
       },
       "Data": {
-        "Text": "###.0",
+        "Text": null,
         "Placeholder": null,
         "Value": null,
         "Minimum": null,
         "Maximum": null,
-        "Decimals": null,
+        "Decimals": 0,
         "Unit": null,
-        "DisplayFormat": null,
+        "DisplayFormat": "###.#",
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": true
       },
       "Children": null,
       "LegacyPayload": {

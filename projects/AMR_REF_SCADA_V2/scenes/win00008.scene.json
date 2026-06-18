@@ -2879,7 +2879,7 @@
       "Kind": "InputNumeric",
       "Bounds": {
         "X": 60,
-        "Y": 179,
+        "Y": 178,
         "Width": 62,
         "Height": 23
       },
@@ -2913,7 +2913,7 @@
         "Maximum": null,
         "Decimals": 0,
         "Unit": null,
-        "DisplayFormat": "####",
+        "DisplayFormat": "###.#",
         "TagBinding": null,
         "IsReadOnly": false,
         "ReadTagId": "tf100.mapping.159",
@@ -2929,7 +2929,7 @@
       "DisplayName": "Element\u002B Text24",
       "Kind": "InputNumeric",
       "Bounds": {
-        "X": 58,
+        "X": 57,
         "Y": 235,
         "Width": 59,
         "Height": 25
@@ -2958,13 +2958,13 @@
       },
       "Data": {
         "Text": null,
-        "Placeholder": "0",
+        "Placeholder": null,
         "Value": null,
         "Minimum": null,
         "Maximum": null,
         "Decimals": 0,
         "Unit": null,
-        "DisplayFormat": "####",
+        "DisplayFormat": "###.#",
         "TagBinding": null,
         "IsReadOnly": true,
         "ReadTagId": "tf100.mapping.161",
@@ -3009,16 +3009,16 @@
       },
       "Data": {
         "Text": null,
-        "Placeholder": "0",
+        "Placeholder": null,
         "Value": null,
         "Minimum": null,
         "Maximum": null,
         "Decimals": 0,
         "Unit": null,
-        "DisplayFormat": "###.0",
+        "DisplayFormat": "##.#",
         "TagBinding": null,
         "IsReadOnly": true,
-        "ReadTagId": null,
+        "ReadTagId": "tf100.mapping.161",
         "WriteTagId": null
       },
       "Children": null,

@@ -69608,8 +69608,8 @@
     },
     {
       "Id": "legacy_967",
-      "DisplayName": "Text41",
-      "Kind": "LegacyStatic",
+      "DisplayName": "Element+ Text41",
+      "Kind": "InputNumeric",
       "Bounds": {
         "X": 50,
         "Y": 61,
@@ -69639,16 +69639,16 @@
         "AdvancedCss": null
       },
       "Data": {
-        "Text": "###.0",
+        "Text": null,
         "Placeholder": null,
         "Value": null,
         "Minimum": null,
         "Maximum": null,
-        "Decimals": null,
+        "Decimals": 0,
         "Unit": null,
-        "DisplayFormat": null,
+        "DisplayFormat": "###.#",
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": true
       },
       "Children": null,
       "LegacyPayload": {

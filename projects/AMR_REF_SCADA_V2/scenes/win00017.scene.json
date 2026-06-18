@@ -86660,13 +86660,13 @@
       },
       "Data": {
         "Text": null,
-        "Placeholder": "0",
+        "Placeholder": null,
         "Value": null,
         "Minimum": null,
         "Maximum": null,
         "Decimals": 0,
         "Unit": null,
-        "DisplayFormat": "###.0",
+        "DisplayFormat": "###.#",
         "TagBinding": null,
         "IsReadOnly": true,
         "ReadTagId": "tf100.mapping.165",
@@ -86711,7 +86711,7 @@
       },
       "Data": {
         "Text": null,
-        "Placeholder": "0",
+        "Placeholder": null,
         "Value": null,
         "Minimum": null,
         "Maximum": null,
@@ -86762,7 +86762,7 @@
       },
       "Data": {
         "Text": null,
-        "Placeholder": "0",
+        "Placeholder": null,
         "Value": null,
         "Minimum": null,
         "Maximum": null,

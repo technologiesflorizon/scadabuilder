@@ -69260,8 +69260,8 @@
     },
     {
       "Id": "legacy_867",
-      "DisplayName": "Text19",
-      "Kind": "LegacyStatic",
+      "DisplayName": "Element+ Text19",
+      "Kind": "InputNumeric",
       "Bounds": {
         "X": 51,
         "Y": 61,
@@ -69291,16 +69291,16 @@
         "AdvancedCss": null
       },
       "Data": {
-        "Text": "###.0",
+        "Text": null,
         "Placeholder": null,
         "Value": null,
         "Minimum": null,
         "Maximum": null,
-        "Decimals": null,
+        "Decimals": 0,
         "Unit": null,
-        "DisplayFormat": null,
+        "DisplayFormat": "###.#",
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": true
       },
       "Children": null,
       "LegacyPayload": {
@@ -69492,8 +69492,8 @@
     },
     {
       "Id": "legacy_1003",
-      "DisplayName": "Text23",
-      "Kind": "LegacyStatic",
+      "DisplayName": "Element+ Text23",
+      "Kind": "InputNumeric",
       "Bounds": {
         "X": 809,
         "Y": 837,
@@ -69523,16 +69523,16 @@
         "AdvancedCss": null
       },
       "Data": {
-        "Text": "###.0",
+        "Text": null,
         "Placeholder": null,
         "Value": null,
         "Minimum": null,
         "Maximum": null,
-        "Decimals": null,
+        "Decimals": 0,
         "Unit": null,
-        "DisplayFormat": null,
+        "DisplayFormat": "###.#",
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": true
       },
       "Children": null,
       "LegacyPayload": {
@@ -69608,8 +69608,8 @@
     },
     {
       "Id": "legacy_1008",
-      "DisplayName": "Text25",
-      "Kind": "LegacyStatic",
+      "DisplayName": "Element+ Text25",
+      "Kind": "InputNumeric",
       "Bounds": {
         "X": 934,
         "Y": 836,
@@ -69639,16 +69639,16 @@
         "AdvancedCss": null
       },
       "Data": {
-        "Text": "###.0",
+        "Text": null,
         "Placeholder": null,
         "Value": null,
         "Minimum": null,
         "Maximum": null,
-        "Decimals": null,
+        "Decimals": 0,
         "Unit": null,
-        "DisplayFormat": null,
+        "DisplayFormat": "###.#",
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": true
       },
       "Children": null,
       "LegacyPayload": {
@@ -69724,8 +69724,8 @@
     },
     {
       "Id": "legacy_1013",
-      "DisplayName": "Text27",
-      "Kind": "LegacyStatic",
+      "DisplayName": "Element+ Text27",
+      "Kind": "InputNumeric",
       "Bounds": {
         "X": 1055,
         "Y": 837,
@@ -69755,16 +69755,16 @@
         "AdvancedCss": null
       },
       "Data": {
-        "Text": "###.0",
+        "Text": null,
         "Placeholder": null,
         "Value": null,
         "Minimum": null,
         "Maximum": null,
-        "Decimals": null,
+        "Decimals": 0,
         "Unit": null,
-        "DisplayFormat": null,
+        "DisplayFormat": "###.#",
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": true
       },
       "Children": null,
       "LegacyPayload": {
@@ -69840,8 +69840,8 @@
     },
     {
       "Id": "legacy_1018",
-      "DisplayName": "Text29",
-      "Kind": "LegacyStatic",
+      "DisplayName": "Element+ Text29",
+      "Kind": "InputNumeric",
       "Bounds": {
         "X": 1180,
         "Y": 836,
@@ -69871,16 +69871,16 @@
         "AdvancedCss": null
       },
       "Data": {
-        "Text": "###.0",
+        "Text": null,
         "Placeholder": null,
         "Value": null,
         "Minimum": null,
         "Maximum": null,
-        "Decimals": null,
+        "Decimals": 0,
         "Unit": null,
-        "DisplayFormat": null,
+        "DisplayFormat": "###.#",
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": true
       },
       "Children": null,
       "LegacyPayload": {

@@ -1080,6 +1080,7 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
                     element.DisplayName,
                     Kind = element.Kind.ToString(),
                     ButtonBehavior = element.Kind == ScadaElementKind.Button ? element.EffectiveButtonBehavior : null,
+                    Data = BuildManifestElementData(element),
                     Events = element.EventBindings,
                     ValueBindings = new
                     {
@@ -1088,6 +1089,22 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
                     }
                 })
                 .ToArray()
+        };
+    }
+
+    private static object? BuildManifestElementData(ScadaElement element)
+    {
+        if (element.Kind != ScadaElementKind.InputNumeric)
+        {
+            return null;
+        }
+
+        return new
+        {
+            DisplayFormat = element.Data?.DisplayFormat,
+            IsReadOnly = element.Data?.IsReadOnly ?? false,
+            Min = element.Data?.Minimum,
+            Max = element.Data?.Maximum
         };
     }
 
