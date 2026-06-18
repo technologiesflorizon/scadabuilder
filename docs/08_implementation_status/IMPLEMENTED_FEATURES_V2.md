@@ -8,7 +8,7 @@ Document version: `V2.1.2.0030`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-18 | `V2.1.2.0030` | `PENDING` | Implementation des presets de boutons HMI Element+ `Command`, `Toggle`, `Navigation`, `AlarmAcknowledge` et `EmergencyStop`. |
+| 2026-06-18 | `V2.1.2.0030` | `cae57c9` | Implementation des presets de boutons HMI Element+ `Command`, `Toggle`, `Navigation`, `AlarmAcknowledge` et `EmergencyStop`. |
 | 2026-06-18 | `V2.1.2.0029` | `b97ef16` | Implementation des primitives process HMI Element+ reservoir, tuyaux, vanne et pompe. |
 | 2026-06-18 | `V2.1.2.0028` | `PENDING` | Implementation des primitives HMI Element+ voyant et barres de valeur. |
 | 2026-06-18 | `V2.1.2.0027` | `PENDING` | Implementation des formes standards Element+ et insertion manuelle des boutons Element+ depuis le ruban. |

@@ -8,7 +8,7 @@ Document version: `V2.1.2.0030`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-18 | `V2.1.2.0030` | `PENDING` | Ajout de la couverture des presets de boutons HMI Element+ et du champ exporte `ButtonKind`. |
+| 2026-06-18 | `V2.1.2.0030` | `cae57c9` | Ajout de la couverture des presets de boutons HMI Element+ et du champ exporte `ButtonKind`. |
 | 2026-06-18 | `V2.1.2.0029` | `b97ef16` | Ajout de la couverture des primitives process HMI Element+ reservoir, tuyaux, vanne et pompe. |
 | 2026-06-18 | `V2.1.2.0028` | `PENDING` | Ajout de la couverture des primitives HMI Element+ voyant et barres de valeur. |
 | 2026-06-18 | `V2.1.2.0027` | `PENDING` | Ajout de la couverture des formes standards Element+ et de l'insertion manuelle des boutons Element+. |

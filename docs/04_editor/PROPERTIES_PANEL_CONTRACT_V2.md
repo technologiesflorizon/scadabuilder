@@ -8,7 +8,7 @@ Document version: `V2.1.2.0030`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-18 | `V2.1.2.0030` | `PENDING` | Ajout des presets de boutons HMI Element+ persistants via `ScadaButtonKind`. |
+| 2026-06-18 | `V2.1.2.0030` | `cae57c9` | Ajout des presets de boutons HMI Element+ persistants via `ScadaButtonKind`. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Refactor de l'onglet Donnees Element+: retrait authoring de `Mapping / Tag`, `Decimales` et `Unite`; `Format affichage` devient le signal actif. |
 | 2026-06-16 | `V2.1.2.0005` | `PENDING` | Ajout de la tab Bouton pour hover automatique, style de survol et etat desactive. |
 | 2026-06-16 | `V2.1.2.0004` | `PENDING` | Ajout de l'entree Evenement pour l'edition des bindings runtime Element+. |
