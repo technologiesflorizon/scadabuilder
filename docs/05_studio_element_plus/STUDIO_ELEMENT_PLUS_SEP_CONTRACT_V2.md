@@ -8,7 +8,7 @@ Document version: `V2.1.2.0031`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-18 | `V2.1.2.0031` | `PENDING` | Ajout des primitives machines/mesure HMI Element+ `Motor`, `Fan`, `Conveyor` et `Gauge`. |
+| 2026-06-18 | `V2.1.2.0031` | `f6a85ed` | Ajout des primitives machines/mesure HMI Element+ `Motor`, `Fan`, `Conveyor` et `Gauge`. |
 | 2026-06-18 | `V2.1.2.0029` | `b97ef16` | Ajout des primitives process HMI Element+ `Tank`, `PipeHorizontal`, `PipeVertical`, `Valve` et `Pump`. |
 | 2026-06-18 | `V2.1.2.0028` | `PENDING` | Ajout des primitives HMI Element+ `IndicatorLamp`, `HorizontalBar` et `VerticalBar`. |
 | 2026-06-18 | `V2.1.2.0027` | `PENDING` | Ajout du contrat des formes standards Element+ creees depuis SCADA Builder V2 et exportees en SVG runtime. |
