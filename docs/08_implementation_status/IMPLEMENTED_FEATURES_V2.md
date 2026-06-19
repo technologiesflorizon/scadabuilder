@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active implementation status
-Document version: `V2.1.2.0043`
+Document version: `V2.1.2.0044`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0044` | `PENDING` | Extraction de la palette laterale d'outils vers le catalogue semantique partage. |
 | 2026-06-19 | `V2.1.2.0043` | `fde1b31` | Retrait du fallback XAML statique et cloture de la surface de ruban dynamique unique. |
 | 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Activation du groupement et degroupement Element+ depuis le ruban Selection. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Extraction du catalogue de ruban dans Application et ajout de tests de registre. |
@@ -57,7 +58,7 @@ Document version: `V2.1.2.0043`
 
 ## 1. Current Verified Baseline
 
-As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 243 tests.
+As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 251 tests.
 
 ## 2. Implemented Areas
 

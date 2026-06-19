@@ -2,12 +2,13 @@
 
 Date: 2026-06-16
 Status: Active icon strategy pointer
-Document version: `V2.1.2.0041`
+Document version: `V2.1.2.0044`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0044` | `PENDING` | Extension du catalogue semantique a la palette laterale d'outils. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Ajout de la couverture de contrat pour les cles d'icones semantiques du catalogue de ruban. |
 | 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Ajout du registre operationnel des icones de ruban et de la normalisation des glyphes visibles. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du nouveau document proprietaire de strategie d'icones. |
@@ -34,7 +35,7 @@ src/ScadaBuilderV2.App/Resources/README.md
 
 The semantic resource key is the public UI contract. A control should reference `Icon.Project.Save`, `Icon.Export.Package`, or `Icon.Hmi.Pump`, not a source library filename or temporary drawing name.
 
-The default top-ribbon command catalog in `ScadaBuilderV2.Application.Commands.RibbonCommandCatalog` records the semantic `Icon.*` key for every visible command. The WPF shell resolves that key against `Icons.xaml`; command metadata tests block empty, non-semantic, or temporary icon references from entering the default catalog.
+The default top-ribbon command catalog in `ScadaBuilderV2.Application.Commands.RibbonCommandCatalog` records the semantic `Icon.*` key for every visible command. The same catalog exposes the left tool palette through `CreateToolPalette()`. The WPF shell resolves those keys against `Icons.xaml`; command metadata tests block empty, non-semantic, or temporary icon references from entering the default catalog or tool palette.
 
 Current icon families:
 
@@ -48,7 +49,7 @@ Current icon families:
 
 ## 4. Standardization Rule
 
-Every visible command in the top ribbon must resolve to a semantic icon key before the command is considered UI-complete.
+Every visible command in the top ribbon or left tool palette must resolve to a semantic icon key before the command is considered UI-complete.
 
 Temporary text glyphs are not valid command icons in the top ribbon. Examples such as `BTN`, `LED`, `TNK`, `VLV`, `PMP`, `MTR`, `FAN`, `CVY`, `GAU`, `SW`, `CB`, `XFMR`, `ALM`, `123`, `[ ]`, `--`, `==`, and `I/O` may be useful during prototyping but must be replaced by normalized vector resources before delivery.
 

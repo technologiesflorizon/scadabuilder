@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active UI specification pointer
-Document version: `V2.1.2.0043`
+Document version: `V2.1.2.0044`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0044` | `PENDING` | La palette laterale d'outils consomme maintenant le catalogue semantique d'icones. |
 | 2026-06-19 | `V2.1.2.0043` | `fde1b31` | Le ruban superieur ne conserve plus de surface XAML statique parallele. |
 | 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Le ruban Selection execute maintenant Grouper et Degrouper pour les Element+ selectionnes. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Le catalogue du ruban est extrait de la fenetre WPF et couvert par tests de contrat. |
@@ -48,3 +49,4 @@ Current shell rules:
 9. The canonical visible command catalog lives in the Application layer and is regression-tested for tab coverage, unique command ids, semantic icon keys, and disabled reasons.
 10. The `Selection` tab exposes executable group and ungroup actions for Element+ selections; blocked selection states are reported through status feedback from the existing workflow.
 11. The main shell ribbon has a single dynamic command surface. Static per-tab XAML button rows must not be restored as a second command source.
+12. The left tool palette uses the same command metadata adapter as the ribbon for labels, disabled tooltips, and semantic `Icon.Tool.*` lookup.

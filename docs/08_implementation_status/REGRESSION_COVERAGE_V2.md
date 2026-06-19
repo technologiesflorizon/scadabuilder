@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active regression coverage map
-Document version: `V2.1.2.0043`
+Document version: `V2.1.2.0044`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0044` | `PENDING` | Ajout de la couverture de la palette laterale d'outils issue du catalogue semantique. |
 | 2026-06-19 | `V2.1.2.0043` | `fde1b31` | Ajout de la couverture interdisant le retour des anciens rubans XAML statiques. |
 | 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Ajout de la couverture du dispatch de ruban pour `object.group` et `object.ungroup`. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Ajout de la couverture de parite metadata preview/export pour boutons Element+. |
@@ -54,7 +55,7 @@ Document version: `V2.1.2.0043`
 
 ```text
 dotnet test ScadaBuilderV2.sln --no-restore
-243 passed, 0 failed, 0 skipped
+251 passed, 0 failed, 0 skipped
 ```
 
 ## 2. Coverage Map
@@ -71,6 +72,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Undo/redo/history | `EditorHistoryServiceTests.cs` |
 | WebView bridge/context menu | `WebViewContextMenuScriptTests.cs` |
 | Top ribbon dynamic command surface | `RibbonCommandCatalogTests.MainRibbonUsesOnlyDynamicCommandSurface`, `RibbonCommandCatalogTests.DefaultCatalogDefinesExpectedTopRibbonTabs`, `RibbonCommandCatalogTests.DefaultCatalogRequiresSemanticIconKeys` |
+| Left tool palette semantic command surface | `RibbonCommandCatalogTests.ToolPaletteUsesSemanticCommandCatalog`, `RibbonCommandCatalogTests.DefaultCatalogRequiresSemanticIconKeys`, `RibbonCommandCatalogTests.DisabledCommandsExposeReason` |
 | Element inventory hierarchy | `LegacyElementSelectionModelTests.cs` |
 | Element+ legacy conversion | `ElementPlusLegacyConverterTests.cs` |
 | Element+ events/actions | `OfficialSceneDomainTests.cs`, `WebViewContextMenuScriptTests.cs`, `ModernProjectStoreTests.cs`, `Ft100SceneExporterTests.cs` |

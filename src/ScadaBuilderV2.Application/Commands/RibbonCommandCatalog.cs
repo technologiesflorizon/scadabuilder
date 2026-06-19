@@ -125,6 +125,22 @@ public static class RibbonCommandCatalog
     }
 
     /// <summary>
+    /// Creates the default left-side editor tool palette consumed by the WPF shell.
+    /// </summary>
+    public static IReadOnlyList<RibbonCommandDefinition> CreateToolPalette()
+    {
+        return
+        [
+            Disabled("tool.select", "Select", "Icon.Tool.Select", "Selection outillee a venir"),
+            Disabled("tool.move", "Move", "Icon.Tool.Move", "Deplacement outille a venir"),
+            Disabled("tool.text", "Texte", "Icon.Tool.Text", "Outil texte a venir"),
+            Disabled("tool.image", "Image", "Icon.Tool.Image", "Outil image a venir"),
+            Disabled("tool.group", "Groupe", "Icon.Tool.Group", "Outil groupe a venir"),
+            Disabled("tool.zoom", "Zoom", "Icon.Tool.Zoom", "Zoom outille a venir")
+        ];
+    }
+
+    /// <summary>
     /// Enumerates every command from a ribbon tab collection.
     /// </summary>
     public static IEnumerable<RibbonCommandDefinition> EnumerateCommands(

@@ -48,6 +48,7 @@ public sealed class RibbonCommandCatalogTests
     {
         var disabledCommands = RibbonCommandCatalog
             .EnumerateCommands(RibbonCommandCatalog.CreateDefault())
+            .Concat(RibbonCommandCatalog.CreateToolPalette())
             .Where(command => !command.IsEnabled)
             .ToArray();
 
@@ -85,6 +86,32 @@ public sealed class RibbonCommandCatalogTests
         Assert.IsFalse(code.Contains("FileRibbon.Visibility", StringComparison.Ordinal));
         Assert.IsFalse(code.Contains("EditRibbon.Visibility", StringComparison.Ordinal));
         Assert.IsFalse(code.Contains("InsertRibbon.Visibility", StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ToolPaletteUsesSemanticCommandCatalog()
+    {
+        var commands = RibbonCommandCatalog.CreateToolPalette().ToArray();
+        var ids = commands.Select(command => command.Id).ToArray();
+        var xaml = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml");
+        var code = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");
+
+        CollectionAssert.AreEqual(
+            new[]
+            {
+                "tool.select",
+                "tool.move",
+                "tool.text",
+                "tool.image",
+                "tool.group",
+                "tool.zoom"
+            },
+            ids);
+        Assert.IsTrue(commands.All(command => command.IconKey.StartsWith("Icon.Tool.", StringComparison.Ordinal)));
+        StringAssert.Contains(xaml, "ItemsSource=\"{Binding ToolPaletteCommands}\"");
+        StringAssert.Contains(xaml, "ToolPaletteCommandTemplate");
+        StringAssert.Contains(code, "RibbonCommandCatalog.CreateToolPalette()");
+        Assert.IsFalse(xaml.Contains("Source=\"{StaticResource Icon.Tool.", StringComparison.Ordinal));
     }
 
     private static string ReadProjectFile(params string[] parts)

@@ -104,12 +104,15 @@ public partial class MainWindow : Window
 
     public ObservableCollection<RibbonGroupViewModel> ActiveRibbonGroups { get; } = [];
 
+    public ObservableCollection<RibbonCommandViewModel> ToolPaletteCommands { get; } = [];
+
     public bool IsSelectionLocked { get; set; } = false;
 
     public MainWindow()
     {
         InitializeComponent();
         InitializeRibbonCommandRegistry();
+        InitializeToolPaletteCommands();
         DataContext = this;
         SetActiveRibbon("File");
         ElementLibraryListBox.ItemsSource = _elementLibraryItems;
@@ -5864,6 +5867,15 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         foreach (var (tabKey, groups) in RibbonCommandCatalog.CreateDefault())
         {
             _ribbonTabs[tabKey] = groups;
+        }
+    }
+
+    private void InitializeToolPaletteCommands()
+    {
+        ToolPaletteCommands.Clear();
+        foreach (var definition in RibbonCommandCatalog.CreateToolPalette())
+        {
+            ToolPaletteCommands.Add(CreateRibbonCommandViewModel(definition));
         }
     }
 
