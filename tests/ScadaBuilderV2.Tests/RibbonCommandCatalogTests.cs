@@ -89,6 +89,24 @@ public sealed class RibbonCommandCatalogTests
     }
 
     [TestMethod]
+    public void MainRibbonUsesNormalizedScrollableHeight()
+    {
+        var xaml = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml");
+        var ribbonSurfaceIndex = xaml.IndexOf("x:Name=\"RibbonCommandSurface\"", StringComparison.Ordinal);
+
+        Assert.IsTrue(ribbonSurfaceIndex >= 0, "Main ribbon command surface was not found.");
+        var ribbonSurface = xaml.Substring(ribbonSurfaceIndex, 600);
+
+        StringAssert.Contains(xaml, "Height=\"196\"");
+        StringAssert.Contains(xaml, "<RowDefinition Height=\"156\"/>");
+        StringAssert.Contains(ribbonSurface, "HorizontalScrollBarVisibility=\"Auto\"");
+        StringAssert.Contains(ribbonSurface, "<StackPanel Orientation=\"Horizontal\"/>");
+        Assert.IsFalse(
+            ribbonSurface.Contains("<WrapPanel/>", StringComparison.Ordinal),
+            "The main ribbon command surface must scroll horizontally instead of wrapping into clipped rows.");
+    }
+
+    [TestMethod]
     public void ToolPaletteUsesSemanticCommandCatalog()
     {
         var commands = RibbonCommandCatalog.CreateToolPalette().ToArray();

@@ -170,14 +170,14 @@
 
     <DockPanel LastChildFill="True">
         <Border DockPanel.Dock="Top"
-                Height="130"
+                Height="196"
                 Background="#F2F8EF"
                 BorderBrush="{StaticResource BorderBrushSoft}"
                 BorderThickness="0,0,0,1">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"/>
-                    <RowDefinition Height="90"/>
+                    <RowDefinition Height="156"/>
                 </Grid.RowDefinitions>
 
                 <DockPanel Grid.Row="0" Margin="14,6,14,0">
@@ -234,7 +234,7 @@
                                           ItemTemplate="{StaticResource RibbonGroupTemplate}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <WrapPanel/>
+                                        <StackPanel Orientation="Horizontal"/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                             </ItemsControl>

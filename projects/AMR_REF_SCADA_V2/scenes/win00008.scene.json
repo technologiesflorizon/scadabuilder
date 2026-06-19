@@ -1536,8 +1536,8 @@
       "DisplayName": "Text23",
       "Kind": "LegacyStatic",
       "Bounds": {
-        "X": 147,
-        "Y": 57,
+        "X": 181,
+        "Y": 25,
         "Width": 19,
         "Height": 24
       },
@@ -1841,8 +1841,8 @@
       "DisplayName": "Text30",
       "Kind": "LegacyStatic",
       "Bounds": {
-        "X": 51,
-        "Y": 34,
+        "X": 235,
+        "Y": 24,
         "Width": 58,
         "Height": 21
       },
@@ -2980,8 +2980,8 @@
       "DisplayName": "Element\u002B Text22",
       "Kind": "InputNumeric",
       "Bounds": {
-        "X": 67,
-        "Y": 57,
+        "X": 96,
+        "Y": 14,
         "Width": 64,
         "Height": 24
       },
