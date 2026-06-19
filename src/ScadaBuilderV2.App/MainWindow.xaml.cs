@@ -4080,6 +4080,26 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         BeginShapePlacement(ScadaShapeKind.Gauge);
     }
 
+    private void OnInsertSwitchClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.Switch);
+    }
+
+    private void OnInsertBreakerClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.Breaker);
+    }
+
+    private void OnInsertTransformerClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.Transformer);
+    }
+
+    private void OnInsertAlarmBeaconClick(object sender, RoutedEventArgs e)
+    {
+        BeginShapePlacement(ScadaShapeKind.AlarmBeacon);
+    }
+
     private void OnInsertButtonClick(object sender, RoutedEventArgs e)
     {
         BeginButtonPlacement(ScadaButtonKind.Command);
@@ -4333,6 +4353,10 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ScadaShapeKind.Fan => "Ventilateur",
             ScadaShapeKind.Conveyor => "Convoyeur",
             ScadaShapeKind.Gauge => "Jauge",
+            ScadaShapeKind.Switch => "Interrupteur",
+            ScadaShapeKind.Breaker => "Disjoncteur",
+            ScadaShapeKind.Transformer => "Transformateur",
+            ScadaShapeKind.AlarmBeacon => "BaliseAlarme",
             _ => "Rectangle"
         };
     }
@@ -4357,6 +4381,10 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ScadaShapeKind.Fan => "ventilateur HMI",
             ScadaShapeKind.Conveyor => "convoyeur HMI",
             ScadaShapeKind.Gauge => "jauge HMI",
+            ScadaShapeKind.Switch => "interrupteur electrique HMI",
+            ScadaShapeKind.Breaker => "disjoncteur HMI",
+            ScadaShapeKind.Transformer => "transformateur HMI",
+            ScadaShapeKind.AlarmBeacon => "balise alarme HMI",
             _ => "rectangle"
         };
     }
@@ -7587,6 +7615,137 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       hub.setAttribute('fill', fill);
       setStroke(hub);
       svg.appendChild(hub);
+      return svg;
+    }
+
+    if (shapeKind === 'switch') {
+      const y = element.Height * 0.55;
+      const leftX = element.Width * 0.22;
+      const rightX = element.Width * 0.78;
+      const bladeEndX = element.Width * 0.64;
+      const bladeEndY = element.Height * 0.28;
+      const bus = document.createElementNS(svg.namespaceURI, 'line');
+      bus.setAttribute('x1', `${halfStroke}`);
+      bus.setAttribute('y1', `${y}`);
+      bus.setAttribute('x2', `${element.Width - halfStroke}`);
+      bus.setAttribute('y2', `${y}`);
+      setStroke(bus);
+      svg.appendChild(bus);
+
+      [leftX, rightX].forEach(x => {
+        const terminal = document.createElementNS(svg.namespaceURI, 'circle');
+        terminal.setAttribute('cx', `${x}`);
+        terminal.setAttribute('cy', `${y}`);
+        terminal.setAttribute('r', `${Math.max(4, Math.min(element.Width, element.Height) * 0.08)}`);
+        terminal.setAttribute('fill', '#f7fbf5');
+        setStroke(terminal);
+        svg.appendChild(terminal);
+      });
+
+      const blade = document.createElementNS(svg.namespaceURI, 'line');
+      blade.setAttribute('x1', `${leftX}`);
+      blade.setAttribute('y1', `${y}`);
+      blade.setAttribute('x2', `${bladeEndX}`);
+      blade.setAttribute('y2', `${bladeEndY}`);
+      setStroke(blade);
+      svg.appendChild(blade);
+      return svg;
+    }
+
+    if (shapeKind === 'breaker') {
+      const body = document.createElementNS(svg.namespaceURI, 'rect');
+      body.setAttribute('x', `${halfStroke + element.Width * 0.14}`);
+      body.setAttribute('y', `${halfStroke + element.Height * 0.12}`);
+      body.setAttribute('width', `${Math.max(0, element.Width * 0.72 - strokeWidth)}`);
+      body.setAttribute('height', `${Math.max(0, element.Height * 0.76 - strokeWidth)}`);
+      body.setAttribute('rx', `${Math.min(8, element.Height * 0.12)}`);
+      body.setAttribute('fill', '#f7fbf5');
+      setStroke(body);
+      svg.appendChild(body);
+
+      const lever = document.createElementNS(svg.namespaceURI, 'line');
+      lever.setAttribute('x1', `${element.Width * 0.37}`);
+      lever.setAttribute('y1', `${element.Height * 0.68}`);
+      lever.setAttribute('x2', `${element.Width * 0.63}`);
+      lever.setAttribute('y2', `${element.Height * 0.34}`);
+      lever.setAttribute('stroke', stroke);
+      lever.setAttribute('stroke-width', `${Math.max(2, strokeWidth + 1)}`);
+      lever.setAttribute('vector-effect', 'non-scaling-stroke');
+      svg.appendChild(lever);
+
+      const label = document.createElementNS(svg.namespaceURI, 'text');
+      label.setAttribute('x', `${element.Width * 0.5}`);
+      label.setAttribute('y', `${element.Height * 0.48}`);
+      label.setAttribute('text-anchor', 'middle');
+      label.setAttribute('font-size', `${Math.max(10, Math.min(element.Width, element.Height) * 0.18)}`);
+      label.setAttribute('font-family', 'Segoe UI, Arial, sans-serif');
+      label.setAttribute('font-weight', '700');
+      label.setAttribute('fill', stroke);
+      label.textContent = 'CB';
+      svg.appendChild(label);
+      return svg;
+    }
+
+    if (shapeKind === 'transformer') {
+      const coreLeft = document.createElementNS(svg.namespaceURI, 'line');
+      coreLeft.setAttribute('x1', `${element.Width * 0.47}`);
+      coreLeft.setAttribute('y1', `${element.Height * 0.2}`);
+      coreLeft.setAttribute('x2', `${element.Width * 0.47}`);
+      coreLeft.setAttribute('y2', `${element.Height * 0.8}`);
+      setStroke(coreLeft);
+      svg.appendChild(coreLeft);
+
+      const coreRight = document.createElementNS(svg.namespaceURI, 'line');
+      coreRight.setAttribute('x1', `${element.Width * 0.53}`);
+      coreRight.setAttribute('y1', `${element.Height * 0.2}`);
+      coreRight.setAttribute('x2', `${element.Width * 0.53}`);
+      coreRight.setAttribute('y2', `${element.Height * 0.8}`);
+      setStroke(coreRight);
+      svg.appendChild(coreRight);
+
+      [0.28, 0.72].forEach(cx => {
+        [0.34, 0.5, 0.66].forEach(cy => {
+          const coil = document.createElementNS(svg.namespaceURI, 'ellipse');
+          coil.setAttribute('cx', `${element.Width * cx}`);
+          coil.setAttribute('cy', `${element.Height * cy}`);
+          coil.setAttribute('rx', `${Math.max(5, element.Width * 0.12)}`);
+          coil.setAttribute('ry', `${Math.max(5, element.Height * 0.11)}`);
+          coil.setAttribute('fill', 'none');
+          setStroke(coil);
+          svg.appendChild(coil);
+        });
+      });
+      return svg;
+    }
+
+    if (shapeKind === 'alarmbeacon') {
+      const base = document.createElementNS(svg.namespaceURI, 'rect');
+      base.setAttribute('x', `${element.Width * 0.22}`);
+      base.setAttribute('y', `${element.Height * 0.72}`);
+      base.setAttribute('width', `${element.Width * 0.56}`);
+      base.setAttribute('height', `${element.Height * 0.14}`);
+      base.setAttribute('rx', `${Math.min(6, element.Height * 0.05)}`);
+      base.setAttribute('fill', '#f7fbf5');
+      setStroke(base);
+      svg.appendChild(base);
+
+      const dome = document.createElementNS(svg.namespaceURI, 'path');
+      dome.setAttribute('d', `M ${element.Width * 0.24} ${element.Height * 0.72} Q ${element.Width * 0.5} ${element.Height * 0.12} ${element.Width * 0.76} ${element.Height * 0.72} Z`);
+      dome.setAttribute('fill', fill);
+      setStroke(dome);
+      svg.appendChild(dome);
+
+      [[0.5, 0.04, 0.5, 0.16], [0.16, 0.32, 0.28, 0.42], [0.84, 0.32, 0.72, 0.42]].forEach(([x1, y1, x2, y2]) => {
+        const ray = document.createElementNS(svg.namespaceURI, 'line');
+        ray.setAttribute('x1', `${element.Width * x1}`);
+        ray.setAttribute('y1', `${element.Height * y1}`);
+        ray.setAttribute('x2', `${element.Width * x2}`);
+        ray.setAttribute('y2', `${element.Height * y2}`);
+        ray.setAttribute('stroke', stroke);
+        ray.setAttribute('stroke-width', `${Math.max(2, strokeWidth + 1)}`);
+        ray.setAttribute('vector-effect', 'non-scaling-stroke');
+        svg.appendChild(ray);
+      });
       return svg;
     }
 

@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Implemented Features
 
-Date: 2026-06-18
+Date: 2026-06-19
 Status: Active implementation status
-Document version: `V2.1.2.0032`
+Document version: `V2.1.2.0033`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0033` | `PENDING` | Implementation des symboles HMI Element+ electriques et alarme. |
 | 2026-06-18 | `V2.1.2.0032` | `d5ee1fd` | Implementation des proprietes avancees Element+ opacite et rotation. |
 | 2026-06-18 | `V2.1.2.0031` | `f6a85ed` | Implementation des symboles HMI Element+ moteur, ventilateur, convoyeur et jauge. |
 | 2026-06-18 | `V2.1.2.0030` | `cae57c9` | Implementation des presets de boutons HMI Element+ `Command`, `Toggle`, `Navigation`, `AlarmAcknowledge` et `EmergencyStop`. |
@@ -92,6 +93,7 @@ As of 2026-06-18, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 240 
 40. The insert ribbon can create HMI Element+ button presets for `Command`, `Toggle`, `Navigation`, `AlarmAcknowledge`, and `EmergencyStop`. Button presets persist through `ButtonKind`, provide initial size/text/style, and export `ButtonKind` in the FT100 manifest plus `data-scada-button-kind` in generated HTML.
 41. The insert ribbon can create machine and measurement HMI Element+ symbols for `Motor`, `Fan`, `Conveyor`, and `Gauge`. These primitives persist through `ShapeKind`; gauge symbols use `Data.Value` as a clamped 0-100 percentage in preview and FT100 export.
 42. The `Style` tab can author model-backed `Opacity` and `Rotation` for Element+ objects. Preview and FT100 export apply `opacity` and `rotate(...deg)`, save/reload preserves them, and `AdvancedCss` remains a later override point.
+43. The insert ribbon can create electrical and alarm HMI Element+ symbols for `Switch`, `Breaker`, `Transformer`, and `AlarmBeacon`. These primitives persist through `ShapeKind` and render as Element+-owned SVG content in preview and FT100 export.
 
 ## 3. Source Of Truth
 

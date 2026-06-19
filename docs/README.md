@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Documentation Index
 
-Date: 2026-06-18
+Date: 2026-06-19
 Status: Active enterprise documentation map
-Document version: `V2.1.2.0032`
+Document version: `V2.1.2.0033`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0033` | `PENDING` | Ajout des symboles HMI Element+ interrupteur, disjoncteur, transformateur et balise alarme. |
 | 2026-06-18 | `V2.1.2.0032` | `d5ee1fd` | Ajout des proprietes avancees Element+ opacite et rotation. |
 | 2026-06-18 | `V2.1.2.0031` | `f6a85ed` | Ajout des symboles HMI Element+ moteur, ventilateur, convoyeur et jauge. |
 | 2026-06-18 | `V2.1.2.0030` | `cae57c9` | Ajout des presets de boutons HMI Element+ et du champ exporte `ButtonKind`. |

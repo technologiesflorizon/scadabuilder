@@ -803,6 +803,14 @@ public sealed partial class Ft100SceneExporter
                 BuildConveyorShape(width, height, strokeWidth, halfStroke, fill, common),
             ScadaShapeKind.Gauge =>
                 BuildGaugeShape(width, height, strokeWidth, halfStroke, stroke, fill, data.Value, common),
+            ScadaShapeKind.Switch =>
+                BuildSwitchShape(width, height, halfStroke, common),
+            ScadaShapeKind.Breaker =>
+                BuildBreakerShape(width, height, strokeWidth, halfStroke, stroke, common),
+            ScadaShapeKind.Transformer =>
+                BuildTransformerShape(width, height, common),
+            ScadaShapeKind.AlarmBeacon =>
+                BuildAlarmBeaconShape(width, height, strokeWidth, stroke, fill, common),
             ScadaShapeKind.Ellipse =>
                 $"""<ellipse cx="{Format(width / 2)}" cy="{Format(height / 2)}" rx="{Format(Math.Max(0, (width / 2) - halfStroke))}" ry="{Format(Math.Max(0, (height / 2) - halfStroke))}" fill="{fill}" {common}/>""",
             ScadaShapeKind.Line =>
@@ -990,6 +998,72 @@ public sealed partial class Ft100SceneExporter
             $"""<circle cx="{Format(cx)}" cy="{Format(cy)}" r="{Format(radius)}" fill="#f7fbf5" {common}/>""" +
             $"""<line x1="{Format(cx)}" y1="{Format(cy)}" x2="{Format(cx + Math.Cos(angle) * radius * 0.72)}" y2="{Format(cy + Math.Sin(angle) * radius * 0.72)}" stroke="{stroke}" stroke-width="{Format(Math.Max(2, strokeWidth + 1))}" vector-effect="non-scaling-stroke"/>""" +
             $"""<circle cx="{Format(cx)}" cy="{Format(cy)}" r="{Format(Math.Max(3, radius * 0.08))}" fill="{fill}" {common}/>""";
+    }
+
+    private static string BuildSwitchShape(
+        double width,
+        double height,
+        double halfStroke,
+        string common)
+    {
+        var y = height * 0.55;
+        var leftX = width * 0.22;
+        var rightX = width * 0.78;
+        var terminalRadius = Math.Max(4, Math.Min(width, height) * 0.08);
+        return
+            $"""<line x1="{Format(halfStroke)}" y1="{Format(y)}" x2="{Format(width - halfStroke)}" y2="{Format(y)}" {common}/>""" +
+            $"""<circle cx="{Format(leftX)}" cy="{Format(y)}" r="{Format(terminalRadius)}" fill="#f7fbf5" {common}/>""" +
+            $"""<circle cx="{Format(rightX)}" cy="{Format(y)}" r="{Format(terminalRadius)}" fill="#f7fbf5" {common}/>""" +
+            $"""<line x1="{Format(leftX)}" y1="{Format(y)}" x2="{Format(width * 0.64)}" y2="{Format(height * 0.28)}" {common}/>""";
+    }
+
+    private static string BuildBreakerShape(
+        double width,
+        double height,
+        double strokeWidth,
+        double halfStroke,
+        string stroke,
+        string common)
+    {
+        return
+            $"""<rect x="{Format(halfStroke + width * 0.14)}" y="{Format(halfStroke + height * 0.12)}" width="{Format(Math.Max(0, width * 0.72 - strokeWidth))}" height="{Format(Math.Max(0, height * 0.76 - strokeWidth))}" rx="{Format(Math.Min(8, height * 0.12))}" fill="#f7fbf5" {common}/>""" +
+            $"""<line x1="{Format(width * 0.37)}" y1="{Format(height * 0.68)}" x2="{Format(width * 0.63)}" y2="{Format(height * 0.34)}" stroke="{stroke}" stroke-width="{Format(Math.Max(2, strokeWidth + 1))}" vector-effect="non-scaling-stroke"/>""" +
+            $"""<text x="{Format(width * 0.5)}" y="{Format(height * 0.48)}" text-anchor="middle" font-size="{Format(Math.Max(10, Math.Min(width, height) * 0.18))}" font-family="Segoe UI, Arial, sans-serif" font-weight="700" fill="{stroke}">CB</text>""";
+    }
+
+    private static string BuildTransformerShape(
+        double width,
+        double height,
+        string common)
+    {
+        var core =
+            $"""<line x1="{Format(width * 0.47)}" y1="{Format(height * 0.2)}" x2="{Format(width * 0.47)}" y2="{Format(height * 0.8)}" {common}/>""" +
+            $"""<line x1="{Format(width * 0.53)}" y1="{Format(height * 0.2)}" x2="{Format(width * 0.53)}" y2="{Format(height * 0.8)}" {common}/>""";
+        var coils = string.Concat(new[] { 0.28, 0.72 }.SelectMany(cx =>
+            new[] { 0.34, 0.5, 0.66 }.Select(cy =>
+                $"""<ellipse cx="{Format(width * cx)}" cy="{Format(height * cy)}" rx="{Format(Math.Max(5, width * 0.12))}" ry="{Format(Math.Max(5, height * 0.11))}" fill="none" {common}/>""")));
+        return core + coils;
+    }
+
+    private static string BuildAlarmBeaconShape(
+        double width,
+        double height,
+        double strokeWidth,
+        string stroke,
+        string fill,
+        string common)
+    {
+        var rays = string.Concat(new[]
+        {
+            (X1: 0.5, Y1: 0.04, X2: 0.5, Y2: 0.16),
+            (X1: 0.16, Y1: 0.32, X2: 0.28, Y2: 0.42),
+            (X1: 0.84, Y1: 0.32, X2: 0.72, Y2: 0.42)
+        }.Select(ray =>
+            $"""<line x1="{Format(width * ray.X1)}" y1="{Format(height * ray.Y1)}" x2="{Format(width * ray.X2)}" y2="{Format(height * ray.Y2)}" stroke="{stroke}" stroke-width="{Format(Math.Max(2, strokeWidth + 1))}" vector-effect="non-scaling-stroke"/>"""));
+        return
+            $"""<rect x="{Format(width * 0.22)}" y="{Format(height * 0.72)}" width="{Format(width * 0.56)}" height="{Format(height * 0.14)}" rx="{Format(Math.Min(6, height * 0.05))}" fill="#f7fbf5" {common}/>""" +
+            $"""<path d="M {Format(width * 0.24)} {Format(height * 0.72)} Q {Format(width * 0.5)} {Format(height * 0.12)} {Format(width * 0.76)} {Format(height * 0.72)} Z" fill="{fill}" {common}/>""" +
+            rays;
     }
 
     private static string BuildButton(ScadaElement element)

@@ -105,7 +105,27 @@ public enum ScadaShapeKind
     /// <summary>
     /// HMI/SCADA gauge or meter symbol.
     /// </summary>
-    Gauge
+    Gauge,
+
+    /// <summary>
+    /// HMI/SCADA electrical switch symbol.
+    /// </summary>
+    Switch,
+
+    /// <summary>
+    /// HMI/SCADA circuit breaker symbol.
+    /// </summary>
+    Breaker,
+
+    /// <summary>
+    /// HMI/SCADA transformer symbol.
+    /// </summary>
+    Transformer,
+
+    /// <summary>
+    /// HMI/SCADA alarm beacon symbol.
+    /// </summary>
+    AlarmBeacon
 }
 
 /// <summary>
@@ -552,6 +572,10 @@ public sealed record ScadaElement(
             ScadaShapeKind.Fan => new SceneBounds(x, y, 88, 88),
             ScadaShapeKind.Conveyor => new SceneBounds(x, y, 180, 56),
             ScadaShapeKind.Gauge => new SceneBounds(x, y, 88, 88),
+            ScadaShapeKind.Switch => new SceneBounds(x, y, 96, 56),
+            ScadaShapeKind.Breaker => new SceneBounds(x, y, 96, 72),
+            ScadaShapeKind.Transformer => new SceneBounds(x, y, 112, 80),
+            ScadaShapeKind.AlarmBeacon => new SceneBounds(x, y, 72, 88),
             ScadaShapeKind.Ellipse => new SceneBounds(x, y, 96, 72),
             _ => new SceneBounds(x, y, 120, 72)
         };

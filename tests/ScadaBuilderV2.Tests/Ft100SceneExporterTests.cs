@@ -1394,6 +1394,10 @@ public sealed class Ft100SceneExporterTests
         {
             Data = new ScadaElementData(null, null, 55, 0, 100, null, null, "0", null, false)
         };
+        var switchShape = ScadaElement.CreateShape("shape_switch_001", "Interrupteur001", ScadaShapeKind.Switch, 340, 300);
+        var breaker = ScadaElement.CreateShape("shape_breaker_001", "Disjoncteur001", ScadaShapeKind.Breaker, 460, 300);
+        var transformer = ScadaElement.CreateShape("shape_transformer_001", "Transformateur001", ScadaShapeKind.Transformer, 580, 300);
+        var alarmBeacon = ScadaElement.CreateShape("shape_alarm_001", "BaliseAlarme001", ScadaShapeKind.AlarmBeacon, 720, 300);
         var scene = ScadaScene
             .CreateEmpty("win00008", "Formes", new(1280, 873))
             .WithElement(arrow)
@@ -1407,7 +1411,11 @@ public sealed class Ft100SceneExporterTests
             .WithElement(motor)
             .WithElement(fan)
             .WithElement(conveyor)
-            .WithElement(gauge);
+            .WithElement(gauge)
+            .WithElement(switchShape)
+            .WithElement(breaker)
+            .WithElement(transformer)
+            .WithElement(alarmBeacon);
 
         try
         {
@@ -1442,6 +1450,12 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_fan_001\"");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_conveyor_001\"");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_gauge_001\"");
+            StringAssert.Contains(html, "id=\"ft100-win00008__shape_switch_001\"");
+            StringAssert.Contains(html, "id=\"ft100-win00008__shape_breaker_001\"");
+            StringAssert.Contains(html, ">CB</text>");
+            StringAssert.Contains(html, "id=\"ft100-win00008__shape_transformer_001\"");
+            StringAssert.Contains(html, "id=\"ft100-win00008__shape_alarm_001\"");
+            StringAssert.Contains(html, "Q 36 10.56 54.72 63.36");
 
             var css = await File.ReadAllTextAsync(result.CssPath);
             StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_arrow_001");
@@ -1456,6 +1470,10 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_fan_001");
             StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_conveyor_001");
             StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_gauge_001");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_switch_001");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_breaker_001");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_transformer_001");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_alarm_001");
             StringAssert.Contains(css, "background: transparent;");
             StringAssert.Contains(css, "border: 0 none transparent;");
             AssertExportCssHasNoGlobalRuntimeSelectors(css);
@@ -1474,6 +1492,10 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(manifest, "\"ShapeKind\": \"Fan\"");
             StringAssert.Contains(manifest, "\"ShapeKind\": \"Conveyor\"");
             StringAssert.Contains(manifest, "\"ShapeKind\": \"Gauge\"");
+            StringAssert.Contains(manifest, "\"ShapeKind\": \"Switch\"");
+            StringAssert.Contains(manifest, "\"ShapeKind\": \"Breaker\"");
+            StringAssert.Contains(manifest, "\"ShapeKind\": \"Transformer\"");
+            StringAssert.Contains(manifest, "\"ShapeKind\": \"AlarmBeacon\"");
         }
         finally
         {

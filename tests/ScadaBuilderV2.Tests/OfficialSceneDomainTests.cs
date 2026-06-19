@@ -765,6 +765,18 @@ public sealed class OfficialSceneDomainTests
         Assert.AreEqual(65, gauge.Data?.Value);
         Assert.AreEqual(0, gauge.Data?.Minimum);
         Assert.AreEqual(100, gauge.Data?.Maximum);
+
+        var switchShape = ScadaElement.CreateShape("shape_switch", "Interrupteur001", ScadaShapeKind.Switch, 10, 20);
+        Assert.AreEqual(new SceneBounds(10, 20, 96, 56), switchShape.Bounds);
+
+        var breaker = ScadaElement.CreateShape("shape_breaker", "Disjoncteur001", ScadaShapeKind.Breaker, 10, 20);
+        Assert.AreEqual(new SceneBounds(10, 20, 96, 72), breaker.Bounds);
+
+        var transformer = ScadaElement.CreateShape("shape_transformer", "Transformateur001", ScadaShapeKind.Transformer, 10, 20);
+        Assert.AreEqual(new SceneBounds(10, 20, 112, 80), transformer.Bounds);
+
+        var alarmBeacon = ScadaElement.CreateShape("shape_alarm", "BaliseAlarme001", ScadaShapeKind.AlarmBeacon, 10, 20);
+        Assert.AreEqual(new SceneBounds(10, 20, 72, 88), alarmBeacon.Bounds);
     }
 
     private static ScadaElement CreateLegacyStatic(string sourceId, string name)

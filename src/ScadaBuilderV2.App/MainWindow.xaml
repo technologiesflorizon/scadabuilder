@@ -435,6 +435,38 @@
                                 </StackPanel>
                             </Button>
                             <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer un interrupteur electrique HMI Element+"
+                                    Click="OnInsertSwitchClick">
+                                <StackPanel>
+                                    <TextBlock Text="SW" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <TextBlock Text="Interrup." FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer un disjoncteur HMI Element+"
+                                    Click="OnInsertBreakerClick">
+                                <StackPanel>
+                                    <TextBlock Text="CB" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <TextBlock Text="Disjonct." FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer un transformateur HMI Element+"
+                                    Click="OnInsertTransformerClick">
+                                <StackPanel>
+                                    <TextBlock Text="XFMR" FontWeight="Bold" FontSize="13" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <TextBlock Text="Transfo" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                                    ToolTip="Inserer une balise alarme HMI Element+"
+                                    Click="OnInsertAlarmBeaconClick">
+                                <StackPanel>
+                                    <TextBlock Text="ALM" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <TextBlock Text="Alarme" FontSize="12" TextAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource RibbonCommandButtonStyle}"
                                     ToolTip="Inserer un bouton Element+"
                                     Click="OnInsertButtonClick">
                                 <StackPanel>
