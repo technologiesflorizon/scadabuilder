@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active implementation status
-Document version: `V2.1.2.0044`
+Document version: `V2.1.3.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.3.0000` | `PENDING` | Implementation de la galerie Formes du ruban Inserer et du placement Ligne/Fleche en deux points. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Extraction de la palette laterale d'outils vers le catalogue semantique partage. |
 | 2026-06-19 | `V2.1.2.0043` | `fde1b31` | Retrait du fallback XAML statique et cloture de la surface de ruban dynamique unique. |
 | 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Activation du groupement et degroupement Element+ depuis le ruban Selection. |
@@ -58,7 +59,7 @@ Document version: `V2.1.2.0044`
 
 ## 1. Current Verified Baseline
 
-As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 251 tests.
+As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 253 tests.
 
 ## 2. Implemented Areas
 
@@ -98,7 +99,7 @@ As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 251 
 34. The Element+ `Donnees` tab now treats `Format affichage` as the active numeric display signal. Legacy `Mapping / Tag`, `Decimales`, and `Unite` controls are removed from visible authoring, while legacy model fields remain preserved for compatibility. `Min` and `Max` are enabled only for non-read-only numeric inputs.
 35. FT100 `.sb2` manifests export `InputNumeric` display metadata under `Objects[].Data`, including `DisplayFormat`, `IsReadOnly`, `Min`, and `Max`, so TF100Web does not have to infer numeric masks from page text for newly compiled packages.
 36. TF100Web interprets SCADA Builder V2 `DisplayFormat` hash masks made of `#` plus an optional decimal point. It aligns runtime formatting with TF100Web `RegisterMapping.DataType`: `FLOAT32` and `FLOAT64` round directly, explicit integer datatypes scale by the mask decimal count, and unknown datatypes use direct rounding. For example, `39.599998474121094` with `###.#` and `FLOAT32` displays as `39.6`.
-37. The insert ribbon can create standard Element+ shapes and Element+ buttons directly in the scene. Standard shapes persist `ShapeKind` for rectangle, rounded rectangle, ellipse, line, and arrow; the WebView preview and FT100 export render them as Element+-owned SVG content with style-backed fill, stroke, border width, and dashed/dotted treatment.
+37. The insert ribbon can create standard Element+ shapes and Element+ buttons directly in the scene. Standard shapes persist `ShapeKind` for rectangle, rounded rectangle, ellipse, circle, triangle, star, line, and arrow; the WebView preview and FT100 export render them as Element+-owned SVG content with style-backed fill, stroke, border width, and dashed/dotted treatment. Line and arrow authoring uses a two-click placement workflow and persists model-backed start/end coordinates in `ScadaElementData`.
 38. The insert ribbon can create HMI Element+ shapes for `IndicatorLamp`, `HorizontalBar`, and `VerticalBar`. Lamp and bar shapes persist through `ShapeKind`; bar shapes use `Data.Value` as a clamped 0-100 percentage in preview and FT100 export.
 39. The insert ribbon can create process HMI Element+ shapes for `Tank`, `PipeHorizontal`, `PipeVertical`, `Valve`, and `Pump`. These primitives persist through `ShapeKind`; tank shapes use `Data.Value` as a clamped 0-100 percentage in preview and FT100 export.
 40. The insert ribbon can create HMI Element+ button presets for `Command`, `Toggle`, `Navigation`, `AlarmAcknowledge`, and `EmergencyStop`. Button presets persist through `ButtonKind`, provide initial size/text/style, and export `ButtonKind` in the FT100 manifest plus `data-scada-button-kind` in generated HTML.
@@ -112,6 +113,7 @@ As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 251 
 48. The HMI button block is closed with preview/export metadata parity: SCADA Builder V2 preview wrappers now expose the same button kind, behavior, disabled, and Toggle-state metadata expected by FT100 export while preserving editor-only non-interactive preview behavior.
 49. The WPF shell top ribbon now marks the active tab, groups visible commands by task family, exposes horizontal overflow for long command families, standardizes visible labels in French, disables placeholder commands with explanatory tooltips, and replaces insert-ribbon text glyphs with semantic icon keys from `Icons.xaml`.
 50. The WPF shell top ribbon now renders the active tab from a command registry containing stable command ids, labels, tooltips or disabled reasons, icon keys, executable state, and grouped command metadata. Implemented commands dispatch through the registry to existing shell workflows; future commands remain registered but disabled.
+51. The Insert ribbon `Formes` group now uses a large 64x64 icon gallery capped at four columns with a second row for overflow. Active insertion commands show selected state until placement completes or is cancelled.
 
 ## 3. Source Of Truth
 

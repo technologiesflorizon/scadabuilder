@@ -2,12 +2,13 @@
 
 Date: 2026-06-16
 Status: Active editor command contract
-Document version: `V2.1.2.0042`
+Document version: `V2.1.3.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.3.0000` | `PENDING` | Ajout des commandes `insert.shape.circle`, `insert.shape.triangle`, `insert.shape.star` et du placement deux points ligne/fleche. |
 | 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Activation des commandes de ruban `object.group` et `object.ungroup`. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Le catalogue de commandes du ruban devient un contrat applicatif testable. |
 | 2026-06-19 | `V2.1.2.0040` | `335adfb` | Ajout du contrat de metadonnees de commandes pour le ruban superieur. |
@@ -37,6 +38,8 @@ Commands are explicit application operations. A command id is the stable bridge 
 13. Disabled future ribbon commands must remain registered with a disabled reason when they are shown, so the surface communicates intent without pretending the command is executable.
 14. The default top-ribbon command catalog is owned by the Application layer, so WPF adapts shared command metadata instead of owning the canonical list of visible commands.
 15. When `object.group` or `object.ungroup` is executable from the top ribbon, it must route to the same Element+ scene workflow as the context menu and preserve history coverage.
+16. Standard shape insert commands include `insert.shape.rectangle`, `insert.shape.ellipse`, `insert.shape.circle`, `insert.shape.triangle`, `insert.shape.star`, `insert.shape.line`, and `insert.shape.arrow`.
+17. `insert.shape.line` and `insert.shape.arrow` must route through two-point placement and persist model-backed start/end geometry rather than creating generic default line geometry.
 
 ## 3. Dispatch Flow
 

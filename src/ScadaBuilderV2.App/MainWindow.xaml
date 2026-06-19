@@ -64,6 +64,27 @@
             <Setter Property="Height" Value="58"/>
             <Setter Property="Padding" Value="6"/>
             <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsActive}" Value="True">
+                    <Setter Property="Background" Value="#DFF3E7"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentBlueBrush}"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="LargeRibbonCommandButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Width" Value="84"/>
+            <Setter Property="Height" Value="92"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsActive}" Value="True">
+                    <Setter Property="Background" Value="#DFF3E7"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentBlueBrush}"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="RibbonGroupStyle" TargetType="Border">
@@ -89,6 +110,13 @@
             <Setter Property="Margin" Value="0,0,0,4"/>
         </Style>
 
+        <Style x:Key="LargeCommandIconStyle" TargetType="Image">
+            <Setter Property="Width" Value="64"/>
+            <Setter Property="Height" Value="64"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,0,3"/>
+        </Style>
+
         <DataTemplate x:Key="RibbonCommandTemplate">
             <Button Style="{StaticResource RibbonCommandButtonStyle}"
                     ToolTip="{Binding ToolTip}"
@@ -101,14 +129,53 @@
             </Button>
         </DataTemplate>
 
+        <DataTemplate x:Key="LargeRibbonCommandTemplate">
+            <Button Style="{StaticResource LargeRibbonCommandButtonStyle}"
+                    ToolTip="{Binding ToolTip}"
+                    IsEnabled="{Binding IsEnabled}"
+                    Command="{Binding Command}">
+                <StackPanel>
+                    <Image Style="{StaticResource LargeCommandIconStyle}" Source="{Binding Icon}"/>
+                    <TextBlock Text="{Binding Label}" FontSize="11" TextAlignment="Center" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Button>
+        </DataTemplate>
+
         <DataTemplate x:Key="RibbonGroupTemplate">
             <Border Style="{StaticResource RibbonGroupStyle}">
                 <StackPanel>
                     <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="{Binding Label}"/>
                     <ItemsControl ItemsSource="{Binding Commands}" ItemTemplate="{StaticResource RibbonCommandTemplate}">
+                        <ItemsControl.Style>
+                            <Style TargetType="ItemsControl">
+                                <Setter Property="Visibility" Value="Visible"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsShapeGallery}" Value="True">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ItemsControl.Style>
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                    <ItemsControl ItemsSource="{Binding Commands}" ItemTemplate="{StaticResource LargeRibbonCommandTemplate}">
+                        <ItemsControl.Style>
+                            <Style TargetType="ItemsControl">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsShapeGallery}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ItemsControl.Style>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="4"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
@@ -170,14 +237,14 @@
 
     <DockPanel LastChildFill="True">
         <Border DockPanel.Dock="Top"
-                Height="196"
+                Height="270"
                 Background="#F2F8EF"
                 BorderBrush="{StaticResource BorderBrushSoft}"
                 BorderThickness="0,0,0,1">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"/>
-                    <RowDefinition Height="156"/>
+                    <RowDefinition Height="230"/>
                 </Grid.RowDefinitions>
 
                 <DockPanel Grid.Row="0" Margin="14,6,14,0">

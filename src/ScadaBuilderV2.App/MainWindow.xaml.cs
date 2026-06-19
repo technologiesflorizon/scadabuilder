@@ -82,6 +82,8 @@ public partial class MainWindow : Window
     private ScadaElementKind? _pendingInsertKind;
     private ScadaShapeKind? _pendingInsertShapeKind;
     private ScadaButtonKind? _pendingInsertButtonKind;
+    private string _activeRibbonKey = "File";
+    private string? _activeInsertCommandId;
     private int _nextTextSequence = 1;
     private int _nextInputTextSequence = 1;
     private int _nextInputNumericSequence = 1;
@@ -1100,6 +1102,13 @@ public partial class MainWindow : Window
                     break;
                 case "placeElement":
                     PlaceModernElement(message.Kind, message.X, message.Y);
+                    break;
+                case "placeTwoPointElement":
+                    PlaceTwoPointShape(message.ShapeKind, message.X, message.Y, message.X2, message.Y2);
+                    break;
+                case "cancelPlacement":
+                    ResetPendingInsertion();
+                    SetStatus("Insertion annulee.");
                     break;
                 case "selectSceneObject":
                 case "selectModernElement":
@@ -4133,19 +4142,19 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         BeginButtonPlacement(ScadaButtonKind.EmergencyStop);
     }
 
-    private void BeginShapePlacement(ScadaShapeKind shapeKind)
+    private void BeginShapePlacement(ScadaShapeKind shapeKind, string? commandId = null)
     {
         _pendingInsertShapeKind = shapeKind;
-        BeginModernElementPlacement(ScadaElementKind.Shape);
+        BeginModernElementPlacement(ScadaElementKind.Shape, commandId ?? CommandIdForShape(shapeKind));
     }
 
-    private void BeginButtonPlacement(ScadaButtonKind buttonKind)
+    private void BeginButtonPlacement(ScadaButtonKind buttonKind, string? commandId = null)
     {
         _pendingInsertButtonKind = buttonKind;
-        BeginModernElementPlacement(ScadaElementKind.Button);
+        BeginModernElementPlacement(ScadaElementKind.Button, commandId ?? CommandIdForButton(buttonKind));
     }
 
-    private async void BeginModernElementPlacement(ScadaElementKind kind)
+    private async void BeginModernElementPlacement(ScadaElementKind kind, string? commandId = null)
     {
         _pendingInsertKind = kind;
         if (kind != ScadaElementKind.Shape)
@@ -4157,7 +4166,16 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             _pendingInsertButtonKind = null;
         }
 
-        await ExecuteLegacyViewerCommandAsync(new LegacyViewerCommand("beginPlacement", kind.ToString()));
+        _activeInsertCommandId = commandId ?? CommandIdForElementKind(kind);
+        RefreshActiveRibbonCommandStates();
+
+        var shapeKind = _pendingInsertShapeKind ?? ScadaShapeKind.Rectangle;
+        var isTwoPointShape = kind == ScadaElementKind.Shape && IsTwoPointShape(shapeKind);
+        await ExecuteLegacyViewerCommandAsync(new LegacyViewerCommand(
+            "beginPlacement",
+            kind.ToString(),
+            ShapeKind: kind == ScadaElementKind.Shape ? shapeKind.ToString() : null,
+            IsTwoPoint: isTwoPointShape));
         var label = kind switch
         {
             ScadaElementKind.InputText => "champ d'entree texte",
@@ -4166,7 +4184,10 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ScadaElementKind.Button => FormatButtonLabel(_pendingInsertButtonKind ?? ScadaButtonKind.Command),
             _ => "champ texte"
         };
-        SetStatus($"Insertion active: cliquez dans la scene pour placer un {label}.");
+        var instruction = isTwoPointShape
+            ? "cliquez le premier point, puis le second point"
+            : "cliquez dans la scene";
+        SetStatus($"Insertion active: {instruction} pour placer un {label}.");
     }
 
     private void PlaceModernElement(string? kind, double x, double y)
@@ -4185,6 +4206,59 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
 
         var element = CreateModernElement(elementKind.Value, x, y);
+        AddModernElementToScene(element, "insertion Element+");
+    }
+
+    private void PlaceTwoPointShape(string? shapeKindText, double x, double y, double x2, double y2)
+    {
+        if (_activeScene is null)
+        {
+            SetStatus("Aucune scene V2 active.");
+            return;
+        }
+
+        var shapeKind = ParseShapeKind(shapeKindText) ?? _pendingInsertShapeKind;
+        if (shapeKind is null || !IsTwoPointShape(shapeKind.Value))
+        {
+            SetStatus("Aucun outil ligne/fleche actif.");
+            return;
+        }
+
+        var left = Math.Min(x, x2);
+        var top = Math.Min(y, y2);
+        var width = Math.Max(8, Math.Abs(x2 - x));
+        var height = Math.Max(8, Math.Abs(y2 - y));
+        var startX = Math.Abs(x2 - x) < 8 ? width / 2 : x - left;
+        var startY = Math.Abs(y2 - y) < 8 ? height / 2 : y - top;
+        var endX = Math.Abs(x2 - x) < 8 ? width / 2 : x2 - left;
+        var endY = Math.Abs(y2 - y) < 8 ? height / 2 : y2 - top;
+
+        var sequence = _nextShapeSequence++;
+        var id = CreateUniqueElementId($"shape_{sequence:000}");
+        var element = ScadaElement.CreateShape(id, $"{FormatShapeName(shapeKind.Value)}{sequence:000}", shapeKind.Value, left, top);
+        var data = element.Data ?? new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
+        element = element with
+        {
+            Bounds = new SceneBounds(left, top, width, height),
+            Data = data with
+            {
+                ShapeStartX = startX,
+                ShapeStartY = startY,
+                ShapeEndX = endX,
+                ShapeEndY = endY
+            }
+        };
+
+        AddModernElementToScene(element, "insertion ligne Element+");
+    }
+
+    private void AddModernElementToScene(ScadaElement element, string historyLabel)
+    {
+        if (_activeScene is null)
+        {
+            SetStatus("Aucune scene V2 active.");
+            return;
+        }
 
         var beforeScene = _activeScene;
         _activeScene = _activeScene.WithElement(element);
@@ -4192,19 +4266,26 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             beforeScene.Id,
             beforeScene,
             _activeScene,
-            "insertion Element+"));
+            historyLabel));
         _selectedSceneObject = element;
         _selectedSceneObjectIds.Clear();
         _selectedSceneObjectIds.Add(element.Id);
         _selectedSourceObjectIds.Clear();
-        _pendingInsertKind = null;
-        _pendingInsertShapeKind = null;
-        _pendingInsertButtonKind = null;
+        ResetPendingInsertion();
         MarkActiveSceneDirty();
         RefreshSelectionUi();
         RefreshModernSceneUi();
         _ = RenderModernSceneAsync();
         SetStatus($"{element.UserLabel} ajoute a la scene V2. Sauvegarde requise.");
+    }
+
+    private void ResetPendingInsertion()
+    {
+        _pendingInsertKind = null;
+        _pendingInsertShapeKind = null;
+        _pendingInsertButtonKind = null;
+        _activeInsertCommandId = null;
+        RefreshActiveRibbonCommandStates();
     }
 
     private async Task CreateElementPlusLibraryInstanceAsync(
@@ -4304,6 +4385,73 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 : null;
     }
 
+    private static ScadaShapeKind? ParseShapeKind(string? shapeKind)
+    {
+        return Enum.TryParse<ScadaShapeKind>(shapeKind, ignoreCase: true, out var parsed)
+            ? parsed
+            : null;
+    }
+
+    private static bool IsTwoPointShape(ScadaShapeKind shapeKind)
+    {
+        return shapeKind is ScadaShapeKind.Line or ScadaShapeKind.Arrow;
+    }
+
+    private static string? CommandIdForElementKind(ScadaElementKind kind)
+    {
+        return kind switch
+        {
+            ScadaElementKind.Text => "insert.text",
+            ScadaElementKind.InputText => "insert.input-text",
+            ScadaElementKind.InputNumeric => "insert.input-numeric",
+            _ => null
+        };
+    }
+
+    private static string? CommandIdForShape(ScadaShapeKind shapeKind)
+    {
+        return shapeKind switch
+        {
+            ScadaShapeKind.Rectangle => "insert.shape.rectangle",
+            ScadaShapeKind.Ellipse => "insert.shape.ellipse",
+            ScadaShapeKind.Circle => "insert.shape.circle",
+            ScadaShapeKind.Triangle => "insert.shape.triangle",
+            ScadaShapeKind.Star => "insert.shape.star",
+            ScadaShapeKind.Line => "insert.shape.line",
+            ScadaShapeKind.Arrow => "insert.shape.arrow",
+            ScadaShapeKind.IndicatorLamp => "insert.hmi.indicator-lamp",
+            ScadaShapeKind.HorizontalBar => "insert.hmi.bar-horizontal",
+            ScadaShapeKind.VerticalBar => "insert.hmi.bar-vertical",
+            ScadaShapeKind.Tank => "insert.hmi.tank",
+            ScadaShapeKind.PipeHorizontal => "insert.hmi.pipe-horizontal",
+            ScadaShapeKind.PipeVertical => "insert.hmi.pipe-vertical",
+            ScadaShapeKind.Valve => "insert.hmi.valve",
+            ScadaShapeKind.Pump => "insert.hmi.pump",
+            ScadaShapeKind.Motor => "insert.hmi.motor",
+            ScadaShapeKind.Fan => "insert.hmi.fan",
+            ScadaShapeKind.Conveyor => "insert.hmi.conveyor",
+            ScadaShapeKind.Gauge => "insert.hmi.gauge",
+            ScadaShapeKind.Switch => "insert.hmi.switch",
+            ScadaShapeKind.Breaker => "insert.hmi.breaker",
+            ScadaShapeKind.Transformer => "insert.hmi.transformer",
+            ScadaShapeKind.AlarmBeacon => "insert.hmi.alarm-beacon",
+            _ => null
+        };
+    }
+
+    private static string? CommandIdForButton(ScadaButtonKind buttonKind)
+    {
+        return buttonKind switch
+        {
+            ScadaButtonKind.Command => "insert.button.command",
+            ScadaButtonKind.Toggle => "insert.button.toggle",
+            ScadaButtonKind.Navigation => "insert.button.navigation",
+            ScadaButtonKind.AlarmAcknowledge => "insert.button.alarm-ack",
+            ScadaButtonKind.EmergencyStop => "insert.button.emergency-stop",
+            _ => null
+        };
+    }
+
     private ScadaElement CreateModernElement(ScadaElementKind kind, double x, double y)
     {
         if (kind == ScadaElementKind.Text)
@@ -4347,6 +4495,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         {
             ScadaShapeKind.RoundedRectangle => "RectangleArrondi",
             ScadaShapeKind.Ellipse => "Ellipse",
+            ScadaShapeKind.Circle => "Cercle",
+            ScadaShapeKind.Triangle => "Triangle",
+            ScadaShapeKind.Star => "Etoile",
             ScadaShapeKind.Line => "Ligne",
             ScadaShapeKind.Arrow => "Fleche",
             ScadaShapeKind.IndicatorLamp => "Voyant",
@@ -4375,6 +4526,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         {
             ScadaShapeKind.RoundedRectangle => "rectangle arrondi",
             ScadaShapeKind.Ellipse => "ellipse",
+            ScadaShapeKind.Circle => "cercle",
+            ScadaShapeKind.Triangle => "triangle",
+            ScadaShapeKind.Star => "etoile",
             ScadaShapeKind.Line => "ligne",
             ScadaShapeKind.Arrow => "fleche",
             ScadaShapeKind.IndicatorLamp => "voyant HMI",
@@ -5898,6 +6052,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             definition.IconKey,
             ResolveRibbonIcon(definition.IconKey),
             definition.IsEnabled,
+            string.Equals(definition.Id, _activeInsertCommandId, StringComparison.Ordinal),
             command);
     }
 
@@ -5918,6 +6073,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private void SetActiveRibbon(string ribbonKey)
     {
+        _activeRibbonKey = ribbonKey;
         ActiveRibbonGroups.Clear();
         if (_ribbonTabs.TryGetValue(ribbonKey, out var groups))
         {
@@ -5933,6 +6089,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         SetRibbonMenuButtonStyle(ScreenMenuButton, ribbonKey == "Screen");
         SetRibbonMenuButtonStyle(SelectionMenuButton, ribbonKey == "Selection");
         SetRibbonMenuButtonStyle(ToolsMenuButton, ribbonKey == "Tools");
+    }
+
+    private void RefreshActiveRibbonCommandStates()
+    {
+        SetActiveRibbon(_activeRibbonKey);
     }
 
     private void SetRibbonMenuButtonStyle(Button button, bool isActive)
@@ -5969,88 +6130,97 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 UngroupSelectedModernElement();
                 break;
             case "insert.text":
-                BeginModernElementPlacement(ScadaElementKind.Text);
+                BeginModernElementPlacement(ScadaElementKind.Text, commandId);
                 break;
             case "insert.input-text":
-                BeginModernElementPlacement(ScadaElementKind.InputText);
+                BeginModernElementPlacement(ScadaElementKind.InputText, commandId);
                 break;
             case "insert.input-numeric":
-                BeginModernElementPlacement(ScadaElementKind.InputNumeric);
+                BeginModernElementPlacement(ScadaElementKind.InputNumeric, commandId);
                 break;
             case "insert.shape.rectangle":
-                BeginShapePlacement(ScadaShapeKind.Rectangle);
+                BeginShapePlacement(ScadaShapeKind.Rectangle, commandId);
                 break;
             case "insert.shape.ellipse":
-                BeginShapePlacement(ScadaShapeKind.Ellipse);
+                BeginShapePlacement(ScadaShapeKind.Ellipse, commandId);
+                break;
+            case "insert.shape.circle":
+                BeginShapePlacement(ScadaShapeKind.Circle, commandId);
+                break;
+            case "insert.shape.triangle":
+                BeginShapePlacement(ScadaShapeKind.Triangle, commandId);
+                break;
+            case "insert.shape.star":
+                BeginShapePlacement(ScadaShapeKind.Star, commandId);
                 break;
             case "insert.shape.line":
-                BeginShapePlacement(ScadaShapeKind.Line);
+                BeginShapePlacement(ScadaShapeKind.Line, commandId);
                 break;
             case "insert.shape.arrow":
-                BeginShapePlacement(ScadaShapeKind.Arrow);
+                BeginShapePlacement(ScadaShapeKind.Arrow, commandId);
                 break;
             case "insert.hmi.indicator-lamp":
-                BeginShapePlacement(ScadaShapeKind.IndicatorLamp);
+                BeginShapePlacement(ScadaShapeKind.IndicatorLamp, commandId);
                 break;
             case "insert.hmi.bar-horizontal":
-                BeginShapePlacement(ScadaShapeKind.HorizontalBar);
+                BeginShapePlacement(ScadaShapeKind.HorizontalBar, commandId);
                 break;
             case "insert.hmi.bar-vertical":
-                BeginShapePlacement(ScadaShapeKind.VerticalBar);
+                BeginShapePlacement(ScadaShapeKind.VerticalBar, commandId);
                 break;
             case "insert.hmi.tank":
-                BeginShapePlacement(ScadaShapeKind.Tank);
+                BeginShapePlacement(ScadaShapeKind.Tank, commandId);
                 break;
             case "insert.hmi.pipe-horizontal":
-                BeginShapePlacement(ScadaShapeKind.PipeHorizontal);
+                BeginShapePlacement(ScadaShapeKind.PipeHorizontal, commandId);
                 break;
             case "insert.hmi.pipe-vertical":
-                BeginShapePlacement(ScadaShapeKind.PipeVertical);
+                BeginShapePlacement(ScadaShapeKind.PipeVertical, commandId);
                 break;
             case "insert.hmi.valve":
-                BeginShapePlacement(ScadaShapeKind.Valve);
+                BeginShapePlacement(ScadaShapeKind.Valve, commandId);
                 break;
             case "insert.hmi.pump":
-                BeginShapePlacement(ScadaShapeKind.Pump);
+                BeginShapePlacement(ScadaShapeKind.Pump, commandId);
                 break;
             case "insert.hmi.motor":
-                BeginShapePlacement(ScadaShapeKind.Motor);
+                BeginShapePlacement(ScadaShapeKind.Motor, commandId);
                 break;
             case "insert.hmi.fan":
-                BeginShapePlacement(ScadaShapeKind.Fan);
+                BeginShapePlacement(ScadaShapeKind.Fan, commandId);
                 break;
             case "insert.hmi.conveyor":
-                BeginShapePlacement(ScadaShapeKind.Conveyor);
+                BeginShapePlacement(ScadaShapeKind.Conveyor, commandId);
                 break;
             case "insert.hmi.gauge":
-                BeginShapePlacement(ScadaShapeKind.Gauge);
+                BeginShapePlacement(ScadaShapeKind.Gauge, commandId);
                 break;
             case "insert.hmi.switch":
-                BeginShapePlacement(ScadaShapeKind.Switch);
+                BeginShapePlacement(ScadaShapeKind.Switch, commandId);
                 break;
             case "insert.hmi.breaker":
-                BeginShapePlacement(ScadaShapeKind.Breaker);
+                BeginShapePlacement(ScadaShapeKind.Breaker, commandId);
                 break;
             case "insert.hmi.transformer":
-                BeginShapePlacement(ScadaShapeKind.Transformer);
+                BeginShapePlacement(ScadaShapeKind.Transformer, commandId);
                 break;
             case "insert.hmi.alarm-beacon":
-                BeginShapePlacement(ScadaShapeKind.AlarmBeacon);
+                BeginShapePlacement(ScadaShapeKind.AlarmBeacon, commandId);
                 break;
             case "insert.button.command":
-                BeginButtonPlacement(ScadaButtonKind.Command);
+                BeginButtonPlacement(ScadaButtonKind.Command, commandId);
                 break;
             case "insert.button.toggle":
-                BeginButtonPlacement(ScadaButtonKind.Toggle);
+                BeginButtonPlacement(ScadaButtonKind.Toggle, commandId);
                 break;
             case "insert.button.navigation":
-                BeginButtonPlacement(ScadaButtonKind.Navigation);
+                BeginButtonPlacement(ScadaButtonKind.Navigation, commandId);
                 break;
             case "insert.button.alarm-ack":
-                BeginButtonPlacement(ScadaButtonKind.AlarmAcknowledge);
+                BeginButtonPlacement(ScadaButtonKind.AlarmAcknowledge, commandId);
                 break;
             case "insert.button.emergency-stop":
-                BeginButtonPlacement(ScadaButtonKind.EmergencyStop);
+                BeginButtonPlacement(ScadaButtonKind.EmergencyStop, commandId);
                 break;
             default:
                 SetStatus($"Commande ruban inconnue: {commandId}");
@@ -6288,6 +6458,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         public string Label { get; }
 
         /// <summary>
+        /// Whether the group uses the large two-row shape gallery layout.
+        /// </summary>
+        public bool IsShapeGallery => string.Equals(Label, "Formes", StringComparison.Ordinal);
+
+        /// <summary>
         /// Ordered command list displayed in the group.
         /// </summary>
         public IReadOnlyList<RibbonCommandViewModel> Commands { get; }
@@ -6305,6 +6480,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             string iconKey,
             ImageSource? icon,
             bool isEnabled,
+            bool isActive,
             ICommand command)
         {
             Id = id;
@@ -6313,6 +6489,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             IconKey = iconKey;
             Icon = icon;
             IsEnabled = isEnabled;
+            IsActive = isActive;
             Command = command;
         }
 
@@ -6345,6 +6522,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         /// Whether the command is executable in the current implementation slice.
         /// </summary>
         public bool IsEnabled { get; }
+
+        /// <summary>
+        /// Whether this command is the current active insertion command.
+        /// </summary>
+        public bool IsActive { get; }
 
         /// <summary>
         /// WPF command invoked by the ribbon button.
@@ -6480,7 +6662,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         string Action,
         string? Kind = null,
         string? Id = null,
-        IReadOnlyList<string>? Ids = null);
+        IReadOnlyList<string>? Ids = null,
+        string? ShapeKind = null,
+        bool IsTwoPoint = false);
 
     private sealed class LegacyViewerMessage
     {
@@ -6497,6 +6681,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         public List<string>? Ids { get; set; }
 
         public string? Kind { get; set; }
+
+        public string? ShapeKind { get; set; }
 
         public string? CommandId { get; set; }
 
@@ -6551,6 +6737,10 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         public double X { get; set; }
 
         public double Y { get; set; }
+
+        public double X2 { get; set; }
+
+        public double Y2 { get; set; }
 
         public double Width { get; set; }
 
@@ -6845,7 +7035,23 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     .scada-modern-handle[data-handle="se"] { right: -6px; bottom: -6px; cursor: nwse-resize; }
     body.scada-placement-active,
     body.scada-placement-active * {
-      cursor: text !important;
+      cursor: crosshair !important;
+    }
+    #scada-placement-preview {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1px;
+      height: 1px;
+      z-index: 2147483644;
+      overflow: visible;
+      pointer-events: none;
+    }
+    #scada-placement-preview line {
+      stroke: #2090a0;
+      stroke-width: 2;
+      stroke-dasharray: 6 4;
+      vector-effect: non-scaling-stroke;
     }
     #scada-text-editor {
       position: fixed;
@@ -6893,6 +7099,10 @@ await PreviewWebView.ExecuteScriptAsync($$"""
   let sceneCanvasResize = null;
   const selectedModernIds = new Set();
   let placementKind = null;
+  let placementShapeKind = null;
+  let placementIsTwoPoint = false;
+  let placementStart = null;
+  let placementPreview = null;
   let sourceDrag = null;
   let modernDrag = null;
   let activeTextEditor = null;
@@ -7446,6 +7656,66 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
   function getPageSurface() {
     return document.querySelector('.page') || document.querySelector('#scada-root') || document.body;
+  }
+
+  function getSurfacePoint(event, surface = getPageSurface()) {
+    const rect = surface.getBoundingClientRect();
+    return {
+      x: Math.round(event.clientX - rect.left + surface.scrollLeft),
+      y: Math.round(event.clientY - rect.top + surface.scrollTop)
+    };
+  }
+
+  function clearPlacementPreview() {
+    placementPreview?.remove?.();
+    placementPreview = null;
+  }
+
+  function clearPlacementState(postCancel = false) {
+    placementKind = null;
+    placementShapeKind = null;
+    placementIsTwoPoint = false;
+    placementStart = null;
+    clearPlacementPreview();
+    document.body.classList.remove('scada-placement-active');
+    if (postCancel) {
+      window.chrome?.webview?.postMessage({ type: 'cancelPlacement' });
+    }
+  }
+
+  function updateTwoPointPlacementPreview(point) {
+    if (!placementStart) {
+      return;
+    }
+    const surface = getPageSurface();
+    if (!placementPreview) {
+      placementPreview = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      placementPreview.id = 'scada-placement-preview';
+      const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      line.setAttribute('x1', '0');
+      line.setAttribute('y1', '0');
+      line.setAttribute('x2', '0');
+      line.setAttribute('y2', '0');
+      placementPreview.appendChild(line);
+      surface.appendChild(placementPreview);
+    } else if (placementPreview.parentElement !== surface) {
+      surface.appendChild(placementPreview);
+    }
+
+    const left = Math.min(placementStart.x, point.x);
+    const top = Math.min(placementStart.y, point.y);
+    const width = Math.max(1, Math.abs(point.x - placementStart.x));
+    const height = Math.max(1, Math.abs(point.y - placementStart.y));
+    const line = placementPreview.querySelector('line');
+    placementPreview.style.left = `${left}px`;
+    placementPreview.style.top = `${top}px`;
+    placementPreview.style.width = `${width}px`;
+    placementPreview.style.height = `${height}px`;
+    placementPreview.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    line?.setAttribute('x1', `${placementStart.x - left}`);
+    line?.setAttribute('y1', `${placementStart.y - top}`);
+    line?.setAttribute('x2', `${point.x - left}`);
+    line?.setAttribute('y2', `${point.y - top}`);
   }
 
   function ensureModernLayer() {
@@ -8084,6 +8354,17 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       return svg;
     }
 
+    if (shapeKind === 'circle') {
+      const circle = document.createElementNS(svg.namespaceURI, 'circle');
+      circle.setAttribute('cx', `${element.Width / 2}`);
+      circle.setAttribute('cy', `${element.Height / 2}`);
+      circle.setAttribute('r', `${Math.max(0, Math.min(element.Width, element.Height) / 2 - halfStroke)}`);
+      circle.setAttribute('fill', fill);
+      setStroke(circle);
+      svg.appendChild(circle);
+      return svg;
+    }
+
     if (shapeKind === 'ellipse') {
       const ellipse = document.createElementNS(svg.namespaceURI, 'ellipse');
       ellipse.setAttribute('cx', `${element.Width / 2}`);
@@ -8093,6 +8374,33 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       ellipse.setAttribute('fill', fill);
       setStroke(ellipse);
       svg.appendChild(ellipse);
+      return svg;
+    }
+
+    if (shapeKind === 'triangle') {
+      const triangle = document.createElementNS(svg.namespaceURI, 'polygon');
+      triangle.setAttribute('points', `${element.Width / 2},${halfStroke} ${Math.max(halfStroke, element.Width - halfStroke)},${Math.max(halfStroke, element.Height - halfStroke)} ${halfStroke},${Math.max(halfStroke, element.Height - halfStroke)}`);
+      triangle.setAttribute('fill', fill);
+      setStroke(triangle);
+      svg.appendChild(triangle);
+      return svg;
+    }
+
+    if (shapeKind === 'star') {
+      const cx = element.Width / 2;
+      const cy = element.Height / 2;
+      const outer = Math.max(0, Math.min(element.Width, element.Height) / 2 - halfStroke);
+      const inner = outer * 0.45;
+      const points = Array.from({ length: 10 }, (_, index) => {
+        const radius = index % 2 === 0 ? outer : inner;
+        const angle = (-90 + index * 36) * Math.PI / 180;
+        return `${cx + Math.cos(angle) * radius},${cy + Math.sin(angle) * radius}`;
+      }).join(' ');
+      const star = document.createElementNS(svg.namespaceURI, 'polygon');
+      star.setAttribute('points', points);
+      star.setAttribute('fill', fill);
+      setStroke(star);
+      svg.appendChild(star);
       return svg;
     }
 
@@ -8114,10 +8422,14 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       }
 
       const line = document.createElementNS(svg.namespaceURI, 'line');
-      line.setAttribute('x1', `${halfStroke}`);
-      line.setAttribute('y1', `${element.Height / 2}`);
-      line.setAttribute('x2', `${Math.max(halfStroke, element.Width - halfStroke - (shapeKind === 'arrow' ? 7 : 0))}`);
-      line.setAttribute('y2', `${element.Height / 2}`);
+      const startX = Number(data.ShapeStartX ?? data.shapeStartX);
+      const startY = Number(data.ShapeStartY ?? data.shapeStartY);
+      const endX = Number(data.ShapeEndX ?? data.shapeEndX);
+      const endY = Number(data.ShapeEndY ?? data.shapeEndY);
+      line.setAttribute('x1', `${Number.isFinite(startX) ? startX : halfStroke}`);
+      line.setAttribute('y1', `${Number.isFinite(startY) ? startY : element.Height / 2}`);
+      line.setAttribute('x2', `${Number.isFinite(endX) ? endX : Math.max(halfStroke, element.Width - halfStroke - (shapeKind === 'arrow' ? 7 : 0))}`);
+      line.setAttribute('y2', `${Number.isFinite(endY) ? endY : element.Height / 2}`);
       if (shapeKind === 'arrow') {
         line.setAttribute('marker-end', `url(#arrow-${element.Id})`);
       }
@@ -8491,13 +8803,31 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     if (placementKind) {
       const surface = getPageSurface();
-      const rect = surface.getBoundingClientRect();
-      const x = Math.max(0, event.clientX - rect.left + surface.scrollLeft);
-      const y = Math.max(0, event.clientY - rect.top + surface.scrollTop);
-      const kind = placementKind;
-      placementKind = null;
-      document.body.classList.remove('scada-placement-active');
-      window.chrome?.webview?.postMessage({ type: 'placeElement', kind, x, y });
+      const point = getSurfacePoint(event, surface);
+      if (placementIsTwoPoint) {
+        if (!placementStart) {
+          placementStart = point;
+          updateTwoPointPlacementPreview(point);
+        } else {
+          const start = placementStart;
+          const kind = placementKind;
+          const shapeKind = placementShapeKind;
+          clearPlacementState(false);
+          window.chrome?.webview?.postMessage({
+            type: 'placeTwoPointElement',
+            kind,
+            shapeKind,
+            x: start.x,
+            y: start.y,
+            x2: point.x,
+            y2: point.y
+          });
+        }
+      } else {
+        const kind = placementKind;
+        clearPlacementState(false);
+        window.chrome?.webview?.postMessage({ type: 'placeElement', kind, x: point.x, y: point.y });
+      }
       event.preventDefault();
       event.stopPropagation();
       return;
@@ -8556,6 +8886,13 @@ await PreviewWebView.ExecuteScriptAsync($$"""
   }, true);
 
   document.addEventListener('pointermove', event => {
+    if (placementKind && placementIsTwoPoint && placementStart) {
+      updateTwoPointPlacementPreview(getSurfacePoint(event));
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+
     if (sceneCanvasResize) {
       const width = sceneCanvasResize.startWidth + event.clientX - sceneCanvasResize.startClientX;
       const height = sceneCanvasResize.startHeight + event.clientY - sceneCanvasResize.startClientY;
@@ -8723,6 +9060,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     if (isEditableKeyboardTarget(event.target)) {
       return;
     }
+    if (placementKind && event.key === 'Escape') {
+      clearPlacementState(true);
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') {
       window.chrome?.webview?.postMessage({ type: event.shiftKey ? 'redo' : 'undo' });
       event.preventDefault();
@@ -8855,7 +9198,10 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       const action = typeof command === 'string' ? command : command?.Action;
       if (action === 'beginPlacement') {
         clearModernSelection(false);
+        clearPlacementState(false);
         placementKind = command?.Kind || null;
+        placementShapeKind = command?.ShapeKind || command?.shapeKind || null;
+        placementIsTwoPoint = command?.IsTwoPoint === true || command?.isTwoPoint === true;
         document.body.classList.toggle('scada-placement-active', !!placementKind);
         return;
       }

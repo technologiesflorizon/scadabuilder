@@ -2,12 +2,13 @@
 
 Date: 2026-06-16
 Status: Active icon strategy pointer
-Document version: `V2.1.2.0044`
+Document version: `V2.1.3.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.3.0000` | `PENDING` | Ajout des icones semantiques Cercle, Triangle et Etoile et de la taille 64x64 pour la galerie Formes. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Extension du catalogue semantique a la palette laterale d'outils. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Ajout de la couverture de contrat pour les cles d'icones semantiques du catalogue de ruban. |
 | 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Ajout du registre operationnel des icones de ruban et de la normalisation des glyphes visibles. |
@@ -45,12 +46,14 @@ Current icon families:
 4. `Icon.View.*` for responsive preview and measurement commands.
 5. `Icon.Selection.*`, `Icon.Object.*`, and `Icon.Layer.*` for scene selection and ordering.
 6. `Icon.Tool.*` for general editor tools.
-7. `Icon.Field.*`, `Icon.Shape.*`, `Icon.Hmi.*`, and `Icon.Button.*` for insert-ribbon authoring commands.
+7. `Icon.Field.*`, `Icon.Shape.*`, `Icon.Hmi.*`, and `Icon.Button.*` for insert-ribbon authoring commands. The standard shape family includes `Icon.Shape.Rectangle`, `Icon.Shape.Ellipse`, `Icon.Shape.Circle`, `Icon.Shape.Triangle`, `Icon.Shape.Star`, `Icon.Shape.Line`, and `Icon.Shape.Arrow`.
 
 ## 4. Standardization Rule
 
 Every visible command in the top ribbon or left tool palette must resolve to a semantic icon key before the command is considered UI-complete.
 
 Temporary text glyphs are not valid command icons in the top ribbon. Examples such as `BTN`, `LED`, `TNK`, `VLV`, `PMP`, `MTR`, `FAN`, `CVY`, `GAU`, `SW`, `CB`, `XFMR`, `ALM`, `123`, `[ ]`, `--`, `==`, and `I/O` may be useful during prototyping but must be replaced by normalized vector resources before delivery.
+
+The Insert `Formes` gallery scales its command icons to 64x64. Other ribbon command families continue using compact command icon sizing unless their contract explicitly defines a large gallery treatment.
 
 The current implementation uses internal original WPF vector primitives and does not introduce a third-party icon dependency. If the baseline later moves to Lucide or Fluent UI System Icons, the project must record the selected upstream version, license, converted files, and required third-party notices before distribution.

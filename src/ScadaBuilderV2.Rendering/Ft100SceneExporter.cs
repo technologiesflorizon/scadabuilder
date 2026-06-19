@@ -831,12 +831,18 @@ public sealed partial class Ft100SceneExporter
                 BuildTransformerShape(width, height, common),
             ScadaShapeKind.AlarmBeacon =>
                 BuildAlarmBeaconShape(width, height, strokeWidth, stroke, fill, common),
+            ScadaShapeKind.Circle =>
+                $"""<circle cx="{Format(width / 2)}" cy="{Format(height / 2)}" r="{Format(Math.Max(0, Math.Min(width, height) / 2 - halfStroke))}" fill="{fill}" {common}/>""",
             ScadaShapeKind.Ellipse =>
                 $"""<ellipse cx="{Format(width / 2)}" cy="{Format(height / 2)}" rx="{Format(Math.Max(0, (width / 2) - halfStroke))}" ry="{Format(Math.Max(0, (height / 2) - halfStroke))}" fill="{fill}" {common}/>""",
+            ScadaShapeKind.Triangle =>
+                $"""<polygon points="{Format(width / 2)},{Format(halfStroke)} {Format(Math.Max(halfStroke, width - halfStroke))},{Format(Math.Max(halfStroke, height - halfStroke))} {Format(halfStroke)},{Format(Math.Max(halfStroke, height - halfStroke))}" fill="{fill}" {common}/>""",
+            ScadaShapeKind.Star =>
+                $"""<polygon points="{BuildStarPoints(width, height, halfStroke)}" fill="{fill}" {common}/>""",
             ScadaShapeKind.Line =>
-                $"""<line x1="{Format(halfStroke)}" y1="{Format(height / 2)}" x2="{Format(Math.Max(halfStroke, width - halfStroke))}" y2="{Format(height / 2)}" {common}/>""",
+                $"""<line x1="{Format(data.ShapeStartX ?? halfStroke)}" y1="{Format(data.ShapeStartY ?? height / 2)}" x2="{Format(data.ShapeEndX ?? Math.Max(halfStroke, width - halfStroke))}" y2="{Format(data.ShapeEndY ?? height / 2)}" {common}/>""",
             ScadaShapeKind.Arrow =>
-                $"""<defs><marker id="{markerId}" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="{stroke}"/></marker></defs><line x1="{Format(halfStroke)}" y1="{Format(height / 2)}" x2="{Format(Math.Max(halfStroke, width - halfStroke - 7))}" y2="{Format(height / 2)}" marker-end="url(#{markerId})" {common}/>""",
+                $"""<defs><marker id="{markerId}" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="{stroke}"/></marker></defs><line x1="{Format(data.ShapeStartX ?? halfStroke)}" y1="{Format(data.ShapeStartY ?? height / 2)}" x2="{Format(data.ShapeEndX ?? Math.Max(halfStroke, width - halfStroke - 7))}" y2="{Format(data.ShapeEndY ?? height / 2)}" marker-end="url(#{markerId})" {common}/>""",
             ScadaShapeKind.RoundedRectangle =>
                 $"""<rect x="{Format(halfStroke)}" y="{Format(halfStroke)}" width="{Format(Math.Max(0, width - strokeWidth))}" height="{Format(Math.Max(0, height - strokeWidth))}" rx="{Format(Math.Min(width, height) * 0.12)}" ry="{Format(Math.Min(width, height) * 0.12)}" fill="{fill}" {common}/>""",
             _ =>
@@ -844,6 +850,22 @@ public sealed partial class Ft100SceneExporter
         };
 
         return $"""<svg id="{svgId}" viewBox="0 0 {Format(width)} {Format(height)}" width="100%" height="100%" preserveAspectRatio="none" style="display:block;pointer-events:none;">{body}</svg>""";
+    }
+
+    private static string BuildStarPoints(double width, double height, double halfStroke)
+    {
+        var centerX = width / 2;
+        var centerY = height / 2;
+        var outerRadius = Math.Max(0, Math.Min(width, height) / 2 - halfStroke);
+        var innerRadius = outerRadius * 0.45;
+        return string.Join(
+            " ",
+            Enumerable.Range(0, 10).Select(index =>
+            {
+                var radius = index % 2 == 0 ? outerRadius : innerRadius;
+                var angle = (-90 + (index * 36)) * Math.PI / 180;
+                return $"{Format(centerX + Math.Cos(angle) * radius)},{Format(centerY + Math.Sin(angle) * radius)}";
+            }));
     }
 
     private static string BuildBarShape(

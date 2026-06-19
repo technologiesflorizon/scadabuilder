@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.2.0044`
+Document version: `V2.1.3.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.3.0000` | `PENDING` | Ajout de DEC-0032 pour la galerie Formes du ruban Inserer et le placement ligne/fleche en deux points. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Mise a jour de DEC-0031 apres extraction de la palette laterale d'outils vers le catalogue semantique. |
 | 2026-06-19 | `V2.1.2.0043` | `fde1b31` | Mise a jour de DEC-0031 apres retrait du fallback XAML statique du ruban superieur. |
 | 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Mise a jour de DEC-0031 apres activation des commandes de groupement depuis le ruban. |
@@ -715,6 +716,32 @@ The shell now renders the active top ribbon only through `RibbonCommandSurface`,
 Regression coverage:
 
 `tests/ScadaBuilderV2.Tests/RibbonCommandCatalogTests.cs`, `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`, `dotnet build ScadaBuilderV2.sln --no-restore`
+
+### DEC-0032 - Insert Shape Gallery And Two-Point Shape Authoring
+
+Status: Active
+Created: 2026-06-19 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md`, `docs/05_studio_element_plus/STUDIO_ELEMENT_PLUS_SEP_CONTRACT_V2.md`, `docs/06_ui_ux/UI_SPECIFICATION_V2.md`, `docs/06_ui_ux/ICON_STRATEGY_V2.md`
+
+Context:
+
+The Insert ribbon shape commands must be visually distinct, must show the active insertion command, and must author real Element+ geometry. The previous standard shape surface exposed only rectangle, ellipse, line, and arrow; line and arrow creation consumed one click and produced generic horizontal geometry instead of a user-selected start/end point.
+
+Decision:
+
+The Insert ribbon `Formes` group is a large shape gallery capped at four columns, with 64x64 semantic shape icons and active-command visual state. The standard shape set includes rectangle, ellipse, circle, triangle, star, line, and arrow. Line and arrow insertion uses a two-point editor workflow: first click captures the start point, pointer movement shows an editor-only SVG preview, second click persists the final Element+ shape with `ScadaElementData.ShapeStartX`, `ShapeStartY`, `ShapeEndX`, and `ShapeEndY`. Escape cancels placement and clears the active ribbon command.
+
+Consequences:
+
+Preview and FT100 export render circle, triangle, star, line, and arrow as Element+-owned SVG content using the same persisted model data. Editor-only placement previews, selection overlays, handles, and drag rectangles remain outside exported `.sep` and FT100 runtime geometry. Future shape commands must enter the semantic command catalog before WPF visual templates or dispatch code are changed.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/RibbonCommandCatalogTests.cs`, `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`, `tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
 
 ### DEC-0024 - Global Runtime Lifecycle Bridge
 

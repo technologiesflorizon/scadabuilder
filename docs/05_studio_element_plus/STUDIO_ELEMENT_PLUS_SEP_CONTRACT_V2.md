@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active `.sep` package contract
-Document version: `V2.1.2.0033`
+Document version: `V2.1.3.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.3.0000` | `PENDING` | Extension du contrat formes standards a Cercle/Triangle/Etoile et aux lignes/fleches en deux points. |
 | 2026-06-19 | `V2.1.2.0033` | `89d7165` | Ajout des primitives HMI/SCADA electriques et alarme `Switch`, `Breaker`, `Transformer` et `AlarmBeacon`. |
 | 2026-06-18 | `V2.1.2.0031` | `f6a85ed` | Ajout des primitives machines/mesure HMI Element+ `Motor`, `Fan`, `Conveyor` et `Gauge`. |
 | 2026-06-18 | `V2.1.2.0029` | `b97ef16` | Ajout des primitives process HMI Element+ `Tank`, `PipeHorizontal`, `PipeVertical`, `Valve` et `Pump`. |
@@ -59,12 +60,12 @@ Required drawing tool behavior:
 10. Ensure created primitives become part of the Element+ component model, not editor-only overlays.
 
 SCADA Builder V2 scene insertions persist standard shape type through `ScadaElement.ShapeKind`.
-The implemented standard shape slice covers `Rectangle`, `RoundedRectangle`, `Ellipse`, `Line`, and `Arrow`.
+The implemented standard shape slice covers `Rectangle`, `RoundedRectangle`, `Ellipse`, `Circle`, `Triangle`, `Star`, `Line`, and `Arrow`. Line and arrow authoring stores explicit start/end coordinates in `ScadaElement.Data` so preview and FT100 export do not synthesize generic horizontal geometry.
 The implemented HMI shape slice covers `IndicatorLamp`, `HorizontalBar`, and `VerticalBar`; bar shapes use `ScadaElement.Data.Value` as a 0-100 percentage for preview and FT100 export.
 The implemented process shape slice covers `Tank`, `PipeHorizontal`, `PipeVertical`, `Valve`, and `Pump`; tank shapes use `ScadaElement.Data.Value` as a 0-100 percentage for preview and FT100 export.
 The implemented machine and measurement symbol slice covers `Motor`, `Fan`, `Conveyor`, and `Gauge`; gauge shapes use `ScadaElement.Data.Value` as a 0-100 percentage for preview and FT100 export.
 The implemented electrical and alarm symbol slice covers `Switch`, `Breaker`, `Transformer`, and `AlarmBeacon`.
-Preview and FT100 export render these shapes as Element+-owned SVG content inside the Element+ wrapper; selection overlays, handles, drag rectangles, workzone state, zoom, and pan remain editor-only.
+Preview and FT100 export render these shapes as Element+-owned SVG content inside the Element+ wrapper; placement previews, selection overlays, handles, drag rectangles, workzone state, zoom, and pan remain editor-only.
 
 ## 4. Related Tests
 

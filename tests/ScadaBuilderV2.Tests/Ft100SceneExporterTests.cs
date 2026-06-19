@@ -1488,8 +1488,26 @@ public sealed class Ft100SceneExporterTests
                 BorderStyle = "Dashed",
                 Opacity = 0.42,
                 Rotation = 17
-            }
+            },
+            Data = new ScadaElementData(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                false,
+                ShapeStartX: 7,
+                ShapeStartY: 9,
+                ShapeEndX: 124,
+                ShapeEndY: 21)
         };
+        var circle = ScadaElement.CreateShape("shape_circle_001", "Cercle001", ScadaShapeKind.Circle, 40, 120);
+        var triangle = ScadaElement.CreateShape("shape_triangle_001", "Triangle001", ScadaShapeKind.Triangle, 40, 220);
+        var star = ScadaElement.CreateShape("shape_star_001", "Etoile001", ScadaShapeKind.Star, 140, 220);
         var lamp = ScadaElement.CreateShape("shape_lamp_001", "Voyant001", ScadaShapeKind.IndicatorLamp, 80, 120);
         var bar = ScadaElement.CreateShape("shape_bar_001", "BarreHorizontale001", ScadaShapeKind.HorizontalBar, 140, 120) with
         {
@@ -1517,6 +1535,9 @@ public sealed class Ft100SceneExporterTests
         var scene = ScadaScene
             .CreateEmpty("win00008", "Formes", new(1280, 873))
             .WithElement(arrow)
+            .WithElement(circle)
+            .WithElement(triangle)
+            .WithElement(star)
             .WithElement(lamp)
             .WithElement(bar)
             .WithElement(tank)
@@ -1542,10 +1563,20 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "data-scada-element-id=\"shape_arrow_001\"");
             StringAssert.Contains(html, "<svg id=\"shape-shape_arrow_001\"");
             StringAssert.Contains(html, "marker-end=\"url(#arrow-shape_arrow_001)\"");
+            StringAssert.Contains(html, "x1=\"7\"");
+            StringAssert.Contains(html, "y1=\"9\"");
+            StringAssert.Contains(html, "x2=\"124\"");
+            StringAssert.Contains(html, "y2=\"21\"");
             StringAssert.Contains(html, "stroke=\"#90C030\"");
             StringAssert.Contains(html, "stroke-dasharray=\"8 5\"");
             StringAssert.Contains(html, "opacity:0.42;");
             StringAssert.Contains(html, "transform:rotate(17deg);");
+            StringAssert.Contains(html, "id=\"ft100-win00008__shape_circle_001\"");
+            StringAssert.Contains(html, "<svg id=\"shape-shape_circle_001\"");
+            StringAssert.Contains(html, "id=\"ft100-win00008__shape_triangle_001\"");
+            StringAssert.Contains(html, "<svg id=\"shape-shape_triangle_001\"");
+            StringAssert.Contains(html, "id=\"ft100-win00008__shape_star_001\"");
+            StringAssert.Contains(html, "<svg id=\"shape-shape_star_001\"");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_lamp_001\"");
             StringAssert.Contains(html, "radialGradient id=\"lamp-gradient-shape_lamp_001\"");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_bar_001\"");
@@ -1575,6 +1606,9 @@ public sealed class Ft100SceneExporterTests
 
             var css = await File.ReadAllTextAsync(result.CssPath);
             StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_arrow_001");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_circle_001");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_triangle_001");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_star_001");
             StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_lamp_001");
             StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_bar_001");
             StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__shape_tank_001");
@@ -1597,6 +1631,9 @@ public sealed class Ft100SceneExporterTests
             var manifest = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "manifest.json"));
             StringAssert.Contains(manifest, "\"Kind\": \"Shape\"");
             StringAssert.Contains(manifest, "\"ShapeKind\": \"Arrow\"");
+            StringAssert.Contains(manifest, "\"ShapeKind\": \"Circle\"");
+            StringAssert.Contains(manifest, "\"ShapeKind\": \"Triangle\"");
+            StringAssert.Contains(manifest, "\"ShapeKind\": \"Star\"");
             StringAssert.Contains(manifest, "\"ShapeKind\": \"IndicatorLamp\"");
             StringAssert.Contains(manifest, "\"ShapeKind\": \"HorizontalBar\"");
             StringAssert.Contains(manifest, "\"ShapeKind\": \"Tank\"");

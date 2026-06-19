@@ -728,6 +728,18 @@ public sealed class OfficialSceneDomainTests
         Assert.AreEqual("Transparent", arrow.Style?.Background);
         Assert.AreEqual(140, arrow.Bounds.Width);
 
+        var circle = ScadaElement.CreateShape("shape_circle", "Cercle001", ScadaShapeKind.Circle, 10, 20);
+        Assert.AreEqual(new SceneBounds(10, 20, 88, 88), circle.Bounds);
+        Assert.AreEqual(ScadaShapeKind.Circle, circle.EffectiveShapeKind);
+
+        var triangle = ScadaElement.CreateShape("shape_triangle", "Triangle001", ScadaShapeKind.Triangle, 10, 20);
+        Assert.AreEqual(new SceneBounds(10, 20, 96, 88), triangle.Bounds);
+        Assert.AreEqual(ScadaShapeKind.Triangle, triangle.EffectiveShapeKind);
+
+        var star = ScadaElement.CreateShape("shape_star", "Etoile001", ScadaShapeKind.Star, 10, 20);
+        Assert.AreEqual(new SceneBounds(10, 20, 96, 88), star.Bounds);
+        Assert.AreEqual(ScadaShapeKind.Star, star.EffectiveShapeKind);
+
         var lamp = ScadaElement.CreateShape("shape_lamp", "Voyant001", ScadaShapeKind.IndicatorLamp, 10, 20);
         Assert.AreEqual(new SceneBounds(10, 20, 64, 64), lamp.Bounds);
 

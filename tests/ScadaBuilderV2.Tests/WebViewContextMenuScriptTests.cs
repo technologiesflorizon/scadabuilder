@@ -639,13 +639,15 @@ public sealed class WebViewContextMenuScriptTests
     {
         var source = ReadMainWindowSource();
         var insertMethod = ExtractMethod(source, "private void PlaceModernElement(string? kind, double x, double y)");
+        var insertCommitMethod = ExtractMethod(source, "private void AddModernElementToScene(ScadaElement element, string historyLabel)");
         var libraryMethod = ExtractMethod(source, "private async Task CreateElementPlusLibraryInstanceAsync(");
         var legacyTextMethod = ExtractMethod(source, "private void EditLegacyText(string? id, string? text)");
 
-        StringAssert.Contains(insertMethod, "new SceneSnapshotChangedAction(");
+        StringAssert.Contains(insertCommitMethod, "new SceneSnapshotChangedAction(");
         StringAssert.Contains(libraryMethod, "new SceneSnapshotChangedAction(");
         StringAssert.Contains(legacyTextMethod, "new SceneSnapshotChangedAction(");
-        StringAssert.Contains(insertMethod, "\"insertion Element+\"");
+        StringAssert.Contains(insertMethod, "AddModernElementToScene(element, \"insertion Element+\");");
+        StringAssert.Contains(insertCommitMethod, "historyLabel");
         StringAssert.Contains(libraryMethod, "\"instanciation librairie Element+\"");
         StringAssert.Contains(legacyTextMethod, "\"edition texte legacy\"");
     }
@@ -922,6 +924,9 @@ public sealed class WebViewContextMenuScriptTests
 
         CollectionAssert.Contains(commandIds, "insert.shape.rectangle");
         CollectionAssert.Contains(commandIds, "insert.shape.ellipse");
+        CollectionAssert.Contains(commandIds, "insert.shape.circle");
+        CollectionAssert.Contains(commandIds, "insert.shape.triangle");
+        CollectionAssert.Contains(commandIds, "insert.shape.star");
         CollectionAssert.Contains(commandIds, "insert.shape.line");
         CollectionAssert.Contains(commandIds, "insert.shape.arrow");
         CollectionAssert.Contains(commandIds, "insert.hmi.indicator-lamp");
@@ -947,6 +952,9 @@ public sealed class WebViewContextMenuScriptTests
         CollectionAssert.Contains(commandIds, "insert.button.emergency-stop");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Rectangle);");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Ellipse);");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Circle, commandId);");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Triangle, commandId);");
+        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Star, commandId);");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Line);");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Arrow);");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.IndicatorLamp);");
@@ -980,8 +988,13 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "function renderShapeElement(element, style)");
         StringAssert.Contains(source, "String(element.ShapeKind || element.shapeKind || 'Rectangle').toLowerCase()");
         StringAssert.Contains(source, "document.createElementNS('http://www.w3.org/2000/svg', 'svg')");
+        StringAssert.Contains(source, "shapeKind === 'circle'");
         StringAssert.Contains(source, "shapeKind === 'ellipse'");
+        StringAssert.Contains(source, "shapeKind === 'triangle'");
+        StringAssert.Contains(source, "shapeKind === 'star'");
         StringAssert.Contains(source, "shapeKind === 'line' || shapeKind === 'arrow'");
+        StringAssert.Contains(source, "data.ShapeStartX ?? data.shapeStartX");
+        StringAssert.Contains(source, "data.ShapeEndX ?? data.shapeEndX");
         StringAssert.Contains(source, "shapeKind === 'indicatorlamp'");
         StringAssert.Contains(source, "shapeKind === 'horizontalbar' || shapeKind === 'verticalbar'");
         StringAssert.Contains(source, "shapeKind === 'tank'");
@@ -1011,6 +1024,22 @@ public sealed class WebViewContextMenuScriptTests
             source.IndexOf("clearModernSelection(false);", StringComparison.Ordinal) <
             source.IndexOf("placementKind = command?.Kind || null;", StringComparison.Ordinal),
             "Starting placement must clear modern selection before the next canvas click creates the element.");
+    }
+
+    [TestMethod]
+    public void LineAndArrowPlacementUseTwoPointMode()
+    {
+        var source = NormalizeNewLines(ReadMainWindowSource());
+
+        StringAssert.Contains(source, "private static bool IsTwoPointShape(ScadaShapeKind shapeKind)");
+        StringAssert.Contains(source, "shapeKind is ScadaShapeKind.Line or ScadaShapeKind.Arrow");
+        StringAssert.Contains(source, "ShapeKind: kind == ScadaElementKind.Shape ? shapeKind.ToString() : null");
+        StringAssert.Contains(source, "IsTwoPoint: isTwoPointShape");
+        StringAssert.Contains(source, "let placementIsTwoPoint = false;");
+        StringAssert.Contains(source, "type: 'placeTwoPointElement'");
+        StringAssert.Contains(source, "ShapeStartX = startX");
+        StringAssert.Contains(source, "ShapeEndY = endY");
+        StringAssert.Contains(source, "clearPlacementState(true);");
     }
 
     [TestMethod]

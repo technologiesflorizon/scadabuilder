@@ -28,6 +28,9 @@ public sealed class RibbonCommandCatalogTests
         Assert.AreEqual(0, duplicateIds.Length, $"Duplicate ribbon command ids: {string.Join(", ", duplicateIds)}");
         CollectionAssert.Contains(commands.Select(command => command.Id).ToArray(), "project.save");
         CollectionAssert.Contains(commands.Select(command => command.Id).ToArray(), "export.ft100.sb2");
+        CollectionAssert.Contains(commands.Select(command => command.Id).ToArray(), "insert.shape.circle");
+        CollectionAssert.Contains(commands.Select(command => command.Id).ToArray(), "insert.shape.triangle");
+        CollectionAssert.Contains(commands.Select(command => command.Id).ToArray(), "insert.shape.star");
         CollectionAssert.Contains(commands.Select(command => command.Id).ToArray(), "insert.button.emergency-stop");
     }
 
@@ -97,8 +100,13 @@ public sealed class RibbonCommandCatalogTests
         Assert.IsTrue(ribbonSurfaceIndex >= 0, "Main ribbon command surface was not found.");
         var ribbonSurface = xaml.Substring(ribbonSurfaceIndex, 600);
 
-        StringAssert.Contains(xaml, "Height=\"196\"");
-        StringAssert.Contains(xaml, "<RowDefinition Height=\"156\"/>");
+        StringAssert.Contains(xaml, "Height=\"270\"");
+        StringAssert.Contains(xaml, "<RowDefinition Height=\"230\"/>");
+        StringAssert.Contains(xaml, "LargeRibbonCommandTemplate");
+        StringAssert.Contains(xaml, "LargeCommandIconStyle");
+        StringAssert.Contains(xaml, "<Setter Property=\"Width\" Value=\"64\"/>");
+        StringAssert.Contains(xaml, "<Setter Property=\"Height\" Value=\"64\"/>");
+        StringAssert.Contains(xaml, "<UniformGrid Columns=\"4\"/>");
         StringAssert.Contains(ribbonSurface, "HorizontalScrollBarVisibility=\"Auto\"");
         StringAssert.Contains(ribbonSurface, "<StackPanel Orientation=\"Horizontal\"/>");
         Assert.IsFalse(

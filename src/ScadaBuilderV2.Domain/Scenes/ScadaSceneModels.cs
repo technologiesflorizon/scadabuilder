@@ -48,6 +48,21 @@ public enum ScadaShapeKind
     Arrow,
 
     /// <summary>
+    /// Circular Element+ shape.
+    /// </summary>
+    Circle,
+
+    /// <summary>
+    /// Triangular Element+ shape.
+    /// </summary>
+    Triangle,
+
+    /// <summary>
+    /// Star Element+ shape.
+    /// </summary>
+    Star,
+
+    /// <summary>
     /// Round HMI/SCADA status indicator lamp.
     /// </summary>
     IndicatorLamp,
@@ -226,7 +241,11 @@ public sealed record ScadaElementData(
     string? TagBinding,
     bool IsReadOnly,
     string? ReadTagId = null,
-    string? WriteTagId = null);
+    string? WriteTagId = null,
+    double? ShapeStartX = null,
+    double? ShapeStartY = null,
+    double? ShapeEndX = null,
+    double? ShapeEndY = null);
 
 /// <summary>
 /// Identifies which runtime tag value binding is edited on an Element+ object.
@@ -603,6 +622,8 @@ public sealed record ScadaElement(
             ScadaShapeKind.Transformer => new SceneBounds(x, y, 112, 80),
             ScadaShapeKind.AlarmBeacon => new SceneBounds(x, y, 72, 88),
             ScadaShapeKind.Ellipse => new SceneBounds(x, y, 96, 72),
+            ScadaShapeKind.Circle => new SceneBounds(x, y, 88, 88),
+            ScadaShapeKind.Triangle or ScadaShapeKind.Star => new SceneBounds(x, y, 96, 88),
             _ => new SceneBounds(x, y, 120, 72)
         };
         var data = shapeKind is ScadaShapeKind.HorizontalBar or ScadaShapeKind.VerticalBar or ScadaShapeKind.Tank or ScadaShapeKind.Gauge
