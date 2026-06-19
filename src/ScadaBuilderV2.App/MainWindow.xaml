@@ -42,6 +42,14 @@
         <Style x:Key="MenuButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="MinWidth" Value="96"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Padding" Value="12,5"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Background" Value="#ffffff"/>
+        </Style>
+
+        <Style x:Key="ActiveMenuButtonStyle" TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+            <Setter Property="Background" Value="#DFF3E7"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentBlueBrush}"/>
         </Style>
 
         <Style x:Key="IconToolButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
@@ -51,9 +59,26 @@
         </Style>
 
         <Style x:Key="RibbonCommandButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Width" Value="84"/>
-            <Setter Property="Height" Value="54"/>
+            <Setter Property="Width" Value="78"/>
+            <Setter Property="Height" Value="58"/>
             <Setter Property="Padding" Value="6"/>
+            <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
+        </Style>
+
+        <Style x:Key="RibbonGroupStyle" TargetType="Border">
+            <Setter Property="Background" Value="#FAFCF9"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrushSoft}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="5"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+        </Style>
+
+        <Style x:Key="RibbonGroupHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
+            <Setter Property="Margin" Value="3,0,0,3"/>
         </Style>
 
         <Style x:Key="CommandIconStyle" TargetType="Image">
@@ -105,14 +130,14 @@
 
     <DockPanel LastChildFill="True">
         <Border DockPanel.Dock="Top"
-                Height="112"
+                Height="130"
                 Background="#F2F8EF"
                 BorderBrush="{StaticResource BorderBrushSoft}"
                 BorderThickness="0,0,0,1">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"/>
-                    <RowDefinition Height="72"/>
+                    <RowDefinition Height="90"/>
                 </Grid.RowDefinitions>
 
                 <DockPanel Grid.Row="0" Margin="14,6,14,0">
@@ -122,27 +147,33 @@
                                Foreground="{StaticResource InkBrush}"
                                FontWeight="Bold"/>
                     <StackPanel Orientation="Horizontal">
-                        <Button Content="Fichier"
+                        <Button x:Name="FileMenuButton"
+                                Content="Fichier"
                                 Style="{StaticResource MenuButtonStyle}"
                                 Click="OnMenuButtonClick"
                                 Tag="File"/>
-                        <Button Content="Edition"
+                        <Button x:Name="EditMenuButton"
+                                Content="Edition"
                                 Style="{StaticResource MenuButtonStyle}"
                                 Click="OnMenuButtonClick"
                                 Tag="Edit"/>
-                        <Button Content="Inserer"
+                        <Button x:Name="InsertMenuButton"
+                                Content="Inserer"
                                 Style="{StaticResource MenuButtonStyle}"
                                 Click="OnMenuButtonClick"
                                 Tag="Insert"/>
-                        <Button Content="Ecran"
+                        <Button x:Name="ScreenMenuButton"
+                                Content="Ecran"
                                 Style="{StaticResource MenuButtonStyle}"
                                 Click="OnMenuButtonClick"
                                 Tag="Screen"/>
-                        <Button Content="Selection"
+                        <Button x:Name="SelectionMenuButton"
+                                Content="Selection"
                                 Style="{StaticResource MenuButtonStyle}"
                                 Click="OnMenuButtonClick"
                                 Tag="Selection"/>
-                        <Button Content="Outils"
+                        <Button x:Name="ToolsMenuButton"
+                                Content="Outils"
                                 Style="{StaticResource MenuButtonStyle}"
                                 Click="OnMenuButtonClick"
                                 Tag="Tools"/>
@@ -156,132 +187,300 @@
                         BorderThickness="1"
                         CornerRadius="6">
                     <Grid Margin="8">
-                        <StackPanel x:Name="FileRibbon" Orientation="Horizontal">
-                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Nouveau projet">
-                                <StackPanel>
-                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Project.New}"/>
-                                    <TextBlock Text="Nouveau" FontSize="12"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Ouvrir un projet">
-                                <StackPanel>
-                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Project.Open}"/>
-                                    <TextBlock Text="Ouvrir" FontSize="12"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Enregistrer" Click="OnSaveSceneClick">
-                                <StackPanel>
-                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Project.Save}"/>
-                                    <TextBlock Text="Save" FontSize="12"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Importer legacy Wonderware/ArchestrA">
-                                <StackPanel>
-                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Import.Legacy}"/>
-                                    <TextBlock Text="Legacy" FontSize="12"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Importer les tags SCADA" Click="OnImportTagsClick">
-                                <StackPanel>
-                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Import.Legacy}"/>
-                                    <TextBlock Text="Tags" FontSize="12"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Exporter dossier FT100" Click="OnExportFt100Click">
-                                <StackPanel>
-                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Build.FT100}"/>
-                                    <TextBlock Text="Build" FontSize="12"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Exporter package FT100 .sb2" Click="OnExportFt100Sb2Click">
-                                <StackPanel>
-                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Build.FT100}"/>
-                                    <TextBlock Text=".sb2" FontSize="12"/>
-                                </StackPanel>
-                            </Button>
-                        </StackPanel>
+                        <ScrollViewer x:Name="FileRibbon"
+                                      HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Disabled">
+                            <WrapPanel>
+                                <Border Style="{StaticResource RibbonGroupStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="Projet"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Nouveau projet">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Project.New}"/>
+                                                    <TextBlock Text="Nouveau" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Ouvrir un projet">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Project.Open}"/>
+                                                    <TextBlock Text="Ouvrir" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Enregistrer" Click="OnSaveSceneClick">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Project.Save}"/>
+                                                    <TextBlock Text="Enregistrer" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource RibbonGroupStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="Import"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Importer legacy Wonderware/ArchestrA">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Import.Legacy}"/>
+                                                    <TextBlock Text="Legacy" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Importer les tags SCADA" Click="OnImportTagsClick">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Import.Tags}"/>
+                                                    <TextBlock Text="Tags" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource RibbonGroupStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="Export"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Exporter dossier FT100" Click="OnExportFt100Click">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Export.Folder}"/>
+                                                    <TextBlock Text="Dossier" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Exporter package FT100 .sb2" Click="OnExportFt100Sb2Click">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Export.Package}"/>
+                                                    <TextBlock Text=".sb2" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </WrapPanel>
+                        </ScrollViewer>
 
-                        <StackPanel x:Name="EditRibbon" Orientation="Horizontal" Visibility="Collapsed">
-                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Annuler"
-                                    Click="OnUndoClick">
-                                <StackPanel>
-                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Edit.Undo}"/>
-                                    <TextBlock Text="Undo" FontSize="12"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Retablir"
-                                    Click="OnRedoClick">
-                                <StackPanel>
-                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Edit.Redo}"/>
-                                    <TextBlock Text="Redo" FontSize="12"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Content="Copier"/>
-                            <Button Content="Coller"/>
-                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Afficher les panneaux">
-                                <StackPanel>
-                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Panel.Restore}"/>
-                                    <TextBlock Text="Panneaux" FontSize="12"/>
-                                </StackPanel>
-                            </Button>
-                        </StackPanel>
+                        <ScrollViewer x:Name="EditRibbon"
+                                      HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Disabled"
+                                      Visibility="Collapsed">
+                            <WrapPanel>
+                                <Border Style="{StaticResource RibbonGroupStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="Historique"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Annuler" Click="OnUndoClick">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Edit.Undo}"/>
+                                                    <TextBlock Text="Annuler" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Retablir" Click="OnRedoClick">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Edit.Redo}"/>
+                                                    <TextBlock Text="Retablir" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource RibbonGroupStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="Presse-papiers"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Commande a venir" IsEnabled="False">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Edit.Copy}"/>
+                                                    <TextBlock Text="Copier" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Commande a venir" IsEnabled="False">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Edit.Paste}"/>
+                                                    <TextBlock Text="Coller" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource RibbonGroupStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="Interface"/>
+                                        <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Afficher les panneaux" IsEnabled="False">
+                                            <StackPanel>
+                                                <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Panel.Restore}"/>
+                                                <TextBlock Text="Panneaux" FontSize="12" TextAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+                            </WrapPanel>
+                        </ScrollViewer>
 
-                        <StackPanel x:Name="ScreenRibbon" Orientation="Horizontal" Visibility="Collapsed">
-                            <Button Content="Desktop"/>
-                            <Button Content="Tablet"/>
-                            <Button Content="Mobile"/>
-                            <Button Content="Rotate"/>
-                            <Button Content="Mesures"/>
-                        </StackPanel>
+                        <ScrollViewer x:Name="ScreenRibbon"
+                                      HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Disabled"
+                                      Visibility="Collapsed">
+                            <WrapPanel>
+                                <Border Style="{StaticResource RibbonGroupStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="Apercu"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Mode desktop a venir" IsEnabled="False">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.View.Desktop}"/>
+                                                    <TextBlock Text="Desktop" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Mode tablette a venir" IsEnabled="False">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.View.Tablet}"/>
+                                                    <TextBlock Text="Tablette" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Mode mobile a venir" IsEnabled="False">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.View.Mobile}"/>
+                                                    <TextBlock Text="Mobile" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Rotation a venir" IsEnabled="False">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.View.Rotate}"/>
+                                                    <TextBlock Text="Rotation" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource RibbonGroupStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="Mesure"/>
+                                        <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Mesures a venir" IsEnabled="False">
+                                            <StackPanel>
+                                                <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.View.Measure}"/>
+                                                <TextBlock Text="Mesures" FontSize="12" TextAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+                            </WrapPanel>
+                        </ScrollViewer>
 
-                        <StackPanel x:Name="SelectionRibbon" Orientation="Horizontal" Visibility="Collapsed">
-                            <Button Content="Grouper"/>
-                            <Button Content="Degrouper"/>
-                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Verrouiller l'objet">
-                                <StackPanel>
-                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Object.Lock}"/>
-                                    <TextBlock Text="Lock objet" FontSize="12"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Content="Z +"/>
-                            <Button Content="Z -"/>
-                        </StackPanel>
+                        <ScrollViewer x:Name="SelectionRibbon"
+                                      HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Disabled"
+                                      Visibility="Collapsed">
+                            <WrapPanel>
+                                <Border Style="{StaticResource RibbonGroupStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="Objets"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Grouper depuis le menu contextuel pour cette tranche" IsEnabled="False">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Selection.Group}"/>
+                                                    <TextBlock Text="Grouper" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Degrouper depuis le menu contextuel pour cette tranche" IsEnabled="False">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Selection.Ungroup}"/>
+                                                    <TextBlock Text="Degrouper" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Verrouiller l'objet" IsEnabled="False">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Object.Lock}"/>
+                                                    <TextBlock Text="Verrou" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource RibbonGroupStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="Ordre"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Avancer a venir" IsEnabled="False">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Layer.Forward}"/>
+                                                    <TextBlock Text="Avant" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Reculer a venir" IsEnabled="False">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Layer.Backward}"/>
+                                                    <TextBlock Text="Arriere" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </WrapPanel>
+                        </ScrollViewer>
 
-                        <StackPanel x:Name="ToolsRibbon" Orientation="Horizontal" Visibility="Collapsed">
-                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Selection">
-                                <StackPanel>
-                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Tool.Select}"/>
-                                    <TextBlock Text="Selection" FontSize="12"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Deplacement">
-                                <StackPanel>
-                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Tool.Move}"/>
-                                    <TextBlock Text="Move" FontSize="12"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Texte">
-                                <StackPanel>
-                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Tool.Text}"/>
-                                    <TextBlock Text="Text" FontSize="12"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Image">
-                                <StackPanel>
-                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Tool.Image}"/>
-                                    <TextBlock Text="Image" FontSize="12"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Zoom">
-                                <StackPanel>
-                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Tool.Zoom}"/>
-                                    <TextBlock Text="Zoom" FontSize="12"/>
-                                </StackPanel>
-                            </Button>
-                            <Button Content="Configurer"/>
-                        </StackPanel>
+                        <ScrollViewer x:Name="ToolsRibbon"
+                                      HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Disabled"
+                                      Visibility="Collapsed">
+                            <WrapPanel>
+                                <Border Style="{StaticResource RibbonGroupStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="Edition"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Selection" IsEnabled="False">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Tool.Select}"/>
+                                                    <TextBlock Text="Selection" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Deplacement" IsEnabled="False">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Tool.Move}"/>
+                                                    <TextBlock Text="Deplacer" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Texte" IsEnabled="False">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Tool.Text}"/>
+                                                    <TextBlock Text="Texte" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Image" IsEnabled="False">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Tool.Image}"/>
+                                                    <TextBlock Text="Image" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                            <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Zoom" IsEnabled="False">
+                                                <StackPanel>
+                                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Tool.Zoom}"/>
+                                                    <TextBlock Text="Zoom" FontSize="12" TextAlignment="Center"/>
+                                                </StackPanel>
+                                            </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource RibbonGroupStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="Configuration"/>
+                                        <Button Style="{StaticResource RibbonCommandButtonStyle}" ToolTip="Configurer les outils a venir" IsEnabled="False">
+                                            <StackPanel>
+                                                <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Tool.Settings}"/>
+                                                <TextBlock Text="Configurer" FontSize="12" TextAlignment="Center"/>
+                                            </StackPanel>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+                            </WrapPanel>
+                        </ScrollViewer>
 
-                        <StackPanel x:Name="InsertRibbon" Orientation="Horizontal" Visibility="Collapsed">
+                        <ScrollViewer x:Name="InsertRibbon"
+                                      HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Disabled"
+                                      Visibility="Collapsed">
+                            <WrapPanel>
+                                <Border Style="{StaticResource RibbonGroupStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="Champs"/>
+                                        <StackPanel Orientation="Horizontal">
                             <Button Style="{StaticResource RibbonCommandButtonStyle}"
                                     ToolTip="Inserer un champ texte statique"
                                     Click="OnInsertTextClick">
@@ -302,15 +501,22 @@
                                     ToolTip="Inserer un champ d'entree numerique"
                                     Click="OnInsertInputNumericClick">
                                 <StackPanel>
-                                    <TextBlock Text="123" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center" Margin="0,0,0,2"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Field.Numeric}"/>
                                     <TextBlock Text="Entree num." FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource RibbonGroupStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="Formes"/>
+                                        <StackPanel Orientation="Horizontal">
                             <Button Style="{StaticResource RibbonCommandButtonStyle}"
                                     ToolTip="Inserer un rectangle Element+"
                                     Click="OnInsertRectangleClick">
                                 <StackPanel>
-                                    <TextBlock Text="[ ]" FontWeight="Bold" FontSize="18" HorizontalAlignment="Center" Margin="0,0,0,2"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Shape.Rectangle}"/>
                                     <TextBlock Text="Rectangle" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -318,7 +524,7 @@
                                     ToolTip="Inserer une ellipse Element+"
                                     Click="OnInsertEllipseClick">
                                 <StackPanel>
-                                    <TextBlock Text="O" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,0,0,2"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Shape.Ellipse}"/>
                                     <TextBlock Text="Ellipse" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -326,7 +532,7 @@
                                     ToolTip="Inserer une ligne Element+"
                                     Click="OnInsertLineClick">
                                 <StackPanel>
-                                    <TextBlock Text="--" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,0,0,2"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Shape.Line}"/>
                                     <TextBlock Text="Ligne" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -334,15 +540,22 @@
                                     ToolTip="Inserer une fleche Element+"
                                     Click="OnInsertArrowClick">
                                 <StackPanel>
-                                    <TextBlock Text="-&gt;" FontWeight="Bold" FontSize="20" HorizontalAlignment="Center" Margin="0,0,0,2"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Shape.Arrow}"/>
                                     <TextBlock Text="Fleche" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource RibbonGroupStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="HMI process"/>
+                                        <StackPanel Orientation="Horizontal">
                             <Button Style="{StaticResource RibbonCommandButtonStyle}"
                                     ToolTip="Inserer un voyant HMI Element+"
                                     Click="OnInsertIndicatorLampClick">
                                 <StackPanel>
-                                    <TextBlock Text="LED" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Hmi.IndicatorLamp}"/>
                                     <TextBlock Text="Voyant" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -350,7 +563,7 @@
                                     ToolTip="Inserer une barre horizontale HMI Element+"
                                     Click="OnInsertHorizontalBarClick">
                                 <StackPanel>
-                                    <TextBlock Text="[=]" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" Margin="0,2,0,4"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Hmi.BarHorizontal}"/>
                                     <TextBlock Text="Barre H" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -358,7 +571,7 @@
                                     ToolTip="Inserer une barre verticale HMI Element+"
                                     Click="OnInsertVerticalBarClick">
                                 <StackPanel>
-                                    <TextBlock Text="||" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" Margin="0,2,0,4"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Hmi.BarVertical}"/>
                                     <TextBlock Text="Barre V" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -366,7 +579,7 @@
                                     ToolTip="Inserer un reservoir HMI Element+"
                                     Click="OnInsertTankClick">
                                 <StackPanel>
-                                    <TextBlock Text="TNK" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Hmi.Tank}"/>
                                     <TextBlock Text="Reservoir" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -374,7 +587,7 @@
                                     ToolTip="Inserer un tuyau horizontal HMI Element+"
                                     Click="OnInsertPipeHorizontalClick">
                                 <StackPanel>
-                                    <TextBlock Text="==" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" Margin="0,2,0,4"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Hmi.PipeHorizontal}"/>
                                     <TextBlock Text="Tuyau H" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -382,7 +595,7 @@
                                     ToolTip="Inserer un tuyau vertical HMI Element+"
                                     Click="OnInsertPipeVerticalClick">
                                 <StackPanel>
-                                    <TextBlock Text="II" FontWeight="Bold" FontSize="16" HorizontalAlignment="Center" Margin="0,2,0,4"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Hmi.PipeVertical}"/>
                                     <TextBlock Text="Tuyau V" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -390,7 +603,7 @@
                                     ToolTip="Inserer une vanne HMI Element+"
                                     Click="OnInsertValveClick">
                                 <StackPanel>
-                                    <TextBlock Text="VLV" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Hmi.Valve}"/>
                                     <TextBlock Text="Vanne" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -398,7 +611,7 @@
                                     ToolTip="Inserer une pompe HMI Element+"
                                     Click="OnInsertPumpClick">
                                 <StackPanel>
-                                    <TextBlock Text="PMP" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Hmi.Pump}"/>
                                     <TextBlock Text="Pompe" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -406,7 +619,7 @@
                                     ToolTip="Inserer un moteur HMI Element+"
                                     Click="OnInsertMotorClick">
                                 <StackPanel>
-                                    <TextBlock Text="MTR" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Hmi.Motor}"/>
                                     <TextBlock Text="Moteur" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -414,7 +627,7 @@
                                     ToolTip="Inserer un ventilateur HMI Element+"
                                     Click="OnInsertFanClick">
                                 <StackPanel>
-                                    <TextBlock Text="FAN" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Hmi.Fan}"/>
                                     <TextBlock Text="Ventil." FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -422,7 +635,7 @@
                                     ToolTip="Inserer un convoyeur HMI Element+"
                                     Click="OnInsertConveyorClick">
                                 <StackPanel>
-                                    <TextBlock Text="CVY" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Hmi.Conveyor}"/>
                                     <TextBlock Text="Convoy." FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -430,15 +643,22 @@
                                     ToolTip="Inserer une jauge HMI Element+"
                                     Click="OnInsertGaugeClick">
                                 <StackPanel>
-                                    <TextBlock Text="GAU" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Hmi.Gauge}"/>
                                     <TextBlock Text="Jauge" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource RibbonGroupStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="HMI electrique"/>
+                                        <StackPanel Orientation="Horizontal">
                             <Button Style="{StaticResource RibbonCommandButtonStyle}"
                                     ToolTip="Inserer un interrupteur electrique HMI Element+"
                                     Click="OnInsertSwitchClick">
                                 <StackPanel>
-                                    <TextBlock Text="SW" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Hmi.Switch}"/>
                                     <TextBlock Text="Interrup." FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -446,7 +666,7 @@
                                     ToolTip="Inserer un disjoncteur HMI Element+"
                                     Click="OnInsertBreakerClick">
                                 <StackPanel>
-                                    <TextBlock Text="CB" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Hmi.Breaker}"/>
                                     <TextBlock Text="Disjonct." FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -454,7 +674,7 @@
                                     ToolTip="Inserer un transformateur HMI Element+"
                                     Click="OnInsertTransformerClick">
                                 <StackPanel>
-                                    <TextBlock Text="XFMR" FontWeight="Bold" FontSize="13" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Hmi.Transformer}"/>
                                     <TextBlock Text="Transfo" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -462,15 +682,22 @@
                                     ToolTip="Inserer une balise alarme HMI Element+"
                                     Click="OnInsertAlarmBeaconClick">
                                 <StackPanel>
-                                    <TextBlock Text="ALM" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Hmi.AlarmBeacon}"/>
                                     <TextBlock Text="Alarme" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                                <Border Style="{StaticResource RibbonGroupStyle}">
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="Boutons"/>
+                                        <StackPanel Orientation="Horizontal">
                             <Button Style="{StaticResource RibbonCommandButtonStyle}"
                                     ToolTip="Inserer un bouton Element+"
                                     Click="OnInsertButtonClick">
                                 <StackPanel>
-                                    <TextBlock Text="BTN" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Button.Command}"/>
                                     <TextBlock Text="Bouton" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -478,15 +705,15 @@
                                     ToolTip="Inserer un bouton bascule Element+"
                                     Click="OnInsertToggleButtonClick">
                                 <StackPanel>
-                                    <TextBlock Text="I/O" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
-                                    <TextBlock Text="Toggle" FontSize="12" TextAlignment="Center"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Button.Toggle}"/>
+                                    <TextBlock Text="Bascule" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <Button Style="{StaticResource RibbonCommandButtonStyle}"
                                     ToolTip="Inserer un bouton de navigation Element+"
                                     Click="OnInsertNavigationButtonClick">
                                 <StackPanel>
-                                    <TextBlock Text="NAV" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Button.Navigation}"/>
                                     <TextBlock Text="Nav" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
@@ -494,19 +721,23 @@
                                     ToolTip="Inserer un bouton acquittement alarme Element+"
                                     Click="OnInsertAlarmAckButtonClick">
                                 <StackPanel>
-                                    <TextBlock Text="ACK" FontWeight="Bold" FontSize="14" HorizontalAlignment="Center" Margin="0,3,0,5"/>
-                                    <TextBlock Text="Ack" FontSize="12" TextAlignment="Center"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Button.AlarmAck}"/>
+                                    <TextBlock Text="Acquitter" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
                             <Button Style="{StaticResource RibbonCommandButtonStyle}"
                                     ToolTip="Inserer un bouton arret d'urgence Element+"
                                     Click="OnInsertEmergencyStopButtonClick">
                                 <StackPanel>
-                                    <TextBlock Text="STOP" FontWeight="Bold" FontSize="12" HorizontalAlignment="Center" Margin="0,4,0,6"/>
+                                    <Image Style="{StaticResource CommandIconStyle}" Source="{StaticResource Icon.Button.EmergencyStop}"/>
                                     <TextBlock Text="Arret" FontSize="12" TextAlignment="Center"/>
                                 </StackPanel>
                             </Button>
-                        </StackPanel>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+                            </WrapPanel>
+                        </ScrollViewer>
                     </Grid>
                 </Border>
             </Grid>

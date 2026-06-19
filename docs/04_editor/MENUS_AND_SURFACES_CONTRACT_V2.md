@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active editor menu and surface contract
-Document version: `V2.1.2.0013`
+Document version: `V2.1.2.0039`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0039` | `PENDING` | Ajout du contrat de ruban superieur groupe et icone pour les surfaces de commande. |
 | 2026-06-17 | `V2.1.2.0013` | `PENDING` | Ajout du contrat de surface pour le panneau `Catalogue Tags` filtre. |
 | 2026-06-16 | `V2.1.2.0003` | `PENDING` | Ajout de la hierarchie parent/enfant dans l'onglet Element pour les groupes Element+. |
 | 2026-06-16 | `V2.1.2.0002` | `PENDING` | Ajout du contrat menu pour `object.group` et avertissement de conversion avant groupement legacy. |
@@ -54,6 +55,11 @@ flowchart TD
 10. The `Catalogue Tags` panel is a read-oriented project catalog surface. It lists imported tags with id, name, datatype, device, address, access, and state.
 11. The `Catalogue Tags` panel must expose filters for text search, device, datatype, access, and state. These filters affect the displayed list only and must not mutate `ScadaProject.TagCatalog`.
 12. The `Catalogue Tags` panel must show a filtered summary so users can distinguish the visible filtered subset from the full imported catalog.
+13. The top ribbon must expose an active tab state and group commands by user task family rather than by implementation detail.
+14. A visible ribbon command must have a stable label, tooltip, command route or documented disabled reason, and semantic icon key.
+15. Disabled future commands may remain visible only when they communicate roadmap intent or preserve a familiar command location; they must not look executable.
+16. Long command families must use scrolling, wrapping, galleries, or grouped overflow so buttons are not clipped at the application minimum width.
+17. Insert-ribbon commands must use normalized vector icon keys. Temporary text glyphs are not valid command-surface icons.
 
 ## 4. Related Tests
 

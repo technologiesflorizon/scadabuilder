@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active implementation status
-Document version: `V2.1.2.0038`
+Document version: `V2.1.2.0039`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0039` | `PENDING` | Implementation de la refonte du ruban superieur et du registre d'icones visible. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Cloture du bloc boutons HMI avec parite metadata preview/export. |
 | 2026-06-19 | `V2.1.2.0037` | `2a540d6` | Implementation des evenements runtime pour boutons HMI standards. |
 | 2026-06-19 | `V2.1.2.0036` | `8cc4d33` | Implementation du runtime disabled reel pour boutons Element+. |
@@ -104,6 +105,7 @@ As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 243 
 46. Element+ disabled buttons now export native disabled button state, wrapper disabled metadata, not-allowed cursor treatment, suppressed hover/pressed/toggle behavior, and a runtime action guard for object-owned events.
 47. Element+ standard buttons now emit runtime activation diagnostics. Enabled `Command`, `Navigation`, `AlarmAcknowledge`, `EmergencyStop`, and `Toggle` wrappers dispatch `scada-builder-button-activated` plus a kind-specific event for TF100Web or host runtime integration.
 48. The HMI button block is closed with preview/export metadata parity: SCADA Builder V2 preview wrappers now expose the same button kind, behavior, disabled, and Toggle-state metadata expected by FT100 export while preserving editor-only non-interactive preview behavior.
+49. The WPF shell top ribbon now marks the active tab, groups visible commands by task family, exposes horizontal overflow for long command families, standardizes visible labels in French, disables placeholder commands with explanatory tooltips, and replaces insert-ribbon text glyphs with semantic icon keys from `Icons.xaml`.
 
 ## 3. Source Of Truth
 

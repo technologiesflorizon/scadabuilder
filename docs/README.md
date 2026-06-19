@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active enterprise documentation map
-Document version: `V2.1.2.0038`
+Document version: `V2.1.2.0039`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0039` | `PENDING` | Refonte du ruban superieur et normalisation du registre d'icones visibles. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Cloture du bloc boutons HMI avec parite metadata preview/export. |
 | 2026-06-19 | `V2.1.2.0037` | `2a540d6` | Ajout des evenements runtime explicites pour boutons HMI standards. |
 | 2026-06-19 | `V2.1.2.0036` | `8cc4d33` | Ajout du runtime disabled reel pour les boutons Element+. |

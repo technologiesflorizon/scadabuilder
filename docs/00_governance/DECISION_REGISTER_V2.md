@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.2.0025`
+Document version: `V2.1.2.0039`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0039` | `PENDING` | Ajout de DEC-0031 pour le ruban superieur groupe et le registre d'icones semantiques. |
 | 2026-06-17 | `V2.1.2.0025` | `58567eb` | Mise a jour de DEC-0030 apres implementation TF100Web des masques `DisplayFormat` `#`. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Ajout de DEC-0030 pour la refonte de l'onglet Donnees Element+ et le format numerique actif. |
 | 2026-06-17 | `V2.1.2.0022` | `PENDING` | Ajout de DEC-0029 pour l'intake TF100Web des events de binding `ValueBindings` depuis `.sb2`. |
@@ -683,6 +684,32 @@ SCADA Builder V2 exports a single display signal to TF100Web through `DisplayFor
 Regression coverage:
 
 `tests/ScadaBuilderV2.Tests/ElementGroupTests.cs`, `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`, `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py`
+
+### DEC-0031 - Grouped Top Ribbon And Semantic Icon Registry
+
+Status: Active
+Created: 2026-06-19 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/06_ui_ux/UI_SPECIFICATION_V2.md`, `docs/06_ui_ux/ICON_STRATEGY_V2.md`, `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md`
+
+Context:
+
+The WPF shell top ribbon previously exposed flat `StackPanel` command rows, mixed French and English labels, reused generic icons for unrelated commands, and represented many insert commands with temporary text glyphs. This made the command surface hard to scan and weakened the icon strategy.
+
+Decision:
+
+The top ribbon is organized by active tab plus grouped task families. Visible command buttons must use semantic icon keys from the central WPF icon registry. Commands that are shown but not implemented stay disabled with a reason tooltip instead of appearing executable.
+
+Consequences:
+
+The shell can remain WPF-static for the current slice, but future command additions must register a semantic icon key and preserve grouped/overflow behavior. A later command-registry-driven renderer may replace static XAML without changing the visible contract.
+
+Regression coverage:
+
+`dotnet build ScadaBuilderV2.sln --no-restore`
 
 ### DEC-0024 - Global Runtime Lifecycle Bridge
 

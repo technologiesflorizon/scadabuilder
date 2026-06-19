@@ -107,6 +107,7 @@ public partial class MainWindow : Window
     {
         InitializeComponent();
         DataContext = this;
+        SetActiveRibbon("File");
         ElementLibraryListBox.ItemsSource = _elementLibraryItems;
         _tagCatalogView = CollectionViewSource.GetDefaultView(_tagCatalogItems);
         _tagCatalogView.Filter = FilterTagCatalogItem;
@@ -5860,12 +5861,29 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
+        SetActiveRibbon(ribbonKey);
+    }
+
+    private void SetActiveRibbon(string ribbonKey)
+    {
         FileRibbon.Visibility = ribbonKey == "File" ? Visibility.Visible : Visibility.Collapsed;
         EditRibbon.Visibility = ribbonKey == "Edit" ? Visibility.Visible : Visibility.Collapsed;
         InsertRibbon.Visibility = ribbonKey == "Insert" ? Visibility.Visible : Visibility.Collapsed;
         ScreenRibbon.Visibility = ribbonKey == "Screen" ? Visibility.Visible : Visibility.Collapsed;
         SelectionRibbon.Visibility = ribbonKey == "Selection" ? Visibility.Visible : Visibility.Collapsed;
         ToolsRibbon.Visibility = ribbonKey == "Tools" ? Visibility.Visible : Visibility.Collapsed;
+
+        SetRibbonMenuButtonStyle(FileMenuButton, ribbonKey == "File");
+        SetRibbonMenuButtonStyle(EditMenuButton, ribbonKey == "Edit");
+        SetRibbonMenuButtonStyle(InsertMenuButton, ribbonKey == "Insert");
+        SetRibbonMenuButtonStyle(ScreenMenuButton, ribbonKey == "Screen");
+        SetRibbonMenuButtonStyle(SelectionMenuButton, ribbonKey == "Selection");
+        SetRibbonMenuButtonStyle(ToolsMenuButton, ribbonKey == "Tools");
+    }
+
+    private void SetRibbonMenuButtonStyle(Button button, bool isActive)
+    {
+        button.Style = (Style)FindResource(isActive ? "ActiveMenuButtonStyle" : "MenuButtonStyle");
     }
 
     private async void OnUndoClick(object sender, RoutedEventArgs e)
