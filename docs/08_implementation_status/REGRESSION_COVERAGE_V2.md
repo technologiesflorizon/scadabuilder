@@ -8,7 +8,7 @@ Document version: `V2.1.2.0034`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0034` | `PENDING` | Ajout de la couverture du style appui/actif pour les boutons Element+. |
+| 2026-06-19 | `V2.1.2.0034` | `61eef34` | Ajout de la couverture du style appui/actif pour les boutons Element+. |
 | 2026-06-19 | `V2.1.2.0033` | `89d7165` | Ajout de la couverture des symboles HMI Element+ electriques et alarme. |
 | 2026-06-18 | `V2.1.2.0032` | `d5ee1fd` | Ajout de la couverture des proprietes avancees Element+ opacite et rotation. |
 | 2026-06-18 | `V2.1.2.0031` | `f6a85ed` | Ajout de la couverture des symboles HMI Element+ moteur, ventilateur, convoyeur et jauge. |

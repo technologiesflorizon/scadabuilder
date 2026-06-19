@@ -8,7 +8,7 @@ Document version: `V2.1.2.0034`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0034` | `PENDING` | Ajout du style bouton appui/actif model-backed dans l'onglet Bouton. |
+| 2026-06-19 | `V2.1.2.0034` | `61eef34` | Ajout du style bouton appui/actif model-backed dans l'onglet Bouton. |
 | 2026-06-18 | `V2.1.2.0032` | `d5ee1fd` | Ajout des proprietes Style avancees opacite et rotation pour les Element+. |
 | 2026-06-18 | `V2.1.2.0030` | `cae57c9` | Ajout des presets de boutons HMI Element+ persistants via `ScadaButtonKind`. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Refactor de l'onglet Donnees Element+: retrait authoring de `Mapping / Tag`, `Decimales` et `Unite`; `Format affichage` devient le signal actif. |

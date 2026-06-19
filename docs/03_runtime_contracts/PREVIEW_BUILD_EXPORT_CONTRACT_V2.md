@@ -8,7 +8,7 @@ Document version: `V2.1.2.0034`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0034` | `PENDING` | Ajout du contrat export CSS appui/actif pour les boutons Element+. |
+| 2026-06-19 | `V2.1.2.0034` | `61eef34` | Ajout du contrat export CSS appui/actif pour les boutons Element+. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout de l'export archive `.sb2` FT100 avec validation de compatibilite avant packaging. |
 | 2026-06-16 | `V2.1.2.0007` | `PENDING` | Clarification du curseur FT100 runtime par defaut sur boutons et cibles avec events. |
 | 2026-06-16 | `V2.1.2.0006` | `PENDING` | Clarification de la parite export des events runtime portes par des groupes Element+. |
