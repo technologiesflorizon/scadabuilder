@@ -471,6 +471,18 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void TopRibbonDispatchesElementGroupCommands()
+    {
+        var source = ReadMainWindowSource();
+        var dispatchMethod = ExtractMethod(source, "private async void ExecuteRibbonCommand(string commandId)");
+
+        StringAssert.Contains(dispatchMethod, "case \"object.group\":");
+        StringAssert.Contains(dispatchMethod, "await GroupSelectedModernElementsAsync();");
+        StringAssert.Contains(dispatchMethod, "case \"object.ungroup\":");
+        StringAssert.Contains(dispatchMethod, "UngroupSelectedModernElement();");
+    }
+
+    [TestMethod]
     public void LegacyContextMenuExposesElementStudioCommand()
     {
         var source = ReadMainWindowSource();

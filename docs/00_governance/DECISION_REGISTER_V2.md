@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.2.0041`
+Document version: `V2.1.2.0042`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0042` | `PENDING` | Mise a jour de DEC-0031 apres activation des commandes de groupement depuis le ruban. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Mise a jour de DEC-0031 apres extraction du catalogue de ruban dans Application. |
 | 2026-06-19 | `V2.1.2.0040` | `335adfb` | Mise a jour de DEC-0031 apres implementation du rendu de ruban depuis registre. |
 | 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Ajout de DEC-0031 pour le ruban superieur groupe et le registre d'icones semantiques. |
@@ -707,11 +708,11 @@ The top ribbon is organized by active tab plus grouped task families. Visible co
 
 Consequences:
 
-The shell now renders the active top ribbon from command metadata containing stable ids, labels, tooltips or disabled reasons, icon keys, grouped order, and executable state. The canonical default command catalog lives in `ScadaBuilderV2.Application.Commands.RibbonCommandCatalog`; WPF adapts that metadata for resource lookup and dispatch. Future command additions must update the registry first and preserve grouped/overflow behavior. Legacy static XAML button rows are migration fallback only and must not be treated as the source of truth for new ribbon commands.
+The shell now renders the active top ribbon from command metadata containing stable ids, labels, tooltips or disabled reasons, icon keys, grouped order, and executable state. The canonical default command catalog lives in `ScadaBuilderV2.Application.Commands.RibbonCommandCatalog`; WPF adapts that metadata for resource lookup and dispatch. The `Selection` ribbon exposes executable `object.group` and `object.ungroup` commands by routing to the same Element+ scene grouping workflows used by context menus. Future command additions must update the registry first and preserve grouped/overflow behavior. Legacy static XAML button rows are migration fallback only and must not be treated as the source of truth for new ribbon commands.
 
 Regression coverage:
 
-`tests/ScadaBuilderV2.Tests/RibbonCommandCatalogTests.cs`, `dotnet build ScadaBuilderV2.sln --no-restore`
+`tests/ScadaBuilderV2.Tests/RibbonCommandCatalogTests.cs`, `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`, `dotnet build ScadaBuilderV2.sln --no-restore`
 
 ### DEC-0024 - Global Runtime Lifecycle Bridge
 

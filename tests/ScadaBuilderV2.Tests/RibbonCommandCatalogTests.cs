@@ -54,4 +54,17 @@ public sealed class RibbonCommandCatalogTests
         Assert.IsTrue(disabledCommands.Length > 0, "The catalog should keep visible future commands explicit.");
         Assert.IsTrue(disabledCommands.All(command => !string.IsNullOrWhiteSpace(command.DisabledReason)));
     }
+
+    [TestMethod]
+    public void SelectionGroupCommandsAreExecutableFromRibbonCatalog()
+    {
+        var commands = RibbonCommandCatalog
+            .EnumerateCommands(RibbonCommandCatalog.CreateDefault())
+            .ToDictionary(command => command.Id, StringComparer.Ordinal);
+
+        Assert.IsTrue(commands["object.group"].IsEnabled);
+        Assert.IsTrue(commands["object.ungroup"].IsEnabled);
+        Assert.IsNull(commands["object.group"].DisabledReason);
+        Assert.IsNull(commands["object.ungroup"].DisabledReason);
+    }
 }

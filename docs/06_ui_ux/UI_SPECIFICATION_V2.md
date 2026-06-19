@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active UI specification pointer
-Document version: `V2.1.2.0041`
+Document version: `V2.1.2.0042`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0042` | `PENDING` | Le ruban Selection execute maintenant Grouper et Degrouper pour les Element+ selectionnes. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Le catalogue du ruban est extrait de la fenetre WPF et couvert par tests de contrat. |
 | 2026-06-19 | `V2.1.2.0040` | `335adfb` | Le ruban superieur consomme un registre actif de commandes et de groupes. |
 | 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Refonte du ruban superieur en groupes visuels, onglet actif et overflow horizontal. |
@@ -44,3 +45,4 @@ Current shell rules:
 7. The visible ribbon content for the active tab is bound to a command registry containing `CommandId`, label, tooltip or disabled reason, `IconKey`, group, order, and executable state.
 8. The renderer uses shared command/group templates so a new command is added through registry metadata before a new XAML button is considered.
 9. The canonical visible command catalog lives in the Application layer and is regression-tested for tab coverage, unique command ids, semantic icon keys, and disabled reasons.
+10. The `Selection` tab exposes executable group and ungroup actions for Element+ selections; blocked selection states are reported through status feedback from the existing workflow.

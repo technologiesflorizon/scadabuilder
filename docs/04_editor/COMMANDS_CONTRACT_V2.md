@@ -2,12 +2,13 @@
 
 Date: 2026-06-16
 Status: Active editor command contract
-Document version: `V2.1.2.0041`
+Document version: `V2.1.2.0042`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0042` | `PENDING` | Activation des commandes de ruban `object.group` et `object.ungroup`. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Le catalogue de commandes du ruban devient un contrat applicatif testable. |
 | 2026-06-19 | `V2.1.2.0040` | `335adfb` | Ajout du contrat de metadonnees de commandes pour le ruban superieur. |
 | 2026-06-16 | `V2.1.2.0003` | `PENDING` | Clarification du groupement Element+: ordre de rendu preserve et deplacement solidaire des enfants de groupe. |
@@ -35,6 +36,7 @@ Commands are explicit application operations. A command id is the stable bridge 
 12. Ribbon command surfaces must be rendered from command metadata instead of per-button duplicated XAML. The metadata includes stable command id, visible label, tooltip or disabled reason, semantic icon key, group, order, and executable state.
 13. Disabled future ribbon commands must remain registered with a disabled reason when they are shown, so the surface communicates intent without pretending the command is executable.
 14. The default top-ribbon command catalog is owned by the Application layer, so WPF adapts shared command metadata instead of owning the canonical list of visible commands.
+15. When `object.group` or `object.ungroup` is executable from the top ribbon, it must route to the same Element+ scene workflow as the context menu and preserve history coverage.
 
 ## 3. Dispatch Flow
 

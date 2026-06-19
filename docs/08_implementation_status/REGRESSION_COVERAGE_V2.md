@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active regression coverage map
-Document version: `V2.1.2.0038`
+Document version: `V2.1.2.0042`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0042` | `PENDING` | Ajout de la couverture du dispatch de ruban pour `object.group` et `object.ungroup`. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Ajout de la couverture de parite metadata preview/export pour boutons Element+. |
 | 2026-06-19 | `V2.1.2.0037` | `2a540d6` | Ajout de la couverture des evenements runtime pour boutons HMI standards. |
 | 2026-06-19 | `V2.1.2.0036` | `8cc4d33` | Ajout de la couverture du runtime disabled reel pour boutons Element+. |

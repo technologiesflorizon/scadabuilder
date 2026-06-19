@@ -67,8 +67,8 @@ public static class RibbonCommandCatalog
             ["Selection"] =
             [
                 Group("Objets",
-                    Disabled("object.group", "Grouper", "Icon.Selection.Group", "Grouper depuis le menu contextuel pour cette tranche"),
-                    Disabled("object.ungroup", "Degrouper", "Icon.Selection.Ungroup", "Degrouper depuis le menu contextuel pour cette tranche"),
+                    Enabled("object.group", "Grouper", "Icon.Selection.Group", "Grouper les Element+ selectionnes"),
+                    Enabled("object.ungroup", "Degrouper", "Icon.Selection.Ungroup", "Degrouper le groupe Element+ selectionne"),
                     Disabled("object.lock", "Verrou", "Icon.Object.Lock", "Verrouiller l'objet a venir")),
                 Group("Ordre",
                     Disabled("layer.forward", "Avant", "Icon.Layer.Forward", "Avancer a venir"),

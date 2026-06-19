@@ -5957,6 +5957,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             case "edit.redo":
                 await RedoLastSceneOperationAsync();
                 break;
+            case "object.group":
+                await GroupSelectedModernElementsAsync();
+                break;
+            case "object.ungroup":
+                UngroupSelectedModernElement();
+                break;
             case "insert.text":
                 BeginModernElementPlacement(ScadaElementKind.Text);
                 break;

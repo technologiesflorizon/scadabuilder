@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active editor menu and surface contract
-Document version: `V2.1.2.0041`
+Document version: `V2.1.2.0042`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0042` | `PENDING` | Les commandes `Grouper` et `Degrouper` du ruban Selection sont maintenant executees. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Le ruban WPF adapte le catalogue applicatif de commandes au lieu de posseder la liste canonique. |
 | 2026-06-19 | `V2.1.2.0040` | `335adfb` | Le ruban superieur est maintenant rendu depuis un registre de commandes actif. |
 | 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Ajout du contrat de ruban superieur groupe et icone pour les surfaces de commande. |
@@ -64,6 +65,7 @@ flowchart TD
 17. Insert-ribbon commands must use normalized vector icon keys. Temporary text glyphs are not valid command-surface icons.
 18. The top ribbon renderer consumes the active command registry for the selected tab. Static XAML button duplication is a migration fallback only and must not be the source of truth for new ribbon commands.
 19. The top ribbon command list is defined in `ScadaBuilderV2.Application.Commands.RibbonCommandCatalog`; the WPF shell is responsible only for resource lookup, visual templates, and dispatch adaptation.
+20. The `Selection` ribbon may execute `Grouper` and `Degrouper` for Element+ objects. Legacy/source selections still use the existing conversion warning rather than a direct legacy grouping workflow.
 
 ## 4. Related Tests
 
