@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active enterprise documentation map
-Document version: `V2.1.3.0000`
+Document version: `V2.1.3.0001`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.3.0001` | `PENDING` | Ajustement de la galerie Formes a des icones 32x32 sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Correction de la galerie Formes du ruban Inserer, ajout Cercle/Triangle/Etoile, et placement Ligne/Fleche en deux points. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Extraction de la palette laterale d'outils vers le catalogue semantique d'icones et commandes. |
 | 2026-06-19 | `V2.1.2.0043` | `fde1b31` | Cloture de la refonte du ruban superieur par retrait du fallback XAML statique. |

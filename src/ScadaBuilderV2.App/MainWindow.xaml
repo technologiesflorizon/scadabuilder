@@ -74,9 +74,9 @@
         </Style>
 
         <Style x:Key="LargeRibbonCommandButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Width" Value="84"/>
-            <Setter Property="Height" Value="92"/>
-            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Width" Value="44"/>
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="Padding" Value="5"/>
             <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsActive}" Value="True">
@@ -111,10 +111,11 @@
         </Style>
 
         <Style x:Key="LargeCommandIconStyle" TargetType="Image">
-            <Setter Property="Width" Value="64"/>
-            <Setter Property="Height" Value="64"/>
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Height" Value="32"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="0,0,0,3"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0"/>
         </Style>
 
         <DataTemplate x:Key="RibbonCommandTemplate">
@@ -136,7 +137,6 @@
                     Command="{Binding Command}">
                 <StackPanel>
                     <Image Style="{StaticResource LargeCommandIconStyle}" Source="{Binding Icon}"/>
-                    <TextBlock Text="{Binding Label}" FontSize="11" TextAlignment="Center" TextWrapping="Wrap"/>
                 </StackPanel>
             </Button>
         </DataTemplate>
@@ -237,14 +237,14 @@
 
     <DockPanel LastChildFill="True">
         <Border DockPanel.Dock="Top"
-                Height="270"
+                Height="196"
                 Background="#F2F8EF"
                 BorderBrush="{StaticResource BorderBrushSoft}"
                 BorderThickness="0,0,0,1">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"/>
-                    <RowDefinition Height="230"/>
+                    <RowDefinition Height="156"/>
                 </Grid.RowDefinitions>
 
                 <DockPanel Grid.Row="0" Margin="14,6,14,0">

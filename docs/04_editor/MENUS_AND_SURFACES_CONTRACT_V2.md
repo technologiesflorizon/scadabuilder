@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active editor menu and surface contract
-Document version: `V2.1.3.0000`
+Document version: `V2.1.3.0001`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.3.0001` | `PENDING` | Ajustement de la galerie Formes a des icones 32x32 sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout du contrat de galerie Formes 4 colonnes, icones 64x64, et etat actif d'insertion. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Extraction de la palette laterale d'outils vers la surface de commandes dynamique. |
 | 2026-06-19 | `V2.1.2.0043` | `fde1b31` | Retrait du fallback XAML statique du ruban superieur. |
@@ -70,7 +71,7 @@ flowchart TD
 19. The top ribbon command list is defined in `ScadaBuilderV2.Application.Commands.RibbonCommandCatalog`; the WPF shell is responsible only for resource lookup, visual templates, and dispatch adaptation.
 20. The `Selection` ribbon may execute `Grouper` and `Degrouper` for Element+ objects. Legacy/source selections still use the existing conversion warning rather than a direct legacy grouping workflow.
 21. The left tool panel palette consumes semantic command metadata from `RibbonCommandCatalog.CreateToolPalette()` and must not duplicate `Icon.Tool.*` resources directly in static XAML buttons.
-22. The Insert ribbon `Formes` group must render as a large shape gallery with at most four icons per row and 64x64 semantic shape icons.
+22. The Insert ribbon `Formes` group must render as a shape gallery with at most four icons per row, 32x32 semantic shape icons, no visible shape-name labels inside the gallery buttons, and tooltip labels for discoverability.
 23. Active insertion commands must show selected state until the placement completes or is cancelled. Starting another placement replaces the active command state.
 24. `insert.shape.line` and `insert.shape.arrow` use a two-point placement surface: first click captures start, second click commits the Element+ object, and Escape cancels placement.
 

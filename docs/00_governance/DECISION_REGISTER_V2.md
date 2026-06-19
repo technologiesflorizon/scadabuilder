@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.3.0000`
+Document version: `V2.1.3.0001`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.3.0001` | `PENDING` | Ajustement de DEC-0032 pour la galerie Formes 32x32 sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout de DEC-0032 pour la galerie Formes du ruban Inserer et le placement ligne/fleche en deux points. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Mise a jour de DEC-0031 apres extraction de la palette laterale d'outils vers le catalogue semantique. |
 | 2026-06-19 | `V2.1.2.0043` | `fde1b31` | Mise a jour de DEC-0031 apres retrait du fallback XAML statique du ruban superieur. |
@@ -733,7 +734,7 @@ The Insert ribbon shape commands must be visually distinct, must show the active
 
 Decision:
 
-The Insert ribbon `Formes` group is a large shape gallery capped at four columns, with 64x64 semantic shape icons and active-command visual state. The standard shape set includes rectangle, ellipse, circle, triangle, star, line, and arrow. Line and arrow insertion uses a two-point editor workflow: first click captures the start point, pointer movement shows an editor-only SVG preview, second click persists the final Element+ shape with `ScadaElementData.ShapeStartX`, `ShapeStartY`, `ShapeEndX`, and `ShapeEndY`. Escape cancels placement and clears the active ribbon command.
+The Insert ribbon `Formes` group is a large shape gallery capped at four columns, with 32x32 semantic shape icons, no visible shape-name labels inside the gallery buttons, tooltip labels for discoverability, and active-command visual state. The standard shape set includes rectangle, ellipse, circle, triangle, star, line, and arrow. Line and arrow insertion uses a two-point editor workflow: first click captures the start point, pointer movement shows an editor-only SVG preview, second click persists the final Element+ shape with `ScadaElementData.ShapeStartX`, `ShapeStartY`, `ShapeEndX`, and `ShapeEndY`. Escape cancels placement and clears the active ribbon command.
 
 Consequences:
 

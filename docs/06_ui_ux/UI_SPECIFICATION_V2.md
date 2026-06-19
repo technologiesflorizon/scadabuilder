@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active UI specification pointer
-Document version: `V2.1.3.0000`
+Document version: `V2.1.3.0001`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.3.0001` | `PENDING` | Ajustement de la galerie Formes: icones 32x32 et boutons sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Normalisation de la galerie Formes du ruban Inserer avec icones 64x64 et etat actif. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | La palette laterale d'outils consomme maintenant le catalogue semantique d'icones. |
 | 2026-06-19 | `V2.1.2.0043` | `fde1b31` | Le ruban superieur ne conserve plus de surface XAML statique parallele. |
@@ -51,5 +52,5 @@ Current shell rules:
 10. The `Selection` tab exposes executable group and ungroup actions for Element+ selections; blocked selection states are reported through status feedback from the existing workflow.
 11. The main shell ribbon has a single dynamic command surface. Static per-tab XAML button rows must not be restored as a second command source.
 12. The left tool palette uses the same command metadata adapter as the ribbon for labels, disabled tooltips, and semantic `Icon.Tool.*` lookup.
-13. The Insert `Formes` group is a large icon gallery capped at four columns. Shape buttons use 64x64 semantic icons, wrap to a second row as needed, and show selected state while placement is active.
+13. The Insert `Formes` group is an icon gallery capped at four columns. Shape buttons use 32x32 semantic icons, do not show redundant visible shape-name labels, expose labels through tooltips, wrap to a second row as needed, and show selected state while placement is active.
 14. Line and arrow insertion uses a two-point canvas workflow with editor-only preview feedback between clicks.

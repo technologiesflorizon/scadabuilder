@@ -100,13 +100,21 @@ public sealed class RibbonCommandCatalogTests
         Assert.IsTrue(ribbonSurfaceIndex >= 0, "Main ribbon command surface was not found.");
         var ribbonSurface = xaml.Substring(ribbonSurfaceIndex, 600);
 
-        StringAssert.Contains(xaml, "Height=\"270\"");
-        StringAssert.Contains(xaml, "<RowDefinition Height=\"230\"/>");
+        StringAssert.Contains(xaml, "Height=\"196\"");
+        StringAssert.Contains(xaml, "<RowDefinition Height=\"156\"/>");
         StringAssert.Contains(xaml, "LargeRibbonCommandTemplate");
         StringAssert.Contains(xaml, "LargeCommandIconStyle");
-        StringAssert.Contains(xaml, "<Setter Property=\"Width\" Value=\"64\"/>");
-        StringAssert.Contains(xaml, "<Setter Property=\"Height\" Value=\"64\"/>");
+        StringAssert.Contains(xaml, "<Setter Property=\"Width\" Value=\"32\"/>");
+        StringAssert.Contains(xaml, "<Setter Property=\"Height\" Value=\"32\"/>");
         StringAssert.Contains(xaml, "<UniformGrid Columns=\"4\"/>");
+        var shapeTemplateStart = xaml.IndexOf("<DataTemplate x:Key=\"LargeRibbonCommandTemplate\">", StringComparison.Ordinal);
+        var shapeTemplateEnd = xaml.IndexOf("<DataTemplate x:Key=\"RibbonGroupTemplate\">", StringComparison.Ordinal);
+        Assert.IsTrue(shapeTemplateStart >= 0 && shapeTemplateEnd > shapeTemplateStart, "The shape gallery template was not found.");
+        var shapeTemplate = xaml.Substring(shapeTemplateStart, shapeTemplateEnd - shapeTemplateStart);
+        StringAssert.Contains(shapeTemplate, "<Image Style=\"{StaticResource LargeCommandIconStyle}\" Source=\"{Binding Icon}\"/>");
+        Assert.IsFalse(
+            shapeTemplate.Contains("<TextBlock", StringComparison.Ordinal),
+            "The shape gallery template should be icon-only; shape names remain available through tooltips.");
         StringAssert.Contains(ribbonSurface, "HorizontalScrollBarVisibility=\"Auto\"");
         StringAssert.Contains(ribbonSurface, "<StackPanel Orientation=\"Horizontal\"/>");
         Assert.IsFalse(
