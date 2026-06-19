@@ -8,7 +8,7 @@ Document version: `V2.1.2.0042`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0042` | `PENDING` | Le ruban Selection execute maintenant Grouper et Degrouper pour les Element+ selectionnes. |
+| 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Le ruban Selection execute maintenant Grouper et Degrouper pour les Element+ selectionnes. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Le catalogue du ruban est extrait de la fenetre WPF et couvert par tests de contrat. |
 | 2026-06-19 | `V2.1.2.0040` | `335adfb` | Le ruban superieur consomme un registre actif de commandes et de groupes. |
 | 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Refonte du ruban superieur en groupes visuels, onglet actif et overflow horizontal. |

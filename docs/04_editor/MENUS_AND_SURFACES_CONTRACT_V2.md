@@ -8,7 +8,7 @@ Document version: `V2.1.2.0042`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0042` | `PENDING` | Les commandes `Grouper` et `Degrouper` du ruban Selection sont maintenant executees. |
+| 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Les commandes `Grouper` et `Degrouper` du ruban Selection sont maintenant executees. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Le ruban WPF adapte le catalogue applicatif de commandes au lieu de posseder la liste canonique. |
 | 2026-06-19 | `V2.1.2.0040` | `335adfb` | Le ruban superieur est maintenant rendu depuis un registre de commandes actif. |
 | 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Ajout du contrat de ruban superieur groupe et icone pour les surfaces de commande. |
