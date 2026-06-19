@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Documentation Agent Rules
 
-Date: 2026-06-17
+Date: 2026-06-19
 Status: Active agent operating contract
-Document version: `V2.1.2.0011`
+Document version: `V2.1.2.0012`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0012` | `PENDING` | Ajout de la regle de polish produit visant un niveau concurrentiel face a ScadaPlant. |
 | 2026-06-17 | `V2.1.2.0011` | `PENDING` | Ajout de l'obligation de commit automatique apres chaque implementation validee. |
 | 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout de l'obligation de worktree propre ou commit produit, puis planification avant tout ajout fonctionnel ou contractuel. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation des regles operationnelles pour humains et agents travaillant dans la documentation SCADA Builder V2. |
@@ -92,3 +93,14 @@ dotnet test ScadaBuilderV2.sln --no-restore
 ```
 
 when the change affects implemented behavior, tests, public contracts, or generated/runtime output.
+
+## 6. Product Polish Rule
+
+SCADA Builder V2 is intended to compete with ScadaPlant. Any UI, editor, interaction, ribbon, property panel, preview, or export workflow must be treated as production-grade product work, not a prototype surface.
+
+Preserve this bar:
+
+1. Prefer complete, coherent workflows over partial visible affordances.
+2. Eliminate rough placeholder text, generic icons, inconsistent spacing, clipped controls, and ambiguous disabled states before declaring UI work complete.
+3. Match industrial SCADA/HMI expectations: dense but readable surfaces, predictable commands, clear feedback, reliable undo/history behavior, and no editor artifacts leaking into preview/export geometry.
+4. When a feature cannot yet reach that polish level, document the gap explicitly instead of presenting it as finished behavior.

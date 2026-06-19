@@ -1,13 +1,14 @@
 # SCADA Builder V2 - UI Specification
 
-Date: 2026-06-17
+Date: 2026-06-19
 Status: Active UI specification pointer
-Document version: `V2.1.3.0001`
+Document version: `V2.1.3.0002`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.3.0002` | `PENDING` | Ajout du standard de polish produit concurrentiel face a ScadaPlant. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes: icones 32x32 et boutons sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Normalisation de la galerie Formes du ruban Inserer avec icones 64x64 et etat actif. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | La palette laterale d'outils consomme maintenant le catalogue semantique d'icones. |
@@ -30,11 +31,22 @@ Historical UI material is archived in `docs/09_archive/deprecated/UI_SPEC_V2.md`
 
 UI behavior that maps to commands, state, actions, selection, or menus must be documented in the corresponding `04_editor` contract rather than duplicated here.
 
-## 3. Status Bar Feedback
+## 3. Product Polish Bar
+
+SCADA Builder V2 targets a competitive product quality level against ScadaPlant. UI work is complete only when it reads as a coherent industrial SCADA/HMI tool rather than an internal prototype.
+
+Required UI polish standards:
+
+1. Command surfaces, editor interactions, property panels, and preview/export feedback must be consistent, readable, and production-oriented.
+2. Visible placeholders, generic command icons, clipped controls, inconsistent spacing, weak active/disabled states, and unfinished affordances must be removed or explicitly documented as known gaps.
+3. Dense operational surfaces are preferred over decorative or marketing-style layouts; the interface must support repeated engineering work, fast scanning, and predictable command execution.
+4. Editor-only geometry, selection overlays, previews, handles, diagnostics, and helper layers must remain visually distinct in the editor and must not leak into preview, FT100/TF100Web export, or `.sep` geometry.
+
+## 4. Status Bar Feedback
 
 Long-running export commands must keep the main shell responsive and surface progress in the bottom status bar. FT100 `.sb2` export uses an indeterminate progress bar at the bottom right while package staging, validation, and archive creation are active.
 
-## 4. Top Ribbon Strategy
+## 5. Top Ribbon Strategy
 
 The top ribbon is a command surface, not the owner of command behavior. It must expose current commands through stable labels, icons, tooltips, and command routing while keeping disabled or future commands visually distinct.
 
