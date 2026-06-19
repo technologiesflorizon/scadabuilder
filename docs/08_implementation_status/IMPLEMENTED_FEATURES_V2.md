@@ -8,7 +8,7 @@ Document version: `V2.1.2.0039`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0039` | `PENDING` | Implementation de la refonte du ruban superieur et du registre d'icones visible. |
+| 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Implementation de la refonte du ruban superieur et du registre d'icones visible. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Cloture du bloc boutons HMI avec parite metadata preview/export. |
 | 2026-06-19 | `V2.1.2.0037` | `2a540d6` | Implementation des evenements runtime pour boutons HMI standards. |
 | 2026-06-19 | `V2.1.2.0036` | `8cc4d33` | Implementation du runtime disabled reel pour boutons Element+. |
