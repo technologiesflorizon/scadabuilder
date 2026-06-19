@@ -5619,8 +5619,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             Style = element.Style,
             Data = element.Data,
             ButtonBehavior = element.ButtonBehavior,
-            ShapeKind = element.ShapeKind,
-            ButtonKind = element.ButtonKind,
+            ShapeKind = element.Kind == ScadaElementKind.Shape ? element.EffectiveShapeKind.ToString() : null,
+            ButtonKind = element.Kind == ScadaElementKind.Button ? element.EffectiveButtonKind.ToString() : null,
             Children = element.ChildElements
                 .Select((child, childIndex) => ToRenderPayload(child, selectedIds, childIndex))
                 .ToArray()
@@ -6835,9 +6835,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         public ScadaButtonBehavior? ButtonBehavior { get; set; }
 
-        public ScadaShapeKind? ShapeKind { get; set; }
+        public string? ShapeKind { get; set; }
 
-        public ScadaButtonKind? ButtonKind { get; set; }
+        public string? ButtonKind { get; set; }
 
         public IReadOnlyList<ModernElementRenderPayload> Children { get; set; } = [];
     }

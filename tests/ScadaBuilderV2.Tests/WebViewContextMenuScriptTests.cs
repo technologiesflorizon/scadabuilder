@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using ScadaBuilderV2.Application.Commands;
 
 namespace ScadaBuilderV2.Tests;
@@ -1011,7 +1012,21 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "shapeKind === 'alarmbeacon'");
         StringAssert.Contains(source, "const clampPercent = value =>");
         StringAssert.Contains(source, "wrapper.appendChild(renderShapeElement(element, style));");
-        StringAssert.Contains(source, "ShapeKind = element.ShapeKind");
+        StringAssert.Contains(source, "ShapeKind = element.Kind == ScadaElementKind.Shape ? element.EffectiveShapeKind.ToString() : null");
+        StringAssert.Contains(source, "public string? ShapeKind { get; set; }");
+    }
+
+    [TestMethod]
+    public void ModernPreviewPayloadSerializesVisualDiscriminatorsAsText()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "ShapeKind = element.Kind == ScadaElementKind.Shape ? element.EffectiveShapeKind.ToString() : null");
+        StringAssert.Contains(source, "ButtonKind = element.Kind == ScadaElementKind.Button ? element.EffectiveButtonKind.ToString() : null");
+        StringAssert.Contains(source, "public string? ShapeKind { get; set; }");
+        StringAssert.Contains(source, "public string? ButtonKind { get; set; }");
+        StringAssert.DoesNotMatch(source, new Regex(@"public\s+ScadaShapeKind\?\s+ShapeKind\s+\{\s+get;\s+set;\s+\}"));
+        StringAssert.DoesNotMatch(source, new Regex(@"public\s+ScadaButtonKind\?\s+ButtonKind\s+\{\s+get;\s+set;\s+\}"));
     }
 
     [TestMethod]
