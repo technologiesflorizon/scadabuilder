@@ -5906,13 +5906,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private void SetActiveRibbon(string ribbonKey)
     {
-        FileRibbon.Visibility = Visibility.Collapsed;
-        EditRibbon.Visibility = Visibility.Collapsed;
-        InsertRibbon.Visibility = Visibility.Collapsed;
-        ScreenRibbon.Visibility = Visibility.Collapsed;
-        SelectionRibbon.Visibility = Visibility.Collapsed;
-        ToolsRibbon.Visibility = Visibility.Collapsed;
-
         ActiveRibbonGroups.Clear();
         if (_ribbonTabs.TryGetValue(ribbonKey, out var groups))
         {

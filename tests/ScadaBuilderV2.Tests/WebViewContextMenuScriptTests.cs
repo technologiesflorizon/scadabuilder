@@ -1,3 +1,5 @@
+using ScadaBuilderV2.Application.Commands;
+
 namespace ScadaBuilderV2.Tests;
 
 [TestClass]
@@ -590,7 +592,16 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "_activeSceneTab.History.UndoAsync");
         StringAssert.Contains(source, "_activeSceneTab.History.RedoAsync");
         StringAssert.Contains(source, "SceneBackgroundChangedAction");
-        StringAssert.Contains(xaml, "Click=\"OnRedoClick\"");
+        StringAssert.Contains(xaml, "UndoSceneCommand");
+        StringAssert.Contains(xaml, "RedoSceneCommand");
+        StringAssert.Contains(source, "case \"edit.undo\":");
+        StringAssert.Contains(source, "case \"edit.redo\":");
+        var ribbonCommandIds = RibbonCommandCatalog
+            .EnumerateCommands(RibbonCommandCatalog.CreateDefault())
+            .Select(command => command.Id)
+            .ToHashSet(StringComparer.Ordinal);
+        Assert.IsTrue(ribbonCommandIds.Contains("edit.undo"));
+        Assert.IsTrue(ribbonCommandIds.Contains("edit.redo"));
         Assert.IsFalse(source.Contains("Stack<ConversionUndoSnapshot>", StringComparison.Ordinal));
         Assert.IsFalse(source.Contains("Stack<LegacyDeletionUndoSnapshot>", StringComparison.Ordinal));
     }
@@ -903,34 +914,37 @@ public sealed class WebViewContextMenuScriptTests
     [TestMethod]
     public void InsertRibbonExposesStandardShapesAndButtons()
     {
-        var xaml = ReadMainWindowFile("MainWindow.xaml");
         var source = ReadMainWindowSource();
+        var commandIds = RibbonCommandCatalog
+            .EnumerateCommands(RibbonCommandCatalog.CreateDefault())
+            .Select(command => command.Id)
+            .ToArray();
 
-        StringAssert.Contains(xaml, "Click=\"OnInsertRectangleClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertEllipseClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertLineClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertArrowClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertIndicatorLampClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertHorizontalBarClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertVerticalBarClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertTankClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertPipeHorizontalClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertPipeVerticalClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertValveClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertPumpClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertMotorClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertFanClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertConveyorClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertGaugeClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertSwitchClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertBreakerClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertTransformerClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertAlarmBeaconClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertButtonClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertToggleButtonClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertNavigationButtonClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertAlarmAckButtonClick\"");
-        StringAssert.Contains(xaml, "Click=\"OnInsertEmergencyStopButtonClick\"");
+        CollectionAssert.Contains(commandIds, "insert.shape.rectangle");
+        CollectionAssert.Contains(commandIds, "insert.shape.ellipse");
+        CollectionAssert.Contains(commandIds, "insert.shape.line");
+        CollectionAssert.Contains(commandIds, "insert.shape.arrow");
+        CollectionAssert.Contains(commandIds, "insert.hmi.indicator-lamp");
+        CollectionAssert.Contains(commandIds, "insert.hmi.bar-horizontal");
+        CollectionAssert.Contains(commandIds, "insert.hmi.bar-vertical");
+        CollectionAssert.Contains(commandIds, "insert.hmi.tank");
+        CollectionAssert.Contains(commandIds, "insert.hmi.pipe-horizontal");
+        CollectionAssert.Contains(commandIds, "insert.hmi.pipe-vertical");
+        CollectionAssert.Contains(commandIds, "insert.hmi.valve");
+        CollectionAssert.Contains(commandIds, "insert.hmi.pump");
+        CollectionAssert.Contains(commandIds, "insert.hmi.motor");
+        CollectionAssert.Contains(commandIds, "insert.hmi.fan");
+        CollectionAssert.Contains(commandIds, "insert.hmi.conveyor");
+        CollectionAssert.Contains(commandIds, "insert.hmi.gauge");
+        CollectionAssert.Contains(commandIds, "insert.hmi.switch");
+        CollectionAssert.Contains(commandIds, "insert.hmi.breaker");
+        CollectionAssert.Contains(commandIds, "insert.hmi.transformer");
+        CollectionAssert.Contains(commandIds, "insert.hmi.alarm-beacon");
+        CollectionAssert.Contains(commandIds, "insert.button.command");
+        CollectionAssert.Contains(commandIds, "insert.button.toggle");
+        CollectionAssert.Contains(commandIds, "insert.button.navigation");
+        CollectionAssert.Contains(commandIds, "insert.button.alarm-ack");
+        CollectionAssert.Contains(commandIds, "insert.button.emergency-stop");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Rectangle);");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Ellipse);");
         StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Line);");

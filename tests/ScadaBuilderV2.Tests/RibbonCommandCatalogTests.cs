@@ -67,4 +67,41 @@ public sealed class RibbonCommandCatalogTests
         Assert.IsNull(commands["object.group"].DisabledReason);
         Assert.IsNull(commands["object.ungroup"].DisabledReason);
     }
+
+    [TestMethod]
+    public void MainRibbonUsesOnlyDynamicCommandSurface()
+    {
+        var xaml = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml");
+        var code = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");
+
+        StringAssert.Contains(xaml, "x:Name=\"RibbonCommandSurface\"");
+        StringAssert.Contains(xaml, "ItemTemplate=\"{StaticResource RibbonGroupTemplate}\"");
+        Assert.IsFalse(xaml.Contains("x:Name=\"FileRibbon\"", StringComparison.Ordinal));
+        Assert.IsFalse(xaml.Contains("x:Name=\"EditRibbon\"", StringComparison.Ordinal));
+        Assert.IsFalse(xaml.Contains("x:Name=\"InsertRibbon\"", StringComparison.Ordinal));
+        Assert.IsFalse(xaml.Contains("x:Name=\"ScreenRibbon\"", StringComparison.Ordinal));
+        Assert.IsFalse(xaml.Contains("x:Name=\"SelectionRibbon\"", StringComparison.Ordinal));
+        Assert.IsFalse(xaml.Contains("x:Name=\"ToolsRibbon\"", StringComparison.Ordinal));
+        Assert.IsFalse(code.Contains("FileRibbon.Visibility", StringComparison.Ordinal));
+        Assert.IsFalse(code.Contains("EditRibbon.Visibility", StringComparison.Ordinal));
+        Assert.IsFalse(code.Contains("InsertRibbon.Visibility", StringComparison.Ordinal));
+    }
+
+    private static string ReadProjectFile(params string[] parts)
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            var candidate = Path.Combine(new[] { directory.FullName }.Concat(parts).ToArray());
+            if (File.Exists(candidate))
+            {
+                return File.ReadAllText(candidate);
+            }
+
+            directory = directory.Parent;
+        }
+
+        Assert.Fail($"Unable to locate project file: {Path.Combine(parts)}");
+        return "";
+    }
 }
