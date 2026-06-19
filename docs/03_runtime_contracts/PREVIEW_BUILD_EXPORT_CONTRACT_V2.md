@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active runtime contract
-Document version: `V2.1.2.0037`
+Document version: `V2.1.2.0038`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0038` | `PENDING` | Alignement metadata preview/export pour wrappers de boutons Element+. |
 | 2026-06-19 | `V2.1.2.0037` | `2a540d6` | Ajout du contrat des evenements runtime pour boutons standards. |
 | 2026-06-19 | `V2.1.2.0036` | `8cc4d33` | Ajout du contrat runtime disabled reel pour boutons Element+. |
 | 2026-06-19 | `V2.1.2.0035` | `588d712` | Ajout du contrat runtime local d'etat Toggle pour boutons Element+. |
@@ -41,6 +42,8 @@ Element+ Toggle button state is export-owned runtime behavior. Preview must pres
 Element+ disabled button behavior is export-owned runtime behavior. Preview must preserve `ScadaButtonBehavior.IsDisabled` without executing runtime actions locally. FT100 export must place disabled metadata on the Element+ wrapper, emit a native disabled `<button>`, suppress hover/pressed/toggle runtime, and block object-owned event execution for disabled button wrappers.
 
 Element+ standard button activation is exposed as host-consumable runtime events. FT100 export must emit `scada-builder-button-activated` for enabled button wrappers and a kind-specific event for `Command`, `Navigation`, `AlarmAcknowledge`, `EmergencyStop`, and `Toggle`, while authored object actions remain the model-owned behavior path.
+
+Preview and FT100 export must agree on wrapper-level button metadata. SCADA Builder V2 preview may keep generated buttons non-interactive for editing, but button wrappers must carry `data-scada-button-kind`, behavior metadata, disabled metadata, and Toggle initial state consistently with the FT100 wrapper contract.
 
 Element+ group runtime events are model behavior, not editor overlay geometry. FT100 export must preserve a group event by emitting a transparent runtime wrapper for hit-testing and `data-scada-events`, while groups without runtime events may remain flattened.
 

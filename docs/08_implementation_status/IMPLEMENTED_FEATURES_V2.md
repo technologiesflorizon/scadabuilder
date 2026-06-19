@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active implementation status
-Document version: `V2.1.2.0037`
+Document version: `V2.1.2.0038`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0038` | `PENDING` | Cloture du bloc boutons HMI avec parite metadata preview/export. |
 | 2026-06-19 | `V2.1.2.0037` | `2a540d6` | Implementation des evenements runtime pour boutons HMI standards. |
 | 2026-06-19 | `V2.1.2.0036` | `8cc4d33` | Implementation du runtime disabled reel pour boutons Element+. |
 | 2026-06-19 | `V2.1.2.0035` | `588d712` | Implementation du runtime on/off pour boutons Toggle Element+. |
@@ -102,6 +103,7 @@ As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 243 
 45. Element+ Toggle buttons export their on/off runtime state on the page-scoped Element+ wrapper. The exported page runtime toggles `data-scada-toggle-state` between `off` and `on` on click, drives active toggle styling, and emits `scada-builder-toggle-state-changed`.
 46. Element+ disabled buttons now export native disabled button state, wrapper disabled metadata, not-allowed cursor treatment, suppressed hover/pressed/toggle behavior, and a runtime action guard for object-owned events.
 47. Element+ standard buttons now emit runtime activation diagnostics. Enabled `Command`, `Navigation`, `AlarmAcknowledge`, `EmergencyStop`, and `Toggle` wrappers dispatch `scada-builder-button-activated` plus a kind-specific event for TF100Web or host runtime integration.
+48. The HMI button block is closed with preview/export metadata parity: SCADA Builder V2 preview wrappers now expose the same button kind, behavior, disabled, and Toggle-state metadata expected by FT100 export while preserving editor-only non-interactive preview behavior.
 
 ## 3. Source Of Truth
 

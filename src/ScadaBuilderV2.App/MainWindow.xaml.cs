@@ -7861,6 +7861,17 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       if (parentWrapper?.dataset?.id) {
         wrapper.dataset.parentGroupId = parentWrapper.dataset.id;
       }
+      if (element.Kind === 'Button') {
+        wrapper.dataset.scadaButtonKind = buttonKind;
+        wrapper.dataset.scadaButtonBehavior = JSON.stringify(buttonBehavior || {});
+        if (buttonKind === 'Toggle') {
+          wrapper.dataset.scadaToggleState = 'off';
+        }
+        if (buttonBehavior.IsDisabled === true) {
+          wrapper.dataset.scadaDisabled = 'true';
+          wrapper.setAttribute('aria-disabled', 'true');
+        }
+      }
       if (element.IsSelected) {
         selectedModernIds.add(element.Id);
         selectedModernId = element.Id;

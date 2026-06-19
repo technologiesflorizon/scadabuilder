@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active regression coverage map
-Document version: `V2.1.2.0037`
+Document version: `V2.1.2.0038`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0038` | `PENDING` | Ajout de la couverture de parite metadata preview/export pour boutons Element+. |
 | 2026-06-19 | `V2.1.2.0037` | `2a540d6` | Ajout de la couverture des evenements runtime pour boutons HMI standards. |
 | 2026-06-19 | `V2.1.2.0036` | `8cc4d33` | Ajout de la couverture du runtime disabled reel pour boutons Element+. |
 | 2026-06-19 | `V2.1.2.0035` | `588d712` | Ajout de la couverture du runtime on/off pour boutons Toggle Element+. |
@@ -87,6 +88,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Element+ Toggle button on/off runtime state | `Ft100SceneExporterTests.ExportWritesToggleButtonRuntimeStateOnWrapper` |
 | Element+ disabled button runtime state | `Ft100SceneExporterTests.ExportWritesDisabledButtonRuntimeStateAndOmitsHoverCss` |
 | Element+ standard button activation runtime events | `Ft100SceneExporterTests.ExportWritesStandardButtonActivationRuntimeEvents` |
+| Element+ button preview/export metadata parity | `WebViewContextMenuScriptTests.ModernButtonRendersTextAndUsesPropertyText`, `Ft100SceneExporterTests.ExportWritesToggleButtonRuntimeStateOnWrapper`, `Ft100SceneExporterTests.ExportWritesDisabledButtonRuntimeStateAndOmitsHoverCss`, `Ft100SceneExporterTests.ExportWritesStandardButtonActivationRuntimeEvents` |
 | Element+ HMI button presets and `ButtonKind` export | `OfficialSceneDomainTests.ButtonElementHasDefaultHoverUnlessExplicitlyDisabled`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.ModernButtonRendersTextAndUsesPropertyText`, `ModernProjectStoreTests.SaveAndReloadPreservesPageManifestBackgroundAndObjectEvents`, `Ft100SceneExporterTests.ExportWritesDjangoManifestAndObjectOwnedClickNavigateAction` |
 | Element+ advanced style opacity and rotation | `OfficialSceneDomainTests.InputTextElementHasEditableStyleAndDataDefaults`, `WebViewContextMenuScriptTests.ElementPropertiesExposeAdvancedShapeStyleFields`, `ModernProjectStoreTests.SaveAndReloadPreservesPageManifestBackgroundAndObjectEvents`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
 | Element+ machine and measurement HMI symbols with manual insertion | `OfficialSceneDomainTests.ShapeElementDefaultsAndFactoriesPreserveShapeKind`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.ModernShapePreviewUsesSvgShapeKind`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
