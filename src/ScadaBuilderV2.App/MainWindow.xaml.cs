@@ -1101,7 +1101,7 @@ public partial class MainWindow : Window
                     _ = ExecuteEditorCommandAsync(message.CommandId, message);
                     break;
                 case "placeElement":
-                    PlaceModernElement(message.Kind, message.X, message.Y);
+                    PlaceModernElement(message.Kind, message.ShapeKind, message.X, message.Y);
                     break;
                 case "placeTwoPointElement":
                     PlaceTwoPointShape(message.ShapeKind, message.X, message.Y, message.X2, message.Y2);
@@ -4190,7 +4190,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         SetStatus($"Insertion active: {instruction} pour placer un {label}.");
     }
 
-    private void PlaceModernElement(string? kind, double x, double y)
+    private void PlaceModernElement(string? kind, string? shapeKindText, double x, double y)
     {
         if (_activeScene is null)
         {
@@ -4205,7 +4205,16 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
-        var element = CreateModernElement(elementKind.Value, x, y);
+        var shapeKind = elementKind == ScadaElementKind.Shape
+            ? ParseShapeKind(shapeKindText) ?? _pendingInsertShapeKind
+            : null;
+        if (elementKind == ScadaElementKind.Shape && shapeKind is null)
+        {
+            SetStatus("Aucune forme d'insertion active.");
+            return;
+        }
+
+        var element = CreateModernElement(elementKind.Value, x, y, shapeKind);
         AddModernElementToScene(element, "insertion Element+");
     }
 
@@ -4452,7 +4461,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         };
     }
 
-    private ScadaElement CreateModernElement(ScadaElementKind kind, double x, double y)
+    private ScadaElement CreateModernElement(ScadaElementKind kind, double x, double y, ScadaShapeKind? shapeKindOverride = null)
     {
         if (kind == ScadaElementKind.Text)
         {
@@ -4471,7 +4480,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         if (kind == ScadaElementKind.Shape)
         {
             var sequence = _nextShapeSequence++;
-            var shapeKind = _pendingInsertShapeKind ?? ScadaShapeKind.Rectangle;
+            var shapeKind = shapeKindOverride ?? _pendingInsertShapeKind ?? ScadaShapeKind.Rectangle;
             var id = CreateUniqueElementId($"shape_{sequence:000}");
             return ScadaElement.CreateShape(id, $"{FormatShapeName(shapeKind)}{sequence:000}", shapeKind, x, y);
         }
@@ -8826,7 +8835,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
       } else {
         const kind = placementKind;
         clearPlacementState(false);
-        window.chrome?.webview?.postMessage({ type: 'placeElement', kind, x: point.x, y: point.y });
+        const shapeKind = placementShapeKind;
+        window.chrome?.webview?.postMessage({ type: 'placeElement', kind, shapeKind, x: point.x, y: point.y });
       }
       event.preventDefault();
       event.stopPropagation();

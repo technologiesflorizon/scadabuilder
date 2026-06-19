@@ -638,7 +638,7 @@ public sealed class WebViewContextMenuScriptTests
     public void RemainingSceneMutationsUseCommonHistorySnapshots()
     {
         var source = ReadMainWindowSource();
-        var insertMethod = ExtractMethod(source, "private void PlaceModernElement(string? kind, double x, double y)");
+        var insertMethod = ExtractMethod(source, "private void PlaceModernElement(string? kind, string? shapeKindText, double x, double y)");
         var insertCommitMethod = ExtractMethod(source, "private void AddModernElementToScene(ScadaElement element, string historyLabel)");
         var libraryMethod = ExtractMethod(source, "private async Task CreateElementPlusLibraryInstanceAsync(");
         var legacyTextMethod = ExtractMethod(source, "private void EditLegacyText(string? id, string? text)");
@@ -1040,6 +1040,18 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "ShapeStartX = startX");
         StringAssert.Contains(source, "ShapeEndY = endY");
         StringAssert.Contains(source, "clearPlacementState(true);");
+    }
+
+    [TestMethod]
+    public void SinglePointShapePlacementPostsAndConsumesShapeKind()
+    {
+        var source = NormalizeNewLines(ReadMainWindowSource());
+
+        StringAssert.Contains(source, "PlaceModernElement(message.Kind, message.ShapeKind, message.X, message.Y);");
+        StringAssert.Contains(source, "private void PlaceModernElement(string? kind, string? shapeKindText, double x, double y)");
+        StringAssert.Contains(source, "ParseShapeKind(shapeKindText) ?? _pendingInsertShapeKind");
+        StringAssert.Contains(source, "var element = CreateModernElement(elementKind.Value, x, y, shapeKind);");
+        StringAssert.Contains(source, "const shapeKind = placementShapeKind;\n        window.chrome?.webview?.postMessage({ type: 'placeElement', kind, shapeKind, x: point.x, y: point.y });");
     }
 
     [TestMethod]
