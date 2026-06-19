@@ -586,6 +586,8 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(css, "background-size: contain;");
             StringAssert.Contains(css, "background-repeat: repeat-x;");
             StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__btn_next:hover {");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__btn_next:active,");
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__btn_next[data-scada-toggle-state=\"on\"] {");
             StringAssert.Contains(css, "#ft100-win00008 .ft100-element--Button, #ft100-win00008 [data-scada-events] { cursor: pointer; }");
             StringAssert.Contains(css, "#ft100-win00008 .ft100-element--Button *, #ft100-win00008 [data-scada-events] * { cursor: pointer; }");
             StringAssert.Contains(css, "#ft100-win00008 .ft100-element--Button:active, #ft100-win00008 [data-scada-events]:active { cursor: pointer; }");
@@ -624,6 +626,8 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(manifest, "\"IsDisabled\": false");
             StringAssert.Contains(manifest, "\"Background\": \"#EAF5F7\"");
             StringAssert.Contains(manifest, "\"BorderColor\": \"#2090A0\"");
+            StringAssert.Contains(manifest, "\"Pressed\"");
+            StringAssert.Contains(manifest, "\"Background\": \"#0F7280\"");
             StringAssert.Contains(manifest, "\"Trigger\": \"click\"");
             StringAssert.Contains(manifest, "\"Kind\": \"navigate\"");
             StringAssert.Contains(manifest, "\"TargetPageId\": \"win00009\"");

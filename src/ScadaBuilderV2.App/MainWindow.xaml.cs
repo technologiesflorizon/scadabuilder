@@ -4810,7 +4810,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                         message.ButtonHoverEnabled,
                         string.IsNullOrWhiteSpace(message.ButtonHoverBackground) ? ScadaButtonHoverStyle.Default.Background : message.ButtonHoverBackground,
                         string.IsNullOrWhiteSpace(message.ButtonHoverForeground) ? ScadaButtonHoverStyle.Default.Foreground : message.ButtonHoverForeground,
-                        string.IsNullOrWhiteSpace(message.ButtonHoverBorderColor) ? ScadaButtonHoverStyle.Default.BorderColor : message.ButtonHoverBorderColor))
+                        string.IsNullOrWhiteSpace(message.ButtonHoverBorderColor) ? ScadaButtonHoverStyle.Default.BorderColor : message.ButtonHoverBorderColor),
+                    new ScadaButtonPressedStyle(
+                        message.ButtonPressedEnabled,
+                        string.IsNullOrWhiteSpace(message.ButtonPressedBackground) ? ScadaButtonPressedStyle.Default.Background : message.ButtonPressedBackground,
+                        string.IsNullOrWhiteSpace(message.ButtonPressedForeground) ? ScadaButtonPressedStyle.Default.Foreground : message.ButtonPressedForeground,
+                        string.IsNullOrWhiteSpace(message.ButtonPressedBorderColor) ? ScadaButtonPressedStyle.Default.BorderColor : message.ButtonPressedBorderColor))
                 : current.ButtonBehavior
         };
 
@@ -4910,6 +4915,10 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ButtonHoverBackgroundComboBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
             ButtonHoverForegroundComboBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
             ButtonHoverBorderColorComboBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
+            ButtonPressedEnabledCheckBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
+            ButtonPressedBackgroundComboBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
+            ButtonPressedForegroundComboBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
+            ButtonPressedBorderColorComboBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
             ElementPlaceholderTextBox.IsEnabled = isEnabled;
             ElementValueTextBox.IsEnabled = isEnabled;
             var canEditNumericInputConstraints = isEnabled
@@ -4946,6 +4955,10 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 SelectComboBoxText(ButtonHoverBackgroundComboBox, ScadaButtonHoverStyle.Default.Background);
                 SelectComboBoxText(ButtonHoverForegroundComboBox, ScadaButtonHoverStyle.Default.Foreground);
                 SelectComboBoxText(ButtonHoverBorderColorComboBox, ScadaButtonHoverStyle.Default.BorderColor);
+                ButtonPressedEnabledCheckBox.IsChecked = true;
+                SelectComboBoxText(ButtonPressedBackgroundComboBox, ScadaButtonPressedStyle.Default.Background);
+                SelectComboBoxText(ButtonPressedForegroundComboBox, ScadaButtonPressedStyle.Default.Foreground);
+                SelectComboBoxText(ButtonPressedBorderColorComboBox, ScadaButtonPressedStyle.Default.BorderColor);
                 ElementPlaceholderTextBox.Text = "";
                 ElementValueTextBox.Text = "";
                 ElementMinTextBox.Text = "";
@@ -4981,11 +4994,16 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ElementAdvancedCssTextBox.Text = style.AdvancedCss ?? "";
             var buttonBehavior = element.EffectiveButtonBehavior;
             var hoverStyle = buttonBehavior.EffectiveHover;
+            var pressedStyle = buttonBehavior.EffectivePressed;
             ButtonDisabledCheckBox.IsChecked = buttonBehavior.IsDisabled;
             ButtonHoverEnabledCheckBox.IsChecked = hoverStyle.Enabled;
             SelectComboBoxText(ButtonHoverBackgroundComboBox, hoverStyle.Background);
             SelectComboBoxText(ButtonHoverForegroundComboBox, hoverStyle.Foreground);
             SelectComboBoxText(ButtonHoverBorderColorComboBox, hoverStyle.BorderColor);
+            ButtonPressedEnabledCheckBox.IsChecked = pressedStyle.Enabled;
+            SelectComboBoxText(ButtonPressedBackgroundComboBox, pressedStyle.Background);
+            SelectComboBoxText(ButtonPressedForegroundComboBox, pressedStyle.Foreground);
+            SelectComboBoxText(ButtonPressedBorderColorComboBox, pressedStyle.BorderColor);
             ElementPlaceholderTextBox.Text = data.Placeholder ?? "";
             ElementValueTextBox.Text = data.Value?.ToString("0.##") ?? data.Text ?? "";
             ElementMinTextBox.Text = data.Minimum?.ToString("0.##") ?? "";
@@ -5037,7 +5055,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                         result.ButtonHoverEnabled,
                         result.ButtonHoverBackground,
                         result.ButtonHoverForeground,
-                        result.ButtonHoverBorderColor))
+                        result.ButtonHoverBorderColor),
+                    new ScadaButtonPressedStyle(
+                        result.ButtonPressedEnabled,
+                        result.ButtonPressedBackground,
+                        result.ButtonPressedForeground,
+                        result.ButtonPressedBorderColor))
                 : current.ButtonBehavior,
             Data = data with
             {
@@ -5329,7 +5352,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                         ButtonHoverEnabledCheckBox.IsChecked == true,
                         GetComboBoxText(ButtonHoverBackgroundComboBox, ScadaButtonHoverStyle.Default.Background),
                         GetComboBoxText(ButtonHoverForegroundComboBox, ScadaButtonHoverStyle.Default.Foreground),
-                        GetComboBoxText(ButtonHoverBorderColorComboBox, ScadaButtonHoverStyle.Default.BorderColor)))
+                        GetComboBoxText(ButtonHoverBorderColorComboBox, ScadaButtonHoverStyle.Default.BorderColor)),
+                    new ScadaButtonPressedStyle(
+                        ButtonPressedEnabledCheckBox.IsChecked == true,
+                        GetComboBoxText(ButtonPressedBackgroundComboBox, ScadaButtonPressedStyle.Default.Background),
+                        GetComboBoxText(ButtonPressedForegroundComboBox, ScadaButtonPressedStyle.Default.Foreground),
+                        GetComboBoxText(ButtonPressedBorderColorComboBox, ScadaButtonPressedStyle.Default.BorderColor)))
                 : current.ButtonBehavior,
             Data = data with
             {
@@ -6206,6 +6234,14 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         public string? ButtonHoverForeground { get; set; }
 
         public string? ButtonHoverBorderColor { get; set; }
+
+        public bool ButtonPressedEnabled { get; set; } = true;
+
+        public string? ButtonPressedBackground { get; set; }
+
+        public string? ButtonPressedForeground { get; set; }
+
+        public string? ButtonPressedBorderColor { get; set; }
 
         public bool IsReadOnly { get; set; }
 

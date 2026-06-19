@@ -264,23 +264,49 @@ public sealed record ScadaButtonHoverStyle(
 }
 
 /// <summary>
+/// Defines the pressed or active visual style for an Element+ button.
+/// </summary>
+/// <param name="Enabled">Whether pressed styling is active for the button when the button is not disabled.</param>
+/// <param name="Background">CSS background applied while pressed or active.</param>
+/// <param name="Foreground">CSS foreground applied while pressed or active.</param>
+/// <param name="BorderColor">CSS border color applied while pressed or active.</param>
+public sealed record ScadaButtonPressedStyle(
+    bool Enabled,
+    string Background,
+    string Foreground,
+    string BorderColor)
+{
+    /// <summary>
+    /// Gets the default industrial HMI pressed treatment for active Element+ buttons.
+    /// </summary>
+    public static ScadaButtonPressedStyle Default { get; } = new(true, "#0F7280", "#FFFFFF", "#0F2A30");
+}
+
+/// <summary>
 /// Defines button-specific runtime behavior for an Element+ button.
 /// </summary>
 /// <param name="IsDisabled">Whether the button is disabled in preview/export runtime.</param>
 /// <param name="Hover">Optional hover style override. A null value uses the default hover style.</param>
+/// <param name="Pressed">Optional pressed style override. A null value uses the default pressed style.</param>
 public sealed record ScadaButtonBehavior(
     bool IsDisabled,
-    ScadaButtonHoverStyle? Hover = null)
+    ScadaButtonHoverStyle? Hover = null,
+    ScadaButtonPressedStyle? Pressed = null)
 {
     /// <summary>
     /// Gets the default behavior for enabled Element+ buttons.
     /// </summary>
-    public static ScadaButtonBehavior Default { get; } = new(false, ScadaButtonHoverStyle.Default);
+    public static ScadaButtonBehavior Default { get; } = new(false, ScadaButtonHoverStyle.Default, ScadaButtonPressedStyle.Default);
 
     /// <summary>
     /// Gets the effective hover style, including defaults for older scenes.
     /// </summary>
     public ScadaButtonHoverStyle EffectiveHover => Hover ?? ScadaButtonHoverStyle.Default;
+
+    /// <summary>
+    /// Gets the effective pressed style, including defaults for older scenes.
+    /// </summary>
+    public ScadaButtonPressedStyle EffectivePressed => Pressed ?? ScadaButtonPressedStyle.Default;
 }
 
 public sealed record LegacySourceTrace(

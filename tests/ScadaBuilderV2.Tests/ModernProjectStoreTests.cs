@@ -456,7 +456,8 @@ public sealed class ModernProjectStoreTests
             new ScadaElementData("Suivant", null, null, null, null, null, null, null, null, false),
             ButtonBehavior: new ScadaButtonBehavior(
                 false,
-                new ScadaButtonHoverStyle(true, "#DFF3E7", "#0F2A30", "#90C030")),
+                new ScadaButtonHoverStyle(true, "#DFF3E7", "#0F2A30", "#90C030"),
+                new ScadaButtonPressedStyle(true, "#0F7280", "#FFFFFF", "#0F2A30")),
             ButtonKind: ScadaButtonKind.Navigation);
         var scene = ScadaScene
             .CreateEmpty("win00008", "win00008", new(1440, 900))
@@ -499,6 +500,8 @@ public sealed class ModernProjectStoreTests
             Assert.AreEqual("action_nav_win00009", loaded.Elements.Single().EventBindings.Single().ActionId);
             Assert.AreEqual("#DFF3E7", loaded.Elements.Single().EffectiveButtonBehavior.EffectiveHover.Background);
             Assert.AreEqual("#90C030", loaded.Elements.Single().EffectiveButtonBehavior.EffectiveHover.BorderColor);
+            Assert.AreEqual("#0F7280", loaded.Elements.Single().EffectiveButtonBehavior.EffectivePressed.Background);
+            Assert.AreEqual("#FFFFFF", loaded.Elements.Single().EffectiveButtonBehavior.EffectivePressed.Foreground);
             Assert.AreEqual(ScadaButtonKind.Navigation, loaded.Elements.Single().EffectiveButtonKind);
             Assert.AreEqual(ScadaActionKind.Navigate, loaded.ActionDefinitions.Single().Kind);
 

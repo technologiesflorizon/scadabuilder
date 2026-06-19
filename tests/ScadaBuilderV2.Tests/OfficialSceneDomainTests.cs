@@ -683,6 +683,8 @@ public sealed class OfficialSceneDomainTests
         Assert.IsFalse(button.EffectiveButtonBehavior.IsDisabled);
         Assert.IsTrue(button.EffectiveButtonBehavior.EffectiveHover.Enabled);
         Assert.AreEqual("#EAF5F7", button.EffectiveButtonBehavior.EffectiveHover.Background);
+        Assert.IsTrue(button.EffectiveButtonBehavior.EffectivePressed.Enabled);
+        Assert.AreEqual("#0F7280", button.EffectiveButtonBehavior.EffectivePressed.Background);
         Assert.AreEqual(ScadaButtonKind.Command, button.EffectiveButtonKind);
 
         var disabled = button with
@@ -692,6 +694,7 @@ public sealed class OfficialSceneDomainTests
 
         Assert.IsTrue(disabled.EffectiveButtonBehavior.IsDisabled);
         Assert.IsFalse(disabled.EffectiveButtonBehavior.EffectiveHover.Enabled);
+        Assert.AreEqual("#0F7280", disabled.EffectiveButtonBehavior.EffectivePressed.Background);
 
         var alarmAck = ScadaElement.CreateButton("btn_ack", "Acquitter001", 30, 40, ScadaButtonKind.AlarmAcknowledge);
         Assert.AreEqual(ScadaButtonKind.AlarmAcknowledge, alarmAck.EffectiveButtonKind);

@@ -1253,6 +1253,36 @@
                                                     <ComboBoxItem Content="#0F7280"/>
                                                     <ComboBoxItem Content="#8AA0A6"/>
                                                 </ComboBox>
+                                                <CheckBox x:Name="ButtonPressedEnabledCheckBox"
+                                                          Content="Appui actif automatique"
+                                                          Margin="0,6,0,8"
+                                                          Checked="OnElementPropertyChanged"
+                                                          Unchecked="OnElementPropertyChanged"/>
+                                                <TextBlock Text="Fond appui"/>
+                                                <ComboBox x:Name="ButtonPressedBackgroundComboBox"
+                                                          Margin="0,3,0,8"
+                                                          SelectionChanged="OnElementPropertyChanged">
+                                                    <ComboBoxItem Content="#0F7280"/>
+                                                    <ComboBoxItem Content="#2090A0"/>
+                                                    <ComboBoxItem Content="#90C030"/>
+                                                    <ComboBoxItem Content="#C62828"/>
+                                                </ComboBox>
+                                                <TextBlock Text="Texte appui"/>
+                                                <ComboBox x:Name="ButtonPressedForegroundComboBox"
+                                                          Margin="0,3,0,8"
+                                                          SelectionChanged="OnElementPropertyChanged">
+                                                    <ComboBoxItem Content="#FFFFFF"/>
+                                                    <ComboBoxItem Content="#0F2A30"/>
+                                                </ComboBox>
+                                                <TextBlock Text="Bordure appui"/>
+                                                <ComboBox x:Name="ButtonPressedBorderColorComboBox"
+                                                          Margin="0,3,0,8"
+                                                          SelectionChanged="OnElementPropertyChanged">
+                                                    <ComboBoxItem Content="#0F2A30"/>
+                                                    <ComboBoxItem Content="#0F7280"/>
+                                                    <ComboBoxItem Content="#2090A0"/>
+                                                    <ComboBoxItem Content="#C62828"/>
+                                                </ComboBox>
                                             </StackPanel>
                                         </TabItem>
                                         <TabItem Header="Evenement">

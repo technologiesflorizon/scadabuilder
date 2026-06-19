@@ -40,6 +40,7 @@ public partial class ElementPropertiesDialog : Window
         var data = current.Data ?? new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
         var buttonBehavior = current.EffectiveButtonBehavior;
         var hoverStyle = buttonBehavior.EffectiveHover;
+        var pressedStyle = buttonBehavior.EffectivePressed;
 
         ElementTitleText.Text = $"{current.UserLabel} ({current.Kind})";
         ElementNameTextBox.Text = current.DisplayName;
@@ -68,6 +69,10 @@ public partial class ElementPropertiesDialog : Window
         SelectComboBoxText(ButtonHoverBackgroundComboBox, hoverStyle.Background);
         SelectComboBoxText(ButtonHoverForegroundComboBox, hoverStyle.Foreground);
         SelectComboBoxText(ButtonHoverBorderColorComboBox, hoverStyle.BorderColor);
+        ButtonPressedEnabledCheckBox.IsChecked = pressedStyle.Enabled;
+        SelectComboBoxText(ButtonPressedBackgroundComboBox, pressedStyle.Background);
+        SelectComboBoxText(ButtonPressedForegroundComboBox, pressedStyle.Foreground);
+        SelectComboBoxText(ButtonPressedBorderColorComboBox, pressedStyle.BorderColor);
 
         ReadOnlyCheckBox.IsChecked = data.IsReadOnly;
         PlaceholderTextBox.Text = data.Placeholder ?? "";
@@ -138,6 +143,10 @@ public partial class ElementPropertiesDialog : Window
             ButtonHoverBackground: GetComboBoxText(ButtonHoverBackgroundComboBox, ScadaButtonHoverStyle.Default.Background),
             ButtonHoverForeground: GetComboBoxText(ButtonHoverForegroundComboBox, ScadaButtonHoverStyle.Default.Foreground),
             ButtonHoverBorderColor: GetComboBoxText(ButtonHoverBorderColorComboBox, ScadaButtonHoverStyle.Default.BorderColor),
+            ButtonPressedEnabled: ButtonPressedEnabledCheckBox.IsChecked == true,
+            ButtonPressedBackground: GetComboBoxText(ButtonPressedBackgroundComboBox, ScadaButtonPressedStyle.Default.Background),
+            ButtonPressedForeground: GetComboBoxText(ButtonPressedForegroundComboBox, ScadaButtonPressedStyle.Default.Foreground),
+            ButtonPressedBorderColor: GetComboBoxText(ButtonPressedBorderColorComboBox, ScadaButtonPressedStyle.Default.BorderColor),
             Placeholder: string.IsNullOrWhiteSpace(PlaceholderTextBox.Text) ? null : PlaceholderTextBox.Text,
             Text: element.Kind is ScadaElementKind.InputText or ScadaElementKind.Text or ScadaElementKind.Button
                 ? ValueTextBox.Text
@@ -240,6 +249,10 @@ public sealed record ElementPropertiesDialogResult(
     string ButtonHoverBackground,
     string ButtonHoverForeground,
     string ButtonHoverBorderColor,
+    bool ButtonPressedEnabled,
+    string ButtonPressedBackground,
+    string ButtonPressedForeground,
+    string ButtonPressedBorderColor,
     string? Placeholder,
     string? Text,
     double? Value,

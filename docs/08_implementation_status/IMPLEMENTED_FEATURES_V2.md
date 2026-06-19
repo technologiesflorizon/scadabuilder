@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active implementation status
-Document version: `V2.1.2.0033`
+Document version: `V2.1.2.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0034` | `PENDING` | Implementation du style appui/actif pour les boutons HMI Element+. |
 | 2026-06-19 | `V2.1.2.0033` | `89d7165` | Implementation des symboles HMI Element+ electriques et alarme. |
 | 2026-06-18 | `V2.1.2.0032` | `d5ee1fd` | Implementation des proprietes avancees Element+ opacite et rotation. |
 | 2026-06-18 | `V2.1.2.0031` | `f6a85ed` | Implementation des symboles HMI Element+ moteur, ventilateur, convoyeur et jauge. |
@@ -47,7 +48,7 @@ Document version: `V2.1.2.0033`
 
 ## 1. Current Verified Baseline
 
-As of 2026-06-18, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 240 tests.
+As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 241 tests.
 
 ## 2. Implemented Areas
 
@@ -94,6 +95,7 @@ As of 2026-06-18, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 240 
 41. The insert ribbon can create machine and measurement HMI Element+ symbols for `Motor`, `Fan`, `Conveyor`, and `Gauge`. These primitives persist through `ShapeKind`; gauge symbols use `Data.Value` as a clamped 0-100 percentage in preview and FT100 export.
 42. The `Style` tab can author model-backed `Opacity` and `Rotation` for Element+ objects. Preview and FT100 export apply `opacity` and `rotate(...deg)`, save/reload preserves them, and `AdvancedCss` remains a later override point.
 43. The insert ribbon can create electrical and alarm HMI Element+ symbols for `Switch`, `Breaker`, `Transformer`, and `AlarmBeacon`. These primitives persist through `ShapeKind` and render as Element+-owned SVG content in preview and FT100 export.
+44. Element+ buttons can author model-backed pressed/active styling in the `Bouton` tab. FT100 export preserves `ButtonBehavior.Pressed` in manifests and emits page-scoped `:active` plus active toggle-state CSS when enabled.
 
 ## 3. Source Of Truth
 

@@ -84,6 +84,25 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void ElementPropertiesExposeAdvancedButtonPressedFields()
+    {
+        var mainXaml = ReadMainWindowFile("MainWindow.xaml");
+        var dialogXaml = ReadMainWindowFile("ElementPropertiesDialog.xaml");
+        var source = ReadMainWindowSource();
+        var dialogCode = ReadMainWindowFile("ElementPropertiesDialog.xaml.cs");
+
+        StringAssert.Contains(mainXaml, "x:Name=\"ButtonPressedEnabledCheckBox\"");
+        StringAssert.Contains(mainXaml, "x:Name=\"ButtonPressedBackgroundComboBox\"");
+        StringAssert.Contains(mainXaml, "x:Name=\"ButtonPressedForegroundComboBox\"");
+        StringAssert.Contains(mainXaml, "x:Name=\"ButtonPressedBorderColorComboBox\"");
+        StringAssert.Contains(dialogXaml, "x:Name=\"ButtonPressedEnabledCheckBox\"");
+        StringAssert.Contains(dialogCode, "var pressedStyle = buttonBehavior.EffectivePressed;");
+        StringAssert.Contains(source, "new ScadaButtonPressedStyle(");
+        StringAssert.Contains(source, "ButtonPressedBackgroundComboBox");
+        StringAssert.Contains(source, "ButtonPressedBorderColorComboBox");
+    }
+
+    [TestMethod]
     public void ModernDoubleClickOpensWpfPropertiesDialog()
     {
         var source = ReadMainWindowSource();

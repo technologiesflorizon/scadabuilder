@@ -1071,7 +1071,10 @@ public sealed partial class Ft100SceneExporter
         var data = element.Data ?? new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
         var label = HtmlEncoder.Default.Encode(data.Text ?? data.Placeholder ?? element.DisplayName);
         var buttonKind = HtmlEncoder.Default.Encode(element.EffectiveButtonKind.ToString());
-        return $"""<button type="button" data-scada-button-kind="{buttonKind}" style="width:100%;height:100%;box-sizing:border-box;font:inherit;color:inherit;background:transparent;border:0;">{label}</button>""";
+        var toggleState = element.EffectiveButtonKind == ScadaButtonKind.Toggle
+            ? " data-scada-toggle-state=\"off\""
+            : "";
+        return $"""<button type="button" data-scada-button-kind="{buttonKind}"{toggleState} style="width:100%;height:100%;box-sizing:border-box;font:inherit;color:inherit;background:transparent;border:0;">{label}</button>""";
     }
 
     private static string BuildInput(ScadaElement element, string type)
@@ -1288,6 +1291,7 @@ public sealed partial class Ft100SceneExporter
         if (element.Kind == ScadaElementKind.Button)
         {
             AppendButtonHoverCss(css, element, scope);
+            AppendButtonPressedCss(css, element, scope);
         }
     }
 
@@ -1305,6 +1309,24 @@ public sealed partial class Ft100SceneExporter
         css.AppendLine($"  background: {hover.Background};");
         css.AppendLine($"  color: {hover.Foreground};");
         css.AppendLine($"  border-color: {hover.BorderColor};");
+        css.AppendLine("}");
+    }
+
+    private static void AppendButtonPressedCss(StringBuilder css, ScadaElement element, Ft100ExportScope scope)
+    {
+        var behavior = element.EffectiveButtonBehavior;
+        var pressed = behavior.EffectivePressed;
+        if (behavior.IsDisabled || !pressed.Enabled)
+        {
+            return;
+        }
+
+        css.AppendLine();
+        css.AppendLine($"{scope.ElementSelector(element.Id)}:active,");
+        css.AppendLine($"{scope.ElementSelector(element.Id)}[data-scada-toggle-state=\"on\"] {{");
+        css.AppendLine($"  background: {pressed.Background};");
+        css.AppendLine($"  color: {pressed.Foreground};");
+        css.AppendLine($"  border-color: {pressed.BorderColor};");
         css.AppendLine("}");
     }
 
