@@ -8,7 +8,7 @@ Document version: `V2.1.2.0044`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0044` | `PENDING` | Extraction de la palette laterale d'outils vers le catalogue semantique partage. |
+| 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Extraction de la palette laterale d'outils vers le catalogue semantique partage. |
 | 2026-06-19 | `V2.1.2.0043` | `fde1b31` | Retrait du fallback XAML statique et cloture de la surface de ruban dynamique unique. |
 | 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Activation du groupement et degroupement Element+ depuis le ruban Selection. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Extraction du catalogue de ruban dans Application et ajout de tests de registre. |

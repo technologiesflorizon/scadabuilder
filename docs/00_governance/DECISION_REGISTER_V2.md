@@ -8,7 +8,7 @@ Document version: `V2.1.2.0044`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0044` | `PENDING` | Mise a jour de DEC-0031 apres extraction de la palette laterale d'outils vers le catalogue semantique. |
+| 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Mise a jour de DEC-0031 apres extraction de la palette laterale d'outils vers le catalogue semantique. |
 | 2026-06-19 | `V2.1.2.0043` | `fde1b31` | Mise a jour de DEC-0031 apres retrait du fallback XAML statique du ruban superieur. |
 | 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Mise a jour de DEC-0031 apres activation des commandes de groupement depuis le ruban. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Mise a jour de DEC-0031 apres extraction du catalogue de ruban dans Application. |
