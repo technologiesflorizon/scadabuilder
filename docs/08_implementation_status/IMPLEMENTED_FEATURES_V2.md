@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active implementation status
-Document version: `V2.1.2.0036`
+Document version: `V2.1.2.0037`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0037` | `PENDING` | Implementation des evenements runtime pour boutons HMI standards. |
 | 2026-06-19 | `V2.1.2.0036` | `8cc4d33` | Implementation du runtime disabled reel pour boutons Element+. |
 | 2026-06-19 | `V2.1.2.0035` | `588d712` | Implementation du runtime on/off pour boutons Toggle Element+. |
 | 2026-06-19 | `V2.1.2.0034` | `61eef34` | Implementation du style appui/actif pour les boutons HMI Element+. |
@@ -50,7 +51,7 @@ Document version: `V2.1.2.0036`
 
 ## 1. Current Verified Baseline
 
-As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 242 tests.
+As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 243 tests.
 
 ## 2. Implemented Areas
 
@@ -100,6 +101,7 @@ As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 242 
 44. Element+ buttons can author model-backed pressed/active styling in the `Bouton` tab. FT100 export preserves `ButtonBehavior.Pressed` in manifests and emits page-scoped `:active` plus active toggle-state CSS when enabled.
 45. Element+ Toggle buttons export their on/off runtime state on the page-scoped Element+ wrapper. The exported page runtime toggles `data-scada-toggle-state` between `off` and `on` on click, drives active toggle styling, and emits `scada-builder-toggle-state-changed`.
 46. Element+ disabled buttons now export native disabled button state, wrapper disabled metadata, not-allowed cursor treatment, suppressed hover/pressed/toggle behavior, and a runtime action guard for object-owned events.
+47. Element+ standard buttons now emit runtime activation diagnostics. Enabled `Command`, `Navigation`, `AlarmAcknowledge`, `EmergencyStop`, and `Toggle` wrappers dispatch `scada-builder-button-activated` plus a kind-specific event for TF100Web or host runtime integration.
 
 ## 3. Source Of Truth
 

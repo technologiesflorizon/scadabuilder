@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active enterprise documentation map
-Document version: `V2.1.2.0036`
+Document version: `V2.1.2.0037`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0037` | `PENDING` | Ajout des evenements runtime explicites pour boutons HMI standards. |
 | 2026-06-19 | `V2.1.2.0036` | `8cc4d33` | Ajout du runtime disabled reel pour les boutons Element+. |
 | 2026-06-19 | `V2.1.2.0035` | `588d712` | Ajout du runtime d'etat actif pour les boutons Toggle Element+. |
 | 2026-06-19 | `V2.1.2.0034` | `61eef34` | Ajout du style appui/actif avance pour les boutons HMI Element+. |

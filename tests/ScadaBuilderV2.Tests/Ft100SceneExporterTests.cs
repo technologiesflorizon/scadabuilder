@@ -695,6 +695,63 @@ public sealed class Ft100SceneExporterTests
     }
 
     [TestMethod]
+    public async Task ExportWritesStandardButtonActivationRuntimeEvents()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "win00008_standard_buttons.html");
+        await File.WriteAllTextAsync(
+            sourceHtmlPath,
+            """
+<!doctype html>
+<html>
+<body>
+  <div class="page"></div>
+</body>
+</html>
+""");
+
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Standard Buttons", new(640, 480))
+            .WithElement(ScadaElement.CreateButton("btn_command", "Commande", 10, 20, ScadaButtonKind.Command))
+            .WithElement(ScadaElement.CreateButton("btn_navigation", "Navigation", 10, 70, ScadaButtonKind.Navigation))
+            .WithElement(ScadaElement.CreateButton("btn_ack", "Acquitter", 10, 120, ScadaButtonKind.AlarmAcknowledge))
+            .WithElement(ScadaElement.CreateButton("btn_stop", "STOP", 10, 170, ScadaButtonKind.EmergencyStop));
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
+
+            StringAssert.Contains(html, "data-scada-button-kind=\"Command\"");
+            StringAssert.Contains(html, "data-scada-button-kind=\"Navigation\"");
+            StringAssert.Contains(html, "data-scada-button-kind=\"AlarmAcknowledge\"");
+            StringAssert.Contains(html, "data-scada-button-kind=\"EmergencyStop\"");
+            StringAssert.Contains(html, "root.querySelectorAll('.ft100-element[data-scada-button-kind]:not([data-scada-disabled=\"true\"])')");
+            StringAssert.Contains(html, "scada-builder-button-activated");
+            StringAssert.Contains(html, "scada-builder-command-button-activated");
+            StringAssert.Contains(html, "scada-builder-navigation-button-activated");
+            StringAssert.Contains(html, "scada-builder-alarm-acknowledge-requested");
+            StringAssert.Contains(html, "scada-builder-emergency-stop-requested");
+            StringAssert.Contains(manifest, "\"ButtonKind\": \"Command\"");
+            StringAssert.Contains(manifest, "\"ButtonKind\": \"Navigation\"");
+            StringAssert.Contains(manifest, "\"ButtonKind\": \"AlarmAcknowledge\"");
+            StringAssert.Contains(manifest, "\"ButtonKind\": \"EmergencyStop\"");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task ExportPreservesGroupClickNavigateEventAsRuntimeWrapper()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

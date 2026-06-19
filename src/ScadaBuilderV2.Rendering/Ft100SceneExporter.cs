@@ -2123,6 +2123,36 @@ Apply any viewport scale to the composed page container, not independently to he
     });
   });
 
+  function getButtonActivationEventName(buttonKind) {
+    const normalized = String(buttonKind || 'Command').toLowerCase();
+    if (normalized === 'navigation') {
+      return 'scada-builder-navigation-button-activated';
+    }
+    if (normalized === 'alarmacknowledge') {
+      return 'scada-builder-alarm-acknowledge-requested';
+    }
+    if (normalized === 'emergencystop') {
+      return 'scada-builder-emergency-stop-requested';
+    }
+    if (normalized === 'toggle') {
+      return 'scada-builder-toggle-button-activated';
+    }
+
+    return 'scada-builder-command-button-activated';
+  }
+
+  root.querySelectorAll('.ft100-element[data-scada-button-kind]:not([data-scada-disabled="true"])').forEach(function (element) {
+    element.addEventListener('click', function () {
+      const buttonKind = element.getAttribute('data-scada-button-kind') || 'Command';
+      const detail = {
+        elementId: element.getAttribute('data-scada-element-id'),
+        buttonKind: buttonKind
+      };
+      dispatchRuntimeEvent('scada-builder-button-activated', detail);
+      dispatchRuntimeEvent(getButtonActivationEventName(buttonKind), detail);
+    });
+  });
+
   root.querySelectorAll('[data-scada-events]').forEach(function (element) {
     let bindings = [];
     try {

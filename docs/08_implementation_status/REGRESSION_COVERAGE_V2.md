@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active regression coverage map
-Document version: `V2.1.2.0036`
+Document version: `V2.1.2.0037`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0037` | `PENDING` | Ajout de la couverture des evenements runtime pour boutons HMI standards. |
 | 2026-06-19 | `V2.1.2.0036` | `8cc4d33` | Ajout de la couverture du runtime disabled reel pour boutons Element+. |
 | 2026-06-19 | `V2.1.2.0035` | `588d712` | Ajout de la couverture du runtime on/off pour boutons Toggle Element+. |
 | 2026-06-19 | `V2.1.2.0034` | `61eef34` | Ajout de la couverture du style appui/actif pour les boutons Element+. |
@@ -50,7 +51,7 @@ Document version: `V2.1.2.0036`
 
 ```text
 dotnet test ScadaBuilderV2.sln --no-restore
-242 passed, 0 failed, 0 skipped
+243 passed, 0 failed, 0 skipped
 ```
 
 ## 2. Coverage Map
@@ -85,6 +86,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Element+ button pressed/active metadata and FT100 CSS | `OfficialSceneDomainTests.ButtonElementHasDefaultHoverUnlessExplicitlyDisabled`, `WebViewContextMenuScriptTests.ElementPropertiesExposeAdvancedButtonPressedFields`, `ModernProjectStoreTests.SaveAndReloadPreservesPageManifestBackgroundAndObjectEvents`, `Ft100SceneExporterTests.ExportWritesDjangoManifestAndObjectOwnedClickNavigateAction` |
 | Element+ Toggle button on/off runtime state | `Ft100SceneExporterTests.ExportWritesToggleButtonRuntimeStateOnWrapper` |
 | Element+ disabled button runtime state | `Ft100SceneExporterTests.ExportWritesDisabledButtonRuntimeStateAndOmitsHoverCss` |
+| Element+ standard button activation runtime events | `Ft100SceneExporterTests.ExportWritesStandardButtonActivationRuntimeEvents` |
 | Element+ HMI button presets and `ButtonKind` export | `OfficialSceneDomainTests.ButtonElementHasDefaultHoverUnlessExplicitlyDisabled`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.ModernButtonRendersTextAndUsesPropertyText`, `ModernProjectStoreTests.SaveAndReloadPreservesPageManifestBackgroundAndObjectEvents`, `Ft100SceneExporterTests.ExportWritesDjangoManifestAndObjectOwnedClickNavigateAction` |
 | Element+ advanced style opacity and rotation | `OfficialSceneDomainTests.InputTextElementHasEditableStyleAndDataDefaults`, `WebViewContextMenuScriptTests.ElementPropertiesExposeAdvancedShapeStyleFields`, `ModernProjectStoreTests.SaveAndReloadPreservesPageManifestBackgroundAndObjectEvents`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
 | Element+ machine and measurement HMI symbols with manual insertion | `OfficialSceneDomainTests.ShapeElementDefaultsAndFactoriesPreserveShapeKind`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.ModernShapePreviewUsesSvgShapeKind`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
