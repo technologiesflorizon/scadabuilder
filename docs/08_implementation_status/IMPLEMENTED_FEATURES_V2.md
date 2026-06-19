@@ -8,7 +8,7 @@ Document version: `V2.1.2.0033`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0033` | `PENDING` | Implementation des symboles HMI Element+ electriques et alarme. |
+| 2026-06-19 | `V2.1.2.0033` | `89d7165` | Implementation des symboles HMI Element+ electriques et alarme. |
 | 2026-06-18 | `V2.1.2.0032` | `d5ee1fd` | Implementation des proprietes avancees Element+ opacite et rotation. |
 | 2026-06-18 | `V2.1.2.0031` | `f6a85ed` | Implementation des symboles HMI Element+ moteur, ventilateur, convoyeur et jauge. |
 | 2026-06-18 | `V2.1.2.0030` | `cae57c9` | Implementation des presets de boutons HMI Element+ `Command`, `Toggle`, `Navigation`, `AlarmAcknowledge` et `EmergencyStop`. |

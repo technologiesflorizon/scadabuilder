@@ -8,7 +8,7 @@ Document version: `V2.1.2.0033`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0033` | `PENDING` | Ajout des primitives HMI/SCADA electriques et alarme `Switch`, `Breaker`, `Transformer` et `AlarmBeacon`. |
+| 2026-06-19 | `V2.1.2.0033` | `89d7165` | Ajout des primitives HMI/SCADA electriques et alarme `Switch`, `Breaker`, `Transformer` et `AlarmBeacon`. |
 | 2026-06-18 | `V2.1.2.0031` | `f6a85ed` | Ajout des primitives machines/mesure HMI Element+ `Motor`, `Fan`, `Conveyor` et `Gauge`. |
 | 2026-06-18 | `V2.1.2.0029` | `b97ef16` | Ajout des primitives process HMI Element+ `Tank`, `PipeHorizontal`, `PipeVertical`, `Valve` et `Pump`. |
 | 2026-06-18 | `V2.1.2.0028` | `PENDING` | Ajout des primitives HMI Element+ `IndicatorLamp`, `HorizontalBar` et `VerticalBar`. |
