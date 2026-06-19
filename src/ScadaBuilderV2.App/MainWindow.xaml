@@ -88,6 +88,33 @@
             <Setter Property="Margin" Value="0,0,0,4"/>
         </Style>
 
+        <DataTemplate x:Key="RibbonCommandTemplate">
+            <Button Style="{StaticResource RibbonCommandButtonStyle}"
+                    ToolTip="{Binding ToolTip}"
+                    IsEnabled="{Binding IsEnabled}"
+                    Command="{Binding Command}">
+                <StackPanel>
+                    <Image Style="{StaticResource CommandIconStyle}" Source="{Binding Icon}"/>
+                    <TextBlock Text="{Binding Label}" FontSize="12" TextAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </DataTemplate>
+
+        <DataTemplate x:Key="RibbonGroupTemplate">
+            <Border Style="{StaticResource RibbonGroupStyle}">
+                <StackPanel>
+                    <TextBlock Style="{StaticResource RibbonGroupHeaderStyle}" Text="{Binding Label}"/>
+                    <ItemsControl ItemsSource="{Binding Commands}" ItemTemplate="{StaticResource RibbonCommandTemplate}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+
         <Style x:Key="ElementListBoxItemStyle" TargetType="ListBoxItem">
             <Setter Property="Padding" Value="6,4"/>
             <Setter Property="Margin" Value="0,1"/>
@@ -189,7 +216,8 @@
                     <Grid Margin="8">
                         <ScrollViewer x:Name="FileRibbon"
                                       HorizontalScrollBarVisibility="Auto"
-                                      VerticalScrollBarVisibility="Disabled">
+                                      VerticalScrollBarVisibility="Disabled"
+                                      Visibility="Collapsed">
                             <WrapPanel>
                                 <Border Style="{StaticResource RibbonGroupStyle}">
                                     <StackPanel>
@@ -737,6 +765,18 @@
                                     </StackPanel>
                                 </Border>
                             </WrapPanel>
+                        </ScrollViewer>
+                        <ScrollViewer x:Name="RibbonCommandSurface"
+                                      HorizontalScrollBarVisibility="Auto"
+                                      VerticalScrollBarVisibility="Disabled">
+                            <ItemsControl ItemsSource="{Binding ActiveRibbonGroups}"
+                                          ItemTemplate="{StaticResource RibbonGroupTemplate}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
                         </ScrollViewer>
                     </Grid>
                 </Border>

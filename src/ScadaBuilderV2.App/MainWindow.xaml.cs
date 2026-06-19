@@ -47,6 +47,7 @@ public partial class MainWindow : Window
     private readonly ObservableCollection<TagCatalogListItem> _tagCatalogItems = [];
     private readonly ICollectionView _tagCatalogView;
     private readonly ObservableCollection<SceneWorkspaceTab> _openSceneTabs = [];
+    private readonly Dictionary<string, IReadOnlyList<RibbonGroupViewModel>> _ribbonTabs = new(StringComparer.Ordinal);
     private readonly HashSet<string> _hiddenSourceObjectIds = new(StringComparer.Ordinal);
     private readonly List<LegacyElementListItem> _sourceObjects = [];
     private readonly ActiveSelectionState _activeSelection = new();
@@ -101,11 +102,14 @@ public partial class MainWindow : Window
 
     public string StatusText { get; private set; } = "Etat / Warning";
 
+    public ObservableCollection<RibbonGroupViewModel> ActiveRibbonGroups { get; } = [];
+
     public bool IsSelectionLocked { get; set; } = false;
 
     public MainWindow()
     {
         InitializeComponent();
+        InitializeRibbonCommandRegistry();
         DataContext = this;
         SetActiveRibbon("File");
         ElementLibraryListBox.ItemsSource = _elementLibraryItems;
@@ -5854,6 +5858,140 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             : "V2.0.0.0000";
     }
 
+    private void InitializeRibbonCommandRegistry()
+    {
+        _ribbonTabs["File"] =
+        [
+            RibbonGroup("Projet",
+                DisabledRibbonCommand("project.new", "Nouveau", "Icon.Project.New", "Creation de projet a venir"),
+                DisabledRibbonCommand("project.open", "Ouvrir", "Icon.Project.Open", "Ouverture de projet a venir"),
+                EnabledRibbonCommand("project.save", "Enregistrer", "Icon.Project.Save", "Enregistrer la scene active")),
+            RibbonGroup("Import",
+                DisabledRibbonCommand("import.legacy", "Legacy", "Icon.Import.Legacy", "Import legacy dedie a venir"),
+                EnabledRibbonCommand("import.tags", "Tags", "Icon.Import.Tags", "Importer les tags SCADA")),
+            RibbonGroup("Export",
+                EnabledRibbonCommand("export.ft100.folder", "Dossier", "Icon.Export.Folder", "Exporter dossier FT100"),
+                EnabledRibbonCommand("export.ft100.sb2", ".sb2", "Icon.Export.Package", "Exporter package FT100 .sb2"))
+        ];
+
+        _ribbonTabs["Edit"] =
+        [
+            RibbonGroup("Historique",
+                EnabledRibbonCommand("edit.undo", "Annuler", "Icon.Edit.Undo", "Annuler la derniere operation"),
+                EnabledRibbonCommand("edit.redo", "Retablir", "Icon.Edit.Redo", "Retablir la derniere operation annulee")),
+            RibbonGroup("Presse-papiers",
+                DisabledRibbonCommand("edit.copy", "Copier", "Icon.Edit.Copy", "Commande a venir"),
+                DisabledRibbonCommand("edit.paste", "Coller", "Icon.Edit.Paste", "Commande a venir")),
+            RibbonGroup("Interface",
+                DisabledRibbonCommand("panel.restore", "Panneaux", "Icon.Panel.Restore", "Commande a venir"))
+        ];
+
+        _ribbonTabs["Screen"] =
+        [
+            RibbonGroup("Apercu",
+                DisabledRibbonCommand("view.desktop", "Desktop", "Icon.View.Desktop", "Mode desktop a venir"),
+                DisabledRibbonCommand("view.tablet", "Tablette", "Icon.View.Tablet", "Mode tablette a venir"),
+                DisabledRibbonCommand("view.mobile", "Mobile", "Icon.View.Mobile", "Mode mobile a venir"),
+                DisabledRibbonCommand("view.rotate", "Rotation", "Icon.View.Rotate", "Rotation a venir")),
+            RibbonGroup("Mesure",
+                DisabledRibbonCommand("view.measure", "Mesures", "Icon.View.Measure", "Mesures a venir"))
+        ];
+
+        _ribbonTabs["Selection"] =
+        [
+            RibbonGroup("Objets",
+                DisabledRibbonCommand("object.group", "Grouper", "Icon.Selection.Group", "Grouper depuis le menu contextuel pour cette tranche"),
+                DisabledRibbonCommand("object.ungroup", "Degrouper", "Icon.Selection.Ungroup", "Degrouper depuis le menu contextuel pour cette tranche"),
+                DisabledRibbonCommand("object.lock", "Verrou", "Icon.Object.Lock", "Verrouiller l'objet a venir")),
+            RibbonGroup("Ordre",
+                DisabledRibbonCommand("layer.forward", "Avant", "Icon.Layer.Forward", "Avancer a venir"),
+                DisabledRibbonCommand("layer.backward", "Arriere", "Icon.Layer.Backward", "Reculer a venir"))
+        ];
+
+        _ribbonTabs["Tools"] =
+        [
+            RibbonGroup("Edition",
+                DisabledRibbonCommand("tool.select", "Selection", "Icon.Tool.Select", "Selection outillee a venir"),
+                DisabledRibbonCommand("tool.move", "Deplacer", "Icon.Tool.Move", "Deplacement outille a venir"),
+                DisabledRibbonCommand("tool.text", "Texte", "Icon.Tool.Text", "Outil texte a venir"),
+                DisabledRibbonCommand("tool.image", "Image", "Icon.Tool.Image", "Outil image a venir"),
+                DisabledRibbonCommand("tool.zoom", "Zoom", "Icon.Tool.Zoom", "Zoom outille a venir")),
+            RibbonGroup("Configuration",
+                DisabledRibbonCommand("tool.settings", "Configurer", "Icon.Tool.Settings", "Configurer les outils a venir"))
+        ];
+
+        _ribbonTabs["Insert"] =
+        [
+            RibbonGroup("Champs",
+                EnabledRibbonCommand("insert.text", "Champ texte", "Icon.Tool.Text", "Inserer un champ texte statique"),
+                EnabledRibbonCommand("insert.input-text", "Entree texte", "Icon.Tool.Text", "Inserer un champ d'entree texte"),
+                EnabledRibbonCommand("insert.input-numeric", "Entree num.", "Icon.Field.Numeric", "Inserer un champ d'entree numerique")),
+            RibbonGroup("Formes",
+                EnabledRibbonCommand("insert.shape.rectangle", "Rectangle", "Icon.Shape.Rectangle", "Inserer un rectangle Element+"),
+                EnabledRibbonCommand("insert.shape.ellipse", "Ellipse", "Icon.Shape.Ellipse", "Inserer une ellipse Element+"),
+                EnabledRibbonCommand("insert.shape.line", "Ligne", "Icon.Shape.Line", "Inserer une ligne Element+"),
+                EnabledRibbonCommand("insert.shape.arrow", "Fleche", "Icon.Shape.Arrow", "Inserer une fleche Element+")),
+            RibbonGroup("HMI process",
+                EnabledRibbonCommand("insert.hmi.indicator-lamp", "Voyant", "Icon.Hmi.IndicatorLamp", "Inserer un voyant HMI Element+"),
+                EnabledRibbonCommand("insert.hmi.bar-horizontal", "Barre H", "Icon.Hmi.BarHorizontal", "Inserer une barre horizontale HMI Element+"),
+                EnabledRibbonCommand("insert.hmi.bar-vertical", "Barre V", "Icon.Hmi.BarVertical", "Inserer une barre verticale HMI Element+"),
+                EnabledRibbonCommand("insert.hmi.tank", "Reservoir", "Icon.Hmi.Tank", "Inserer un reservoir HMI Element+"),
+                EnabledRibbonCommand("insert.hmi.pipe-horizontal", "Tuyau H", "Icon.Hmi.PipeHorizontal", "Inserer un tuyau horizontal HMI Element+"),
+                EnabledRibbonCommand("insert.hmi.pipe-vertical", "Tuyau V", "Icon.Hmi.PipeVertical", "Inserer un tuyau vertical HMI Element+"),
+                EnabledRibbonCommand("insert.hmi.valve", "Vanne", "Icon.Hmi.Valve", "Inserer une vanne HMI Element+"),
+                EnabledRibbonCommand("insert.hmi.pump", "Pompe", "Icon.Hmi.Pump", "Inserer une pompe HMI Element+"),
+                EnabledRibbonCommand("insert.hmi.motor", "Moteur", "Icon.Hmi.Motor", "Inserer un moteur HMI Element+"),
+                EnabledRibbonCommand("insert.hmi.fan", "Ventil.", "Icon.Hmi.Fan", "Inserer un ventilateur HMI Element+"),
+                EnabledRibbonCommand("insert.hmi.conveyor", "Convoy.", "Icon.Hmi.Conveyor", "Inserer un convoyeur HMI Element+"),
+                EnabledRibbonCommand("insert.hmi.gauge", "Jauge", "Icon.Hmi.Gauge", "Inserer une jauge HMI Element+")),
+            RibbonGroup("HMI electrique",
+                EnabledRibbonCommand("insert.hmi.switch", "Interrup.", "Icon.Hmi.Switch", "Inserer un interrupteur electrique HMI Element+"),
+                EnabledRibbonCommand("insert.hmi.breaker", "Disjonct.", "Icon.Hmi.Breaker", "Inserer un disjoncteur HMI Element+"),
+                EnabledRibbonCommand("insert.hmi.transformer", "Transfo", "Icon.Hmi.Transformer", "Inserer un transformateur HMI Element+"),
+                EnabledRibbonCommand("insert.hmi.alarm-beacon", "Alarme", "Icon.Hmi.AlarmBeacon", "Inserer une balise alarme HMI Element+")),
+            RibbonGroup("Boutons",
+                EnabledRibbonCommand("insert.button.command", "Bouton", "Icon.Button.Command", "Inserer un bouton Element+"),
+                EnabledRibbonCommand("insert.button.toggle", "Bascule", "Icon.Button.Toggle", "Inserer un bouton bascule Element+"),
+                EnabledRibbonCommand("insert.button.navigation", "Nav", "Icon.Button.Navigation", "Inserer un bouton de navigation Element+"),
+                EnabledRibbonCommand("insert.button.alarm-ack", "Acquitter", "Icon.Button.AlarmAck", "Inserer un bouton acquittement alarme Element+"),
+                EnabledRibbonCommand("insert.button.emergency-stop", "Arret", "Icon.Button.EmergencyStop", "Inserer un bouton arret d'urgence Element+"))
+        ];
+    }
+
+    private RibbonGroupViewModel RibbonGroup(string label, params RibbonCommandViewModel[] commands)
+    {
+        return new RibbonGroupViewModel(label, commands);
+    }
+
+    private RibbonCommandViewModel EnabledRibbonCommand(string id, string label, string iconKey, string toolTip)
+    {
+        return new RibbonCommandViewModel(
+            id,
+            label,
+            toolTip,
+            iconKey,
+            ResolveRibbonIcon(iconKey),
+            isEnabled: true,
+            new RibbonRelayCommand(() => ExecuteRibbonCommand(id), () => true));
+    }
+
+    private RibbonCommandViewModel DisabledRibbonCommand(string id, string label, string iconKey, string disabledReason)
+    {
+        return new RibbonCommandViewModel(
+            id,
+            label,
+            disabledReason,
+            iconKey,
+            ResolveRibbonIcon(iconKey),
+            isEnabled: false,
+            new RibbonRelayCommand(() => SetStatus($"{label}: {disabledReason}"), () => false));
+    }
+
+    private ImageSource? ResolveRibbonIcon(string iconKey)
+    {
+        return TryFindResource(iconKey) as ImageSource;
+    }
+
     private void OnMenuButtonClick(object sender, RoutedEventArgs e)
     {
         if (sender is not Button { Tag: string ribbonKey })
@@ -5866,12 +6004,21 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private void SetActiveRibbon(string ribbonKey)
     {
-        FileRibbon.Visibility = ribbonKey == "File" ? Visibility.Visible : Visibility.Collapsed;
-        EditRibbon.Visibility = ribbonKey == "Edit" ? Visibility.Visible : Visibility.Collapsed;
-        InsertRibbon.Visibility = ribbonKey == "Insert" ? Visibility.Visible : Visibility.Collapsed;
-        ScreenRibbon.Visibility = ribbonKey == "Screen" ? Visibility.Visible : Visibility.Collapsed;
-        SelectionRibbon.Visibility = ribbonKey == "Selection" ? Visibility.Visible : Visibility.Collapsed;
-        ToolsRibbon.Visibility = ribbonKey == "Tools" ? Visibility.Visible : Visibility.Collapsed;
+        FileRibbon.Visibility = Visibility.Collapsed;
+        EditRibbon.Visibility = Visibility.Collapsed;
+        InsertRibbon.Visibility = Visibility.Collapsed;
+        ScreenRibbon.Visibility = Visibility.Collapsed;
+        SelectionRibbon.Visibility = Visibility.Collapsed;
+        ToolsRibbon.Visibility = Visibility.Collapsed;
+
+        ActiveRibbonGroups.Clear();
+        if (_ribbonTabs.TryGetValue(ribbonKey, out var groups))
+        {
+            foreach (var group in groups)
+            {
+                ActiveRibbonGroups.Add(group);
+            }
+        }
 
         SetRibbonMenuButtonStyle(FileMenuButton, ribbonKey == "File");
         SetRibbonMenuButtonStyle(EditMenuButton, ribbonKey == "Edit");
@@ -5884,6 +6031,118 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     private void SetRibbonMenuButtonStyle(Button button, bool isActive)
     {
         button.Style = (Style)FindResource(isActive ? "ActiveMenuButtonStyle" : "MenuButtonStyle");
+    }
+
+    private async void ExecuteRibbonCommand(string commandId)
+    {
+        switch (commandId)
+        {
+            case "project.save":
+                OnSaveSceneClick(this, new RoutedEventArgs());
+                break;
+            case "import.tags":
+                OnImportTagsClick(this, new RoutedEventArgs());
+                break;
+            case "export.ft100.folder":
+                OnExportFt100Click(this, new RoutedEventArgs());
+                break;
+            case "export.ft100.sb2":
+                OnExportFt100Sb2Click(this, new RoutedEventArgs());
+                break;
+            case "edit.undo":
+                await UndoLastSceneOperationAsync();
+                break;
+            case "edit.redo":
+                await RedoLastSceneOperationAsync();
+                break;
+            case "insert.text":
+                BeginModernElementPlacement(ScadaElementKind.Text);
+                break;
+            case "insert.input-text":
+                BeginModernElementPlacement(ScadaElementKind.InputText);
+                break;
+            case "insert.input-numeric":
+                BeginModernElementPlacement(ScadaElementKind.InputNumeric);
+                break;
+            case "insert.shape.rectangle":
+                BeginShapePlacement(ScadaShapeKind.Rectangle);
+                break;
+            case "insert.shape.ellipse":
+                BeginShapePlacement(ScadaShapeKind.Ellipse);
+                break;
+            case "insert.shape.line":
+                BeginShapePlacement(ScadaShapeKind.Line);
+                break;
+            case "insert.shape.arrow":
+                BeginShapePlacement(ScadaShapeKind.Arrow);
+                break;
+            case "insert.hmi.indicator-lamp":
+                BeginShapePlacement(ScadaShapeKind.IndicatorLamp);
+                break;
+            case "insert.hmi.bar-horizontal":
+                BeginShapePlacement(ScadaShapeKind.HorizontalBar);
+                break;
+            case "insert.hmi.bar-vertical":
+                BeginShapePlacement(ScadaShapeKind.VerticalBar);
+                break;
+            case "insert.hmi.tank":
+                BeginShapePlacement(ScadaShapeKind.Tank);
+                break;
+            case "insert.hmi.pipe-horizontal":
+                BeginShapePlacement(ScadaShapeKind.PipeHorizontal);
+                break;
+            case "insert.hmi.pipe-vertical":
+                BeginShapePlacement(ScadaShapeKind.PipeVertical);
+                break;
+            case "insert.hmi.valve":
+                BeginShapePlacement(ScadaShapeKind.Valve);
+                break;
+            case "insert.hmi.pump":
+                BeginShapePlacement(ScadaShapeKind.Pump);
+                break;
+            case "insert.hmi.motor":
+                BeginShapePlacement(ScadaShapeKind.Motor);
+                break;
+            case "insert.hmi.fan":
+                BeginShapePlacement(ScadaShapeKind.Fan);
+                break;
+            case "insert.hmi.conveyor":
+                BeginShapePlacement(ScadaShapeKind.Conveyor);
+                break;
+            case "insert.hmi.gauge":
+                BeginShapePlacement(ScadaShapeKind.Gauge);
+                break;
+            case "insert.hmi.switch":
+                BeginShapePlacement(ScadaShapeKind.Switch);
+                break;
+            case "insert.hmi.breaker":
+                BeginShapePlacement(ScadaShapeKind.Breaker);
+                break;
+            case "insert.hmi.transformer":
+                BeginShapePlacement(ScadaShapeKind.Transformer);
+                break;
+            case "insert.hmi.alarm-beacon":
+                BeginShapePlacement(ScadaShapeKind.AlarmBeacon);
+                break;
+            case "insert.button.command":
+                BeginButtonPlacement(ScadaButtonKind.Command);
+                break;
+            case "insert.button.toggle":
+                BeginButtonPlacement(ScadaButtonKind.Toggle);
+                break;
+            case "insert.button.navigation":
+                BeginButtonPlacement(ScadaButtonKind.Navigation);
+                break;
+            case "insert.button.alarm-ack":
+                BeginButtonPlacement(ScadaButtonKind.AlarmAcknowledge);
+                break;
+            case "insert.button.emergency-stop":
+                BeginButtonPlacement(ScadaButtonKind.EmergencyStop);
+                break;
+            default:
+                SetStatus($"Commande ruban inconnue: {commandId}");
+                break;
+        }
     }
 
     private async void OnUndoClick(object sender, RoutedEventArgs e)
@@ -6097,6 +6356,115 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         RefreshModernSceneUi();
         await RenderModernSceneAsync();
         SetStatus($"{convertedElements.Count} conversion(s) Element+ retablie(s) ({targetLabel}). Sauvegarde requise.");
+    }
+
+    /// <summary>
+    /// View model for a top-ribbon command group rendered from the shell command registry.
+    /// </summary>
+    public sealed class RibbonGroupViewModel
+    {
+        public RibbonGroupViewModel(string label, IReadOnlyList<RibbonCommandViewModel> commands)
+        {
+            Label = label;
+            Commands = commands;
+        }
+
+        /// <summary>
+        /// Visible group label.
+        /// </summary>
+        public string Label { get; }
+
+        /// <summary>
+        /// Ordered command list displayed in the group.
+        /// </summary>
+        public IReadOnlyList<RibbonCommandViewModel> Commands { get; }
+    }
+
+    /// <summary>
+    /// View model for one top-ribbon command button.
+    /// </summary>
+    public sealed class RibbonCommandViewModel
+    {
+        public RibbonCommandViewModel(
+            string id,
+            string label,
+            string toolTip,
+            string iconKey,
+            ImageSource? icon,
+            bool isEnabled,
+            ICommand command)
+        {
+            Id = id;
+            Label = label;
+            ToolTip = toolTip;
+            IconKey = iconKey;
+            Icon = icon;
+            IsEnabled = isEnabled;
+            Command = command;
+        }
+
+        /// <summary>
+        /// Stable command id used by ribbon dispatch and documentation.
+        /// </summary>
+        public string Id { get; }
+
+        /// <summary>
+        /// Visible button label.
+        /// </summary>
+        public string Label { get; }
+
+        /// <summary>
+        /// Tooltip or disabled reason shown by the command surface.
+        /// </summary>
+        public string ToolTip { get; }
+
+        /// <summary>
+        /// Semantic icon resource key.
+        /// </summary>
+        public string IconKey { get; }
+
+        /// <summary>
+        /// Resolved WPF icon resource.
+        /// </summary>
+        public ImageSource? Icon { get; }
+
+        /// <summary>
+        /// Whether the command is executable in the current implementation slice.
+        /// </summary>
+        public bool IsEnabled { get; }
+
+        /// <summary>
+        /// WPF command invoked by the ribbon button.
+        /// </summary>
+        public ICommand Command { get; }
+    }
+
+    private sealed class RibbonRelayCommand : ICommand
+    {
+        private readonly Action execute;
+        private readonly Func<bool> canExecute;
+
+        public RibbonRelayCommand(Action execute, Func<bool> canExecute)
+        {
+            this.execute = execute;
+            this.canExecute = canExecute;
+        }
+
+        public event EventHandler? CanExecuteChanged
+        {
+            add => CommandManager.RequerySuggested += value;
+            remove => CommandManager.RequerySuggested -= value;
+        }
+
+        public bool CanExecute(object? parameter)
+        {
+            return canExecute();
+        }
+
+        public void Execute(object? parameter)
+        {
+            execute();
+        }
     }
 
     private sealed class SceneWorkspaceTab : INotifyPropertyChanged

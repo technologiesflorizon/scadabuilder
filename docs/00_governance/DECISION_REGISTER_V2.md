@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active authoritative decision register
-Document version: `V2.1.2.0039`
+Document version: `V2.1.2.0040`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0040` | `PENDING` | Mise a jour de DEC-0031 apres implementation du rendu de ruban depuis registre. |
 | 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Ajout de DEC-0031 pour le ruban superieur groupe et le registre d'icones semantiques. |
 | 2026-06-17 | `V2.1.2.0025` | `58567eb` | Mise a jour de DEC-0030 apres implementation TF100Web des masques `DisplayFormat` `#`. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Ajout de DEC-0030 pour la refonte de l'onglet Donnees Element+ et le format numerique actif. |
@@ -705,7 +706,7 @@ The top ribbon is organized by active tab plus grouped task families. Visible co
 
 Consequences:
 
-The shell can remain WPF-static for the current slice, but future command additions must register a semantic icon key and preserve grouped/overflow behavior. A later command-registry-driven renderer may replace static XAML without changing the visible contract.
+The shell now renders the active top ribbon from command metadata containing stable ids, labels, tooltips or disabled reasons, icon keys, grouped order, and executable state. Future command additions must update the registry first and preserve grouped/overflow behavior. Legacy static XAML button rows are migration fallback only and must not be treated as the source of truth for new ribbon commands.
 
 Regression coverage:
 

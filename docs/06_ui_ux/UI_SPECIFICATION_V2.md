@@ -2,12 +2,13 @@
 
 Date: 2026-06-17
 Status: Active UI specification pointer
-Document version: `V2.1.2.0039`
+Document version: `V2.1.2.0040`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0040` | `PENDING` | Le ruban superieur consomme un registre actif de commandes et de groupes. |
 | 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Refonte du ruban superieur en groupes visuels, onglet actif et overflow horizontal. |
 | 2026-06-17 | `V2.1.2.0021` | `1040889` | Correction du feedback de progression pour cibler le handler `.sb2`. |
 | 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Ajout de l'indicateur de progression statut pour l'export FT100 `.sb2`. |
@@ -39,3 +40,5 @@ Current shell rules:
 4. Visible command buttons use French labels in the shell. Stable command ids remain implementation contracts and do not depend on the visible label.
 5. Commands that are visible but not wired in the current implementation remain disabled and expose a tooltip explaining that the command is future work.
 6. Insert commands use normalized semantic icon keys instead of temporary text glyphs such as `BTN`, `LED`, `TNK`, or `123`.
+7. The visible ribbon content for the active tab is bound to a command registry containing `CommandId`, label, tooltip or disabled reason, `IconKey`, group, order, and executable state.
+8. The renderer uses shared command/group templates so a new command is added through registry metadata before a new XAML button is considered.

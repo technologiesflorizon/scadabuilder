@@ -57,4 +57,6 @@ The public contract is the semantic resource key, not the visual metaphor. Futur
 
 The icons use a shared `Icon.OutlinePen` and `Icon.StrokeBrush` inside the dictionary. When the dictionary is integrated into the application resource tree, those shared resources can be replaced or bridged to the application theme brushes if needed.
 
-Every command exposed in the top ribbon should use one of these keys or add a new semantic key before the control is made visible. Temporary text glyphs such as `BTN`, `LED`, `TNK`, or `123` should stay out of command surfaces because they do not scale consistently with the shell icon language.
+Every command exposed in the top ribbon should use one of these keys or add a new semantic key before the control is made visible. The active top ribbon renderer consumes icon keys through the shell command registry in `MainWindow.xaml.cs`; new ribbon commands should be added there before adding any new XAML surface.
+
+Temporary text glyphs such as `BTN`, `LED`, `TNK`, or `123` should stay out of command surfaces because they do not scale consistently with the shell icon language.
