@@ -8,7 +8,7 @@ Document version: `V2.1.2.0043`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0043` | `PENDING` | Ajout de la couverture interdisant le retour des anciens rubans XAML statiques. |
+| 2026-06-19 | `V2.1.2.0043` | `fde1b31` | Ajout de la couverture interdisant le retour des anciens rubans XAML statiques. |
 | 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Ajout de la couverture du dispatch de ruban pour `object.group` et `object.ungroup`. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Ajout de la couverture de parite metadata preview/export pour boutons Element+. |
 | 2026-06-19 | `V2.1.2.0037` | `2a540d6` | Ajout de la couverture des evenements runtime pour boutons HMI standards. |

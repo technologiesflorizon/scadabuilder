@@ -8,7 +8,7 @@ Document version: `V2.1.2.0043`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0043` | `PENDING` | Le ruban superieur ne conserve plus de surface XAML statique parallele. |
+| 2026-06-19 | `V2.1.2.0043` | `fde1b31` | Le ruban superieur ne conserve plus de surface XAML statique parallele. |
 | 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Le ruban Selection execute maintenant Grouper et Degrouper pour les Element+ selectionnes. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Le catalogue du ruban est extrait de la fenetre WPF et couvert par tests de contrat. |
 | 2026-06-19 | `V2.1.2.0040` | `335adfb` | Le ruban superieur consomme un registre actif de commandes et de groupes. |

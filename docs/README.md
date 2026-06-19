@@ -8,7 +8,7 @@ Document version: `V2.1.2.0043`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0043` | `PENDING` | Cloture de la refonte du ruban superieur par retrait du fallback XAML statique. |
+| 2026-06-19 | `V2.1.2.0043` | `fde1b31` | Cloture de la refonte du ruban superieur par retrait du fallback XAML statique. |
 | 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Branchement des commandes de ruban `object.group` et `object.ungroup` sur les workflows Element+ existants. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Extraction du catalogue de commandes de ruban dans la couche Application avec couverture de contrat. |
 | 2026-06-19 | `V2.1.2.0040` | `335adfb` | Ajout du registre de commandes actif pour le rendu du ruban superieur. |
