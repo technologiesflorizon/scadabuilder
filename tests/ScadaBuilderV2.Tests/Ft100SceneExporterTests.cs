@@ -643,6 +643,58 @@ public sealed class Ft100SceneExporterTests
     }
 
     [TestMethod]
+    public async Task ExportWritesToggleButtonRuntimeStateOnWrapper()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "win00008_toggle.html");
+        await File.WriteAllTextAsync(
+            sourceHtmlPath,
+            """
+<!doctype html>
+<html>
+<body>
+  <div class="page"></div>
+</body>
+</html>
+""");
+
+        var toggleButton = ScadaElement.CreateButton("btn_toggle", "Pompe", 10, 20, ScadaButtonKind.Toggle);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Toggle", new(320, 240))
+            .WithElement(toggleButton);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+
+            var css = await File.ReadAllTextAsync(result.CssPath);
+            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__btn_toggle[data-scada-toggle-state=\"on\"] {");
+
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            StringAssert.Contains(html, "id=\"ft100-win00008__btn_toggle\"");
+            StringAssert.Contains(html, "data-scada-button-kind=\"Toggle\" data-scada-toggle-state=\"off\"");
+            StringAssert.Contains(html, "<button type=\"button\" data-scada-button-kind=\"Toggle\"");
+            Assert.IsFalse(
+                html.Contains("<button type=\"button\" data-scada-button-kind=\"Toggle\" data-scada-toggle-state=", StringComparison.Ordinal),
+                "The runtime toggle state belongs to the exported Element+ wrapper, not the inner button.");
+            StringAssert.Contains(html, "root.querySelectorAll('.ft100-element[data-scada-button-kind=\"Toggle\"]')");
+            StringAssert.Contains(html, "element.setAttribute('data-scada-toggle-state', nextState);");
+            StringAssert.Contains(html, "scada-builder-toggle-state-changed");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task ExportPreservesGroupClickNavigateEventAsRuntimeWrapper()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

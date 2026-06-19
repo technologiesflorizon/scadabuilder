@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active runtime contract
-Document version: `V2.1.2.0034`
+Document version: `V2.1.2.0035`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0035` | `PENDING` | Ajout du contrat runtime local d'etat Toggle pour boutons Element+. |
 | 2026-06-19 | `V2.1.2.0034` | `61eef34` | Ajout du contrat export CSS appui/actif pour les boutons Element+. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout de l'export archive `.sb2` FT100 avec validation de compatibilite avant packaging. |
 | 2026-06-16 | `V2.1.2.0007` | `PENDING` | Clarification du curseur FT100 runtime par defaut sur boutons et cibles avec events. |
@@ -32,6 +33,8 @@ Editor-only artifacts are never runtime geometry:
 Element+ button hover behavior is FT100Web runtime metadata, not an editor overlay and not SCADA Builder V2 preview styling. Preview must preserve `ScadaButtonBehavior` without applying hover locally. FT100 export must preserve `ScadaButtonBehavior` in the manifest and may generate page-scoped CSS `:hover` rules from enabled hover metadata.
 
 Element+ button pressed/active behavior is also FT100Web runtime metadata. Preview must preserve `ScadaButtonBehavior.Pressed` without simulating press state locally. FT100 export must preserve the metadata in the manifest and may generate page-scoped CSS `:active` plus active toggle-state rules from enabled pressed metadata.
+
+Element+ Toggle button state is export-owned runtime behavior. Preview must preserve `ButtonKind.Toggle` without simulating on/off state locally. FT100 export must place `data-scada-button-kind="Toggle"` and `data-scada-toggle-state="off"` on the Element+ wrapper, then toggle that wrapper state on click and emit `scada-builder-toggle-state-changed`.
 
 Element+ group runtime events are model behavior, not editor overlay geometry. FT100 export must preserve a group event by emitting a transparent runtime wrapper for hit-testing and `data-scada-events`, while groups without runtime events may remain flattened.
 

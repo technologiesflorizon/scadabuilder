@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active implementation status
-Document version: `V2.1.2.0034`
+Document version: `V2.1.2.0035`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0035` | `PENDING` | Implementation du runtime on/off pour boutons Toggle Element+. |
 | 2026-06-19 | `V2.1.2.0034` | `61eef34` | Implementation du style appui/actif pour les boutons HMI Element+. |
 | 2026-06-19 | `V2.1.2.0033` | `89d7165` | Implementation des symboles HMI Element+ electriques et alarme. |
 | 2026-06-18 | `V2.1.2.0032` | `d5ee1fd` | Implementation des proprietes avancees Element+ opacite et rotation. |
@@ -48,7 +49,7 @@ Document version: `V2.1.2.0034`
 
 ## 1. Current Verified Baseline
 
-As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 241 tests.
+As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 242 tests.
 
 ## 2. Implemented Areas
 
@@ -96,6 +97,7 @@ As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 241 
 42. The `Style` tab can author model-backed `Opacity` and `Rotation` for Element+ objects. Preview and FT100 export apply `opacity` and `rotate(...deg)`, save/reload preserves them, and `AdvancedCss` remains a later override point.
 43. The insert ribbon can create electrical and alarm HMI Element+ symbols for `Switch`, `Breaker`, `Transformer`, and `AlarmBeacon`. These primitives persist through `ShapeKind` and render as Element+-owned SVG content in preview and FT100 export.
 44. Element+ buttons can author model-backed pressed/active styling in the `Bouton` tab. FT100 export preserves `ButtonBehavior.Pressed` in manifests and emits page-scoped `:active` plus active toggle-state CSS when enabled.
+45. Element+ Toggle buttons export their on/off runtime state on the page-scoped Element+ wrapper. The exported page runtime toggles `data-scada-toggle-state` between `off` and `on` on click, drives active toggle styling, and emits `scada-builder-toggle-state-changed`.
 
 ## 3. Source Of Truth
 

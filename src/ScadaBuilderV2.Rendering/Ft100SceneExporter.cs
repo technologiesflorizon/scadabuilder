@@ -705,9 +705,10 @@ public sealed partial class Ft100SceneExporter
         var content = BuildElementContent(element);
         var eventAttribute = BuildEventAttribute(element);
         var valueBindingAttributes = BuildValueBindingAttributes(element);
+        var buttonRuntimeAttributes = BuildButtonRuntimeAttributes(element);
 
         return $$"""
-<div id="{{id}}" class="ft100-element ft100-element--{{kind}}" data-scada-element-id="{{sceneElementId}}" data-name="{{name}}" style="{{inlineStyle}}"{{eventAttribute}}{{valueBindingAttributes}}>
+<div id="{{id}}" class="ft100-element ft100-element--{{kind}}" data-scada-element-id="{{sceneElementId}}" data-name="{{name}}" style="{{inlineStyle}}"{{eventAttribute}}{{valueBindingAttributes}}{{buttonRuntimeAttributes}}>
   {{content}}
 </div>
 """;
@@ -718,6 +719,20 @@ public sealed partial class Ft100SceneExporter
         return element.EventBindings.Count == 0
             ? ""
             : $" data-scada-events=\"{HtmlEncoder.Default.Encode(JsonSerializer.Serialize(element.EventBindings, ManifestJsonOptions))}\"";
+    }
+
+    private static string BuildButtonRuntimeAttributes(ScadaElement element)
+    {
+        if (element.Kind != ScadaElementKind.Button)
+        {
+            return "";
+        }
+
+        var buttonKind = HtmlEncoder.Default.Encode(element.EffectiveButtonKind.ToString());
+        var attributes = $" data-scada-button-kind=\"{buttonKind}\"";
+        return element.EffectiveButtonKind == ScadaButtonKind.Toggle
+            ? attributes + " data-scada-toggle-state=\"off\""
+            : attributes;
     }
 
     private static string BuildValueBindingAttributes(ScadaElement element)
@@ -1071,10 +1086,7 @@ public sealed partial class Ft100SceneExporter
         var data = element.Data ?? new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
         var label = HtmlEncoder.Default.Encode(data.Text ?? data.Placeholder ?? element.DisplayName);
         var buttonKind = HtmlEncoder.Default.Encode(element.EffectiveButtonKind.ToString());
-        var toggleState = element.EffectiveButtonKind == ScadaButtonKind.Toggle
-            ? " data-scada-toggle-state=\"off\""
-            : "";
-        return $"""<button type="button" data-scada-button-kind="{buttonKind}"{toggleState} style="width:100%;height:100%;box-sizing:border-box;font:inherit;color:inherit;background:transparent;border:0;">{label}</button>""";
+        return $"""<button type="button" data-scada-button-kind="{buttonKind}" style="width:100%;height:100%;box-sizing:border-box;font:inherit;color:inherit;background:transparent;border:0;">{label}</button>""";
     }
 
     private static string BuildInput(ScadaElement element, string type)
@@ -2086,6 +2098,21 @@ Apply any viewport scale to the composed page container, not independently to he
 
     return true;
   }
+
+  root.querySelectorAll('.ft100-element[data-scada-button-kind="Toggle"]').forEach(function (element) {
+    if (!element.hasAttribute('data-scada-toggle-state')) {
+      element.setAttribute('data-scada-toggle-state', 'off');
+    }
+
+    element.addEventListener('click', function () {
+      const nextState = element.getAttribute('data-scada-toggle-state') === 'on' ? 'off' : 'on';
+      element.setAttribute('data-scada-toggle-state', nextState);
+      dispatchRuntimeEvent('scada-builder-toggle-state-changed', {
+        elementId: element.getAttribute('data-scada-element-id'),
+        state: nextState
+      });
+    });
+  });
 
   root.querySelectorAll('[data-scada-events]').forEach(function (element) {
     let bindings = [];
