@@ -8,7 +8,7 @@ Document version: `V2.1.3.0000`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.3.0000` | `PENDING` | Ajout de la couverture galerie Formes, formes standard completes, et placement Ligne/Fleche en deux points. |
+| 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout de la couverture galerie Formes, formes standard completes, et placement Ligne/Fleche en deux points. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Ajout de la couverture de la palette laterale d'outils issue du catalogue semantique. |
 | 2026-06-19 | `V2.1.2.0043` | `fde1b31` | Ajout de la couverture interdisant le retour des anciens rubans XAML statiques. |
 | 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Ajout de la couverture du dispatch de ruban pour `object.group` et `object.ungroup`. |

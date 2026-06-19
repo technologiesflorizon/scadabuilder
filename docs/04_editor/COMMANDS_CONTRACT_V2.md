@@ -8,7 +8,7 @@ Document version: `V2.1.3.0000`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.3.0000` | `PENDING` | Ajout des commandes `insert.shape.circle`, `insert.shape.triangle`, `insert.shape.star` et du placement deux points ligne/fleche. |
+| 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout des commandes `insert.shape.circle`, `insert.shape.triangle`, `insert.shape.star` et du placement deux points ligne/fleche. |
 | 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Activation des commandes de ruban `object.group` et `object.ungroup`. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Le catalogue de commandes du ruban devient un contrat applicatif testable. |
 | 2026-06-19 | `V2.1.2.0040` | `335adfb` | Ajout du contrat de metadonnees de commandes pour le ruban superieur. |

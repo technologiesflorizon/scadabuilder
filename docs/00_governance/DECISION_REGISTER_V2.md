@@ -8,7 +8,7 @@ Document version: `V2.1.3.0000`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.3.0000` | `PENDING` | Ajout de DEC-0032 pour la galerie Formes du ruban Inserer et le placement ligne/fleche en deux points. |
+| 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout de DEC-0032 pour la galerie Formes du ruban Inserer et le placement ligne/fleche en deux points. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Mise a jour de DEC-0031 apres extraction de la palette laterale d'outils vers le catalogue semantique. |
 | 2026-06-19 | `V2.1.2.0043` | `fde1b31` | Mise a jour de DEC-0031 apres retrait du fallback XAML statique du ruban superieur. |
 | 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Mise a jour de DEC-0031 apres activation des commandes de groupement depuis le ruban. |
@@ -721,7 +721,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-19 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `b195fe0`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A

@@ -8,7 +8,7 @@ Document version: `V2.1.3.0000`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.3.0000` | `PENDING` | Normalisation de la galerie Formes du ruban Inserer avec icones 64x64 et etat actif. |
+| 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Normalisation de la galerie Formes du ruban Inserer avec icones 64x64 et etat actif. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | La palette laterale d'outils consomme maintenant le catalogue semantique d'icones. |
 | 2026-06-19 | `V2.1.2.0043` | `fde1b31` | Le ruban superieur ne conserve plus de surface XAML statique parallele. |
 | 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Le ruban Selection execute maintenant Grouper et Degrouper pour les Element+ selectionnes. |
