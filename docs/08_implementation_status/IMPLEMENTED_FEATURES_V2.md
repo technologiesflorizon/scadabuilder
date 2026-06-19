@@ -8,7 +8,7 @@ Document version: `V2.1.2.0037`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0037` | `PENDING` | Implementation des evenements runtime pour boutons HMI standards. |
+| 2026-06-19 | `V2.1.2.0037` | `2a540d6` | Implementation des evenements runtime pour boutons HMI standards. |
 | 2026-06-19 | `V2.1.2.0036` | `8cc4d33` | Implementation du runtime disabled reel pour boutons Element+. |
 | 2026-06-19 | `V2.1.2.0035` | `588d712` | Implementation du runtime on/off pour boutons Toggle Element+. |
 | 2026-06-19 | `V2.1.2.0034` | `61eef34` | Implementation du style appui/actif pour les boutons HMI Element+. |

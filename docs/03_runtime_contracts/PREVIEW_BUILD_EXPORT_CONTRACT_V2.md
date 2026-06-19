@@ -8,7 +8,7 @@ Document version: `V2.1.2.0037`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0037` | `PENDING` | Ajout du contrat des evenements runtime pour boutons standards. |
+| 2026-06-19 | `V2.1.2.0037` | `2a540d6` | Ajout du contrat des evenements runtime pour boutons standards. |
 | 2026-06-19 | `V2.1.2.0036` | `8cc4d33` | Ajout du contrat runtime disabled reel pour boutons Element+. |
 | 2026-06-19 | `V2.1.2.0035` | `588d712` | Ajout du contrat runtime local d'etat Toggle pour boutons Element+. |
 | 2026-06-19 | `V2.1.2.0034` | `61eef34` | Ajout du contrat export CSS appui/actif pour les boutons Element+. |
