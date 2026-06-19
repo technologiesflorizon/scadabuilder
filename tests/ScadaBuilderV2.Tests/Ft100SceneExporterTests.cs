@@ -681,7 +681,7 @@ public sealed class Ft100SceneExporterTests
             Assert.IsFalse(
                 html.Contains("<button type=\"button\" data-scada-button-kind=\"Toggle\" data-scada-toggle-state=", StringComparison.Ordinal),
                 "The runtime toggle state belongs to the exported Element+ wrapper, not the inner button.");
-            StringAssert.Contains(html, "root.querySelectorAll('.ft100-element[data-scada-button-kind=\"Toggle\"]')");
+            StringAssert.Contains(html, "root.querySelectorAll('.ft100-element[data-scada-button-kind=\"Toggle\"]:not([data-scada-disabled=\"true\"])')");
             StringAssert.Contains(html, "element.setAttribute('data-scada-toggle-state', nextState);");
             StringAssert.Contains(html, "scada-builder-toggle-state-changed");
         }
@@ -1294,7 +1294,7 @@ public sealed class Ft100SceneExporterTests
     }
 
     [TestMethod]
-    public async Task ExportOmitsDisabledButtonHoverCssButKeepsMetadata()
+    public async Task ExportWritesDisabledButtonRuntimeStateAndOmitsHoverCss()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
         var sourceRoot = Path.Combine(root, "source");
@@ -1325,9 +1325,12 @@ public sealed class Ft100SceneExporterTests
             var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
 
             StringAssert.Contains(html, "<button type=\"button\"");
-            Assert.IsFalse(html.Contains("data-scada-disabled", StringComparison.Ordinal));
-            Assert.IsFalse(html.Contains(" disabled", StringComparison.Ordinal));
+            StringAssert.Contains(html, "data-scada-disabled=\"true\" aria-disabled=\"true\"");
+            StringAssert.Contains(html, "<button type=\"button\" data-scada-button-kind=\"Command\" disabled aria-disabled=\"true\"");
+            StringAssert.Contains(html, "if (element.getAttribute('data-scada-disabled') === 'true')");
             Assert.IsFalse(css.Contains("#ft100-win00008 #ft100-win00008__btn_disabled:hover", StringComparison.Ordinal));
+            Assert.IsFalse(css.Contains("#ft100-win00008 #ft100-win00008__btn_disabled:active", StringComparison.Ordinal));
+            StringAssert.Contains(css, "#ft100-win00008 .ft100-element--Button[data-scada-disabled=\"true\"], #ft100-win00008 .ft100-element--Button[data-scada-disabled=\"true\"] * { cursor: not-allowed; opacity: 0.62; }");
             StringAssert.Contains(manifest, "\"ButtonBehavior\"");
             StringAssert.Contains(manifest, "\"IsDisabled\": true");
             StringAssert.Contains(manifest, "\"Enabled\": true");

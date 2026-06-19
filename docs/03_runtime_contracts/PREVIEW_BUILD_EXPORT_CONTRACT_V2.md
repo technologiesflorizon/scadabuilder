@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active runtime contract
-Document version: `V2.1.2.0035`
+Document version: `V2.1.2.0036`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0036` | `PENDING` | Ajout du contrat runtime disabled reel pour boutons Element+. |
 | 2026-06-19 | `V2.1.2.0035` | `588d712` | Ajout du contrat runtime local d'etat Toggle pour boutons Element+. |
 | 2026-06-19 | `V2.1.2.0034` | `61eef34` | Ajout du contrat export CSS appui/actif pour les boutons Element+. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout de l'export archive `.sb2` FT100 avec validation de compatibilite avant packaging. |
@@ -35,6 +36,8 @@ Element+ button hover behavior is FT100Web runtime metadata, not an editor overl
 Element+ button pressed/active behavior is also FT100Web runtime metadata. Preview must preserve `ScadaButtonBehavior.Pressed` without simulating press state locally. FT100 export must preserve the metadata in the manifest and may generate page-scoped CSS `:active` plus active toggle-state rules from enabled pressed metadata.
 
 Element+ Toggle button state is export-owned runtime behavior. Preview must preserve `ButtonKind.Toggle` without simulating on/off state locally. FT100 export must place `data-scada-button-kind="Toggle"` and `data-scada-toggle-state="off"` on the Element+ wrapper, then toggle that wrapper state on click and emit `scada-builder-toggle-state-changed`.
+
+Element+ disabled button behavior is export-owned runtime behavior. Preview must preserve `ScadaButtonBehavior.IsDisabled` without executing runtime actions locally. FT100 export must place disabled metadata on the Element+ wrapper, emit a native disabled `<button>`, suppress hover/pressed/toggle runtime, and block object-owned event execution for disabled button wrappers.
 
 Element+ group runtime events are model behavior, not editor overlay geometry. FT100 export must preserve a group event by emitting a transparent runtime wrapper for hit-testing and `data-scada-events`, while groups without runtime events may remain flattened.
 

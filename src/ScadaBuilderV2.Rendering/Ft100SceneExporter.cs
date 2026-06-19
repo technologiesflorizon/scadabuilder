@@ -730,6 +730,11 @@ public sealed partial class Ft100SceneExporter
 
         var buttonKind = HtmlEncoder.Default.Encode(element.EffectiveButtonKind.ToString());
         var attributes = $" data-scada-button-kind=\"{buttonKind}\"";
+        if (element.EffectiveButtonBehavior.IsDisabled)
+        {
+            attributes += " data-scada-disabled=\"true\" aria-disabled=\"true\"";
+        }
+
         return element.EffectiveButtonKind == ScadaButtonKind.Toggle
             ? attributes + " data-scada-toggle-state=\"off\""
             : attributes;
@@ -1086,7 +1091,10 @@ public sealed partial class Ft100SceneExporter
         var data = element.Data ?? new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
         var label = HtmlEncoder.Default.Encode(data.Text ?? data.Placeholder ?? element.DisplayName);
         var buttonKind = HtmlEncoder.Default.Encode(element.EffectiveButtonKind.ToString());
-        return $"""<button type="button" data-scada-button-kind="{buttonKind}" style="width:100%;height:100%;box-sizing:border-box;font:inherit;color:inherit;background:transparent;border:0;">{label}</button>""";
+        var disabled = element.EffectiveButtonBehavior.IsDisabled
+            ? " disabled aria-disabled=\"true\""
+            : "";
+        return $"""<button type="button" data-scada-button-kind="{buttonKind}"{disabled} style="width:100%;height:100%;box-sizing:border-box;font:inherit;color:inherit;background:transparent;border:0;">{label}</button>""";
     }
 
     private static string BuildInput(ScadaElement element, string type)
@@ -1190,6 +1198,7 @@ public sealed partial class Ft100SceneExporter
         css.AppendLine($"{scope.Descendant(".ft100-element--Button")}, {scope.Descendant("[data-scada-events]")} {{ cursor: pointer; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element--Button *")}, {scope.Descendant("[data-scada-events] *")} {{ cursor: pointer; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element--Button:active")}, {scope.Descendant("[data-scada-events]:active")} {{ cursor: pointer; }}");
+        css.AppendLine($"{scope.Descendant(".ft100-element--Button[data-scada-disabled=\"true\"]")}, {scope.Descendant(".ft100-element--Button[data-scada-disabled=\"true\"] *")} {{ cursor: not-allowed; opacity: 0.62; }}");
         css.AppendLine($"{scope.Descendant($".{ScadaEventRegistry.RuntimeBorderHighlightClass}")} {{ outline: 2px solid #00a3ff; outline-offset: 2px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.85), 0 0 8px rgba(0, 163, 255, 0.65); }}");
         css.AppendLine($"@keyframes {scope.AnimationName("scada-blink")} {{ 0%, 100% {{ opacity: 1; }} 50% {{ opacity: 0.35; }} }}");
         css.AppendLine($"@keyframes {scope.AnimationName("scada-pulse")} {{ 0%, 100% {{ transform: scale(1); }} 50% {{ transform: scale(1.035); }} }}");
@@ -2099,7 +2108,7 @@ Apply any viewport scale to the composed page container, not independently to he
     return true;
   }
 
-  root.querySelectorAll('.ft100-element[data-scada-button-kind="Toggle"]').forEach(function (element) {
+  root.querySelectorAll('.ft100-element[data-scada-button-kind="Toggle"]:not([data-scada-disabled="true"])').forEach(function (element) {
     if (!element.hasAttribute('data-scada-toggle-state')) {
       element.setAttribute('data-scada-toggle-state', 'off');
     }
@@ -2128,6 +2137,11 @@ Apply any viewport scale to the composed page container, not independently to he
       }
 
       element.addEventListener(binding.Trigger, function (event) {
+        if (element.getAttribute('data-scada-disabled') === 'true') {
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
         if (binding.PreventDefault) {
           event.preventDefault();
         }
