@@ -8,7 +8,7 @@ Document version: `V2.1.3.0001`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.3.0001` | `PENDING` | Ajustement de DEC-0032 pour la galerie Formes 32x32 sans libelles visibles. |
+| 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de DEC-0032 pour la galerie Formes 32x32 sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout de DEC-0032 pour la galerie Formes du ruban Inserer et le placement ligne/fleche en deux points. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Mise a jour de DEC-0031 apres extraction de la palette laterale d'outils vers le catalogue semantique. |
 | 2026-06-19 | `V2.1.2.0043` | `fde1b31` | Mise a jour de DEC-0031 apres retrait du fallback XAML statique du ruban superieur. |

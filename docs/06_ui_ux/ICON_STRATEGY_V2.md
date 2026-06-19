@@ -8,7 +8,7 @@ Document version: `V2.1.3.0001`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.3.0001` | `PENDING` | Ajustement de la galerie Formes vers des icones 32x32 sans libelles visibles. |
+| 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes vers des icones 32x32 sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout des icones semantiques Cercle, Triangle et Etoile et de la taille 64x64 pour la galerie Formes. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Extension du catalogue semantique a la palette laterale d'outils. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Ajout de la couverture de contrat pour les cles d'icones semantiques du catalogue de ruban. |
