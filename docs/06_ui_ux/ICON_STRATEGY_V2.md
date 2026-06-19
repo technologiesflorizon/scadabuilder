@@ -2,12 +2,13 @@
 
 Date: 2026-06-16
 Status: Active icon strategy pointer
-Document version: `V2.1.2.0039`
+Document version: `V2.1.2.0041`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0041` | `PENDING` | Ajout de la couverture de contrat pour les cles d'icones semantiques du catalogue de ruban. |
 | 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Ajout du registre operationnel des icones de ruban et de la normalisation des glyphes visibles. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du nouveau document proprietaire de strategie d'icones. |
 
@@ -32,6 +33,8 @@ src/ScadaBuilderV2.App/Resources/README.md
 ```
 
 The semantic resource key is the public UI contract. A control should reference `Icon.Project.Save`, `Icon.Export.Package`, or `Icon.Hmi.Pump`, not a source library filename or temporary drawing name.
+
+The default top-ribbon command catalog in `ScadaBuilderV2.Application.Commands.RibbonCommandCatalog` records the semantic `Icon.*` key for every visible command. The WPF shell resolves that key against `Icons.xaml`; command metadata tests block empty, non-semantic, or temporary icon references from entering the default catalog.
 
 Current icon families:
 

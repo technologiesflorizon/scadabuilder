@@ -2,12 +2,13 @@
 
 Date: 2026-06-16
 Status: Active editor command contract
-Document version: `V2.1.2.0040`
+Document version: `V2.1.2.0041`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0041` | `PENDING` | Le catalogue de commandes du ruban devient un contrat applicatif testable. |
 | 2026-06-19 | `V2.1.2.0040` | `335adfb` | Ajout du contrat de metadonnees de commandes pour le ruban superieur. |
 | 2026-06-16 | `V2.1.2.0003` | `PENDING` | Clarification du groupement Element+: ordre de rendu preserve et deplacement solidaire des enfants de groupe. |
 | 2026-06-16 | `V2.1.2.0002` | `PENDING` | Decommission du groupement legacy direct et verrouillage du groupement scene Element+ only. |
@@ -33,6 +34,7 @@ Commands are explicit application operations. A command id is the stable bridge 
 11. In normal scene movement, dragging or moving a child of an Element+ group targets the containing group so grouped objects remain solidary.
 12. Ribbon command surfaces must be rendered from command metadata instead of per-button duplicated XAML. The metadata includes stable command id, visible label, tooltip or disabled reason, semantic icon key, group, order, and executable state.
 13. Disabled future ribbon commands must remain registered with a disabled reason when they are shown, so the surface communicates intent without pretending the command is executable.
+14. The default top-ribbon command catalog is owned by the Application layer, so WPF adapts shared command metadata instead of owning the canonical list of visible commands.
 
 ## 3. Dispatch Flow
 
@@ -57,3 +59,4 @@ sequenceDiagram
 1. `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`
 2. `tests/ScadaBuilderV2.Tests/EditorHistoryServiceTests.cs`
 3. `tests/ScadaBuilderV2.Tests/ScadaSceneGroupTests.cs`
+4. `tests/ScadaBuilderV2.Tests/RibbonCommandCatalogTests.cs`

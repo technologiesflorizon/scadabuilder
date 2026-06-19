@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active implementation status
-Document version: `V2.1.2.0040`
+Document version: `V2.1.2.0041`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0041` | `PENDING` | Extraction du catalogue de ruban dans Application et ajout de tests de registre. |
 | 2026-06-19 | `V2.1.2.0040` | `335adfb` | Implementation du registre de commandes actif pour le rendu du ruban superieur. |
 | 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Implementation de la refonte du ruban superieur et du registre d'icones visible. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Cloture du bloc boutons HMI avec parite metadata preview/export. |

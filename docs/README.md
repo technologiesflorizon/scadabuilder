@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active enterprise documentation map
-Document version: `V2.1.2.0040`
+Document version: `V2.1.2.0041`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.2.0041` | `PENDING` | Extraction du catalogue de commandes de ruban dans la couche Application avec couverture de contrat. |
 | 2026-06-19 | `V2.1.2.0040` | `335adfb` | Ajout du registre de commandes actif pour le rendu du ruban superieur. |
 | 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Refonte du ruban superieur et normalisation du registre d'icones visibles. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Cloture du bloc boutons HMI avec parite metadata preview/export. |
