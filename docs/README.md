@@ -8,7 +8,7 @@ Document version: `V2.1.2.0035`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0035` | `PENDING` | Ajout du runtime d'etat actif pour les boutons Toggle Element+. |
+| 2026-06-19 | `V2.1.2.0035` | `588d712` | Ajout du runtime d'etat actif pour les boutons Toggle Element+. |
 | 2026-06-19 | `V2.1.2.0034` | `61eef34` | Ajout du style appui/actif avance pour les boutons HMI Element+. |
 | 2026-06-19 | `V2.1.2.0033` | `89d7165` | Ajout des symboles HMI Element+ interrupteur, disjoncteur, transformateur et balise alarme. |
 | 2026-06-18 | `V2.1.2.0032` | `d5ee1fd` | Ajout des proprietes avancees Element+ opacite et rotation. |
