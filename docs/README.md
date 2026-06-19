@@ -8,7 +8,7 @@ Document version: `V2.1.2.0040`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0040` | `PENDING` | Ajout du registre de commandes actif pour le rendu du ruban superieur. |
+| 2026-06-19 | `V2.1.2.0040` | `335adfb` | Ajout du registre de commandes actif pour le rendu du ruban superieur. |
 | 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Refonte du ruban superieur et normalisation du registre d'icones visibles. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Cloture du bloc boutons HMI avec parite metadata preview/export. |
 | 2026-06-19 | `V2.1.2.0037` | `2a540d6` | Ajout des evenements runtime explicites pour boutons HMI standards. |

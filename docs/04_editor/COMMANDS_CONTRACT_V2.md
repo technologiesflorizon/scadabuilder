@@ -8,7 +8,7 @@ Document version: `V2.1.2.0040`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0040` | `PENDING` | Ajout du contrat de metadonnees de commandes pour le ruban superieur. |
+| 2026-06-19 | `V2.1.2.0040` | `335adfb` | Ajout du contrat de metadonnees de commandes pour le ruban superieur. |
 | 2026-06-16 | `V2.1.2.0003` | `PENDING` | Clarification du groupement Element+: ordre de rendu preserve et deplacement solidaire des enfants de groupe. |
 | 2026-06-16 | `V2.1.2.0002` | `PENDING` | Decommission du groupement legacy direct et verrouillage du groupement scene Element+ only. |
 | 2026-06-16 | `V2.1.2.0001` | `PENDING` | Ajout du contrat des raccourcis clavier WebView: Backspace est non destructif et les champs editables interceptent leurs touches. |

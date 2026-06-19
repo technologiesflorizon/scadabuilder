@@ -8,7 +8,7 @@ Document version: `V2.1.2.0040`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0040` | `PENDING` | Mise a jour de DEC-0031 apres implementation du rendu de ruban depuis registre. |
+| 2026-06-19 | `V2.1.2.0040` | `335adfb` | Mise a jour de DEC-0031 apres implementation du rendu de ruban depuis registre. |
 | 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Ajout de DEC-0031 pour le ruban superieur groupe et le registre d'icones semantiques. |
 | 2026-06-17 | `V2.1.2.0025` | `58567eb` | Mise a jour de DEC-0030 apres implementation TF100Web des masques `DisplayFormat` `#`. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Ajout de DEC-0030 pour la refonte de l'onglet Donnees Element+ et le format numerique actif. |

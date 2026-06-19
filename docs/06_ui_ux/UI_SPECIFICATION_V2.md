@@ -8,7 +8,7 @@ Document version: `V2.1.2.0040`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0040` | `PENDING` | Le ruban superieur consomme un registre actif de commandes et de groupes. |
+| 2026-06-19 | `V2.1.2.0040` | `335adfb` | Le ruban superieur consomme un registre actif de commandes et de groupes. |
 | 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Refonte du ruban superieur en groupes visuels, onglet actif et overflow horizontal. |
 | 2026-06-17 | `V2.1.2.0021` | `1040889` | Correction du feedback de progression pour cibler le handler `.sb2`. |
 | 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Ajout de l'indicateur de progression statut pour l'export FT100 `.sb2`. |
