@@ -120,12 +120,7 @@ public sealed class StudioElementPlusContractTests
     public void ScadaBuilderLibraryPanelWatchesProjectSepDirectory()
     {
         var xaml = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml");
-        // MainWindow code-behind is split across partial-class files; the WebView2 bootstrap
-        // script lives in MainWindow.WebViewScript.cs. Concatenate so source-text assertions
-        // see the full surface.
-        var code = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs")
-            + "\n"
-            + ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.WebViewScript.cs");
+        var code = ReadBuilderMainWindowCode();
         var modernProjectStore = ReadProjectFile("src", "ScadaBuilderV2.Infrastructure", "ModernProjects", "ModernProjectStore.cs");
         var studioCode = ReadProjectFile("src", "ScadaBuilderV2.ElementStudio.App", "MainWindow.xaml.cs");
 
@@ -171,7 +166,7 @@ public sealed class StudioElementPlusContractTests
     [TestMethod]
     public void ScadaBuilderLaunchesStudioFromProjectInDevelopmentToAvoidStaleBinaries()
     {
-        var code = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");
+        var code = ReadBuilderMainWindowCode();
 
         StringAssert.Contains(code, "LaunchElementStudioProjectAsync(studioProjectPath, packagePath)");
         StringAssert.Contains(code, "BuildElementStudioProjectAsync(studioProjectPath)");
@@ -190,7 +185,7 @@ public sealed class StudioElementPlusContractTests
     public void TagCatalogPanelExposesSearchFiltersAndFilteredSummary()
     {
         var xaml = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml");
-        var code = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");
+        var code = ReadBuilderMainWindowCode();
 
         StringAssert.Contains(xaml, "<TabItem Header=\"Catalogue Tags\">");
         StringAssert.Contains(xaml, "x:Name=\"TagCatalogFilteredSummaryText\"");
@@ -361,6 +356,30 @@ public sealed class StudioElementPlusContractTests
                     "{\"source\":\"legacy-svg\"}")
             },
             ElementStudioPackageMetadata.Current("V2.0.3.0016"));
+    }
+
+    private static string ReadBuilderMainWindowCode()
+    {
+        // MainWindow code-behind is split across MainWindow*.cs partial-class files;
+        // concatenate them all so source-text assertions see the full surface.
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            var appDir = Path.Combine(directory.FullName, "src", "ScadaBuilderV2.App");
+            if (Directory.Exists(appDir))
+            {
+                return string.Join(
+                    "\n",
+                    Directory.GetFiles(appDir, "MainWindow*.cs")
+                        .OrderBy(path => path, StringComparer.Ordinal)
+                        .Select(File.ReadAllText));
+            }
+
+            directory = directory.Parent;
+        }
+
+        Assert.Fail("Unable to locate src/ScadaBuilderV2.App from test output directory.");
+        return "";
     }
 
     private static string ReadProjectFile(params string[] segments)

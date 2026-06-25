@@ -1156,12 +1156,27 @@ public sealed class WebViewContextMenuScriptTests
 
     private static string ReadMainWindowSource()
     {
-        // MainWindow code-behind is split into behavior-preserving partial-class files.
-        // Concatenate them so source-text contract assertions see the full surface
-        // regardless of which partial a given member lives in.
-        return ReadMainWindowFile("MainWindow.xaml.cs")
-            + "\n"
-            + ReadMainWindowFile("MainWindow.WebViewScript.cs");
+        // MainWindow code-behind is split into behavior-preserving partial-class files
+        // (MainWindow.xaml.cs, MainWindow.ColorMath.cs, MainWindow.WebViewScript.cs, ...).
+        // Concatenate every MainWindow*.cs partial so source-text contract assertions see
+        // the full surface regardless of which partial a given member lives in.
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            var appDir = Path.Combine(directory.FullName, "src", "ScadaBuilderV2.App");
+            if (Directory.Exists(appDir))
+            {
+                var partials = Directory.GetFiles(appDir, "MainWindow*.cs")
+                    .OrderBy(path => path, StringComparer.Ordinal)
+                    .Select(File.ReadAllText);
+                return string.Join("\n", partials);
+            }
+
+            directory = directory.Parent;
+        }
+
+        Assert.Fail("Unable to locate src/ScadaBuilderV2.App from test output directory.");
+        return "";
     }
 
     private static string ReadMainWindowFile(string fileName)
