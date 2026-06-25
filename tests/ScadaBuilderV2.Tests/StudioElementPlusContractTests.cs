@@ -120,7 +120,12 @@ public sealed class StudioElementPlusContractTests
     public void ScadaBuilderLibraryPanelWatchesProjectSepDirectory()
     {
         var xaml = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml");
-        var code = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");
+        // MainWindow code-behind is split across partial-class files; the WebView2 bootstrap
+        // script lives in MainWindow.WebViewScript.cs. Concatenate so source-text assertions
+        // see the full surface.
+        var code = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs")
+            + "\n"
+            + ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.WebViewScript.cs");
         var modernProjectStore = ReadProjectFile("src", "ScadaBuilderV2.Infrastructure", "ModernProjects", "ModernProjectStore.cs");
         var studioCode = ReadProjectFile("src", "ScadaBuilderV2.ElementStudio.App", "MainWindow.xaml.cs");
 

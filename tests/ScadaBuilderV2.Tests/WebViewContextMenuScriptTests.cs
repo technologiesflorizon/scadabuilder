@@ -1156,7 +1156,12 @@ public sealed class WebViewContextMenuScriptTests
 
     private static string ReadMainWindowSource()
     {
-        return ReadMainWindowFile("MainWindow.xaml.cs");
+        // MainWindow code-behind is split into behavior-preserving partial-class files.
+        // Concatenate them so source-text contract assertions see the full surface
+        // regardless of which partial a given member lives in.
+        return ReadMainWindowFile("MainWindow.xaml.cs")
+            + "\n"
+            + ReadMainWindowFile("MainWindow.WebViewScript.cs");
     }
 
     private static string ReadMainWindowFile(string fileName)
