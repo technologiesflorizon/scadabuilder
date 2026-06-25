@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active properties panel contract
-Document version: `V2.1.2.0038`
+Document version: `V2.1.3.0002`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.3.0002` | `PENDING` | Remplacement des couleurs arriere-plan/bordure Style et Bouton par le color picker modal aligne sur `CSS fond`. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Clarification de la parite metadata preview/export pour les wrappers de boutons Element+. |
 | 2026-06-19 | `V2.1.2.0034` | `61eef34` | Ajout du style bouton appui/actif model-backed dans l'onglet Bouton. |
 | 2026-06-18 | `V2.1.2.0032` | `d5ee1fd` | Ajout des proprietes Style avancees opacite et rotation pour les Element+. |
@@ -39,9 +40,10 @@ The properties panel edits model-backed properties through commands or applicati
 13. Inserted Element+ buttons persist `ScadaButtonKind` for `Command`, `Toggle`, `Navigation`, `AlarmAcknowledge`, and `EmergencyStop`; the preset supplies initial size, text, and style only. Hover, disabled state, pressed/active state, events, and later property edits remain independently model-backed.
 14. The preview WebView must expose wrapper-level button metadata matching FT100 export (`data-scada-button-kind`, behavior metadata, disabled metadata, and Toggle initial state) while keeping generated buttons non-interactive for editor selection and property workflows.
 15. The Element+ `Style` tab exposes model-backed `Opacity` from `0` to `1` and `Rotation` in degrees. Preview and FT100 export apply them through CSS `opacity` and `rotate(...)` before `AdvancedCss` so explicit advanced CSS remains the final override point.
-16. The Element+ `Donnees` tab exposes `Format affichage` as the active display-format field. `Decimales` and `Unite` are legacy model fields and must not be visible active authoring controls.
-17. `Format affichage` may use hash masks such as `##.#`; the mask defines visible digit budget and decimal placement. Example: raw numeric value `999` with `##.#` displays as `99.9`, and the maximum visible value for the mask is `99.9`.
-18. `Min` and `Max` are operator-entry clamp constraints only for numeric inputs that are not `Lecture seulement`; they are disabled for read-only displays.
+16. Color-valued Element+ `Style` fields, including `Background` and `BorderColor`, and color-valued `Bouton` fields use the same color picker model as `CSS fond`: swatch preview, saturation/value area, hue slider, preset swatches, hex output, and RGB sliders in a modal picker with `Annuler` and `Enregistrer` before committing the model-backed value.
+17. The Element+ `Donnees` tab exposes `Format affichage` as the active display-format field. `Decimales` and `Unite` are legacy model fields and must not be visible active authoring controls.
+18. `Format affichage` may use hash masks such as `##.#`; the mask defines visible digit budget and decimal placement. Example: raw numeric value `999` with `##.#` displays as `99.9`, and the maximum visible value for the mask is `99.9`.
+19. `Min` and `Max` are operator-entry clamp constraints only for numeric inputs that are not `Lecture seulement`; they are disabled for read-only displays.
 
 ## 3. Related Tests
 

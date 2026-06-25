@@ -99,15 +99,44 @@ public sealed class WebViewContextMenuScriptTests
         var source = ReadMainWindowSource();
         var dialogCode = ReadMainWindowFile("ElementPropertiesDialog.xaml.cs");
 
+        StringAssert.Contains(mainXaml, "x:Name=\"ElementBackgroundColorPicker\"");
+        StringAssert.Contains(mainXaml, "x:Name=\"ElementBorderColorPicker\"");
+        StringAssert.Contains(dialogXaml, "x:Name=\"BackgroundColorPicker\"");
+        StringAssert.Contains(dialogXaml, "x:Name=\"BorderColorPicker\"");
+        StringAssert.Contains(source, "BorderColor = GetColorPickerValue(ElementBorderColorPicker, style.BorderColor)");
+        StringAssert.Contains(dialogCode, "BorderColor: GetColorPickerValue(BorderColorPicker, \"#8AA0A6\")");
         StringAssert.Contains(mainXaml, "x:Name=\"ButtonPressedEnabledCheckBox\"");
-        StringAssert.Contains(mainXaml, "x:Name=\"ButtonPressedBackgroundComboBox\"");
-        StringAssert.Contains(mainXaml, "x:Name=\"ButtonPressedForegroundComboBox\"");
-        StringAssert.Contains(mainXaml, "x:Name=\"ButtonPressedBorderColorComboBox\"");
+        StringAssert.Contains(mainXaml, "x:Name=\"ButtonPressedBackgroundColorPicker\"");
+        StringAssert.Contains(mainXaml, "x:Name=\"ButtonPressedForegroundColorPicker\"");
+        StringAssert.Contains(mainXaml, "x:Name=\"ButtonPressedBorderColorPicker\"");
+        StringAssert.Contains(mainXaml, "local:ColorPickerField");
         StringAssert.Contains(dialogXaml, "x:Name=\"ButtonPressedEnabledCheckBox\"");
+        StringAssert.Contains(dialogXaml, "x:Name=\"ButtonPressedBackgroundColorPicker\"");
+        StringAssert.Contains(dialogXaml, "local:ColorPickerField");
         StringAssert.Contains(dialogCode, "var pressedStyle = buttonBehavior.EffectivePressed;");
         StringAssert.Contains(source, "new ScadaButtonPressedStyle(");
-        StringAssert.Contains(source, "ButtonPressedBackgroundComboBox");
-        StringAssert.Contains(source, "ButtonPressedBorderColorComboBox");
+        StringAssert.Contains(source, "ButtonPressedBackgroundColorPicker");
+        StringAssert.Contains(source, "ButtonPressedBorderColorPicker");
+    }
+
+    [TestMethod]
+    public void ColorPickerDialogMatchesCssBackgroundPickerControls()
+    {
+        var dialogXaml = ReadMainWindowFile("ColorPickerDialog.xaml");
+        var dialogCode = ReadMainWindowFile("ColorPickerDialog.xaml.cs");
+
+        StringAssert.Contains(dialogXaml, "x:Name=\"SaturationValuePicker\"");
+        StringAssert.Contains(dialogXaml, "x:Name=\"HueColorLayer\"");
+        StringAssert.Contains(dialogXaml, "x:Name=\"SaturationValueSelectorTransform\"");
+        StringAssert.Contains(dialogXaml, "x:Name=\"HueSlider\"");
+        StringAssert.Contains(dialogXaml, "x:Name=\"ColorTextBox\"");
+        StringAssert.Contains(dialogXaml, "x:Name=\"RedSlider\"");
+        StringAssert.Contains(dialogXaml, "x:Name=\"GreenSlider\"");
+        StringAssert.Contains(dialogXaml, "x:Name=\"BlueSlider\"");
+        StringAssert.Contains(dialogXaml, "Content=\"Annuler\"");
+        StringAssert.Contains(dialogXaml, "Content=\"Enregistrer\"");
+        StringAssert.Contains(dialogCode, "UpdateSaturationValueFromPoint");
+        StringAssert.Contains(dialogCode, "FromHsv(_hue, _saturation, _value)");
     }
 
     [TestMethod]
@@ -503,6 +532,8 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "WaitForStudioWindowAsync");
         StringAssert.Contains(source, "FindVisibleStudioProcess");
         StringAssert.Contains(source, "BringProcessWindowToFront");
+        StringAssert.Contains(source, "BuildElementStudioProjectAsync(studioProjectPath)");
+        StringAssert.Contains(source, "dotnetStartInfo.ArgumentList.Add(\"--no-build\");");
         StringAssert.Contains(source, "Studio Element+ via dotnet run reste actif, mais aucune fenetre WPF visible n'a ete detectee.");
         StringAssert.Contains(source, "Studio Element+ a quitte immediatement");
         StringAssert.Contains(source, "ResolveElementStudioProjectPath");

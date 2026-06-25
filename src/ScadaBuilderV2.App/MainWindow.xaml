@@ -935,15 +935,11 @@
                                                          Margin="0,3,0,8"
                                                          TextChanged="OnElementPropertyChanged"/>
                                                 <TextBlock Text="Couleur arriere-plan"/>
-                                                <ComboBox x:Name="ElementBackgroundComboBox"
-                                                          Margin="0,3,0,8"
-                                                          SelectionChanged="OnElementPropertyChanged">
-                                                    <ComboBoxItem Content="#FFFFFF"/>
-                                                    <ComboBoxItem Content="Transparent"/>
-                                                    <ComboBoxItem Content="#F7FBF5"/>
-                                                    <ComboBoxItem Content="#90C030"/>
-                                                    <ComboBoxItem Content="#2090A0"/>
-                                                </ComboBox>
+                                                <local:ColorPickerField x:Name="ElementBackgroundColorPicker"
+                                                                        ColorChanged="OnElementPropertyChanged"/>
+                                                <TextBlock Text="Couleur bordure"/>
+                                                <local:ColorPickerField x:Name="ElementBorderColorPicker"
+                                                                        ColorChanged="OnElementPropertyChanged"/>
                                                 <TextBlock Text="Bordure"/>
                                                 <ComboBox x:Name="ElementBorderStyleComboBox"
                                                           Margin="0,3,0,8"
@@ -998,62 +994,28 @@
                                                           Checked="OnElementPropertyChanged"
                                                           Unchecked="OnElementPropertyChanged"/>
                                                 <TextBlock Text="Fond survol"/>
-                                                <ComboBox x:Name="ButtonHoverBackgroundComboBox"
-                                                          Margin="0,3,0,8"
-                                                          SelectionChanged="OnElementPropertyChanged">
-                                                    <ComboBoxItem Content="#EAF5F7"/>
-                                                    <ComboBoxItem Content="#F7FBF5"/>
-                                                    <ComboBoxItem Content="#DFF3E7"/>
-                                                    <ComboBoxItem Content="#2090A0"/>
-                                                    <ComboBoxItem Content="#90C030"/>
-                                                </ComboBox>
+                                                <local:ColorPickerField x:Name="ButtonHoverBackgroundColorPicker"
+                                                                        ColorChanged="OnElementPropertyChanged"/>
                                                 <TextBlock Text="Texte survol"/>
-                                                <ComboBox x:Name="ButtonHoverForegroundComboBox"
-                                                          Margin="0,3,0,8"
-                                                          SelectionChanged="OnElementPropertyChanged">
-                                                    <ComboBoxItem Content="#0F2A30"/>
-                                                    <ComboBoxItem Content="#FFFFFF"/>
-                                                    <ComboBoxItem Content="#2090A0"/>
-                                                </ComboBox>
+                                                <local:ColorPickerField x:Name="ButtonHoverForegroundColorPicker"
+                                                                        ColorChanged="OnElementPropertyChanged"/>
                                                 <TextBlock Text="Bordure survol"/>
-                                                <ComboBox x:Name="ButtonHoverBorderColorComboBox"
-                                                          Margin="0,3,0,8"
-                                                          SelectionChanged="OnElementPropertyChanged">
-                                                    <ComboBoxItem Content="#2090A0"/>
-                                                    <ComboBoxItem Content="#90C030"/>
-                                                    <ComboBoxItem Content="#0F7280"/>
-                                                    <ComboBoxItem Content="#8AA0A6"/>
-                                                </ComboBox>
+                                                <local:ColorPickerField x:Name="ButtonHoverBorderColorPicker"
+                                                                        ColorChanged="OnElementPropertyChanged"/>
                                                 <CheckBox x:Name="ButtonPressedEnabledCheckBox"
                                                           Content="Appui actif automatique"
                                                           Margin="0,6,0,8"
                                                           Checked="OnElementPropertyChanged"
                                                           Unchecked="OnElementPropertyChanged"/>
                                                 <TextBlock Text="Fond appui"/>
-                                                <ComboBox x:Name="ButtonPressedBackgroundComboBox"
-                                                          Margin="0,3,0,8"
-                                                          SelectionChanged="OnElementPropertyChanged">
-                                                    <ComboBoxItem Content="#0F7280"/>
-                                                    <ComboBoxItem Content="#2090A0"/>
-                                                    <ComboBoxItem Content="#90C030"/>
-                                                    <ComboBoxItem Content="#C62828"/>
-                                                </ComboBox>
+                                                <local:ColorPickerField x:Name="ButtonPressedBackgroundColorPicker"
+                                                                        ColorChanged="OnElementPropertyChanged"/>
                                                 <TextBlock Text="Texte appui"/>
-                                                <ComboBox x:Name="ButtonPressedForegroundComboBox"
-                                                          Margin="0,3,0,8"
-                                                          SelectionChanged="OnElementPropertyChanged">
-                                                    <ComboBoxItem Content="#FFFFFF"/>
-                                                    <ComboBoxItem Content="#0F2A30"/>
-                                                </ComboBox>
+                                                <local:ColorPickerField x:Name="ButtonPressedForegroundColorPicker"
+                                                                        ColorChanged="OnElementPropertyChanged"/>
                                                 <TextBlock Text="Bordure appui"/>
-                                                <ComboBox x:Name="ButtonPressedBorderColorComboBox"
-                                                          Margin="0,3,0,8"
-                                                          SelectionChanged="OnElementPropertyChanged">
-                                                    <ComboBoxItem Content="#0F2A30"/>
-                                                    <ComboBoxItem Content="#0F7280"/>
-                                                    <ComboBoxItem Content="#2090A0"/>
-                                                    <ComboBoxItem Content="#C62828"/>
-                                                </ComboBox>
+                                                <local:ColorPickerField x:Name="ButtonPressedBorderColorPicker"
+                                                                        ColorChanged="OnElementPropertyChanged"/>
                                             </StackPanel>
                                         </TabItem>
                                         <TabItem Header="Evenement">

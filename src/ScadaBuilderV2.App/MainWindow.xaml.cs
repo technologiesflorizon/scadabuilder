@@ -2355,6 +2355,12 @@ public partial class MainWindow : Window
 
     private static async Task<ElementStudioLaunchResult> LaunchElementStudioProjectAsync(string studioProjectPath, string packagePath)
     {
+        var build = await BuildElementStudioProjectAsync(studioProjectPath);
+        if (!build.Launched)
+        {
+            return build;
+        }
+
         var dotnetStartInfo = new ProcessStartInfo
         {
             FileName = "dotnet",
@@ -2363,6 +2369,7 @@ public partial class MainWindow : Window
             WorkingDirectory = Path.GetDirectoryName(studioProjectPath) ?? ""
         };
         dotnetStartInfo.ArgumentList.Add("run");
+        dotnetStartInfo.ArgumentList.Add("--no-build");
         dotnetStartInfo.ArgumentList.Add("--project");
         dotnetStartInfo.ArgumentList.Add(studioProjectPath);
         dotnetStartInfo.ArgumentList.Add("--");
@@ -2390,6 +2397,56 @@ public partial class MainWindow : Window
         visibleProcess.Dispose();
         process.Dispose();
         return new ElementStudioLaunchResult(true, messagePath);
+    }
+
+    private static async Task<ElementStudioLaunchResult> BuildElementStudioProjectAsync(string studioProjectPath)
+    {
+        var buildStartInfo = new ProcessStartInfo
+        {
+            FileName = "dotnet",
+            UseShellExecute = false,
+            CreateNoWindow = true,
+            RedirectStandardOutput = true,
+            RedirectStandardError = true,
+            WorkingDirectory = Path.GetDirectoryName(studioProjectPath) ?? ""
+        };
+        buildStartInfo.ArgumentList.Add("build");
+        buildStartInfo.ArgumentList.Add(studioProjectPath);
+        buildStartInfo.ArgumentList.Add("--nologo");
+
+        var process = Process.Start(buildStartInfo);
+        if (process is null)
+        {
+            return new ElementStudioLaunchResult(false, $"Impossible de compiler Studio Element+ pour {studioProjectPath}.");
+        }
+
+        var outputTask = process.StandardOutput.ReadToEndAsync();
+        var errorTask = process.StandardError.ReadToEndAsync();
+        await process.WaitForExitAsync();
+        var output = await outputTask;
+        var error = await errorTask;
+        var exitCode = process.ExitCode;
+        process.Dispose();
+
+        if (exitCode == 0)
+        {
+            return new ElementStudioLaunchResult(true, studioProjectPath);
+        }
+
+        var details = string.Join(" ", new[] { output, error }
+            .Where(text => !string.IsNullOrWhiteSpace(text)))
+            .ReplaceLineEndings(" ")
+            .Trim();
+        if (details.Length > 260)
+        {
+            details = details[^260..];
+        }
+
+        return new ElementStudioLaunchResult(
+            false,
+            string.IsNullOrWhiteSpace(details)
+                ? $"Compilation Studio Element+ echouee (code {exitCode})."
+                : $"Compilation Studio Element+ echouee (code {exitCode}): {details}");
     }
 
     private static async Task<Process?> WaitForStudioWindowAsync(Process process, TimeSpan timeout)
@@ -5074,7 +5131,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ElementHeightTextBox.IsEnabled = isEnabled;
             ElementFontFamilyComboBox.IsEnabled = isEnabled;
             ElementFontSizeTextBox.IsEnabled = isEnabled;
-            ElementBackgroundComboBox.IsEnabled = isEnabled;
+            ElementBackgroundColorPicker.IsEnabled = isEnabled;
+            ElementBorderColorPicker.IsEnabled = isEnabled;
             ElementBorderStyleComboBox.IsEnabled = isEnabled;
             ElementBorderWidthTextBox.IsEnabled = isEnabled;
             ElementOpacityTextBox.IsEnabled = isEnabled;
@@ -5083,13 +5141,13 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ButtonContextTab.Visibility = element?.Kind == ScadaElementKind.Button ? Visibility.Visible : Visibility.Collapsed;
             ButtonDisabledCheckBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
             ButtonHoverEnabledCheckBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
-            ButtonHoverBackgroundComboBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
-            ButtonHoverForegroundComboBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
-            ButtonHoverBorderColorComboBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
+            ButtonHoverBackgroundColorPicker.IsEnabled = element?.Kind == ScadaElementKind.Button;
+            ButtonHoverForegroundColorPicker.IsEnabled = element?.Kind == ScadaElementKind.Button;
+            ButtonHoverBorderColorPicker.IsEnabled = element?.Kind == ScadaElementKind.Button;
             ButtonPressedEnabledCheckBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
-            ButtonPressedBackgroundComboBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
-            ButtonPressedForegroundComboBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
-            ButtonPressedBorderColorComboBox.IsEnabled = element?.Kind == ScadaElementKind.Button;
+            ButtonPressedBackgroundColorPicker.IsEnabled = element?.Kind == ScadaElementKind.Button;
+            ButtonPressedForegroundColorPicker.IsEnabled = element?.Kind == ScadaElementKind.Button;
+            ButtonPressedBorderColorPicker.IsEnabled = element?.Kind == ScadaElementKind.Button;
             ElementPlaceholderTextBox.IsEnabled = isEnabled;
             ElementValueTextBox.IsEnabled = isEnabled;
             var canEditNumericInputConstraints = isEnabled
@@ -5114,7 +5172,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 ElementHeightTextBox.Text = "";
                 ElementFontFamilyComboBox.SelectedIndex = 0;
                 ElementFontSizeTextBox.Text = "";
-                ElementBackgroundComboBox.SelectedIndex = 0;
+                ElementBackgroundColorPicker.SetColor("#FFFFFF");
+                ElementBorderColorPicker.SetColor("#8AA0A6");
                 ElementBorderStyleComboBox.SelectedIndex = 0;
                 ElementBorderWidthTextBox.Text = "";
                 ShadowNoneRadio.IsChecked = true;
@@ -5123,13 +5182,13 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 ElementAdvancedCssTextBox.Text = "";
                 ButtonDisabledCheckBox.IsChecked = false;
                 ButtonHoverEnabledCheckBox.IsChecked = true;
-                SelectComboBoxText(ButtonHoverBackgroundComboBox, ScadaButtonHoverStyle.Default.Background);
-                SelectComboBoxText(ButtonHoverForegroundComboBox, ScadaButtonHoverStyle.Default.Foreground);
-                SelectComboBoxText(ButtonHoverBorderColorComboBox, ScadaButtonHoverStyle.Default.BorderColor);
+                ButtonHoverBackgroundColorPicker.SetColor(ScadaButtonHoverStyle.Default.Background);
+                ButtonHoverForegroundColorPicker.SetColor(ScadaButtonHoverStyle.Default.Foreground);
+                ButtonHoverBorderColorPicker.SetColor(ScadaButtonHoverStyle.Default.BorderColor);
                 ButtonPressedEnabledCheckBox.IsChecked = true;
-                SelectComboBoxText(ButtonPressedBackgroundComboBox, ScadaButtonPressedStyle.Default.Background);
-                SelectComboBoxText(ButtonPressedForegroundComboBox, ScadaButtonPressedStyle.Default.Foreground);
-                SelectComboBoxText(ButtonPressedBorderColorComboBox, ScadaButtonPressedStyle.Default.BorderColor);
+                ButtonPressedBackgroundColorPicker.SetColor(ScadaButtonPressedStyle.Default.Background);
+                ButtonPressedForegroundColorPicker.SetColor(ScadaButtonPressedStyle.Default.Foreground);
+                ButtonPressedBorderColorPicker.SetColor(ScadaButtonPressedStyle.Default.BorderColor);
                 ElementPlaceholderTextBox.Text = "";
                 ElementValueTextBox.Text = "";
                 ElementMinTextBox.Text = "";
@@ -5153,7 +5212,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ElementHeightTextBox.Text = element.Bounds.Height.ToString("0.##");
             SelectComboBoxText(ElementFontFamilyComboBox, style.FontFamily);
             ElementFontSizeTextBox.Text = style.FontSize.ToString("0.##");
-            SelectComboBoxText(ElementBackgroundComboBox, style.Background);
+            ElementBackgroundColorPicker.SetColor(style.Background);
+            ElementBorderColorPicker.SetColor(style.BorderColor);
             SelectComboBoxText(ElementBorderStyleComboBox, style.BorderStyle);
             ElementBorderWidthTextBox.Text = style.BorderWidth.ToString("0.##");
             ShadowNoneRadio.IsChecked = style.ShadowPreset == "None";
@@ -5168,13 +5228,13 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             var pressedStyle = buttonBehavior.EffectivePressed;
             ButtonDisabledCheckBox.IsChecked = buttonBehavior.IsDisabled;
             ButtonHoverEnabledCheckBox.IsChecked = hoverStyle.Enabled;
-            SelectComboBoxText(ButtonHoverBackgroundComboBox, hoverStyle.Background);
-            SelectComboBoxText(ButtonHoverForegroundComboBox, hoverStyle.Foreground);
-            SelectComboBoxText(ButtonHoverBorderColorComboBox, hoverStyle.BorderColor);
+            ButtonHoverBackgroundColorPicker.SetColor(hoverStyle.Background);
+            ButtonHoverForegroundColorPicker.SetColor(hoverStyle.Foreground);
+            ButtonHoverBorderColorPicker.SetColor(hoverStyle.BorderColor);
             ButtonPressedEnabledCheckBox.IsChecked = pressedStyle.Enabled;
-            SelectComboBoxText(ButtonPressedBackgroundComboBox, pressedStyle.Background);
-            SelectComboBoxText(ButtonPressedForegroundComboBox, pressedStyle.Foreground);
-            SelectComboBoxText(ButtonPressedBorderColorComboBox, pressedStyle.BorderColor);
+            ButtonPressedBackgroundColorPicker.SetColor(pressedStyle.Background);
+            ButtonPressedForegroundColorPicker.SetColor(pressedStyle.Foreground);
+            ButtonPressedBorderColorPicker.SetColor(pressedStyle.BorderColor);
             ElementPlaceholderTextBox.Text = data.Placeholder ?? "";
             ElementValueTextBox.Text = data.Value?.ToString("0.##") ?? data.Text ?? "";
             ElementMinTextBox.Text = data.Minimum?.ToString("0.##") ?? "";
@@ -5212,6 +5272,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 FontFamily = result.FontFamily,
                 FontSize = result.FontSize,
                 Background = result.Background,
+                BorderColor = result.BorderColor,
                 BorderStyle = result.BorderStyle,
                 BorderWidth = result.BorderWidth,
                 ShadowPreset = result.ShadowPreset,
@@ -5508,7 +5569,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             {
                 FontFamily = GetComboBoxText(ElementFontFamilyComboBox, style.FontFamily),
                 FontSize = Math.Max(6, ParseDoubleOrDefault(ElementFontSizeTextBox.Text, style.FontSize)),
-                Background = GetComboBoxText(ElementBackgroundComboBox, style.Background),
+                Background = GetColorPickerValue(ElementBackgroundColorPicker, style.Background),
+                BorderColor = GetColorPickerValue(ElementBorderColorPicker, style.BorderColor),
                 BorderStyle = GetComboBoxText(ElementBorderStyleComboBox, style.BorderStyle),
                 BorderWidth = Math.Max(0, ParseDoubleOrDefault(ElementBorderWidthTextBox.Text, style.BorderWidth)),
                 ShadowPreset = GetSelectedShadowPreset(),
@@ -5521,14 +5583,14 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                     ButtonDisabledCheckBox.IsChecked == true,
                     new ScadaButtonHoverStyle(
                         ButtonHoverEnabledCheckBox.IsChecked == true,
-                        GetComboBoxText(ButtonHoverBackgroundComboBox, ScadaButtonHoverStyle.Default.Background),
-                        GetComboBoxText(ButtonHoverForegroundComboBox, ScadaButtonHoverStyle.Default.Foreground),
-                        GetComboBoxText(ButtonHoverBorderColorComboBox, ScadaButtonHoverStyle.Default.BorderColor)),
+                        GetColorPickerValue(ButtonHoverBackgroundColorPicker, ScadaButtonHoverStyle.Default.Background),
+                        GetColorPickerValue(ButtonHoverForegroundColorPicker, ScadaButtonHoverStyle.Default.Foreground),
+                        GetColorPickerValue(ButtonHoverBorderColorPicker, ScadaButtonHoverStyle.Default.BorderColor)),
                     new ScadaButtonPressedStyle(
                         ButtonPressedEnabledCheckBox.IsChecked == true,
-                        GetComboBoxText(ButtonPressedBackgroundComboBox, ScadaButtonPressedStyle.Default.Background),
-                        GetComboBoxText(ButtonPressedForegroundComboBox, ScadaButtonPressedStyle.Default.Foreground),
-                        GetComboBoxText(ButtonPressedBorderColorComboBox, ScadaButtonPressedStyle.Default.BorderColor)))
+                        GetColorPickerValue(ButtonPressedBackgroundColorPicker, ScadaButtonPressedStyle.Default.Background),
+                        GetColorPickerValue(ButtonPressedForegroundColorPicker, ScadaButtonPressedStyle.Default.Foreground),
+                        GetColorPickerValue(ButtonPressedBorderColorPicker, ScadaButtonPressedStyle.Default.BorderColor)))
                 : current.ButtonBehavior,
             Data = data with
             {
@@ -5743,6 +5805,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         return comboBox.SelectedItem is ComboBoxItem item && item.Content is string text
             ? text
             : fallback;
+    }
+
+    private static string GetColorPickerValue(ColorPickerField colorPicker, string fallback)
+    {
+        return string.IsNullOrWhiteSpace(colorPicker.Value) ? fallback : colorPicker.Value.Trim();
     }
 
     private static void SelectComboBoxText(ComboBox comboBox, string value)

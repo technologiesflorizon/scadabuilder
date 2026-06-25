@@ -169,6 +169,9 @@ public sealed class StudioElementPlusContractTests
         var code = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");
 
         StringAssert.Contains(code, "LaunchElementStudioProjectAsync(studioProjectPath, packagePath)");
+        StringAssert.Contains(code, "BuildElementStudioProjectAsync(studioProjectPath)");
+        StringAssert.Contains(code, "buildStartInfo.ArgumentList.Add(\"build\");");
+        StringAssert.Contains(code, "dotnetStartInfo.ArgumentList.Add(\"--no-build\");");
         StringAssert.Contains(code, "Path.Combine(AppContext.BaseDirectory, \"ScadaBuilderV2.ElementStudio.App.exe\")");
         Assert.IsFalse(
             code.Contains("Path.Combine(sourceRoot, \"bin\", \"Debug\"", StringComparison.Ordinal),
@@ -311,7 +314,7 @@ public sealed class StudioElementPlusContractTests
         var decisions = ReadProjectFile("docs", "05_studio_element_plus", "STUDIO_ELEMENT_PLUS_SELECTION_CONTRACT_V2.md");
         var version = ReadProjectFile("VERSION");
 
-        StringAssert.Contains(version, "V2.1.3.0001");
+        StringAssert.Contains(version, "V2.1.3.0002");
         StringAssert.Contains(code, "case \"clearSelection\":");
         StringAssert.Contains(code, "UpdateSelectionGeometryFields();");
         StringAssert.Contains(xaml, "Text=\"{Binding StructureSummary}\"");

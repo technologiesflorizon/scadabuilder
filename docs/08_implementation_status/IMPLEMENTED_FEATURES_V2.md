@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active implementation status
-Document version: `V2.1.3.0001`
+Document version: `V2.1.3.0002`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-06-19 | `V2.1.3.0002` | `PENDING` | Implementation du color picker modal aligne sur `CSS fond` pour les couleurs arriere-plan/bordure Style et Bouton Element+. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes a des icones 32x32 sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Implementation de la galerie Formes du ruban Inserer et du placement Ligne/Fleche en deux points. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Extraction de la palette laterale d'outils vers le catalogue semantique partage. |
@@ -115,6 +116,7 @@ As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 253 
 49. The WPF shell top ribbon now marks the active tab, groups visible commands by task family, exposes horizontal overflow for long command families, standardizes visible labels in French, disables placeholder commands with explanatory tooltips, and replaces insert-ribbon text glyphs with semantic icon keys from `Icons.xaml`.
 50. The WPF shell top ribbon now renders the active tab from a command registry containing stable command ids, labels, tooltips or disabled reasons, icon keys, executable state, and grouped command metadata. Implemented commands dispatch through the registry to existing shell workflows; future commands remain registered but disabled.
 51. The Insert ribbon `Formes` group now uses an icon-only 32x32 shape gallery capped at four columns with a second row for overflow. Active insertion commands show selected state until placement completes or is cancelled, and shape names remain available through command tooltips.
+52. Color-valued Element+ `Style` properties, including background and border color, and `Bouton` properties use a WPF color picker field with swatch preview, hex output, saturation/value area, hue slider, preset swatches, RGB sliders, and a modal `Annuler` / `Enregistrer` flow aligned with `CSS fond`; targeted `WebViewContextMenuScriptTests`, `ModernProjectStoreTests`, and `Ft100SceneExporterTests` coverage passed for the protected property/export contracts.
 
 ## 3. Source Of Truth
 

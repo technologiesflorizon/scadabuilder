@@ -1,6 +1,7 @@
 <Window x:Class="ScadaBuilderV2.App.ElementPropertiesDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:ScadaBuilderV2.App"
         Title="Proprietes Element+"
         Width="620"
         Height="680"
@@ -107,13 +108,9 @@
                         <TextBlock Text="Taille police"/>
                         <TextBox x:Name="FontSizeTextBox"/>
                         <TextBlock Text="Couleur arriere-plan"/>
-                        <ComboBox x:Name="BackgroundComboBox" IsEditable="True">
-                            <ComboBoxItem Content="#FFFFFF"/>
-                            <ComboBoxItem Content="Transparent"/>
-                            <ComboBoxItem Content="#F7FBF5"/>
-                            <ComboBoxItem Content="#90C030"/>
-                            <ComboBoxItem Content="#2090A0"/>
-                        </ComboBox>
+                        <local:ColorPickerField x:Name="BackgroundColorPicker"/>
+                        <TextBlock Text="Couleur bordure"/>
+                        <local:ColorPickerField x:Name="BorderColorPicker"/>
                         <TextBlock Text="Bordure"/>
                         <ComboBox x:Name="BorderStyleComboBox">
                             <ComboBoxItem Content="Solid"/>
@@ -159,48 +156,20 @@
                                   Content="Survol automatique"
                                   Margin="0,0,0,8"/>
                         <TextBlock Text="Fond survol"/>
-                        <ComboBox x:Name="ButtonHoverBackgroundComboBox" IsEditable="True">
-                            <ComboBoxItem Content="#EAF5F7"/>
-                            <ComboBoxItem Content="#F7FBF5"/>
-                            <ComboBoxItem Content="#DFF3E7"/>
-                            <ComboBoxItem Content="#2090A0"/>
-                            <ComboBoxItem Content="#90C030"/>
-                        </ComboBox>
+                        <local:ColorPickerField x:Name="ButtonHoverBackgroundColorPicker"/>
                         <TextBlock Text="Texte survol"/>
-                        <ComboBox x:Name="ButtonHoverForegroundComboBox" IsEditable="True">
-                            <ComboBoxItem Content="#0F2A30"/>
-                            <ComboBoxItem Content="#FFFFFF"/>
-                            <ComboBoxItem Content="#2090A0"/>
-                        </ComboBox>
+                        <local:ColorPickerField x:Name="ButtonHoverForegroundColorPicker"/>
                         <TextBlock Text="Bordure survol"/>
-                        <ComboBox x:Name="ButtonHoverBorderColorComboBox" IsEditable="True">
-                            <ComboBoxItem Content="#2090A0"/>
-                            <ComboBoxItem Content="#90C030"/>
-                            <ComboBoxItem Content="#0F7280"/>
-                            <ComboBoxItem Content="#8AA0A6"/>
-                        </ComboBox>
+                        <local:ColorPickerField x:Name="ButtonHoverBorderColorPicker"/>
                         <CheckBox x:Name="ButtonPressedEnabledCheckBox"
                                   Content="Appui actif automatique"
                                   Margin="0,8,0,8"/>
                         <TextBlock Text="Fond appui"/>
-                        <ComboBox x:Name="ButtonPressedBackgroundComboBox" IsEditable="True">
-                            <ComboBoxItem Content="#0F7280"/>
-                            <ComboBoxItem Content="#2090A0"/>
-                            <ComboBoxItem Content="#90C030"/>
-                            <ComboBoxItem Content="#C62828"/>
-                        </ComboBox>
+                        <local:ColorPickerField x:Name="ButtonPressedBackgroundColorPicker"/>
                         <TextBlock Text="Texte appui"/>
-                        <ComboBox x:Name="ButtonPressedForegroundComboBox" IsEditable="True">
-                            <ComboBoxItem Content="#FFFFFF"/>
-                            <ComboBoxItem Content="#0F2A30"/>
-                        </ComboBox>
+                        <local:ColorPickerField x:Name="ButtonPressedForegroundColorPicker"/>
                         <TextBlock Text="Bordure appui"/>
-                        <ComboBox x:Name="ButtonPressedBorderColorComboBox" IsEditable="True">
-                            <ComboBoxItem Content="#0F2A30"/>
-                            <ComboBoxItem Content="#0F7280"/>
-                            <ComboBoxItem Content="#2090A0"/>
-                            <ComboBoxItem Content="#C62828"/>
-                        </ComboBox>
+                        <local:ColorPickerField x:Name="ButtonPressedBorderColorPicker"/>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>
