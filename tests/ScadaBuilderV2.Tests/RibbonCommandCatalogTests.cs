@@ -148,6 +148,22 @@ public sealed class RibbonCommandCatalogTests
         Assert.IsFalse(xaml.Contains("Source=\"{StaticResource Icon.Tool.", StringComparison.Ordinal));
     }
 
+    [TestMethod]
+    public void ToolsTabExposesElementStudioCommand()
+    {
+        var tabs = RibbonCommandCatalog.CreateDefault();
+        var toolsCommands = tabs["Tools"].SelectMany(group => group.Commands).ToArray();
+        var studioCommand = toolsCommands.SingleOrDefault(command => command.Id == "tool.element-studio");
+
+        Assert.IsNotNull(studioCommand, "Tools tab should expose the tool.element-studio command.");
+        Assert.IsTrue(studioCommand!.IsEnabled);
+        Assert.IsNull(studioCommand.DisabledReason);
+        Assert.AreEqual("Icon.Tool.ElementStudio", studioCommand.IconKey);
+
+        var paletteIds = RibbonCommandCatalog.CreateToolPalette().Select(command => command.Id).ToArray();
+        CollectionAssert.DoesNotContain(paletteIds, "tool.element-studio");
+    }
+
     private static string ReadProjectFile(params string[] parts)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
