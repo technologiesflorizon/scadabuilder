@@ -33,9 +33,12 @@ desactive ("Configurer les outils a venir") et n'ouvre rien.
      — son chemin n'est jamais ecrit dans un fichier de configuration, pour
      eviter qu'il devienne perime si le depot est deplace ou re-clone ;
   2. les entrees externes chargees depuis le fichier de settings.
-  `LibraryRegistry` expose `Add`, `Rename`, `UpdatePath`, `Remove` ; ces
-  trois dernieres operations refusent explicitement de s'appliquer a
-  l'entree `IsDefault`. `Add` refuse un chemin deja present dans la liste
+  `LibraryRegistry` expose `Add`, `Rename`, `UpdatePath`, `Remove`.
+  `Rename` s'applique aussi bien a l'entree `IsDefault` qu'aux entrees
+  externes (seul le nom de la librairie par defaut est modifiable, conforme
+  a la decision prise en brainstorming). `UpdatePath` et `Remove` refusent
+  explicitement de s'appliquer a l'entree `IsDefault` (chemin et presence
+  verrouilles). `Add` refuse un chemin deja present dans la liste
   (comparaison de chemins normalisee, insensible a la casse sous Windows).
 
 - **`ScadaBuilderV2.Infrastructure.Libraries.LibraryRegistryStore`** :
