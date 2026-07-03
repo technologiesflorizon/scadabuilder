@@ -21,6 +21,8 @@ using ScadaBuilderV2.Domain.Elements;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
 using ScadaBuilderV2.Infrastructure.ElementStudio;
+using ScadaBuilderV2.Application.Libraries;
+using ScadaBuilderV2.Infrastructure.Libraries;
 using ScadaBuilderV2.Infrastructure.ModernProjects;
 using ScadaBuilderV2.Infrastructure.ReferenceProjects;
 using ScadaBuilderV2.Rendering;
@@ -42,6 +44,7 @@ public partial class MainWindow : Window
     private readonly Tf100WebTagCatalogImporter _tagCatalogImporter = new();
     private readonly IElementStudioImportPackageWriter _elementStudioPackageWriter = new ElementStudioImportPackageWriter();
     private readonly ElementStudioComponentPackageStore _elementStudioComponentPackageStore = new();
+    private readonly LibraryRegistryStore _libraryRegistryStore = new();
     private readonly ElementPlusLibraryReader _elementPlusLibraryReader = new();
     private readonly ObservableCollection<ElementPlusLibraryItem> _elementLibraryItems = [];
     private readonly ObservableCollection<TagCatalogListItem> _tagCatalogItems = [];
@@ -904,6 +907,25 @@ public partial class MainWindow : Window
         }
 
         return libraryRoot;
+    }
+
+    private async Task<LibraryRegistry> BuildLibraryRegistryAsync()
+    {
+        var defaultPath = ResolveElementPlusLibraryRoot(create: true)
+            ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SCADA_BUILDER_V2", "library", "elements");
+        var defaultEntry = new LibraryEntry("Defaut", defaultPath, IsDefault: true);
+        var externalEntries = await _libraryRegistryStore.ReadExternalEntriesAsync();
+        return new LibraryRegistry(defaultEntry, externalEntries);
+    }
+
+    private async Task OpenConfigurationWindowAsync()
+    {
+        var registry = await BuildLibraryRegistryAsync();
+        var dialog = new ConfigurationWindow(registry) { Owner = this };
+        if (dialog.ShowDialog() == true)
+        {
+            await _libraryRegistryStore.WriteExternalEntriesAsync(dialog.Registry.ExternalEntries);
+        }
     }
 
     private void OnStatusDiagnosticsClick(object sender, RoutedEventArgs e)
@@ -5845,6 +5867,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 break;
             case "tool.element-studio":
                 await OpenElementStudioFromToolPaletteAsync();
+                break;
+            case "tool.settings":
+                await OpenConfigurationWindowAsync();
                 break;
             case "object.ungroup":
                 UngroupSelectedModernElement();

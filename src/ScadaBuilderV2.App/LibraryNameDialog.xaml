@@ -1,0 +1,39 @@
+<Window x:Class="ScadaBuilderV2.App.LibraryNameDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Nom de la librairie"
+        Width="360"
+        Height="180"
+        MinWidth="320"
+        MinHeight="180"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        ShowInTaskbar="False">
+    <Window.Resources>
+        <SolidColorBrush x:Key="InkBrush" Color="#0F2A30"/>
+        <SolidColorBrush x:Key="BorderBrushSoft" Color="#DCE8DD"/>
+        <Style TargetType="Button">
+            <Setter Property="MinHeight" Value="32"/>
+            <Setter Property="Padding" Value="12,6"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrushSoft}"/>
+        </Style>
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Background" Value="#2090A0"/>
+            <Setter Property="BorderBrush" Value="#0F7280"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+    </Window.Resources>
+    <DockPanel Margin="16">
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,12,0,0">
+            <Button Content="OK" Style="{StaticResource PrimaryButtonStyle}" Click="OnOkClick" IsDefault="True"/>
+            <Button Content="Annuler" Click="OnCancelClick" IsCancel="True"/>
+        </StackPanel>
+        <StackPanel>
+            <TextBlock x:Name="PromptText" Text="Nom de la librairie" Foreground="{StaticResource InkBrush}" Margin="0,0,0,6"/>
+            <TextBox x:Name="NameTextBox" MinHeight="30"/>
+            <TextBlock x:Name="ErrorText" Foreground="Red" Margin="0,6,0,0" TextWrapping="Wrap" Visibility="Collapsed"/>
+        </StackPanel>
+    </DockPanel>
+</Window>

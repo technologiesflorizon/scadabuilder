@@ -83,7 +83,7 @@ public static class RibbonCommandCatalog
                     Disabled("tool.image", "Image", "Icon.Tool.Image", "Outil image a venir"),
                     Disabled("tool.zoom", "Zoom", "Icon.Tool.Zoom", "Zoom outille a venir")),
                 Group("Configuration",
-                    Disabled("tool.settings", "Configurer", "Icon.Tool.Settings", "Configurer les outils a venir"),
+                    Enabled("tool.settings", "Configurer", "Icon.Tool.Settings", "Ouvrir la configuration (librairies)"),
                     Enabled("tool.element-studio", "Studio E+", "Icon.Tool.ElementStudio", "Ouvrir Studio Element+ (editeur de composants Element+)"))
             ],
             ["Insert"] =

@@ -164,6 +164,18 @@ public sealed class RibbonCommandCatalogTests
         CollectionAssert.DoesNotContain(paletteIds, "tool.element-studio");
     }
 
+    [TestMethod]
+    public void ToolsTabExposesEnabledSettingsCommand()
+    {
+        var tabs = RibbonCommandCatalog.CreateDefault();
+        var toolsCommands = tabs["Tools"].SelectMany(group => group.Commands).ToArray();
+        var settingsCommand = toolsCommands.SingleOrDefault(command => command.Id == "tool.settings");
+
+        Assert.IsNotNull(settingsCommand, "Tools tab should expose the tool.settings command.");
+        Assert.IsTrue(settingsCommand!.IsEnabled);
+        Assert.IsNull(settingsCommand.DisabledReason);
+    }
+
     private static string ReadProjectFile(params string[] parts)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
