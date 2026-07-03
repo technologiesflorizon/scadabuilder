@@ -398,6 +398,33 @@
                             <TextBlock Text="{Binding ComponentSummary}" TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" Margin="0,8,0,0"/>
                         </StackPanel>
                     </TabItem>
+                    <TabItem Header="Librairie">
+                        <DockPanel Margin="12">
+                            <StackPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+                                <TextBlock Text="Librairie active"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource InkBrush}"
+                                           Margin="0,0,0,4"/>
+                                <ComboBox x:Name="StudioLibrarySelectorComboBox"
+                                          DisplayMemberPath="Name"
+                                          SelectionChanged="OnStudioLibrarySelectorSelectionChanged"/>
+                            </StackPanel>
+                            <ListBox x:Name="StudioLibraryListBox"
+                                     DisplayMemberPath="Name"
+                                     ItemContainerStyle="{StaticResource ElementListBoxItemStyle}">
+                                <ListBox.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Editer"
+                                                  IsEnabled="False"
+                                                  ToolTip="Edition disponible dans une prochaine version"/>
+                                        <MenuItem Header="Renommer" Click="OnRenameLibraryComponentClick"/>
+                                        <MenuItem Header="Copier" Click="OnCopyLibraryComponentClick"/>
+                                        <MenuItem Header="Supprimer" Click="OnDeleteLibraryComponentClick"/>
+                                    </ContextMenu>
+                                </ListBox.ContextMenu>
+                            </ListBox>
+                        </DockPanel>
+                    </TabItem>
                 </TabControl>
             </Border>
 

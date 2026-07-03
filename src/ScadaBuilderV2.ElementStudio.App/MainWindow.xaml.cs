@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text.Encodings.Web;
@@ -20,6 +21,8 @@ public partial class MainWindow : Window
     private readonly IReadOnlyDictionary<string, FrameworkElement> ribbons;
     private readonly ElementStudioComponentPackageStore componentPackageStore = new();
     private readonly LibraryRegistryStore libraryRegistryStore = new();
+    private readonly ElementPlusLibraryReader elementPlusLibraryReader = new();
+    private readonly ObservableCollection<ElementPlusLibraryItem> libraryItems = [];
     private readonly ElementStudioWorkspaceViewModel workspace;
     private readonly string? sourcePackagePath;
     private bool isSynchronizingElementSelection;
@@ -44,6 +47,7 @@ public partial class MainWindow : Window
         };
 
         Loaded += OnLoaded;
+        StudioLibraryListBox.ItemsSource = libraryItems;
     }
 
     private async void OnLoaded(object sender, RoutedEventArgs e)
@@ -70,6 +74,7 @@ public partial class MainWindow : Window
         UpdateSelectionGeometryFields();
         ApplyWorkzoneZoom();
         UpdateToolButtonStates();
+        await RefreshLibrarySelectorAsync();
     }
 
     private async void OnCreateSvgComponentClick(object sender, RoutedEventArgs e)
@@ -99,10 +104,7 @@ public partial class MainWindow : Window
 
     private async void OnAddToLibraryArrowClick(object sender, RoutedEventArgs e)
     {
-        var externalEntries = await libraryRegistryStore.ReadExternalEntriesAsync();
-        var defaultName = await libraryRegistryStore.ReadDefaultNameAsync() ?? "Defaut";
-        var defaultEntry = new LibraryEntry(defaultName, ResolveDefaultSepDirectory(), IsDefault: true);
-        var entries = new[] { defaultEntry }.Concat(externalEntries).ToArray();
+        var entries = await BuildLibraryEntriesAsync();
 
         var menu = new ContextMenu();
         foreach (var entry in entries)
@@ -114,6 +116,64 @@ public partial class MainWindow : Window
 
         menu.PlacementTarget = AddToLibraryArrowButton;
         menu.IsOpen = true;
+    }
+
+    private async Task<IReadOnlyList<LibraryEntry>> BuildLibraryEntriesAsync()
+    {
+        var externalEntries = await libraryRegistryStore.ReadExternalEntriesAsync();
+        var defaultName = await libraryRegistryStore.ReadDefaultNameAsync() ?? "Defaut";
+        var defaultEntry = new LibraryEntry(defaultName, ResolveDefaultSepDirectory(), IsDefault: true);
+        return new[] { defaultEntry }.Concat(externalEntries).ToArray();
+    }
+
+    private async Task RefreshLibrarySelectorAsync()
+    {
+        var entries = await BuildLibraryEntriesAsync();
+        var previousName = (StudioLibrarySelectorComboBox.SelectedItem as LibraryEntry)?.Name;
+        StudioLibrarySelectorComboBox.ItemsSource = entries;
+        var toSelect = entries.FirstOrDefault(entry => entry.Name == previousName) ?? entries[0];
+        StudioLibrarySelectorComboBox.SelectedItem = toSelect;
+    }
+
+    private async void OnStudioLibrarySelectorSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        await RefreshLibraryItemsAsync();
+    }
+
+    private async Task RefreshLibraryItemsAsync()
+    {
+        libraryItems.Clear();
+        if (StudioLibrarySelectorComboBox.SelectedItem is not LibraryEntry selected)
+        {
+            return;
+        }
+
+        try
+        {
+            var snapshot = await elementPlusLibraryReader.ReadAsync(selected.Path);
+            foreach (var item in snapshot.Items)
+            {
+                libraryItems.Add(item);
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, ex.Message, "Librairie", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    // Handlers wired from the "Librairie" tab context menu. Implemented in a later task;
+    // kept as no-op stubs here so the XAML's Click bindings compile.
+    private void OnRenameLibraryComponentClick(object sender, RoutedEventArgs e)
+    {
+    }
+
+    private void OnCopyLibraryComponentClick(object sender, RoutedEventArgs e)
+    {
+    }
+
+    private void OnDeleteLibraryComponentClick(object sender, RoutedEventArgs e)
+    {
     }
 
     private async void OnLibraryMenuItemClick(object sender, RoutedEventArgs e)
