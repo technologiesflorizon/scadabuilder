@@ -6,20 +6,23 @@ namespace ScadaBuilderV2.Tests;
 [TestClass]
 public sealed class LibraryRegistryStoreTests
 {
+    private string _tempSettingsDirectory = "";
     private string _tempSettingsPath = "";
 
     [TestInitialize]
     public void Setup()
     {
-        _tempSettingsPath = Path.Combine(Path.GetTempPath(), $"scada-builder-v2-libraries-test-{Guid.NewGuid():N}.json");
+        _tempSettingsDirectory = Path.Combine(Path.GetTempPath(), $"scada-builder-v2-libraries-test-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(_tempSettingsDirectory);
+        _tempSettingsPath = Path.Combine(_tempSettingsDirectory, "libraries.json");
     }
 
     [TestCleanup]
     public void Cleanup()
     {
-        if (File.Exists(_tempSettingsPath))
+        if (Directory.Exists(_tempSettingsDirectory))
         {
-            File.Delete(_tempSettingsPath);
+            Directory.Delete(_tempSettingsDirectory, recursive: true);
         }
     }
 
@@ -90,5 +93,49 @@ public sealed class LibraryRegistryStoreTests
         var path = LibraryRegistryStore.GetDefaultSettingsPath();
 
         StringAssert.EndsWith(path, Path.Combine("ScadaBuilderV2", "libraries.json"));
+    }
+
+    [TestMethod]
+    public async Task ReadExternalEntriesAsyncReturnsEmptyListWhenFileIsCorruptJson()
+    {
+        var store = new LibraryRegistryStore();
+        await File.WriteAllTextAsync(_tempSettingsPath, "{ not valid json ]]]");
+
+        var entries = await store.ReadExternalEntriesAsync(_tempSettingsPath);
+
+        Assert.AreEqual(0, entries.Count);
+    }
+
+    [TestMethod]
+    public async Task ReadDefaultNameAsyncReturnsNullWhenFileMissing()
+    {
+        var store = new LibraryRegistryStore();
+
+        var name = await store.ReadDefaultNameAsync(_tempSettingsPath);
+
+        Assert.IsNull(name);
+    }
+
+    [TestMethod]
+    public async Task WriteThenReadRoundTripsDefaultName()
+    {
+        var store = new LibraryRegistryStore();
+
+        await store.WriteDefaultNameAsync("Ma librairie par defaut", _tempSettingsPath);
+        var name = await store.ReadDefaultNameAsync(_tempSettingsPath);
+
+        Assert.AreEqual("Ma librairie par defaut", name);
+    }
+
+    [TestMethod]
+    public async Task ReadDefaultNameAsyncReturnsNullWhenFileIsCorruptJson()
+    {
+        var store = new LibraryRegistryStore();
+        var defaultNamePath = Path.Combine(_tempSettingsDirectory, "default-library-name.json");
+        await File.WriteAllTextAsync(defaultNamePath, "{ not valid json ]]]");
+
+        var name = await store.ReadDefaultNameAsync(_tempSettingsPath);
+
+        Assert.IsNull(name);
     }
 }

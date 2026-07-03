@@ -100,7 +100,8 @@ public partial class MainWindow : Window
     private async void OnAddToLibraryArrowClick(object sender, RoutedEventArgs e)
     {
         var externalEntries = await libraryRegistryStore.ReadExternalEntriesAsync();
-        var defaultEntry = new LibraryEntry("Defaut", ResolveDefaultSepDirectory(), IsDefault: true);
+        var defaultName = await libraryRegistryStore.ReadDefaultNameAsync() ?? "Defaut";
+        var defaultEntry = new LibraryEntry(defaultName, ResolveDefaultSepDirectory(), IsDefault: true);
         var entries = new[] { defaultEntry }.Concat(externalEntries).ToArray();
 
         var menu = new ContextMenu();

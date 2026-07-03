@@ -58,6 +58,37 @@ public sealed class ConfigurationWindowContractTests
     }
 
     [TestMethod]
+    public void ResolveActiveLibraryRootOnlyAutoCreatesDefaultEntryFolder()
+    {
+        var code = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");
+
+        var methodStart = code.IndexOf("private string? ResolveActiveLibraryRoot(bool create)", StringComparison.Ordinal);
+        Assert.AreNotEqual(-1, methodStart, "ResolveActiveLibraryRoot method not found.");
+        var methodEnd = code.IndexOf("\n    }", methodStart, StringComparison.Ordinal);
+        Assert.AreNotEqual(-1, methodEnd, "ResolveActiveLibraryRoot method end not found.");
+        var methodBody = code.Substring(methodStart, methodEnd - methodStart);
+
+        StringAssert.Contains(methodBody, "IsDefault");
+        StringAssert.Contains(methodBody, "Directory.CreateDirectory");
+    }
+
+    [TestMethod]
+    public void StartElementLibraryWatcherGuardsWatcherCreationWithTryCatch()
+    {
+        var code = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");
+
+        var methodStart = code.IndexOf("private void StartElementLibraryWatcher()", StringComparison.Ordinal);
+        Assert.AreNotEqual(-1, methodStart, "StartElementLibraryWatcher method not found.");
+        var methodEnd = code.IndexOf("\n    private void StopElementLibraryWatcher()", methodStart, StringComparison.Ordinal);
+        Assert.AreNotEqual(-1, methodEnd, "StartElementLibraryWatcher method end not found.");
+        var methodBody = code.Substring(methodStart, methodEnd - methodStart);
+
+        StringAssert.Contains(methodBody, "try");
+        StringAssert.Contains(methodBody, "catch");
+        StringAssert.Contains(methodBody, "new FileSystemWatcher(");
+    }
+
+    [TestMethod]
     public void ElementStudioXamlReplacesSaveAsSepButtonWithSplitButton()
     {
         var xaml = ReadProjectFile("src", "ScadaBuilderV2.ElementStudio.App", "MainWindow.xaml");

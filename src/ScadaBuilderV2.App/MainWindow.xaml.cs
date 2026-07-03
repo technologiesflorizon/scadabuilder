@@ -832,26 +832,33 @@ public partial class MainWindow : Window
             return;
         }
 
-        _elementLibraryRefreshTimer = new DispatcherTimer
+        try
         {
-            Interval = TimeSpan.FromMilliseconds(350)
-        };
-        _elementLibraryRefreshTimer.Tick += async (_, _) =>
-        {
-            _elementLibraryRefreshTimer?.Stop();
-            await RefreshElementLibraryAsync();
-        };
+            _elementLibraryRefreshTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(350)
+            };
+            _elementLibraryRefreshTimer.Tick += async (_, _) =>
+            {
+                _elementLibraryRefreshTimer?.Stop();
+                await RefreshElementLibraryAsync();
+            };
 
-        _elementLibraryWatcher = new FileSystemWatcher(libraryRoot, "*.sep")
+            _elementLibraryWatcher = new FileSystemWatcher(libraryRoot, "*.sep")
+            {
+                IncludeSubdirectories = false,
+                NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.CreationTime
+            };
+            _elementLibraryWatcher.Created += OnElementLibraryChanged;
+            _elementLibraryWatcher.Changed += OnElementLibraryChanged;
+            _elementLibraryWatcher.Deleted += OnElementLibraryChanged;
+            _elementLibraryWatcher.Renamed += OnElementLibraryRenamed;
+            _elementLibraryWatcher.EnableRaisingEvents = true;
+        }
+        catch (Exception ex) when (ex is ArgumentException or IOException)
         {
-            IncludeSubdirectories = false,
-            NotifyFilter = NotifyFilters.FileName | NotifyFilters.LastWrite | NotifyFilters.Size | NotifyFilters.CreationTime
-        };
-        _elementLibraryWatcher.Created += OnElementLibraryChanged;
-        _elementLibraryWatcher.Changed += OnElementLibraryChanged;
-        _elementLibraryWatcher.Deleted += OnElementLibraryChanged;
-        _elementLibraryWatcher.Renamed += OnElementLibraryRenamed;
-        _elementLibraryWatcher.EnableRaisingEvents = true;
+            StopElementLibraryWatcher();
+        }
     }
 
     private void StopElementLibraryWatcher()
@@ -912,18 +919,18 @@ public partial class MainWindow : Window
 
     private string? ResolveActiveLibraryRoot(bool create)
     {
-        var path = _selectedLibraryEntry?.Path;
-        if (path is null)
+        var selectedEntry = _selectedLibraryEntry;
+        if (selectedEntry is null)
         {
             return null;
         }
 
-        if (create)
+        if (create && selectedEntry.IsDefault)
         {
-            Directory.CreateDirectory(path);
+            Directory.CreateDirectory(selectedEntry.Path);
         }
 
-        return path;
+        return selectedEntry.Path;
     }
 
     private async Task RefreshLibrarySelectorAsync()
@@ -947,7 +954,8 @@ public partial class MainWindow : Window
     {
         var defaultPath = ResolveElementPlusLibraryRoot(create: true)
             ?? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "SCADA_BUILDER_V2", "library", "elements");
-        var defaultEntry = new LibraryEntry("Defaut", defaultPath, IsDefault: true);
+        var defaultName = await _libraryRegistryStore.ReadDefaultNameAsync() ?? "Defaut";
+        var defaultEntry = new LibraryEntry(defaultName, defaultPath, IsDefault: true);
         var externalEntries = await _libraryRegistryStore.ReadExternalEntriesAsync();
         return new LibraryRegistry(defaultEntry, externalEntries);
     }
@@ -959,6 +967,7 @@ public partial class MainWindow : Window
         if (dialog.ShowDialog() == true)
         {
             await _libraryRegistryStore.WriteExternalEntriesAsync(dialog.Registry.ExternalEntries);
+            await _libraryRegistryStore.WriteDefaultNameAsync(dialog.Registry.Entries[0].Name);
             await RefreshLibrarySelectorAsync();
         }
     }
