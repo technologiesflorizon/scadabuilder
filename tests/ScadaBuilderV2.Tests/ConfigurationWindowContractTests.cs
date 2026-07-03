@@ -57,6 +57,27 @@ public sealed class ConfigurationWindowContractTests
         StringAssert.Contains(code, "OnLibrarySelectorSelectionChanged");
     }
 
+    [TestMethod]
+    public void ElementStudioXamlReplacesSaveAsSepButtonWithSplitButton()
+    {
+        var xaml = ReadProjectFile("src", "ScadaBuilderV2.ElementStudio.App", "MainWindow.xaml");
+
+        StringAssert.Contains(xaml, "x:Name=\"AddToLibraryButton\"");
+        StringAssert.Contains(xaml, "x:Name=\"AddToLibraryArrowButton\"");
+        StringAssert.Contains(xaml, "Click=\"OnAddToLibraryArrowClick\"");
+        Assert.IsFalse(xaml.Contains("Content=\"Save as .sep\"", StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void ElementStudioCodeSavesDirectlyToChosenLibraryFromArrowMenu()
+    {
+        var code = ReadProjectFile("src", "ScadaBuilderV2.ElementStudio.App", "MainWindow.xaml.cs");
+
+        StringAssert.Contains(code, "OnAddToLibraryArrowClick");
+        StringAssert.Contains(code, "componentPackageStore.WriteToLibraryAsync(");
+        StringAssert.Contains(code, "OnSaveComponentAsClick");
+    }
+
     private static string ReadProjectFile(params string[] parts)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

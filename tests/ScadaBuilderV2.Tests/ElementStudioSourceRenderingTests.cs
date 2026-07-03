@@ -262,7 +262,7 @@ public sealed class ElementStudioSourceRenderingTests
 
         StringAssert.Contains(project, "ScadaBuilderV2.Infrastructure");
         StringAssert.Contains(xaml, "Content=\"Enregistrer\" Click=\"OnSaveComponentClick\"");
-        StringAssert.Contains(xaml, "Content=\"Save as .sep\" Click=\"OnSaveComponentAsClick\"");
+        StringAssert.Contains(xaml, "Content=\"Ajouter a la librairie\" Click=\"OnSaveComponentAsClick\"");
         StringAssert.Contains(xaml, "SavedComponentPath, Mode=OneWay");
         StringAssert.Contains(code, "ElementStudioComponentPackageStore");
         StringAssert.Contains(code, "private async void OnSaveComponentClick");

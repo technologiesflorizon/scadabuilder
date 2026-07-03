@@ -10,6 +10,8 @@ using Microsoft.Win32;
 using ScadaBuilderV2.Application.ElementStudio;
 using ScadaBuilderV2.Domain.Scenes;
 using ScadaBuilderV2.Infrastructure.ElementStudio;
+using ScadaBuilderV2.Application.Libraries;
+using ScadaBuilderV2.Infrastructure.Libraries;
 
 namespace ScadaBuilderV2.ElementStudio.App;
 
@@ -17,6 +19,7 @@ public partial class MainWindow : Window
 {
     private readonly IReadOnlyDictionary<string, FrameworkElement> ribbons;
     private readonly ElementStudioComponentPackageStore componentPackageStore = new();
+    private readonly LibraryRegistryStore libraryRegistryStore = new();
     private readonly ElementStudioWorkspaceViewModel workspace;
     private readonly string? sourcePackagePath;
     private bool isSynchronizingElementSelection;
@@ -92,6 +95,47 @@ public partial class MainWindow : Window
     private async void OnSaveComponentAsClick(object sender, RoutedEventArgs e)
     {
         await SaveComponentAsAsync();
+    }
+
+    private async void OnAddToLibraryArrowClick(object sender, RoutedEventArgs e)
+    {
+        var externalEntries = await libraryRegistryStore.ReadExternalEntriesAsync();
+        var defaultEntry = new LibraryEntry("Defaut", ResolveDefaultSepDirectory(), IsDefault: true);
+        var entries = new[] { defaultEntry }.Concat(externalEntries).ToArray();
+
+        var menu = new ContextMenu();
+        foreach (var entry in entries)
+        {
+            var menuItem = new MenuItem { Header = entry.Name, Tag = entry };
+            menuItem.Click += OnLibraryMenuItemClick;
+            menu.Items.Add(menuItem);
+        }
+
+        menu.PlacementTarget = AddToLibraryArrowButton;
+        menu.IsOpen = true;
+    }
+
+    private async void OnLibraryMenuItemClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not MenuItem { Tag: LibraryEntry entry })
+        {
+            return;
+        }
+
+        try
+        {
+            var package = CreateCurrentComponentPackage();
+            var savedPath = await componentPackageStore.WriteToLibraryAsync(package, entry.Path);
+            currentSepPath = savedPath;
+            workspace.SavedComponentPath = savedPath;
+            workspace.ComponentVisualKind = package.Component.Visual.Kind.ToString();
+            workspace.Diagnostics.Add($"Composant ajoute a la librairie '{entry.Name}': {savedPath}");
+        }
+        catch (Exception ex)
+        {
+            workspace.Diagnostics.Add($"Ajout a la librairie impossible: {ex.Message}");
+            MessageBox.Show(this, ex.Message, "Ajouter a la librairie", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     private async Task SaveComponentAsAsync()

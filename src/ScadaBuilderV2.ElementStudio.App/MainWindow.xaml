@@ -106,7 +106,10 @@
                         <StackPanel x:Name="FileRibbon" Orientation="Horizontal">
                             <Button Style="{StaticResource RibbonCommandButtonStyle}" Content="Ouvrir .ft1" Click="OnUnavailableCommandClick" Tag="Ouvrir .ft1"/>
                             <Button Style="{StaticResource RibbonCommandButtonStyle}" Content="Enregistrer" Click="OnSaveComponentClick"/>
-                            <Button Style="{StaticResource RibbonCommandButtonStyle}" Content="Save as .sep" Click="OnSaveComponentAsClick"/>
+                            <StackPanel Orientation="Horizontal" Margin="3,3,0,3">
+                                <Button x:Name="AddToLibraryButton" Style="{StaticResource RibbonCommandButtonStyle}" Width="84" Margin="0" Content="Ajouter a la librairie" Click="OnSaveComponentAsClick"/>
+                                <Button x:Name="AddToLibraryArrowButton" Style="{StaticResource RibbonCommandButtonStyle}" Width="20" Margin="0" Content="&#9662;" Click="OnAddToLibraryArrowClick"/>
+                            </StackPanel>
                         </StackPanel>
                         <StackPanel x:Name="EditRibbon" Orientation="Horizontal" Visibility="Collapsed">
                             <Button Style="{StaticResource RibbonCommandButtonStyle}" Content="Annuler" Click="OnUndoClick"/>
