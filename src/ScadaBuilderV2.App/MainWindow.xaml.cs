@@ -45,6 +45,8 @@ public partial class MainWindow : Window
     private readonly IElementStudioImportPackageWriter _elementStudioPackageWriter = new ElementStudioImportPackageWriter();
     private readonly ElementStudioComponentPackageStore _elementStudioComponentPackageStore = new();
     private readonly LibraryRegistryStore _libraryRegistryStore = new();
+    private IReadOnlyList<LibraryEntry> _libraryEntries = [];
+    private LibraryEntry? _selectedLibraryEntry;
     private readonly ElementPlusLibraryReader _elementPlusLibraryReader = new();
     private readonly ObservableCollection<ElementPlusLibraryItem> _elementLibraryItems = [];
     private readonly ObservableCollection<TagCatalogListItem> _tagCatalogItems = [];
@@ -166,8 +168,7 @@ public partial class MainWindow : Window
             .Select(page => new ScadaSceneReference(page.Id, page.Title, $"scenes/{page.Id}.scene.json"))
             .ToArray();
         _modernProject = await _modernProjectStore.EnsureReferenceModernProjectAsync(_repositoryRoot, sceneReferences);
-        StartElementLibraryWatcher();
-        await RefreshElementLibraryAsync();
+        await RefreshLibrarySelectorAsync();
 
         ProjectNameText.Text = $"{_referenceProject.Name} ({_referenceProject.Pages.Count} pages)";
         RefreshProjectTagSummary();
@@ -792,7 +793,7 @@ public partial class MainWindow : Window
 
     private async Task RefreshElementLibraryAsync()
     {
-        var libraryRoot = ResolveElementPlusLibraryRoot(create: true);
+        var libraryRoot = ResolveActiveLibraryRoot(create: true);
         if (libraryRoot is null)
         {
             _elementLibraryItems.Clear();
@@ -825,7 +826,7 @@ public partial class MainWindow : Window
     {
         StopElementLibraryWatcher();
 
-        var libraryRoot = ResolveElementPlusLibraryRoot(create: true);
+        var libraryRoot = ResolveActiveLibraryRoot(create: true);
         if (libraryRoot is null)
         {
             return;
@@ -909,6 +910,39 @@ public partial class MainWindow : Window
         return libraryRoot;
     }
 
+    private string? ResolveActiveLibraryRoot(bool create)
+    {
+        var path = _selectedLibraryEntry?.Path;
+        if (path is null)
+        {
+            return null;
+        }
+
+        if (create)
+        {
+            Directory.CreateDirectory(path);
+        }
+
+        return path;
+    }
+
+    private async Task RefreshLibrarySelectorAsync()
+    {
+        var registry = await BuildLibraryRegistryAsync();
+        var previousName = _selectedLibraryEntry?.Name;
+        _libraryEntries = registry.Entries;
+        LibrarySelectorComboBox.ItemsSource = _libraryEntries;
+        var toSelect = _libraryEntries.FirstOrDefault(entry => entry.Name == previousName) ?? _libraryEntries[0];
+        LibrarySelectorComboBox.SelectedItem = toSelect;
+    }
+
+    private async void OnLibrarySelectorSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        _selectedLibraryEntry = LibrarySelectorComboBox.SelectedItem as LibraryEntry;
+        StartElementLibraryWatcher();
+        await RefreshElementLibraryAsync();
+    }
+
     private async Task<LibraryRegistry> BuildLibraryRegistryAsync()
     {
         var defaultPath = ResolveElementPlusLibraryRoot(create: true)
@@ -925,6 +959,7 @@ public partial class MainWindow : Window
         if (dialog.ShowDialog() == true)
         {
             await _libraryRegistryStore.WriteExternalEntriesAsync(dialog.Registry.ExternalEntries);
+            await RefreshLibrarySelectorAsync();
         }
     }
 

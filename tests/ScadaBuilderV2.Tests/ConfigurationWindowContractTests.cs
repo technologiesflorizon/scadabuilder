@@ -37,6 +37,26 @@ public sealed class ConfigurationWindowContractTests
         StringAssert.Contains(code, "OpenConfigurationWindowAsync");
     }
 
+    [TestMethod]
+    public void MainWindowXamlReplacesLibraryLabelWithSelectorComboBox()
+    {
+        var xaml = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml");
+
+        StringAssert.Contains(xaml, "x:Name=\"LibrarySelectorComboBox\"");
+        StringAssert.Contains(xaml, "SelectionChanged=\"OnLibrarySelectorSelectionChanged\"");
+        Assert.IsFalse(xaml.Contains("Text=\"Element+ disponibles\"", StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void MainWindowUsesActiveLibraryRootForRefreshAndWatcher()
+    {
+        var code = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");
+
+        StringAssert.Contains(code, "private string? ResolveActiveLibraryRoot(bool create)");
+        StringAssert.Contains(code, "private async Task RefreshLibrarySelectorAsync()");
+        StringAssert.Contains(code, "OnLibrarySelectorSelectionChanged");
+    }
+
     private static string ReadProjectFile(params string[] parts)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

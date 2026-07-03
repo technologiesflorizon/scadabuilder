@@ -1079,9 +1079,10 @@
                         <TabItem Header="Librairie">
                             <DockPanel Margin="12">
                                 <StackPanel DockPanel.Dock="Top">
-                                    <TextBlock Text="Element+ disponibles"
-                                               FontWeight="SemiBold"
-                                               Foreground="{StaticResource InkBrush}"/>
+                                    <ComboBox x:Name="LibrarySelectorComboBox"
+                                              DisplayMemberPath="Name"
+                                              Margin="0,0,0,4"
+                                              SelectionChanged="OnLibrarySelectorSelectionChanged"/>
                                     <TextBlock x:Name="ElementLibraryStatusText"
                                                Text="Librairie non chargee"
                                                Margin="0,4,0,8"
