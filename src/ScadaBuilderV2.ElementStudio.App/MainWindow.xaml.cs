@@ -162,18 +162,97 @@ public partial class MainWindow : Window
         }
     }
 
-    // Handlers wired from the "Librairie" tab context menu. Implemented in a later task;
-    // kept as no-op stubs here so the XAML's Click bindings compile.
-    private void OnRenameLibraryComponentClick(object sender, RoutedEventArgs e)
+    private async void OnRenameLibraryComponentClick(object sender, RoutedEventArgs e)
     {
+        if (StudioLibraryListBox.SelectedItem is not ElementPlusLibraryItem selected)
+        {
+            return;
+        }
+
+        var nameDialog = new ComponentNameDialog("Nouveau nom du composant", selected.Name) { Owner = this };
+        if (nameDialog.ShowDialog() != true)
+        {
+            return;
+        }
+
+        try
+        {
+            var package = await componentPackageStore.ReadFromPathAsync(selected.FilePath);
+            var renamedComponent = package.Component with { Name = nameDialog.EnteredName };
+            var renamedPackage = package with { Component = renamedComponent };
+            var libraryRoot = Path.GetDirectoryName(selected.FilePath) ?? "";
+            var newPath = ElementStudioComponentPackageStore.GetDefaultComponentPath(libraryRoot, renamedPackage);
+
+            await componentPackageStore.WriteToPathAsync(renamedPackage, newPath);
+            if (!string.Equals(Path.GetFullPath(newPath), Path.GetFullPath(selected.FilePath), StringComparison.OrdinalIgnoreCase))
+            {
+                File.Delete(selected.FilePath);
+            }
+
+            await RefreshLibraryItemsAsync();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, ex.Message, "Renommer le composant", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
-    private void OnCopyLibraryComponentClick(object sender, RoutedEventArgs e)
+    private async void OnCopyLibraryComponentClick(object sender, RoutedEventArgs e)
     {
+        if (StudioLibraryListBox.SelectedItem is not ElementPlusLibraryItem selected)
+        {
+            return;
+        }
+
+        try
+        {
+            var package = await componentPackageStore.ReadFromPathAsync(selected.FilePath);
+            var existingNames = libraryItems.Select(item => item.Name);
+            var copyName = ElementStudioComponentCopyNaming.GenerateCopyName(selected.Name, existingNames);
+            var copiedComponent = package.Component with
+            {
+                ComponentId = ToComponentId(copyName),
+                Name = copyName
+            };
+            var copiedPackage = package with { Component = copiedComponent };
+            var libraryRoot = Path.GetDirectoryName(selected.FilePath) ?? "";
+
+            await componentPackageStore.WriteToLibraryAsync(copiedPackage, libraryRoot);
+            await RefreshLibraryItemsAsync();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, ex.Message, "Copier le composant", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
-    private void OnDeleteLibraryComponentClick(object sender, RoutedEventArgs e)
+    private async void OnDeleteLibraryComponentClick(object sender, RoutedEventArgs e)
     {
+        if (StudioLibraryListBox.SelectedItem is not ElementPlusLibraryItem selected)
+        {
+            return;
+        }
+
+        var confirmed = MessageBox.Show(
+            this,
+            $"Supprimer definitivement le composant '{selected.Name}' ?",
+            "Supprimer le composant",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning);
+        if (confirmed != MessageBoxResult.Yes)
+        {
+            return;
+        }
+
+        try
+        {
+            File.Delete(selected.FilePath);
+            await RefreshLibraryItemsAsync();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, ex.Message, "Supprimer le composant", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     private async void OnLibraryMenuItemClick(object sender, RoutedEventArgs e)
