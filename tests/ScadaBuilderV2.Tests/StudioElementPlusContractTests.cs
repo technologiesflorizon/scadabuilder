@@ -157,7 +157,8 @@ public sealed class StudioElementPlusContractTests
         StringAssert.Contains(studioCode, "workspace.Package.TargetLibraryPath");
         StringAssert.Contains(studioCode, "Directory.CreateDirectory(explicitLibrary)");
         StringAssert.Contains(studioCode, "ResolveProjectLibraryFromDirectory(importPackageDirectory)");
-        StringAssert.Contains(studioCode, "ResolveProjectLibraryFromRepository(workspace.Package.SourceProjectId)");
+        StringAssert.Contains(studioCode, "ElementStudioSourceProjectId.ResolveEffectiveProjectId(workspace.Package.SourceProjectId)");
+        StringAssert.Contains(studioCode, "ResolveProjectLibraryFromRepository(effectiveProjectId)");
         Assert.IsFalse(
             studioCode.Contains("Path.GetDirectoryName(sourcePage)", StringComparison.Ordinal),
             "Studio Element+ Save As .sep must not infer the target library from the legacy source page path.");

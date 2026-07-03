@@ -1020,7 +1020,8 @@ public partial class MainWindow : Window
             return importProjectLibrary;
         }
 
-        var repositoryProjectLibrary = ResolveProjectLibraryFromRepository(workspace.Package.SourceProjectId);
+        var effectiveProjectId = ElementStudioSourceProjectId.ResolveEffectiveProjectId(workspace.Package.SourceProjectId);
+        var repositoryProjectLibrary = ResolveProjectLibraryFromRepository(effectiveProjectId);
         if (repositoryProjectLibrary is not null)
         {
             return repositoryProjectLibrary;
