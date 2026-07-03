@@ -74,7 +74,14 @@ public partial class MainWindow : Window
         UpdateSelectionGeometryFields();
         ApplyWorkzoneZoom();
         UpdateToolButtonStates();
-        await RefreshLibrarySelectorAsync();
+        try
+        {
+            await RefreshLibrarySelectorAsync();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, ex.Message, "Librairie", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 
     private async void OnCreateSvgComponentClick(object sender, RoutedEventArgs e)

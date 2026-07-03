@@ -416,7 +416,8 @@
                                     <ContextMenu>
                                         <MenuItem Header="Editer"
                                                   IsEnabled="False"
-                                                  ToolTip="Edition disponible dans une prochaine version"/>
+                                                  ToolTip="Edition disponible dans une prochaine version"
+                                                  ToolTipService.ShowOnDisabled="True"/>
                                         <MenuItem Header="Renommer" Click="OnRenameLibraryComponentClick"/>
                                         <MenuItem Header="Copier" Click="OnCopyLibraryComponentClick"/>
                                         <MenuItem Header="Supprimer" Click="OnDeleteLibraryComponentClick"/>
