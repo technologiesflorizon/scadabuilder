@@ -309,6 +309,14 @@
         </DrawingImage.Drawing>
     </DrawingImage>
 
+    <DrawingImage x:Key="Icon.Tool.ElementStudio">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Pen="{StaticResource Icon.OutlinePen}" Geometry="M5,9 L5,19 L19,19 L19,9 L14,9 C14,6.5 10,6.5 10,9 L5,9 Z"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
     <DrawingImage x:Key="Icon.Field.Numeric">
         <DrawingImage.Drawing>
             <DrawingGroup>
