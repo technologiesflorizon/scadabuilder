@@ -109,7 +109,16 @@
                         <TextBox x:Name="FontSizeTextBox"/>
                         <TextBlock Text="Couleur arriere-plan"/>
                         <local:ColorPickerField x:Name="BackgroundColorPicker"/>
-                        <TextBlock Text="Couleur bordure"/>
+                        <DockPanel Margin="0,0,0,2">
+                            <TextBlock Text="Couleur bordure" VerticalAlignment="Center"/>
+                            <CheckBox x:Name="BorderTransparentCheckBox"
+                                      Content="Transparent"
+                                      DockPanel.Dock="Right"
+                                      VerticalAlignment="Center"
+                                      Margin="8,0,0,0"
+                                      Checked="OnBorderTransparentChanged"
+                                      Unchecked="OnBorderTransparentChanged"/>
+                        </DockPanel>
                         <local:ColorPickerField x:Name="BorderColorPicker"/>
                         <TextBlock Text="Bordure"/>
                         <ComboBox x:Name="BorderStyleComboBox">

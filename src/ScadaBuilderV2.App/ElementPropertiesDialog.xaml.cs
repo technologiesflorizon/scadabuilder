@@ -53,7 +53,13 @@ public partial class ElementPropertiesDialog : Window
         SelectComboBoxText(FontFamilyComboBox, style.FontFamily);
         FontSizeTextBox.Text = style.FontSize.ToString("0.##");
         BackgroundColorPicker.SetColor(style.Background);
-        BorderColorPicker.SetColor(style.BorderColor);
+        var isBorderTransparent = string.Equals(style.BorderColor, "Transparent", StringComparison.OrdinalIgnoreCase);
+        BorderTransparentCheckBox.IsChecked = isBorderTransparent;
+        BorderColorPicker.IsEnabled = !isBorderTransparent;
+        if (!isBorderTransparent)
+        {
+            BorderColorPicker.SetColor(style.BorderColor);
+        }
         SelectComboBoxText(BorderStyleComboBox, style.BorderStyle);
         BorderWidthTextBox.Text = style.BorderWidth.ToString("0.##");
         ShadowNoneRadio.IsChecked = style.ShadowPreset == "None";
@@ -85,6 +91,11 @@ public partial class ElementPropertiesDialog : Window
         DisplayFormatTextBox.Text = data.DisplayFormat ?? "";
         TagBindingTextBox.Text = data.TagBinding ?? "";
         UpdateDataConstraintState();
+    }
+
+    private void OnBorderTransparentChanged(object sender, RoutedEventArgs e)
+    {
+        BorderColorPicker.IsEnabled = BorderTransparentCheckBox.IsChecked != true;
     }
 
     private void OnReadOnlyChanged(object sender, RoutedEventArgs e)
@@ -133,7 +144,9 @@ public partial class ElementPropertiesDialog : Window
             FontFamily: GetComboBoxText(FontFamilyComboBox, "Segoe UI"),
             FontSize: Math.Max(6, fontSize),
             Background: GetColorPickerValue(BackgroundColorPicker, "#FFFFFF"),
-            BorderColor: GetColorPickerValue(BorderColorPicker, "#8AA0A6"),
+            BorderColor: BorderTransparentCheckBox.IsChecked == true
+                ? "Transparent"
+                : GetColorPickerValue(BorderColorPicker, "#8AA0A6"),
             BorderStyle: GetComboBoxText(BorderStyleComboBox, "Solid"),
             BorderWidth: Math.Max(0, borderWidth),
             ShadowPreset: GetSelectedShadowPreset(),

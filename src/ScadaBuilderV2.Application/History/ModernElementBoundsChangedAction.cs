@@ -12,12 +12,14 @@ public sealed record ModernElementBoundsChangedAction(
 
     public bool CanMergeWith(IEditorHistoryAction next)
     {
-        return false;
+        return next is ModernElementBoundsChangedAction other &&
+               other.ElementId == ElementId;
     }
 
     public IEditorHistoryAction MergeWith(IEditorHistoryAction next)
     {
-        throw new InvalidOperationException("Committed geometry changes do not support merge.");
+        var other = (ModernElementBoundsChangedAction)next;
+        return this with { AfterBounds = other.AfterBounds };
     }
 
     public async Task UndoAsync(EditorHistoryContext context)

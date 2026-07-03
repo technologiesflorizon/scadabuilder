@@ -2152,6 +2152,34 @@ public partial class MainWindow : Window
         }
     }
 
+    private async Task OpenElementStudioFromToolPaletteAsync()
+    {
+        var hasEditingContext = _repositoryRoot is not null && _activeScene is not null && _activeReferencePage is not null;
+        if (hasEditingContext)
+        {
+            var selectedLegacy = await CaptureSelectedLegacyElementsForStudioAsync();
+            if (selectedLegacy.Length > 0)
+            {
+                await OpenSelectedLegacyInElementStudioAsync();
+                return;
+            }
+        }
+
+        try
+        {
+            SetStatus("Ouverture de Studio Element+...");
+            var launch = await TryLaunchElementStudioAsync(packagePath: null);
+            AppendElementStudioLaunchLog("(aucun package)", launch);
+            SetStatus(launch.Launched
+                ? "Studio Element+ ouvert."
+                : $"Ouverture Studio Element+ echouee: {launch.Message}");
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Erreur ouverture Studio Element+: {ex.Message}");
+        }
+    }
+
     private async Task<LegacyElementListItem[]> CaptureSelectedLegacyElementsForStudioAsync()
     {
         if (PreviewWebView.CoreWebView2 is null)
@@ -2281,7 +2309,7 @@ public partial class MainWindow : Window
         }
     }
 
-    private async Task<ElementStudioLaunchResult> TryLaunchElementStudioAsync(string packagePath)
+    private async Task<ElementStudioLaunchResult> TryLaunchElementStudioAsync(string? packagePath)
     {
         var attempts = new List<string>();
         var studioExePath = ResolveElementStudioExecutablePath();
@@ -2317,7 +2345,7 @@ public partial class MainWindow : Window
         return new ElementStudioLaunchResult(false, string.Join(" | ", attempts));
     }
 
-    private static async Task<ElementStudioLaunchResult> LaunchElementStudioExecutableAsync(string studioExePath, string packagePath)
+    private static async Task<ElementStudioLaunchResult> LaunchElementStudioExecutableAsync(string studioExePath, string? packagePath)
     {
         var startInfo = new ProcessStartInfo
         {
@@ -2326,7 +2354,10 @@ public partial class MainWindow : Window
             WindowStyle = ProcessWindowStyle.Normal,
             WorkingDirectory = Path.GetDirectoryName(studioExePath) ?? ""
         };
-        startInfo.ArgumentList.Add(packagePath);
+        if (!string.IsNullOrWhiteSpace(packagePath))
+        {
+            startInfo.ArgumentList.Add(packagePath);
+        }
 
         var process = Process.Start(startInfo);
         if (process is null)
@@ -2334,14 +2365,21 @@ public partial class MainWindow : Window
             return new ElementStudioLaunchResult(false, $"Impossible de lancer {studioExePath}.");
         }
 
-        var visibleProcess = await WaitForStudioWindowAsync(process, TimeSpan.FromSeconds(8));
+        var visibleProcess = await WaitForStudioWindowAsync(process, TimeSpan.FromSeconds(15));
         if (visibleProcess is null)
         {
-            var message = process.HasExited
-                ? $"Studio Element+ a quitte immediatement (code {process.ExitCode})."
-                : "Studio Element+ demarre, mais aucune fenetre WPF visible n'a ete detectee.";
+            if (process.HasExited)
+            {
+                var exitMessage = $"Studio Element+ a quitte immediatement (code {process.ExitCode}).";
+                process.Dispose();
+                return new ElementStudioLaunchResult(false, exitMessage);
+            }
+
+            // Still starting up (first WebView2 startup can exceed the wait window); leave it alive.
             process.Dispose();
-            return new ElementStudioLaunchResult(false, message);
+            return new ElementStudioLaunchResult(
+                true,
+                $"{studioExePath} (fenetre non detectee dans le delai; le studio peut prendre quelques secondes de plus).");
         }
 
         BringProcessWindowToFront(visibleProcess);
@@ -2353,7 +2391,7 @@ public partial class MainWindow : Window
         return new ElementStudioLaunchResult(true, messagePath);
     }
 
-    private static async Task<ElementStudioLaunchResult> LaunchElementStudioProjectAsync(string studioProjectPath, string packagePath)
+    private static async Task<ElementStudioLaunchResult> LaunchElementStudioProjectAsync(string studioProjectPath, string? packagePath)
     {
         var build = await BuildElementStudioProjectAsync(studioProjectPath);
         if (!build.Launched)
@@ -2372,8 +2410,11 @@ public partial class MainWindow : Window
         dotnetStartInfo.ArgumentList.Add("--no-build");
         dotnetStartInfo.ArgumentList.Add("--project");
         dotnetStartInfo.ArgumentList.Add(studioProjectPath);
-        dotnetStartInfo.ArgumentList.Add("--");
-        dotnetStartInfo.ArgumentList.Add(packagePath);
+        if (!string.IsNullOrWhiteSpace(packagePath))
+        {
+            dotnetStartInfo.ArgumentList.Add("--");
+            dotnetStartInfo.ArgumentList.Add(packagePath);
+        }
 
         var process = Process.Start(dotnetStartInfo);
         if (process is null)
@@ -2381,15 +2422,22 @@ public partial class MainWindow : Window
             return new ElementStudioLaunchResult(false, $"Impossible de lancer dotnet run pour {studioProjectPath}.");
         }
 
-        var visibleProcess = await WaitForStudioWindowAsync(process, TimeSpan.FromSeconds(12));
+        var visibleProcess = await WaitForStudioWindowAsync(process, TimeSpan.FromSeconds(30));
         if (visibleProcess is null)
         {
-            var message = process.HasExited
-                ? $"Studio Element+ via dotnet run a quitte immediatement (code {process.ExitCode})."
-                : "Studio Element+ via dotnet run reste actif, mais aucune fenetre WPF visible n'a ete detectee.";
-            TryKillProcess(process);
+            if (process.HasExited)
+            {
+                var exitMessage = $"Studio Element+ via dotnet run a quitte immediatement (code {process.ExitCode}).";
+                process.Dispose();
+                return new ElementStudioLaunchResult(false, exitMessage);
+            }
+
+            // The studio may still be initializing (first WebView2 startup can exceed the wait window).
+            // Leave the process alive instead of killing a window that is about to appear.
             process.Dispose();
-            return new ElementStudioLaunchResult(false, message);
+            return new ElementStudioLaunchResult(
+                true,
+                $"{studioProjectPath} (fenetre non detectee dans le delai; le studio peut prendre quelques secondes de plus).");
         }
 
         BringProcessWindowToFront(visibleProcess);
@@ -2518,21 +2566,6 @@ public partial class MainWindow : Window
         }
     }
 
-    private static void TryKillProcess(Process process)
-    {
-        try
-        {
-            if (!process.HasExited)
-            {
-                process.Kill(entireProcessTree: true);
-            }
-        }
-        catch
-        {
-            // Best-effort cleanup only.
-        }
-    }
-
     [DllImport("user32.dll")]
     private static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
@@ -2546,7 +2579,17 @@ public partial class MainWindow : Window
             Path.Combine(AppContext.BaseDirectory, "ScadaBuilderV2.ElementStudio.App.exe"),
         };
 
-        return candidates.FirstOrDefault(File.Exists);
+        var sourceRoot = ResolveElementStudioSourceRoot();
+        if (sourceRoot is not null)
+        {
+            candidates.Add(Path.Combine(sourceRoot, "bin", "Release", "net8.0-windows", "ScadaBuilderV2.ElementStudio.App.exe"));
+            candidates.Add(Path.Combine(sourceRoot, "bin", "Debug", "net8.0-windows", "ScadaBuilderV2.ElementStudio.App.exe"));
+        }
+
+        return candidates
+            .Where(File.Exists)
+            .OrderByDescending(File.GetLastWriteTimeUtc)
+            .FirstOrDefault();
     }
 
     private string? ResolveElementStudioProjectPath()
@@ -2619,6 +2662,54 @@ public partial class MainWindow : Window
         RefreshModernSceneUi();
         _ = RenderModernSceneAsync();
         SetStatus($"{groupId} degroupe. Les enfants conservent leur position visuelle.");
+    }
+
+    private void ReorderSelectedElement(string operation)
+    {
+        if (_activeScene is null || _selectedSceneObjectIds.Count != 1)
+        {
+            SetStatus("Ordre: selection unique requise.");
+            return;
+        }
+
+        var elementId = _selectedSceneObjectIds.First();
+        if (!_activeScene.Elements.Any(e => e.Id == elementId))
+        {
+            SetStatus("Ordre: disponible pour les elements de premier niveau uniquement.");
+            return;
+        }
+
+        var beforeScene = _activeScene;
+        _activeScene = operation switch
+        {
+            "bring-to-front" => beforeScene.WithElementBroughtToFront(elementId),
+            "bring-forward" => beforeScene.WithElementBroughtForward(elementId),
+            "send-backward" => beforeScene.WithElementSentBackward(elementId),
+            "send-to-back" => beforeScene.WithElementSentToBack(elementId),
+            _ => beforeScene
+        };
+
+        if (Equals(beforeScene, _activeScene)) return;
+
+        var label = operation switch
+        {
+            "bring-to-front" => "Mettre a l'avant",
+            "bring-forward" => "Avancer",
+            "send-backward" => "Reculer",
+            "send-to-back" => "Mettre a l'arriere",
+            _ => "Ordre"
+        };
+
+        _activeSceneTab?.History.Push(new SceneSnapshotChangedAction(
+            beforeScene.Id,
+            beforeScene,
+            _activeScene,
+            label));
+        MarkActiveSceneDirty();
+        RefreshSelectionUi();
+        RefreshModernSceneUi();
+        _ = RenderModernSceneAsync();
+        SetStatus($"{label} applique.");
     }
 
     private void RemoveLegacyElementsFromInventory(IReadOnlyCollection<string> ids)
@@ -3422,6 +3513,27 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 modernCommands.Insert(0, new EditorCommandDescriptor("object.ungroup", "Degrouper", "group"));
             }
 
+            if (_selectedSceneObjectIds.Count == 1 && (_activeScene?.Elements.Any(e => e.Id == selected.Id) ?? false))
+            {
+                var elementCount = _activeScene!.Elements.Count;
+                var elementIdx = _activeScene.Elements.ToList().FindIndex(e => e.Id == selected.Id);
+                modernCommands.Add(new EditorCommandDescriptor(
+                    "object.order",
+                    "Ordre",
+                    "order",
+                    Children:
+                    [
+                        new EditorCommandDescriptor("object.order.bring-to-front", "Mettre a l'avant", "order",
+                            IsEnabled: elementIdx < elementCount - 1),
+                        new EditorCommandDescriptor("object.order.bring-forward", "Avancer", "order",
+                            IsEnabled: elementIdx < elementCount - 1),
+                        new EditorCommandDescriptor("object.order.send-backward", "Reculer", "order",
+                            IsEnabled: elementIdx > 0),
+                        new EditorCommandDescriptor("object.order.send-to-back", "Mettre a l'arriere", "order",
+                            IsEnabled: elementIdx > 0),
+                    ]));
+            }
+
             return modernCommands;
         }
 
@@ -3541,6 +3653,18 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             case "object.ungroup":
             case "element-plus.ungroup":
                 UngroupSelectedModernElement();
+                break;
+            case "object.order.bring-to-front":
+                ReorderSelectedElement("bring-to-front");
+                break;
+            case "object.order.bring-forward":
+                ReorderSelectedElement("bring-forward");
+                break;
+            case "object.order.send-backward":
+                ReorderSelectedElement("send-backward");
+                break;
+            case "object.order.send-to-back":
+                ReorderSelectedElement("send-to-back");
                 break;
             case "object.delete":
             case "element-plus.delete":
@@ -4399,7 +4523,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         MarkActiveSceneDirty();
         RefreshModernSceneUi();
-        _ = RenderModernSceneAsync();
         SetStatus($"{updated.UserLabel}: position {updated.Bounds.X:0},{updated.Bounds.Y:0}, taille {updated.Bounds.Width:0}x{updated.Bounds.Height:0}.");
     }
 
@@ -5719,6 +5842,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 break;
             case "object.group":
                 await GroupSelectedModernElementsAsync();
+                break;
+            case "tool.element-studio":
+                await OpenElementStudioFromToolPaletteAsync();
                 break;
             case "object.ungroup":
                 UngroupSelectedModernElement();

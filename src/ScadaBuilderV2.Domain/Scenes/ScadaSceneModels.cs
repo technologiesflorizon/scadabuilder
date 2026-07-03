@@ -847,6 +847,46 @@ public sealed record ScadaScene(
         };
     }
 
+    public ScadaScene WithElementBroughtForward(string elementId)
+    {
+        var list = Elements.ToList();
+        var idx = list.FindIndex(e => e.Id == elementId);
+        if (idx < 0 || idx >= list.Count - 1) return this;
+        (list[idx], list[idx + 1]) = (list[idx + 1], list[idx]);
+        return this with { Elements = list };
+    }
+
+    public ScadaScene WithElementSentBackward(string elementId)
+    {
+        var list = Elements.ToList();
+        var idx = list.FindIndex(e => e.Id == elementId);
+        if (idx <= 0) return this;
+        (list[idx], list[idx - 1]) = (list[idx - 1], list[idx]);
+        return this with { Elements = list };
+    }
+
+    public ScadaScene WithElementBroughtToFront(string elementId)
+    {
+        var list = Elements.ToList();
+        var idx = list.FindIndex(e => e.Id == elementId);
+        if (idx < 0 || idx == list.Count - 1) return this;
+        var element = list[idx];
+        list.RemoveAt(idx);
+        list.Add(element);
+        return this with { Elements = list };
+    }
+
+    public ScadaScene WithElementSentToBack(string elementId)
+    {
+        var list = Elements.ToList();
+        var idx = list.FindIndex(e => e.Id == elementId);
+        if (idx <= 0) return this;
+        var element = list[idx];
+        list.RemoveAt(idx);
+        list.Insert(0, element);
+        return this with { Elements = list };
+    }
+
     public ScadaScene WithoutElementRecursive(string elementId)
     {
         return this with

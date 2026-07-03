@@ -104,7 +104,8 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(dialogXaml, "x:Name=\"BackgroundColorPicker\"");
         StringAssert.Contains(dialogXaml, "x:Name=\"BorderColorPicker\"");
         StringAssert.Contains(source, "BorderColor = GetColorPickerValue(ElementBorderColorPicker, style.BorderColor)");
-        StringAssert.Contains(dialogCode, "BorderColor: GetColorPickerValue(BorderColorPicker, \"#8AA0A6\")");
+        StringAssert.Contains(dialogCode, "GetColorPickerValue(BorderColorPicker, \"#8AA0A6\")");
+        StringAssert.Contains(dialogCode, "BorderTransparentCheckBox.IsChecked == true");
         StringAssert.Contains(mainXaml, "x:Name=\"ButtonPressedEnabledCheckBox\"");
         StringAssert.Contains(mainXaml, "x:Name=\"ButtonPressedBackgroundColorPicker\"");
         StringAssert.Contains(mainXaml, "x:Name=\"ButtonPressedForegroundColorPicker\"");
