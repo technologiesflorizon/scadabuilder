@@ -59,6 +59,15 @@ depuis Studio Element+" (service paye) puisse reutiliser le meme service
 en ajoutant seulement une couche auth/quota/multi-tenant, sans reecrire
 le pipeline.
 
+Ce service vit dans un **repo Git separe** de `SCADA_BUILDER_V2`
+(`sep-ai-modernizer`, `ssh://git@git.oroubotic-technologies.com:2224/knarfel01/scadaiconemakerpipeline.git`) :
+stack (Python/Django) et cible de deploiement (serveur Ubuntu avec GPU,
+secrets Postgres/Redis/cle Claude API) totalement differentes du produit
+desktop .NET. Ce repo depend du contrat `.sep` documente dans
+`SCADA_BUILDER_V2/docs/05_studio_element_plus/STUDIO_ELEMENT_PLUS_SEP_CONTRACT_V2.md`
+sans couplage de code (cross-langage) ; toute evolution de ce contrat
+doit etre repercutee manuellement dans `sep-ai-modernizer`.
+
 ### Detection des candidats
 
 Regle deterministe : tout `.sep` contenant au moins un `Part` avec
