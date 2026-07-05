@@ -6,13 +6,13 @@
 
 **Architecture:** Wrap the existing three-column shell in an AvalonDock `DockingManager`. The 3 left tabs (`Outil`, `Projet`, `Catalogue Tags`) and 4 right tabs (`Page`, `Element`, `Propriete`, `Librairie`) each become an independent `LayoutAnchorable` in a left/right `LayoutAnchorablePane`; existing tab *content* moves unchanged into each anchorable. The untouched center content (the `DockPanel` containing `SceneTabs` and `PreviewSurfaceBorder`/`PreviewWebView`) is wrapped in a single non-closable `LayoutDocument` inside AvalonDock's required `LayoutDocumentPane` — this satisfies AvalonDock's structural requirement of a document host while keeping the center region visually and behaviorally identical to today (single area, no new tabs — multi-tab canvas is a separate plan). Layout state (pane positions/floating/visibility) persists to `%AppData%\ScadaBuilderV2\dock-layout.xml` via a new `DockLayoutStore` (path-parameterized like the existing `LibraryRegistryStore`), loaded on window `Loaded` and saved during the existing `OnMainWindowClosing` confirmed-close path.
 
-**Tech Stack:** .NET 8, WPF (`net8.0-windows`), AvalonDock (NuGet `AvalonDock` 4.72.1), MSTest (existing `tests\ScadaBuilderV2.Tests`, `net8.0`, no WPF reference).
+**Tech Stack:** .NET 8, WPF (`net8.0-windows`), AvalonDock (NuGet `Xceed.Wpf.AvalonDock` 5.2.26322.8434 — the plain `AvalonDock` NuGet package id is a stale/unmaintained line capped at 2.0.2000; `Xceed.Wpf.AvalonDock` is the actively maintained package providing the `Xceed.Wpf.AvalonDock.*` namespaces used throughout this plan), MSTest (existing `tests\ScadaBuilderV2.Tests`, `net8.0`, no WPF reference).
 
 ## Global Constraints
 
 - Target framework for any new/modified project stays `net8.0-windows` (App) or `net8.0` (Domain/Application/Infrastructure/Rendering/Tests) — do not change any `TargetFramework`.
 - `tests\ScadaBuilderV2.Tests` does not and must not reference `ScadaBuilderV2.App` or any WPF/AvalonDock assembly — new automated tests for this feature must target a plain C# class in `ScadaBuilderV2.Infrastructure`.
-- No existing MSTest test may be broken; `dotnet test ScadaBuilderV2.sln --no-restore` must pass (253 existing tests + new ones) after every task.
+- No existing MSTest test may be broken; `dotnet test ScadaBuilderV2.sln --no-restore` must pass the same 302 tests that pass today (plus any new ones this plan adds) after every task. 4 pre-existing failures unrelated to this work (`ScadaBuilderLaunchesStudioFromProjectInDevelopmentToAvoidStaleBinaries`, `StudioFinalPolishContractKeepsSelectionStructureAndDecisionTrace`, `LegacyContextMenuExposesElementStudioCommand`, `ReadOnlyNumericElementsRenderDisplayFormatWhenValueIsMissing`) are a known baseline condition — do not fix them as part of this plan, but never let their count grow.
 - Panel *content* (existing XAML inside each tab: `ElementLibraryListBox`, `TagCatalogDataGrid`, the nested `General`/`Style`/`Bouton`/`Evenement`/`Donnees` property sub-tabs, etc.) moves verbatim — no redesign of what is inside a panel.
 - The center canvas region (`SceneTabs`, `PreviewSurfaceBorder`, `PreviewWebView`, `PreviewPlaceholder`) is moved as a block into a single `LayoutDocument` with no internal changes to its XAML or the C# that manipulates it (`PreviewSurfaceBorder`, `PreviewWebView`, `SceneTabs` references in `MainWindow.xaml.cs` keep their exact current names and behavior).
 - Persisted settings files in this codebase live under `%AppData%\ScadaBuilderV2\<file>` (see `LibraryRegistryStore.GetDefaultSettingsPath()`), using `System.Text.Json`-free hand-rolled read/write with `Directory.CreateDirectory` before write and swallowed `IOException`/format exceptions on read returning a default. The new `dock-layout.xml` follows the same root folder convention (raw XML text, not JSON).
@@ -26,7 +26,7 @@
 - Modify: `src/ScadaBuilderV2.App/ScadaBuilderV2.App.csproj:10-12`
 
 **Interfaces:**
-- Produces: `AvalonDock` assembly available to `ScadaBuilderV2.App` (types `Xceed.Wpf.AvalonDock.DockingManager`, `Xceed.Wpf.AvalonDock.Layout.LayoutAnchorable`, `Xceed.Wpf.AvalonDock.Layout.LayoutDocument`, `Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer` — used by later tasks).
+- Produces: `Xceed.Wpf.AvalonDock` assembly available to `ScadaBuilderV2.App` (types `Xceed.Wpf.AvalonDock.DockingManager`, `Xceed.Wpf.AvalonDock.Layout.LayoutAnchorable`, `Xceed.Wpf.AvalonDock.Layout.LayoutDocument`, `Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer` — used by later tasks).
 
 - [ ] **Step 1: Add the package reference**
 
@@ -35,19 +35,19 @@ Edit `src/ScadaBuilderV2.App/ScadaBuilderV2.App.csproj`, inside the existing `It
 ```xml
   <ItemGroup>
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3967.48" />
-    <PackageReference Include="AvalonDock" Version="4.72.1" />
+    <PackageReference Include="Xceed.Wpf.AvalonDock" Version="5.2.26322.8434" />
   </ItemGroup>
 ```
 
 - [ ] **Step 2: Restore and build**
 
 Run: `dotnet build ScadaBuilderV2.sln`
-Expected: Build succeeds (`Build succeeded.`), NuGet restores `AvalonDock` 4.72.1 (and its `AvalonDock.Themes.*` dependents) with no version conflicts.
+Expected: Build succeeds (`Build succeeded.`), NuGet restores `Xceed.Wpf.AvalonDock` 5.2.26322.8434 (and its dependents) with no version conflicts.
 
 - [ ] **Step 3: Run the full test suite to confirm no regression**
 
 Run: `dotnet test ScadaBuilderV2.sln --no-restore`
-Expected: 253 tests pass (same baseline as before this change — adding an unused package reference must not affect test behavior).
+Expected: 306 tests total, the same 302 pass and the same 4 pre-existing failures remain (`ScadaBuilderLaunchesStudioFromProjectInDevelopmentToAvoidStaleBinaries`, `StudioFinalPolishContractKeepsSelectionStructureAndDecisionTrace`, `LegacyContextMenuExposesElementStudioCommand`, `ReadOnlyNumericElementsRenderDisplayFormatWhenValueIsMissing`) — adding an unused package reference must not change test behavior.
 
 - [ ] **Step 4: Commit**
 
@@ -227,7 +227,7 @@ Expected: 4 tests pass.
 - [ ] **Step 5: Run the full suite**
 
 Run: `dotnet test ScadaBuilderV2.sln --no-restore`
-Expected: 257 tests pass (253 existing + 4 new).
+Expected: 310 tests total, 306 pass (302 existing + 4 new), the same 4 pre-existing failures remain.
 
 - [ ] **Step 6: Commit**
 
@@ -339,7 +339,7 @@ Expected: The window opens with a left docked pane showing 3 tabs (Outil/Projet/
 - [ ] **Step 5: Run the full test suite**
 
 Run: `dotnet test ScadaBuilderV2.sln --no-restore`
-Expected: 257 tests still pass — this task only restructures WPF shell XAML, which is not covered by the (App-project-excluding) test suite, so the count must not change from Task 2's end state.
+Expected: 310 tests total, 306 still pass — this task only restructures WPF shell XAML, which is not covered by the (App-project-excluding) test suite, so the count must not change from Task 2's end state.
 
 - [ ] **Step 6: Commit**
 
@@ -469,7 +469,7 @@ Expected: Clicking the close ("X") button on the `Catalogue Tags` panel hides it
 - [ ] **Step 6: Run the full test suite**
 
 Run: `dotnet test ScadaBuilderV2.sln --no-restore`
-Expected: 257 tests pass (no App-layer tests exist for this behavior per the Global Constraints — manual verification is the coverage for this task).
+Expected: 310 tests total, 306 pass (no App-layer tests exist for this behavior per the Global Constraints — manual verification is the coverage for this task).
 
 - [ ] **Step 7: Commit**
 
@@ -657,7 +657,7 @@ Expected: All panels return immediately to their original docked positions and s
 - [ ] **Step 10: Run the full test suite**
 
 Run: `dotnet test ScadaBuilderV2.sln --no-restore`
-Expected: 257 tests pass.
+Expected: 310 tests total, 306 pass (same 4 pre-existing failures).
 
 - [ ] **Step 11: Commit**
 
@@ -734,7 +734,7 @@ Expected: Passes with no errors.
 - [ ] **Step 5: Run the full test suite one final time**
 
 Run: `dotnet test ScadaBuilderV2.sln --no-restore`
-Expected: 257 tests pass.
+Expected: 310 tests total, 306 pass (same 4 pre-existing failures).
 
 - [ ] **Step 6: Commit**
 
