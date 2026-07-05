@@ -2,12 +2,13 @@
 
 Date: 2026-07-05
 Status: Active style guide
-Document version: `V2.1.3.0003`
+Document version: `V2.1.3.0004`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-05 | `V2.1.3.0004` | `PENDING` | Premiere icone approuvee (Ventilateur.sep, famille ventilateur) via la boucle interactive; ajout de la regle 6 interdisant les transformations autres que `translate` (contrainte decouverte en pratique: `tools/icon_modernization` rejette `rotate`/`scale`/`matrix`). |
 | 2026-07-05 | `V2.1.3.0003` | `PENDING` | Creation du guide de style visuel pour la modernisation des icones Element+ (DEC-0033). |
 
 ## 1. Purpose
@@ -46,16 +47,21 @@ color alone - pair every state color with a distinct shape/glyph change
    exact points needed to visually connect to neighboring icons (pipe ends,
    valve stems). These are the icon's junction points and are verified by
    `tools/icon_modernization` per
-   `docs/07_legacy_migration/MODERNIZATION_WORKFLOW_V2.md` section 3.
+   `docs/07_legacy_migration/MODERNIZATION_WORKFLOW_V2.md` section 3. Icons
+   with no external connection points (e.g. a free-standing fan glyph) are
+   expected to produce zero junction points - this is a pass, not a gap.
+6. No `transform` other than `translate` anywhere in the icon, including on
+   nested elements. `tools/icon_modernization` raises a typed error on
+   `rotate`/`scale`/`matrix`. For repeated rotated shapes (e.g. fan blades),
+   compute the rotated coordinates by hand (or by script) and hardcode them
+   as absolute point/path coordinates instead of using `transform="rotate(...)"`.
 
 ## 4. Reference Icons
 
 Icons listed here are the imposed visual reference for every new icon of
 the same family. An icon is added to this list only after a human approves
-it during the interactive modernization loop - this table starts empty and
-grows one entry per approved session; it is not pre-populated with
-unreviewed guesses.
+it during the interactive modernization loop.
 
 | Family | `.sep` path | Approved on |
 | --- | --- | --- |
-| _(none yet - the fan/`Ventilateur.sep` family is the next candidate)_ | | |
+| Fan / ventilateur | `projects/AMR_REF_SCADA_V2/library/elements/Ventilateur.sep` | 2026-07-05 |
