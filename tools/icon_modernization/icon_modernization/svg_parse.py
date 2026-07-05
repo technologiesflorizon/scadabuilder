@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 import xml.etree.ElementTree as ET
 
 from icon_modernization.geometry import Point
@@ -11,6 +12,84 @@ class UnsupportedTransformError(ValueError):
 
 class UnsupportedPathCommandError(ValueError):
     pass
+
+
+_PATH_TOKEN_RE = re.compile(r"([A-Za-z])|(-?\d*\.?\d+(?:[eE][-+]?\d+)?)")
+
+
+def _tokenize_path(d: str) -> list[str]:
+    tokens = []
+    for cmd, num in _PATH_TOKEN_RE.findall(d):
+        if cmd:
+            tokens.append(cmd)
+        elif num:
+            tokens.append(num)
+    return tokens
+
+
+def _parse_path_vertices(d: str) -> list[Point]:
+    tokens = _tokenize_path(d)
+    vertices: list[Point] = []
+    i = 0
+    cur_x = cur_y = 0.0
+    cmd = None
+
+    def read_floats(n: int) -> list[float]:
+        nonlocal i
+        vals = [float(tokens[i + k]) for k in range(n)]
+        i += n
+        return vals
+
+    while i < len(tokens):
+        token = tokens[i]
+        if token.isalpha():
+            cmd = token
+            i += 1
+            continue
+        if cmd is None:
+            raise UnsupportedPathCommandError(f"Path data must start with a command: {d!r}")
+
+        if cmd in ("M", "L"):
+            cur_x, cur_y = read_floats(2)
+            vertices.append(Point(cur_x, cur_y))
+        elif cmd in ("m", "l"):
+            dx, dy = read_floats(2)
+            cur_x, cur_y = cur_x + dx, cur_y + dy
+            vertices.append(Point(cur_x, cur_y))
+        elif cmd == "H":
+            (cur_x,) = read_floats(1)
+            vertices.append(Point(cur_x, cur_y))
+        elif cmd == "h":
+            (dx,) = read_floats(1)
+            cur_x = cur_x + dx
+            vertices.append(Point(cur_x, cur_y))
+        elif cmd == "V":
+            (cur_y,) = read_floats(1)
+            vertices.append(Point(cur_x, cur_y))
+        elif cmd == "v":
+            (dy,) = read_floats(1)
+            cur_y = cur_y + dy
+            vertices.append(Point(cur_x, cur_y))
+        elif cmd == "C":
+            _, _, _, _, cur_x, cur_y = read_floats(6)
+            vertices.append(Point(cur_x, cur_y))
+        elif cmd == "c":
+            _, _, _, _, dx, dy = read_floats(6)
+            cur_x, cur_y = cur_x + dx, cur_y + dy
+            vertices.append(Point(cur_x, cur_y))
+        elif cmd == "Q":
+            _, _, cur_x, cur_y = read_floats(4)
+            vertices.append(Point(cur_x, cur_y))
+        elif cmd == "q":
+            _, _, dx, dy = read_floats(4)
+            cur_x, cur_y = cur_x + dx, cur_y + dy
+            vertices.append(Point(cur_x, cur_y))
+        elif cmd in ("Z", "z"):
+            pass
+        else:
+            raise UnsupportedPathCommandError(f"Unsupported path command {cmd!r} in {d!r}")
+
+    return vertices
 
 
 def _strip_ns(tag: str) -> str:
@@ -62,6 +141,9 @@ def _extract_from_element(element: ET.Element, offset_x: float, offset_y: float)
         w, h = float(element.get("width", "0")), float(element.get("height", "0"))
         for cx, cy in ((x, y), (x + w, y), (x, y + h), (x + w, y + h)):
             vertices.append(Point(cx + dx, cy + dy))
+    elif tag == "path":
+        for p in _parse_path_vertices(element.get("d", "")):
+            vertices.append(Point(p.x + dx, p.y + dy))
 
     for child in element:
         vertices += _extract_from_element(child, dx, dy)

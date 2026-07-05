@@ -1,7 +1,7 @@
 import unittest
 
 from icon_modernization.geometry import Point
-from icon_modernization.svg_parse import UnsupportedTransformError, extract_vertices
+from icon_modernization.svg_parse import UnsupportedPathCommandError, UnsupportedTransformError, extract_vertices
 
 
 class TestExtractVerticesBasicShapes(unittest.TestCase):
@@ -58,6 +58,55 @@ class TestExtractVerticesBasicShapes(unittest.TestCase):
         )
         vertices = extract_vertices(svg)
         self.assertEqual(len(vertices), 6)
+
+
+class TestExtractVerticesPath(unittest.TestCase):
+    def test_moveto_lineto_absolute(self):
+        svg = '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0,0 L10,0 L10,10"/></svg>'
+        self.assertEqual(extract_vertices(svg), [Point(0, 0), Point(10, 0), Point(10, 10)])
+
+    def test_moveto_lineto_relative(self):
+        svg = '<svg xmlns="http://www.w3.org/2000/svg"><path d="m0,0 l10,0 l0,10"/></svg>'
+        self.assertEqual(extract_vertices(svg), [Point(0, 0), Point(10, 0), Point(10, 10)])
+
+    def test_implicit_repeated_lineto(self):
+        svg = '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0,0 L10,0 20,0 30,0"/></svg>'
+        self.assertEqual(
+            extract_vertices(svg),
+            [Point(0, 0), Point(10, 0), Point(20, 0), Point(30, 0)],
+        )
+
+    def test_horizontal_and_vertical_lineto(self):
+        svg = '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0,0 H10 V10 h-5 v-5"/></svg>'
+        self.assertEqual(
+            extract_vertices(svg),
+            [Point(0, 0), Point(10, 0), Point(10, 10), Point(5, 10), Point(5, 5)],
+        )
+
+    def test_cubic_curve_keeps_only_endpoint(self):
+        svg = '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0,0 C1,9 9,9 10,0"/></svg>'
+        self.assertEqual(extract_vertices(svg), [Point(0, 0), Point(10, 0)])
+
+    def test_quadratic_curve_keeps_only_endpoint(self):
+        svg = '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0,0 Q5,9 10,0"/></svg>'
+        self.assertEqual(extract_vertices(svg), [Point(0, 0), Point(10, 0)])
+
+    def test_close_path_is_a_no_op_for_vertices(self):
+        svg = '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0,0 L10,0 L10,10 Z"/></svg>'
+        self.assertEqual(extract_vertices(svg), [Point(0, 0), Point(10, 0), Point(10, 10)])
+
+    def test_path_inside_translated_group(self):
+        svg = (
+            '<svg xmlns="http://www.w3.org/2000/svg">'
+            '<g transform="translate(100,200)"><path d="M0,0 L1,1"/></g>'
+            "</svg>"
+        )
+        self.assertEqual(extract_vertices(svg), [Point(100, 200), Point(101, 201)])
+
+    def test_unsupported_arc_command_raises(self):
+        svg = '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0,0 A5,5 0 0 1 10,10"/></svg>'
+        with self.assertRaises(UnsupportedPathCommandError):
+            extract_vertices(svg)
 
 
 if __name__ == "__main__":
