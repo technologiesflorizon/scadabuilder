@@ -2,12 +2,13 @@
 
 Date: 2026-07-05
 Status: Active style guide
-Document version: `V2.1.3.0004`
+Document version: `V2.1.3.0005`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-05 | `V2.1.3.0005` | `PENDING` | Condenseur.sep approuve (composite panneau/triangle/biseau superieur/2 ventilateurs); ajout de la convention "variante palee" pour les sous-composants destines a un halo d'etat runtime. |
 | 2026-07-05 | `V2.1.3.0004` | `PENDING` | Premiere icone approuvee (Ventilateur.sep, famille ventilateur) via la boucle interactive; ajout de la regle 6 interdisant les transformations autres que `translate` (contrainte decouverte en pratique: `tools/icon_modernization` rejette `rotate`/`scale`/`matrix`). |
 | 2026-07-05 | `V2.1.3.0003` | `PENDING` | Creation du guide de style visuel pour la modernisation des icones Element+ (DEC-0033). |
 
@@ -65,3 +66,17 @@ it during the interactive modernization loop.
 | Family | `.sep` path | Approved on |
 | --- | --- | --- |
 | Fan / ventilateur | `projects/AMR_REF_SCADA_V2/library/elements/Ventilateur.sep` | 2026-07-05 |
+| Condenser module / condenseur | `projects/AMR_REF_SCADA_V2/library/elements/Condenseur.sep` | 2026-07-05 |
+
+### 4.1 Pale Variant Convention
+
+A sub-component destined to receive a runtime state halo/glow filter (per
+the future event-system modernization, out of scope for this guide) is
+drawn as a **pale variant**: identical geometry to its approved reference,
+recolored to lighter flat tones so the colored halo remains legible against
+it. `Condenseur.sep`'s two embedded fans are the first example - same
+geometry as `Ventilateur.sep`, recolored from the slate palette
+(`#5b6b7c`/`#8795a1`) to a pale one (`#c8d0d8`/`#d8dee3`). Do not invent a
+new pale palette per icon; reuse `#c8d0d8` (outer), `#b8c2cc` (inner ring),
+`#d8dee3` (blades/facets), `#a8b3bd` (hub ring), `#8795a1` (hub center) for
+any future pale variant unless a reviewed reason calls for a different one.
