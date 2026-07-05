@@ -36,6 +36,10 @@ def _parse_path_vertices(d: str) -> list[Point]:
 
     def read_floats(n: int) -> list[float]:
         nonlocal i
+        if i + n > len(tokens):
+            raise UnsupportedPathCommandError(
+                f"Path command {cmd!r} is missing required coordinate(s) in {d!r}"
+            )
         vals = [float(tokens[i + k]) for k in range(n)]
         i += n
         return vals
@@ -144,6 +148,16 @@ def _extract_from_element(element: ET.Element, offset_x: float, offset_y: float)
     elif tag == "path":
         for p in _parse_path_vertices(element.get("d", "")):
             vertices.append(Point(p.x + dx, p.y + dy))
+    elif tag == "circle":
+        cx, cy = float(element.get("cx", "0")), float(element.get("cy", "0"))
+        r = float(element.get("r", "0"))
+        for px, py in ((cx - r, cy), (cx + r, cy), (cx, cy - r), (cx, cy + r)):
+            vertices.append(Point(px + dx, py + dy))
+    elif tag == "ellipse":
+        cx, cy = float(element.get("cx", "0")), float(element.get("cy", "0"))
+        rx, ry = float(element.get("rx", "0")), float(element.get("ry", "0"))
+        for px, py in ((cx - rx, cy), (cx + rx, cy), (cx, cy - ry), (cx, cy + ry)):
+            vertices.append(Point(px + dx, py + dy))
 
     for child in element:
         vertices += _extract_from_element(child, dx, dy)

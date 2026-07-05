@@ -34,7 +34,7 @@ class ComparisonResult:
 def compare_junction_points(
     original: list[JunctionPoint],
     candidate: list[JunctionPoint],
-    tolerance_fraction: float,
+    tolerance_fraction: dict[str, float],
 ) -> ComparisonResult:
     remaining_candidates = list(candidate)
     matched: list[JunctionPoint] = []
@@ -43,11 +43,12 @@ def compare_junction_points(
     for point in original:
         best_index = None
         best_distance = None
+        edge_tolerance = tolerance_fraction[point.edge]
         for index, cand in enumerate(remaining_candidates):
             if cand.edge != point.edge:
                 continue
             distance = abs(cand.fraction - point.fraction)
-            if distance <= tolerance_fraction and (best_distance is None or distance < best_distance):
+            if distance <= edge_tolerance and (best_distance is None or distance < best_distance):
                 best_distance = distance
                 best_index = index
         if best_index is None:

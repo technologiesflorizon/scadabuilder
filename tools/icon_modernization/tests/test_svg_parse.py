@@ -49,6 +49,31 @@ class TestExtractVerticesBasicShapes(unittest.TestCase):
         with self.assertRaises(UnsupportedTransformError):
             extract_vertices(svg)
 
+    def test_circle_produces_four_cardinal_points(self):
+        svg = '<svg xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="5"/></svg>'
+        self.assertEqual(
+            extract_vertices(svg),
+            [Point(5, 10), Point(15, 10), Point(10, 5), Point(10, 15)],
+        )
+
+    def test_circle_inside_translated_group(self):
+        svg = (
+            '<svg xmlns="http://www.w3.org/2000/svg">'
+            '<g transform="translate(100,200)"><circle cx="10" cy="10" r="5"/></g>'
+            "</svg>"
+        )
+        self.assertEqual(
+            extract_vertices(svg),
+            [Point(105, 210), Point(115, 210), Point(110, 205), Point(110, 215)],
+        )
+
+    def test_ellipse_produces_four_cardinal_points_with_distinct_radii(self):
+        svg = '<svg xmlns="http://www.w3.org/2000/svg"><ellipse cx="10" cy="20" rx="3" ry="7"/></svg>'
+        self.assertEqual(
+            extract_vertices(svg),
+            [Point(7, 20), Point(13, 20), Point(10, 13), Point(10, 27)],
+        )
+
     def test_multiple_shapes_combined(self):
         svg = (
             '<svg xmlns="http://www.w3.org/2000/svg">'
@@ -110,6 +135,11 @@ class TestExtractVerticesPath(unittest.TestCase):
 
     def test_bare_token_after_close_path_raises(self):
         svg = '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0,0 L10,0 Z 5,5"/></svg>'
+        with self.assertRaises(UnsupportedPathCommandError):
+            extract_vertices(svg)
+
+    def test_path_command_missing_coordinate_raises(self):
+        svg = '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0,0 L10"/></svg>'
         with self.assertRaises(UnsupportedPathCommandError):
             extract_vertices(svg)
 
