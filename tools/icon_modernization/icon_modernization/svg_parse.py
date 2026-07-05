@@ -85,7 +85,7 @@ def _parse_path_vertices(d: str) -> list[Point]:
             cur_x, cur_y = cur_x + dx, cur_y + dy
             vertices.append(Point(cur_x, cur_y))
         elif cmd in ("Z", "z"):
-            pass
+            cmd = None
         else:
             raise UnsupportedPathCommandError(f"Unsupported path command {cmd!r} in {d!r}")
 

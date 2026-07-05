@@ -108,6 +108,11 @@ class TestExtractVerticesPath(unittest.TestCase):
         with self.assertRaises(UnsupportedPathCommandError):
             extract_vertices(svg)
 
+    def test_bare_token_after_close_path_raises(self):
+        svg = '<svg xmlns="http://www.w3.org/2000/svg"><path d="M0,0 L10,0 Z 5,5"/></svg>'
+        with self.assertRaises(UnsupportedPathCommandError):
+            extract_vertices(svg)
+
 
 if __name__ == "__main__":
     unittest.main()
