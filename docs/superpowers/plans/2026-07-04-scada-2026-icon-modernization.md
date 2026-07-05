@@ -655,7 +655,7 @@ git commit -m "feat: parse SVG path M/L/H/V/C/Q/Z commands for vertex extraction
 - Test: `tools/icon_modernization/tests/test_junctions.py`
 
 **Interfaces:**
-- Consumes: `compute_bbox`, `junction_points`, `JunctionPoint` from `geometry.py` (Tasks 1-2); `extract_vertices` from `svg_parse.py` (Tasks 3-4).
+- Consumes: `BBox`, `junction_points`, `JunctionPoint` from `geometry.py` (Tasks 1-2); `extract_vertices` from `svg_parse.py` (Tasks 3-4). Note: this task does **not** use `compute_bbox` - the junction-point bbox must be the SVG's own declared `width`/`height` (the icon's canvas/viewport), not the tight bounding box of the shape's vertices. A single horizontal line spanning the full width of its canvas has a vertex-derived bbox with zero height, which `junction_points` correctly rejects as degenerate - but that same line legitimately touches the canvas's left/right edges at 50% height, which only the canvas-derived bbox can express.
 - Produces: `junction_points_for_svg(svg_markup: str, epsilon: float = 0.5) -> list[JunctionPoint]`, `ComparisonResult(matched: list[JunctionPoint], missing: list[JunctionPoint], extra: list[JunctionPoint])` with `.ok` property, `compare_junction_points(original: list[JunctionPoint], candidate: list[JunctionPoint], tolerance_fraction: float) -> ComparisonResult`. Consumed by Task 6.
 
 - [ ] **Step 1: Write the failing tests**
@@ -737,15 +737,23 @@ Expected: `ModuleNotFoundError: No module named 'icon_modernization.junctions'`.
 ```python
 from __future__ import annotations
 
+import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 
-from icon_modernization.geometry import JunctionPoint, compute_bbox, junction_points
+from icon_modernization.geometry import BBox, JunctionPoint, junction_points
 from icon_modernization.svg_parse import extract_vertices
+
+
+def _read_svg_bbox(svg_markup: str) -> BBox:
+    root = ET.fromstring(svg_markup)
+    width = float(root.get("width"))
+    height = float(root.get("height"))
+    return BBox(min_x=0.0, min_y=0.0, max_x=width, max_y=height)
 
 
 def junction_points_for_svg(svg_markup: str, epsilon: float = 0.5) -> list[JunctionPoint]:
     vertices = extract_vertices(svg_markup)
-    bbox = compute_bbox(vertices)
+    bbox = _read_svg_bbox(svg_markup)
     return junction_points(vertices, bbox, epsilon=epsilon)
 
 
@@ -797,7 +805,7 @@ cd "F:/Groupe AMR/SCADA_AMR_GROUP/SCADA_BUILDER_V2/tools/icon_modernization"
 "C:/Python313/python.exe" -m unittest discover -s tests -t . -v
 ```
 
-Expected: `OK` with 34 tests run.
+Expected: `OK` with 35 tests run (29 pre-existing + 6 new: 1 in `TestJunctionPointsForSvg` + 5 in `TestCompareJunctionPoints`).
 
 - [ ] **Step 5: Commit**
 
@@ -968,7 +976,7 @@ cd "F:/Groupe AMR/SCADA_AMR_GROUP/SCADA_BUILDER_V2/tools/icon_modernization"
 "C:/Python313/python.exe" -m unittest discover -s tests -t . -v
 ```
 
-Expected: `OK` with 36 tests run.
+Expected: `OK` with 37 tests run (35 pre-existing + 2 new in `TestRunCheckJunctions`).
 
 - [ ] **Step 5: Manually verify the CLI end-to-end**
 
