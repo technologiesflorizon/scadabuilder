@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active enterprise documentation map
-Document version: `V2.1.3.0002`
+Document version: `V2.1.3.0003`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-05 | `V2.1.3.0003` | `PENDING` | Ajout du guide de style d'icones SCADA 2026 et du workflow interactif de modernisation Element+ (DEC-0033), en remplacement du pipeline autonome sep-ai-modernizer. |
 | 2026-06-19 | `V2.1.3.0002` | `PENDING` | Ajout du color picker moderne pour les couleurs arriere-plan/bordure Style et Bouton Element+. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes a des icones 32x32 sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Correction de la galerie Formes du ruban Inserer, ajout Cercle/Triangle/Etoile, et placement Ligne/Fleche en deux points. |
@@ -147,6 +148,7 @@ Legacy migration:
 1. `07_legacy_migration/LEGACY_SOURCE_POLICY_V2.md` - legacy source policy, sanitized-source decision, and `win00008`/`win00009` baseline.
 2. `07_legacy_migration/REFERENCE_PROJECT_NOTES_V2.md` - reference project notes.
 3. `07_legacy_migration/MODERNIZATION_WORKFLOW_V2.md` - modernization workflow.
+4. `07_legacy_migration/SCADA_2026_ICON_STYLE_GUIDE_V2.md` - icon visual style guide and junction-point contract for Element+ modernization.
 
 Implementation status:
 

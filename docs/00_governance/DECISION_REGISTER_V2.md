@@ -899,3 +899,52 @@ FT100/TF100Web manifests include imported tags and per-element value binding met
 Regression coverage:
 
 `tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+
+### DEC-0033 - Interactive Icon Modernization Loop Replaces Autonomous AI Pipeline
+
+Status: Active
+Created: 2026-07-05 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/07_legacy_migration/MODERNIZATION_WORKFLOW_V2.md`
+
+Context:
+
+The `sep-ai-modernizer` autonomous pipeline (separate repository, Django
+worker + GPU-hosted model, fully implemented) was evaluated against real
+`.sep` components. Two failures: `Ventilateur2.sep` (AI-regenerated) reads
+as a generic consumer "flat icon" (pastel gradients) rather than an
+industrial SCADA symbol, and independently, the modernized piping icons
+integrated into `win00008_updated.html` kept correct bounding boxes but no
+longer touched those boxes' edges at the same relative positions as the
+legacy originals, breaking the visual connection between neighboring pieces
+(pipe to valve, pipe to tank).
+
+Decision:
+
+Icon artwork modernization is an interactive, human-in-the-loop process
+(Claude Code session per `.sep`), not an autonomous service. Every
+candidate icon must be authored as native inline SVG primitives (never a
+raster or SVG-as-image), follow
+`docs/07_legacy_migration/SCADA_2026_ICON_STYLE_GUIDE_V2.md`, and pass the
+`tools/icon_modernization` junction-point check (2 pixel tolerance) before
+human visual review. `sep-ai-modernizer` is not part of the active
+workflow.
+
+Consequences:
+
+New `.sep` icons are produced and reviewed one at a time inside Claude Code
+sessions rather than through a queued service; the icon and style-guide
+reference table in
+`docs/07_legacy_migration/SCADA_2026_ICON_STYLE_GUIDE_V2.md` section 4
+grows only as icons are actually approved. Reviving a service-based
+approach later requires the style guide and junction-point contract to
+already be validated manually across multiple icons.
+
+Regression coverage:
+
+`tools/icon_modernization/tests` (junction point extraction and comparison),
+manual visual review recorded in
+`docs/07_legacy_migration/SCADA_2026_ICON_STYLE_GUIDE_V2.md` section 4.
