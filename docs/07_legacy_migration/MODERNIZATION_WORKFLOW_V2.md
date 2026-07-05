@@ -2,12 +2,13 @@
 
 Date: 2026-07-05
 Status: Active modernization workflow
-Document version: `V2.1.3.0004`
+Document version: `V2.1.3.0005`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-05 | `V2.1.3.0005` | `PENDING` | Ajout de la regle de decomposition par besoin d'evenement (section 5): tout morceau destine a recevoir un etat/evenement runtime independant doit etre son propre composant `.sep`, jamais une `Part` embarquee, puisque `ScadaElement.Events` est attache a l'objet de scene entier. Condenseur.sep reduit a Panel+HeaderRect; Triangle.sep et VentilateurPale.sep extraits comme composants autonomes. |
 | 2026-07-05 | `V2.1.3.0004` | `PENDING` | Ajout de l'etape obligatoire de sauvegarde `.sep.bak` avant toute modification en place d'un composant existant (retex apres modernisation de `Ventilateur.sep`). |
 | 2026-07-05 | `V2.1.3.0003` | `PENDING` | Remplacement du stub par le workflow actif de modernisation visuelle interactive (DEC-0033), en reponse a l'echec du pipeline autonome `sep-ai-modernizer`. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du nouveau document proprietaire du workflow de modernisation legacy. |
@@ -85,3 +86,27 @@ CLI usage.
 
 Detailed historical content is archived in
 `docs/09_archive/deprecated/LEGACY_MODERNIZATION_WORKFLOW_V2.md`.
+
+## 5. Decomposition By Event Need
+
+`ScadaElement.Events` (runtime event bindings) are attached to a scene
+object as a whole, not to an individual `Part` embedded inside one `.sep`'s
+`Visual`/`Parts`. A sub-shape bundled as a `Part` of a larger component can
+never receive its own independent runtime state - only the whole component
+instance can.
+
+Before finishing a modernization pass, identify every sub-piece that will
+need independent runtime state or events (matching the legacy behavior,
+e.g. `win00008_updated.html`'s `Condenser` class already treats its module
+and its two fans as 3 separate DOM elements with independently swappable
+state). Each such piece must be its own `.sep` component, placed as its own
+`ScadaElement` instance in the scene - never left as an embedded `Part`.
+
+Example: `Condenseur.sep` was first modernized as one 5-part component
+(panel, triangle, header, 2 fans). Once it was clear the triangle and the
+two fans each need independent state, they were split into their own
+components - `Triangle.sep` and `VentilateurPale.sep` (the latter placed
+twice, once per fan) - leaving `Condenseur.sep` as just the static frame
+(panel + header bevel). Getting this decomposition right the first time
+avoids re-splitting an already-approved component later; when in doubt,
+split rather than embed.

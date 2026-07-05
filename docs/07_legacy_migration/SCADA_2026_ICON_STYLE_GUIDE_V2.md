@@ -2,12 +2,13 @@
 
 Date: 2026-07-05
 Status: Active style guide
-Document version: `V2.1.3.0005`
+Document version: `V2.1.3.0006`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-05 | `V2.1.3.0006` | `PENDING` | Triangle.sep et VentilateurPale.sep extraits de Condenseur.sep (voir MODERNIZATION_WORKFLOW_V2.md section 5: decomposition par besoin d'evenement); Condenseur.sep reduit au cadre statique (panneau + biseau superieur). |
 | 2026-07-05 | `V2.1.3.0005` | `PENDING` | Condenseur.sep approuve (composite panneau/triangle/biseau superieur/2 ventilateurs); ajout de la convention "variante palee" pour les sous-composants destines a un halo d'etat runtime. |
 | 2026-07-05 | `V2.1.3.0004` | `PENDING` | Premiere icone approuvee (Ventilateur.sep, famille ventilateur) via la boucle interactive; ajout de la regle 6 interdisant les transformations autres que `translate` (contrainte decouverte en pratique: `tools/icon_modernization` rejette `rotate`/`scale`/`matrix`). |
 | 2026-07-05 | `V2.1.3.0003` | `PENDING` | Creation du guide de style visuel pour la modernisation des icones Element+ (DEC-0033). |
@@ -66,7 +67,17 @@ it during the interactive modernization loop.
 | Family | `.sep` path | Approved on |
 | --- | --- | --- |
 | Fan / ventilateur | `projects/AMR_REF_SCADA_V2/library/elements/Ventilateur.sep` | 2026-07-05 |
-| Condenser module / condenseur | `projects/AMR_REF_SCADA_V2/library/elements/Condenseur.sep` | 2026-07-05 |
+| Fan (pale variant) / ventilateur pale | `projects/AMR_REF_SCADA_V2/library/elements/VentilateurPale.sep` | 2026-07-05 |
+| Condenser frame / condenseur | `projects/AMR_REF_SCADA_V2/library/elements/Condenseur.sep` | 2026-07-05 |
+| Support gusset triangle | `projects/AMR_REF_SCADA_V2/library/elements/Triangle.sep` | 2026-07-05 |
+
+Per `MODERNIZATION_WORKFLOW_V2.md` section 5, `Condenseur.sep` itself only
+contains the static frame (panel + header bevel) - the triangle and the two
+fans are separate components so each can carry independent runtime state
+events. Composing them back into the visual condenser requires placing
+`Condenseur.sep`, `Triangle.sep` (at X=60,Y=170, size 79x45), and
+`VentilateurPale.sep` twice (at X=8,Y=78 and X=97,Y=78, each 93x93), all
+relative to the condenser's own 199x216 origin.
 
 ### 4.1 Pale Variant Convention
 
@@ -74,7 +85,7 @@ A sub-component destined to receive a runtime state halo/glow filter (per
 the future event-system modernization, out of scope for this guide) is
 drawn as a **pale variant**: identical geometry to its approved reference,
 recolored to lighter flat tones so the colored halo remains legible against
-it. `Condenseur.sep`'s two embedded fans are the first example - same
+it. `VentilateurPale.sep` is the first example - same
 geometry as `Ventilateur.sep`, recolored from the slate palette
 (`#5b6b7c`/`#8795a1`) to a pale one (`#c8d0d8`/`#d8dee3`). Do not invent a
 new pale palette per icon; reuse `#c8d0d8` (outer), `#b8c2cc` (inner ring),

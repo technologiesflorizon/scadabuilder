@@ -16,7 +16,7 @@
     },
     "Visual": {
       "Kind": "Svg",
-      "SvgMarkup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"199\" height=\"216\" viewBox=\"0 0 199 216\">\n  <g id=\"Element001\" data-name=\"Panel\"><rect x=\"0\" y=\"64\" width=\"199\" height=\"152\" fill=\"#8795a1\" stroke=\"#1f2933\" stroke-width=\"2\" /></g>\n  <g id=\"Element002\" data-name=\"Triangle\"><polygon points=\"99.5,170 139,215 60,215\" fill=\"#7b8794\" stroke=\"#1f2933\" stroke-width=\"1.5\" /></g>\n  <g id=\"Element003\" data-name=\"HeaderRect\"><rect x=\"0\" y=\"3\" width=\"198\" height=\"61\" fill=\"#8795a1\" stroke=\"#1f2933\" stroke-width=\"2\" /><polygon points=\"4,62 194,62 99,33\" fill=\"#aab4bd\" /><polygon points=\"99,33 4,62 4,4\" fill=\"#7b8794\" /><polygon points=\"4,4 194,4 99,33\" fill=\"#5b6b7c\" /></g>\n  <g id=\"Element004\" data-name=\"FanLeft\"><g transform=\"translate(8,78)\"><circle cx=\"46.5\" cy=\"46.5\" r=\"45\" fill=\"#c8d0d8\" stroke=\"#8795a1\" stroke-width=\"3\" /><circle cx=\"46.5\" cy=\"46.5\" r=\"38\" fill=\"#b8c2cc\" stroke=\"#8795a1\" stroke-width=\"1.5\" /><polygon points=\"46.5,6.5 52.5,22.5 49.5,34.5 43.5,34.5 40.5,22.5\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"81.14,26.5 70.28,39.7 58.39,43.1 55.39,37.9 64.28,29.3\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"81.14,66.5 64.28,63.7 55.39,55.1 58.39,49.9 70.28,53.3\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"46.5,86.5 40.5,70.5 43.5,58.5 49.5,58.5 52.5,70.5\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"11.86,66.5 22.72,53.3 34.61,49.9 37.61,55.1 28.72,63.7\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"11.86,26.5 28.72,29.3 37.61,37.9 34.61,43.1 22.72,39.7\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><circle cx=\"46.5\" cy=\"46.5\" r=\"11\" fill=\"#a8b3bd\" stroke=\"#8795a1\" stroke-width=\"1.5\" /><circle cx=\"46.5\" cy=\"46.5\" r=\"4\" fill=\"#8795a1\" /></g></g>\n  <g id=\"Element005\" data-name=\"FanRight\"><g transform=\"translate(97,78)\"><circle cx=\"46.5\" cy=\"46.5\" r=\"45\" fill=\"#c8d0d8\" stroke=\"#8795a1\" stroke-width=\"3\" /><circle cx=\"46.5\" cy=\"46.5\" r=\"38\" fill=\"#b8c2cc\" stroke=\"#8795a1\" stroke-width=\"1.5\" /><polygon points=\"46.5,6.5 52.5,22.5 49.5,34.5 43.5,34.5 40.5,22.5\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"81.14,26.5 70.28,39.7 58.39,43.1 55.39,37.9 64.28,29.3\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"81.14,66.5 64.28,63.7 55.39,55.1 58.39,49.9 70.28,53.3\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"46.5,86.5 40.5,70.5 43.5,58.5 49.5,58.5 52.5,70.5\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"11.86,66.5 22.72,53.3 34.61,49.9 37.61,55.1 28.72,63.7\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"11.86,26.5 28.72,29.3 37.61,37.9 34.61,43.1 22.72,39.7\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><circle cx=\"46.5\" cy=\"46.5\" r=\"11\" fill=\"#a8b3bd\" stroke=\"#8795a1\" stroke-width=\"1.5\" /><circle cx=\"46.5\" cy=\"46.5\" r=\"4\" fill=\"#8795a1\" /></g></g>\n</svg>\n",
+      "SvgMarkup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"199\" height=\"216\" viewBox=\"0 0 199 216\">\n  <g id=\"Element001\" data-name=\"Panel\"><rect x=\"0\" y=\"64\" width=\"199\" height=\"152\" fill=\"#8795a1\" stroke=\"#1f2933\" stroke-width=\"2\" /></g>\n  <g id=\"Element002\" data-name=\"HeaderRect\"><rect x=\"0\" y=\"3\" width=\"198\" height=\"61\" fill=\"#8795a1\" stroke=\"#1f2933\" stroke-width=\"2\" /><polygon points=\"4,62 194,62 99,33\" fill=\"#aab4bd\" /><polygon points=\"99,33 4,62 4,4\" fill=\"#7b8794\" /><polygon points=\"4,4 194,4 99,33\" fill=\"#5b6b7c\" /></g>\n</svg>\n",
       "ImageAssetId": null,
       "HtmlMarkup": null,
       "CssCode": null,
@@ -62,42 +62,6 @@
       },
       {
         "PartId": "Element002",
-        "Name": "Triangle",
-        "Kind": "Polygon",
-        "Bounds": {
-          "X": 60,
-          "Y": 170,
-          "Width": 79,
-          "Height": 45
-        },
-        "Style": {
-          "FontFamily": "\"Segoe UI\", Arial, sans-serif",
-          "FontSize": 16,
-          "Foreground": "rgb(232, 237, 245)",
-          "Background": "rgba(0, 0, 0, 0)",
-          "BorderColor": "rgb(232, 237, 245)",
-          "BorderWidth": 0,
-          "BorderStyle": "None",
-          "Opacity": 1
-        },
-        "Geometry": "<polygon points=\"99.5,170 139,215 60,215\" fill=\"#7b8794\" stroke=\"#1f2933\" stroke-width=\"1.5\" />",
-        "Text": "",
-        "ImageAssetId": null,
-        "HtmlMarkup": null,
-        "CssCode": null,
-        "Children": null,
-        "SourceTrace": {
-          "SourceProjectId": "AMR_REF_SCADA_V2",
-          "SourceSceneId": "win00008",
-          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
-          "SourceElementIds": [
-            "97"
-          ],
-          "Notes": "Modernized 2026-07-05: support gusset triangle, redrawn as flat vector (was part of the single legacy raster asset-97)."
-        }
-      },
-      {
-        "PartId": "Element003",
         "Name": "HeaderRect",
         "Kind": "Group",
         "Bounds": {
@@ -123,7 +87,7 @@
         "CssCode": null,
         "Children": [
           {
-            "PartId": "Element003a",
+            "PartId": "Element002a",
             "Name": "HeaderBase",
             "Kind": "Rectangle",
             "Bounds": {
@@ -159,7 +123,7 @@
             }
           },
           {
-            "PartId": "Element003b",
+            "PartId": "Element002b",
             "Name": "HeaderBottomFacet",
             "Kind": "Polygon",
             "Bounds": {
@@ -195,7 +159,7 @@
             }
           },
           {
-            "PartId": "Element003c",
+            "PartId": "Element002c",
             "Name": "HeaderLeftFacet",
             "Kind": "Polygon",
             "Bounds": {
@@ -231,7 +195,7 @@
             }
           },
           {
-            "PartId": "Element003d",
+            "PartId": "Element002d",
             "Name": "HeaderTopFacet",
             "Kind": "Polygon",
             "Bounds": {
@@ -279,78 +243,6 @@
           ],
           "Notes": "Modernized 2026-07-05: upper header bevel, geometry reused from CondenseurHeader.sep (4-facet flat-shaded bevel), recolored to the SCADA 2026 palette. Previously baked into legacy raster asset-97 where the bevel effect was not visible."
         }
-      },
-      {
-        "PartId": "Element004",
-        "Name": "FanLeft",
-        "Kind": "Path",
-        "Bounds": {
-          "X": 8,
-          "Y": 78,
-          "Width": 93,
-          "Height": 93
-        },
-        "Style": {
-          "FontFamily": "\"Segoe UI\", Arial, sans-serif",
-          "FontSize": 16,
-          "Foreground": "rgb(232, 237, 245)",
-          "Background": "rgba(0, 0, 0, 0)",
-          "BorderColor": "rgb(232, 237, 245)",
-          "BorderWidth": 0,
-          "BorderStyle": "None",
-          "Opacity": 1
-        },
-        "Geometry": "<g transform=\"translate(8,78)\"><circle cx=\"46.5\" cy=\"46.5\" r=\"45\" fill=\"#c8d0d8\" stroke=\"#8795a1\" stroke-width=\"3\" /><circle cx=\"46.5\" cy=\"46.5\" r=\"38\" fill=\"#b8c2cc\" stroke=\"#8795a1\" stroke-width=\"1.5\" /><polygon points=\"46.5,6.5 52.5,22.5 49.5,34.5 43.5,34.5 40.5,22.5\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"81.14,26.5 70.28,39.7 58.39,43.1 55.39,37.9 64.28,29.3\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"81.14,66.5 64.28,63.7 55.39,55.1 58.39,49.9 70.28,53.3\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"46.5,86.5 40.5,70.5 43.5,58.5 49.5,58.5 52.5,70.5\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"11.86,66.5 22.72,53.3 34.61,49.9 37.61,55.1 28.72,63.7\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"11.86,26.5 28.72,29.3 37.61,37.9 34.61,43.1 22.72,39.7\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><circle cx=\"46.5\" cy=\"46.5\" r=\"11\" fill=\"#a8b3bd\" stroke=\"#8795a1\" stroke-width=\"1.5\" /><circle cx=\"46.5\" cy=\"46.5\" r=\"4\" fill=\"#8795a1\" /></g>",
-        "Text": "",
-        "ImageAssetId": null,
-        "HtmlMarkup": null,
-        "CssCode": null,
-        "Children": null,
-        "SourceTrace": {
-          "SourceProjectId": "AMR_REF_SCADA_V2",
-          "SourceSceneId": "win00008",
-          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
-          "SourceElementIds": [
-            "860"
-          ],
-          "Notes": "Modernized 2026-07-05: pale variant of Ventilateur.sep geometry (same shape, lighter flat tones) so a runtime state halo/glow filter reads clearly. Position matches win00008_updated.html Image5 (left 716,top 179) relative to the module (left 708,top 101)."
-        }
-      },
-      {
-        "PartId": "Element005",
-        "Name": "FanRight",
-        "Kind": "Path",
-        "Bounds": {
-          "X": 97,
-          "Y": 78,
-          "Width": 93,
-          "Height": 93
-        },
-        "Style": {
-          "FontFamily": "\"Segoe UI\", Arial, sans-serif",
-          "FontSize": 16,
-          "Foreground": "rgb(232, 237, 245)",
-          "Background": "rgba(0, 0, 0, 0)",
-          "BorderColor": "rgb(232, 237, 245)",
-          "BorderWidth": 0,
-          "BorderStyle": "None",
-          "Opacity": 1
-        },
-        "Geometry": "<g transform=\"translate(97,78)\"><circle cx=\"46.5\" cy=\"46.5\" r=\"45\" fill=\"#c8d0d8\" stroke=\"#8795a1\" stroke-width=\"3\" /><circle cx=\"46.5\" cy=\"46.5\" r=\"38\" fill=\"#b8c2cc\" stroke=\"#8795a1\" stroke-width=\"1.5\" /><polygon points=\"46.5,6.5 52.5,22.5 49.5,34.5 43.5,34.5 40.5,22.5\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"81.14,26.5 70.28,39.7 58.39,43.1 55.39,37.9 64.28,29.3\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"81.14,66.5 64.28,63.7 55.39,55.1 58.39,49.9 70.28,53.3\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"46.5,86.5 40.5,70.5 43.5,58.5 49.5,58.5 52.5,70.5\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"11.86,66.5 22.72,53.3 34.61,49.9 37.61,55.1 28.72,63.7\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"11.86,26.5 28.72,29.3 37.61,37.9 34.61,43.1 22.72,39.7\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><circle cx=\"46.5\" cy=\"46.5\" r=\"11\" fill=\"#a8b3bd\" stroke=\"#8795a1\" stroke-width=\"1.5\" /><circle cx=\"46.5\" cy=\"46.5\" r=\"4\" fill=\"#8795a1\" /></g>",
-        "Text": "",
-        "ImageAssetId": null,
-        "HtmlMarkup": null,
-        "CssCode": null,
-        "Children": null,
-        "SourceTrace": {
-          "SourceProjectId": "AMR_REF_SCADA_V2",
-          "SourceSceneId": "win00008",
-          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
-          "SourceElementIds": [
-            "918"
-          ],
-          "Notes": "Modernized 2026-07-05: pale variant of Ventilateur.sep geometry (same shape, lighter flat tones) so a runtime state halo/glow filter reads clearly. Position matches win00008_updated.html Image6 (left 805,top 179) relative to the module (left 708,top 101)."
-        }
       }
     ],
     "Assets": [
@@ -374,11 +266,9 @@
         "285",
         "286",
         "287",
-        "288",
-        "860",
-        "918"
+        "288"
       ],
-      "Notes": "Modernized 2026-07-05 per SCADA_2026_ICON_STYLE_GUIDE_V2.md: decomposed from a single legacy raster (asset-97) into 5 native-vector parts (panel, triangle, header bevel, 2 pale fan variants). Header bevel geometry reused from CondenseurHeader.sep. Legacy raster kept in Assets[] for provenance, no longer referenced."
+      "Notes": "Modernized 2026-07-05 per SCADA_2026_ICON_STYLE_GUIDE_V2.md: decomposed from a single legacy raster (asset-97) into 2 native-vector parts (panel, header bevel). Triangle and the 2 fans were split out to their own components (Triangle.sep, VentilateurPale.sep) so each can carry independent runtime state events - ScadaElement.Events is per scene object, not per embedded Part. Legacy raster kept in Assets[] for provenance, no longer referenced. Intended composition: place Condenseur.sep, then Triangle.sep and 2x VentilateurPale.sep on top at their original relative positions (triangle at X=60,Y=170 size 79x45; fans at X=8,Y=78 and X=97,Y=78, size 93x93 each, all relative to the condenser's own 199x216 origin)."
     },
     "Category": "General",
     "Description": null,

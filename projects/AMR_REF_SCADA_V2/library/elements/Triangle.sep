@@ -1,0 +1,80 @@
+{
+  "Metadata": {
+    "Schema": "scada-builder-v2.element-studio.component",
+    "SchemaVersion": 1,
+    "Format": "json.sep",
+    "CreatedByVersion": "V2.1.2.0008"
+  },
+  "Component": {
+    "ComponentId": "Nouveau composant",
+    "Name": "Nouveau composant",
+    "Bounds": {
+      "X": 0,
+      "Y": 0,
+      "Width": 79,
+      "Height": 45
+    },
+    "Visual": {
+      "Kind": "Svg",
+      "SvgMarkup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"79\" height=\"45\" viewBox=\"0 0 79 45\">\n  <g id=\"Element001\" data-name=\"Triangle\"><polygon points=\"39.5,0 79,45 0,45\" fill=\"#7b8794\" stroke=\"#1f2933\" stroke-width=\"1.5\" /></g>\n</svg>\n",
+      "ImageAssetId": null,
+      "HtmlMarkup": null,
+      "CssCode": null,
+      "JsCode": null,
+      "TypedElementKind": null
+    },
+    "Parts": [
+      {
+        "PartId": "Element001",
+        "Name": "Triangle",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 0,
+          "Y": 0,
+          "Width": 79,
+          "Height": 45
+        },
+        "Style": {
+          "FontFamily": "\"Segoe UI\", Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": "<polygon points=\"39.5,0 79,45 0,45\" fill=\"#7b8794\" stroke=\"#1f2933\" stroke-width=\"1.5\" />",
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": null,
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00008",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
+          "SourceElementIds": [
+            "97"
+          ],
+          "Notes": "Split out of Condenseur.sep 2026-07-05 so this piece can carry its own runtime state events independently (ScadaElement.Events is per scene object, not per embedded Part)."
+        }
+      }
+    ],
+    "Assets": [],
+    "Bindings": [],
+    "Events": [],
+    "SourceTrace": {
+      "SourceProjectId": "AMR_REF_SCADA_V2",
+      "SourceSceneId": "win00008",
+      "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
+      "SourceElementIds": [
+        "97"
+      ],
+      "Notes": "Modernized 2026-07-05: support gusset triangle, split out of Condenseur.sep as its own component so it can receive independent runtime state events."
+    },
+    "Category": "General",
+    "Description": null,
+    "Tags": []
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "Metadata": {
+    "Schema": "scada-builder-v2.element-studio.component",
+    "SchemaVersion": 1,
+    "Format": "json.sep",
+    "CreatedByVersion": "V2.1.2.0008"
+  },
+  "Component": {
+    "ComponentId": "Nouveau composant",
+    "Name": "Nouveau composant",
+    "Bounds": {
+      "X": 0,
+      "Y": 0,
+      "Width": 93,
+      "Height": 93
+    },
+    "Visual": {
+      "Kind": "Svg",
+      "SvgMarkup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"93\" height=\"93\" viewBox=\"0 0 93 93\">\n  <g id=\"Element001\" data-name=\"VentilateurPale\"><circle cx=\"46.5\" cy=\"46.5\" r=\"45\" fill=\"#c8d0d8\" stroke=\"#8795a1\" stroke-width=\"3\" /><circle cx=\"46.5\" cy=\"46.5\" r=\"38\" fill=\"#b8c2cc\" stroke=\"#8795a1\" stroke-width=\"1.5\" /><polygon points=\"46.5,6.5 52.5,22.5 49.5,34.5 43.5,34.5 40.5,22.5\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"81.14,26.5 70.28,39.7 58.39,43.1 55.39,37.9 64.28,29.3\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"81.14,66.5 64.28,63.7 55.39,55.1 58.39,49.9 70.28,53.3\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"46.5,86.5 40.5,70.5 43.5,58.5 49.5,58.5 52.5,70.5\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"11.86,66.5 22.72,53.3 34.61,49.9 37.61,55.1 28.72,63.7\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"11.86,26.5 28.72,29.3 37.61,37.9 34.61,43.1 22.72,39.7\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><circle cx=\"46.5\" cy=\"46.5\" r=\"11\" fill=\"#a8b3bd\" stroke=\"#8795a1\" stroke-width=\"1.5\" /><circle cx=\"46.5\" cy=\"46.5\" r=\"4\" fill=\"#8795a1\" /></g>\n</svg>\n",
+      "ImageAssetId": null,
+      "HtmlMarkup": null,
+      "CssCode": null,
+      "JsCode": null,
+      "TypedElementKind": null
+    },
+    "Parts": [
+      {
+        "PartId": "Element001",
+        "Name": "VentilateurPale",
+        "Kind": "Path",
+        "Bounds": {
+          "X": 0,
+          "Y": 0,
+          "Width": 93,
+          "Height": 93
+        },
+        "Style": {
+          "FontFamily": "\"Segoe UI\", Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": "<circle cx=\"46.5\" cy=\"46.5\" r=\"45\" fill=\"#c8d0d8\" stroke=\"#8795a1\" stroke-width=\"3\" /><circle cx=\"46.5\" cy=\"46.5\" r=\"38\" fill=\"#b8c2cc\" stroke=\"#8795a1\" stroke-width=\"1.5\" /><polygon points=\"46.5,6.5 52.5,22.5 49.5,34.5 43.5,34.5 40.5,22.5\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"81.14,26.5 70.28,39.7 58.39,43.1 55.39,37.9 64.28,29.3\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"81.14,66.5 64.28,63.7 55.39,55.1 58.39,49.9 70.28,53.3\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"46.5,86.5 40.5,70.5 43.5,58.5 49.5,58.5 52.5,70.5\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"11.86,66.5 22.72,53.3 34.61,49.9 37.61,55.1 28.72,63.7\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><polygon points=\"11.86,26.5 28.72,29.3 37.61,37.9 34.61,43.1 22.72,39.7\" fill=\"#d8dee3\" stroke=\"#8795a1\" stroke-width=\"1.2\" /><circle cx=\"46.5\" cy=\"46.5\" r=\"11\" fill=\"#a8b3bd\" stroke=\"#8795a1\" stroke-width=\"1.5\" /><circle cx=\"46.5\" cy=\"46.5\" r=\"4\" fill=\"#8795a1\" />",
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": null,
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00008",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
+          "SourceElementIds": [
+            "860",
+            "918"
+          ],
+          "Notes": "Split out of Condenseur.sep 2026-07-05 so each fan can carry its own runtime state events independently (ScadaElement.Events is per scene object, not per embedded Part). Same geometry as Ventilateur.sep, recolored to the pale palette (SCADA_2026_ICON_STYLE_GUIDE_V2.md section 4.1) for a future state halo/glow filter. Intended to be placed twice (left/right fan) in the condenser scene composition."
+        }
+      }
+    ],
+    "Assets": [],
+    "Bindings": [],
+    "Events": [],
+    "SourceTrace": {
+      "SourceProjectId": "AMR_REF_SCADA_V2",
+      "SourceSceneId": "win00008",
+      "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
+      "SourceElementIds": [
+        "860",
+        "918"
+      ],
+      "Notes": "Modernized 2026-07-05: pale variant of Ventilateur.sep, split out of Condenseur.sep as its own reusable component so each placed instance can receive independent runtime state events."
+    },
+    "Category": "General",
+    "Description": null,
+    "Tags": []
+  }
+}
