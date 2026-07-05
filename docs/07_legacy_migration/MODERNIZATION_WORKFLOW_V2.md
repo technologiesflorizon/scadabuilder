@@ -2,12 +2,13 @@
 
 Date: 2026-07-05
 Status: Active modernization workflow
-Document version: `V2.1.3.0003`
+Document version: `V2.1.3.0004`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-05 | `V2.1.3.0004` | `PENDING` | Ajout de l'etape obligatoire de sauvegarde `.sep.bak` avant toute modification en place d'un composant existant (retex apres modernisation de `Ventilateur.sep`). |
 | 2026-07-05 | `V2.1.3.0003` | `PENDING` | Remplacement du stub par le workflow actif de modernisation visuelle interactive (DEC-0033), en reponse a l'echec du pipeline autonome `sep-ai-modernizer`. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du nouveau document proprietaire du workflow de modernisation legacy. |
 
@@ -41,6 +42,13 @@ Steps:
    editor, as already supported by the existing Legacy -> Element+
    conversion. This step is unchanged and already fixes the component's
    `Bounds`.
+1a. Before editing an existing `.sep` in place, copy it to `<name>.sep.bak`
+   in the same `library/elements/` folder. The `.bak` extension is not a
+   valid component the editor loads, so it never appears in the library
+   picker - it exists solely so the pre-modernization file can be restored
+   by a plain file copy if the modernization attempt needs to be discarded,
+   without relying on git history. Never skip this step, even for a "quick"
+   edit.
 2. In an interactive Claude Code session, provide the `.sep` and its legacy
    source geometry. The candidate artwork must:
    - follow `docs/07_legacy_migration/SCADA_2026_ICON_STYLE_GUIDE_V2.md`,
