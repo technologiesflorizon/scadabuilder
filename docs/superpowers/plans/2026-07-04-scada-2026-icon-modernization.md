@@ -1110,7 +1110,7 @@ Document version: `V2.1.3.0003`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-05 | `V2.1.3.0003` | `PENDING` | Remplacement du stub par le workflow actif de modernisation visuelle interactive (DEC-0032), en reponse a l'echec du pipeline autonome `sep-ai-modernizer`. |
+| 2026-07-05 | `V2.1.3.0003` | `PENDING` | Remplacement du stub par le workflow actif de modernisation visuelle interactive (DEC-0033), en reponse a l'echec du pipeline autonome `sep-ai-modernizer`. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du nouveau document proprietaire du workflow de modernisation legacy. |
 
 ## 1. Workflow
@@ -1134,7 +1134,7 @@ Producing modern artwork for a `.sep` component is an **interactive,
 session-by-session** process, not an autonomous pipeline. `sep-ai-modernizer`
 (a separate autonomous AI pipeline repository) was built and fully
 implemented but produced icons that were geometrically unreliable (see
-DEC-0032) and stylistically inconsistent with an industrial SCADA interface.
+DEC-0033) and stylistically inconsistent with an industrial SCADA interface.
 It is not part of this workflow.
 
 Steps:
@@ -1194,7 +1194,7 @@ Document version: `V2.1.3.0003`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-05 | `V2.1.3.0003` | `PENDING` | Creation du guide de style visuel pour la modernisation des icones Element+ (DEC-0032). |
+| 2026-07-05 | `V2.1.3.0003` | `PENDING` | Creation du guide de style visuel pour la modernisation des icones Element+ (DEC-0033). |
 
 ## 1. Purpose
 
@@ -1247,12 +1247,12 @@ unreviewed guesses.
 | _(none yet - the fan/`Ventilateur.sep` family is the next candidate)_ | | |
 ```
 
-- [ ] **Step 3: Add DEC-0032 to `docs/00_governance/DECISION_REGISTER_V2.md`**
+- [ ] **Step 3: Add DEC-0033 to `docs/00_governance/DECISION_REGISTER_V2.md`**
 
 Append to the end of the "Active Decisions" section (after the last existing `### DEC-00xx` entry):
 
 ```markdown
-### DEC-0032 - Interactive Icon Modernization Loop Replaces Autonomous AI Pipeline
+### DEC-0033 - Interactive Icon Modernization Loop Replaces Autonomous AI Pipeline
 
 Status: Active
 Created: 2026-07-05 00:00 America/Toronto
@@ -1309,7 +1309,7 @@ changements` table, right after the header separator row, keeping every
 existing row unchanged below it):
 
 ```markdown
-| 2026-07-05 | `V2.1.3.0003` | `PENDING` | Ajout du guide de style d'icones SCADA 2026 et du workflow interactif de modernisation Element+ (DEC-0032), en remplacement du pipeline autonome sep-ai-modernizer. |
+| 2026-07-05 | `V2.1.3.0003` | `PENDING` | Ajout du guide de style d'icones SCADA 2026 et du workflow interactif de modernisation Element+ (DEC-0033), en remplacement du pipeline autonome sep-ai-modernizer. |
 ```
 
 Bump the header `Document version:` from `V2.1.3.0002` to `V2.1.3.0003`.
@@ -1344,7 +1344,7 @@ do not skip or silence the check.
 ```bash
 cd "F:/Groupe AMR/SCADA_AMR_GROUP/SCADA_BUILDER_V2"
 git add docs/07_legacy_migration/MODERNIZATION_WORKFLOW_V2.md docs/07_legacy_migration/SCADA_2026_ICON_STYLE_GUIDE_V2.md docs/00_governance/DECISION_REGISTER_V2.md docs/README.md VERSION
-git commit -m "docs: record interactive icon modernization workflow and style guide (DEC-0032)"
+git commit -m "docs: record interactive icon modernization workflow and style guide (DEC-0033)"
 ```
 
 ---
