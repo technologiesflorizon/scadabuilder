@@ -87,6 +87,45 @@ public sealed class StudioElementPlusContractTests
             Assert.AreEqual("Piping", snapshot.Items[0].Category);
             Assert.AreEqual(ElementStudioComponentVisualKind.Svg, snapshot.Items[0].VisualKind);
             StringAssert.Contains(snapshot.Items[0].PreviewMarkup, "<svg");
+            Assert.IsNull(snapshot.Items[0].Provenance);
+            Assert.AreEqual("Non renseigne", snapshot.Items[0].ProvenanceText);
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public async Task ProvenanceRoundTripsThroughSepWriteAndRead()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var libraryRoot = Path.Combine(root, "library", "elements");
+        var store = new ElementStudioComponentPackageStore();
+        var reader = new ElementPlusLibraryReader();
+
+        try
+        {
+            var package = ElementStudioComponentPackageFactory.CreateSvg(
+                "fan-test",
+                "Fan Test",
+                new SceneBounds(0, 0, 93, 93),
+                "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 93 93\"><circle cx=\"46.5\" cy=\"46.5\" r=\"45\" /></svg>",
+                ElementStudioComponentMetadata.Current("V2.1.3.0006"),
+                provenance: ElementStudioComponentProvenance.AiModernized);
+
+            var path = await store.WriteToLibraryAsync(package, libraryRoot);
+            var json = await File.ReadAllTextAsync(path);
+            StringAssert.Contains(json, "\"Provenance\": \"AiModernized\"");
+
+            var snapshot = await reader.ReadAsync(libraryRoot);
+
+            Assert.AreEqual(1, snapshot.Items.Count);
+            Assert.AreEqual(ElementStudioComponentProvenance.AiModernized, snapshot.Items[0].Provenance);
+            Assert.AreEqual("Modernise (IA)", snapshot.Items[0].ProvenanceText);
         }
         finally
         {

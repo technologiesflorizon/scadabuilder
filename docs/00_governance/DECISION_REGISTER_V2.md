@@ -948,3 +948,51 @@ Regression coverage:
 `tools/icon_modernization/tests` (junction point extraction and comparison),
 manual visual review recorded in
 `docs/07_legacy_migration/SCADA_2026_ICON_STYLE_GUIDE_V2.md` section 4.
+
+### DEC-0034 - Component Provenance Field (Legacy Vs AI-Modernized)
+
+Status: Active
+Created: 2026-07-05 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/05_studio_element_plus/STUDIO_ELEMENT_PLUS_SEP_CONTRACT_V2.md`
+
+Context:
+
+Two `.sep` components (`Condenseur.sep`, `Triangle.sep`, `VentilateurPale.sep`)
+were modernized and, in one case, replaced in place with no structured way
+to tell from the file itself whether its current artwork is the untouched
+legacy import or a redraw produced by the interactive modernization loop.
+The only prior safety net was a `.sep.bak` sibling file (DEC-0033 workflow
+step 1a) and free-text `SourceTrace.Notes`, neither of which is a queryable
+property a reader or the editor UI can check.
+
+Decision:
+
+`ElementStudioComponent` gains an optional field, `Provenance`
+(`ElementStudioComponentProvenance?`: `Legacy` or `AiModernized`), set by
+`ElementStudioComponentPackageFactory.Create`/`CreateSvg` and persisted like
+any other component field (PascalCase JSON, `JsonStringEnumConverter`). It
+is additive and optional: `.sep` files written before this field existed
+deserialize unchanged with `Provenance == null` ("not recorded", not
+implicitly "Legacy"). The element library UI in both `ScadaBuilderV2.App`
+and `ScadaBuilderV2.ElementStudio.App` shows a small "IA" badge on library
+tiles whose `Provenance` is `AiModernized`. This field does not replace the
+`.sep.bak` safety-copy step or `SourceTrace` - it is a structured,
+queryable complement to both.
+
+Consequences:
+
+Every `.sep` produced or touched by the interactive modernization loop must
+set `Provenance: AiModernized` as its last authoring step. Existing
+modernized components (`Ventilateur.sep`, `Condenseur.sep`, `Triangle.sep`,
+`VentilateurPale.sep`) were retroactively tagged; their `.sep.bak` backups
+were tagged `Legacy` for the same reason.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/StudioElementPlusContractTests.cs`
+(`ProvenanceRoundTripsThroughSepWriteAndRead`,
+`ScadaBuilderLibraryReaderLoadsSepComponentsFromProjectLibrary`).

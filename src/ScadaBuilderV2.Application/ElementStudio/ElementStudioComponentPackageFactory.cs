@@ -17,7 +17,8 @@ public static class ElementStudioComponentPackageFactory
         string? description = null,
         IEnumerable<string>? tags = null,
         IEnumerable<ElementStudioComponentBinding>? bindings = null,
-        IEnumerable<ElementStudioComponentEvent>? events = null)
+        IEnumerable<ElementStudioComponentEvent>? events = null,
+        ElementStudioComponentProvenance? provenance = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(componentId);
         ArgumentException.ThrowIfNullOrWhiteSpace(name);
@@ -37,7 +38,8 @@ public static class ElementStudioComponentPackageFactory
             sourceTrace,
             category,
             description,
-            tags?.Where(tag => !string.IsNullOrWhiteSpace(tag)).Select(tag => tag.Trim()).Distinct(StringComparer.OrdinalIgnoreCase).ToArray());
+            tags?.Where(tag => !string.IsNullOrWhiteSpace(tag)).Select(tag => tag.Trim()).Distinct(StringComparer.OrdinalIgnoreCase).ToArray(),
+            provenance);
 
         return new ElementStudioComponentPackage(metadata, component);
     }
@@ -52,7 +54,8 @@ public static class ElementStudioComponentPackageFactory
         ElementStudioComponentSourceTrace? sourceTrace = null,
         string? category = null,
         string? description = null,
-        IEnumerable<string>? tags = null)
+        IEnumerable<string>? tags = null,
+        ElementStudioComponentProvenance? provenance = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(svgMarkup);
 
@@ -67,7 +70,8 @@ public static class ElementStudioComponentPackageFactory
             sourceTrace,
             category,
             description,
-            tags);
+            tags,
+            provenance: provenance);
     }
 
     public static ElementStudioComponentPackage CreateImage(

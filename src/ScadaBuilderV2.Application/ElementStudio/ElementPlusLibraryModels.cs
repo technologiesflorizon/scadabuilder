@@ -12,7 +12,8 @@ public sealed record ElementPlusLibraryItem(
     string FilePath,
     string? PreviewMarkup,
     DateTimeOffset ModifiedAt,
-    IReadOnlyList<string> Tags)
+    IReadOnlyList<string> Tags,
+    ElementStudioComponentProvenance? Provenance = null)
 {
     public string FileName => Path.GetFileName(FilePath);
 
@@ -27,6 +28,13 @@ public sealed record ElementPlusLibraryItem(
         : $"{Name} ({Category})";
 
     public string DetailText => $"{VisualKind} - {PartCount} composant(s)";
+
+    public string ProvenanceText => Provenance switch
+    {
+        ElementStudioComponentProvenance.AiModernized => "Modernise (IA)",
+        ElementStudioComponentProvenance.Legacy => "Original",
+        _ => "Non renseigne"
+    };
 }
 
 public sealed record ElementPlusLibrarySnapshot(

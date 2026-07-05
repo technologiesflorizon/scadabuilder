@@ -457,6 +457,28 @@
                                                             </Style>
                                                         </TextBlock.Style>
                                                     </TextBlock>
+                                                    <Border Background="#CC2F6F4E"
+                                                            CornerRadius="3"
+                                                            Padding="3,1"
+                                                            Margin="2"
+                                                            HorizontalAlignment="Right"
+                                                            VerticalAlignment="Top"
+                                                            ToolTip="{Binding ProvenanceText}">
+                                                        <Border.Style>
+                                                            <Style TargetType="Border">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding Provenance}" Value="AiModernized">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </Border.Style>
+                                                        <TextBlock Text="IA"
+                                                                   FontSize="9"
+                                                                   FontWeight="Bold"
+                                                                   Foreground="White"/>
+                                                    </Border>
                                                 </Grid>
                                             </Border>
                                             <TextBlock Text="{Binding FileName}"

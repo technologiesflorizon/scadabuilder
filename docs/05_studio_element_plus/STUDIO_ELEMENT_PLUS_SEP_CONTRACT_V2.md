@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Studio Element+ SEP Contract
 
-Date: 2026-06-19
+Date: 2026-07-05
 Status: Active `.sep` package contract
-Document version: `V2.1.3.0000`
+Document version: `V2.1.3.0001`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-05 | `V2.1.3.0001` | `PENDING` | Ajout du champ `Component.Provenance` (`Legacy` \| `AiModernized`) pour distinguer une artwork originale d'une retouche via la boucle de modernisation interactive (DEC-0034). |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Extension du contrat formes standards a Cercle/Triangle/Etoile et aux lignes/fleches en deux points. |
 | 2026-06-19 | `V2.1.2.0033` | `89d7165` | Ajout des primitives HMI/SCADA electriques et alarme `Switch`, `Breaker`, `Transformer` et `AlarmBeacon`. |
 | 2026-06-18 | `V2.1.2.0031` | `f6a85ed` | Ajout des primitives machines/mesure HMI Element+ `Motor`, `Fan`, `Conveyor` et `Gauge`. |
@@ -75,3 +76,29 @@ Preview and FT100 export render these shapes as Element+-owned SVG content insid
 4. `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`
 5. `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`
 6. `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+
+## 5. Provenance
+
+`ElementStudioComponent.Provenance` is an optional field
+(`ElementStudioComponentProvenance?`: `Legacy` or `AiModernized`) recording
+whether a component's current artwork is the untouched legacy import or has
+been redrawn under the interactive icon-modernization loop
+(`docs/07_legacy_migration/MODERNIZATION_WORKFLOW_V2.md`). It is `null` for
+components written before this field existed or where provenance was never
+set - readers must treat `null` as "not recorded," not as "Legacy."
+
+`Provenance` is serialized like any other `Component` field (PascalCase,
+`JsonStringEnumConverter`, see `ElementStudioComponentPackageStore`). It is
+optional and additive: `.sep` files written before this field existed
+deserialize unchanged with `Provenance == null`.
+
+Set `provenance: ElementStudioComponentProvenance.AiModernized` when writing
+a component through `ElementStudioComponentPackageFactory.CreateSvg`/`Create`
+as the last step of the interactive modernization loop (workflow step 5).
+The element library UI (`ScadaBuilderV2.App` and
+`ScadaBuilderV2.ElementStudio.App` `MainWindow.xaml`) shows a small "IA"
+badge on library tiles whose `Provenance` is `AiModernized`.
+
+This field is metadata only; it does not affect rendering, export, or the
+junction-point/style-guide verification already required by
+`MODERNIZATION_WORKFLOW_V2.md`.

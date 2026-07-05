@@ -2,12 +2,13 @@
 
 Date: 2026-07-05
 Status: Active modernization workflow
-Document version: `V2.1.3.0005`
+Document version: `V2.1.3.0006`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-05 | `V2.1.3.0006` | `PENDING` | Etape 5 precisee: tagger `Component.Provenance = AiModernized` a la fin de chaque passe de modernisation (DEC-0034, contrat dans STUDIO_ELEMENT_PLUS_SEP_CONTRACT_V2.md section 5). |
 | 2026-07-05 | `V2.1.3.0005` | `PENDING` | Ajout de la regle de decomposition par besoin d'evenement (section 5): tout morceau destine a recevoir un etat/evenement runtime independant doit etre son propre composant `.sep`, jamais une `Part` embarquee, puisque `ScadaElement.Events` est attache a l'objet de scene entier. Condenseur.sep reduit a Panel+HeaderRect; Triangle.sep et VentilateurPale.sep extraits comme composants autonomes. |
 | 2026-07-05 | `V2.1.3.0004` | `PENDING` | Ajout de l'etape obligatoire de sauvegarde `.sep.bak` avant toute modification en place d'un composant existant (retex apres modernisation de `Ventilateur.sep`). |
 | 2026-07-05 | `V2.1.3.0003` | `PENDING` | Remplacement du stub par le workflow actif de modernisation visuelle interactive (DEC-0033), en reponse a l'echec du pipeline autonome `sep-ai-modernizer`. |
@@ -63,7 +64,11 @@ Steps:
    against already-approved icons, then approves or requests changes.
 5. The approved `.sep` replaces the previous one in the project's element
    library (`projects/<project-id>/library/elements/*.sep`), reusable by
-   every scene referencing that component.
+   every scene referencing that component. Set
+   `Component.Provenance = AiModernized` on the written component (DEC-0034,
+   `docs/05_studio_element_plus/STUDIO_ELEMENT_PLUS_SEP_CONTRACT_V2.md`
+   section 5) so the file itself - not just `SourceTrace.Notes` or the
+   `.sep.bak` sibling - records that its artwork was redrawn.
 
 ## 3. Junction Point Contract
 

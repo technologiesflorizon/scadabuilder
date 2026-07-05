@@ -26,6 +26,23 @@ public enum ElementStudioComponentPartKind
     Custom
 }
 
+/// <summary>
+/// Whether a `.sep` component's current artwork is the untouched legacy import
+/// or has been redrawn under the interactive icon-modernization loop.
+/// </summary>
+/// <remarks>
+/// Decisions: DEC-0034. Contracts: STUDIO_ELEMENT_PLUS_SEP_CONTRACT_V2.md.
+/// Tests: StudioElementPlusContractTests.cs.
+/// </remarks>
+public enum ElementStudioComponentProvenance
+{
+    /// <summary>Untouched legacy import - original artwork, not redrawn.</summary>
+    Legacy,
+
+    /// <summary>Artwork redrawn under the interactive icon-modernization loop (docs/07_legacy_migration/MODERNIZATION_WORKFLOW_V2.md).</summary>
+    AiModernized
+}
+
 public sealed record ElementStudioComponentMetadata(
     string Schema,
     int SchemaVersion,
@@ -62,7 +79,8 @@ public sealed record ElementStudioComponent(
     ElementStudioComponentSourceTrace? SourceTrace,
     string? Category = null,
     string? Description = null,
-    IReadOnlyList<string>? Tags = null)
+    IReadOnlyList<string>? Tags = null,
+    ElementStudioComponentProvenance? Provenance = null)
 {
     [JsonIgnore]
     public IReadOnlyList<string> TagList => Tags ?? Array.Empty<string>();

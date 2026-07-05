@@ -50,7 +50,8 @@ public sealed class ElementPlusLibraryReader
                     fileInfo.FullName,
                     GetPreviewMarkup(component),
                     fileInfo.LastWriteTimeUtc,
-                    component.TagList));
+                    component.TagList,
+                    component.Provenance));
             }
             catch (Exception ex) when (ex is IOException or InvalidDataException or JsonException or ArgumentException)
             {
