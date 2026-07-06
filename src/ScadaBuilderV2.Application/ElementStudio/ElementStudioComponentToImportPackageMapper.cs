@@ -60,7 +60,8 @@ public static class ElementStudioComponentToImportPackageMapper
             sourceTrace?.SourcePagePath ?? sepFilePath,
             items,
             ElementStudioPackageMetadata.Current(createdByVersion),
-            targetLibraryPath);
+            targetLibraryPath,
+            component.Name);
     }
 
     private static List<ElementStudioComponentPart> FlattenParts(IReadOnlyList<ElementStudioComponentPart> parts)

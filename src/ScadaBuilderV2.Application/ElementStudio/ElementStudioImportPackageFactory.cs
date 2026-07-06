@@ -11,7 +11,8 @@ public static class ElementStudioImportPackageFactory
         string sourcePagePath,
         IEnumerable<ElementStudioLegacyItem> items,
         ElementStudioPackageMetadata metadata,
-        string? targetLibraryPath = null)
+        string? targetLibraryPath = null,
+        string? componentName = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(packageId);
         ArgumentException.ThrowIfNullOrWhiteSpace(sourceProjectId);
@@ -46,7 +47,8 @@ public static class ElementStudioImportPackageFactory
             sourcePagePath,
             targetLibraryPath,
             packageBounds,
-            relativeItems);
+            relativeItems,
+            componentName);
     }
 
     private static SceneBounds CalculateOuterBounds(IEnumerable<SceneBounds> bounds)

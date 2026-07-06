@@ -34,8 +34,10 @@ public sealed class ElementStudioWorkspaceViewModel : INotifyPropertyChanged
         SelectedItems = new ObservableCollection<ElementStudioItemViewModel>();
         Diagnostics = new ObservableCollection<string>(diagnostics);
         nextElementIndex = ImportedItems.Count + 1;
-        componentName = ElementStudioComponentNaming.ResolveDefaultComponentName(
-            package.Items.Select(item => item.SourceName).ToArray());
+        componentName = string.IsNullOrWhiteSpace(package.ComponentName)
+            ? ElementStudioComponentNaming.ResolveDefaultComponentName(
+                package.Items.Select(item => item.SourceName).ToArray())
+            : package.ComponentName;
         SetSelectedItems(ImportedItems.Take(1));
     }
 

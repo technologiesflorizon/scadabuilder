@@ -1270,6 +1270,14 @@ public sealed class WebViewContextMenuScriptTests
             "componentName must no longer be hardcoded to the placeholder default.");
     }
 
+    [TestMethod]
+    public void WorkspacePrefersPackageComponentNameWhenPresent()
+    {
+        var source = ReadElementStudioAppSource("ElementStudioViewModels.cs");
+
+        StringAssert.Contains(source, "package.ComponentName");
+    }
+
     private static string ReadElementStudioAppSource(string fileName)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

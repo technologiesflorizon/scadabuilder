@@ -1119,10 +1119,10 @@ public partial class MainWindow : Window
     private static string ToSafeFileName(string value)
     {
         var invalid = Path.GetInvalidFileNameChars().Append('/').Append('\\').ToHashSet();
-        var safe = new string((string.IsNullOrWhiteSpace(value) ? "Nouveau composant" : value)
+        var safe = new string((string.IsNullOrWhiteSpace(value) ? ElementStudioComponentNaming.DefaultComponentName : value)
             .Select(character => invalid.Contains(character) ? '_' : character)
             .ToArray()).Trim();
-        return string.IsNullOrWhiteSpace(safe) ? "Nouveau composant" : safe;
+        return string.IsNullOrWhiteSpace(safe) ? ElementStudioComponentNaming.DefaultComponentName : safe;
     }
 
     private void SynchronizeElementListSelection(IEnumerable<ElementStudioItemViewModel> selectedItems)

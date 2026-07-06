@@ -66,6 +66,20 @@ public sealed class ElementStudioComponentToImportPackageMapperTests
     }
 
     [TestMethod]
+    public void ToEditablePackageSetsComponentNameFromComponentNotFromFirstPart()
+    {
+        var sepPackage = CreateComponentPackage(
+            CreatePart("part-1", "Element001", ElementStudioComponentPartKind.Rectangle));
+
+        var result = ElementStudioComponentToImportPackageMapper.ToEditablePackage(
+            sepPackage,
+            @"C:\lib\Condenseur.sep",
+            "V2.1.3.0003");
+
+        Assert.AreEqual("Condenseur", result.ComponentName);
+    }
+
+    [TestMethod]
     public void ToEditablePackageThrowsWhenComponentHasNoParts()
     {
         var sepPackage = CreateComponentPackage();
