@@ -1009,7 +1009,7 @@ Owner document: `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md`
 
 Context:
 
-Once a legacy element is converted to Element+, right-clicking it exposed no way back into Studio Element+ to edit its source `.sep` component; only never-converted legacy elements could open Studio Element+, and only to create a brand-new component. Users who convert to Element+ (required for grouping/resizing) lost their only path to editing that component's appearance. Separately, `.sep` components created from a library import always kept the placeholder name "Nuovo componente" because nothing seeded `ElementStudioWorkspaceViewModel.ComponentName` from the captured source element's name.
+Once a legacy element is converted to Element+, right-clicking it exposed no way back into Studio Element+ to edit its source `.sep` component; only never-converted legacy elements could open Studio Element+, and only to create a brand-new component. Users who convert to Element+ (required for grouping/resizing) lost their only path to editing that component's appearance. Separately, `.sep` components created from a library import always kept the placeholder name "Nouveau composant" because nothing seeded `ElementStudioWorkspaceViewModel.ComponentName` from the captured source element's name.
 
 Decision:
 
