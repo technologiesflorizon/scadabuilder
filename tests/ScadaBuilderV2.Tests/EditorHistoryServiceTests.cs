@@ -127,6 +127,47 @@ public sealed class EditorHistoryServiceTests
     }
 
     [TestMethod]
+    public async Task SceneObjectAddedActionUndoRedoRestoresTopLevelElement()
+    {
+        var element = ScadaElement.CreateInputText("input-002", "Input002", 30, 40);
+        var scene = ScadaScene.CreateEmpty("win00008", "win00008", new(1280, 873))
+            .WithElement(element);
+        var history = new EditorHistoryService();
+        var context = CreateContext(scene, replacement => scene = replacement);
+
+        history.Push(new SceneObjectsAddedAction(
+            scene.Id,
+            [new DeletedSceneObjectSnapshot(element, null, 0)]));
+
+        Assert.IsTrue(await history.UndoAsync(context));
+        Assert.IsNull(scene.FindElementRecursive(element.Id));
+
+        Assert.IsTrue(await history.RedoAsync(context));
+        Assert.IsNotNull(scene.FindElementRecursive(element.Id));
+    }
+
+    [TestMethod]
+    public async Task SceneObjectAddedActionRestoresChildToOriginalParentOnRedo()
+    {
+        var child = CreateShape("shape-002", 7, 8);
+        var group = CreateGroup("group-002", 50, 60, []);
+        var scene = ScadaScene.CreateEmpty("win00008", "win00008", new(1280, 873))
+            .WithElement(group);
+        var history = new EditorHistoryService();
+        var context = CreateContext(scene, replacement => scene = replacement);
+
+        history.Push(new SceneObjectsAddedAction(
+            scene.Id,
+            [new DeletedSceneObjectSnapshot(child, group.Id, 0)]));
+
+        Assert.IsTrue(await history.UndoAsync(context));
+        Assert.IsNull(scene.FindElementRecursive(child.Id));
+
+        Assert.IsTrue(await history.RedoAsync(context));
+        Assert.AreEqual(group.Id, scene.FindParentOf(child.Id)?.Id);
+    }
+
+    [TestMethod]
     public async Task SceneObjectDeleteActionRestoresChildToOriginalParent()
     {
         var child = CreateShape("shape-001", 5, 6);
