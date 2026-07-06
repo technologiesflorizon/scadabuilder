@@ -1,0 +1,141 @@
+{
+  "Metadata": {
+    "Schema": "scada-builder-v2.element-studio.component",
+    "SchemaVersion": 1,
+    "Format": "json.sep",
+    "CreatedByVersion": "V2.1.3.0002"
+  },
+  "Component": {
+    "ComponentId": "Nouveau composant",
+    "Name": "Nouveau composant",
+    "Bounds": {
+      "X": 0,
+      "Y": 0,
+      "Width": 33,
+      "Height": 30
+    },
+    "Visual": {
+      "Kind": "Svg",
+      "SvgMarkup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"33\" height=\"30\" viewBox=\"0 0 33 30\">\n  <g id=\"Element001\" data-source-name=\"Modernized\">\n    <polygon points=\"0,14 0,30 16.5,22\" fill=\"#7b8794\" /><polygon points=\"33,14 33,30 16.5,22\" fill=\"#8795a1\" /><rect x=\"14.5\" y=\"7\" width=\"4\" height=\"16\" fill=\"#5b6b7c\" /><rect x=\"8\" y=\"0\" width=\"17\" height=\"7\" fill=\"#8795a1\" /><rect x=\"8\" y=\"5\" width=\"17\" height=\"2\" fill=\"#7b8794\" /><rect x=\"8\" y=\"0\" width=\"17\" height=\"2\" fill=\"#aab4bd\" /><rect x=\"8\" y=\"0\" width=\"17\" height=\"1\" fill=\"#d8dee3\" /><polygon points=\"0,14 0,30 16.5,22\" fill=\"none\" stroke=\"#1f2933\" stroke-width=\"1\" /><polygon points=\"33,14 33,30 16.5,22\" fill=\"none\" stroke=\"#1f2933\" stroke-width=\"1\" /><rect x=\"14.5\" y=\"7\" width=\"4\" height=\"16\" fill=\"none\" stroke=\"#1f2933\" stroke-width=\"1\" /><rect x=\"8\" y=\"0\" width=\"17\" height=\"7\" fill=\"none\" stroke=\"#1f2933\" stroke-width=\"1\" />\n  </g>\n</svg>\n",
+      "ImageAssetId": null,
+      "HtmlMarkup": null,
+      "CssCode": null,
+      "JsCode": null,
+      "TypedElementKind": null
+    },
+    "Parts": [
+      {
+        "PartId": "Element001",
+        "Name": "Element001",
+        "Kind": "Path",
+        "Bounds": {
+          "X": 0,
+          "Y": 0,
+          "Width": 33,
+          "Height": 30
+        },
+        "Style": {
+          "FontFamily": "\"Segoe UI\", Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": "<polygon points=\"0,14 0,30 16.5,22\" fill=\"#7b8794\" /><polygon points=\"33,14 33,30 16.5,22\" fill=\"#8795a1\" /><rect x=\"14.5\" y=\"7\" width=\"4\" height=\"16\" fill=\"#5b6b7c\" /><rect x=\"8\" y=\"0\" width=\"17\" height=\"7\" fill=\"#8795a1\" /><rect x=\"8\" y=\"5\" width=\"17\" height=\"2\" fill=\"#7b8794\" /><rect x=\"8\" y=\"0\" width=\"17\" height=\"2\" fill=\"#aab4bd\" /><rect x=\"8\" y=\"0\" width=\"17\" height=\"1\" fill=\"#d8dee3\" /><polygon points=\"0,14 0,30 16.5,22\" fill=\"none\" stroke=\"#1f2933\" stroke-width=\"1\" /><polygon points=\"33,14 33,30 16.5,22\" fill=\"none\" stroke=\"#1f2933\" stroke-width=\"1\" /><rect x=\"14.5\" y=\"7\" width=\"4\" height=\"16\" fill=\"none\" stroke=\"#1f2933\" stroke-width=\"1\" /><rect x=\"8\" y=\"0\" width=\"17\" height=\"7\" fill=\"none\" stroke=\"#1f2933\" stroke-width=\"1\" />",
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": null,
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00008",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
+          "SourceElementIds": [
+            "749",
+            "750",
+            "751",
+            "752",
+            "753",
+            "754",
+            "755",
+            "756",
+            "757",
+            "758",
+            "759",
+            "760",
+            "761",
+            "762",
+            "763",
+            "764",
+            "765",
+            "766",
+            "767",
+            "768",
+            "769",
+            "770",
+            "771",
+            "772",
+            "773",
+            "774",
+            "775",
+            "776",
+            "777",
+            "778",
+            "779"
+          ],
+          "Notes": "Modernized 2026-07-05 per SCADA_2026_ICON_STYLE_GUIDE_V2.md - flat industrial gate-valve glyph (bowtie body + stem + wheel actuator) replacing the legacy multi-band fake-gradient shading; left/right/bottom pipe-stub junctions preserved from the legacy PolyLine bowtie outline; untouched original preserved as Original_Vanne.sep."
+        }
+      }
+    ],
+    "Assets": [],
+    "Bindings": [],
+    "Events": [],
+    "SourceTrace": {
+      "SourceProjectId": "AMR_REF_SCADA_V2",
+      "SourceSceneId": "win00008",
+      "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
+      "SourceElementIds": [
+        "749",
+        "750",
+        "751",
+        "752",
+        "753",
+        "754",
+        "755",
+        "756",
+        "757",
+        "758",
+        "759",
+        "760",
+        "761",
+        "762",
+        "763",
+        "764",
+        "765",
+        "766",
+        "767",
+        "768",
+        "769",
+        "770",
+        "771",
+        "772",
+        "773",
+        "774",
+        "775",
+        "776",
+        "777",
+        "778",
+        "779"
+      ],
+      "Notes": "Modernized 2026-07-05 per SCADA_2026_ICON_STYLE_GUIDE_V2.md - flat industrial gate-valve glyph (bowtie body + stem + wheel actuator) replacing the legacy multi-band fake-gradient shading; left/right/bottom pipe-stub junctions preserved from the legacy PolyLine bowtie outline; untouched original preserved as Original_Vanne.sep. Reworked 2026-07-05: separated fills from a single final outline overlay pass (previously each shape carried its own stroke, and later shapes drawn on top partially covered earlier shapes' strokes at shared edges - the outline is now drawn once, last, guaranteeing a complete 1px border everywhere)."
+    },
+    "Category": "General",
+    "Description": null,
+    "Tags": [],
+    "Provenance": "AiModernized"
+  }
+}

@@ -3,20 +3,20 @@
     "Schema": "scada-builder-v2.element-studio.component",
     "SchemaVersion": 1,
     "Format": "json.sep",
-    "CreatedByVersion": "V2.1.3.0002"
+    "CreatedByVersion": "V2.0.3.0026"
   },
   "Component": {
-    "ComponentId": "Nouveau composant",
-    "Name": "Nouveau composant",
+    "ComponentId": "Pipe_Elbow_Rot90",
+    "Name": "Pipe_Elbow_Rot90",
     "Bounds": {
       "X": 0,
       "Y": 0,
-      "Width": 153,
-      "Height": 70
+      "Width": 27,
+      "Height": 22
     },
     "Visual": {
       "Kind": "Svg",
-      "SvgMarkup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"153\" height=\"70\" viewBox=\"78 695 153 70\">\n  <g id=\"Element001\" data-source-id=\"115\" data-source-name=\"Rectangle3\">\n    <rect x=\"78\" y=\"695\" width=\"153\" height=\"70\" fill=\"#00ba00\" stroke=\"#1f2933\" stroke-width=\"1\" />\n  </g>\n</svg>\n",
+      "SvgMarkup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"27\" height=\"22\" viewBox=\"0 0 27 22\">\n  <g id=\"Element001\" data-source-name=\"elbow\">\n    <path d=\"M0 0 L14 0 Q27 0 27 11 L27 21 L16 21 L16 11 Q16 11 14 11 L0 11 Z\" fill=\"#8795a1\" stroke=\"#1f2933\" stroke-width=\"1\" /><path d=\"M0 0 L14 0 Q27 0 27 11 L27 21 L25 21 L25 11 Q25 2 14 2 L0 2 Z\" fill=\"#7b8794\" /><path d=\"M0 4 L14 4 Q23 4 23 11 L23 21 L20 21 L20 11 Q20 7 14 7 L0 7 Z\" fill=\"#aab4bd\" />\n  </g>\n</svg>\n",
       "ImageAssetId": null,
       "HtmlMarkup": null,
       "CssCode": null,
@@ -31,8 +31,8 @@
         "Bounds": {
           "X": 0,
           "Y": 0,
-          "Width": 153,
-          "Height": 70
+          "Width": 27,
+          "Height": 22
         },
         "Style": {
           "FontFamily": "\"Segoe UI\", Arial, sans-serif",
@@ -44,7 +44,7 @@
           "BorderStyle": "None",
           "Opacity": 1
         },
-        "Geometry": "<rect x=\"78\" y=\"695\" width=\"153\" height=\"70\" fill=\"#00ba00\" stroke=\"#1f2933\" stroke-width=\"1\" />",
+        "Geometry": "<path d=\"M0 0 L14 0 Q27 0 27 11 L27 21 L16 21 L16 11 Q16 11 14 11 L0 11 Z\" fill=\"#8795a1\" stroke=\"#1f2933\" stroke-width=\"1\" /><path d=\"M0 0 L14 0 Q27 0 27 11 L27 21 L25 21 L25 11 Q25 2 14 2 L0 2 Z\" fill=\"#7b8794\" /><path d=\"M0 4 L14 4 Q23 4 23 11 L23 21 L20 21 L20 11 Q20 7 14 7 L0 7 Z\" fill=\"#aab4bd\" />",
         "Text": "",
         "ImageAssetId": null,
         "HtmlMarkup": null,
@@ -55,9 +55,9 @@
           "SourceSceneId": "win00008",
           "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
           "SourceElementIds": [
-            "115"
+            "159"
           ],
-          "Notes": "Rectangle3"
+          "Notes": "Rotated 90 degrees clockwise from Pipe_Elbow.sep (hand-computed coordinate rotation, no SVG rotate() transform per style guide rule 6)."
         }
       }
     ],
@@ -69,9 +69,15 @@
       "SourceSceneId": "win00008",
       "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
       "SourceElementIds": [
-        "115"
+        "593",
+        "594",
+        "595",
+        "596",
+        "597",
+        "598",
+        "599"
       ],
-      "Notes": "Modernized 2026-07-05 per SCADA_2026_ICON_STYLE_GUIDE_V2.md - flat single-fill rectangle normalized to hex palette (#00ba00) with a #1f2933 outline replacing the legacy strokeless rgba fill; untouched original preserved as Original_GreenRectangle.sep."
+      "Notes": "Generated 2026-07-06: 90 degree clockwise rotation of Pipe_Elbow.sep, coordinates hand-rotated per SCADA_2026_ICON_STYLE_GUIDE_V2.md rule 6 (translate-only transforms - no rotate()/scale()/matrix()). Base component: Pipe_Elbow.sep."
     },
     "Category": "General",
     "Description": null,

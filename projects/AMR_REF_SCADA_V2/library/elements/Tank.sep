@@ -1,0 +1,122 @@
+{
+  "Metadata": {
+    "Schema": "scada-builder-v2.element-studio.component",
+    "SchemaVersion": 1,
+    "Format": "json.sep",
+    "CreatedByVersion": "V2.1.3.0003"
+  },
+  "Component": {
+    "ComponentId": "Nouveau composant",
+    "Name": "Nouveau composant",
+    "Bounds": {
+      "X": 0,
+      "Y": 0,
+      "Width": 270,
+      "Height": 196
+    },
+    "Visual": {
+      "Kind": "Svg",
+      "SvgMarkup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"270\" height=\"196\" viewBox=\"0 0 270 196\">\n  <g id=\"Element001\" data-source-name=\"Tank\">\n    <rect x=\"11\" y=\"0\" width=\"229\" height=\"196\" fill=\"#c9c9c9\" stroke=\"#1f2933\" stroke-width=\"1\" /><polygon points=\"40,0 210,0 125,50\" fill=\"#c0c0c0\" /><rect x=\"0\" y=\"0\" width=\"249\" height=\"4\" rx=\"2\" ry=\"2\" fill=\"#d6d6d6\" stroke=\"#9a9a9a\" stroke-width=\"0.5\" /><rect x=\"0\" y=\"7\" width=\"249\" height=\"4\" rx=\"2\" ry=\"2\" fill=\"#d6d6d6\" stroke=\"#9a9a9a\" stroke-width=\"0.5\" /><rect x=\"0\" y=\"60\" width=\"249\" height=\"4\" rx=\"2\" ry=\"2\" fill=\"#d6d6d6\" stroke=\"#9a9a9a\" stroke-width=\"0.5\" /><rect x=\"0\" y=\"67\" width=\"250\" height=\"4\" rx=\"2\" ry=\"2\" fill=\"#d6d6d6\" stroke=\"#9a9a9a\" stroke-width=\"0.5\" /><rect x=\"0\" y=\"120\" width=\"246\" height=\"4\" rx=\"2\" ry=\"2\" fill=\"#d6d6d6\" stroke=\"#9a9a9a\" stroke-width=\"0.5\" /><rect x=\"0\" y=\"128\" width=\"246\" height=\"4\" rx=\"2\" ry=\"2\" fill=\"#d6d6d6\" stroke=\"#9a9a9a\" stroke-width=\"0.5\" /><rect x=\"0\" y=\"192\" width=\"250\" height=\"4\" rx=\"2\" ry=\"2\" fill=\"#d6d6d6\" stroke=\"#9a9a9a\" stroke-width=\"0.5\" /><rect x=\"0\" y=\"185\" width=\"248\" height=\"4\" rx=\"2\" ry=\"2\" fill=\"#d6d6d6\" stroke=\"#9a9a9a\" stroke-width=\"0.5\" /><rect x=\"180\" y=\"1\" width=\"40\" height=\"2\" fill=\"#e8e8e8\" /><rect x=\"180\" y=\"186\" width=\"40\" height=\"2\" fill=\"#e8e8e8\" />\n  </g>\n</svg>\n",
+      "ImageAssetId": null,
+      "HtmlMarkup": null,
+      "CssCode": null,
+      "JsCode": null,
+      "TypedElementKind": null
+    },
+    "Parts": [
+      {
+        "PartId": "Element001",
+        "Name": "Element001",
+        "Kind": "Path",
+        "Bounds": {
+          "X": 0,
+          "Y": 0,
+          "Width": 270,
+          "Height": 196
+        },
+        "Style": {
+          "FontFamily": "\"Segoe UI\", Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": "<rect x=\"11\" y=\"0\" width=\"229\" height=\"196\" fill=\"#c9c9c9\" stroke=\"#1f2933\" stroke-width=\"1\" /><polygon points=\"40,0 210,0 125,50\" fill=\"#c0c0c0\" /><rect x=\"0\" y=\"0\" width=\"249\" height=\"4\" rx=\"2\" ry=\"2\" fill=\"#d6d6d6\" stroke=\"#9a9a9a\" stroke-width=\"0.5\" /><rect x=\"0\" y=\"7\" width=\"249\" height=\"4\" rx=\"2\" ry=\"2\" fill=\"#d6d6d6\" stroke=\"#9a9a9a\" stroke-width=\"0.5\" /><rect x=\"0\" y=\"60\" width=\"249\" height=\"4\" rx=\"2\" ry=\"2\" fill=\"#d6d6d6\" stroke=\"#9a9a9a\" stroke-width=\"0.5\" /><rect x=\"0\" y=\"67\" width=\"250\" height=\"4\" rx=\"2\" ry=\"2\" fill=\"#d6d6d6\" stroke=\"#9a9a9a\" stroke-width=\"0.5\" /><rect x=\"0\" y=\"120\" width=\"246\" height=\"4\" rx=\"2\" ry=\"2\" fill=\"#d6d6d6\" stroke=\"#9a9a9a\" stroke-width=\"0.5\" /><rect x=\"0\" y=\"128\" width=\"246\" height=\"4\" rx=\"2\" ry=\"2\" fill=\"#d6d6d6\" stroke=\"#9a9a9a\" stroke-width=\"0.5\" /><rect x=\"0\" y=\"192\" width=\"250\" height=\"4\" rx=\"2\" ry=\"2\" fill=\"#d6d6d6\" stroke=\"#9a9a9a\" stroke-width=\"0.5\" /><rect x=\"0\" y=\"185\" width=\"248\" height=\"4\" rx=\"2\" ry=\"2\" fill=\"#d6d6d6\" stroke=\"#9a9a9a\" stroke-width=\"0.5\" /><rect x=\"180\" y=\"1\" width=\"40\" height=\"2\" fill=\"#e8e8e8\" /><rect x=\"180\" y=\"186\" width=\"40\" height=\"2\" fill=\"#e8e8e8\" />",
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": null,
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00008",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
+          "SourceElementIds": [
+            "697",
+            "698",
+            "700",
+            "701",
+            "702",
+            "703",
+            "704",
+            "705",
+            "706",
+            "707",
+            "708",
+            "85",
+            "86"
+          ],
+          "Notes": "Body outline + gloss triangle + 8 seam bands (exact legacy x/y/width/height/corner-radius preserved per band, these are physical ring/flange elements, not decoration - previous pass had wrongly clipped them to the body width and rounded their y-positions) + 2 glint accents, light-gray palette matching the legacy 204/208/192 tones."
+        }
+      }
+    ],
+    "Assets": [
+      {
+        "AssetId": "asset-85",
+        "FileName": "0cfe1189e5b51a8cc9ad8a8ec5ad7c90917ed16f6ab6e9a84d92ada70a98e00d.png",
+        "MediaType": "image/png",
+        "Base64Data": "iVBORw0KGgoAAAANSUhEUgAAAH4AAAAICAIAAACwOtwDAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABFSURBVEhLY7h2+RrDKBgQMGfWnFFEfwRK8Vs3bR1F9EegoH8+CgYCgIL+/ygYCAAK+nOnz40i+qPRsn7A0GjDcsAAMOgBdDL7avQA5mgAAAAASUVORK5CYII=",
+        "SizeBytes": 176,
+        "Sha256": "0cfe1189e5b51a8cc9ad8a8ec5ad7c90917ed16f6ab6e9a84d92ada70a98e00d"
+      },
+      {
+        "AssetId": "asset-86",
+        "FileName": "4453a175ac8c65dfb23c015ca8e560e9d8b64d00d82b289130b8814e436f188f.png",
+        "MediaType": "image/png",
+        "Base64Data": "iVBORw0KGgoAAAANSUhEUgAAAH4AAAAICAIAAACwOtwDAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAABLSURBVEhLY7h2+RrDKBgQcO3yta2bto4i+iNQ0J87fW4U0R+Bgv7/KBgIAAr656NgIMBoWT9gCBT0c2bNGUX0R+gNnlFAHwBs0wMA9YX7avAbpUIAAAAASUVORK5CYII=",
+        "SizeBytes": 182,
+        "Sha256": "4453a175ac8c65dfb23c015ca8e560e9d8b64d00d82b289130b8814e436f188f"
+      }
+    ],
+    "Bindings": [],
+    "Events": [],
+    "SourceTrace": {
+      "SourceProjectId": "AMR_REF_SCADA_V2",
+      "SourceSceneId": "win00008",
+      "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
+      "SourceElementIds": [
+        "697",
+        "698",
+        "700",
+        "701",
+        "702",
+        "703",
+        "704",
+        "705",
+        "706",
+        "707",
+        "708",
+        "85",
+        "86"
+      ],
+      "Notes": "Modernized 2026-07-05 per SCADA_2026_ICON_STYLE_GUIDE_V2.md - flat industrial tank body, light-gray palette matching the legacy tones. The 8 seam/ring bands keep their exact legacy x/y/width/height/corner-radius (physical structural rings, not decorative shading) rather than being clipped to the body width or repositioned. Untouched original preserved as Original_Tank.sep."
+    },
+    "Category": "General",
+    "Description": null,
+    "Tags": [],
+    "Provenance": "AiModernized"
+  }
+}

@@ -6,17 +6,17 @@
     "CreatedByVersion": "V2.1.3.0002"
   },
   "Component": {
-    "ComponentId": "Nouveau composant",
-    "Name": "Nouveau composant",
+    "ComponentId": "CondenseurTop",
+    "Name": "CondenseurTop",
     "Bounds": {
       "X": 0,
       "Y": 0,
-      "Width": 153,
-      "Height": 70
+      "Width": 198,
+      "Height": 61
     },
     "Visual": {
       "Kind": "Svg",
-      "SvgMarkup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"153\" height=\"70\" viewBox=\"78 695 153 70\">\n  <g id=\"Element001\" data-source-id=\"115\" data-source-name=\"Rectangle3\">\n    <rect x=\"78\" y=\"695\" width=\"153\" height=\"70\" fill=\"#00ba00\" stroke=\"#1f2933\" stroke-width=\"1\" />\n  </g>\n</svg>\n",
+      "SvgMarkup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"198\" height=\"61\" viewBox=\"0 0 198 61\">\n  <g id=\"Element001\">\n    <rect x=\"0\" y=\"0\" width=\"198\" height=\"61\" fill=\"#8795a1\" stroke=\"#1f2933\" stroke-width=\"2\" />\n    <polygon points=\"4,59 194,59 99,30\" fill=\"#aab4bd\" />\n    <polygon points=\"99,30 4,59 4,1\" fill=\"#7b8794\" />\n    <polygon points=\"4,1 194,1 99,30\" fill=\"#5b6b7c\" />\n  </g>\n</svg>",
       "ImageAssetId": null,
       "HtmlMarkup": null,
       "CssCode": null,
@@ -31,8 +31,8 @@
         "Bounds": {
           "X": 0,
           "Y": 0,
-          "Width": 153,
-          "Height": 70
+          "Width": 198,
+          "Height": 61
         },
         "Style": {
           "FontFamily": "\"Segoe UI\", Arial, sans-serif",
@@ -44,7 +44,7 @@
           "BorderStyle": "None",
           "Opacity": 1
         },
-        "Geometry": "<rect x=\"78\" y=\"695\" width=\"153\" height=\"70\" fill=\"#00ba00\" stroke=\"#1f2933\" stroke-width=\"1\" />",
+        "Geometry": "<rect x=\"0\" y=\"0\" width=\"198\" height=\"61\" fill=\"#8795a1\" stroke=\"#1f2933\" stroke-width=\"2\" /><polygon points=\"4,59 194,59 99,30\" fill=\"#aab4bd\" /><polygon points=\"99,30 4,59 4,1\" fill=\"#7b8794\" /><polygon points=\"4,1 194,1 99,30\" fill=\"#5b6b7c\" />",
         "Text": "",
         "ImageAssetId": null,
         "HtmlMarkup": null,
@@ -55,9 +55,12 @@
           "SourceSceneId": "win00008",
           "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
           "SourceElementIds": [
-            "115"
+            "285",
+            "286",
+            "287",
+            "288"
           ],
-          "Notes": "Rectangle3"
+          "Notes": "Flat header bevel facets, reused from Condenseur.sep HeaderRect group (Y-3 offset-corrected)."
         }
       }
     ],
@@ -69,9 +72,12 @@
       "SourceSceneId": "win00008",
       "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
       "SourceElementIds": [
-        "115"
+        "285",
+        "286",
+        "287",
+        "288"
       ],
-      "Notes": "Modernized 2026-07-05 per SCADA_2026_ICON_STYLE_GUIDE_V2.md - flat single-fill rectangle normalized to hex palette (#00ba00) with a #1f2933 outline replacing the legacy strokeless rgba fill; untouched original preserved as Original_GreenRectangle.sep."
+      "Notes": "Modernized 2026-07-05 per SCADA_2026_ICON_STYLE_GUIDE_V2.md - reuses the flat header-bevel facets already approved in Condenseur.sep's HeaderRect group; untouched original preserved as Original_CondenseurTop.sep."
     },
     "Category": "General",
     "Description": null,
