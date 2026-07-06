@@ -1799,7 +1799,8 @@ public partial class MainWindow
           });
         }
         const geometry = readWrapperGeometry(sceneMoveWrapper);
-        const movingWrappers = event.target?.classList?.contains('scada-modern-handle')
+        const isResize = event.target?.classList?.contains('scada-modern-handle');
+        const movingWrappers = isResize
           ? [sceneMoveWrapper]
           : Array.from(document.querySelectorAll('.scada-modern-element'))
               .filter(item => selectedModernIds.has(item.dataset.id))
@@ -1808,7 +1809,7 @@ public partial class MainWindow
         modernDrag = {
           id: sceneMoveId,
           wrapper: sceneMoveWrapper,
-          mode: event.target?.classList?.contains('scada-modern-handle') ? 'resize' : 'move',
+          mode: isResize ? 'resize' : 'move',
           handle: event.target?.dataset?.handle || '',
           startClientX: event.clientX,
           startClientY: event.clientY,
@@ -1816,6 +1817,7 @@ public partial class MainWindow
           startY: geometry.y,
           startWidth: geometry.width,
           startHeight: geometry.height,
+          aspectRatio: geometry.height > 0 ? geometry.width / geometry.height : null,
           items: movingWrappers.map(item => ({
             id: item.dataset.id,
             wrapper: item,
@@ -2123,6 +2125,23 @@ public partial class MainWindow
         } else if (modernDrag.handle.includes('s')) {
           geometry.height = Math.max(8, modernDrag.startHeight + dy);
         }
+
+        if (event.shiftKey && modernDrag.handle.length === 2 && modernDrag.aspectRatio) {
+          const widthRatioChange = Math.abs(geometry.width - modernDrag.startWidth) / modernDrag.startWidth;
+          const heightRatioChange = Math.abs(geometry.height - modernDrag.startHeight) / modernDrag.startHeight;
+          if (widthRatioChange >= heightRatioChange) {
+            geometry.height = geometry.width / modernDrag.aspectRatio;
+          } else {
+            geometry.width = geometry.height * modernDrag.aspectRatio;
+          }
+          if (modernDrag.handle.includes('n')) {
+            geometry.y = modernDrag.startY + (modernDrag.startHeight - geometry.height);
+          }
+          if (modernDrag.handle.includes('w')) {
+            geometry.x = modernDrag.startX + (modernDrag.startWidth - geometry.width);
+          }
+        }
+
         setWrapperGeometry(modernDrag.wrapper, geometry);
       }
 
