@@ -211,7 +211,7 @@ public partial class MainWindow : Window
         try
         {
             await OpenSceneTabAsync(page);
-            RightContextTabs.SelectedItem = PageContextTab;
+            PageAnchorable.IsActive = true;
         }
         catch (Exception ex)
         {
@@ -3776,7 +3776,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             SetBackgroundColorControls(backgroundColor);
         }
 
-        RightContextTabs.SelectedItem = PageContextTab;
+        PageAnchorable.IsActive = true;
         SetStatus("Edition CSS du fond active. La modification reste en session legacy.");
     }
 
@@ -3840,7 +3840,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
 
         SelectModernElement(targetId);
-        RightContextTabs.SelectedItem = PropertiesContextTab;
+        PropertiesAnchorable.IsActive = true;
         OpenElementEventDialog(targetId);
     }
 
