@@ -1076,6 +1076,7 @@
                                 <ListBox x:Name="ElementLibraryListBox"
                                          BorderThickness="0"
                                          Background="Transparent"
+                                         ClipToBounds="True"
                                          ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                                          PreviewMouseLeftButtonDown="OnElementLibraryPreviewMouseLeftButtonDown"
                                          SelectionChanged="OnElementLibrarySelectionChanged"
@@ -1103,7 +1104,8 @@
                                                         Background="#F2F8EF"
                                                         BorderBrush="#335E7A82"
                                                         BorderThickness="1"
-                                                        Margin="0,0,0,5">
+                                                        Margin="0,0,0,5"
+                                                        ClipToBounds="True">
                                                     <Grid>
                                                         <local:HtmlPreviewControl Markup="{Binding PreviewMarkup}"
                                                                                   IsHitTestVisible="False"/>
