@@ -78,26 +78,34 @@ object (matching the scope above).
 
 ### 3. Frontend → host DTO
 
-`LegacyViewerMessage` (`MainWindow.NestedTypes.cs:175`) gains `Rotation` and
-`BeforeRotation` (double) fields, mirroring the existing `Before*`/current
-pattern used for `X/Y/Width/Height`. A new message type (e.g.
-`updateSceneObjectRotation`) is posted from JS via
-`window.chrome.webview.postMessage(...)` and handled in the existing switch in
-`OnLegacyViewerMessageReceived` (`MainWindow.xaml.cs:1332-1369`).
+`LegacyViewerMessage` (`MainWindow.NestedTypes.cs:175`) gains a single
+`Rotation` (double) field. No `BeforeRotation` field is needed (see Undo/redo
+below — the "before" snapshot is taken host-side from the current element, not
+sent by the client). A new message type `updateSceneObjectRotation` is posted
+from JS via `window.chrome.webview.postMessage(...)` and handled in the
+existing switch in `OnLegacyViewerMessageReceived`
+(`MainWindow.xaml.cs:1332-1369`), added as a new `case`.
 
 ### 4. Undo/redo
 
-New `ModernElementRotationChangedAction` in
-`src/ScadaBuilderV2.Application/History/`, modeled on
-`ModernElementBoundsChangedAction.cs`:
+**Revised after codebase research:** no new history action class is needed.
+`ModernElementChangedAction` (`src/ScadaBuilderV2.Application/History/ModernElementChangedAction.cs`)
+already exists as a generic before/after whole-`ScadaElement` snapshot action,
+with `CanMergeWith`/`MergeWith` based on `Equals(AfterElement, next.BeforeElement)`.
+It is already used by `CommitModernElementProperties(current, updated)`
+(`MainWindow.xaml.cs:5378-5398`), which handles scene replacement, selection
+tracking, the history push, `MarkActiveSceneDirty()`, UI refresh, and status
+text — this is the same commit path the Properties dialog uses for edits
+including its own (pre-existing) Rotation text box.
 
-- Implements `UndoAsync`/`RedoAsync` by writing `Rotation` back onto the
-  target element via `scene.FindElementRecursive` +
-  `WithReplacedElementRecursive`, then `context.MarkDirty()` /
-  `RefreshPreviewAsync()`.
-- Implements `CanMergeWith`/`MergeWith` so continuous handle-drag updates
-  coalesce into one history entry per gesture. Context-menu preset clicks and
-  custom-input commits each produce their own, non-merged entry.
+The new `UpdateModernElementRotation(string? id, double rotation)` method
+looks up the current element, builds
+`current with { Style = current.Style with { Rotation = NormalizeRotation(rotation) } }`,
+and calls `CommitModernElementProperties(current, updated)` — reusing the
+existing merge/undo/redo/dirty/refresh behavior instead of duplicating it.
+Consecutive handle-drag updates coalesce naturally via the existing
+`CanMergeWith` check; context-menu preset clicks and custom-input commits each
+produce their own entry because they aren't adjacent drag updates.
 
 ### 5. Persistence
 
@@ -118,13 +126,10 @@ every element's `Style` block.
 
 ## Testing
 
-- Extend `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs` for the
-  new Rotation submenu and custom-angle input validation (decimal truncation,
-  range normalization, empty/no-op input).
-- Unit tests for `ModernElementRotationChangedAction` covering undo/redo and
-  drag-merge coalescing.
-- Integration test verifying `Rotation`/`BeforeRotation` DTO fields round-trip
-  correctly into `ScadaElementStyle`.
-- Manual check: confirm existing NE-corner-resize tests/usages are updated to
-  reflect the new rotate behavior, and that no resize regression exists on the
-  remaining handles (N/S/E/W/NW/SW/SE).
+- Extend `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`,
+  following its existing convention of asserting on the raw embedded-JS/C#
+  source text, for: the NE handle rotate repurposing, the Rotation submenu
+  descriptor, the `NormalizeRotation` behavior, and custom-angle input
+  validation (decimal truncation, range normalization, empty/no-op input).
+- Manual check: confirm no resize regression exists on the remaining handles
+  (N/S/E/W/NW/SW/SE) now that NE no longer resizes.
