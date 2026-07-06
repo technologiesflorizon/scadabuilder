@@ -4750,6 +4750,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             Math.Max(0, Math.Round(message.BeforeY)),
             Math.Max(8, Math.Round(message.BeforeWidth)),
             Math.Max(8, Math.Round(message.BeforeHeight)));
+        if (!HasUsableGeometrySnapshot(beforeGroupBounds))
+        {
+            beforeGroupBounds = group.Bounds;
+        }
+
         var afterGroupBounds = new SceneBounds(
             Math.Max(0, Math.Round(message.X)),
             Math.Max(0, Math.Round(message.Y)),
@@ -4780,6 +4785,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 Math.Max(1, Math.Round(child.Height)));
 
             elementBounds.Add(new MovedSceneElementBounds(child.Id, beforeChildBounds, afterChildBounds));
+        }
+
+        if (elementBounds.All(item => BoundsEqual(item.BeforeBounds, item.AfterBounds)))
+        {
+            return;
         }
 
         var updatedScene = _activeScene;

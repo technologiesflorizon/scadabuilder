@@ -2170,9 +2170,17 @@ public partial class MainWindow
           }
           if (modernDrag.handle.includes('n')) {
             geometry.y = modernDrag.startY + (modernDrag.startHeight - geometry.height);
+            if (geometry.y < 0) {
+              geometry.height = modernDrag.startY + modernDrag.startHeight;
+              geometry.y = 0;
+            }
           }
           if (modernDrag.handle.includes('w')) {
             geometry.x = modernDrag.startX + (modernDrag.startWidth - geometry.width);
+            if (geometry.x < 0) {
+              geometry.width = modernDrag.startX + modernDrag.startWidth;
+              geometry.x = 0;
+            }
           }
         }
 
