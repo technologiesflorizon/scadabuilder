@@ -220,6 +220,16 @@ public partial class MainWindow
       z-index: 9999;
       transform: translate(12px, -50%);
     }
+    #scada-rotation-input {
+      position: fixed;
+      display: none;
+      width: 64px;
+      padding: 3px 6px;
+      border: 1px solid #2090a0;
+      border-radius: 4px;
+      font: 12px "Segoe UI", sans-serif;
+      z-index: 9999;
+    }
     body.scada-placement-active,
     body.scada-placement-active * {
       cursor: crosshair !important;
@@ -292,6 +302,7 @@ public partial class MainWindow
   let placementPreview = null;
   let sourceDrag = null;
   let modernDrag = null;
+  let lastObjectContextTargetId = null;
   let activeTextEditor = null;
 
   document.querySelectorAll('button.layer[disabled], input.layer[disabled], select.layer[disabled], textarea.layer[disabled]')
@@ -1919,6 +1930,7 @@ public partial class MainWindow
         event.stopPropagation();
         const sceneContextWrapper = getSceneMoveWrapper(wrapper);
         const sceneContextId = sceneContextWrapper?.dataset?.id || element.Id;
+        lastObjectContextTargetId = sceneContextId;
         if (!selectedModernIds.has(sceneContextId) && !event.ctrlKey && !event.shiftKey) {
           clearSelection();
           selectModernElementInDom(sceneContextId);
@@ -2156,6 +2168,73 @@ public partial class MainWindow
     if (badge) {
       badge.style.display = 'none';
     }
+  }
+
+  function ensureRotationInput() {
+    let input = document.getElementById('scada-rotation-input');
+    if (!input) {
+      input = document.createElement('input');
+      input.id = 'scada-rotation-input';
+      input.type = 'text';
+      document.body.appendChild(input);
+    }
+    return input;
+  }
+
+  function beginCustomRotationEntry(anchorX, anchorY) {
+    if (!lastObjectContextTargetId) return;
+    const targetId = lastObjectContextTargetId;
+    const input = ensureRotationInput();
+    const targetWrapper = document.querySelector(`.scada-modern-element[data-id="${targetId}"]`);
+    input.value = targetWrapper ? getWrapperRotation(targetWrapper).toFixed(1) : '0';
+    input.style.left = `${anchorX}px`;
+    input.style.top = `${anchorY}px`;
+    input.style.display = 'block';
+
+    const decimalPattern = /^\d{1,3}(\.\d)?$/;
+    const onInput = () => {
+      if (input.value !== '' && !decimalPattern.test(input.value)) {
+        input.value = input.value.slice(0, -1);
+      }
+    };
+
+    const commit = () => {
+      const parsed = parseFloat(input.value);
+      if (!Number.isNaN(parsed)) {
+        let normalized = parsed % 360;
+        if (normalized < 0) {
+          normalized += 360;
+        }
+        normalized = Math.round(normalized * 10) / 10;
+        postModernRotation(lastObjectContextTargetId, normalized);
+      }
+      cleanup();
+    };
+
+    const cancel = () => cleanup();
+
+    const onKeyDown = event => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        commit();
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        cancel();
+      }
+    };
+
+    function cleanup() {
+      input.style.display = 'none';
+      input.removeEventListener('input', onInput);
+      input.removeEventListener('keydown', onKeyDown);
+      input.removeEventListener('blur', commit);
+    }
+
+    input.addEventListener('input', onInput);
+    input.addEventListener('keydown', onKeyDown);
+    input.addEventListener('blur', commit);
+    input.focus();
+    input.select();
   }
 
   document.addEventListener('pointermove', event => {
@@ -2487,6 +2566,12 @@ public partial class MainWindow
     if (!commandId) return;
     event.preventDefault();
     event.stopPropagation();
+    if (commandId === 'object.rotation.custom') {
+      const anchorRect = event.target.getBoundingClientRect();
+      hideMenu();
+      beginCustomRotationEntry(anchorRect.left, anchorRect.top);
+      return;
+    }
     hideMenu();
     window.chrome?.webview?.postMessage({
       type: 'executeCommand',

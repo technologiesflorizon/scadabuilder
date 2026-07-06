@@ -1234,6 +1234,19 @@ public sealed class WebViewContextMenuScriptTests
             "object.rotation descriptor must be inside the same single-element guard as object.order");
     }
 
+    [TestMethod]
+    public void ContextMenuCustomRotationOpensValidatedInlineInput()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "let lastObjectContextTargetId = null;");
+        StringAssert.Contains(source, "lastObjectContextTargetId = sceneContextId;");
+        StringAssert.Contains(source, "function beginCustomRotationEntry(anchorX, anchorY)");
+        StringAssert.Contains(source, "commandId === 'object.rotation.custom'");
+        StringAssert.Contains(source, "/^\\d{1,3}(\\.\\d)?$/");
+        StringAssert.Contains(source, "postModernRotation(lastObjectContextTargetId");
+    }
+
     private static string ReadMainWindowSource()
     {
         // MainWindow code-behind is split into behavior-preserving partial-class files
