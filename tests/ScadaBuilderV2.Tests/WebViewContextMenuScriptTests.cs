@@ -1213,6 +1213,25 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "UpdateModernElementRotation(message.Id, 90)");
         StringAssert.Contains(source, "UpdateModernElementRotation(message.Id, 180)");
         StringAssert.Contains(source, "UpdateModernElementRotation(message.Id, 270)");
+
+        // Verify that object.rotation.custom is NOT handled in the switch dispatch
+        // (it's handled entirely client-side in JS via Task 6, not in ExecuteEditorCommandAsync)
+        Assert.IsFalse(
+            source.Contains("case \"object.rotation.custom\":", StringComparison.Ordinal),
+            "object.rotation.custom must NOT have a case in ExecuteEditorCommandAsync; it is handled client-side in JS.");
+
+        // Verify that object.rotation descriptor is scoped inside the same single-selection guard as object.order
+        // Extract the guarded scope between the if (_selectedSceneObjectIds.Count == 1 condition and return modernCommands
+        var guardStart = source.IndexOf("if (_selectedSceneObjectIds.Count == 1 && (_activeScene?.Elements.Any(e => e.Id == selected.Id) ?? false))", StringComparison.Ordinal);
+        Assert.IsTrue(guardStart >= 0, "Guard condition for single-element descriptor scope not found");
+        var scopeEnd = source.IndexOf("return modernCommands;", guardStart, StringComparison.Ordinal);
+        Assert.IsTrue(scopeEnd >= 0, "return modernCommands statement not found after guard");
+        var guardedScope = source[guardStart..scopeEnd];
+
+        StringAssert.Contains(guardedScope, "\"object.order\"",
+            "object.order descriptor must be inside the single-element guard");
+        StringAssert.Contains(guardedScope, "\"object.rotation\"",
+            "object.rotation descriptor must be inside the same single-element guard as object.order");
     }
 
     private static string ReadMainWindowSource()
