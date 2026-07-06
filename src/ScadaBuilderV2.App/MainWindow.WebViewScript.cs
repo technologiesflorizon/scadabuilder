@@ -138,6 +138,13 @@ public partial class MainWindow
       outline-offset: 2px;
       box-shadow: 0 0 0 4px rgba(32,144,160,.20), 0 8px 22px rgba(15,42,48,.18);
     }
+    .scada-modern-element[data-transforming="true"] {
+      outline: none !important;
+      box-shadow: none !important;
+    }
+    .scada-modern-element[data-transforming="true"] > .scada-modern-handle {
+      display: none !important;
+    }
     .scada-modern-group {
       align-items: stretch;
       padding: 0;
@@ -1803,6 +1810,7 @@ public partial class MainWindow
         custom.style.overflow = 'visible';
         custom.innerHTML = data.Text || '';
         custom.querySelectorAll('svg').forEach(svg => {
+          svg.setAttribute('preserveAspectRatio', 'none');
           svg.style.width = '100%';
           svg.style.height = '100%';
           svg.style.display = 'block';
@@ -1896,6 +1904,19 @@ public partial class MainWindow
         };
         if (modernDrag.mode === 'rotate') {
           modernDrag.startRotation = getWrapperRotation(sceneMoveWrapper);
+          const rotateRect = sceneMoveWrapper.getBoundingClientRect();
+          const startPivotX = rotateRect.left + rotateRect.width / 2;
+          const startPivotY = rotateRect.top + rotateRect.height / 2;
+          modernDrag.startAngle = Math.atan2(event.clientY - startPivotY, event.clientX - startPivotX) * (180 / Math.PI);
+        }
+        if (modernDrag.mode === 'resize' || modernDrag.mode === 'rotate') {
+          sceneMoveWrapper.dataset.transforming = 'true';
+        } else if (modernDrag.mode === 'move') {
+          modernDrag.items.forEach(item => {
+            if (item.wrapper) {
+              item.wrapper.dataset.transforming = 'true';
+            }
+          });
         }
         sceneMoveWrapper.setPointerCapture?.(event.pointerId);
       }, true);
@@ -2276,7 +2297,8 @@ public partial class MainWindow
         const pivotClientX = wrapperRect.left + wrapperRect.width / 2;
         const pivotClientY = wrapperRect.top + wrapperRect.height / 2;
         const angleRad = Math.atan2(event.clientY - pivotClientY, event.clientX - pivotClientX);
-        let angleDeg = angleRad * (180 / Math.PI) + 90;
+        const currentAngleDeg = angleRad * (180 / Math.PI);
+        let angleDeg = modernDrag.startRotation + (currentAngleDeg - modernDrag.startAngle);
         if (event.ctrlKey) {
           angleDeg = Math.round(angleDeg / 90) * 90;
         }
@@ -2317,7 +2339,7 @@ public partial class MainWindow
           geometry.height = Math.max(8, modernDrag.startHeight + dy);
         }
 
-        if (event.shiftKey && modernDrag.handle.length === 2 && modernDrag.aspectRatio) {
+        if (event.ctrlKey && modernDrag.handle.length === 2 && modernDrag.aspectRatio) {
           const widthRatioChange = Math.abs(geometry.width - modernDrag.startWidth) / modernDrag.startWidth;
           const heightRatioChange = Math.abs(geometry.height - modernDrag.startHeight) / modernDrag.startHeight;
           if (widthRatioChange >= heightRatioChange) {
@@ -2412,10 +2434,20 @@ public partial class MainWindow
       if (modernDrag.mode === 'rotate') {
         postModernRotation(modernDrag.id, modernDrag.currentRotation ?? modernDrag.startRotation);
         hideRotationBadge();
+        delete modernDrag.wrapper.dataset.transforming;
         modernDrag = null;
         event.preventDefault();
         event.stopPropagation();
         return;
+      }
+      if (modernDrag.mode === 'resize') {
+        delete modernDrag.wrapper.dataset.transforming;
+      } else if (modernDrag.mode === 'move') {
+        modernDrag.items.forEach(item => {
+          if (item.wrapper) {
+            delete item.wrapper.dataset.transforming;
+          }
+        });
       }
       const geometry = readWrapperGeometry(modernDrag.wrapper);
       if (modernDrag.mode === 'move' && (modernDrag.items || []).length > 1) {

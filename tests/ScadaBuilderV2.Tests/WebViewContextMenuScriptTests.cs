@@ -1398,14 +1398,38 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
-    public void ModernElementSvgRenderLoopDoesNotForceNonUniformAspectRatio()
+    public void ResizeAndRotateHideSelectionChromeWhileDraggingAndRestoreOnRelease()
     {
-        // Regression guard: an unrelated, undocumented line was accidentally introduced
-        // alongside a rotation-input fix that forced preserveAspectRatio='none' on every
-        // SVG inside a custom modern-element's markup, changing how every SVG-based
-        // Element+ renders (non-uniform stretch instead of aspect-preserving). That line
-        // has nothing to do with rotation and must not be present in the
-        // custom.querySelectorAll('svg').forEach(...) block.
+        // While the operator is actively resizing, rotating, or moving an Element+, the
+        // selection outline/box-shadow and the resize handles are hidden
+        // (data-transforming="true") so they don't obscure the element being adjusted.
+        // They must reappear on release.
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "sceneMoveWrapper.dataset.transforming = 'true';");
+        StringAssert.Contains(source, "delete modernDrag.wrapper.dataset.transforming;");
+        StringAssert.Contains(source, "item.wrapper.dataset.transforming = 'true';");
+        StringAssert.Contains(source, "delete item.wrapper.dataset.transforming;");
+
+        var cssStart = source.IndexOf(".scada-modern-element[data-transforming=\"true\"] {", StringComparison.Ordinal);
+        Assert.IsTrue(cssStart >= 0, "data-transforming CSS rule not found");
+        var cssSlice = source.Substring(cssStart, 260);
+        StringAssert.Contains(cssSlice, "outline: none !important;");
+        StringAssert.Contains(cssSlice, "box-shadow: none !important;");
+        StringAssert.Contains(cssSlice, ".scada-modern-element[data-transforming=\"true\"] > .scada-modern-handle");
+        StringAssert.Contains(cssSlice, "display: none !important;");
+    }
+
+    [TestMethod]
+    public void ModernElementSvgRenderLoopStretchesToFillItsBoundingBox()
+    {
+        // Regression guard: the resize handles (n/s/e/w) change width and height
+        // independently, so a Custom modern-element's SVG must stretch to fill its
+        // wrapper (preserveAspectRatio='none') rather than letterbox at its native
+        // ratio - otherwise a single-axis resize leaves visible empty space and the
+        // drawing appears to shrink on the axis you didn't touch. Aspect-ratio
+        // preservation during resize is handled separately, at the geometry level,
+        // only when Ctrl is held on a corner handle.
         var source = ReadMainWindowSource();
 
         var loopStart = source.IndexOf("custom.querySelectorAll('svg').forEach(svg => {", StringComparison.Ordinal);
@@ -1414,9 +1438,8 @@ public sealed class WebViewContextMenuScriptTests
         Assert.IsTrue(loopEnd >= 0, "End of custom SVG render loop not found");
         var loopBody = source[loopStart..loopEnd];
 
-        Assert.IsFalse(loopBody.Contains("preserveAspectRatio", StringComparison.Ordinal),
-            "The custom modern-element SVG render loop must not set preserveAspectRatio; " +
-            "this was an unrelated, undocumented scope-creep change and must stay removed.");
+        StringAssert.Contains(loopBody, "svg.setAttribute('preserveAspectRatio', 'none');",
+            "The custom modern-element SVG render loop must stretch SVGs to fill their box.");
         StringAssert.Contains(loopBody, "svg.style.width = '100%';");
         StringAssert.Contains(loopBody, "svg.style.height = '100%';");
     }
