@@ -303,6 +303,42 @@ public sealed class EditorHistoryServiceTests
     }
 
     [TestMethod]
+    public async Task SceneSelectionMovedActionUndoRedoRestoresGroupAndChildBoundsTogether()
+    {
+        var child = CreateShape("shape-001", 5, 6);
+        var group = CreateGroup("group-001", 100, 200, [child]);
+        var scene = ScadaScene.CreateEmpty("win00008", "win00008", new(1280, 873))
+            .WithElement(group);
+        var history = new EditorHistoryService();
+        var context = CreateContext(scene, updated => scene = updated);
+
+        var beforeGroupBounds = group.Bounds;
+        var afterGroupBounds = new SceneBounds(100, 200, 160, 160);
+        var beforeChildBounds = child.Bounds;
+        var afterChildBounds = new SceneBounds(10, 12, 40, 40);
+
+        scene = scene
+            .WithReplacedElementRecursive(group with { Bounds = afterGroupBounds })
+            .WithReplacedElementRecursive(child with { Bounds = afterChildBounds });
+
+        history.Push(new SceneSelectionMovedAction(
+            scene.Id,
+            [
+                new MovedSceneElementBounds(group.Id, beforeGroupBounds, afterGroupBounds),
+                new MovedSceneElementBounds(child.Id, beforeChildBounds, afterChildBounds)
+            ],
+            "resize de groupe"));
+
+        Assert.IsTrue(await history.UndoAsync(context));
+        Assert.AreEqual(beforeGroupBounds.Width, scene.FindElementRecursive(group.Id)?.Bounds.Width);
+        Assert.AreEqual(beforeChildBounds.Width, scene.FindElementRecursive(child.Id)?.Bounds.Width);
+
+        Assert.IsTrue(await history.RedoAsync(context));
+        Assert.AreEqual(afterGroupBounds.Width, scene.FindElementRecursive(group.Id)?.Bounds.Width);
+        Assert.AreEqual(afterChildBounds.Width, scene.FindElementRecursive(child.Id)?.Bounds.Width);
+    }
+
+    [TestMethod]
     public async Task HistoriesAreIndependentPerSceneInstance()
     {
         var sceneA = ScadaScene.CreateEmpty("win00008", "win00008", new(1280, 873));
