@@ -1050,6 +1050,11 @@ public partial class MainWindow
     wrapper.style.height = `${Math.max(8, geometry.height)}px`;
   }
 
+  function clampNearAxis(startPos, startSize, delta) {
+    const clampedDelta = Math.max(-startPos, Math.min(delta, startSize - 8));
+    return { pos: startPos + clampedDelta, size: startSize - clampedDelta };
+  }
+
   function getSceneMoveWrapper(wrapper) {
     if (!wrapper?.classList?.contains('scada-modern-child')) {
       return wrapper;
@@ -2104,15 +2109,19 @@ public partial class MainWindow
           });
         });
       } else {
-        if (modernDrag.handle.includes('e')) geometry.width = modernDrag.startWidth + dx;
-        if (modernDrag.handle.includes('s')) geometry.height = modernDrag.startHeight + dy;
         if (modernDrag.handle.includes('w')) {
-          geometry.x = modernDrag.startX + dx;
-          geometry.width = modernDrag.startWidth - dx;
+          const clampedX = clampNearAxis(modernDrag.startX, modernDrag.startWidth, dx);
+          geometry.x = clampedX.pos;
+          geometry.width = clampedX.size;
+        } else if (modernDrag.handle.includes('e')) {
+          geometry.width = Math.max(8, modernDrag.startWidth + dx);
         }
         if (modernDrag.handle.includes('n')) {
-          geometry.y = modernDrag.startY + dy;
-          geometry.height = modernDrag.startHeight - dy;
+          const clampedY = clampNearAxis(modernDrag.startY, modernDrag.startHeight, dy);
+          geometry.y = clampedY.pos;
+          geometry.height = clampedY.size;
+        } else if (modernDrag.handle.includes('s')) {
+          geometry.height = Math.max(8, modernDrag.startHeight + dy);
         }
         setWrapperGeometry(modernDrag.wrapper, geometry);
       }
