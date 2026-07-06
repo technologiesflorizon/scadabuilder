@@ -14,7 +14,7 @@ public sealed class ElementStudioWorkspaceViewModel : INotifyPropertyChanged
     private readonly Stack<WorkspaceSnapshot> redoStack = [];
     private int nextElementIndex;
     private int nextGroupIndex;
-    private string componentName = "Nouveau composant";
+    private string componentName = ElementStudioComponentNaming.DefaultComponentName;
     private string componentCategory = "General";
     private string componentTags = "";
     private string componentVisualKind = "Source";
@@ -34,6 +34,8 @@ public sealed class ElementStudioWorkspaceViewModel : INotifyPropertyChanged
         SelectedItems = new ObservableCollection<ElementStudioItemViewModel>();
         Diagnostics = new ObservableCollection<string>(diagnostics);
         nextElementIndex = ImportedItems.Count + 1;
+        componentName = ElementStudioComponentNaming.ResolveDefaultComponentName(
+            package.Items.Select(item => item.SourceName).ToArray());
         SetSelectedItems(ImportedItems.Take(1));
     }
 

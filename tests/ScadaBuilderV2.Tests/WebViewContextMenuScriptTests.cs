@@ -1247,4 +1247,32 @@ public sealed class WebViewContextMenuScriptTests
         Assert.Fail($"Method end not found: {signature}");
         return "";
     }
+
+    [TestMethod]
+    public void WorkspaceSeedsComponentNameFromFirstImportedSourceName()
+    {
+        var source = ReadElementStudioAppSource("ElementStudioViewModels.cs");
+
+        StringAssert.Contains(source, "ElementStudioComponentNaming.ResolveDefaultComponentName");
+        Assert.IsFalse(
+            source.Contains("private string componentName = \"Nouveau composant\";", StringComparison.Ordinal),
+            "componentName must no longer be hardcoded to the placeholder default.");
+    }
+
+    private static string ReadElementStudioAppSource(string fileName)
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            var studioAppDir = Path.Combine(directory.FullName, "src", "ScadaBuilderV2.ElementStudio.App");
+            if (Directory.Exists(studioAppDir))
+            {
+                return File.ReadAllText(Path.Combine(studioAppDir, fileName));
+            }
+
+            directory = directory.Parent;
+        }
+
+        throw new DirectoryNotFoundException("Could not locate src/ScadaBuilderV2.ElementStudio.App from test base directory.");
+    }
 }
