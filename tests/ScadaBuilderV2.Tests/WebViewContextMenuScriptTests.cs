@@ -213,6 +213,14 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void LegacyViewerMessageExposesRotationField()
+    {
+        var nestedTypesSource = ReadMainWindowFile("MainWindow.NestedTypes.cs");
+
+        StringAssert.Contains(nestedTypesSource, "public double Rotation { get; set; }");
+    }
+
+    [TestMethod]
     public void WebViewKeyboardShortcutsDoNotDeleteOnBackspaceOrInsideEditors()
     {
         var source = NormalizeNewLines(ReadMainWindowSource());
@@ -1164,6 +1172,252 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "ResolveElementStudioLaunchLogPath");
         StringAssert.Contains(source, "element-studio-launch.log");
         StringAssert.Contains(source, "MessageBox.Show");
+    }
+
+    [TestMethod]
+    public void MainWindowHandlesRotationMessageAndNormalizesAngle()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "case \"updateSceneObjectRotation\":");
+        StringAssert.Contains(source, "UpdateModernElementRotation(message.Id, message.Rotation)");
+        StringAssert.Contains(source, "private void UpdateModernElementRotation(string? id, double rotation)");
+        StringAssert.Contains(source, "private static double NormalizeRotation(double degrees)");
+    }
+
+    [TestMethod]
+    public void NeHandleIsRepurposedForRotationDrag()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "cursor: grab;");
+        StringAssert.Contains(source, "mode: event.target?.dataset?.handle === 'ne' ? 'rotate' : (isResize ? 'resize' : 'move')");
+        StringAssert.Contains(source, "function getWrapperRotation(wrapper)");
+        StringAssert.Contains(source, "function postModernRotation(id, rotation)");
+        StringAssert.Contains(source, "modernDrag.mode === 'rotate'");
+    }
+
+    [TestMethod]
+    public void RotationDragShowsLiveAngleBadge()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "scada-rotation-badge");
+        StringAssert.Contains(source, "function updateRotationBadge(clientX, clientY, angleDeg)");
+        StringAssert.Contains(source, "function hideRotationBadge()");
+        StringAssert.Contains(source, "toFixed(1)");
+    }
+
+    [TestMethod]
+    public void ContextMenuOffersRotationPresetsForSingleElementPlusSelection()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "\"object.rotation\"");
+        StringAssert.Contains(source, "\"object.rotation.0\"");
+        StringAssert.Contains(source, "\"object.rotation.90\"");
+        StringAssert.Contains(source, "\"object.rotation.180\"");
+        StringAssert.Contains(source, "\"object.rotation.270\"");
+        StringAssert.Contains(source, "\"object.rotation.custom\"");
+        StringAssert.Contains(source, "case \"object.rotation.0\":");
+        StringAssert.Contains(source, "UpdateModernElementRotation(message.Id, 0)");
+        StringAssert.Contains(source, "UpdateModernElementRotation(message.Id, 90)");
+        StringAssert.Contains(source, "UpdateModernElementRotation(message.Id, 180)");
+        StringAssert.Contains(source, "UpdateModernElementRotation(message.Id, 270)");
+
+        // Verify that object.rotation.custom is NOT handled in the switch dispatch
+        // (it's handled entirely client-side in JS via Task 6, not in ExecuteEditorCommandAsync)
+        Assert.IsFalse(
+            source.Contains("case \"object.rotation.custom\":", StringComparison.Ordinal),
+            "object.rotation.custom must NOT have a case in ExecuteEditorCommandAsync; it is handled client-side in JS.");
+
+        // Verify that object.rotation descriptor is scoped inside the same single-selection guard as object.order
+        // Extract the guarded scope between the if (_selectedSceneObjectIds.Count == 1 condition and return modernCommands
+        var guardStart = source.IndexOf("if (_selectedSceneObjectIds.Count == 1 && (_activeScene?.Elements.Any(e => e.Id == selected.Id) ?? false))", StringComparison.Ordinal);
+        Assert.IsTrue(guardStart >= 0, "Guard condition for single-element descriptor scope not found");
+        var scopeEnd = source.IndexOf("return modernCommands;", guardStart, StringComparison.Ordinal);
+        Assert.IsTrue(scopeEnd >= 0, "return modernCommands statement not found after guard");
+        var guardedScope = source[guardStart..scopeEnd];
+
+        StringAssert.Contains(guardedScope, "\"object.order\"",
+            "object.order descriptor must be inside the single-element guard");
+        StringAssert.Contains(guardedScope, "\"object.rotation\"",
+            "object.rotation descriptor must be inside the same single-element guard as object.order");
+    }
+
+    [TestMethod]
+    public void ContextMenuCustomRotationOpensValidatedInlineInput()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "let lastObjectContextTargetId = null;");
+        StringAssert.Contains(source, "lastObjectContextTargetId = sceneContextId;");
+        StringAssert.Contains(source, "function beginCustomRotationEntry(anchorX, anchorY)");
+        StringAssert.Contains(source, "commandId === 'object.rotation.custom'");
+        StringAssert.Contains(source, "/^-?\\d{1,3}(\\.\\d)?$/");
+
+        // commit() must apply the rotation to the targetId captured when the custom
+        // input was opened, not the live lastObjectContextTargetId global (which can be
+        // reassigned by right-clicking a different Element+ object while the input is
+        // still open, silently misdirecting the committed rotation).
+        StringAssert.Contains(source, "postModernRotation(targetId,");
+        var commitStart = source.IndexOf("const commit = () => {", StringComparison.Ordinal);
+        Assert.IsTrue(commitStart >= 0, "commit() function not found");
+        var commitEnd = source.IndexOf("const cancel = () => cleanup();", commitStart, StringComparison.Ordinal);
+        Assert.IsTrue(commitEnd >= 0, "cancel() definition not found after commit()");
+        var commitBody = source[commitStart..commitEnd];
+        StringAssert.DoesNotMatch(commitBody, new Regex("postModernRotation\\(lastObjectContextTargetId"),
+            "commit() must not read the live lastObjectContextTargetId global at call time");
+    }
+
+    [TestMethod]
+    public void CustomRotationOnInputUsesPermissiveLiveTypingPatternDistinctFromCommitPattern()
+    {
+        // Regression guard: onInput runs on every keystroke while the user is still typing.
+        // If it used the same strict commit-time pattern (/^-?\d{1,3}(\.\d)?$/, which requires
+        // at least one digit), typing a lone '-' as the first character of "-10" would not
+        // match, so onInput would immediately strip it back to '' before the digits are typed.
+        // onInput must use a more permissive pattern that tolerates in-progress states like a
+        // lone '-' or a trailing '.', while commit()'s strict decimalPattern stays unchanged.
+        var source = ReadMainWindowSource();
+
+        var beginStart = source.IndexOf("function beginCustomRotationEntry(anchorX, anchorY)", StringComparison.Ordinal);
+        Assert.IsTrue(beginStart >= 0, "beginCustomRotationEntry not found");
+        var onInputStart = source.IndexOf("const onInput = () => {", beginStart, StringComparison.Ordinal);
+        Assert.IsTrue(onInputStart >= 0, "onInput not found inside beginCustomRotationEntry");
+        var onInputEnd = source.IndexOf("const commit = () => {", onInputStart, StringComparison.Ordinal);
+        Assert.IsTrue(onInputEnd >= 0, "commit() not found after onInput()");
+        var onInputBody = source[onInputStart..onInputEnd];
+
+        // Strict, commit-time pattern must be unchanged.
+        StringAssert.Contains(source, "const decimalPattern = /^-?\\d{1,3}(\\.\\d)?$/;");
+
+        // onInput must reference a distinct, more permissive pattern rather than decimalPattern.
+        StringAssert.DoesNotMatch(onInputBody, new Regex(@"decimalPattern\.test"),
+            "onInput must not gate live typing with the strict commit-time decimalPattern; " +
+            "it silently eats a lone '-' before the digits of a negative angle can be typed.");
+
+        var permissivePatternMatch = Regex.Match(source, @"const (\w+) = (/\^[^;]+\$/);");
+        Assert.IsTrue(source.Contains("liveTypingPattern", StringComparison.Ordinal) || permissivePatternMatch.Success,
+            "Expected a dedicated live-typing pattern distinct from decimalPattern");
+
+        // Extract the permissive pattern's source text and independently verify (via .NET Regex,
+        // applying the same pattern text) that it accepts a lone '-' -- the exact character that
+        // was being rejected -- while the strict commit-time pattern still rejects it.
+        var permissivePatternDeclMatch = Regex.Match(source, @"const liveTypingPattern = /(\^.*\$)/;");
+        Assert.IsTrue(permissivePatternDeclMatch.Success, "liveTypingPattern declaration not found");
+        var permissiveRegex = new Regex(permissivePatternDeclMatch.Groups[1].Value);
+        var strictRegex = new Regex(@"^-?\d{1,3}(\.\d)?$");
+
+        Assert.IsTrue(permissiveRegex.IsMatch("-"),
+            "Live-typing pattern must accept a lone '-' so typing '-10' left-to-right is possible.");
+        Assert.IsFalse(strictRegex.IsMatch("-"),
+            "Sanity check: the strict commit-time pattern must NOT accept a lone '-' (that's the bug being fixed).");
+
+        Assert.IsTrue(permissiveRegex.IsMatch("-1"), "Live-typing pattern must accept '-1' (partway through '-10').");
+        Assert.IsTrue(permissiveRegex.IsMatch("-10"), "Live-typing pattern must accept the fully-typed '-10'.");
+        Assert.IsTrue(permissiveRegex.IsMatch("45."), "Live-typing pattern should tolerate a trailing '.' before the decimal digit.");
+
+        // onInput must be wired to the permissive pattern, not the strict one.
+        StringAssert.Contains(onInputBody, "liveTypingPattern.test(input.value)");
+    }
+
+    [TestMethod]
+    public void CustomRotationCleanupDetachesBlurListenerBeforeHidingInput()
+    {
+        // Regression guard: setting display:none on a focused element synchronously fires
+        // 'blur' in Chromium/WebView2. If the 'blur' listener (commit) is still attached
+        // when that happens, pressing Escape to cancel would silently re-enter commit()
+        // and apply a rotation anyway. The listeners must be removed before the input is hidden.
+        var source = ReadMainWindowSource();
+
+        var cleanupStart = source.IndexOf("function cleanup() {", StringComparison.Ordinal);
+        Assert.IsTrue(cleanupStart >= 0, "cleanup() function not found");
+        var cleanupEnd = source.IndexOf("}", cleanupStart, StringComparison.Ordinal);
+        Assert.IsTrue(cleanupEnd >= 0, "End of cleanup() function not found");
+        var cleanupBody = source[cleanupStart..cleanupEnd];
+
+        var blurRemovalIndex = cleanupBody.IndexOf("removeEventListener('blur', commit);", StringComparison.Ordinal);
+        var displayNoneIndex = cleanupBody.IndexOf("input.style.display = 'none';", StringComparison.Ordinal);
+
+        Assert.IsTrue(blurRemovalIndex >= 0, "cleanup() must remove the blur listener");
+        Assert.IsTrue(displayNoneIndex >= 0, "cleanup() must hide the input");
+        Assert.IsTrue(blurRemovalIndex < displayNoneIndex,
+            "cleanup() must remove the blur listener before hiding the input, otherwise the synchronous " +
+            "blur fired by 'display: none' on a focused element re-enters commit().");
+    }
+
+    [TestMethod]
+    public void RotationNormalizationReChecksUpperBoundAfterRounding()
+    {
+        // Regression guard: degrees % 360 followed by rounding to 1 decimal can round a
+        // value like 359.96 up to exactly 360.0, which is outside the documented [0, 360)
+        // invariant. Every rotation-normalization site (C# NormalizeRotation, the JS drag
+        // rotation branch, and the JS custom-input commit path) must re-check the rounded
+        // result and wrap 360 back down to 0.
+        var source = ReadMainWindowSource();
+
+        var normalizeRotationStart = source.IndexOf("private static double NormalizeRotation(double degrees)", StringComparison.Ordinal);
+        Assert.IsTrue(normalizeRotationStart >= 0, "NormalizeRotation not found");
+        var normalizeRotationEnd = source.IndexOf("private void UpdateModernGroupGeometryWithChildren", normalizeRotationStart, StringComparison.Ordinal);
+        Assert.IsTrue(normalizeRotationEnd >= 0, "End of NormalizeRotation not found");
+        var normalizeRotationBody = source[normalizeRotationStart..normalizeRotationEnd];
+        StringAssert.Contains(normalizeRotationBody, "if (normalized >= 360)",
+            "C# NormalizeRotation must re-check the rounded result against 360");
+
+        var dragRotateStart = source.IndexOf("if (modernDrag.mode === 'rotate') {", StringComparison.Ordinal);
+        Assert.IsTrue(dragRotateStart >= 0, "JS drag rotate branch not found");
+        var dragRotateEnd = source.IndexOf("updateRotationBadge(event.clientX, event.clientY, normalized);", dragRotateStart, StringComparison.Ordinal);
+        Assert.IsTrue(dragRotateEnd >= 0, "End of JS drag rotate branch not found");
+        var dragRotateBody = source[dragRotateStart..dragRotateEnd];
+        StringAssert.Contains(dragRotateBody, "if (normalized >= 360) {",
+            "JS drag-rotation normalization must re-check the rounded result against 360");
+
+        var commitStart = source.IndexOf("const commit = () => {", StringComparison.Ordinal);
+        Assert.IsTrue(commitStart >= 0, "commit() function not found");
+        var commitEnd = source.IndexOf("const cancel = () => cleanup();", commitStart, StringComparison.Ordinal);
+        Assert.IsTrue(commitEnd >= 0, "cancel() definition not found after commit()");
+        var commitBody = source[commitStart..commitEnd];
+        StringAssert.Contains(commitBody, "if (normalized >= 360) {",
+            "custom-rotation-input commit() must re-check the rounded result against 360");
+    }
+
+    [TestMethod]
+    public void RotateDragDoesNotSetDeadCenterFields()
+    {
+        // Regression guard: pointermove's rotate branch computes its pivot fresh via
+        // getBoundingClientRect(), so modernDrag.centerX/centerY set in pointerdown were
+        // dead writes. Keep them removed; only startRotation is needed from that block.
+        var source = ReadMainWindowSource();
+
+        Assert.IsFalse(source.Contains("modernDrag.centerX", StringComparison.Ordinal),
+            "modernDrag.centerX is dead code and should not be reintroduced");
+        Assert.IsFalse(source.Contains("modernDrag.centerY", StringComparison.Ordinal),
+            "modernDrag.centerY is dead code and should not be reintroduced");
+    }
+
+    [TestMethod]
+    public void ModernElementSvgRenderLoopDoesNotForceNonUniformAspectRatio()
+    {
+        // Regression guard: an unrelated, undocumented line was accidentally introduced
+        // alongside a rotation-input fix that forced preserveAspectRatio='none' on every
+        // SVG inside a custom modern-element's markup, changing how every SVG-based
+        // Element+ renders (non-uniform stretch instead of aspect-preserving). That line
+        // has nothing to do with rotation and must not be present in the
+        // custom.querySelectorAll('svg').forEach(...) block.
+        var source = ReadMainWindowSource();
+
+        var loopStart = source.IndexOf("custom.querySelectorAll('svg').forEach(svg => {", StringComparison.Ordinal);
+        Assert.IsTrue(loopStart >= 0, "custom SVG render loop not found");
+        var loopEnd = source.IndexOf("});", loopStart, StringComparison.Ordinal);
+        Assert.IsTrue(loopEnd >= 0, "End of custom SVG render loop not found");
+        var loopBody = source[loopStart..loopEnd];
+
+        Assert.IsFalse(loopBody.Contains("preserveAspectRatio", StringComparison.Ordinal),
+            "The custom modern-element SVG render loop must not set preserveAspectRatio; " +
+            "this was an unrelated, undocumented scope-creep change and must stay removed.");
+        StringAssert.Contains(loopBody, "svg.style.width = '100%';");
+        StringAssert.Contains(loopBody, "svg.style.height = '100%';");
     }
 
     private static string ReadMainWindowSource()

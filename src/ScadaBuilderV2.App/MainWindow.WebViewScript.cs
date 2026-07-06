@@ -201,13 +201,35 @@ public partial class MainWindow
       display: block;
     }
     .scada-modern-handle[data-handle="nw"] { left: -6px; top: -6px; cursor: nwse-resize; }
-    .scada-modern-handle[data-handle="ne"] { right: -6px; top: -6px; cursor: nesw-resize; }
+    .scada-modern-handle[data-handle="ne"] { right: -6px; top: -6px; cursor: grab; }
     .scada-modern-handle[data-handle="sw"] { left: -6px; bottom: -6px; cursor: nesw-resize; }
     .scada-modern-handle[data-handle="se"] { right: -6px; bottom: -6px; cursor: nwse-resize; }
     .scada-modern-handle[data-handle="n"] { left: 50%; top: -6px; transform: translateX(-50%); cursor: ns-resize; }
     .scada-modern-handle[data-handle="s"] { left: 50%; bottom: -6px; transform: translateX(-50%); cursor: ns-resize; }
     .scada-modern-handle[data-handle="e"] { right: -6px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
     .scada-modern-handle[data-handle="w"] { left: -6px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
+    #scada-rotation-badge {
+      position: fixed;
+      display: none;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #0f2a30;
+      color: #ffffff;
+      font: 12px "Segoe UI", sans-serif;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(12px, -50%);
+    }
+    #scada-rotation-input {
+      position: fixed;
+      display: none;
+      width: 64px;
+      padding: 3px 6px;
+      border: 1px solid #2090a0;
+      border-radius: 4px;
+      font: 12px "Segoe UI", sans-serif;
+      z-index: 9999;
+    }
     body.scada-placement-active,
     body.scada-placement-active * {
       cursor: crosshair !important;
@@ -280,6 +302,7 @@ public partial class MainWindow
   let placementPreview = null;
   let sourceDrag = null;
   let modernDrag = null;
+  let lastObjectContextTargetId = null;
   let activeTextEditor = null;
 
   document.querySelectorAll('button.layer[disabled], input.layer[disabled], select.layer[disabled], textarea.layer[disabled]')
@@ -981,6 +1004,14 @@ public partial class MainWindow
     });
   }
 
+  function postModernRotation(id, rotation) {
+    window.chrome?.webview?.postMessage({
+      type: 'updateSceneObjectRotation',
+      id,
+      rotation
+    });
+  }
+
   function postModernGroupResize(id, before, after, children) {
     window.chrome?.webview?.postMessage({
       type: 'resizeSceneGroupWithChildren',
@@ -1074,6 +1105,11 @@ public partial class MainWindow
     wrapper.style.top = `${Math.max(0, geometry.y)}px`;
     wrapper.style.width = `${Math.max(8, geometry.width)}px`;
     wrapper.style.height = `${Math.max(8, geometry.height)}px`;
+  }
+
+  function getWrapperRotation(wrapper) {
+    const match = /rotate\(([-\d.]+)deg\)/.exec(wrapper.style.transform || '');
+    return match ? parseFloat(match[1]) || 0 : 0;
   }
 
   function clampNearAxis(startPos, startSize, delta) {
@@ -1842,7 +1878,7 @@ public partial class MainWindow
         modernDrag = {
           id: sceneMoveId,
           wrapper: sceneMoveWrapper,
-          mode: isResize ? 'resize' : 'move',
+          mode: event.target?.dataset?.handle === 'ne' ? 'rotate' : (isResize ? 'resize' : 'move'),
           handle: event.target?.dataset?.handle || '',
           startClientX: event.clientX,
           startClientY: event.clientY,
@@ -1858,6 +1894,9 @@ public partial class MainWindow
             geometry: readWrapperGeometry(item)
           }))
         };
+        if (modernDrag.mode === 'rotate') {
+          modernDrag.startRotation = getWrapperRotation(sceneMoveWrapper);
+        }
         sceneMoveWrapper.setPointerCapture?.(event.pointerId);
       }, true);
 
@@ -1889,6 +1928,7 @@ public partial class MainWindow
         event.stopPropagation();
         const sceneContextWrapper = getSceneMoveWrapper(wrapper);
         const sceneContextId = sceneContextWrapper?.dataset?.id || element.Id;
+        lastObjectContextTargetId = sceneContextId;
         if (!selectedModernIds.has(sceneContextId) && !event.ctrlKey && !event.shiftKey) {
           clearSelection();
           selectModernElementInDom(sceneContextId);
@@ -2103,6 +2143,102 @@ public partial class MainWindow
     marquee.style.display = 'block';
   }, true);
 
+  function ensureRotationBadge() {
+    let badge = document.getElementById('scada-rotation-badge');
+    if (!badge) {
+      badge = document.createElement('div');
+      badge.id = 'scada-rotation-badge';
+      document.body.appendChild(badge);
+    }
+    return badge;
+  }
+
+  function updateRotationBadge(clientX, clientY, angleDeg) {
+    const badge = ensureRotationBadge();
+    badge.textContent = `${angleDeg.toFixed(1)}°`;
+    badge.style.left = `${clientX}px`;
+    badge.style.top = `${clientY}px`;
+    badge.style.display = 'block';
+  }
+
+  function hideRotationBadge() {
+    const badge = document.getElementById('scada-rotation-badge');
+    if (badge) {
+      badge.style.display = 'none';
+    }
+  }
+
+  function ensureRotationInput() {
+    let input = document.getElementById('scada-rotation-input');
+    if (!input) {
+      input = document.createElement('input');
+      input.id = 'scada-rotation-input';
+      input.type = 'text';
+      document.body.appendChild(input);
+    }
+    return input;
+  }
+
+  function beginCustomRotationEntry(anchorX, anchorY) {
+    if (!lastObjectContextTargetId) return;
+    const targetId = lastObjectContextTargetId;
+    const input = ensureRotationInput();
+    const targetWrapper = document.querySelector(`.scada-modern-element[data-id="${targetId}"]`);
+    input.value = targetWrapper ? getWrapperRotation(targetWrapper).toFixed(1) : '0';
+    input.style.left = `${anchorX}px`;
+    input.style.top = `${anchorY}px`;
+    input.style.display = 'block';
+
+    const decimalPattern = /^-?\d{1,3}(\.\d)?$/;
+    const liveTypingPattern = /^-?\d{0,3}(\.\d?)?$/;
+    const onInput = () => {
+      if (input.value !== '' && !liveTypingPattern.test(input.value)) {
+        input.value = input.value.slice(0, -1);
+      }
+    };
+
+    const commit = () => {
+      const parsed = parseFloat(input.value);
+      if (!Number.isNaN(parsed)) {
+        let normalized = parsed % 360;
+        if (normalized < 0) {
+          normalized += 360;
+        }
+        normalized = Math.round(normalized * 10) / 10;
+        if (normalized >= 360) {
+          normalized -= 360;
+        }
+        postModernRotation(targetId, normalized);
+      }
+      cleanup();
+    };
+
+    const cancel = () => cleanup();
+
+    const onKeyDown = event => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        commit();
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        cancel();
+      }
+    };
+
+    function cleanup() {
+      input.removeEventListener('input', onInput);
+      input.removeEventListener('keydown', onKeyDown);
+      input.removeEventListener('blur', commit);
+      input.style.display = 'none';
+    }
+
+    input.addEventListener('input', onInput);
+    input.addEventListener('keydown', onKeyDown);
+    input.addEventListener('blur', commit);
+    input.focus();
+    input.select();
+  }
+
   document.addEventListener('pointermove', event => {
     if (placementKind && placementIsTwoPoint && placementStart) {
       updateTwoPointPlacementPreview(getSurfacePoint(event));
@@ -2135,7 +2271,28 @@ public partial class MainWindow
         height: modernDrag.startHeight
       };
 
-      if (modernDrag.mode === 'move') {
+      if (modernDrag.mode === 'rotate') {
+        const wrapperRect = modernDrag.wrapper.getBoundingClientRect();
+        const pivotClientX = wrapperRect.left + wrapperRect.width / 2;
+        const pivotClientY = wrapperRect.top + wrapperRect.height / 2;
+        const angleRad = Math.atan2(event.clientY - pivotClientY, event.clientX - pivotClientX);
+        let angleDeg = angleRad * (180 / Math.PI) + 90;
+        if (event.ctrlKey) {
+          angleDeg = Math.round(angleDeg / 90) * 90;
+        }
+        let normalized = angleDeg % 360;
+        if (normalized < 0) {
+          normalized += 360;
+        }
+        normalized = Math.round(normalized * 10) / 10;
+        if (normalized >= 360) {
+          normalized -= 360;
+        }
+        modernDrag.wrapper.style.transformOrigin = 'center center';
+        modernDrag.wrapper.style.transform = `rotate(${normalized}deg)`;
+        modernDrag.currentRotation = normalized;
+        updateRotationBadge(event.clientX, event.clientY, normalized);
+      } else if (modernDrag.mode === 'move') {
         (modernDrag.items || []).forEach(item => {
           setWrapperGeometry(item.wrapper, {
             x: item.geometry.x + dx,
@@ -2252,6 +2409,14 @@ public partial class MainWindow
     }
 
     if (modernDrag) {
+      if (modernDrag.mode === 'rotate') {
+        postModernRotation(modernDrag.id, modernDrag.currentRotation ?? modernDrag.startRotation);
+        hideRotationBadge();
+        modernDrag = null;
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
       const geometry = readWrapperGeometry(modernDrag.wrapper);
       if (modernDrag.mode === 'move' && (modernDrag.items || []).length > 1) {
         postSelectionMove(
@@ -2406,6 +2571,12 @@ public partial class MainWindow
     if (!commandId) return;
     event.preventDefault();
     event.stopPropagation();
+    if (commandId === 'object.rotation.custom') {
+      const anchorRect = event.target.getBoundingClientRect();
+      hideMenu();
+      beginCustomRotationEntry(anchorRect.left, anchorRect.top);
+      return;
+    }
     hideMenu();
     window.chrome?.webview?.postMessage({
       type: 'executeCommand',
