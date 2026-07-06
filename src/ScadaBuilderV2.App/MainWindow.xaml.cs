@@ -1342,6 +1342,9 @@ public partial class MainWindow : Window
                         message.BeforeWidth,
                         message.BeforeHeight);
                     break;
+                case "resizeSceneGroupWithChildren":
+                    UpdateModernGroupGeometryWithChildren(message);
+                    break;
                 case "moveSelectionBy":
                     _ = MoveSelectionByAsync(message);
                     break;
@@ -4727,6 +4730,82 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         MarkActiveSceneDirty();
         RefreshModernSceneUi();
         SetStatus($"{updated.UserLabel}: position {updated.Bounds.X:0},{updated.Bounds.Y:0}, taille {updated.Bounds.Width:0}x{updated.Bounds.Height:0}.");
+    }
+
+    private void UpdateModernGroupGeometryWithChildren(LegacyViewerMessage message)
+    {
+        if (_activeScene is null || string.IsNullOrWhiteSpace(message.Id))
+        {
+            return;
+        }
+
+        var group = _activeScene.FindElementRecursive(message.Id);
+        if (group is null)
+        {
+            return;
+        }
+
+        var beforeGroupBounds = new SceneBounds(
+            Math.Max(0, Math.Round(message.BeforeX)),
+            Math.Max(0, Math.Round(message.BeforeY)),
+            Math.Max(8, Math.Round(message.BeforeWidth)),
+            Math.Max(8, Math.Round(message.BeforeHeight)));
+        var afterGroupBounds = new SceneBounds(
+            Math.Max(0, Math.Round(message.X)),
+            Math.Max(0, Math.Round(message.Y)),
+            Math.Max(8, Math.Round(message.Width)),
+            Math.Max(8, Math.Round(message.Height)));
+
+        var elementBounds = new List<MovedSceneElementBounds>
+        {
+            new(group.Id, beforeGroupBounds, afterGroupBounds)
+        };
+
+        foreach (var child in message.Children ?? Enumerable.Empty<LegacyViewerChildBoundsMessage>())
+        {
+            if (string.IsNullOrWhiteSpace(child.Id))
+            {
+                continue;
+            }
+
+            var beforeChildBounds = new SceneBounds(
+                Math.Round(child.BeforeX),
+                Math.Round(child.BeforeY),
+                Math.Max(1, Math.Round(child.BeforeWidth)),
+                Math.Max(1, Math.Round(child.BeforeHeight)));
+            var afterChildBounds = new SceneBounds(
+                Math.Round(child.X),
+                Math.Round(child.Y),
+                Math.Max(1, Math.Round(child.Width)),
+                Math.Max(1, Math.Round(child.Height)));
+
+            elementBounds.Add(new MovedSceneElementBounds(child.Id, beforeChildBounds, afterChildBounds));
+        }
+
+        var updatedScene = _activeScene;
+        foreach (var item in elementBounds)
+        {
+            var current = updatedScene.FindElementRecursive(item.ElementId);
+            if (current is null)
+            {
+                continue;
+            }
+
+            updatedScene = updatedScene.WithReplacedElementRecursive(current with { Bounds = item.AfterBounds });
+        }
+
+        _activeScene = updatedScene;
+        _selectedSceneObject = updatedScene.FindElementRecursive(group.Id);
+        _selectedSceneObjectIds.Add(group.Id);
+
+        _activeSceneTab?.History.Push(new SceneSelectionMovedAction(
+            updatedScene.Id,
+            elementBounds,
+            "resize de groupe"));
+
+        MarkActiveSceneDirty();
+        RefreshModernSceneUi();
+        SetStatus($"{group.UserLabel}: groupe redimensionne {afterGroupBounds.Width:0}x{afterGroupBounds.Height:0}.");
     }
 
     private async Task MoveSelectionByAsync(LegacyViewerMessage message)
