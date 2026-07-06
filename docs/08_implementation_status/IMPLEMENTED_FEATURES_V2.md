@@ -1,8 +1,8 @@
 # SCADA Builder V2 - Implemented Features
 
-Date: 2026-06-19
+Date: 2026-07-05
 Status: Active implementation status
-Document version: `V2.1.3.0002`
+Document version: `V2.1.4.0000`
 
 ## Historique des changements
 
@@ -118,7 +118,7 @@ As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 253 
 50. The WPF shell top ribbon now renders the active tab from a command registry containing stable command ids, labels, tooltips or disabled reasons, icon keys, executable state, and grouped command metadata. Implemented commands dispatch through the registry to existing shell workflows; future commands remain registered but disabled.
 51. The Insert ribbon `Formes` group now uses an icon-only 32x32 shape gallery capped at four columns with a second row for overflow. Active insertion commands show selected state until placement completes or is cancelled, and shape names remain available through command tooltips.
 52. Color-valued Element+ `Style` properties, including background and border color, and `Bouton` properties use a WPF color picker field with swatch preview, hex output, saturation/value area, hue slider, preset swatches, RGB sliders, and a modal `Annuler` / `Enregistrer` flow aligned with `CSS fond`; targeted `WebViewContextMenuScriptTests`, `ModernProjectStoreTests`, and `Ft100SceneExporterTests` coverage passed for the protected property/export contracts.
-53. The WPF shell's left and right side panels (`Outil`, `Projet`, `Catalogue Tags`, `Page`, `Element`, `Propriete`, `Librairie`) are AvalonDock anchorable panes: draggable, floatable, closable/reopenable via a `Fenetres` menu, and persisted across sessions to `%AppData%\ScadaBuilderV2\dock-layout.xml`. The central canvas area (`SceneTabs`, `PreviewWebView`) is unchanged and remains a single non-closable document region.
+53. The WPF shell's left and right side panels (`Outil`, `Projet`, `Catalogue Tags`, `Page`, `Element`, `Propriete`, `Librairie`) are AvalonDock anchorable panes: draggable, floatable, closable/reopenable via a `Fenetres` menu, and persisted across sessions to `%AppData%\ScadaBuilderV2\dock-layout.xml`. A `Fenetres > Reinitialiser la disposition` command restores the default layout without an app restart, and the previously existing selection `Lock` toggle (bound to `IsSelectionLocked`) is preserved in the top bar next to the `Fenetres` menu. The central canvas area (`SceneTabs`, `PreviewWebView`) is unchanged and remains a single non-closable document region.
 
 ## 3. Source Of Truth
 
