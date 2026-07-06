@@ -3234,10 +3234,10 @@
       "DisplayName": "Nouveau composant",
       "Kind": "Custom",
       "Bounds": {
-        "X": 277,
-        "Y": 338,
-        "Width": 326,
-        "Height": 40
+        "X": 225,
+        "Y": 361,
+        "Width": 440,
+        "Height": 15
       },
       "LegacySource": null,
       "Layout": {
