@@ -204,6 +204,10 @@ public partial class MainWindow
     .scada-modern-handle[data-handle="ne"] { right: -6px; top: -6px; cursor: nesw-resize; }
     .scada-modern-handle[data-handle="sw"] { left: -6px; bottom: -6px; cursor: nesw-resize; }
     .scada-modern-handle[data-handle="se"] { right: -6px; bottom: -6px; cursor: nwse-resize; }
+    .scada-modern-handle[data-handle="n"] { left: 50%; top: -6px; transform: translateX(-50%); cursor: ns-resize; }
+    .scada-modern-handle[data-handle="s"] { left: 50%; bottom: -6px; transform: translateX(-50%); cursor: ns-resize; }
+    .scada-modern-handle[data-handle="e"] { right: -6px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
+    .scada-modern-handle[data-handle="w"] { left: -6px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
     body.scada-placement-active,
     body.scada-placement-active * {
       cursor: crosshair !important;
@@ -1754,7 +1758,7 @@ public partial class MainWindow
       badge.textContent = `${element.DisplayName || element.Id} - ${element.Kind}`;
       wrapper.appendChild(badge);
 
-      ['nw', 'ne', 'sw', 'se'].forEach(handle => {
+      ['nw', 'ne', 'sw', 'se', 'n', 's', 'e', 'w'].forEach(handle => {
         const grip = document.createElement('span');
         grip.className = 'scada-modern-handle';
         grip.dataset.handle = handle;
