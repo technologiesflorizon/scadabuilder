@@ -1803,6 +1803,7 @@ public partial class MainWindow
         custom.style.overflow = 'visible';
         custom.innerHTML = data.Text || '';
         custom.querySelectorAll('svg').forEach(svg => {
+          svg.setAttribute('preserveAspectRatio', 'none');
           svg.style.width = '100%';
           svg.style.height = '100%';
           svg.style.display = 'block';
@@ -1895,8 +1896,6 @@ public partial class MainWindow
           }))
         };
         if (modernDrag.mode === 'rotate') {
-          modernDrag.centerX = modernDrag.startX + modernDrag.startWidth / 2;
-          modernDrag.centerY = modernDrag.startY + modernDrag.startHeight / 2;
           modernDrag.startRotation = getWrapperRotation(sceneMoveWrapper);
         }
         sceneMoveWrapper.setPointerCapture?.(event.pointerId);
@@ -2191,7 +2190,7 @@ public partial class MainWindow
     input.style.top = `${anchorY}px`;
     input.style.display = 'block';
 
-    const decimalPattern = /^\d{1,3}(\.\d)?$/;
+    const decimalPattern = /^-?\d{1,3}(\.\d)?$/;
     const onInput = () => {
       if (input.value !== '' && !decimalPattern.test(input.value)) {
         input.value = input.value.slice(0, -1);
@@ -2206,6 +2205,9 @@ public partial class MainWindow
           normalized += 360;
         }
         normalized = Math.round(normalized * 10) / 10;
+        if (normalized >= 360) {
+          normalized -= 360;
+        }
         postModernRotation(targetId, normalized);
       }
       cleanup();
@@ -2283,6 +2285,9 @@ public partial class MainWindow
           normalized += 360;
         }
         normalized = Math.round(normalized * 10) / 10;
+        if (normalized >= 360) {
+          normalized -= 360;
+        }
         modernDrag.wrapper.style.transformOrigin = 'center center';
         modernDrag.wrapper.style.transform = `rotate(${normalized}deg)`;
         modernDrag.currentRotation = normalized;

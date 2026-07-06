@@ -1243,7 +1243,7 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "lastObjectContextTargetId = sceneContextId;");
         StringAssert.Contains(source, "function beginCustomRotationEntry(anchorX, anchorY)");
         StringAssert.Contains(source, "commandId === 'object.rotation.custom'");
-        StringAssert.Contains(source, "/^\\d{1,3}(\\.\\d)?$/");
+        StringAssert.Contains(source, "/^-?\\d{1,3}(\\.\\d)?$/");
 
         // commit() must apply the rotation to the targetId captured when the custom
         // input was opened, not the live lastObjectContextTargetId global (which can be
@@ -1282,6 +1282,55 @@ public sealed class WebViewContextMenuScriptTests
         Assert.IsTrue(blurRemovalIndex < displayNoneIndex,
             "cleanup() must remove the blur listener before hiding the input, otherwise the synchronous " +
             "blur fired by 'display: none' on a focused element re-enters commit().");
+    }
+
+    [TestMethod]
+    public void RotationNormalizationReChecksUpperBoundAfterRounding()
+    {
+        // Regression guard: degrees % 360 followed by rounding to 1 decimal can round a
+        // value like 359.96 up to exactly 360.0, which is outside the documented [0, 360)
+        // invariant. Every rotation-normalization site (C# NormalizeRotation, the JS drag
+        // rotation branch, and the JS custom-input commit path) must re-check the rounded
+        // result and wrap 360 back down to 0.
+        var source = ReadMainWindowSource();
+
+        var normalizeRotationStart = source.IndexOf("private static double NormalizeRotation(double degrees)", StringComparison.Ordinal);
+        Assert.IsTrue(normalizeRotationStart >= 0, "NormalizeRotation not found");
+        var normalizeRotationEnd = source.IndexOf("private void UpdateModernGroupGeometryWithChildren", normalizeRotationStart, StringComparison.Ordinal);
+        Assert.IsTrue(normalizeRotationEnd >= 0, "End of NormalizeRotation not found");
+        var normalizeRotationBody = source[normalizeRotationStart..normalizeRotationEnd];
+        StringAssert.Contains(normalizeRotationBody, "if (normalized >= 360)",
+            "C# NormalizeRotation must re-check the rounded result against 360");
+
+        var dragRotateStart = source.IndexOf("if (modernDrag.mode === 'rotate') {", StringComparison.Ordinal);
+        Assert.IsTrue(dragRotateStart >= 0, "JS drag rotate branch not found");
+        var dragRotateEnd = source.IndexOf("updateRotationBadge(event.clientX, event.clientY, normalized);", dragRotateStart, StringComparison.Ordinal);
+        Assert.IsTrue(dragRotateEnd >= 0, "End of JS drag rotate branch not found");
+        var dragRotateBody = source[dragRotateStart..dragRotateEnd];
+        StringAssert.Contains(dragRotateBody, "if (normalized >= 360) {",
+            "JS drag-rotation normalization must re-check the rounded result against 360");
+
+        var commitStart = source.IndexOf("const commit = () => {", StringComparison.Ordinal);
+        Assert.IsTrue(commitStart >= 0, "commit() function not found");
+        var commitEnd = source.IndexOf("const cancel = () => cleanup();", commitStart, StringComparison.Ordinal);
+        Assert.IsTrue(commitEnd >= 0, "cancel() definition not found after commit()");
+        var commitBody = source[commitStart..commitEnd];
+        StringAssert.Contains(commitBody, "if (normalized >= 360) {",
+            "custom-rotation-input commit() must re-check the rounded result against 360");
+    }
+
+    [TestMethod]
+    public void RotateDragDoesNotSetDeadCenterFields()
+    {
+        // Regression guard: pointermove's rotate branch computes its pivot fresh via
+        // getBoundingClientRect(), so modernDrag.centerX/centerY set in pointerdown were
+        // dead writes. Keep them removed; only startRotation is needed from that block.
+        var source = ReadMainWindowSource();
+
+        Assert.IsFalse(source.Contains("modernDrag.centerX", StringComparison.Ordinal),
+            "modernDrag.centerX is dead code and should not be reintroduced");
+        Assert.IsFalse(source.Contains("modernDrag.centerY", StringComparison.Ordinal),
+            "modernDrag.centerY is dead code and should not be reintroduced");
     }
 
     private static string ReadMainWindowSource()

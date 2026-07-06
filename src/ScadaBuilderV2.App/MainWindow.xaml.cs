@@ -4790,7 +4790,13 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             normalized += 360;
         }
 
-        return Math.Round(normalized, 1);
+        normalized = Math.Round(normalized, 1);
+        if (normalized >= 360)
+        {
+            normalized -= 360;
+        }
+
+        return normalized;
     }
 
     private void UpdateModernGroupGeometryWithChildren(LegacyViewerMessage message)
