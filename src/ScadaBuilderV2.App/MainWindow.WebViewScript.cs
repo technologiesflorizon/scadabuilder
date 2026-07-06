@@ -1684,6 +1684,7 @@ public partial class MainWindow
       } else if (element.Kind === 'Shape') {
         wrapper.style.background = 'transparent';
         wrapper.style.border = '0';
+        wrapper.style.padding = '0';
         wrapper.appendChild(renderShapeElement(element, style));
       } else if (element.Kind === 'Text') {
         const text = document.createElement('span');
