@@ -1,0 +1,95 @@
+{
+  "Metadata": {
+    "Schema": "scada-builder-v2.element-studio.component",
+    "SchemaVersion": 1,
+    "Format": "json.sep",
+    "CreatedByVersion": "V2.1.3.0003"
+  },
+  "Component": {
+    "ComponentId": "Nouveau composant",
+    "Name": "Nouveau composant",
+    "Bounds": {
+      "X": 0,
+      "Y": 0,
+      "Width": 18,
+      "Height": 93
+    },
+    "Visual": {
+      "Kind": "Svg",
+      "SvgMarkup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"93\" viewBox=\"0 0 18 93\">\n  <g id=\"Element001\" data-source-name=\"pipe\">\n    <rect x=\"0\" y=\"0\" width=\"18\" height=\"93\" fill=\"#8795a1\" /><rect x=\"0\" y=\"0\" width=\"3\" height=\"93\" fill=\"#7b8794\" /><rect x=\"7\" y=\"0\" width=\"3\" height=\"93\" fill=\"#d8dee3\" /><line x1=\"0\" y1=\"0\" x2=\"0\" y2=\"93\" stroke=\"#1f2933\" stroke-width=\"1\" /><line x1=\"18\" y1=\"0\" x2=\"18\" y2=\"93\" stroke=\"#1f2933\" stroke-width=\"1\" />\n  </g>\n</svg>\n",
+      "ImageAssetId": null,
+      "HtmlMarkup": null,
+      "CssCode": null,
+      "JsCode": null,
+      "TypedElementKind": null
+    },
+    "Parts": [
+      {
+        "PartId": "Element001",
+        "Name": "Element001",
+        "Kind": "Path",
+        "Bounds": {
+          "X": 0,
+          "Y": 0,
+          "Width": 18,
+          "Height": 93
+        },
+        "Style": {
+          "FontFamily": "\"Segoe UI\", Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": "<rect x=\"0\" y=\"0\" width=\"18\" height=\"93\" fill=\"#8795a1\" /><rect x=\"0\" y=\"0\" width=\"3\" height=\"93\" fill=\"#7b8794\" /><rect x=\"7\" y=\"0\" width=\"3\" height=\"93\" fill=\"#d8dee3\" /><line x1=\"0\" y1=\"0\" x2=\"0\" y2=\"93\" stroke=\"#1f2933\" stroke-width=\"1\" /><line x1=\"18\" y1=\"0\" x2=\"18\" y2=\"93\" stroke=\"#1f2933\" stroke-width=\"1\" />",
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": null,
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00008",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
+          "SourceElementIds": [
+            "52",
+            "53",
+            "54",
+            "55",
+            "56",
+            "57",
+            "58",
+            "59"
+          ],
+          "Notes": "Element001, Element002, Element003, Element004, Element005, Element006, Element007, Element008 (flattened into one modernized Path) Shadow strip added for consistency with Vertical_Piping.sep's 3-facet (shadow/body/highlight) convention."
+        }
+      }
+    ],
+    "Assets": [],
+    "Bindings": [],
+    "Events": [],
+    "SourceTrace": {
+      "SourceProjectId": "AMR_REF_SCADA_V2",
+      "SourceSceneId": "win00008",
+      "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
+      "SourceElementIds": [
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59"
+      ],
+      "Notes": "Modernized 2026-07-05 per SCADA_2026_ICON_STYLE_GUIDE_V2.md - flat industrial pipe segment replacing the legacy 5/6-band fake-gradient shading; untouched original preserved as Original_tank_out.sep. Revised 2026-07-05: added the shadow facet to match Vertical_Piping.sep's 3-facet convention (the batch script that produced this file originally used only 2 facets, an inconsistency caught by review)."
+    },
+    "Category": "General",
+    "Description": null,
+    "Tags": [],
+    "Provenance": "AiModernized"
+  }
+}

@@ -1,0 +1,172 @@
+{
+  "Metadata": {
+    "Schema": "scada-builder-v2.element-studio.component",
+    "SchemaVersion": 1,
+    "Format": "json.sep",
+    "CreatedByVersion": "V2.1.3.0003"
+  },
+  "Component": {
+    "ComponentId": "Nouveau composant",
+    "Name": "Nouveau composant",
+    "Bounds": {
+      "X": 0,
+      "Y": 0,
+      "Width": 18,
+      "Height": 50
+    },
+    "Visual": {
+      "Kind": "Svg",
+      "SvgMarkup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"50\" viewBox=\"0 0 18 50\">\n  <g id=\"Element001\" data-source-name=\"SensorHead\">\n    <polygon points=\"4,0 18,0 18,11 16,11 16,18 10,18 10,12 4,12 0,9 0,2\" fill=\"#99ffff\" stroke=\"#1f2933\" stroke-width=\"1\" />\n  </g>\n  <g id=\"Element002\" data-source-name=\"ProbeBody\">\n    <rect x=\"12\" y=\"18\" width=\"3\" height=\"13\" fill=\"#7b8794\" stroke=\"#1f2933\" stroke-width=\"1\" /><polygon points=\"12,31 15,31 16,34 11,34\" fill=\"#8795a1\" stroke=\"#1f2933\" stroke-width=\"1\" /><rect x=\"11\" y=\"34\" width=\"5\" height=\"16\" fill=\"#8795a1\" /><rect x=\"11\" y=\"34\" width=\"1\" height=\"16\" fill=\"#5b6b7c\" /><rect x=\"14\" y=\"34\" width=\"2\" height=\"16\" fill=\"#aab4bd\" /><rect x=\"13\" y=\"40\" width=\"1\" height=\"4\" fill=\"#d8dee3\" /><rect x=\"11\" y=\"34\" width=\"5\" height=\"16\" fill=\"none\" stroke=\"#1f2933\" stroke-width=\"1\" />\n  </g>\n</svg>\n",
+      "ImageAssetId": null,
+      "HtmlMarkup": null,
+      "CssCode": null,
+      "JsCode": null,
+      "TypedElementKind": null
+    },
+    "Parts": [
+      {
+        "PartId": "Element001",
+        "Name": "Element001",
+        "Kind": "Path",
+        "Bounds": {
+          "X": 0,
+          "Y": 0,
+          "Width": 18,
+          "Height": 12
+        },
+        "Style": {
+          "FontFamily": "\"Segoe UI\", Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": "<polygon points=\"4,0 18,0 18,11 16,11 16,18 10,18 10,12 4,12 0,9 0,2\" fill=\"#99ffff\" stroke=\"#1f2933\" stroke-width=\"1\" />",
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": null,
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00008",
+          "SourcePagePath": "F:Groupe AMRSCADA_AMR_GROUPSCADA_BUILDERAMR_SCADAAMR_REF_SCADApageswin00008.json",
+          "SourceElementIds": [
+            "1012",
+            "1013",
+            "1014",
+            "1015",
+            "1016",
+            "1017",
+            "1018",
+            "1020",
+            "1021",
+            "1022",
+            "1023",
+            "1024",
+            "1025",
+            "1026",
+            "1027"
+          ],
+          "Notes": "Polygon554, Polygon556, Polygon560-561, PolyLine237-245 (flattened into one modernized cyan sensing-head Path)"
+        }
+      },
+      {
+        "PartId": "Element002",
+        "Name": "Element002",
+        "Kind": "Path",
+        "Bounds": {
+          "X": 11,
+          "Y": 18,
+          "Width": 5,
+          "Height": 32
+        },
+        "Style": {
+          "FontFamily": "\"Segoe UI\", Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": "<rect x=\"12\" y=\"18\" width=\"3\" height=\"13\" fill=\"#7b8794\" stroke=\"#1f2933\" stroke-width=\"1\" /><polygon points=\"12,31 15,31 16,34 11,34\" fill=\"#8795a1\" stroke=\"#1f2933\" stroke-width=\"1\" /><rect x=\"11\" y=\"34\" width=\"5\" height=\"16\" fill=\"#8795a1\" /><rect x=\"11\" y=\"34\" width=\"1\" height=\"16\" fill=\"#5b6b7c\" /><rect x=\"14\" y=\"34\" width=\"2\" height=\"16\" fill=\"#aab4bd\" /><rect x=\"13\" y=\"40\" width=\"1\" height=\"4\" fill=\"#d8dee3\" /><rect x=\"11\" y=\"34\" width=\"5\" height=\"16\" fill=\"none\" stroke=\"#1f2933\" stroke-width=\"1\" />",
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": null,
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00008",
+          "SourcePagePath": "F:Groupe AMRSCADA_AMR_GROUPSCADA_BUILDERAMR_SCADAAMR_REF_SCADApageswin00008.json",
+          "SourceElementIds": [
+            "1028",
+            "1030",
+            "1032",
+            "1034",
+            "1035",
+            "1036",
+            "1037",
+            "1038",
+            "1039",
+            "1040",
+            "1041",
+            "1042",
+            "1043",
+            "1044"
+          ],
+          "Notes": "Polygon555, Polygon557-559, Polygon562, Polygon570, PolyLine234-236 (flattened into one modernized probe-body/stem Path with slate shading facets)"
+        }
+      }
+    ],
+    "Assets": [],
+    "Bindings": [],
+    "Events": [],
+    "SourceTrace": {
+      "SourceProjectId": "AMR_REF_SCADA_V2",
+      "SourceSceneId": "win00008",
+      "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
+      "SourceElementIds": [
+        "1012",
+        "1013",
+        "1014",
+        "1015",
+        "1016",
+        "1017",
+        "1018",
+        "1020",
+        "1021",
+        "1022",
+        "1023",
+        "1024",
+        "1025",
+        "1026",
+        "1027",
+        "1028",
+        "1030",
+        "1032",
+        "1034",
+        "1035",
+        "1036",
+        "1037",
+        "1038",
+        "1039",
+        "1040",
+        "1041",
+        "1042",
+        "1043",
+        "1044"
+      ],
+      "Notes": "Modernized 2026-07-05 per SCADA_2026_ICON_STYLE_GUIDE_V2.md - flat industrial probe/sensor icon replacing the legacy 29-shape pseudo-3D shading (rivet marks, gradient bands) with a flat cyan sensing head and slate shaded probe body/stem; untouched original preserved as Original_sonde.sep."
+    },
+    "Category": "General",
+    "Description": null,
+    "Tags": [],
+    "Provenance": "AiModernized"
+  }
+}

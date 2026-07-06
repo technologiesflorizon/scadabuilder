@@ -3,11 +3,11 @@
     "Schema": "scada-builder-v2.element-studio.component",
     "SchemaVersion": 1,
     "Format": "json.sep",
-    "CreatedByVersion": "V2.0.3.0023"
+    "CreatedByVersion": "V2.1.3.0002"
   },
   "Component": {
-    "ComponentId": "Vertical_Piping",
-    "Name": "Vertical_Piping",
+    "ComponentId": "Nouveau composant",
+    "Name": "Nouveau composant",
     "Bounds": {
       "X": 0,
       "Y": 0,
@@ -16,7 +16,7 @@
     },
     "Visual": {
       "Kind": "Svg",
-      "SvgMarkup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12\" height=\"333\" viewBox=\"0 0 12 333\">\n  <g id=\"Element001\" data-source-id=\"159\" data-source-name=\"Polygon95\">\n    <rect x=\"0\" y=\"0\" width=\"11\" height=\"333\" fill=\"#8795a1\" />\n    <rect x=\"0\" y=\"0\" width=\"2\" height=\"333\" fill=\"#7b8794\" />\n    <rect x=\"4\" y=\"0\" width=\"3\" height=\"333\" fill=\"#aab4bd\" />\n    <line x1=\"0\" y1=\"0\" x2=\"0\" y2=\"333\" stroke=\"#1f2933\" stroke-width=\"1\" />\n    <line x1=\"11\" y1=\"0\" x2=\"11\" y2=\"333\" stroke=\"#1f2933\" stroke-width=\"1\" />\n  </g>\n</svg>\n",
+      "SvgMarkup": "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"12\" height=\"333\" viewBox=\"0 0 12 333\">\n  <g id=\"Element001\" data-source-name=\"pipe\">\n    <rect x=\"0\" y=\"0\" width=\"11\" height=\"333\" fill=\"#8795a1\" /><rect x=\"0\" y=\"0\" width=\"2\" height=\"333\" fill=\"#7b8794\" /><rect x=\"5\" y=\"0\" width=\"1\" height=\"333\" fill=\"#d8dee3\" /><line x1=\"0\" y1=\"0\" x2=\"0\" y2=\"333\" stroke=\"#1f2933\" stroke-width=\"1\" /><line x1=\"11\" y1=\"0\" x2=\"11\" y2=\"333\" stroke=\"#1f2933\" stroke-width=\"1\" />\n  </g>\n</svg>\n",
       "ImageAssetId": null,
       "HtmlMarkup": null,
       "CssCode": null,
@@ -31,7 +31,7 @@
         "Bounds": {
           "X": 0,
           "Y": 0,
-          "Width": 11,
+          "Width": 12,
           "Height": 333
         },
         "Style": {
@@ -44,7 +44,7 @@
           "BorderStyle": "None",
           "Opacity": 1
         },
-        "Geometry": "<rect x=\"0\" y=\"0\" width=\"11\" height=\"333\" fill=\"#8795a1\" /><rect x=\"0\" y=\"0\" width=\"2\" height=\"333\" fill=\"#7b8794\" /><rect x=\"4\" y=\"0\" width=\"3\" height=\"333\" fill=\"#aab4bd\" /><line x1=\"0\" y1=\"0\" x2=\"0\" y2=\"333\" stroke=\"#1f2933\" stroke-width=\"1\" /><line x1=\"11\" y1=\"0\" x2=\"11\" y2=\"333\" stroke=\"#1f2933\" stroke-width=\"1\" />",
+        "Geometry": "<rect x=\"0\" y=\"0\" width=\"11\" height=\"333\" fill=\"#8795a1\" /><rect x=\"0\" y=\"0\" width=\"2\" height=\"333\" fill=\"#7b8794\" /><rect x=\"5\" y=\"0\" width=\"1\" height=\"333\" fill=\"#d8dee3\" /><line x1=\"0\" y1=\"0\" x2=\"0\" y2=\"333\" stroke=\"#1f2933\" stroke-width=\"1\" /><line x1=\"11\" y1=\"0\" x2=\"11\" y2=\"333\" stroke=\"#1f2933\" stroke-width=\"1\" />",
         "Text": "",
         "ImageAssetId": null,
         "HtmlMarkup": null,
@@ -64,7 +64,7 @@
             "165",
             "166"
           ],
-          "Notes": "Polygon95-100, PolyLine35-36 (flattened into one modernized Path)"
+          "Notes": "Element001, Element002, Element003, Element004, Element005, Element006, Element007, Element008 (flattened into one modernized Path) Shadow strip added for consistency with Vertical_Piping.sep's 3-facet (shadow/body/highlight) convention."
         }
       }
     ],
@@ -85,7 +85,7 @@
         "165",
         "166"
       ],
-      "Notes": "Modernized 2026-07-05 per SCADA_2026_ICON_STYLE_GUIDE_V2.md - flat industrial pipe segment replacing the legacy 6-band fake-gradient shading; untouched original preserved as Original_Vertical_Piping.sep."
+      "Notes": "Modernized 2026-07-05 per SCADA_2026_ICON_STYLE_GUIDE_V2.md - flat industrial pipe segment replacing the legacy 5/6-band fake-gradient shading; untouched original preserved as Original_pipe1.sep. Revised 2026-07-05: added the shadow facet to match Vertical_Piping.sep's 3-facet convention (the batch script that produced this file originally used only 2 facets, an inconsistency caught by review)."
     },
     "Category": "General",
     "Description": null,

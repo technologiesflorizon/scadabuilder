@@ -1,0 +1,89 @@
+{
+  "Metadata": {
+    "Schema": "scada-builder-v2.element-studio.component",
+    "SchemaVersion": 1,
+    "Format": "json.sep",
+    "CreatedByVersion": "V2.1.3.0002"
+  },
+  "Component": {
+    "ComponentId": "Nouveau composant",
+    "Name": "Nouveau composant",
+    "Bounds": {
+      "X": 0,
+      "Y": 0,
+      "Width": 93,
+      "Height": 93
+    },
+    "Visual": {
+      "Kind": "Svg",
+      "SvgMarkup": "\u003Csvg xmlns=\u0022http://www.w3.org/2000/svg\u0022 width=\u002293\u0022 height=\u002293\u0022 viewBox=\u00220 0 93 93\u0022\u003E\r\n  \u003Cg id=\u0022Element001\u0022 data-source-id=\u0022860\u0022 data-source-name=\u0022Image5\u0022\u003E\r\n    \u003Cimage x=\u00220\u0022 y=\u00220\u0022 width=\u002293\u0022 height=\u002293\u0022 href=\u0022data:image/svg\u002Bxml;base64,77u/PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NiA5NiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJGYW4gaWNvbiBtb2Rlcm5pemVkIGlkbGUiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJvdXRlckdyYWQiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2YyZjVmOCIgLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZGNlM2VhIiAvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iYmxhZGVHcmFkIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI\u002BCiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNkNGRkZTgiIC8\u002BCiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2FlYjljOSIgLz4KICAgIDwvbGluZWFyR3JhZGllbnQ\u002BCiAgICA8Y2xpcFBhdGggaWQ9ImZhbkRpc2MiPgogICAgICA8Y2lyY2xlIGN4PSI0OCIgY3k9IjQ4IiByPSIzNSIgLz4KICAgIDwvY2xpcFBhdGg\u002BCiAgPC9kZWZzPgoKICA8Y2lyY2xlIGN4PSI0OCIgY3k9IjQ4IiByPSI0NSIgZmlsbD0idXJsKCNvdXRlckdyYWQpIiBzdHJva2U9IiM3ZjhlYTMiIHN0cm9rZS13aWR0aD0iMiIgLz4KICA8Y2lyY2xlIGN4PSI0OCIgY3k9IjQ4IiByPSIzNyIgZmlsbD0iI2VkZjJmNyIgc3Ryb2tlPSIjOTVhM2I2IiBzdHJva2Utd2lkdGg9IjEuMiIgLz4KCiAgPGcgY2xpcC1wYXRoPSJ1cmwoI2ZhbkRpc2MpIiBmaWxsPSJ1cmwoI2JsYWRlR3JhZCkiIHN0cm9rZT0iIzdkOGNhMCIgc3Ryb2tlLXdpZHRoPSIxIj4KICAgIDxlbGxpcHNlIGN4PSI0OCIgY3k9IjI4IiByeD0iNy41IiByeT0iMjIiIC8\u002BCiAgICA8ZWxsaXBzZSBjeD0iNDgiIGN5PSIyOCIgcng9IjcuNSIgcnk9IjIyIiB0cmFuc2Zvcm09InJvdGF0ZSg2MCA0OCA0OCkiIC8\u002BCiAgICA8ZWxsaXBzZSBjeD0iNDgiIGN5PSIyOCIgcng9IjcuNSIgcnk9IjIyIiB0cmFuc2Zvcm09InJvdGF0ZSgxMjAgNDggNDgpIiAvPgogICAgPGVsbGlwc2UgY3g9IjQ4IiBjeT0iMjgiIHJ4PSI3LjUiIHJ5PSIyMiIgdHJhbnNmb3JtPSJyb3RhdGUoMTgwIDQ4IDQ4KSIgLz4KICAgIDxlbGxpcHNlIGN4PSI0OCIgY3k9IjI4IiByeD0iNy41IiByeT0iMjIiIHRyYW5zZm9ybT0icm90YXRlKDI0MCA0OCA0OCkiIC8\u002BCiAgICA8ZWxsaXBzZSBjeD0iNDgiIGN5PSIyOCIgcng9IjcuNSIgcnk9IjIyIiB0cmFuc2Zvcm09InJvdGF0ZSgzMDAgNDggNDgpIiAvPgogIDwvZz4KCiAgPGNpcmNsZSBjeD0iNDgiIGN5PSI0OCIgcj0iMTAiIGZpbGw9IiNjZGQ2ZTIiIHN0cm9rZT0iIzc0ODU5YSIgc3Ryb2tlLXdpZHRoPSIxLjIiIC8\u002BCiAgPGNpcmNsZSBjeD0iNDgiIGN5PSI0OCIgcj0iMyIgZmlsbD0iIzhmYTFiNiIgLz4KPC9zdmc\u002BDQo=\u0022 preserveAspectRatio=\u0022none\u0022 /\u003E\r\n  \u003C/g\u003E\r\n\u003C/svg\u003E",
+      "ImageAssetId": null,
+      "HtmlMarkup": null,
+      "CssCode": null,
+      "JsCode": null,
+      "TypedElementKind": null
+    },
+    "Parts": [
+      {
+        "PartId": "Element001",
+        "Name": "Element001",
+        "Kind": "Image",
+        "Bounds": {
+          "X": 0,
+          "Y": 0,
+          "Width": 93,
+          "Height": 93
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": "asset-860",
+        "HtmlMarkup": null,
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00008",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
+          "SourceElementIds": [
+            "860"
+          ],
+          "Notes": "Image5"
+        }
+      }
+    ],
+    "Assets": [
+      {
+        "AssetId": "asset-860",
+        "FileName": "icon_469b_fan_idle_v1.svg",
+        "MediaType": "image/svg\u002Bxml",
+        "Base64Data": "77u/PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA5NiA5NiIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJGYW4gaWNvbiBtb2Rlcm5pemVkIGlkbGUiPgogIDxkZWZzPgogICAgPGxpbmVhckdyYWRpZW50IGlkPSJvdXRlckdyYWQiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2YyZjVmOCIgLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjZGNlM2VhIiAvPgogICAgPC9saW5lYXJHcmFkaWVudD4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iYmxhZGVHcmFkIiB4MT0iMCIgeTE9IjAiIHgyPSIwIiB5Mj0iMSI\u002BCiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNkNGRkZTgiIC8\u002BCiAgICAgIDxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2FlYjljOSIgLz4KICAgIDwvbGluZWFyR3JhZGllbnQ\u002BCiAgICA8Y2xpcFBhdGggaWQ9ImZhbkRpc2MiPgogICAgICA8Y2lyY2xlIGN4PSI0OCIgY3k9IjQ4IiByPSIzNSIgLz4KICAgIDwvY2xpcFBhdGg\u002BCiAgPC9kZWZzPgoKICA8Y2lyY2xlIGN4PSI0OCIgY3k9IjQ4IiByPSI0NSIgZmlsbD0idXJsKCNvdXRlckdyYWQpIiBzdHJva2U9IiM3ZjhlYTMiIHN0cm9rZS13aWR0aD0iMiIgLz4KICA8Y2lyY2xlIGN4PSI0OCIgY3k9IjQ4IiByPSIzNyIgZmlsbD0iI2VkZjJmNyIgc3Ryb2tlPSIjOTVhM2I2IiBzdHJva2Utd2lkdGg9IjEuMiIgLz4KCiAgPGcgY2xpcC1wYXRoPSJ1cmwoI2ZhbkRpc2MpIiBmaWxsPSJ1cmwoI2JsYWRlR3JhZCkiIHN0cm9rZT0iIzdkOGNhMCIgc3Ryb2tlLXdpZHRoPSIxIj4KICAgIDxlbGxpcHNlIGN4PSI0OCIgY3k9IjI4IiByeD0iNy41IiByeT0iMjIiIC8\u002BCiAgICA8ZWxsaXBzZSBjeD0iNDgiIGN5PSIyOCIgcng9IjcuNSIgcnk9IjIyIiB0cmFuc2Zvcm09InJvdGF0ZSg2MCA0OCA0OCkiIC8\u002BCiAgICA8ZWxsaXBzZSBjeD0iNDgiIGN5PSIyOCIgcng9IjcuNSIgcnk9IjIyIiB0cmFuc2Zvcm09InJvdGF0ZSgxMjAgNDggNDgpIiAvPgogICAgPGVsbGlwc2UgY3g9IjQ4IiBjeT0iMjgiIHJ4PSI3LjUiIHJ5PSIyMiIgdHJhbnNmb3JtPSJyb3RhdGUoMTgwIDQ4IDQ4KSIgLz4KICAgIDxlbGxpcHNlIGN4PSI0OCIgY3k9IjI4IiByeD0iNy41IiByeT0iMjIiIHRyYW5zZm9ybT0icm90YXRlKDI0MCA0OCA0OCkiIC8\u002BCiAgICA8ZWxsaXBzZSBjeD0iNDgiIGN5PSIyOCIgcng9IjcuNSIgcnk9IjIyIiB0cmFuc2Zvcm09InJvdGF0ZSgzMDAgNDggNDgpIiAvPgogIDwvZz4KCiAgPGNpcmNsZSBjeD0iNDgiIGN5PSI0OCIgcj0iMTAiIGZpbGw9IiNjZGQ2ZTIiIHN0cm9rZT0iIzc0ODU5YSIgc3Ryb2tlLXdpZHRoPSIxLjIiIC8\u002BCiAgPGNpcmNsZSBjeD0iNDgiIGN5PSI0OCIgcj0iMyIgZmlsbD0iIzhmYTFiNiIgLz4KPC9zdmc\u002BDQo=",
+        "SizeBytes": 1451,
+        "Sha256": "adcfcd87f386d474d8727dc274e48f570d524324a7409814960b0030e4f51567"
+      }
+    ],
+    "Bindings": [],
+    "Events": [],
+    "SourceTrace": {
+      "SourceProjectId": "AMR_REF_SCADA_V2",
+      "SourceSceneId": "win00008",
+      "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
+      "SourceElementIds": [
+        "860"
+      ],
+      "Notes": "Created from Studio Element\u002B import package."
+    },
+    "Category": "General",
+    "Description": null,
+    "Tags": []
+  }
+}
