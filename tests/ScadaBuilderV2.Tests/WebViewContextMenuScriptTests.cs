@@ -542,6 +542,17 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void ModernContextMenuExposesElementStudioCommandForLibraryInstances()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "\"object.open-in-element-studio\"");
+        StringAssert.Contains(source, "OpenSelectedModernComponentInElementStudioAsync");
+        StringAssert.Contains(source, "ElementStudioComponentToImportPackageMapper.ToEditablePackage");
+        StringAssert.Contains(source, "Cet objet n'a pas ete instancie depuis la bibliotheque Element+.");
+    }
+
+    [TestMethod]
     public void ElementStudioPackageCapturesLegacyMarkupForSourceRendering()
     {
         var source = ReadMainWindowSource();
