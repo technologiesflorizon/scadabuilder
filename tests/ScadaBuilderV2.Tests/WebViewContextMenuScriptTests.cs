@@ -1163,6 +1163,17 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "MessageBox.Show");
     }
 
+    [TestMethod]
+    public void MainWindowHandlesRotationMessageAndNormalizesAngle()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "case \"updateSceneObjectRotation\":");
+        StringAssert.Contains(source, "UpdateModernElementRotation(message.Id, message.Rotation)");
+        StringAssert.Contains(source, "private void UpdateModernElementRotation(string? id, double rotation)");
+        StringAssert.Contains(source, "private static double NormalizeRotation(double degrees)");
+    }
+
     private static string ReadMainWindowSource()
     {
         // MainWindow code-behind is split into behavior-preserving partial-class files

@@ -1342,6 +1342,9 @@ public partial class MainWindow : Window
                         message.BeforeWidth,
                         message.BeforeHeight);
                     break;
+                case "updateSceneObjectRotation":
+                    UpdateModernElementRotation(message.Id, message.Rotation);
+                    break;
                 case "resizeSceneGroupWithChildren":
                     UpdateModernGroupGeometryWithChildren(message);
                     break;
@@ -4730,6 +4733,40 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         MarkActiveSceneDirty();
         RefreshModernSceneUi();
         SetStatus($"{updated.UserLabel}: position {updated.Bounds.X:0},{updated.Bounds.Y:0}, taille {updated.Bounds.Width:0}x{updated.Bounds.Height:0}.");
+    }
+
+    private void UpdateModernElementRotation(string? id, double rotation)
+    {
+        if (_activeScene is null || string.IsNullOrWhiteSpace(id))
+        {
+            return;
+        }
+
+        var current = _activeScene.FindElementRecursive(id);
+        if (current is null)
+        {
+            return;
+        }
+
+        var normalized = NormalizeRotation(rotation);
+        if (Math.Abs(current.Style.Rotation - normalized) < 0.05)
+        {
+            return;
+        }
+
+        var updated = current with { Style = current.Style with { Rotation = normalized } };
+        CommitModernElementProperties(current, updated);
+    }
+
+    private static double NormalizeRotation(double degrees)
+    {
+        var normalized = degrees % 360;
+        if (normalized < 0)
+        {
+            normalized += 360;
+        }
+
+        return Math.Round(normalized, 1);
     }
 
     private void UpdateModernGroupGeometryWithChildren(LegacyViewerMessage message)
