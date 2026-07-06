@@ -4763,7 +4763,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         foreach (var child in message.Children ?? Enumerable.Empty<LegacyViewerChildBoundsMessage>())
         {
-            if (string.IsNullOrWhiteSpace(child.Id))
+            if (string.IsNullOrWhiteSpace(child.Id) || _activeScene.FindElementRecursive(child.Id) is null)
             {
                 continue;
             }
