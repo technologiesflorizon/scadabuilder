@@ -1803,7 +1803,6 @@ public partial class MainWindow
         custom.style.overflow = 'visible';
         custom.innerHTML = data.Text || '';
         custom.querySelectorAll('svg').forEach(svg => {
-          svg.setAttribute('preserveAspectRatio', 'none');
           svg.style.width = '100%';
           svg.style.height = '100%';
           svg.style.display = 'block';
@@ -2191,8 +2190,9 @@ public partial class MainWindow
     input.style.display = 'block';
 
     const decimalPattern = /^-?\d{1,3}(\.\d)?$/;
+    const liveTypingPattern = /^-?\d{0,3}(\.\d?)?$/;
     const onInput = () => {
-      if (input.value !== '' && !decimalPattern.test(input.value)) {
+      if (input.value !== '' && !liveTypingPattern.test(input.value)) {
         input.value = input.value.slice(0, -1);
       }
     };

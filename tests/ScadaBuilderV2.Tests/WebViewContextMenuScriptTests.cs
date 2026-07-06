@@ -1260,6 +1260,58 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void CustomRotationOnInputUsesPermissiveLiveTypingPatternDistinctFromCommitPattern()
+    {
+        // Regression guard: onInput runs on every keystroke while the user is still typing.
+        // If it used the same strict commit-time pattern (/^-?\d{1,3}(\.\d)?$/, which requires
+        // at least one digit), typing a lone '-' as the first character of "-10" would not
+        // match, so onInput would immediately strip it back to '' before the digits are typed.
+        // onInput must use a more permissive pattern that tolerates in-progress states like a
+        // lone '-' or a trailing '.', while commit()'s strict decimalPattern stays unchanged.
+        var source = ReadMainWindowSource();
+
+        var beginStart = source.IndexOf("function beginCustomRotationEntry(anchorX, anchorY)", StringComparison.Ordinal);
+        Assert.IsTrue(beginStart >= 0, "beginCustomRotationEntry not found");
+        var onInputStart = source.IndexOf("const onInput = () => {", beginStart, StringComparison.Ordinal);
+        Assert.IsTrue(onInputStart >= 0, "onInput not found inside beginCustomRotationEntry");
+        var onInputEnd = source.IndexOf("const commit = () => {", onInputStart, StringComparison.Ordinal);
+        Assert.IsTrue(onInputEnd >= 0, "commit() not found after onInput()");
+        var onInputBody = source[onInputStart..onInputEnd];
+
+        // Strict, commit-time pattern must be unchanged.
+        StringAssert.Contains(source, "const decimalPattern = /^-?\\d{1,3}(\\.\\d)?$/;");
+
+        // onInput must reference a distinct, more permissive pattern rather than decimalPattern.
+        StringAssert.DoesNotMatch(onInputBody, new Regex(@"decimalPattern\.test"),
+            "onInput must not gate live typing with the strict commit-time decimalPattern; " +
+            "it silently eats a lone '-' before the digits of a negative angle can be typed.");
+
+        var permissivePatternMatch = Regex.Match(source, @"const (\w+) = (/\^[^;]+\$/);");
+        Assert.IsTrue(source.Contains("liveTypingPattern", StringComparison.Ordinal) || permissivePatternMatch.Success,
+            "Expected a dedicated live-typing pattern distinct from decimalPattern");
+
+        // Extract the permissive pattern's source text and independently verify (via .NET Regex,
+        // applying the same pattern text) that it accepts a lone '-' -- the exact character that
+        // was being rejected -- while the strict commit-time pattern still rejects it.
+        var permissivePatternDeclMatch = Regex.Match(source, @"const liveTypingPattern = /(\^.*\$)/;");
+        Assert.IsTrue(permissivePatternDeclMatch.Success, "liveTypingPattern declaration not found");
+        var permissiveRegex = new Regex(permissivePatternDeclMatch.Groups[1].Value);
+        var strictRegex = new Regex(@"^-?\d{1,3}(\.\d)?$");
+
+        Assert.IsTrue(permissiveRegex.IsMatch("-"),
+            "Live-typing pattern must accept a lone '-' so typing '-10' left-to-right is possible.");
+        Assert.IsFalse(strictRegex.IsMatch("-"),
+            "Sanity check: the strict commit-time pattern must NOT accept a lone '-' (that's the bug being fixed).");
+
+        Assert.IsTrue(permissiveRegex.IsMatch("-1"), "Live-typing pattern must accept '-1' (partway through '-10').");
+        Assert.IsTrue(permissiveRegex.IsMatch("-10"), "Live-typing pattern must accept the fully-typed '-10'.");
+        Assert.IsTrue(permissiveRegex.IsMatch("45."), "Live-typing pattern should tolerate a trailing '.' before the decimal digit.");
+
+        // onInput must be wired to the permissive pattern, not the strict one.
+        StringAssert.Contains(onInputBody, "liveTypingPattern.test(input.value)");
+    }
+
+    [TestMethod]
     public void CustomRotationCleanupDetachesBlurListenerBeforeHidingInput()
     {
         // Regression guard: setting display:none on a focused element synchronously fires
@@ -1331,6 +1383,30 @@ public sealed class WebViewContextMenuScriptTests
             "modernDrag.centerX is dead code and should not be reintroduced");
         Assert.IsFalse(source.Contains("modernDrag.centerY", StringComparison.Ordinal),
             "modernDrag.centerY is dead code and should not be reintroduced");
+    }
+
+    [TestMethod]
+    public void ModernElementSvgRenderLoopDoesNotForceNonUniformAspectRatio()
+    {
+        // Regression guard: an unrelated, undocumented line was accidentally introduced
+        // alongside a rotation-input fix that forced preserveAspectRatio='none' on every
+        // SVG inside a custom modern-element's markup, changing how every SVG-based
+        // Element+ renders (non-uniform stretch instead of aspect-preserving). That line
+        // has nothing to do with rotation and must not be present in the
+        // custom.querySelectorAll('svg').forEach(...) block.
+        var source = ReadMainWindowSource();
+
+        var loopStart = source.IndexOf("custom.querySelectorAll('svg').forEach(svg => {", StringComparison.Ordinal);
+        Assert.IsTrue(loopStart >= 0, "custom SVG render loop not found");
+        var loopEnd = source.IndexOf("});", loopStart, StringComparison.Ordinal);
+        Assert.IsTrue(loopEnd >= 0, "End of custom SVG render loop not found");
+        var loopBody = source[loopStart..loopEnd];
+
+        Assert.IsFalse(loopBody.Contains("preserveAspectRatio", StringComparison.Ordinal),
+            "The custom modern-element SVG render loop must not set preserveAspectRatio; " +
+            "this was an unrelated, undocumented scope-creep change and must stay removed.");
+        StringAssert.Contains(loopBody, "svg.style.width = '100%';");
+        StringAssert.Contains(loopBody, "svg.style.height = '100%';");
     }
 
     private static string ReadMainWindowSource()
