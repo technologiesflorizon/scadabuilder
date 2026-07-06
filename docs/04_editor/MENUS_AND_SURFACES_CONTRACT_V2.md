@@ -74,6 +74,7 @@ flowchart TD
 22. The Insert ribbon `Formes` group must render as a shape gallery with at most four icons per row, 32x32 semantic shape icons, no visible shape-name labels inside the gallery buttons, and tooltip labels for discoverability.
 23. Active insertion commands must show selected state until the placement completes or is cancelled. Starting another placement replaces the active command state.
 24. `insert.shape.line` and `insert.shape.arrow` use a two-point placement surface: first click captures start, second click commits the Element+ object, and Escape cancels placement.
+25. The Element+ context menu exposes `object.open-in-element-studio` ("Ouvrir dans Studio Element+") for a single selected converted object only when it was instantiated from a library `.sep` (tracked via `ScadaElementData.TagBinding`); otherwise it is visible but disabled with the reason "Cet objet n'a pas ete instancie depuis la bibliotheque Element+".
 
 ## 4. Related Tests
 
