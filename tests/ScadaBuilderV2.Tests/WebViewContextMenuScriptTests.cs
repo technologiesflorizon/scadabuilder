@@ -542,6 +542,17 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void ModernContextMenuExposesElementStudioCommandForLibraryInstances()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "\"object.open-in-element-studio\"");
+        StringAssert.Contains(source, "OpenSelectedModernComponentInElementStudioAsync");
+        StringAssert.Contains(source, "ElementStudioComponentToImportPackageMapper.ToEditablePackage");
+        StringAssert.Contains(source, "Cet objet n'a pas ete instancie depuis la bibliotheque Element+.");
+    }
+
+    [TestMethod]
     public void ElementStudioPackageCapturesLegacyMarkupForSourceRendering()
     {
         var source = ReadMainWindowSource();
@@ -1246,5 +1257,41 @@ public sealed class WebViewContextMenuScriptTests
 
         Assert.Fail($"Method end not found: {signature}");
         return "";
+    }
+
+    [TestMethod]
+    public void WorkspaceSeedsComponentNameFromFirstImportedSourceName()
+    {
+        var source = ReadElementStudioAppSource("ElementStudioViewModels.cs");
+
+        StringAssert.Contains(source, "ElementStudioComponentNaming.ResolveDefaultComponentName");
+        Assert.IsFalse(
+            source.Contains("private string componentName = \"Nouveau composant\";", StringComparison.Ordinal),
+            "componentName must no longer be hardcoded to the placeholder default.");
+    }
+
+    [TestMethod]
+    public void WorkspacePrefersPackageComponentNameWhenPresent()
+    {
+        var source = ReadElementStudioAppSource("ElementStudioViewModels.cs");
+
+        StringAssert.Contains(source, "package.ComponentName");
+    }
+
+    private static string ReadElementStudioAppSource(string fileName)
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            var studioAppDir = Path.Combine(directory.FullName, "src", "ScadaBuilderV2.ElementStudio.App");
+            if (Directory.Exists(studioAppDir))
+            {
+                return File.ReadAllText(Path.Combine(studioAppDir, fileName));
+            }
+
+            directory = directory.Parent;
+        }
+
+        throw new DirectoryNotFoundException("Could not locate src/ScadaBuilderV2.ElementStudio.App from test base directory.");
     }
 }

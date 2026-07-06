@@ -105,6 +105,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Element+ `Donnees` authoring and `DisplayFormat` masks | `ElementGroupTests.NumericDisplayFormatMaskControlsScalePrecisionAndInputStep`, `ElementGroupTests.NumericDisplayFormatMaskClampsToVisibleDigitBudget`, `WebViewContextMenuScriptTests.ElementDataTabDeprecatesLegacyTagDecimalsAndUnitFields` |
 | Studio Element+ editor state | `ElementStudioEditorStateTests.cs` |
 | Studio Element+ contract | `StudioElementPlusContractTests.cs` |
+| Studio Element+ re-edit from scene | `WebViewContextMenuScriptTests.cs`, `ElementStudioComponentToImportPackageMapperTests.cs`, `ElementStudioComponentNamingTests.cs` |
 | Studio source rendering | `ElementStudioSourceRenderingTests.cs` |
 | Legacy extraction | `LegacyElementDetectorTests.cs`, `LegacyAtomicElementDetectorTests.cs` |
 

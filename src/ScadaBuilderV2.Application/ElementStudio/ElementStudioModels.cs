@@ -31,7 +31,8 @@ public sealed record ElementStudioImportPackage(
     string SourcePagePath,
     string? TargetLibraryPath,
     SceneBounds Bounds,
-    IReadOnlyList<ElementStudioLegacyItem> Items);
+    IReadOnlyList<ElementStudioLegacyItem> Items,
+    string? ComponentName = null);
 
 public sealed record ElementStudioLegacyItem(
     string SourceElementId,

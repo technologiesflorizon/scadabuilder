@@ -2358,6 +2358,65 @@ public partial class MainWindow : Window
         }
     }
 
+    private async Task OpenSelectedModernComponentInElementStudioAsync()
+    {
+        if (_repositoryRoot is null || _activeScene is null)
+        {
+            SetStatus("Studio Element+ indisponible: aucun projet ou scene active.");
+            return;
+        }
+
+        var selected = _selectedSceneObjectIds.Count == 1
+            ? _activeScene.FindElementRecursive(_selectedSceneObjectIds.Single())
+            : null;
+        var sourceSepFileName = selected?.Kind == ScadaElementKind.Custom ? selected.Data?.TagBinding : null;
+        if (selected is null || string.IsNullOrWhiteSpace(sourceSepFileName))
+        {
+            SetStatus("Selectionnez un objet Element+ instancie depuis la bibliotheque pour ouvrir Studio Element+.");
+            return;
+        }
+
+        var sepFilePath = await ResolveLibrarySepFilePathAsync(sourceSepFileName);
+        if (sepFilePath is null)
+        {
+            SetStatus($"Composant source '{sourceSepFileName}' introuvable dans les bibliotheques Element+ configurees.");
+            return;
+        }
+
+        try
+        {
+            var sepPackage = await _elementStudioComponentPackageStore.ReadFromPathAsync(sepFilePath);
+            var version = LoadVersionText();
+            var editPackage = ElementStudioComponentToImportPackageMapper.ToEditablePackage(sepPackage, sepFilePath, version);
+            var projectsRoot = Path.Combine(_repositoryRoot, "SCADA_BUILDER_V2", "projects");
+            var packagePath = await _elementStudioPackageWriter.WriteToProjectAsync(editPackage, projectsRoot);
+            var launch = await TryLaunchElementStudioAsync(packagePath);
+            AppendElementStudioLaunchLog(packagePath, launch);
+            SetStatus(launch.Launched
+                ? $"Studio Element+ ouvert pour edition: {Path.GetFileName(sepFilePath)}"
+                : $"Package Studio Element+ cree: {packagePath}. {launch.Message}");
+        }
+        catch (Exception ex)
+        {
+            SetStatus($"Erreur ouverture Studio Element+: {ex.Message}");
+        }
+    }
+
+    private async Task<string?> ResolveLibrarySepFilePathAsync(string fileName)
+    {
+        var registry = await BuildLibraryRegistryAsync();
+        foreach (var entry in registry.Entries)
+        {
+            var candidatePath = Path.Combine(entry.Path, fileName);
+            if (File.Exists(candidatePath))
+            {
+                return candidatePath;
+            }
+        }
+
+        return null;
+    }
+
     private async Task OpenElementStudioFromToolPaletteAsync()
     {
         var hasEditingContext = _repositoryRoot is not null && _activeScene is not null && _activeReferencePage is not null;
@@ -3709,6 +3768,20 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 new("object.properties", "Propriete", "object"),
                 new("object.delete", "Supprimer la selection", "object")
             };
+
+            if (_selectedSceneObjectIds.Count == 1)
+            {
+                var sourceSepFileName = selected.Kind == ScadaElementKind.Custom
+                    ? selected.Data?.TagBinding
+                    : null;
+                modernCommands.Insert(0, new EditorCommandDescriptor(
+                    "object.open-in-element-studio",
+                    "Ouvrir dans Studio Element+",
+                    "element-studio",
+                    IsEnabled: !string.IsNullOrWhiteSpace(sourceSepFileName),
+                    DisabledReason: "Cet objet n'a pas ete instancie depuis la bibliotheque Element+."));
+            }
+
             if (_selectedSceneObjectIds.Count > 1)
             {
                 modernCommands.Insert(0, new EditorCommandDescriptor("object.group", "Grouper", "group"));
@@ -3855,6 +3928,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             case "source.open-in-element-studio":
             case "legacy.open-in-element-studio":
                 await OpenSelectedLegacyInElementStudioAsync();
+                break;
+            case "object.open-in-element-studio":
+                await OpenSelectedModernComponentInElementStudioAsync();
                 break;
             case "object.ungroup":
             case "element-plus.ungroup":

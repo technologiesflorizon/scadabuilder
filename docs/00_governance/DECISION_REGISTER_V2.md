@@ -996,3 +996,29 @@ Regression coverage:
 `tests/ScadaBuilderV2.Tests/StudioElementPlusContractTests.cs`
 (`ProvenanceRoundTripsThroughSepWriteAndRead`,
 `ScadaBuilderLibraryReaderLoadsSepComponentsFromProjectLibrary`).
+
+### DEC-0035 - Re-Edit Existing Element+ Library Components From The Scene
+
+Status: Active
+Created: 2026-07-06 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md`
+
+Context:
+
+Once a legacy element is converted to Element+, right-clicking it exposed no way back into Studio Element+ to edit its source `.sep` component; only never-converted legacy elements could open Studio Element+, and only to create a brand-new component. Users who convert to Element+ (required for grouping/resizing) lost their only path to editing that component's appearance. Separately, `.sep` components created from a library import always kept the placeholder name "Nouveau composant" because nothing seeded `ElementStudioWorkspaceViewModel.ComponentName` from the captured source element's name.
+
+Decision:
+
+A converted Element+ object created from a library component (`ScadaElementData.TagBinding` holds the source `.sep` filename) exposes `object.open-in-element-studio` in its context menu. Activating it reads the `.sep` via `ElementStudioComponentPackageStore`, maps it back into an `ElementStudioImportPackage` via `ElementStudioComponentToImportPackageMapper.ToEditablePackage` (flattening `Group` parts into their children), writes it through the existing `.ft1` import pipeline with `TargetLibraryPath` set to the original `.sep`'s directory, and launches Studio Element+ against it — so Save re-targets the same library folder. Separately, `ElementStudioWorkspaceViewModel` now seeds `ComponentName` via `ElementStudioComponentNaming.ResolveDefaultComponentName`, defaulting to the first imported source element's name instead of the placeholder.
+
+Consequences:
+
+Editing a re-opened component does not automatically overwrite the exact original `.sep` file (the Save dialog defaults to the same folder and a filename derived from `ComponentName`, but the user must confirm the save); nested groups deeper than one level are flattened on re-edit and must be re-grouped manually in Studio Element+.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`, `tests/ScadaBuilderV2.Tests/ElementStudioComponentToImportPackageMapperTests.cs`, `tests/ScadaBuilderV2.Tests/ElementStudioComponentNamingTests.cs`
