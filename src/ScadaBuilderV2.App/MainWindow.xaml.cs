@@ -45,6 +45,8 @@ public partial class MainWindow : Window
     private readonly IElementStudioImportPackageWriter _elementStudioPackageWriter = new ElementStudioImportPackageWriter();
     private readonly ElementStudioComponentPackageStore _elementStudioComponentPackageStore = new();
     private readonly LibraryRegistryStore _libraryRegistryStore = new();
+    private readonly ScadaBuilderV2.Infrastructure.Shell.DockLayoutStore _dockLayoutStore = new();
+    private string? _defaultLayoutXml;
     private IReadOnlyList<LibraryEntry> _libraryEntries = [];
     private LibraryEntry? _selectedLibraryEntry;
     private readonly ElementPlusLibraryReader _elementPlusLibraryReader = new();
@@ -118,6 +120,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        CaptureDefaultLayout();
         InitializeRibbonCommandRegistry();
         InitializeToolPaletteCommands();
         DataContext = this;
@@ -137,6 +140,7 @@ public partial class MainWindow : Window
 
         PreviewWebView.NavigationCompleted += OnPreviewNavigationCompleted;
         Closing += OnMainWindowClosing;
+        Loaded += async (_, _) => await LoadDockLayoutAsync();
         ToolAnchorable.Closing += OnAnchorableClosing;
         ProjectAnchorable.Closing += OnAnchorableClosing;
         TagCatalogAnchorable.Closing += OnAnchorableClosing;
@@ -517,6 +521,7 @@ public partial class MainWindow : Window
             }
         }
 
+        await SaveDockLayoutAsync();
         _isClosingConfirmed = true;
         Close();
     }
@@ -535,6 +540,79 @@ public partial class MainWindow : Window
 
         e.Cancel = true;
         anchorable.Hide();
+    }
+
+    /// <summary>
+    /// Snapshots the AvalonDock layout as defined in XAML, before any saved layout is
+    /// restored, so "Reinitialiser la disposition" has a default to return to.
+    /// </summary>
+    private void CaptureDefaultLayout()
+    {
+        var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
+        using var writer = new System.IO.StringWriter();
+        serializer.Serialize(writer);
+        _defaultLayoutXml = writer.ToString();
+    }
+
+    /// <summary>
+    /// Restores the previously saved AvalonDock layout, if any. Falls back silently to the
+    /// XAML-defined default layout when no saved layout exists or it fails to parse.
+    /// </summary>
+    private async Task LoadDockLayoutAsync()
+    {
+        var path = _dockLayoutStore.GetDefaultLayoutPath();
+        var layoutXml = await _dockLayoutStore.ReadLayoutXmlAsync(path);
+        if (string.IsNullOrEmpty(layoutXml))
+        {
+            return;
+        }
+
+        try
+        {
+            var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
+            using var reader = new System.IO.StringReader(layoutXml);
+            serializer.Deserialize(reader);
+        }
+        catch (Exception ex) when (ex is System.Xml.XmlException or InvalidOperationException or NullReferenceException)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to restore dock layout, keeping default: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Serializes the current AvalonDock layout and persists it so it can be restored on
+    /// the next launch. Failures are logged and swallowed so a layout-save problem never
+    /// blocks the window from closing.
+    /// </summary>
+    private async Task SaveDockLayoutAsync()
+    {
+        try
+        {
+            var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
+            using var writer = new System.IO.StringWriter();
+            serializer.Serialize(writer);
+            await _dockLayoutStore.WriteLayoutXmlAsync(_dockLayoutStore.GetDefaultLayoutPath(), writer.ToString());
+        }
+        catch (Exception ex) when (ex is System.Xml.XmlException or InvalidOperationException or IOException or UnauthorizedAccessException)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to save dock layout: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Restores the AvalonDock layout captured from XAML at startup, discarding any
+    /// manual rearrangement made during the current or previous sessions.
+    /// </summary>
+    private void OnResetLayoutClick(object sender, RoutedEventArgs e)
+    {
+        if (string.IsNullOrEmpty(_defaultLayoutXml))
+        {
+            return;
+        }
+
+        var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
+        using var reader = new System.IO.StringReader(_defaultLayoutXml);
+        serializer.Deserialize(reader);
     }
 
     private void OnShowToolAnchorableClick(object sender, RoutedEventArgs e) => ToolAnchorable.Show();

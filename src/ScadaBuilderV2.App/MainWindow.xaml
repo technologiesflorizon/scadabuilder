@@ -294,6 +294,8 @@
                                 <MenuItem Header="Element" Click="OnShowElementAnchorableClick" />
                                 <MenuItem Header="Propriete" Click="OnShowPropertiesAnchorableClick" />
                                 <MenuItem Header="Librairie" Click="OnShowLibraryAnchorableClick" />
+                                <Separator />
+                                <MenuItem Header="Reinitialiser la disposition" Click="OnResetLayoutClick" />
                             </MenuItem>
                         </Menu>
                         <ToggleButton Content="Lock"
