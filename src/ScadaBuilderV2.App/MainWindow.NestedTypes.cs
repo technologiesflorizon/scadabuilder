@@ -267,6 +267,29 @@ public partial class MainWindow
         public double FontSize { get; set; }
 
         public double BorderWidth { get; set; }
+
+        public List<LegacyViewerChildBoundsMessage>? Children { get; set; }
+    }
+
+    private sealed class LegacyViewerChildBoundsMessage
+    {
+        public string Id { get; set; } = "";
+
+        public double X { get; set; }
+
+        public double Y { get; set; }
+
+        public double Width { get; set; }
+
+        public double Height { get; set; }
+
+        public double BeforeX { get; set; }
+
+        public double BeforeY { get; set; }
+
+        public double BeforeWidth { get; set; }
+
+        public double BeforeHeight { get; set; }
     }
 
     private sealed class LegacyViewerElementMessage
