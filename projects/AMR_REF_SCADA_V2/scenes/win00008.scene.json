@@ -3234,10 +3234,10 @@
       "DisplayName": "Nouveau composant",
       "Kind": "Custom",
       "Bounds": {
-        "X": 223,
-        "Y": 364,
-        "Width": 424,
-        "Height": 11
+        "X": 277,
+        "Y": 338,
+        "Width": 326,
+        "Height": 40
       },
       "LegacySource": null,
       "Layout": {
@@ -3605,8 +3605,8 @@
       "DisplayName": "Nouveau composant",
       "Kind": "Custom",
       "Bounds": {
-        "X": 765,
-        "Y": 527,
+        "X": 764,
+        "Y": 526,
         "Width": 270,
         "Height": 196
       },
