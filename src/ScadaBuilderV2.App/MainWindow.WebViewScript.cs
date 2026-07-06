@@ -2206,7 +2206,7 @@ public partial class MainWindow
           normalized += 360;
         }
         normalized = Math.round(normalized * 10) / 10;
-        postModernRotation(lastObjectContextTargetId, normalized);
+        postModernRotation(targetId, normalized);
       }
       cleanup();
     };
@@ -2224,10 +2224,10 @@ public partial class MainWindow
     };
 
     function cleanup() {
-      input.style.display = 'none';
       input.removeEventListener('input', onInput);
       input.removeEventListener('keydown', onKeyDown);
       input.removeEventListener('blur', commit);
+      input.style.display = 'none';
     }
 
     input.addEventListener('input', onInput);

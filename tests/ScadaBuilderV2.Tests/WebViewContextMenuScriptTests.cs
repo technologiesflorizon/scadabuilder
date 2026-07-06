@@ -1244,7 +1244,44 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "function beginCustomRotationEntry(anchorX, anchorY)");
         StringAssert.Contains(source, "commandId === 'object.rotation.custom'");
         StringAssert.Contains(source, "/^\\d{1,3}(\\.\\d)?$/");
-        StringAssert.Contains(source, "postModernRotation(lastObjectContextTargetId");
+
+        // commit() must apply the rotation to the targetId captured when the custom
+        // input was opened, not the live lastObjectContextTargetId global (which can be
+        // reassigned by right-clicking a different Element+ object while the input is
+        // still open, silently misdirecting the committed rotation).
+        StringAssert.Contains(source, "postModernRotation(targetId,");
+        var commitStart = source.IndexOf("const commit = () => {", StringComparison.Ordinal);
+        Assert.IsTrue(commitStart >= 0, "commit() function not found");
+        var commitEnd = source.IndexOf("const cancel = () => cleanup();", commitStart, StringComparison.Ordinal);
+        Assert.IsTrue(commitEnd >= 0, "cancel() definition not found after commit()");
+        var commitBody = source[commitStart..commitEnd];
+        StringAssert.DoesNotMatch(commitBody, new Regex("postModernRotation\\(lastObjectContextTargetId"),
+            "commit() must not read the live lastObjectContextTargetId global at call time");
+    }
+
+    [TestMethod]
+    public void CustomRotationCleanupDetachesBlurListenerBeforeHidingInput()
+    {
+        // Regression guard: setting display:none on a focused element synchronously fires
+        // 'blur' in Chromium/WebView2. If the 'blur' listener (commit) is still attached
+        // when that happens, pressing Escape to cancel would silently re-enter commit()
+        // and apply a rotation anyway. The listeners must be removed before the input is hidden.
+        var source = ReadMainWindowSource();
+
+        var cleanupStart = source.IndexOf("function cleanup() {", StringComparison.Ordinal);
+        Assert.IsTrue(cleanupStart >= 0, "cleanup() function not found");
+        var cleanupEnd = source.IndexOf("}", cleanupStart, StringComparison.Ordinal);
+        Assert.IsTrue(cleanupEnd >= 0, "End of cleanup() function not found");
+        var cleanupBody = source[cleanupStart..cleanupEnd];
+
+        var blurRemovalIndex = cleanupBody.IndexOf("removeEventListener('blur', commit);", StringComparison.Ordinal);
+        var displayNoneIndex = cleanupBody.IndexOf("input.style.display = 'none';", StringComparison.Ordinal);
+
+        Assert.IsTrue(blurRemovalIndex >= 0, "cleanup() must remove the blur listener");
+        Assert.IsTrue(displayNoneIndex >= 0, "cleanup() must hide the input");
+        Assert.IsTrue(blurRemovalIndex < displayNoneIndex,
+            "cleanup() must remove the blur listener before hiding the input, otherwise the synchronous " +
+            "blur fired by 'display: none' on a focused element re-enters commit().");
     }
 
     private static string ReadMainWindowSource()
