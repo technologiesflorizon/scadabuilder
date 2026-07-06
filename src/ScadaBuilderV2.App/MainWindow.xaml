@@ -285,6 +285,21 @@
                                 Style="{StaticResource MenuButtonStyle}"
                                 Click="OnMenuButtonClick"
                                 Tag="Tools"/>
+                        <Menu>
+                            <MenuItem Header="Fenetres">
+                                <MenuItem Header="Outil" Click="OnShowToolAnchorableClick" />
+                                <MenuItem Header="Projet" Click="OnShowProjectAnchorableClick" />
+                                <MenuItem Header="Catalogue Tags" Click="OnShowTagCatalogAnchorableClick" />
+                                <MenuItem Header="Page" Click="OnShowPageAnchorableClick" />
+                                <MenuItem Header="Element" Click="OnShowElementAnchorableClick" />
+                                <MenuItem Header="Propriete" Click="OnShowPropertiesAnchorableClick" />
+                                <MenuItem Header="Librairie" Click="OnShowLibraryAnchorableClick" />
+                            </MenuItem>
+                        </Menu>
+                        <ToggleButton Content="Lock"
+                                      Width="52"
+                                      Margin="8,0,0,0"
+                                      IsChecked="{Binding IsSelectionLocked}" />
                     </StackPanel>
                 </DockPanel>
 

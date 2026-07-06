@@ -137,6 +137,13 @@ public partial class MainWindow : Window
 
         PreviewWebView.NavigationCompleted += OnPreviewNavigationCompleted;
         Closing += OnMainWindowClosing;
+        ToolAnchorable.Closing += OnAnchorableClosing;
+        ProjectAnchorable.Closing += OnAnchorableClosing;
+        TagCatalogAnchorable.Closing += OnAnchorableClosing;
+        PageAnchorable.Closing += OnAnchorableClosing;
+        ElementAnchorable.Closing += OnAnchorableClosing;
+        PropertiesAnchorable.Closing += OnAnchorableClosing;
+        LibraryAnchorable.Closing += OnAnchorableClosing;
         Closed += (_, _) =>
         {
             foreach (var tab in _openSceneTabs)
@@ -513,6 +520,30 @@ public partial class MainWindow : Window
         _isClosingConfirmed = true;
         Close();
     }
+
+    /// <summary>
+    /// Prevents AvalonDock's default "close" behavior (which detaches the anchorable from
+    /// the layout permanently) from firing when the user clicks a side panel's close button.
+    /// Instead the panel is hidden and remains reachable from the "Fenêtres" menu.
+    /// </summary>
+    private void OnAnchorableClosing(object? sender, System.ComponentModel.CancelEventArgs e)
+    {
+        if (sender is not AvalonDock.Layout.LayoutAnchorable anchorable)
+        {
+            return;
+        }
+
+        e.Cancel = true;
+        anchorable.Hide();
+    }
+
+    private void OnShowToolAnchorableClick(object sender, RoutedEventArgs e) => ToolAnchorable.Show();
+    private void OnShowProjectAnchorableClick(object sender, RoutedEventArgs e) => ProjectAnchorable.Show();
+    private void OnShowTagCatalogAnchorableClick(object sender, RoutedEventArgs e) => TagCatalogAnchorable.Show();
+    private void OnShowPageAnchorableClick(object sender, RoutedEventArgs e) => PageAnchorable.Show();
+    private void OnShowElementAnchorableClick(object sender, RoutedEventArgs e) => ElementAnchorable.Show();
+    private void OnShowPropertiesAnchorableClick(object sender, RoutedEventArgs e) => PropertiesAnchorable.Show();
+    private void OnShowLibraryAnchorableClick(object sender, RoutedEventArgs e) => LibraryAnchorable.Show();
 
     private void SaveActiveTabTransientState()
     {
