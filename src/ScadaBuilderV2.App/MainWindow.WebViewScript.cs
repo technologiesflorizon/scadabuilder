@@ -201,7 +201,7 @@ public partial class MainWindow
       display: block;
     }
     .scada-modern-handle[data-handle="nw"] { left: -6px; top: -6px; cursor: nwse-resize; }
-    .scada-modern-handle[data-handle="ne"] { right: -6px; top: -6px; cursor: grab; }
+    .scada-modern-handle[data-handle="ne"] { right: -6px; top: -6px; cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath d='M15 5a7 7 0 1 0 1.5 8.5' fill='none' stroke='%230f2a30' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M17 3v5h-5z' fill='%230f2a30'/%3E%3C/svg%3E") 10 10, grab; }
     .scada-modern-handle[data-handle="sw"] { left: -6px; bottom: -6px; cursor: nesw-resize; }
     .scada-modern-handle[data-handle="se"] { right: -6px; bottom: -6px; cursor: nwse-resize; }
     .scada-modern-handle[data-handle="n"] { left: 50%; top: -6px; transform: translateX(-50%); cursor: ns-resize; }

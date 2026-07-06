@@ -1190,7 +1190,8 @@ public sealed class WebViewContextMenuScriptTests
     {
         var source = ReadMainWindowSource();
 
-        StringAssert.Contains(source, "cursor: grab;");
+        StringAssert.Contains(source, "cursor: url(\"data:image/svg+xml,");
+        StringAssert.Contains(source, "10 10, grab;");
         StringAssert.Contains(source, "mode: event.target?.dataset?.handle === 'ne' ? 'rotate' : (isResize ? 'resize' : 'move')");
         StringAssert.Contains(source, "function getWrapperRotation(wrapper)");
         StringAssert.Contains(source, "function postModernRotation(id, rotation)");
