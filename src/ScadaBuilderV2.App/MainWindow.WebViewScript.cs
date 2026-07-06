@@ -981,6 +981,32 @@ public partial class MainWindow
     });
   }
 
+  function postModernGroupResize(id, before, after, children) {
+    window.chrome?.webview?.postMessage({
+      type: 'resizeSceneGroupWithChildren',
+      id,
+      beforeX: Math.max(0, Math.round(before.x)),
+      beforeY: Math.max(0, Math.round(before.y)),
+      beforeWidth: Math.max(8, Math.round(before.width)),
+      beforeHeight: Math.max(8, Math.round(before.height)),
+      x: Math.max(0, Math.round(after.x)),
+      y: Math.max(0, Math.round(after.y)),
+      width: Math.max(8, Math.round(after.width)),
+      height: Math.max(8, Math.round(after.height)),
+      children: children.map(child => ({
+        id: child.id,
+        beforeX: Math.round(child.geometry.x),
+        beforeY: Math.round(child.geometry.y),
+        beforeWidth: Math.max(1, Math.round(child.geometry.width)),
+        beforeHeight: Math.max(1, Math.round(child.geometry.height)),
+        x: Math.round(child.after.x),
+        y: Math.round(child.after.y),
+        width: Math.max(1, Math.round(child.after.width)),
+        height: Math.max(1, Math.round(child.after.height))
+      }))
+    });
+  }
+
   function postSelectionMove(targetKind, ids, deltaX, deltaY, items = null) {
     window.chrome?.webview?.postMessage({
       type: 'moveSelectionBy',
@@ -1800,6 +1826,13 @@ public partial class MainWindow
         }
         const geometry = readWrapperGeometry(sceneMoveWrapper);
         const isResize = event.target?.classList?.contains('scada-modern-handle');
+        const groupChildren = isResize && sceneMoveWrapper.classList.contains('scada-modern-group')
+          ? Array.from(sceneMoveWrapper.querySelectorAll('.scada-modern-element')).map(child => ({
+              id: child.dataset.id,
+              wrapper: child,
+              geometry: readWrapperGeometry(child)
+            }))
+          : [];
         const movingWrappers = isResize
           ? [sceneMoveWrapper]
           : Array.from(document.querySelectorAll('.scada-modern-element'))
@@ -1818,6 +1851,7 @@ public partial class MainWindow
           startWidth: geometry.width,
           startHeight: geometry.height,
           aspectRatio: geometry.height > 0 ? geometry.width / geometry.height : null,
+          groupChildren,
           items: movingWrappers.map(item => ({
             id: item.dataset.id,
             wrapper: item,
@@ -2143,6 +2177,19 @@ public partial class MainWindow
         }
 
         setWrapperGeometry(modernDrag.wrapper, geometry);
+
+        if (modernDrag.groupChildren.length) {
+          const scaleX = geometry.width / modernDrag.startWidth;
+          const scaleY = geometry.height / modernDrag.startHeight;
+          modernDrag.groupChildren.forEach(child => {
+            setWrapperGeometry(child.wrapper, {
+              x: child.geometry.x * scaleX,
+              y: child.geometry.y * scaleY,
+              width: child.geometry.width * scaleX,
+              height: child.geometry.height * scaleY
+            });
+          });
+        }
       }
 
       event.preventDefault();
@@ -2204,6 +2251,21 @@ public partial class MainWindow
           modernDrag.items.map(item => item.id).filter(Boolean),
           event.clientX - modernDrag.startClientX,
           event.clientY - modernDrag.startClientY);
+      } else if (modernDrag.mode === 'resize' && modernDrag.groupChildren.length) {
+        postModernGroupResize(
+          modernDrag.id,
+          {
+            x: modernDrag.startX,
+            y: modernDrag.startY,
+            width: modernDrag.startWidth,
+            height: modernDrag.startHeight
+          },
+          geometry,
+          modernDrag.groupChildren.map(child => ({
+            id: child.id,
+            geometry: child.geometry,
+            after: readWrapperGeometry(child.wrapper)
+          })));
       } else {
         postModernGeometry(
           modernDrag.id,
