@@ -252,6 +252,8 @@ public partial class MainWindow
 
         public double Height { get; set; }
 
+        public double Rotation { get; set; }
+
         public double BeforeX { get; set; }
 
         public double BeforeY { get; set; }

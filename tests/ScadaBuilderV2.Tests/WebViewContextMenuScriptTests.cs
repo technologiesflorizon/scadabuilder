@@ -213,6 +213,14 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void LegacyViewerMessageExposesRotationField()
+    {
+        var nestedTypesSource = ReadMainWindowFile("MainWindow.NestedTypes.cs");
+
+        StringAssert.Contains(nestedTypesSource, "public double Rotation { get; set; }");
+    }
+
+    [TestMethod]
     public void WebViewKeyboardShortcutsDoNotDeleteOnBackspaceOrInsideEditors()
     {
         var source = NormalizeNewLines(ReadMainWindowSource());
