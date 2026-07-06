@@ -201,7 +201,7 @@ public partial class MainWindow
       display: block;
     }
     .scada-modern-handle[data-handle="nw"] { left: -6px; top: -6px; cursor: nwse-resize; }
-    .scada-modern-handle[data-handle="ne"] { right: -6px; top: -6px; cursor: nesw-resize; }
+    .scada-modern-handle[data-handle="ne"] { right: -6px; top: -6px; cursor: grab; }
     .scada-modern-handle[data-handle="sw"] { left: -6px; bottom: -6px; cursor: nesw-resize; }
     .scada-modern-handle[data-handle="se"] { right: -6px; bottom: -6px; cursor: nwse-resize; }
     .scada-modern-handle[data-handle="n"] { left: 50%; top: -6px; transform: translateX(-50%); cursor: ns-resize; }
@@ -981,6 +981,14 @@ public partial class MainWindow
     });
   }
 
+  function postModernRotation(id, rotation) {
+    window.chrome?.webview?.postMessage({
+      type: 'updateSceneObjectRotation',
+      id,
+      rotation
+    });
+  }
+
   function postModernGroupResize(id, before, after, children) {
     window.chrome?.webview?.postMessage({
       type: 'resizeSceneGroupWithChildren',
@@ -1074,6 +1082,11 @@ public partial class MainWindow
     wrapper.style.top = `${Math.max(0, geometry.y)}px`;
     wrapper.style.width = `${Math.max(8, geometry.width)}px`;
     wrapper.style.height = `${Math.max(8, geometry.height)}px`;
+  }
+
+  function getWrapperRotation(wrapper) {
+    const match = /rotate\(([-\d.]+)deg\)/.exec(wrapper.style.transform || '');
+    return match ? parseFloat(match[1]) || 0 : 0;
   }
 
   function clampNearAxis(startPos, startSize, delta) {
@@ -1842,7 +1855,7 @@ public partial class MainWindow
         modernDrag = {
           id: sceneMoveId,
           wrapper: sceneMoveWrapper,
-          mode: isResize ? 'resize' : 'move',
+          mode: event.target?.dataset?.handle === 'ne' ? 'rotate' : (isResize ? 'resize' : 'move'),
           handle: event.target?.dataset?.handle || '',
           startClientX: event.clientX,
           startClientY: event.clientY,
@@ -1858,6 +1871,11 @@ public partial class MainWindow
             geometry: readWrapperGeometry(item)
           }))
         };
+        if (modernDrag.mode === 'rotate') {
+          modernDrag.centerX = modernDrag.startX + modernDrag.startWidth / 2;
+          modernDrag.centerY = modernDrag.startY + modernDrag.startHeight / 2;
+          modernDrag.startRotation = getWrapperRotation(sceneMoveWrapper);
+        }
         sceneMoveWrapper.setPointerCapture?.(event.pointerId);
       }, true);
 
@@ -2103,6 +2121,14 @@ public partial class MainWindow
     marquee.style.display = 'block';
   }, true);
 
+  function updateRotationBadge(clientX, clientY, angleDeg) {
+    // Implemented in Task 4 (live angle badge).
+  }
+
+  function hideRotationBadge() {
+    // Implemented in Task 4 (live angle badge).
+  }
+
   document.addEventListener('pointermove', event => {
     if (placementKind && placementIsTwoPoint && placementStart) {
       updateTwoPointPlacementPreview(getSurfacePoint(event));
@@ -2135,7 +2161,25 @@ public partial class MainWindow
         height: modernDrag.startHeight
       };
 
-      if (modernDrag.mode === 'move') {
+      if (modernDrag.mode === 'rotate') {
+        const wrapperRect = modernDrag.wrapper.getBoundingClientRect();
+        const pivotClientX = wrapperRect.left + wrapperRect.width / 2;
+        const pivotClientY = wrapperRect.top + wrapperRect.height / 2;
+        const angleRad = Math.atan2(event.clientY - pivotClientY, event.clientX - pivotClientX);
+        let angleDeg = angleRad * (180 / Math.PI) + 90;
+        if (event.ctrlKey) {
+          angleDeg = Math.round(angleDeg / 90) * 90;
+        }
+        let normalized = angleDeg % 360;
+        if (normalized < 0) {
+          normalized += 360;
+        }
+        normalized = Math.round(normalized * 10) / 10;
+        modernDrag.wrapper.style.transformOrigin = 'center center';
+        modernDrag.wrapper.style.transform = `rotate(${normalized}deg)`;
+        modernDrag.currentRotation = normalized;
+        updateRotationBadge(event.clientX, event.clientY, normalized);
+      } else if (modernDrag.mode === 'move') {
         (modernDrag.items || []).forEach(item => {
           setWrapperGeometry(item.wrapper, {
             x: item.geometry.x + dx,
@@ -2252,6 +2296,14 @@ public partial class MainWindow
     }
 
     if (modernDrag) {
+      if (modernDrag.mode === 'rotate') {
+        postModernRotation(modernDrag.id, modernDrag.currentRotation ?? modernDrag.startRotation);
+        hideRotationBadge();
+        modernDrag = null;
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
       const geometry = readWrapperGeometry(modernDrag.wrapper);
       if (modernDrag.mode === 'move' && (modernDrag.items || []).length > 1) {
         postSelectionMove(

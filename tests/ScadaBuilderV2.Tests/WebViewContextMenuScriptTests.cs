@@ -1174,6 +1174,18 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "private static double NormalizeRotation(double degrees)");
     }
 
+    [TestMethod]
+    public void NeHandleIsRepurposedForRotationDrag()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "cursor: grab;");
+        StringAssert.Contains(source, "mode: event.target?.dataset?.handle === 'ne' ? 'rotate' : (isResize ? 'resize' : 'move')");
+        StringAssert.Contains(source, "function getWrapperRotation(wrapper)");
+        StringAssert.Contains(source, "function postModernRotation(id, rotation)");
+        StringAssert.Contains(source, "modernDrag.mode === 'rotate'");
+    }
+
     private static string ReadMainWindowSource()
     {
         // MainWindow code-behind is split into behavior-preserving partial-class files
