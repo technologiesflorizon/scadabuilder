@@ -47,6 +47,7 @@ public partial class MainWindow : Window
     private readonly LibraryRegistryStore _libraryRegistryStore = new();
     private readonly ScadaBuilderV2.Infrastructure.Shell.DockLayoutStore _dockLayoutStore = new();
     private string? _defaultLayoutXml;
+    private bool _layoutLoaded;
     private IReadOnlyList<LibraryEntry> _libraryEntries = [];
     private LibraryEntry? _selectedLibraryEntry;
     private readonly ElementPlusLibraryReader _elementPlusLibraryReader = new();
@@ -543,15 +544,34 @@ public partial class MainWindow : Window
     }
 
     /// <summary>
+    /// Serializes the current AvalonDock layout to an XML string.
+    /// </summary>
+    private string SerializeLayout()
+    {
+        var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
+        using var writer = new System.IO.StringWriter();
+        serializer.Serialize(writer);
+        return writer.ToString();
+    }
+
+    /// <summary>
+    /// Restores an AvalonDock layout previously produced by <see cref="SerializeLayout"/>.
+    /// Throws on malformed or incompatible layout XML; callers decide how to handle failure.
+    /// </summary>
+    private void DeserializeLayout(string layoutXml)
+    {
+        var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
+        using var reader = new System.IO.StringReader(layoutXml);
+        serializer.Deserialize(reader);
+    }
+
+    /// <summary>
     /// Snapshots the AvalonDock layout as defined in XAML, before any saved layout is
     /// restored, so "Reinitialiser la disposition" has a default to return to.
     /// </summary>
     private void CaptureDefaultLayout()
     {
-        var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
-        using var writer = new System.IO.StringWriter();
-        serializer.Serialize(writer);
-        _defaultLayoutXml = writer.ToString();
+        _defaultLayoutXml = SerializeLayout();
     }
 
     /// <summary>
@@ -560,6 +580,13 @@ public partial class MainWindow : Window
     /// </summary>
     private async Task LoadDockLayoutAsync()
     {
+        if (_layoutLoaded)
+        {
+            return;
+        }
+
+        _layoutLoaded = true;
+
         var path = _dockLayoutStore.GetDefaultLayoutPath();
         var layoutXml = await _dockLayoutStore.ReadLayoutXmlAsync(path);
         if (string.IsNullOrEmpty(layoutXml))
@@ -569,9 +596,7 @@ public partial class MainWindow : Window
 
         try
         {
-            var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
-            using var reader = new System.IO.StringReader(layoutXml);
-            serializer.Deserialize(reader);
+            DeserializeLayout(layoutXml);
         }
         catch (Exception ex) when (ex is System.Xml.XmlException or InvalidOperationException or NullReferenceException)
         {
@@ -588,10 +613,8 @@ public partial class MainWindow : Window
     {
         try
         {
-            var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
-            using var writer = new System.IO.StringWriter();
-            serializer.Serialize(writer);
-            await _dockLayoutStore.WriteLayoutXmlAsync(_dockLayoutStore.GetDefaultLayoutPath(), writer.ToString());
+            var layoutXml = SerializeLayout();
+            await _dockLayoutStore.WriteLayoutXmlAsync(_dockLayoutStore.GetDefaultLayoutPath(), layoutXml);
         }
         catch (Exception ex) when (ex is System.Xml.XmlException or InvalidOperationException or IOException or UnauthorizedAccessException)
         {
@@ -610,9 +633,14 @@ public partial class MainWindow : Window
             return;
         }
 
-        var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
-        using var reader = new System.IO.StringReader(_defaultLayoutXml);
-        serializer.Deserialize(reader);
+        try
+        {
+            DeserializeLayout(_defaultLayoutXml);
+        }
+        catch (Exception ex) when (ex is System.Xml.XmlException or InvalidOperationException or NullReferenceException)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to reset dock layout: {ex.Message}");
+        }
     }
 
     private void OnShowToolAnchorableClick(object sender, RoutedEventArgs e) => ToolAnchorable.Show();
