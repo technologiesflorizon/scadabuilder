@@ -6,7 +6,7 @@
 
 **Architecture:** Wrap the existing three-column shell in an AvalonDock `DockingManager`. The 3 left tabs (`Outil`, `Projet`, `Catalogue Tags`) and 4 right tabs (`Page`, `Element`, `Propriete`, `Librairie`) each become an independent `LayoutAnchorable` in a left/right `LayoutAnchorablePane`; existing tab *content* moves unchanged into each anchorable. The untouched center content (the `DockPanel` containing `SceneTabs` and `PreviewSurfaceBorder`/`PreviewWebView`) is wrapped in a single non-closable `LayoutDocument` inside AvalonDock's required `LayoutDocumentPane` — this satisfies AvalonDock's structural requirement of a document host while keeping the center region visually and behaviorally identical to today (single area, no new tabs — multi-tab canvas is a separate plan). Layout state (pane positions/floating/visibility) persists to `%AppData%\ScadaBuilderV2\dock-layout.xml` via a new `DockLayoutStore` (path-parameterized like the existing `LibraryRegistryStore`), loaded on window `Loaded` and saved during the existing `OnMainWindowClosing` confirmed-close path.
 
-**Tech Stack:** .NET 8, WPF (`net8.0-windows`), AvalonDock (NuGet `Dirkster.AvalonDock` 4.74.1 — this is the free/MIT continuation of the original open-source AvalonDock, published under the `Xceed.Wpf.AvalonDock.*` CLR namespaces and the `https://github.com/Dirkster99/AvalonDock` XAML namespace used throughout this plan. Do NOT use the plain `AvalonDock` NuGet id, which is a stale/unmaintained line capped at 2.0.2000, or `Xceed.Wpf.AvalonDock`, which is Xceed's commercial/licensed component and throws a `XamlParseException` at runtime without a paid license key), MSTest (existing `tests\ScadaBuilderV2.Tests`, `net8.0`, no WPF reference).
+**Tech Stack:** .NET 8, WPF (`net8.0-windows`), AvalonDock (NuGet `Dirkster.AvalonDock` 4.74.1 — this is the free/MIT continuation of the original open-source AvalonDock, published under the `AvalonDock.*` CLR namespaces (NOT `Xceed.Wpf.AvalonDock.*` — that was an earlier incorrect assumption in this plan, corrected after Task 4's implementer found the real installed namespace) and the `https://github.com/Dirkster99/AvalonDock` XAML namespace used throughout this plan. Do NOT use the plain `AvalonDock` NuGet package id, which is a stale/unmaintained line capped at 2.0.2000, or `Xceed.Wpf.AvalonDock`, which is Xceed's commercial/licensed component and throws a `XamlParseException` at runtime without a paid license key), MSTest (existing `tests\ScadaBuilderV2.Tests`, `net8.0`, no WPF reference).
 
 ## Global Constraints
 
@@ -26,7 +26,7 @@
 - Modify: `src/ScadaBuilderV2.App/ScadaBuilderV2.App.csproj:10-12`
 
 **Interfaces:**
-- Produces: `Dirkster.AvalonDock` assembly available to `ScadaBuilderV2.App` (types `Xceed.Wpf.AvalonDock.DockingManager`, `Xceed.Wpf.AvalonDock.Layout.LayoutAnchorable`, `Xceed.Wpf.AvalonDock.Layout.LayoutDocument`, `Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer` — used by later tasks). Note the NuGet package id (`Dirkster.AvalonDock`) differs from the CLR namespace (`Xceed.Wpf.AvalonDock`) the package ships — this is expected, the free fork kept the original namespace for compatibility.
+- Produces: `Dirkster.AvalonDock` assembly available to `ScadaBuilderV2.App` (types `AvalonDock.DockingManager`, `AvalonDock.Layout.LayoutAnchorable`, `AvalonDock.Layout.LayoutDocument`, `AvalonDock.Layout.Serialization.XmlLayoutSerializer` — used by later tasks). Note the NuGet package id (`Dirkster.AvalonDock`) differs from the CLR namespace (`AvalonDock`) the package ships — this is expected, the free fork kept the original namespace for compatibility.
 
 - [ ] **Step 1: Add the package reference**
 
@@ -244,7 +244,7 @@ git commit -m "feat: add DockLayoutStore for persisting AvalonDock layout XML"
 - Modify: `src/ScadaBuilderV2.App/MainWindow.xaml:349-1186`
 
 **Interfaces:**
-- Consumes: `AvalonDock` types from Task 1 (`Xceed.Wpf.AvalonDock.DockingManager`, `.Layout.LayoutRoot`, `.Layout.LayoutPanel`, `.Layout.LayoutAnchorablePane`, `.Layout.LayoutAnchorable`, `.Layout.LayoutDocumentPane`, `.Layout.LayoutDocument`).
+- Consumes: `AvalonDock` types from Task 1 (`AvalonDock.DockingManager`, `.Layout.LayoutRoot`, `.Layout.LayoutPanel`, `.Layout.LayoutAnchorablePane`, `.Layout.LayoutAnchorable`, `.Layout.LayoutDocumentPane`, `.Layout.LayoutDocument`).
 - Produces (named elements later tasks/code rely on):
   - `x:Name="MainDockingManager"` (the root `DockingManager`) — consumed by Task 5 (`XmlLayoutSerializer`).
   - `x:Name="ToolAnchorable"`, `x:Name="ProjectAnchorable"`, `x:Name="TagCatalogAnchorable"` (left pane) — consumed by Task 4 (Fenêtres menu, close→hide behavior).
@@ -360,7 +360,7 @@ git commit -m "feat: replace fixed Grid side panels with AvalonDock DockingManag
 - Modify: `src/ScadaBuilderV2.App/MainWindow.xaml` (add a "Fenêtres" top-level menu)
 
 **Interfaces:**
-- Consumes: `ToolAnchorable`, `ProjectAnchorable`, `TagCatalogAnchorable`, `PageAnchorable`, `ElementAnchorable`, `PropertiesAnchorable`, `LibraryAnchorable` (all `Xceed.Wpf.AvalonDock.Layout.LayoutAnchorable`, produced by Task 3).
+- Consumes: `ToolAnchorable`, `ProjectAnchorable`, `TagCatalogAnchorable`, `PageAnchorable`, `ElementAnchorable`, `PropertiesAnchorable`, `LibraryAnchorable` (all `AvalonDock.Layout.LayoutAnchorable`, produced by Task 3).
 - Produces: `private void OnAnchorableClosing(object? sender, System.ComponentModel.CancelEventArgs e)` — wired to every anchorable's `Closing` event; consumed nowhere else (self-contained behavior), but its existence is required by Task 6's manual verification checklist ("panel closed accidentally stays reachable").
 
 - [ ] **Step 1: Replace the two `RightContextTabs.SelectedItem` call sites**
@@ -418,7 +418,7 @@ Then add the handler as a new private method (place it near `OnMainWindowClosing
 /// </summary>
 private void OnAnchorableClosing(object? sender, System.ComponentModel.CancelEventArgs e)
 {
-    if (sender is not Xceed.Wpf.AvalonDock.Layout.LayoutAnchorable anchorable)
+    if (sender is not AvalonDock.Layout.LayoutAnchorable anchorable)
     {
         return;
     }
@@ -546,7 +546,7 @@ Add the capture method near `OnMainWindowClosing`:
 /// </summary>
 private void CaptureDefaultLayout()
 {
-    var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
+    var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
     using var writer = new System.IO.StringWriter();
     serializer.Serialize(writer);
     _defaultLayoutXml = writer.ToString();
@@ -573,7 +573,7 @@ private async Task LoadDockLayoutAsync()
 
     try
     {
-        var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
+        var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
         using var reader = new System.IO.StringReader(layoutXml);
         serializer.Deserialize(reader);
     }
@@ -598,7 +598,7 @@ private async Task SaveDockLayoutAsync()
 {
     try
     {
-        var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
+        var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
         using var writer = new System.IO.StringWriter();
         serializer.Serialize(writer);
         await _dockLayoutStore.WriteLayoutXmlAsync(_dockLayoutStore.GetDefaultLayoutPath(), writer.ToString());
@@ -650,7 +650,7 @@ private void OnResetLayoutClick(object sender, RoutedEventArgs e)
         return;
     }
 
-    var serializer = new Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
+    var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
     using var reader = new System.IO.StringReader(_defaultLayoutXml);
     serializer.Deserialize(reader);
 }
