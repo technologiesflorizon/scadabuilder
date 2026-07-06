@@ -163,7 +163,7 @@ public sealed class StudioElementPlusContractTests
         var modernProjectStore = ReadProjectFile("src", "ScadaBuilderV2.Infrastructure", "ModernProjects", "ModernProjectStore.cs");
         var studioCode = ReadProjectFile("src", "ScadaBuilderV2.ElementStudio.App", "MainWindow.xaml.cs");
 
-        StringAssert.Contains(xaml, "<TabItem Header=\"Librairie\">");
+        StringAssert.Contains(xaml, "x:Name=\"LibraryAnchorable\" Title=\"Librairie\"");
         StringAssert.Contains(xaml, "x:Name=\"ElementLibraryListBox\"");
         StringAssert.Contains(xaml, "x:Name=\"ElementLibraryStatusText\"");
         StringAssert.Contains(xaml, "<WrapPanel/>");
@@ -227,7 +227,7 @@ public sealed class StudioElementPlusContractTests
         var xaml = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml");
         var code = ReadBuilderMainWindowCode();
 
-        StringAssert.Contains(xaml, "<TabItem Header=\"Catalogue Tags\">");
+        StringAssert.Contains(xaml, "x:Name=\"TagCatalogAnchorable\" Title=\"Catalogue Tags\"");
         StringAssert.Contains(xaml, "x:Name=\"TagCatalogFilteredSummaryText\"");
         StringAssert.Contains(xaml, "x:Name=\"TagCatalogSearchTextBox\"");
         StringAssert.Contains(xaml, "ToolTip=\"Recherche tag\"");

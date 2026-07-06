@@ -45,6 +45,9 @@ public partial class MainWindow : Window
     private readonly IElementStudioImportPackageWriter _elementStudioPackageWriter = new ElementStudioImportPackageWriter();
     private readonly ElementStudioComponentPackageStore _elementStudioComponentPackageStore = new();
     private readonly LibraryRegistryStore _libraryRegistryStore = new();
+    private readonly ScadaBuilderV2.Infrastructure.Shell.DockLayoutStore _dockLayoutStore = new();
+    private string? _defaultLayoutXml;
+    private bool _layoutLoaded;
     private IReadOnlyList<LibraryEntry> _libraryEntries = [];
     private LibraryEntry? _selectedLibraryEntry;
     private readonly ElementPlusLibraryReader _elementPlusLibraryReader = new();
@@ -118,6 +121,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        CaptureDefaultLayout();
         InitializeRibbonCommandRegistry();
         InitializeToolPaletteCommands();
         DataContext = this;
@@ -137,6 +141,14 @@ public partial class MainWindow : Window
 
         PreviewWebView.NavigationCompleted += OnPreviewNavigationCompleted;
         Closing += OnMainWindowClosing;
+        Loaded += async (_, _) => await LoadDockLayoutAsync();
+        ToolAnchorable.Closing += OnAnchorableClosing;
+        ProjectAnchorable.Closing += OnAnchorableClosing;
+        TagCatalogAnchorable.Closing += OnAnchorableClosing;
+        PageAnchorable.Closing += OnAnchorableClosing;
+        ElementAnchorable.Closing += OnAnchorableClosing;
+        PropertiesAnchorable.Closing += OnAnchorableClosing;
+        LibraryAnchorable.Closing += OnAnchorableClosing;
         Closed += (_, _) =>
         {
             foreach (var tab in _openSceneTabs)
@@ -211,7 +223,7 @@ public partial class MainWindow : Window
         try
         {
             await OpenSceneTabAsync(page);
-            RightContextTabs.SelectedItem = PageContextTab;
+            PageAnchorable.IsActive = true;
         }
         catch (Exception ex)
         {
@@ -510,9 +522,134 @@ public partial class MainWindow : Window
             }
         }
 
+        await SaveDockLayoutAsync();
         _isClosingConfirmed = true;
         Close();
     }
+
+    /// <summary>
+    /// Prevents AvalonDock's default "close" behavior (which detaches the anchorable from
+    /// the layout permanently) from firing when the user clicks a side panel's close button.
+    /// Instead the panel is hidden and remains reachable from the "Fenêtres" menu.
+    /// </summary>
+    private void OnAnchorableClosing(object? sender, System.ComponentModel.CancelEventArgs e)
+    {
+        if (sender is not AvalonDock.Layout.LayoutAnchorable anchorable)
+        {
+            return;
+        }
+
+        e.Cancel = true;
+        anchorable.Hide();
+    }
+
+    /// <summary>
+    /// Serializes the current AvalonDock layout to an XML string.
+    /// </summary>
+    private string SerializeLayout()
+    {
+        var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
+        using var writer = new System.IO.StringWriter();
+        serializer.Serialize(writer);
+        return writer.ToString();
+    }
+
+    /// <summary>
+    /// Restores an AvalonDock layout previously produced by <see cref="SerializeLayout"/>.
+    /// Throws on malformed or incompatible layout XML; callers decide how to handle failure.
+    /// </summary>
+    private void DeserializeLayout(string layoutXml)
+    {
+        var serializer = new AvalonDock.Layout.Serialization.XmlLayoutSerializer(MainDockingManager);
+        using var reader = new System.IO.StringReader(layoutXml);
+        serializer.Deserialize(reader);
+    }
+
+    /// <summary>
+    /// Snapshots the AvalonDock layout as defined in XAML, before any saved layout is
+    /// restored, so "Reinitialiser la disposition" has a default to return to.
+    /// </summary>
+    private void CaptureDefaultLayout()
+    {
+        _defaultLayoutXml = SerializeLayout();
+    }
+
+    /// <summary>
+    /// Restores the previously saved AvalonDock layout, if any. Falls back silently to the
+    /// XAML-defined default layout when no saved layout exists or it fails to parse.
+    /// </summary>
+    private async Task LoadDockLayoutAsync()
+    {
+        if (_layoutLoaded)
+        {
+            return;
+        }
+
+        _layoutLoaded = true;
+
+        var path = _dockLayoutStore.GetDefaultLayoutPath();
+        var layoutXml = await _dockLayoutStore.ReadLayoutXmlAsync(path);
+        if (string.IsNullOrEmpty(layoutXml))
+        {
+            return;
+        }
+
+        try
+        {
+            DeserializeLayout(layoutXml);
+        }
+        catch (Exception ex) when (ex is System.Xml.XmlException or InvalidOperationException or NullReferenceException)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to restore dock layout, keeping default: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Serializes the current AvalonDock layout and persists it so it can be restored on
+    /// the next launch. Failures are logged and swallowed so a layout-save problem never
+    /// blocks the window from closing.
+    /// </summary>
+    private async Task SaveDockLayoutAsync()
+    {
+        try
+        {
+            var layoutXml = SerializeLayout();
+            await _dockLayoutStore.WriteLayoutXmlAsync(_dockLayoutStore.GetDefaultLayoutPath(), layoutXml);
+        }
+        catch (Exception ex) when (ex is System.Xml.XmlException or InvalidOperationException or IOException or UnauthorizedAccessException)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to save dock layout: {ex.Message}");
+        }
+    }
+
+    /// <summary>
+    /// Restores the AvalonDock layout captured from XAML at startup, discarding any
+    /// manual rearrangement made during the current or previous sessions.
+    /// </summary>
+    private void OnResetLayoutClick(object sender, RoutedEventArgs e)
+    {
+        if (string.IsNullOrEmpty(_defaultLayoutXml))
+        {
+            return;
+        }
+
+        try
+        {
+            DeserializeLayout(_defaultLayoutXml);
+        }
+        catch (Exception ex) when (ex is System.Xml.XmlException or InvalidOperationException or NullReferenceException)
+        {
+            System.Diagnostics.Debug.WriteLine($"Failed to reset dock layout: {ex.Message}");
+        }
+    }
+
+    private void OnShowToolAnchorableClick(object sender, RoutedEventArgs e) => ToolAnchorable.Show();
+    private void OnShowProjectAnchorableClick(object sender, RoutedEventArgs e) => ProjectAnchorable.Show();
+    private void OnShowTagCatalogAnchorableClick(object sender, RoutedEventArgs e) => TagCatalogAnchorable.Show();
+    private void OnShowPageAnchorableClick(object sender, RoutedEventArgs e) => PageAnchorable.Show();
+    private void OnShowElementAnchorableClick(object sender, RoutedEventArgs e) => ElementAnchorable.Show();
+    private void OnShowPropertiesAnchorableClick(object sender, RoutedEventArgs e) => PropertiesAnchorable.Show();
+    private void OnShowLibraryAnchorableClick(object sender, RoutedEventArgs e) => LibraryAnchorable.Show();
 
     private void SaveActiveTabTransientState()
     {
@@ -3776,7 +3913,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             SetBackgroundColorControls(backgroundColor);
         }
 
-        RightContextTabs.SelectedItem = PageContextTab;
+        PageAnchorable.IsActive = true;
         SetStatus("Edition CSS du fond active. La modification reste en session legacy.");
     }
 
@@ -3840,7 +3977,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
 
         SelectModernElement(targetId);
-        RightContextTabs.SelectedItem = PropertiesContextTab;
+        PropertiesAnchorable.IsActive = true;
         OpenElementEventDialog(targetId);
     }
 

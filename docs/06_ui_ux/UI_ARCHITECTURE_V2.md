@@ -1,8 +1,8 @@
 # SCADA Builder V2 - UI Architecture
 
-Date: 2026-06-16
+Date: 2026-07-05
 Status: Active UI architecture contract
-Document version: `V2.1.1.0039`
+Document version: `V2.1.4.0000`
 
 ## Historique des changements
 
