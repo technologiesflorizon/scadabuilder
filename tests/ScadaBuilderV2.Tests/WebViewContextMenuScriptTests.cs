@@ -1186,6 +1186,17 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "modernDrag.mode === 'rotate'");
     }
 
+    [TestMethod]
+    public void RotationDragShowsLiveAngleBadge()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "scada-rotation-badge");
+        StringAssert.Contains(source, "function updateRotationBadge(clientX, clientY, angleDeg)");
+        StringAssert.Contains(source, "function hideRotationBadge()");
+        StringAssert.Contains(source, "toFixed(1)");
+    }
+
     private static string ReadMainWindowSource()
     {
         // MainWindow code-behind is split into behavior-preserving partial-class files

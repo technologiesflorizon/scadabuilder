@@ -208,6 +208,18 @@ public partial class MainWindow
     .scada-modern-handle[data-handle="s"] { left: 50%; bottom: -6px; transform: translateX(-50%); cursor: ns-resize; }
     .scada-modern-handle[data-handle="e"] { right: -6px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
     .scada-modern-handle[data-handle="w"] { left: -6px; top: 50%; transform: translateY(-50%); cursor: ew-resize; }
+    #scada-rotation-badge {
+      position: fixed;
+      display: none;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #0f2a30;
+      color: #ffffff;
+      font: 12px "Segoe UI", sans-serif;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(12px, -50%);
+    }
     body.scada-placement-active,
     body.scada-placement-active * {
       cursor: crosshair !important;
@@ -2121,12 +2133,29 @@ public partial class MainWindow
     marquee.style.display = 'block';
   }, true);
 
+  function ensureRotationBadge() {
+    let badge = document.getElementById('scada-rotation-badge');
+    if (!badge) {
+      badge = document.createElement('div');
+      badge.id = 'scada-rotation-badge';
+      document.body.appendChild(badge);
+    }
+    return badge;
+  }
+
   function updateRotationBadge(clientX, clientY, angleDeg) {
-    // Implemented in Task 4 (live angle badge).
+    const badge = ensureRotationBadge();
+    badge.textContent = `${angleDeg.toFixed(1)}°`;
+    badge.style.left = `${clientX}px`;
+    badge.style.top = `${clientY}px`;
+    badge.style.display = 'block';
   }
 
   function hideRotationBadge() {
-    // Implemented in Task 4 (live angle badge).
+    const badge = document.getElementById('scada-rotation-badge');
+    if (badge) {
+      badge.style.display = 'none';
+    }
   }
 
   document.addEventListener('pointermove', event => {
