@@ -1,7 +1,7 @@
 <Window x:Class="ScadaBuilderV2.App.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:avalonDock="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:avalonDock="https://github.com/Dirkster99/AvalonDock"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         xmlns:local="clr-namespace:ScadaBuilderV2.App"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
