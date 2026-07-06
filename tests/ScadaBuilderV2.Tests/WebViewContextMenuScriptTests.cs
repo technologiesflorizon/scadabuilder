@@ -1197,6 +1197,24 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "toFixed(1)");
     }
 
+    [TestMethod]
+    public void ContextMenuOffersRotationPresetsForSingleElementPlusSelection()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "\"object.rotation\"");
+        StringAssert.Contains(source, "\"object.rotation.0\"");
+        StringAssert.Contains(source, "\"object.rotation.90\"");
+        StringAssert.Contains(source, "\"object.rotation.180\"");
+        StringAssert.Contains(source, "\"object.rotation.270\"");
+        StringAssert.Contains(source, "\"object.rotation.custom\"");
+        StringAssert.Contains(source, "case \"object.rotation.0\":");
+        StringAssert.Contains(source, "UpdateModernElementRotation(message.Id, 0)");
+        StringAssert.Contains(source, "UpdateModernElementRotation(message.Id, 90)");
+        StringAssert.Contains(source, "UpdateModernElementRotation(message.Id, 180)");
+        StringAssert.Contains(source, "UpdateModernElementRotation(message.Id, 270)");
+    }
+
     private static string ReadMainWindowSource()
     {
         // MainWindow code-behind is split into behavior-preserving partial-class files

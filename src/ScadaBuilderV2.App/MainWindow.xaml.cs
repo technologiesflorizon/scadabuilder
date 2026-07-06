@@ -3741,6 +3741,18 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                         new EditorCommandDescriptor("object.order.send-to-back", "Mettre a l'arriere", "order",
                             IsEnabled: elementIdx > 0),
                     ]));
+                modernCommands.Add(new EditorCommandDescriptor(
+                    "object.rotation",
+                    "Rotation",
+                    "rotation",
+                    Children:
+                    [
+                        new EditorCommandDescriptor("object.rotation.0", "0°", "rotation"),
+                        new EditorCommandDescriptor("object.rotation.90", "90°", "rotation"),
+                        new EditorCommandDescriptor("object.rotation.180", "180°", "rotation"),
+                        new EditorCommandDescriptor("object.rotation.270", "270°", "rotation"),
+                        new EditorCommandDescriptor("object.rotation.custom", "Personnalisé...", "rotation"),
+                    ]));
             }
 
             return modernCommands;
@@ -3874,6 +3886,18 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 break;
             case "object.order.send-to-back":
                 ReorderSelectedElement("send-to-back");
+                break;
+            case "object.rotation.0":
+                UpdateModernElementRotation(message.Id, 0);
+                break;
+            case "object.rotation.90":
+                UpdateModernElementRotation(message.Id, 90);
+                break;
+            case "object.rotation.180":
+                UpdateModernElementRotation(message.Id, 180);
+                break;
+            case "object.rotation.270":
+                UpdateModernElementRotation(message.Id, 270);
                 break;
             case "object.delete":
             case "element-plus.delete":
