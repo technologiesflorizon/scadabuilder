@@ -51,7 +51,7 @@ public partial class MainWindow : Window
     private IReadOnlyList<LibraryEntry> _libraryEntries = [];
     private LibraryEntry? _selectedLibraryEntry;
     private readonly ElementPlusLibraryReader _elementPlusLibraryReader = new();
-    private readonly ObservableCollection<ElementPlusLibraryItem> _elementLibraryItems = [];
+    private readonly ObservableCollection<ElementLibraryTileViewModel> _elementLibraryItems = [];
     private readonly ObservableCollection<TagCatalogListItem> _tagCatalogItems = [];
     private readonly ICollectionView _tagCatalogView;
     private readonly ObservableCollection<SceneWorkspaceTab> _openSceneTabs = [];
@@ -811,9 +811,9 @@ public partial class MainWindow : Window
 
     private void OnElementLibrarySelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (ElementLibraryListBox.SelectedItem is ElementPlusLibraryItem item)
+        if (ElementLibraryListBox.SelectedItem is ElementLibraryTileViewModel tile)
         {
-            SetStatus($"{item.FileName}: double-cliquez pour instancier dans la scene active.");
+            SetStatus($"{tile.Item.FileName}: double-cliquez pour instancier dans la scene active.");
         }
     }
 
@@ -824,22 +824,22 @@ public partial class MainWindow : Window
 
     private async void OnElementLibraryMouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
-        var item = ResolveElementLibraryItemFromEvent(e.OriginalSource as DependencyObject)
-            ?? ElementLibraryListBox.SelectedItem as ElementPlusLibraryItem;
-        if (item is null)
+        var tile = ResolveElementLibraryTileFromEvent(e.OriginalSource as DependencyObject)
+            ?? ElementLibraryListBox.SelectedItem as ElementLibraryTileViewModel;
+        if (tile is null)
         {
             return;
         }
 
         e.Handled = true;
         var position = await ResolveVisibleSceneCenterAsync();
-        await CreateElementPlusLibraryInstanceAsync(item.FilePath, position.X, position.Y, centerOnPoint: true);
+        await CreateElementPlusLibraryInstanceAsync(tile.Item.FilePath, position.X, position.Y, centerOnPoint: true);
     }
 
     private void OnElementLibraryPreviewMouseMove(object sender, MouseEventArgs e)
     {
         if (e.LeftButton != MouseButtonState.Pressed ||
-            ElementLibraryListBox.SelectedItem is not ElementPlusLibraryItem item)
+            ElementLibraryListBox.SelectedItem is not ElementLibraryTileViewModel tile)
         {
             return;
         }
@@ -853,7 +853,7 @@ public partial class MainWindow : Window
 
         DragDrop.DoDragDrop(
             ElementLibraryListBox,
-            new DataObject(ElementPlusLibraryDragFormat, item.FilePath),
+            new DataObject(ElementPlusLibraryDragFormat, tile.Item.FilePath),
             DragDropEffects.Copy);
     }
 
@@ -878,13 +878,13 @@ public partial class MainWindow : Window
         e.Handled = true;
     }
 
-    private static ElementPlusLibraryItem? ResolveElementLibraryItemFromEvent(DependencyObject? source)
+    private static ElementLibraryTileViewModel? ResolveElementLibraryTileFromEvent(DependencyObject? source)
     {
         while (source is not null)
         {
-            if (source is ListBoxItem { DataContext: ElementPlusLibraryItem item })
+            if (source is ListBoxItem { DataContext: ElementLibraryTileViewModel tile })
             {
-                return item;
+                return tile;
             }
 
             source = VisualTreeHelper.GetParent(source);
@@ -944,7 +944,7 @@ public partial class MainWindow : Window
             _elementLibraryItems.Clear();
             foreach (var item in snapshot.Items)
             {
-                _elementLibraryItems.Add(item);
+                _elementLibraryItems.Add(new ElementLibraryTileViewModel(item));
             }
 
             var diagnostics = snapshot.Diagnostics.Count == 0

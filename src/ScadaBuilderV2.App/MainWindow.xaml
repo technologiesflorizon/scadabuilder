@@ -1098,7 +1098,7 @@
                                     </ListBox.ItemContainerStyle>
                                     <ListBox.ItemTemplate>
                                         <DataTemplate>
-                                            <StackPanel ToolTip="{Binding DetailText}">
+                                            <StackPanel ToolTip="{Binding Item.DetailText}">
                                                 <Border Height="62"
                                                         CornerRadius="4"
                                                         Background="#F2F8EF"
@@ -1107,9 +1107,10 @@
                                                         Margin="0,0,0,5"
                                                         ClipToBounds="True">
                                                     <Grid>
-                                                        <local:HtmlPreviewControl Markup="{Binding PreviewMarkup}"
-                                                                                  IsHitTestVisible="False"/>
-                                                        <TextBlock Text="{Binding IconText}"
+                                                        <Image Source="{Binding PreviewImage}"
+                                                               Stretch="Uniform"
+                                                               IsHitTestVisible="False"/>
+                                                        <TextBlock Text="{Binding Item.IconText}"
                                                                    HorizontalAlignment="Center"
                                                                    VerticalAlignment="Center"
                                                                    FontWeight="Bold"
@@ -1119,7 +1120,7 @@
                                                                 <Style TargetType="TextBlock">
                                                                     <Setter Property="Visibility" Value="Collapsed"/>
                                                                     <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding PreviewMarkup}" Value="{x:Null}">
+                                                                        <DataTrigger Binding="{Binding PreviewImage}" Value="{x:Null}">
                                                                             <Setter Property="Visibility" Value="Visible"/>
                                                                         </DataTrigger>
                                                                     </Style.Triggers>
@@ -1132,12 +1133,12 @@
                                                                 Margin="2"
                                                                 HorizontalAlignment="Right"
                                                                 VerticalAlignment="Top"
-                                                                ToolTip="{Binding ProvenanceText}">
+                                                                ToolTip="{Binding Item.ProvenanceText}">
                                                             <Border.Style>
                                                                 <Style TargetType="Border">
                                                                     <Setter Property="Visibility" Value="Collapsed"/>
                                                                     <Style.Triggers>
-                                                                        <DataTrigger Binding="{Binding Provenance}" Value="AiModernized">
+                                                                        <DataTrigger Binding="{Binding Item.Provenance}" Value="AiModernized">
                                                                             <Setter Property="Visibility" Value="Visible"/>
                                                                         </DataTrigger>
                                                                     </Style.Triggers>
@@ -1150,7 +1151,7 @@
                                                         </Border>
                                                     </Grid>
                                                 </Border>
-                                                <TextBlock Text="{Binding FileName}"
+                                                <TextBlock Text="{Binding Item.FileName}"
                                                            FontSize="11"
                                                            TextAlignment="Center"
                                                            TextWrapping="Wrap"
