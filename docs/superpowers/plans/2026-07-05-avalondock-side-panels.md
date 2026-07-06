@@ -458,13 +458,35 @@ private void OnShowPropertiesAnchorableClick(object sender, RoutedEventArgs e) =
 private void OnShowLibraryAnchorableClick(object sender, RoutedEventArgs e) => LibraryAnchorable.Show();
 ```
 
-- [ ] **Step 5: Build and manually verify close→hide→reopen**
+- [ ] **Step 4b: Restore the "Lock" selection toggle dropped during Task 3's restructuring**
+
+Task 3's restructuring deleted the pre-existing right-panel "Contexte" header chrome (it lived outside any `TabItem`, in the `Border`/`DockPanel` wrapper around the old `RightContextTabs` `TabControl`, so it was not in scope for the verbatim tab-content move and was silently lost along with the wrapper). Before that deletion, `MainWindow.xaml` contained (at the old `b5b1bfd` revision, right-panel wrapper):
+
+```xml
+<ToggleButton DockPanel.Dock="Right"
+              Width="52"
+              Content="Lock"
+              IsChecked="{Binding IsSelectionLocked}"/>
+```
+
+bound to `MainWindow.xaml.cs`'s existing `public bool IsSelectionLocked { get; set; } = false;` (line 116) and wired to `ToggleSelectionLockCommand` (registered at line 136). This is a working feature with no replacement location after Task 3 — restore it now, in the top bar, next to the `Fenetres` menu added in Step 4 above (same `Menu`'s parent container). Add:
+
+```xml
+<ToggleButton Content="Lock"
+              Width="52"
+              Margin="8,0,0,0"
+              IsChecked="{Binding IsSelectionLocked}" />
+```
+
+as a sibling immediately after the `Menu` element added in Step 4, inside the same top-bar container. `DataContext = this;` is already set in the constructor, so the binding resolves without any additional wiring.
+
+- [ ] **Step 5: Build and manually verify close→hide→reopen, and the restored Lock toggle**
 
 Run: `dotnet build ScadaBuilderV2.sln`
 Expected: Build succeeds.
 
 Run: `dotnet run --project src/ScadaBuilderV2.App`
-Expected: Clicking the close ("X") button on the `Catalogue Tags` panel hides it (it disappears from its pane, the pane still shows the remaining tabs). Opening the `Fenetres` menu and clicking `Catalogue Tags` brings the panel back in its original location. Repeat for at least one other anchorable (e.g. `Propriete`) to confirm the pattern generalizes.
+Expected: Clicking the close ("X") button on the `Catalogue Tags` panel hides it (it disappears from its pane, the pane still shows the remaining tabs). Opening the `Fenetres` menu and clicking `Catalogue Tags` brings the panel back in its original location. Repeat for at least one other anchorable (e.g. `Propriete`) to confirm the pattern generalizes. Also click the restored `Lock` toggle button in the top bar and confirm it toggles pressed/checked state (full behavior of `ToggleSelectionLockCommand` is pre-existing and out of scope to re-verify — only confirm the control renders and its checked state responds to clicks).
 
 - [ ] **Step 6: Run the full test suite**
 
