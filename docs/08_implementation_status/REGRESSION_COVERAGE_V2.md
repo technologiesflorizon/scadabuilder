@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Regression Coverage
 
-Date: 2026-06-19
+Date: 2026-07-06
 Status: Active regression coverage map
-Document version: `V2.1.3.0001`
+Document version: `V2.1.3.0002`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-06 | `V2.1.3.0002` | `4dfe7fe` | Ajout de la couverture de la poignée de rotation Element+ et des presets/angle personnalisé du menu contextuel (7 tests WebViewContextMenuScriptTests). |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajout de la couverture icon-only 32x32 pour la galerie Formes. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout de la couverture galerie Formes, formes standard completes, et placement Ligne/Fleche en deux points. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Ajout de la couverture de la palette laterale d'outils issue du catalogue semantique. |
