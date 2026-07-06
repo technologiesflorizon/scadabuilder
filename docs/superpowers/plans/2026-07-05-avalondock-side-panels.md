@@ -6,7 +6,7 @@
 
 **Architecture:** Wrap the existing three-column shell in an AvalonDock `DockingManager`. The 3 left tabs (`Outil`, `Projet`, `Catalogue Tags`) and 4 right tabs (`Page`, `Element`, `Propriete`, `Librairie`) each become an independent `LayoutAnchorable` in a left/right `LayoutAnchorablePane`; existing tab *content* moves unchanged into each anchorable. The untouched center content (the `DockPanel` containing `SceneTabs` and `PreviewSurfaceBorder`/`PreviewWebView`) is wrapped in a single non-closable `LayoutDocument` inside AvalonDock's required `LayoutDocumentPane` — this satisfies AvalonDock's structural requirement of a document host while keeping the center region visually and behaviorally identical to today (single area, no new tabs — multi-tab canvas is a separate plan). Layout state (pane positions/floating/visibility) persists to `%AppData%\ScadaBuilderV2\dock-layout.xml` via a new `DockLayoutStore` (path-parameterized like the existing `LibraryRegistryStore`), loaded on window `Loaded` and saved during the existing `OnMainWindowClosing` confirmed-close path.
 
-**Tech Stack:** .NET 8, WPF (`net8.0-windows`), AvalonDock (NuGet `Xceed.Wpf.AvalonDock` 5.2.26322.8434 — the plain `AvalonDock` NuGet package id is a stale/unmaintained line capped at 2.0.2000; `Xceed.Wpf.AvalonDock` is the actively maintained package providing the `Xceed.Wpf.AvalonDock.*` namespaces used throughout this plan), MSTest (existing `tests\ScadaBuilderV2.Tests`, `net8.0`, no WPF reference).
+**Tech Stack:** .NET 8, WPF (`net8.0-windows`), AvalonDock (NuGet `Dirkster.AvalonDock` 4.74.1 — this is the free/MIT continuation of the original open-source AvalonDock, published under the `Xceed.Wpf.AvalonDock.*` CLR namespaces and the `https://github.com/Dirkster99/AvalonDock` XAML namespace used throughout this plan. Do NOT use the plain `AvalonDock` NuGet id, which is a stale/unmaintained line capped at 2.0.2000, or `Xceed.Wpf.AvalonDock`, which is Xceed's commercial/licensed component and throws a `XamlParseException` at runtime without a paid license key), MSTest (existing `tests\ScadaBuilderV2.Tests`, `net8.0`, no WPF reference).
 
 ## Global Constraints
 
@@ -26,7 +26,7 @@
 - Modify: `src/ScadaBuilderV2.App/ScadaBuilderV2.App.csproj:10-12`
 
 **Interfaces:**
-- Produces: `Xceed.Wpf.AvalonDock` assembly available to `ScadaBuilderV2.App` (types `Xceed.Wpf.AvalonDock.DockingManager`, `Xceed.Wpf.AvalonDock.Layout.LayoutAnchorable`, `Xceed.Wpf.AvalonDock.Layout.LayoutDocument`, `Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer` — used by later tasks).
+- Produces: `Dirkster.AvalonDock` assembly available to `ScadaBuilderV2.App` (types `Xceed.Wpf.AvalonDock.DockingManager`, `Xceed.Wpf.AvalonDock.Layout.LayoutAnchorable`, `Xceed.Wpf.AvalonDock.Layout.LayoutDocument`, `Xceed.Wpf.AvalonDock.Layout.Serialization.XmlLayoutSerializer` — used by later tasks). Note the NuGet package id (`Dirkster.AvalonDock`) differs from the CLR namespace (`Xceed.Wpf.AvalonDock`) the package ships — this is expected, the free fork kept the original namespace for compatibility.
 
 - [ ] **Step 1: Add the package reference**
 
@@ -35,14 +35,14 @@ Edit `src/ScadaBuilderV2.App/ScadaBuilderV2.App.csproj`, inside the existing `It
 ```xml
   <ItemGroup>
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3967.48" />
-    <PackageReference Include="Xceed.Wpf.AvalonDock" Version="5.2.26322.8434" />
+    <PackageReference Include="Dirkster.AvalonDock" Version="4.74.1" />
   </ItemGroup>
 ```
 
 - [ ] **Step 2: Restore and build**
 
 Run: `dotnet build ScadaBuilderV2.sln`
-Expected: Build succeeds (`Build succeeded.`), NuGet restores `Xceed.Wpf.AvalonDock` 5.2.26322.8434 (and its dependents) with no version conflicts.
+Expected: Build succeeds (`Build succeeded.`), NuGet restores `Dirkster.AvalonDock` 4.74.1 (and its dependents) with no version conflicts.
 
 - [ ] **Step 3: Run the full test suite to confirm no regression**
 
