@@ -2130,9 +2130,9 @@ public partial class MainWindow
           const widthRatioChange = Math.abs(geometry.width - modernDrag.startWidth) / modernDrag.startWidth;
           const heightRatioChange = Math.abs(geometry.height - modernDrag.startHeight) / modernDrag.startHeight;
           if (widthRatioChange >= heightRatioChange) {
-            geometry.height = geometry.width / modernDrag.aspectRatio;
+            geometry.height = Math.max(8, geometry.width / modernDrag.aspectRatio);
           } else {
-            geometry.width = geometry.height * modernDrag.aspectRatio;
+            geometry.width = Math.max(8, geometry.height * modernDrag.aspectRatio);
           }
           if (modernDrag.handle.includes('n')) {
             geometry.y = modernDrag.startY + (modernDrag.startHeight - geometry.height);
