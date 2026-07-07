@@ -2081,7 +2081,7 @@ public sealed class Ft100SceneExporterTests
             var html = await File.ReadAllTextAsync(htmlPath);
             StringAssert.Contains(html, $"<script src=\"../{runtimeFileName}\" defer></script>");
             Assert.IsFalse(html.Contains("<script>\n"),
-                "HTML must not contain inline <script> blocks from BuildRuntimeScript");
+                "HTML must not contain inline <script> blocks (BuildRuntimeScript was removed)");
         }
         finally
         {
@@ -2148,6 +2148,55 @@ public sealed class Ft100SceneExporterTests
 
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             StringAssert.Contains(html, "data-scada-state-config=\"");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public async Task ExportAsync_IncludesAnimationKeyframesInCss()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "animation_test.html");
+        await File.WriteAllTextAsync(
+            sourceHtmlPath,
+            """
+<!doctype html>
+<html>
+<body>
+  <div class="page"></div>
+</body>
+</html>
+""");
+
+        var scene = ScadaScene.CreateEmpty("testscene", "Animation Test", new(800, 600));
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+            var css = await File.ReadAllTextAsync(result.CssPath);
+
+            // Page-scoped @keyframes rules
+            var prefix = "ft100-testscene---scada-";
+            StringAssert.Contains(css, $"@keyframes {prefix}blink");
+            StringAssert.Contains(css, $"@keyframes {prefix}pulse");
+            StringAssert.Contains(css, $"@keyframes {prefix}halo");
+            StringAssert.Contains(css, $"@keyframes {prefix}spin");
+
+            // Animation CSS classes referencing page-scoped keyframes
+            StringAssert.Contains(css, ".scada-anim-blink");
+            StringAssert.Contains(css, ".scada-anim-pulse");
+            StringAssert.Contains(css, ".scada-anim-halo");
+            StringAssert.Contains(css, ".scada-anim-spin");
         }
         finally
         {
