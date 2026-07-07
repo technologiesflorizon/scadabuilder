@@ -359,13 +359,9 @@ public enum ScadaActionKind
     Show,
     Hide,
     ToggleVisibility,
-    SetClass,
-    RemoveClass,
-    ToggleClass,
     MountFragment,
     ClosePopup,
     TogglePopup,
-    WriteTag,
     ReadValue,
     WriteValue
 }
@@ -1557,128 +1553,6 @@ public sealed record ScadaScene(
                     action.Id,
                     StopPropagation: true,
             PreventDefault: false));
-    }
-
-    /// <summary>
-    /// Adds a model-backed Element+ event that applies the standard runtime border highlight class to a target object.
-    /// </summary>
-    /// <remarks>
-    /// Decisions: DEC-0021.
-    /// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
-    /// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
-    /// </remarks>
-    public ScadaScene WithObjectBorderEvent(
-        string elementId,
-        string triggerKeyOrRuntimeName,
-        ScadaActionKind actionKind,
-        string targetElementId)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(triggerKeyOrRuntimeName);
-        ArgumentException.ThrowIfNullOrWhiteSpace(targetElementId);
-
-        if (actionKind is not (ScadaActionKind.SetClass or ScadaActionKind.RemoveClass or ScadaActionKind.ToggleClass))
-        {
-            throw new InvalidOperationException($"Action kind '{actionKind}' is not an object border action.");
-        }
-
-        var trigger = ScadaEventRegistry.FindTrigger(triggerKeyOrRuntimeName) ??
-            throw new InvalidOperationException($"Event trigger '{triggerKeyOrRuntimeName}' is not registered.");
-        var functionName = actionKind switch
-        {
-            ScadaActionKind.RemoveClass => ScadaEventRegistry.HideBorderFunction,
-            ScadaActionKind.ToggleClass => ScadaEventRegistry.ToggleBorderFunction,
-            _ => ScadaEventRegistry.ShowBorderFunction
-        };
-        var action = new ScadaActionDefinition(
-            CreateActionId(elementId, trigger.RuntimeTrigger, functionName, targetElementId),
-            actionKind,
-            TargetElementId: targetElementId.Trim(),
-            ClassName: ScadaEventRegistry.RuntimeBorderHighlightClass);
-
-        return WithAction(action)
-            .WithObjectEvent(
-                elementId,
-                new ScadaObjectEventBinding(
-                    trigger.RuntimeTrigger,
-                    action.Id,
-                    StopPropagation: true,
-                    PreventDefault: false));
-    }
-
-    /// <summary>
-    /// Adds a model-backed Element+ event that applies a standard runtime visual effect class to a target object.
-    /// </summary>
-    /// <remarks>
-    /// Decisions: DEC-0025.
-    /// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
-    /// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
-    /// </remarks>
-    public ScadaScene WithVisualEffectEvent(
-        string elementId,
-        string triggerKeyOrRuntimeName,
-        string functionName,
-        string targetElementId)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(functionName);
-        if (!ScadaEventRegistry.TryResolveVisualEffectFunction(functionName, out var actionKind, out var className))
-        {
-            throw new InvalidOperationException($"Function '{functionName}' is not a standard visual effect action.");
-        }
-
-        ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(triggerKeyOrRuntimeName);
-        ArgumentException.ThrowIfNullOrWhiteSpace(targetElementId);
-
-        var trigger = ScadaEventRegistry.FindTrigger(triggerKeyOrRuntimeName) ??
-            throw new InvalidOperationException($"Event trigger '{triggerKeyOrRuntimeName}' is not registered.");
-        var action = new ScadaActionDefinition(
-            CreateActionId(elementId, trigger.RuntimeTrigger, functionName, targetElementId),
-            actionKind,
-            TargetElementId: targetElementId.Trim(),
-            ClassName: className);
-
-        return WithAction(action)
-            .WithObjectEvent(
-                elementId,
-                new ScadaObjectEventBinding(
-                    trigger.RuntimeTrigger,
-                    action.Id,
-                    StopPropagation: true,
-                    PreventDefault: false));
-    }
-
-    /// <summary>
-    /// Adds a model-backed Element+ event that writes a value to a TF100Web tag.
-    /// </summary>
-    /// <remarks>
-    /// Decisions: DEC-0011.
-    /// Contracts: docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md.
-    /// Tests: tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs, tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
-    /// </remarks>
-    public ScadaScene WithWriteTagEvent(string elementId, string triggerKeyOrRuntimeName, string tagId, string value)
-    {
-        ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
-        ArgumentException.ThrowIfNullOrWhiteSpace(triggerKeyOrRuntimeName);
-        ArgumentException.ThrowIfNullOrWhiteSpace(tagId);
-
-        var trigger = ScadaEventRegistry.FindTrigger(triggerKeyOrRuntimeName) ??
-            throw new InvalidOperationException($"Event trigger '{triggerKeyOrRuntimeName}' is not registered.");
-        var normalizedValue = value.Trim();
-        var action = new ScadaActionDefinition(
-            CreateActionId(elementId, trigger.RuntimeTrigger, ScadaEventRegistry.WriteTagFunction, $"{tagId}_{normalizedValue}"),
-            ScadaActionKind.WriteTag,
-            TagId: tagId.Trim(),
-            Value: normalizedValue);
-
-        return WithAction(action)
-            .WithObjectEvent(
-                elementId,
-                new ScadaObjectEventBinding(
-                    trigger.RuntimeTrigger,
-                    action.Id,
-                    StopPropagation: true,
-                    PreventDefault: false));
     }
 
     public ScadaScene WithoutLegacyTextOverrides(IEnumerable<string> sourceElementIds)
