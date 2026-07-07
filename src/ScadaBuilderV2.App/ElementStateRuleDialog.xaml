@@ -27,8 +27,50 @@
             <TextBlock Text="Nom" Foreground="{StaticResource MutedBrush}"/>
             <TextBox x:Name="NameTextBox" Margin="0,2,0,8"/>
             <TextBlock Text="Condition" Foreground="{StaticResource MutedBrush}"/>
-            <TextBox x:Name="ExpressionTextBox" Margin="0,2,0,2" AcceptsReturn="False"
-                     TextChanged="OnExpressionTextChanged"/>
+
+            <StackPanel Orientation="Horizontal" Margin="0,2,0,4">
+                <RadioButton x:Name="VariableModeRadio" Content="Variable"
+                             GroupName="ConditionMode" Margin="0,0,12,0"
+                             Checked="OnConditionModeChanged" Unchecked="OnConditionModeChanged"/>
+                <RadioButton x:Name="ExpressionModeRadio" Content="Expression"
+                             GroupName="ConditionMode"
+                             Checked="OnConditionModeChanged" Unchecked="OnConditionModeChanged"/>
+            </StackPanel>
+
+            <!-- Variable mode -->
+            <StackPanel x:Name="VariablePanel" Visibility="Collapsed">
+                <TextBlock Text="Tag" Foreground="{StaticResource MutedBrush}"/>
+                <ComboBox x:Name="TagComboBox" Margin="0,2,0,4"
+                          DisplayMemberPath="DisplayName"
+                          SelectionChanged="OnTagSelectionChanged"/>
+
+                <!-- Boolean tag: Si vrai / Si faux -->
+                <StackPanel x:Name="BoolPanel" Visibility="Collapsed" Margin="0,2,0,4">
+                    <TextBlock Text="Valeur" Foreground="{StaticResource MutedBrush}"/>
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton x:Name="BoolTrueRadio" Content="Si vrai"
+                                     GroupName="BoolValue" Margin="0,0,12,0"/>
+                        <RadioButton x:Name="BoolFalseRadio" Content="Si faux"
+                                     GroupName="BoolValue"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Numeric tag: operator + value -->
+                <StackPanel x:Name="NumericPanel" Visibility="Collapsed" Margin="0,2,0,4">
+                    <TextBlock Text="Operateur" Foreground="{StaticResource MutedBrush}"/>
+                    <ComboBox x:Name="OperatorComboBox" Margin="0,2,0,4"/>
+                    <TextBlock Text="Valeur" Foreground="{StaticResource MutedBrush}"/>
+                    <TextBox x:Name="ValueTextBox" Margin="0,2,0,4"
+                             TextChanged="OnVariableValueChanged"/>
+                </StackPanel>
+            </StackPanel>
+
+            <!-- Expression mode -->
+            <StackPanel x:Name="ExpressionPanel" Visibility="Collapsed">
+                <TextBox x:Name="ExpressionTextBox" Margin="0,2,0,2" AcceptsReturn="False"
+                         TextChanged="OnExpressionTextChanged"/>
+            </StackPanel>
+
             <TextBlock x:Name="ExpressionValidationText" TextWrapping="Wrap" Margin="0,0,0,8"/>
         </StackPanel>
 
