@@ -1567,6 +1567,25 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void RotationPresetContextMenuCommandsFallBackToTheCurrentSelectionWhenNoIdIsSent()
+    {
+        // Regression guard: the 'executeCommand' postMessage payload never includes a
+        // top-level Id (only commandId/items) - see the click handler that builds it.
+        // UpdateModernElementRotation must fall back to the currently selected scene
+        // object (like ShowModernElementProperties already does), or the context menu's
+        // 0/90/180/270 rotation presets silently no-op forever.
+        var source = ReadMainWindowSource();
+
+        var methodStart = source.IndexOf("private void UpdateModernElementRotation(string? id, double rotation)", StringComparison.Ordinal);
+        Assert.IsTrue(methodStart >= 0, "UpdateModernElementRotation method not found");
+        var methodEnd = source.IndexOf("private static double NormalizeRotation", methodStart, StringComparison.Ordinal);
+        Assert.IsTrue(methodEnd >= 0, "End of UpdateModernElementRotation not found");
+        var methodBody = source[methodStart..methodEnd];
+
+        StringAssert.Contains(methodBody, "_selectedSceneObject?.Id");
+    }
+
+    [TestMethod]
     public void ResizeAndRotateHideSelectionChromeWhileDraggingAndRestoreOnRelease()
     {
         // While the operator is actively resizing, rotating, or moving an Element+, the

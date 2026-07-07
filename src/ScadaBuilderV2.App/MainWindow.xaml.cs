@@ -4937,12 +4937,15 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private void UpdateModernElementRotation(string? id, double rotation)
     {
-        if (_activeScene is null || string.IsNullOrWhiteSpace(id))
+        var targetId = string.IsNullOrWhiteSpace(id)
+            ? _selectedSceneObject?.Id
+            : id;
+        if (_activeScene is null || string.IsNullOrWhiteSpace(targetId))
         {
             return;
         }
 
-        var current = _activeScene.FindElementRecursive(id);
+        var current = _activeScene.FindElementRecursive(targetId);
         if (current is null)
         {
             return;

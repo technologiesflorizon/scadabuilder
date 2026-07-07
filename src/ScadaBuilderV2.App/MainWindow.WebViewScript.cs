@@ -1115,6 +1115,28 @@ public partial class MainWindow
     wrapper.style.height = `${Math.max(8, geometry.height)}px`;
   }
 
+  function resizeCursorForHandle(handle, rotationDeg) {
+    const baseAngles = { n: 0, ne: 45, e: 90, se: 135, s: 180, sw: 225, w: 270, nw: 315 };
+    const base = baseAngles[handle];
+    if (base === undefined) {
+      return '';
+    }
+    let angle = (base + (rotationDeg || 0)) % 180;
+    if (angle < 0) {
+      angle += 180;
+    }
+    if (angle < 22.5 || angle >= 157.5) {
+      return 'ns-resize';
+    }
+    if (angle < 67.5) {
+      return 'nesw-resize';
+    }
+    if (angle < 112.5) {
+      return 'ew-resize';
+    }
+    return 'nwse-resize';
+  }
+
   function getWrapperRotation(wrapper) {
     const match = /rotate\(([-\d.]+)deg\)/.exec(wrapper.style.transform || '');
     return match ? parseFloat(match[1]) || 0 : 0;
@@ -1839,6 +1861,9 @@ public partial class MainWindow
         const grip = document.createElement('span');
         grip.className = 'scada-modern-handle';
         grip.dataset.handle = handle;
+        if (handle !== 'ne') {
+          grip.style.cursor = resizeCursorForHandle(handle, Number(style.Rotation ?? 0));
+        }
         wrapper.appendChild(grip);
       });
 
@@ -2321,6 +2346,12 @@ public partial class MainWindow
         if (draggedBadge) {
           draggedBadge.style.transform = `rotate(${-normalized}deg)`;
         }
+        modernDrag.wrapper.querySelectorAll(':scope > .scada-modern-handle').forEach(grip => {
+          const handleName = grip.dataset.handle;
+          if (handleName !== 'ne') {
+            grip.style.cursor = resizeCursorForHandle(handleName, normalized);
+          }
+        });
         updateRotationBadge(event.clientX, event.clientY, normalized);
       } else if (modernDrag.mode === 'move') {
         (modernDrag.items || []).forEach(item => {
