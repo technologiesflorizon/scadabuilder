@@ -194,6 +194,41 @@ public sealed class RuntimeJsModulesTests
     }
 
     /// <summary>
+    /// The input-edit-guard.js module must be embedded and contain
+    /// the EDIT_TIMEOUT constant (30000) and the scada-input-edit-overlay class name.
+    /// </summary>
+    [TestMethod]
+    public void InputEditGuardModule_IsEmbeddedResource()
+    {
+        var resourceNames = RenderingAssembly.GetManifestResourceNames();
+        var match = resourceNames.FirstOrDefault(name =>
+            name.EndsWith("input-edit-guard.js", StringComparison.OrdinalIgnoreCase));
+
+        Assert.IsNotNull(match, "input-edit-guard.js must be an embedded resource in ScadaBuilderV2.Rendering");
+
+        var source = ReadEmbeddedResource("input-edit-guard.js");
+        StringAssert.Contains(source, "30000");
+        StringAssert.Contains(source, "scada-input-edit-overlay");
+    }
+
+    /// <summary>
+    /// The confirmation-modal.js module must be embedded and expose
+    /// the showConfirmation function on window.ScadaRuntime.
+    /// </summary>
+    [TestMethod]
+    public void ConfirmationModalModule_IsEmbeddedResource()
+    {
+        var resourceNames = RenderingAssembly.GetManifestResourceNames();
+        var match = resourceNames.FirstOrDefault(name =>
+            name.EndsWith("confirmation-modal.js", StringComparison.OrdinalIgnoreCase));
+
+        Assert.IsNotNull(match, "confirmation-modal.js must be an embedded resource in ScadaBuilderV2.Rendering");
+
+        var source = ReadEmbeddedResource("confirmation-modal.js");
+        StringAssert.Contains(source, "showConfirmation");
+    }
+
+    /// <summary>
     /// Reads an embedded JS resource from the Rendering assembly.
     /// </summary>
     private static string ReadEmbeddedResource(string resourceFileName)
