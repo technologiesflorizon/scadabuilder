@@ -1009,7 +1009,9 @@
                                         <TabItem Header="Etat">
                                             <StackPanel Margin="8">
                                                 <TextBlock Text="Evenement d'affichage d'etat"/>
-                                                <ListBox x:Name="StateRulesListBox" Height="220" SelectionMode="Single" Margin="0,6,0,0"/>
+                                                <ListBox x:Name="StateRulesListBox" Height="220" SelectionMode="Single" Margin="0,6,0,0"
+                                                         DisplayMemberPath="Name"
+                                                         MouseDoubleClick="OnStateRuleDoubleClick"/>
                                                 <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
                                                     <Button Content="+ Ajouter" Click="OnAddStateRuleClick" Margin="0,0,6,0"/>
                                                     <Button Content="Monter" Click="OnMoveStateRuleUpClick" Margin="0,0,6,0"/>
@@ -1023,7 +1025,9 @@
                                         <TabItem Header="Commande">
                                             <StackPanel Margin="8">
                                                 <TextBlock Text="Evenement de commande"/>
-                                                <ListBox x:Name="CommandsListBox" Height="240" SelectionMode="Single" Margin="0,6,0,6"/>
+                                                <ListBox x:Name="CommandsListBox" Height="240" SelectionMode="Single" Margin="0,6,0,6"
+                                                         DisplayMemberPath="Name"
+                                                         MouseDoubleClick="OnCommandDoubleClick"/>
                                                 <StackPanel Orientation="Horizontal">
                                                     <Button Content="+ Ajouter" Click="OnAddCommandClick" Margin="0,0,6,0"/>
                                                     <Button Content="Editer" Click="OnEditCommandClick" Margin="0,0,6,0"/>

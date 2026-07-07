@@ -5664,6 +5664,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         RefreshStateAndCommandTabs();
     }
 
+    private void OnStateRuleDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        OnEditStateRuleClick(sender, e);
+    }
+
     private void OnEditStateRuleClick(object sender, RoutedEventArgs e)
     {
         if (_activeScene is null || _selectedSceneObject is null)
@@ -5789,6 +5794,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         };
         _activeScene = _activeScene.WithElementCommandConfig(_selectedSceneObject.Id, config);
         RefreshStateAndCommandTabs();
+    }
+
+    private void OnCommandDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        OnEditCommandClick(sender, e);
     }
 
     private void OnEditCommandClick(object sender, RoutedEventArgs e)

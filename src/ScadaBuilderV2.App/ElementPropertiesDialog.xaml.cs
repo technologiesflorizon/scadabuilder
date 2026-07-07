@@ -70,6 +70,11 @@ public partial class ElementPropertiesDialog : Window
         RefreshStateAndCommandLists();
     }
 
+    private void OnStateRuleDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        OnEditStateRuleClick(sender, e);
+    }
+
     private void OnEditStateRuleClick(object sender, RoutedEventArgs e)
     {
         if (StateRulesListBox.SelectedItem is not ScadaStateRule selected || SaveStateConfig is null)
@@ -140,6 +145,11 @@ public partial class ElementPropertiesDialog : Window
         };
         currentElement = SaveCommandConfig(config);
         RefreshStateAndCommandLists();
+    }
+
+    private void OnCommandDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        OnEditCommandClick(sender, e);
     }
 
     private void OnEditCommandClick(object sender, RoutedEventArgs e)
