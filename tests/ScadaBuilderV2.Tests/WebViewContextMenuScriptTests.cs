@@ -1685,6 +1685,49 @@ public sealed class WebViewContextMenuScriptTests
             "object.resize must be gated on the selection having no children (not a group/container)");
     }
 
+    [TestMethod]
+    public void ApplyAxisResizeUsesOppositeEdgeAnchoredFormulaPerHandleAndCorrectsForRotation()
+    {
+        var source = ReadMainWindowSource();
+
+        var start = source.IndexOf("function applyAxisResize(startGeometry, handle, newValue, rotationDeg)", StringComparison.Ordinal);
+        Assert.IsTrue(start >= 0, "applyAxisResize not found");
+        var end = source.IndexOf("function pickVisualHandle(wrapper, preferenceOrder, axis, exclude)", start, StringComparison.Ordinal);
+        Assert.IsTrue(end >= 0, "pickVisualHandle not found after applyAxisResize");
+        var body = source[start..end];
+
+        StringAssert.Contains(body, "geometry.x = startGeometry.x + startGeometry.width - newValue;",
+            "handle 'w' must keep the right edge fixed (matches the drag-resize clampNearAxis formula)");
+        StringAssert.Contains(body, "geometry.y = startGeometry.y + startGeometry.height - newValue;",
+            "handle 'n' must keep the bottom edge fixed (matches the drag-resize clampNearAxis formula)");
+
+        // Rotation-anchor correction: must match the same fx/fy + rotate-around-center
+        // technique already proven by the drag-resize path (MainWindow.WebViewScript.cs
+        // pointermove handler), so the edge opposite the edited handle stays visually
+        // fixed on screen even when the element is rotated.
+        StringAssert.Contains(body, "const fx = handle === 'w' ? 1 : handle === 'e' ? 0 : 0.5;");
+        StringAssert.Contains(body, "const fy = handle === 'n' ? 1 : handle === 's' ? 0 : 0.5;");
+        StringAssert.Contains(body, "geometry.x += screenAnchorOld.x - screenAnchorNew.x;");
+        StringAssert.Contains(body, "geometry.y += screenAnchorOld.y - screenAnchorNew.y;");
+    }
+
+    [TestMethod]
+    public void PickVisualHandlePrefersEarlierPreferenceOnNearTieAndSkipsExcluded()
+    {
+        var source = ReadMainWindowSource();
+
+        var start = source.IndexOf("function pickVisualHandle(wrapper, preferenceOrder, axis, exclude)", StringComparison.Ordinal);
+        Assert.IsTrue(start >= 0, "pickVisualHandle not found");
+        var end = source.IndexOf("function getSceneMoveWrapper(wrapper)", start, StringComparison.Ordinal);
+        Assert.IsTrue(end >= 0, "getSceneMoveWrapper not found after pickVisualHandle");
+        var body = source[start..end];
+
+        StringAssert.Contains(body, "if (handle === exclude) return;",
+            "must be able to skip a specific handle (used when north and west would otherwise resolve to the same handle)");
+        StringAssert.Contains(body, "if (center < bestValue - 0.01)",
+            "tie-break must keep the earlier (preferred) handle on a near-exact tie, not the later one");
+    }
+
     private static string ReadMainWindowSource()
     {
         // MainWindow code-behind is split into behavior-preserving partial-class files

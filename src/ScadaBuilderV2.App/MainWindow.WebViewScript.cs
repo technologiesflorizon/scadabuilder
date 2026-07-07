@@ -1147,6 +1147,64 @@ public partial class MainWindow
     return { pos: startPos + clampedDelta, size: startSize - clampedDelta };
   }
 
+  function applyAxisResize(startGeometry, handle, newValue, rotationDeg) {
+    const geometry = { ...startGeometry };
+    if (handle === 'w') {
+      geometry.width = newValue;
+      geometry.x = startGeometry.x + startGeometry.width - newValue;
+    } else if (handle === 'e') {
+      geometry.width = newValue;
+    } else if (handle === 'n') {
+      geometry.height = newValue;
+      geometry.y = startGeometry.y + startGeometry.height - newValue;
+    } else if (handle === 's') {
+      geometry.height = newValue;
+    }
+
+    if (rotationDeg) {
+      const rotationRad = rotationDeg * Math.PI / 180;
+      const cosR = Math.cos(rotationRad);
+      const sinR = Math.sin(rotationRad);
+      const fx = handle === 'w' ? 1 : handle === 'e' ? 0 : 0.5;
+      const fy = handle === 'n' ? 1 : handle === 's' ? 0 : 0.5;
+      const oldCenterX = startGeometry.x + startGeometry.width / 2;
+      const oldCenterY = startGeometry.y + startGeometry.height / 2;
+      const newCenterX = geometry.x + geometry.width / 2;
+      const newCenterY = geometry.y + geometry.height / 2;
+      const anchorOldX = startGeometry.x + fx * startGeometry.width;
+      const anchorOldY = startGeometry.y + fy * startGeometry.height;
+      const anchorNewX = geometry.x + fx * geometry.width;
+      const anchorNewY = geometry.y + fy * geometry.height;
+      const rotateAroundCenter = (px, py, cx, cy) => ({
+        x: cx + (px - cx) * cosR - (py - cy) * sinR,
+        y: cy + (px - cx) * sinR + (py - cy) * cosR
+      });
+      const screenAnchorOld = rotateAroundCenter(anchorOldX, anchorOldY, oldCenterX, oldCenterY);
+      const screenAnchorNew = rotateAroundCenter(anchorNewX, anchorNewY, newCenterX, newCenterY);
+      geometry.x += screenAnchorOld.x - screenAnchorNew.x;
+      geometry.y += screenAnchorOld.y - screenAnchorNew.y;
+    }
+
+    return geometry;
+  }
+
+  function pickVisualHandle(wrapper, preferenceOrder, axis, exclude) {
+    let best = null;
+    let bestValue = Infinity;
+    preferenceOrder.forEach(handle => {
+      if (handle === exclude) return;
+      const el = wrapper.querySelector(`:scope > .scada-modern-handle[data-handle="${handle}"]`);
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const center = axis === 'y' ? rect.top + rect.height / 2 : rect.left + rect.width / 2;
+      if (center < bestValue - 0.01) {
+        bestValue = center;
+        best = handle;
+      }
+    });
+    return best;
+  }
+
   function getSceneMoveWrapper(wrapper) {
     if (!wrapper?.classList?.contains('scada-modern-child')) {
       return wrapper;
