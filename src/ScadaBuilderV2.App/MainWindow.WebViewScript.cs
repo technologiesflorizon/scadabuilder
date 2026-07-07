@@ -337,6 +337,8 @@ public partial class MainWindow
   let sourceDrag = null;
   let modernDrag = null;
   let lastObjectContextTargetId = null;
+  let activeResizeEntry = null;
+  let pendingResizeReopenId = null;
   let activeTextEditor = null;
 
   document.querySelectorAll('button.layer[disabled], input.layer[disabled], select.layer[disabled], textarea.layer[disabled]')
@@ -1962,6 +1964,12 @@ public partial class MainWindow
         event.stopPropagation();
         const sceneMoveWrapper = getSceneMoveWrapper(wrapper);
         const sceneMoveId = sceneMoveWrapper?.dataset?.id || element.Id;
+        if (activeResizeEntry) {
+          if (activeResizeEntry.targetId === sceneMoveId) {
+            pendingResizeReopenId = sceneMoveId;
+          }
+          activeResizeEntry.close();
+        }
         const preserveModernSelection = !event.ctrlKey && !event.shiftKey && selectedModernIds.has(sceneMoveId);
         if (event.ctrlKey || event.shiftKey) {
           toggleModernElementInSelection(sceneMoveId);
@@ -2401,8 +2409,14 @@ public partial class MainWindow
   }
 
   function beginResizeEntry() {
-    if (!lastObjectContextTargetId) return;
-    const targetId = lastObjectContextTargetId;
+    openResizeEntryForId(lastObjectContextTargetId);
+  }
+
+  function openResizeEntryForId(targetId) {
+    if (!targetId) return;
+    if (activeResizeEntry) {
+      activeResizeEntry.close();
+    }
     const wrapper = document.querySelector(`.scada-modern-element[data-id="${CSS.escape(targetId)}"]`);
     if (!wrapper) return;
 
@@ -2452,6 +2466,9 @@ public partial class MainWindow
         delete input.dataset.handle;
         groupFor(input).style.display = 'none';
       });
+      if (activeResizeEntry && activeResizeEntry.targetId === targetId) {
+        activeResizeEntry = null;
+      }
     };
 
     const onBlur = () => {
@@ -2503,6 +2520,16 @@ public partial class MainWindow
 
     north.focus();
     north.select();
+
+    activeResizeEntry = { targetId, close: closeBoth };
+  }
+
+  function reopenResizeEntryIfPending() {
+    if (pendingResizeReopenId) {
+      const reopenId = pendingResizeReopenId;
+      pendingResizeReopenId = null;
+      openResizeEntryForId(reopenId);
+    }
   }
 
   document.addEventListener('pointermove', event => {
@@ -2718,6 +2745,7 @@ public partial class MainWindow
         hideRotationBadge();
         delete modernDrag.wrapper.dataset.transforming;
         modernDrag = null;
+        reopenResizeEntryIfPending();
         event.preventDefault();
         event.stopPropagation();
         return;
@@ -2765,6 +2793,7 @@ public partial class MainWindow
           geometry);
       }
       modernDrag = null;
+      reopenResizeEntryIfPending();
       event.preventDefault();
       event.stopPropagation();
       return;
