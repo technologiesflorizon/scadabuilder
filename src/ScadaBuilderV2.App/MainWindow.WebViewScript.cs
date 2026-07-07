@@ -137,6 +137,7 @@ public partial class MainWindow
       outline: 2px solid #2090a0;
       outline-offset: 2px;
       box-shadow: 0 0 0 4px rgba(32,144,160,.20), 0 8px 22px rgba(15,42,48,.18);
+      z-index: 999999 !important;
     }
     .scada-modern-element[data-transforming="true"] {
       outline: none !important;

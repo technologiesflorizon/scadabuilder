@@ -1535,6 +1535,25 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void SelectedElementRisesAboveAllOthersRegardlessOfRenderOrder()
+    {
+        // Regression guard: each element's z-index is its RenderIndex, and the
+        // selection outline/handles are children of that same wrapper - a child can
+        // never paint above a sibling wrapper with a higher z-index. Elevating the
+        // whole wrapper's z-index (via !important, so it beats the inline
+        // RenderIndex-based z-index) while selected is the only way to guarantee the
+        // selection chrome is visible on top, regardless of the element's order.
+        var source = ReadMainWindowSource();
+
+        var ruleStart = source.IndexOf(".scada-modern-element[data-selected=\"true\"] {", StringComparison.Ordinal);
+        Assert.IsTrue(ruleStart >= 0, "data-selected CSS rule not found");
+        var ruleEnd = source.IndexOf("}", ruleStart, StringComparison.Ordinal);
+        var ruleBody = source[ruleStart..ruleEnd];
+
+        StringAssert.Contains(ruleBody, "z-index: 999999 !important;");
+    }
+
+    [TestMethod]
     public void ResizeAndRotateHideSelectionChromeWhileDraggingAndRestoreOnRelease()
     {
         // While the operator is actively resizing, rotating, or moving an Element+, the
