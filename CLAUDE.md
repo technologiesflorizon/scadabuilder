@@ -2,6 +2,42 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Execution behaviour
+
+When I give you a task, you must execute it without producing intermediate messages.
+
+You must not:
+
+explain what you are going to do;
+show a plan unless I explicitly ask for one;
+comment on your progress;
+generate intermediate prompts;
+ask for confirmation at every step;
+interrupt execution for non-blocking details.
+
+You must continue working silently until one of the following situations occurs:
+
+The task is complete.
+An error prevents you from continuing.
+Essential information is missing.
+A critical ambiguity prevents you from making a safe decision.
+A user decision is absolutely required.
+A technical, logical, or context limitation prevents the task from being completed.
+
+In all other cases, continue executing without interrupting me.
+
+Only at the end of the task, provide a concise final report containing:
+
+what was done;
+the files created or modified;
+any problems encountered, if applicable;
+what remains to be done, only if relevant.
+
+Do not write unnecessary progress messages.
+Do not ask me to validate normal steps.
+Do not turn execution into a conversation.
+Execute the task, then report the final result.
+
 ## What this is
 
 SCADA Builder V2 is a Windows (WPF / .NET 8) desktop authoring tool for industrial SCADA/HMI screens. It imports legacy SCADA HTML pages, lets the user re-author them as "Element+" scene objects on a WebView2-hosted canvas, and exports normalized `.sb2` packages consumed by the **TF100Web** runtime. It explicitly competes with ScadaPlant — treat all UI/editor/export work as production-grade, not prototype (see `docs/AGENTS.md` §6).
