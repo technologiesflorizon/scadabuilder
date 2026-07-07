@@ -1,6 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <EmbeddedResource Include="Runtime\expression-evaluator.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ScadaBuilderV2.Domain\ScadaBuilderV2.Domain.csproj" />
   </ItemGroup>
 
