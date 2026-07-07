@@ -37,9 +37,9 @@ public sealed class ScadaExprNodeTests
 
         var json = JsonSerializer.Serialize(expr);
 
-        StringAssert.Contains(json, "\"$type\":\"binary\"");
-        StringAssert.Contains(json, "\"$type\":\"tagRef\"");
-        StringAssert.Contains(json, "\"$type\":\"literalNumber\"");
+        StringAssert.Contains(json, "\"type\":\"binary\"");
+        StringAssert.Contains(json, "\"type\":\"tagRef\"");
+        StringAssert.Contains(json, "\"type\":\"literalNumber\"");
 
         var deserialized = JsonSerializer.Deserialize<ScadaExprNode>(json);
 
