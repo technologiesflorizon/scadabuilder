@@ -67,7 +67,7 @@ public partial class MainWindow
       padding-left: 9px;
     }
     #scada-extract-menu button.checked::before {
-      content: '\2713 ';
+      content: '✓ ';
     }
     #scada-extract-menu .submenu {
       position: relative;
