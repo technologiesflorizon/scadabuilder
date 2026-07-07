@@ -11,6 +11,16 @@ public partial class ElementStateRuleDialog : Window
     private readonly ScadaTagCatalog? _tagCatalog;
     private readonly string _ruleId;
 
+    private static readonly OperatorItem[] _operatorItems =
+    [
+        new OperatorItem("<>", "!="),
+        new OperatorItem(">=", ">="),
+        new OperatorItem(">", ">"),
+        new OperatorItem("=", "=="),
+        new OperatorItem("<", "<"),
+        new OperatorItem("<=", "<=")
+    ];
+
     public ElementStateRuleDialog(ScadaStateRule? existingRule, ScadaTagCatalog? tagCatalog)
     {
         InitializeComponent();
@@ -30,6 +40,18 @@ public partial class ElementStateRuleDialog : Window
     }
 
     public ScadaStateRule? Result { get; private set; }
+
+    private void PopulateTagComboBox()
+    {
+        var items = (_tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
+            .Where(tag => tag.Enabled)
+            .OrderBy(tag => tag.DisplayName, StringComparer.CurrentCultureIgnoreCase)
+            .Select(tag => new TagItem(tag.Id, tag.AuthoringLabel))
+            .ToArray();
+        TagComboBox.ItemsSource = items;
+        if (items.Length > 0)
+            TagComboBox.SelectedIndex = 0;
+    }
 
     private void LoadEffect(ScadaEffectBlock effect)
     {
@@ -120,6 +142,37 @@ public partial class ElementStateRuleDialog : Window
             Animation: AnimationEnabledCheckBox.IsChecked == true ? (ScadaAnimation?)AnimationComboBox.SelectedItem : null);
     }
 
+    private static bool IsBooleanDatatype(string? datatype)
+    {
+        return !string.IsNullOrWhiteSpace(datatype) &&
+            (string.Equals(datatype, "bool", StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(datatype, "boolean", StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(datatype, "digital", StringComparison.OrdinalIgnoreCase));
+    }
+
+    private ScadaTagDefinition? SelectedTag =>
+        (TagComboBox.SelectedItem as TagItem) is { } item
+            ? (_tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
+                .FirstOrDefault(t => t.Id == item.TagId)
+            : null;
+
+    private string BuildExpressionFromVariable()
+    {
+        var tag = SelectedTag;
+        if (tag is null) return string.Empty;
+
+        if (IsBooleanDatatype(tag.Datatype))
+        {
+            var value = BoolTrueRadio.IsChecked == true ? "true" : "false";
+            return $"{{{tag.Id}}} == {value}";
+        }
+
+        var op = (OperatorComboBox.SelectedItem as OperatorItem)?.Expression ?? "==";
+        var val = ValueTextBox.Text.Trim();
+        if (string.IsNullOrWhiteSpace(val)) val = "0";
+        return $"{{{tag.Id}}} {op} {val}";
+    }
+
     private void OnSaveClick(object sender, RoutedEventArgs e)
     {
         var validation = ScadaExpressionValidator.Validate(ExpressionTextBox.Text, _tagCatalog);
@@ -137,5 +190,11 @@ public partial class ElementStateRuleDialog : Window
             Effect: BuildEffectFromUi());
 
         DialogResult = true;
+    }
+
+    private sealed record TagItem(string TagId, string DisplayName);
+    private sealed record OperatorItem(string Display, string Expression)
+    {
+        public override string ToString() => Display;
     }
 }
