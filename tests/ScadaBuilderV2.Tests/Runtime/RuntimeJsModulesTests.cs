@@ -171,6 +171,7 @@ public sealed class RuntimeJsModulesTests
         StringAssert.Contains(source, "WriteTag");
         StringAssert.Contains(source, "Navigate");
         StringAssert.Contains(source, "Toggle");
+        StringAssert.Contains(source, "confirm");
     }
 
     /// <summary>
