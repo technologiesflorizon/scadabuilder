@@ -29,6 +29,12 @@ public partial class ElementStateRuleDialog : Window
 
         AnimationComboBox.ItemsSource = Enum.GetValues<ScadaAnimation>();
 
+        PopulateTagComboBox();
+        OperatorComboBox.ItemsSource = _operatorItems;
+        OperatorComboBox.SelectedIndex = 3; // "=" par defaut
+        BoolTrueRadio.IsChecked = true;
+        VariableModeRadio.IsChecked = true; // Mode Variable par defaut
+
         if (existingRule is not null)
         {
             NameTextBox.Text = existingRule.Name;
@@ -104,6 +110,63 @@ public partial class ElementStateRuleDialog : Window
     private void OnEffectToggleChanged(object sender, RoutedEventArgs e) => UpdatePreview();
 
     private void OnExpressionTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e) => ValidateExpression();
+
+    private void OnConditionModeChanged(object sender, RoutedEventArgs e)
+    {
+        var isVariable = VariableModeRadio.IsChecked == true;
+        VariablePanel.Visibility = isVariable ? Visibility.Visible : Visibility.Collapsed;
+        ExpressionPanel.Visibility = isVariable ? Visibility.Collapsed : Visibility.Visible;
+
+        if (isVariable)
+            OnTagSelectionChanged(sender, e);
+        else
+            ValidateExpression();
+    }
+
+    private void OnTagSelectionChanged(object sender, RoutedEventArgs e)
+    {
+        var tag = SelectedTag;
+        if (tag is null)
+        {
+            BoolPanel.Visibility = Visibility.Collapsed;
+            NumericPanel.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        if (IsBooleanDatatype(tag.Datatype))
+        {
+            BoolPanel.Visibility = Visibility.Visible;
+            NumericPanel.Visibility = Visibility.Collapsed;
+        }
+        else
+        {
+            BoolPanel.Visibility = Visibility.Collapsed;
+            NumericPanel.Visibility = Visibility.Visible;
+        }
+
+        UpdateValidationFromVariable();
+    }
+
+    private void OnVariableValueChanged(object sender, System.Windows.Controls.TextChangedEventArgs e) =>
+        UpdateValidationFromVariable();
+
+    private void UpdateValidationFromVariable()
+    {
+        var expression = BuildExpressionFromVariable();
+        if (string.IsNullOrWhiteSpace(expression))
+        {
+            ExpressionValidationText.Text = "";
+            return;
+        }
+
+        var result = ScadaExpressionValidator.Validate(expression, _tagCatalog);
+        ExpressionValidationText.Text = result.IsValid
+            ? "Condition valide."
+            : string.Join(" ", result.Errors);
+        ExpressionValidationText.Foreground = result.IsValid
+            ? System.Windows.Media.Brushes.SeaGreen
+            : System.Windows.Media.Brushes.Firebrick;
+    }
 
     private void ValidateExpression()
     {
