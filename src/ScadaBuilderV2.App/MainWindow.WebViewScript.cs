@@ -238,16 +238,31 @@ public partial class MainWindow
       font: 12px "Segoe UI", sans-serif;
       z-index: 9999;
     }
-    .scada-resize-input {
-      position: fixed;
+    .scada-resize-input-group {
+      position: absolute;
       display: none;
-      width: 64px;
+      align-items: center;
+      gap: 4px;
       padding: 3px 6px;
       border: 1px solid #2090a0;
       border-radius: 4px;
+      background: #ffffff;
       font: 12px "Segoe UI", sans-serif;
-      z-index: 9999;
+      z-index: 2147483647;
       transform: translate(-50%, -50%);
+    }
+    .scada-resize-input-label {
+      color: #2090a0;
+      font-weight: 600;
+      pointer-events: none;
+    }
+    .scada-resize-input {
+      width: 48px;
+      border: 0;
+      outline: 0;
+      padding: 0;
+      font: 12px "Segoe UI", sans-serif;
+      background: transparent;
     }
     body.scada-placement-active,
     body.scada-placement-active * {
@@ -2359,16 +2374,29 @@ public partial class MainWindow
   }
 
   function ensureResizeInputs() {
-    return ['scada-resize-input-north', 'scada-resize-input-west'].map(id => {
-      let input = document.getElementById(id);
-      if (!input) {
-        input = document.createElement('input');
-        input.id = id;
+    const surface = getPageSurface();
+    const specs = [
+      { groupId: 'scada-resize-group-north', inputId: 'scada-resize-input-north', label: 'Y:' },
+      { groupId: 'scada-resize-group-west', inputId: 'scada-resize-input-west', label: 'X:' }
+    ];
+    return specs.map(spec => {
+      let group = document.getElementById(spec.groupId);
+      if (!group) {
+        group = document.createElement('div');
+        group.id = spec.groupId;
+        group.className = 'scada-resize-input-group';
+        const label = document.createElement('span');
+        label.className = 'scada-resize-input-label';
+        label.textContent = spec.label;
+        const input = document.createElement('input');
+        input.id = spec.inputId;
         input.type = 'text';
         input.className = 'scada-resize-input';
-        document.body.appendChild(input);
+        group.appendChild(label);
+        group.appendChild(input);
+        surface.appendChild(group);
       }
-      return input;
+      return { group, input: document.getElementById(spec.inputId) };
     });
   }
 
@@ -2385,7 +2413,10 @@ public partial class MainWindow
     }
     if (!northHandleName || !westHandleName) return;
 
-    const [north, west] = ensureResizeInputs();
+    const [northPair, westPair] = ensureResizeInputs();
+    const north = northPair.input;
+    const west = westPair.input;
+    const groupFor = input => (input === north ? northPair.group : westPair.group);
     const liveTypingPattern = /^\d{0,5}(\.\d?)?$/;
 
     const configureInput = (input, handleName) => {
@@ -2393,13 +2424,16 @@ public partial class MainWindow
       if (!currentWrapper) return;
       const handleEl = currentWrapper.querySelector(`:scope > .scada-modern-handle[data-handle="${handleName}"]`);
       if (!handleEl) return;
-      const rect = handleEl.getBoundingClientRect();
+      const surface = getPageSurface();
+      const surfaceRect = surface.getBoundingClientRect();
+      const handleRect = handleEl.getBoundingClientRect();
       const geometry = readWrapperGeometry(currentWrapper);
       const currentValue = (handleName === 'n' || handleName === 's') ? geometry.height : geometry.width;
+      const group = groupFor(input);
       input.value = Math.round(currentValue).toString();
-      input.style.left = `${rect.left + rect.width / 2}px`;
-      input.style.top = `${rect.top + rect.height / 2}px`;
-      input.style.display = 'block';
+      group.style.left = `${handleRect.left - surfaceRect.left + surface.scrollLeft + handleRect.width / 2}px`;
+      group.style.top = `${handleRect.top - surfaceRect.top + surface.scrollTop + handleRect.height / 2}px`;
+      group.style.display = 'flex';
       input.dataset.handle = handleName;
     };
 
@@ -2415,8 +2449,8 @@ public partial class MainWindow
         input.removeEventListener('input', onInput);
         input.removeEventListener('keydown', onKeyDown);
         input.removeEventListener('blur', onBlur);
-        input.style.display = 'none';
         delete input.dataset.handle;
+        groupFor(input).style.display = 'none';
       });
     };
 
