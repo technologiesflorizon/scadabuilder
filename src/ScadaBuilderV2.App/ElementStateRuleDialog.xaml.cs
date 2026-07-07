@@ -38,11 +38,82 @@ public partial class ElementStateRuleDialog : Window
         if (existingRule is not null)
         {
             NameTextBox.Text = existingRule.Name;
-            ExpressionTextBox.Text = existingRule.Expression.Source;
+            RestoreExpression(existingRule.Expression.Source);
             LoadEffect(existingRule.Effect);
         }
 
         ValidateExpression();
+    }
+
+    private void RestoreExpression(string source)
+    {
+        if (string.IsNullOrWhiteSpace(source))
+        {
+            VariableModeRadio.IsChecked = true;
+            return;
+        }
+
+        // Try to match: {TagId} == true  or  {TagId} == false
+        var boolMatch = System.Text.RegularExpressions.Regex.Match(
+            source, @"^\{(.+?)}\s*==\s*(true|false)$",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (boolMatch.Success)
+        {
+            VariableModeRadio.IsChecked = true;
+            SelectTagById(boolMatch.Groups[1].Value);
+            BoolTrueRadio.IsChecked = string.Equals(boolMatch.Groups[2].Value, "true", StringComparison.OrdinalIgnoreCase);
+            BoolFalseRadio.IsChecked = !BoolTrueRadio.IsChecked;
+            return;
+        }
+
+        // Try to match: {TagId} <op> <value>  (numeric comparison)
+        var numericMatch = System.Text.RegularExpressions.Regex.Match(
+            source, @"^\{(.+?)}\s*(!=|>=|>|==|<|<=)\s*(.+)$");
+        if (numericMatch.Success)
+        {
+            VariableModeRadio.IsChecked = true;
+            SelectTagById(numericMatch.Groups[1].Value);
+            ValueTextBox.Text = numericMatch.Groups[3].Value.Trim();
+            var exprOp = numericMatch.Groups[2].Value;
+            for (int i = 0; i < _operatorItems.Length; i++)
+            {
+                if (_operatorItems[i].Expression == exprOp)
+                {
+                    OperatorComboBox.SelectedIndex = i;
+                    break;
+                }
+            }
+            return;
+        }
+
+        // Try to match: bare {TagId}
+        var bareMatch = System.Text.RegularExpressions.Regex.Match(source, @"^\{([^}]+)\}$");
+        if (bareMatch.Success)
+        {
+            VariableModeRadio.IsChecked = true;
+            SelectTagById(bareMatch.Groups[1].Value);
+            return;
+        }
+
+        // Fallback: Expression mode
+        ExpressionModeRadio.IsChecked = true;
+        ExpressionTextBox.Text = source;
+    }
+
+    private void SelectTagById(string tagId)
+    {
+        for (int i = 0; i < TagComboBox.Items.Count; i++)
+        {
+            if (TagComboBox.Items[i] is TagItem item &&
+                string.Equals(item.TagId, tagId, StringComparison.Ordinal))
+            {
+                TagComboBox.SelectedIndex = i;
+                return;
+            }
+        }
+        // Tag non trouve dans le catalogue : fallback Expression
+        ExpressionModeRadio.IsChecked = true;
+        ExpressionTextBox.Text = $"{{{tagId}}}";
     }
 
     public ScadaStateRule? Result { get; private set; }
@@ -238,10 +309,17 @@ public partial class ElementStateRuleDialog : Window
 
     private void OnSaveClick(object sender, RoutedEventArgs e)
     {
-        var validation = ScadaExpressionValidator.Validate(ExpressionTextBox.Text, _tagCatalog);
+        var source = VariableModeRadio.IsChecked == true
+            ? BuildExpressionFromVariable()
+            : ExpressionTextBox.Text;
+
+        var validation = ScadaExpressionValidator.Validate(source, _tagCatalog);
         if (!validation.IsValid || string.IsNullOrWhiteSpace(NameTextBox.Text))
         {
-            ValidateExpression();
+            ExpressionValidationText.Text = string.IsNullOrWhiteSpace(NameTextBox.Text)
+                ? "Le nom est requis."
+                : string.Join(" ", validation.Errors);
+            ExpressionValidationText.Foreground = System.Windows.Media.Brushes.Firebrick;
             return;
         }
 
@@ -249,7 +327,7 @@ public partial class ElementStateRuleDialog : Window
             _ruleId,
             NameTextBox.Text.Trim(),
             Enabled: true,
-            Expression: ScadaExpression.FromSource(ExpressionTextBox.Text),
+            Expression: ScadaExpression.FromSource(source),
             Effect: BuildEffectFromUi());
 
         DialogResult = true;
