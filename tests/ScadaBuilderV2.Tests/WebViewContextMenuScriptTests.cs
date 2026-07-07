@@ -1586,6 +1586,31 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void RotatedResizeCompensatesPositionSoTheOppositeAnchorStaysScreenFixed()
+    {
+        // Regression guard: transform-origin is 'center center', so resizing a rotated
+        // element (which moves its own center) makes the whole shape visually slide
+        // even when only one edge/corner was meant to move - a symmetric-looking
+        // "grow one axis, drift the other" effect. After computing the naive new
+        // geometry, re-anchor it: rotate the pre-resize anchor point (the side/corner
+        // opposite the dragged handle) and the naive post-resize anchor point around
+        // their respective centers, and shift position by the difference so that
+        // single anchor point stays exactly fixed on screen.
+        var source = NormalizeNewLines(ReadMainWindowSource());
+
+        var resizeElseStart = source.IndexOf("} else {\n        const rotationRad = (modernDrag.rotationDeg || 0)", StringComparison.Ordinal);
+        Assert.IsTrue(resizeElseStart >= 0, "Rotation-aware resize branch not found");
+        var resizeElseEnd = source.IndexOf("\n        setWrapperGeometry(modernDrag.wrapper, geometry);", resizeElseStart, StringComparison.Ordinal);
+        Assert.IsTrue(resizeElseEnd >= 0, "End of resize branch not found");
+        var resizeBody = source[resizeElseStart..resizeElseEnd];
+
+        StringAssert.Contains(resizeBody, "const fx = modernDrag.handle.includes('w') ? 1 : modernDrag.handle.includes('e') ? 0 : 0.5;");
+        StringAssert.Contains(resizeBody, "const fy = modernDrag.handle.includes('n') ? 1 : modernDrag.handle.includes('s') ? 0 : 0.5;");
+        StringAssert.Contains(resizeBody, "geometry.x += screenAnchorOld.x - screenAnchorNew.x;");
+        StringAssert.Contains(resizeBody, "geometry.y += screenAnchorOld.y - screenAnchorNew.y;");
+    }
+
+    [TestMethod]
     public void ResizeAndRotateHideSelectionChromeWhileDraggingAndRestoreOnRelease()
     {
         // While the operator is actively resizing, rotating, or moving an Element+, the

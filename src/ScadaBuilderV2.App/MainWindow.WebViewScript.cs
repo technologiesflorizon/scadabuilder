@@ -2408,6 +2408,27 @@ public partial class MainWindow
           }
         }
 
+        if (modernDrag.rotationDeg) {
+          const fx = modernDrag.handle.includes('w') ? 1 : modernDrag.handle.includes('e') ? 0 : 0.5;
+          const fy = modernDrag.handle.includes('n') ? 1 : modernDrag.handle.includes('s') ? 0 : 0.5;
+          const oldCenterX = modernDrag.startX + modernDrag.startWidth / 2;
+          const oldCenterY = modernDrag.startY + modernDrag.startHeight / 2;
+          const newCenterX = geometry.x + geometry.width / 2;
+          const newCenterY = geometry.y + geometry.height / 2;
+          const anchorOldX = modernDrag.startX + fx * modernDrag.startWidth;
+          const anchorOldY = modernDrag.startY + fy * modernDrag.startHeight;
+          const anchorNewX = geometry.x + fx * geometry.width;
+          const anchorNewY = geometry.y + fy * geometry.height;
+          const rotateAroundCenter = (px, py, cx, cy) => ({
+            x: cx + (px - cx) * cosR - (py - cy) * sinR,
+            y: cy + (px - cx) * sinR + (py - cy) * cosR
+          });
+          const screenAnchorOld = rotateAroundCenter(anchorOldX, anchorOldY, oldCenterX, oldCenterY);
+          const screenAnchorNew = rotateAroundCenter(anchorNewX, anchorNewY, newCenterX, newCenterY);
+          geometry.x += screenAnchorOld.x - screenAnchorNew.x;
+          geometry.y += screenAnchorOld.y - screenAnchorNew.y;
+        }
+
         setWrapperGeometry(modernDrag.wrapper, geometry);
 
         if (modernDrag.groupChildren.length) {
