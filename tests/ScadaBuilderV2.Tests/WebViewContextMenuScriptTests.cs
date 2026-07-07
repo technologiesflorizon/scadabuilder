@@ -207,7 +207,7 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "Opacity = Math.Clamp(ParseDoubleOrDefault(ElementOpacityTextBox.Text, style.Opacity), 0, 1)");
         StringAssert.Contains(source, "Rotation = ParseDoubleOrDefault(ElementRotationTextBox.Text, style.Rotation)");
         StringAssert.Contains(source, "wrapper.style.opacity = `${Math.max(0, Math.min(1, Number(style.Opacity ?? 1)))}`;");
-        StringAssert.Contains(source, "wrapper.style.transform = `rotate(${Number(style.Rotation ?? 0)}deg)`;");
+        StringAssert.Contains(source, "wrapper.style.transform = `rotate(${Number(style.Rotation ?? 0)}deg) scaleX(${style.FlipHorizontally ? -1 : 1}) scaleY(${style.FlipVertically ? -1 : 1})`;");
         StringAssert.Contains(dialogCode, "Opacity: Math.Clamp(opacity, 0, 1)");
         StringAssert.Contains(dialogCode, "Rotation: rotation");
     }
@@ -1296,6 +1296,49 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void ContextMenuButtonRendersCheckedStateFromIsCheckedFlag()
+    {
+        var source = ReadMainWindowSource();
+
+        var functionStart = source.IndexOf("function renderContextMenuCommands(commands)", StringComparison.Ordinal);
+        Assert.IsTrue(functionStart >= 0);
+        var createCommandNodeStart = source.IndexOf("const createCommandNode = command =>", functionStart, StringComparison.Ordinal);
+        Assert.IsTrue(createCommandNodeStart > functionStart);
+        var createCommandButtonBody = source[functionStart..createCommandNodeStart];
+
+        StringAssert.Contains(createCommandButtonBody, "command.IsChecked === true || command.isChecked === true");
+        StringAssert.Contains(createCommandButtonBody, "button.classList.add('checked')");
+    }
+
+    [TestMethod]
+    public void WrapperTransformComposesRotationWithFlipScaleOnRenderAndDrag()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(
+            source,
+            "wrapper.style.transform = `rotate(${Number(style.Rotation ?? 0)}deg) scaleX(${style.FlipHorizontally ? -1 : 1}) scaleY(${style.FlipVertically ? -1 : 1})`;");
+
+        StringAssert.Contains(
+            source,
+            "modernDrag.wrapper.style.transform = `rotate(${normalized}deg) scaleX(${modernDrag.flipHorizontally ? -1 : 1}) scaleY(${modernDrag.flipVertically ? -1 : 1})`;");
+    }
+
+    [TestMethod]
+    public void BadgeCounterRotatesAndCounterFlipsSoLabelTextStaysReadable()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(
+            source,
+            "badge.style.transform = `rotate(${-Number(style.Rotation ?? 0)}deg) scaleX(${style.FlipHorizontally ? -1 : 1}) scaleY(${style.FlipVertically ? -1 : 1})`;");
+
+        StringAssert.Contains(
+            source,
+            "draggedBadge.style.transform = `rotate(${-normalized}deg) scaleX(${modernDrag.flipHorizontally ? -1 : 1}) scaleY(${modernDrag.flipVertically ? -1 : 1})`;");
+    }
+
+    [TestMethod]
     public void ContextMenuCustomRotationOpensValidatedInlineInput()
     {
         var source = ReadMainWindowSource();
@@ -1611,8 +1654,8 @@ public sealed class WebViewContextMenuScriptTests
         // drag) so it always stays upright, matching standard design-tool behavior.
         var source = NormalizeNewLines(ReadMainWindowSource());
 
-        StringAssert.Contains(source, "badge.style.transform = `rotate(${-Number(style.Rotation ?? 0)}deg)`;");
-        StringAssert.Contains(source, "draggedBadge.style.transform = `rotate(${-normalized}deg)`;");
+        StringAssert.Contains(source, "badge.style.transform = `rotate(${-Number(style.Rotation ?? 0)}deg) scaleX(${style.FlipHorizontally ? -1 : 1}) scaleY(${style.FlipVertically ? -1 : 1})`;");
+        StringAssert.Contains(source, "draggedBadge.style.transform = `rotate(${-normalized}deg) scaleX(${modernDrag.flipHorizontally ? -1 : 1}) scaleY(${modernDrag.flipVertically ? -1 : 1})`;");
     }
 
     [TestMethod]

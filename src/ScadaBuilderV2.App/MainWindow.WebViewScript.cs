@@ -63,6 +63,12 @@ public partial class MainWindow
       cursor: not-allowed;
       background: transparent;
     }
+    #scada-extract-menu button.checked {
+      padding-left: 9px;
+    }
+    #scada-extract-menu button.checked::before {
+      content: '\2713 ';
+    }
     #scada-extract-menu .submenu {
       position: relative;
     }
@@ -767,6 +773,10 @@ public partial class MainWindow
           button.title = reason;
         }
       }
+      if (command.IsChecked === true || command.isChecked === true) {
+        button.classList.add('checked');
+        button.setAttribute('aria-checked', 'true');
+      }
       return button;
     };
 
@@ -1169,6 +1179,16 @@ public partial class MainWindow
   function getWrapperRotation(wrapper) {
     const match = /rotate\(([-\d.]+)deg\)/.exec(wrapper.style.transform || '');
     return match ? parseFloat(match[1]) || 0 : 0;
+  }
+
+  function getWrapperFlip(wrapper) {
+    const transform = wrapper.style.transform || '';
+    const scaleXMatch = /scaleX\((-?\d+)\)/.exec(transform);
+    const scaleYMatch = /scaleY\((-?\d+)\)/.exec(transform);
+    return {
+      flipHorizontally: scaleXMatch ? parseFloat(scaleXMatch[1]) < 0 : false,
+      flipVertically: scaleYMatch ? parseFloat(scaleYMatch[1]) < 0 : false
+    };
   }
 
   function clampNearAxis(startPos, startSize, delta) {
@@ -1861,7 +1881,7 @@ public partial class MainWindow
       wrapper.style.boxShadow = shadowCss(style.ShadowPreset);
       wrapper.style.opacity = `${Math.max(0, Math.min(1, Number(style.Opacity ?? 1)))}`;
       wrapper.style.transformOrigin = 'center center';
-      wrapper.style.transform = `rotate(${Number(style.Rotation ?? 0)}deg)`;
+      wrapper.style.transform = `rotate(${Number(style.Rotation ?? 0)}deg) scaleX(${style.FlipHorizontally ? -1 : 1}) scaleY(${style.FlipVertically ? -1 : 1})`;
       if (style.AdvancedCss) {
         wrapper.style.cssText += ';' + style.AdvancedCss;
       }
@@ -1941,7 +1961,7 @@ public partial class MainWindow
       const badge = document.createElement('div');
       badge.className = 'scada-modern-badge';
       badge.textContent = `${element.DisplayName || element.Id} - ${element.Kind}`;
-      badge.style.transform = `rotate(${-Number(style.Rotation ?? 0)}deg)`;
+      badge.style.transform = `rotate(${-Number(style.Rotation ?? 0)}deg) scaleX(${style.FlipHorizontally ? -1 : 1}) scaleY(${style.FlipVertically ? -1 : 1})`;
       wrapper.appendChild(badge);
 
       ['nw', 'ne', 'sw', 'se', 'n', 's', 'e', 'w'].forEach(handle => {
@@ -2022,6 +2042,9 @@ public partial class MainWindow
             geometry: readWrapperGeometry(item)
           }))
         };
+        const wrapperFlip = getWrapperFlip(sceneMoveWrapper);
+        modernDrag.flipHorizontally = wrapperFlip.flipHorizontally;
+        modernDrag.flipVertically = wrapperFlip.flipVertically;
         if (modernDrag.mode === 'rotate') {
           modernDrag.startRotation = getWrapperRotation(sceneMoveWrapper);
           const rotateRect = sceneMoveWrapper.getBoundingClientRect();
@@ -2594,11 +2617,11 @@ public partial class MainWindow
           normalized -= 360;
         }
         modernDrag.wrapper.style.transformOrigin = 'center center';
-        modernDrag.wrapper.style.transform = `rotate(${normalized}deg)`;
+        modernDrag.wrapper.style.transform = `rotate(${normalized}deg) scaleX(${modernDrag.flipHorizontally ? -1 : 1}) scaleY(${modernDrag.flipVertically ? -1 : 1})`;
         modernDrag.currentRotation = normalized;
         const draggedBadge = modernDrag.wrapper.querySelector(':scope > .scada-modern-badge');
         if (draggedBadge) {
-          draggedBadge.style.transform = `rotate(${-normalized}deg)`;
+          draggedBadge.style.transform = `rotate(${-normalized}deg) scaleX(${modernDrag.flipHorizontally ? -1 : 1}) scaleY(${modernDrag.flipVertically ? -1 : 1})`;
         }
         modernDrag.wrapper.querySelectorAll(':scope > .scada-modern-handle').forEach(grip => {
           const handleName = grip.dataset.handle;
