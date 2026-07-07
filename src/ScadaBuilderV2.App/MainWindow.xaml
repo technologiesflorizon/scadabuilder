@@ -383,28 +383,36 @@
                         </ScrollViewer>
                         </avalonDock:LayoutAnchorable>
                         <avalonDock:LayoutAnchorable x:Name="ProjectAnchorable" Title="Projet" ContentId="Project" CanClose="True">
-                        <StackPanel Margin="12">
-                            <TextBlock Text="Source legacy"
-                                       FontWeight="Bold"
-                                       Foreground="{StaticResource InkBrush}"/>
-                            <TextBlock x:Name="ProjectNameText"
-                                       Text="(chargement...)"
-                                       Margin="0,4,0,12"
-                                       Foreground="{StaticResource MutedBrush}"/>
-                            <TextBlock Text="Tags SCADA"
-                                       FontWeight="SemiBold"/>
-                            <TextBlock x:Name="ProjectTagsSummaryText"
-                                       Text="Aucun catalogue importe"
-                                       Margin="0,4,0,12"
-                                       Foreground="{StaticResource MutedBrush}"
-                                       TextWrapping="Wrap"/>
-                            <TextBlock Text="Pages"
-                                       FontWeight="SemiBold"/>
+                        <Grid Margin="12">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0">
+                                <TextBlock Text="Source legacy"
+                                           FontWeight="Bold"
+                                           Foreground="{StaticResource InkBrush}"/>
+                                <TextBlock x:Name="ProjectNameText"
+                                           Text="(chargement...)"
+                                           Margin="0,4,0,12"
+                                           Foreground="{StaticResource MutedBrush}"/>
+                                <TextBlock Text="Tags SCADA"
+                                           FontWeight="SemiBold"/>
+                                <TextBlock x:Name="ProjectTagsSummaryText"
+                                           Text="Aucun catalogue importe"
+                                           Margin="0,4,0,12"
+                                           Foreground="{StaticResource MutedBrush}"
+                                           TextWrapping="Wrap"/>
+                                <TextBlock Text="Pages"
+                                           FontWeight="SemiBold"/>
+                            </StackPanel>
                             <ListBox x:Name="PagesListBox"
+                                     Grid.Row="1"
                                      Margin="0,6,0,0"
                                      DisplayMemberPath="Title"
-                                     SelectionChanged="OnPageSelectionChanged"/>
-                        </StackPanel>
+                                     SelectionChanged="OnPageSelectionChanged"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                        </Grid>
                         </avalonDock:LayoutAnchorable>
                         <avalonDock:LayoutAnchorable x:Name="TagCatalogAnchorable" Title="Catalogue Tags" ContentId="TagCatalog" CanClose="True">
                         <DockPanel Margin="12">

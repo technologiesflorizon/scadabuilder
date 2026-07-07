@@ -1710,8 +1710,21 @@
       "Title": "win00087",
       "RelativePath": "scenes/win00087.scene.json",
       "Type": "Default",
-      "CanvasSize": null,
-      "Background": null,
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#A8A8A8",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
@@ -1720,7 +1733,7 @@
         "Height": 873
       },
       "EffectiveBackground": {
-        "Color": "#000000",
+        "Color": "#A8A8A8",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
@@ -1788,8 +1801,21 @@
       "Title": "win00090",
       "RelativePath": "scenes/win00090.scene.json",
       "Type": "Default",
-      "CanvasSize": null,
-      "Background": null,
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#A8A8A8",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
@@ -1798,7 +1824,7 @@
         "Height": 873
       },
       "EffectiveBackground": {
-        "Color": "#000000",
+        "Color": "#A8A8A8",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
@@ -1814,8 +1840,21 @@
       "Title": "win00092",
       "RelativePath": "scenes/win00092.scene.json",
       "Type": "Default",
-      "CanvasSize": null,
-      "Background": null,
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#A8A8A8",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
@@ -1824,7 +1863,7 @@
         "Height": 873
       },
       "EffectiveBackground": {
-        "Color": "#000000",
+        "Color": "#A8A8A8",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
@@ -1840,8 +1879,21 @@
       "Title": "win00093",
       "RelativePath": "scenes/win00093.scene.json",
       "Type": "Default",
-      "CanvasSize": null,
-      "Background": null,
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#A8A8A8",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
@@ -1850,7 +1902,7 @@
         "Height": 873
       },
       "EffectiveBackground": {
-        "Color": "#000000",
+        "Color": "#A8A8A8",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
@@ -1866,8 +1918,21 @@
       "Title": "win00094",
       "RelativePath": "scenes/win00094.scene.json",
       "Type": "Default",
-      "CanvasSize": null,
-      "Background": null,
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#A8A8A8",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
@@ -1876,7 +1941,7 @@
         "Height": 873
       },
       "EffectiveBackground": {
-        "Color": "#000000",
+        "Color": "#A8A8A8",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
@@ -1892,8 +1957,21 @@
       "Title": "win00095",
       "RelativePath": "scenes/win00095.scene.json",
       "Type": "Default",
-      "CanvasSize": null,
-      "Background": null,
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#A8A8A8",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
@@ -1902,7 +1980,7 @@
         "Height": 873
       },
       "EffectiveBackground": {
-        "Color": "#000000",
+        "Color": "#A8A8A8",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
@@ -1918,8 +1996,21 @@
       "Title": "win00096",
       "RelativePath": "scenes/win00096.scene.json",
       "Type": "Default",
-      "CanvasSize": null,
-      "Background": null,
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#A8A8A8",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
@@ -1928,7 +2019,7 @@
         "Height": 873
       },
       "EffectiveBackground": {
-        "Color": "#000000",
+        "Color": "#A8A8A8",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
