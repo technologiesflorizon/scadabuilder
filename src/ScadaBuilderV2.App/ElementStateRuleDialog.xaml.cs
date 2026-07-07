@@ -63,7 +63,7 @@ public partial class ElementStateRuleDialog : Window
         if (boolMatch.Success)
         {
             VariableModeRadio.IsChecked = true;
-            SelectTagById(boolMatch.Groups[1].Value);
+            SelectTagByName(boolMatch.Groups[1].Value);
             BoolTrueRadio.IsChecked = string.Equals(boolMatch.Groups[2].Value, "true", StringComparison.OrdinalIgnoreCase);
             BoolFalseRadio.IsChecked = !BoolTrueRadio.IsChecked;
             return;
@@ -75,7 +75,7 @@ public partial class ElementStateRuleDialog : Window
         if (numericMatch.Success)
         {
             VariableModeRadio.IsChecked = true;
-            SelectTagById(numericMatch.Groups[1].Value);
+            SelectTagByName(numericMatch.Groups[1].Value);
             ValueTextBox.Text = numericMatch.Groups[3].Value.Trim();
             var exprOp = numericMatch.Groups[2].Value;
             for (int i = 0; i < _operatorItems.Length; i++)
@@ -94,7 +94,7 @@ public partial class ElementStateRuleDialog : Window
         if (bareMatch.Success)
         {
             VariableModeRadio.IsChecked = true;
-            SelectTagById(bareMatch.Groups[1].Value);
+            SelectTagByName(bareMatch.Groups[1].Value);
             var tag = SelectedTag;
             if (tag is not null && !IsBooleanDatatype(tag.Datatype))
             {
@@ -109,12 +109,27 @@ public partial class ElementStateRuleDialog : Window
         ExpressionTextBox.Text = source;
     }
 
-    private void SelectTagById(string tagId)
+    private void SelectTagByName(string tagName)
     {
+        // Match by DisplayName (primary — what expressions use)
+        for (int i = 0; i < TagComboBox.Items.Count; i++)
+        {
+            if (TagComboBox.Items[i] is TagItem item)
+            {
+                var tag = (_tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
+                    .FirstOrDefault(t => t.Id == item.TagId);
+                if (tag is not null && string.Equals(tag.DisplayName, tagName, StringComparison.OrdinalIgnoreCase))
+                {
+                    TagComboBox.SelectedIndex = i;
+                    return;
+                }
+            }
+        }
+        // Fallback: match by Id (backward compat with pre-existing expressions)
         for (int i = 0; i < TagComboBox.Items.Count; i++)
         {
             if (TagComboBox.Items[i] is TagItem item &&
-                string.Equals(item.TagId, tagId, StringComparison.Ordinal))
+                string.Equals(item.TagId, tagName, StringComparison.Ordinal))
             {
                 TagComboBox.SelectedIndex = i;
                 return;
@@ -122,7 +137,7 @@ public partial class ElementStateRuleDialog : Window
         }
         // Tag non trouve dans le catalogue : fallback Expression
         ExpressionModeRadio.IsChecked = true;
-        ExpressionTextBox.Text = $"{{{tagId}}}";
+        ExpressionTextBox.Text = $"{{{tagName}}}";
     }
 
     public ScadaStateRule? Result { get; private set; }
@@ -305,17 +320,17 @@ public partial class ElementStateRuleDialog : Window
         if (IsBooleanDatatype(tag.Datatype))
         {
             if (BoolTrueRadio.IsChecked != true && BoolFalseRadio.IsChecked != true)
-                return $"{{{tag.Id}}}";
+                return $"{{{tag.DisplayName}}}";
             var value = BoolTrueRadio.IsChecked == true ? "true" : "false";
-            return $"{{{tag.Id}}} == {value}";
+            return $"{{{tag.DisplayName}}} == {value}";
         }
 
         var op = (OperatorComboBox.SelectedItem as OperatorItem)?.Expression ?? "==";
         if (string.IsNullOrEmpty(op))
-            return $"{{{tag.Id}}}";
+            return $"{{{tag.DisplayName}}}";
         var val = ValueTextBox.Text.Trim();
         if (string.IsNullOrWhiteSpace(val)) val = "0";
-        return $"{{{tag.Id}}} {op} {val}";
+        return $"{{{tag.DisplayName}}} {op} {val}";
     }
 
     private void OnSaveClick(object sender, RoutedEventArgs e)
