@@ -1462,6 +1462,31 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void CutShortcutDispatchesToCutSelectionAsyncAndCopiesBeforeDeleting()
+    {
+        var source = NormalizeNewLines(ReadMainWindowSource());
+
+        var handlerStart = source.IndexOf("private void HandleShortcut(", StringComparison.Ordinal);
+        var handlerEnd = source.IndexOf("\n    }\n", handlerStart, StringComparison.Ordinal);
+        var handlerBody = source[handlerStart..handlerEnd];
+
+        StringAssert.Contains(handlerBody, "case \"clipboard.cut\":");
+        StringAssert.Contains(handlerBody, "CutSelectionAsync();");
+
+        var methodStart = source.IndexOf("private async Task CutSelectionAsync()", StringComparison.Ordinal);
+        Assert.IsTrue(methodStart >= 0, "CutSelectionAsync method not found");
+        var methodEnd = source.IndexOf("\n    }\n", methodStart, StringComparison.Ordinal);
+        var methodBody = source[methodStart..methodEnd];
+
+        var clipboardCopyIndex = methodBody.IndexOf("_sceneClipboard.Copy(", StringComparison.Ordinal);
+        var historyPushIndex = methodBody.IndexOf("new SceneObjectsDeletedAction(", StringComparison.Ordinal);
+        Assert.IsTrue(clipboardCopyIndex >= 0, "Cut must copy to the clipboard");
+        Assert.IsTrue(historyPushIndex >= 0, "Cut must push a SceneObjectsDeletedAction");
+        Assert.IsTrue(clipboardCopyIndex < historyPushIndex,
+            "Cut must snapshot the clipboard before removing the elements from the scene.");
+    }
+
+    [TestMethod]
     public void ResizeAndRotateHideSelectionChromeWhileDraggingAndRestoreOnRelease()
     {
         // While the operator is actively resizing, rotating, or moving an Element+, the

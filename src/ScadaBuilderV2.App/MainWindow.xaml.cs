@@ -2121,6 +2121,43 @@ public partial class MainWindow : Window
         SetStatus($"{deletedCount} objet(s) supprime(s) de la scene active. Undo disponible. Sauvegarde requise.");
     }
 
+    private async Task CutSelectionAsync()
+    {
+        if (_activeScene is null)
+        {
+            SetStatus("Aucune scene active pour couper la selection.");
+            return;
+        }
+
+        var selectedElements = ResolveTopLevelSelectedElements();
+        if (selectedElements.Count == 0)
+        {
+            SetStatus("Aucun objet selectionne a couper.");
+            return;
+        }
+
+        _sceneClipboard.Copy(selectedElements);
+
+        var deletedSnapshots = selectedElements
+            .Select(element => new DeletedSceneObjectSnapshot(
+                element,
+                _activeScene.FindParentOf(element.Id)?.Id,
+                GetSiblingIndex(_activeScene, element)))
+            .ToArray();
+
+        _activeScene = _activeScene.WithoutSceneObjects(selectedElements.Select(element => element.Id));
+
+        _selectedSourceObjectIds.Clear();
+        _selectedSceneObject = null;
+        _selectedSceneObjectIds.Clear();
+        _activeSceneTab?.History.Push(new SceneObjectsDeletedAction(_activeScene.Id, deletedSnapshots));
+        MarkActiveSceneDirty();
+        RefreshSelectionUi();
+        RefreshModernSceneUi();
+        await RenderModernSceneAsync();
+        SetStatus($"{deletedSnapshots.Length} objet(s) coupe(s). Undo disponible. Presse-papier mis a jour.");
+    }
+
     private IReadOnlyList<ScadaElement> ResolveSelectedSceneObjects(string? fallbackElementId = null)
     {
         if (_activeScene is null)
@@ -6508,6 +6545,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 break;
             case "clipboard.copy":
                 CopySelectionToClipboard();
+                break;
+            case "clipboard.cut":
+                _ = CutSelectionAsync();
                 break;
             case "history.undo":
                 _ = UndoLastSceneOperationAsync();
