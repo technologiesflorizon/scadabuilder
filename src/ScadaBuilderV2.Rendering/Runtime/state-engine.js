@@ -15,6 +15,9 @@
   /** Map of element id -> true for paused (edit-locked) elements. */
   var _paused = {};
 
+  /** Map of element id -> cached state (initPage pre-cache). */
+  var _stateCache = {};
+
   /** The evaluator reference (resolved lazily). */
   var _evaluator = null;
   var _effectApplier = null;
@@ -70,6 +73,47 @@
     }
 
     return tags;
+  }
+
+  // ── error badge ───────────────────────────────────────────────────────────
+
+  /**
+   * Shows or hides the expression-evaluation error badge on an element.
+   * When an error is active, a red "!" badge is appended and every
+   * [data-scada-text] child is forced to "---". The badge is removed and
+   * text is restored (by the next successful evaluation) when the error clears.
+   *
+   * @param {Element} element - DOM element to badge.
+   * @param {boolean} show    - true to show the badge, false to remove it.
+   */
+  function _showErrorBadge(element, show) {
+    if (!element) {
+      return;
+    }
+
+    var badge = element.querySelector('.scada-error-badge');
+
+    if (show) {
+      if (!badge) {
+        badge = document.createElement('span');
+        badge.className = 'scada-error-badge';
+        badge.textContent = '!';
+        badge.title = "Erreur d'évaluation d'expression";
+        badge.style.cssText =
+          'position:absolute;top:2px;right:2px;background:#E53935;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;display:flex;align-items:center;justify-content:center;z-index:5';
+        element.appendChild(badge);
+      }
+      // Force "---" on any data-scada-text elements
+      var textEls = element.querySelectorAll('[data-scada-text]');
+      for (var i = 0; i < textEls.length; i++) {
+        textEls[i].textContent = '---';
+      }
+    } else {
+      if (badge) {
+        badge.remove();
+      }
+      // Text is restored by the next successful evaluation applying the effect
+    }
   }
 
   // ── evaluate ────────────────────────────────────────────────────────────
@@ -171,6 +215,9 @@
     if (config.defaultEffect) {
       applier.apply(element, config.defaultEffect);
     }
+
+    // Check for expression evaluation errors and show/hide the badge
+    _showErrorBadge(element, evaluator.hasError());
   }
 
   // ── initPage ────────────────────────────────────────────────────────────
@@ -183,15 +230,19 @@
    * @param {string}  pageId     - Unique page identifier (for namespacing).
    */
   function initPage(container, pageId) {
-    // Reset paused state
+    // Reset paused state and state cache
     _paused = {};
+    _stateCache = {};
 
     if (!container) {
       return;
     }
 
-    // The pageId is accepted for future namespacing use.
-    // Currently, caches are cleared and the container is ready for evaluation.
+    // Pre-cache all elements with data-scada-state-config
+    var elements = container.querySelectorAll('[data-scada-state-config]');
+    for (var i = 0; i < elements.length; i++) {
+      _stateCache[elements[i].getAttribute('data-scada-element-id') || elements[i].id] = null;
+    }
   }
 
   // ── pause / resume ──────────────────────────────────────────────────────
