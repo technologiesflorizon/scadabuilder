@@ -4,6 +4,14 @@ Date: 2026-06-17
 Status: Active editor/runtime actions contract
 Document version: `V2.1.2.0022`
 
+> **DEPRECATED (2026-07-07):** `SetClass`/`RemoveClass`/`ToggleClass`/`WriteTag` (legacy)
+> action kinds and the border/visual-effect authoring described in §3, §8, §9 have been
+> removed from the domain model. Element+ display-state and command authoring is now
+> specified in `docs/superpowers/specs/2026-07-07-element-plus-state-command-events-design.md`
+> and `docs/03_runtime_contracts/STATE_COMMAND_RUNTIME_CONTRACT_V1.md`. `Navigate`,
+> `Show`/`Hide`/`ToggleVisibility`, `MountFragment`/`ClosePopup`/`TogglePopup`, and
+> `ReadValue`/`WriteValue` remain valid until fully absorbed by the new Etat/Commande tabs.
+
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
