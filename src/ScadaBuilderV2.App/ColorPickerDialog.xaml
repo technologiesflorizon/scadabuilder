@@ -113,6 +113,7 @@
                         Minimum="0"
                         Maximum="360"
                         TickFrequency="1"
+                        IsMoveToPointEnabled="True"
                         ValueChanged="OnHueSliderChanged"/>
             </Grid>
             <UniformGrid Columns="6" Margin="0,0,0,8">
@@ -151,6 +152,7 @@
                         Minimum="0"
                         Maximum="255"
                         TickFrequency="1"
+                        IsMoveToPointEnabled="True"
                         ValueChanged="OnRgbSliderChanged"/>
                 <TextBlock x:Name="RedValueText"
                            Grid.Column="2"
@@ -170,6 +172,7 @@
                         Minimum="0"
                         Maximum="255"
                         TickFrequency="1"
+                        IsMoveToPointEnabled="True"
                         ValueChanged="OnRgbSliderChanged"/>
                 <TextBlock x:Name="GreenValueText"
                            Grid.Column="2"
@@ -189,6 +192,7 @@
                         Minimum="0"
                         Maximum="255"
                         TickFrequency="1"
+                        IsMoveToPointEnabled="True"
                         ValueChanged="OnRgbSliderChanged"/>
                 <TextBlock x:Name="BlueValueText"
                            Grid.Column="2"

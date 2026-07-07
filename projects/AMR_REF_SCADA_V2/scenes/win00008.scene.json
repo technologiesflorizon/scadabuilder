@@ -59,7 +59,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "dd31b543cac64977a5caddd815ec9457",
@@ -114,7 +116,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "c073a13b8dd049f7b1f644d20df7dacd",
@@ -169,7 +173,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "91b81f10b4bb4f169a550cd4767ee2a6",
@@ -224,7 +230,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "4198b9e21f674eacafff8d57a1c4b272",
@@ -279,7 +287,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "1520d4fef5ff455aa84675ae312b5aa8",
@@ -334,7 +344,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "213def4e8eb446d58db760faa2fe0acf",
@@ -389,7 +401,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "077224fd33fb429593b2627dda4c23c0",
@@ -444,7 +458,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "ba1625de403e4c589b88826fa2a601de",
@@ -499,7 +515,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "827a6ae756474f7c86acd99eab6ae6ee",
@@ -554,7 +572,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "2668e02db2bc412ab25ed528a05cf86a",
@@ -609,7 +629,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "487596ba58b742398138b8b013d002f9",
@@ -664,7 +686,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "lib_nouveau_composant_4",
@@ -719,7 +743,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "lib_vertical_piping_2",
@@ -774,7 +800,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "shape_001",
@@ -795,7 +823,7 @@
         "FontFamily": "Segoe UI",
         "FontSize": 14,
         "Foreground": "#0F2A30",
-        "Background": "#2CC83E",
+        "Background": "#BBBBBB",
         "BorderColor": "#2090A0",
         "BorderWidth": 2,
         "BorderStyle": "Solid",
@@ -829,7 +857,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_85",
@@ -900,7 +930,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_86",
@@ -971,7 +1003,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_117",
@@ -1042,7 +1076,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_118",
@@ -1113,7 +1149,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_293",
@@ -1184,7 +1222,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_601",
@@ -1255,7 +1295,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_602",
@@ -1326,7 +1368,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_603",
@@ -1397,7 +1441,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_604",
@@ -1468,7 +1514,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_605",
@@ -1539,7 +1587,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_606",
@@ -1610,7 +1660,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_607",
@@ -1681,7 +1733,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_608",
@@ -1752,7 +1806,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_609",
@@ -1823,7 +1879,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_610",
@@ -1894,7 +1952,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_611",
@@ -1965,7 +2025,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_612",
@@ -2036,7 +2098,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_657",
@@ -2107,7 +2171,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_672",
@@ -2178,7 +2244,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_709",
@@ -2249,7 +2317,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_780",
@@ -2320,7 +2390,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_781",
@@ -2391,7 +2463,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_782",
@@ -2462,7 +2536,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_787",
@@ -2533,7 +2609,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_790",
@@ -2604,7 +2682,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_791",
@@ -2675,7 +2755,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_794",
@@ -2746,7 +2828,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_795",
@@ -2817,7 +2901,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_858",
@@ -2888,7 +2974,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_1010",
@@ -2959,7 +3047,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_1045",
@@ -3030,7 +3120,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_1046",
@@ -3101,7 +3193,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_1047",
@@ -3172,7 +3266,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_1048",
@@ -3243,7 +3339,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_1049",
@@ -3314,7 +3412,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_1050",
@@ -3385,7 +3485,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_1051",
@@ -3456,7 +3558,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_1052",
@@ -3527,7 +3631,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "elementplus_numeric_793",
@@ -3588,7 +3694,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "elementplus_numeric_display_789",
@@ -3649,7 +3757,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "elementplus_numeric_display_784",
@@ -3710,7 +3820,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "lib_pompeammoniac",
@@ -3765,7 +3877,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "lib_nouveau_composant_7",
@@ -3820,7 +3934,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "lib_nouveau_composant_8",
@@ -3875,7 +3991,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "lib_nouveau_composant_9",
@@ -3930,7 +4048,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "lib_nouveau_composant_14",
@@ -3985,7 +4105,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "lib_nouveau_composant_3",
@@ -4040,7 +4162,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "lib_nouveau_composant",
@@ -4095,7 +4219,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "lib_nouveau_composant_6",
@@ -4150,7 +4276,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "lib_nouveau_composant_11",
@@ -4205,7 +4333,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "4d39cdc5b25f4726a19985ef161b0e2f",
@@ -4260,7 +4390,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "lib_pipe_elbow_2",
@@ -4315,7 +4447,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "0c9fb60eae08412cb0710bc468137911",
@@ -4370,7 +4504,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "lib_nouveau_composant_18",
@@ -4425,7 +4561,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "lib_nouveau_composant_5",
@@ -4480,7 +4618,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "84df141203a9448195b87c8d8edee705",
@@ -4535,7 +4675,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "f68fa008a707405e98cebcb557472e99",
@@ -4590,7 +4732,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "481ea0c720814154bfe0d74365f21583",
@@ -4645,7 +4789,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "lib_polygon436",
@@ -4700,7 +4846,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "08442a551bde49a09dadb1d2c31c985a",
@@ -4755,7 +4903,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "150c515893cb4325be04a48e079adce5",
@@ -4810,7 +4960,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "74aba1e4801846f7bac6a1c3dcecf440",
@@ -4865,7 +5017,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "888a3ff143b14ef9b2376b96051827b5",
@@ -4920,7 +5074,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "164229b89d20432590494a4da410f3d9",
@@ -4975,7 +5131,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "lib_nouveau_composant_2",
@@ -5030,7 +5188,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "f3fbb928b1e343f99c0ad95f8fb9f2e2",
@@ -5085,7 +5245,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "8c87e1ff6c1f4b559a436924945b2d6d",
@@ -5140,7 +5302,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "3922d2f505ee450589d18c3936afd30f",
@@ -5195,7 +5359,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "7af1211344ef42e3b1eda04afe780271",
@@ -5250,7 +5416,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "7ab505e2810444148a5bb707791dc0ba",
@@ -5305,7 +5473,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "bc1f5008237740d3add34e50faf7949c",
@@ -5360,7 +5530,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "1ca9ad2d1aff4c4f85356a080156295b",
@@ -5415,7 +5587,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "6ae3c18c75ac45b89a225f89b1d4fddc",
@@ -5470,7 +5644,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "c946a8e2d1af457ba1990072487332cb",
@@ -5525,7 +5701,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "4539842a43cd432abbf8edbd2ca0ca29",
@@ -5580,7 +5758,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "f9e9c753a6814b30be743c1eabdce229",
@@ -5635,7 +5815,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "55bbcca467664c04a4de7a0f6363b55e",
@@ -5690,7 +5872,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "lib_nouveau_composant_10",
@@ -5745,7 +5929,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "d608690cb95747b8916a9ac55032aa25",
@@ -5800,7 +5986,9 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     }
   ],
   "BackgroundColor": "#A8A8A8",

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows;
 using ScadaBuilderV2.Domain.ElementEvents.Expressions;
@@ -13,6 +14,7 @@ public partial class ElementStateRuleDialog : Window
 
     private static readonly OperatorItem[] _operatorItems =
     [
+        new OperatorItem("--", ""),
         new OperatorItem("<>", "!="),
         new OperatorItem(">=", ">="),
         new OperatorItem(">", ">"),
@@ -31,7 +33,7 @@ public partial class ElementStateRuleDialog : Window
 
         PopulateTagComboBox();
         OperatorComboBox.ItemsSource = _operatorItems;
-        OperatorComboBox.SelectedIndex = 3; // "=" par defaut
+        OperatorComboBox.SelectedIndex = 4; // "=" par defaut
         BoolTrueRadio.IsChecked = true;
         VariableModeRadio.IsChecked = true; // Mode Variable par defaut
 
@@ -42,7 +44,8 @@ public partial class ElementStateRuleDialog : Window
             LoadEffect(existingRule.Effect);
         }
 
-        ValidateExpression();
+        if (ExpressionModeRadio.IsChecked == true)
+            ValidateExpression();
     }
 
     private void RestoreExpression(string source)
@@ -92,6 +95,12 @@ public partial class ElementStateRuleDialog : Window
         {
             VariableModeRadio.IsChecked = true;
             SelectTagById(bareMatch.Groups[1].Value);
+            var tag = SelectedTag;
+            if (tag is not null && !IsBooleanDatatype(tag.Datatype))
+            {
+                OperatorComboBox.SelectedIndex = 0; // "--"
+                ValueTextBox.Text = "";
+            }
             return;
         }
 
@@ -126,8 +135,6 @@ public partial class ElementStateRuleDialog : Window
             .Select(tag => new TagItem(tag.Id, tag.AuthoringLabel))
             .ToArray();
         TagComboBox.ItemsSource = items;
-        if (items.Length > 0)
-            TagComboBox.SelectedIndex = 0;
     }
 
     private void LoadEffect(ScadaEffectBlock effect)
@@ -297,11 +304,15 @@ public partial class ElementStateRuleDialog : Window
 
         if (IsBooleanDatatype(tag.Datatype))
         {
+            if (BoolTrueRadio.IsChecked != true && BoolFalseRadio.IsChecked != true)
+                return $"{{{tag.Id}}}";
             var value = BoolTrueRadio.IsChecked == true ? "true" : "false";
             return $"{{{tag.Id}}} == {value}";
         }
 
         var op = (OperatorComboBox.SelectedItem as OperatorItem)?.Expression ?? "==";
+        if (string.IsNullOrEmpty(op))
+            return $"{{{tag.Id}}}";
         var val = ValueTextBox.Text.Trim();
         if (string.IsNullOrWhiteSpace(val)) val = "0";
         return $"{{{tag.Id}}} {op} {val}";
@@ -314,11 +325,15 @@ public partial class ElementStateRuleDialog : Window
             : ExpressionTextBox.Text;
 
         var validation = ScadaExpressionValidator.Validate(source, _tagCatalog);
-        if (!validation.IsValid || string.IsNullOrWhiteSpace(NameTextBox.Text))
+        var errors = new List<string>();
+        if (string.IsNullOrWhiteSpace(NameTextBox.Text))
+            errors.Add("Le nom est requis.");
+        if (!validation.IsValid)
+            errors.Add(string.Join(" ", validation.Errors));
+
+        if (errors.Count > 0)
         {
-            ExpressionValidationText.Text = string.IsNullOrWhiteSpace(NameTextBox.Text)
-                ? "Le nom est requis."
-                : string.Join(" ", validation.Errors);
+            ExpressionValidationText.Text = string.Join(" | ", errors);
             ExpressionValidationText.Foreground = System.Windows.Media.Brushes.Firebrick;
             return;
         }

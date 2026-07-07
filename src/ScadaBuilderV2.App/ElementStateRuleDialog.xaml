@@ -31,10 +31,10 @@
             <StackPanel Orientation="Horizontal" Margin="0,2,0,4">
                 <RadioButton x:Name="VariableModeRadio" Content="Variable"
                              GroupName="ConditionMode" Margin="0,0,12,0"
-                             Checked="OnConditionModeChanged" Unchecked="OnConditionModeChanged"/>
+                             Checked="OnConditionModeChanged"/>
                 <RadioButton x:Name="ExpressionModeRadio" Content="Expression"
                              GroupName="ConditionMode"
-                             Checked="OnConditionModeChanged" Unchecked="OnConditionModeChanged"/>
+                             Checked="OnConditionModeChanged"/>
             </StackPanel>
 
             <!-- Variable mode -->
@@ -57,7 +57,7 @@
 
                 <!-- Numeric tag: operator + value -->
                 <StackPanel x:Name="NumericPanel" Visibility="Collapsed" Margin="0,2,0,4">
-                    <TextBlock Text="Operateur" Foreground="{StaticResource MutedBrush}"/>
+                    <TextBlock Text="Opérateur" Foreground="{StaticResource MutedBrush}"/>
                     <ComboBox x:Name="OperatorComboBox" Margin="0,2,0,4"/>
                     <TextBlock Text="Valeur" Foreground="{StaticResource MutedBrush}"/>
                     <TextBox x:Name="ValueTextBox" Margin="0,2,0,4"
