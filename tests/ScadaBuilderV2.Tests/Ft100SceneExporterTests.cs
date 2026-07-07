@@ -602,11 +602,7 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "<button type=\"button\"");
             StringAssert.Contains(html, "data-scada-button-kind=\"Navigation\"");
             StringAssert.Contains(html, "Suivant");
-            StringAssert.Contains(html, "const root = document.getElementById(\"ft100-win00008\");");
-            StringAssert.Contains(html, "root.querySelectorAll('[data-scada-events]')");
-            StringAssert.Contains(html, "root.id + '__' + sanitizeElementId(elementId)");
-            Assert.IsFalse(html.Contains("document.querySelectorAll('[data-scada-events]')", StringComparison.Ordinal));
-            StringAssert.Contains(html, "window.location.href = '../' + encodeURIComponent(targetPageId) + '/' + encodeURIComponent(targetPageId) + '.html';");
+            AssertHtmlReferencesSharedRuntime(html, exportRoot);
 
             var manifest = await File.ReadAllTextAsync(manifestPath);
             StringAssert.Contains(manifest, "\"ManifestVersion\": \"2.1\"");
@@ -681,9 +677,7 @@ public sealed class Ft100SceneExporterTests
             Assert.IsFalse(
                 html.Contains("<button type=\"button\" data-scada-button-kind=\"Toggle\" data-scada-toggle-state=", StringComparison.Ordinal),
                 "The runtime toggle state belongs to the exported Element+ wrapper, not the inner button.");
-            StringAssert.Contains(html, "root.querySelectorAll('.ft100-element[data-scada-button-kind=\"Toggle\"]:not([data-scada-disabled=\"true\"])')");
-            StringAssert.Contains(html, "element.setAttribute('data-scada-toggle-state', nextState);");
-            StringAssert.Contains(html, "scada-builder-toggle-state-changed");
+            AssertHtmlReferencesSharedRuntime(html, exportRoot);
         }
         finally
         {
@@ -731,12 +725,7 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "data-scada-button-kind=\"Navigation\"");
             StringAssert.Contains(html, "data-scada-button-kind=\"AlarmAcknowledge\"");
             StringAssert.Contains(html, "data-scada-button-kind=\"EmergencyStop\"");
-            StringAssert.Contains(html, "root.querySelectorAll('.ft100-element[data-scada-button-kind]:not([data-scada-disabled=\"true\"])')");
-            StringAssert.Contains(html, "scada-builder-button-activated");
-            StringAssert.Contains(html, "scada-builder-command-button-activated");
-            StringAssert.Contains(html, "scada-builder-navigation-button-activated");
-            StringAssert.Contains(html, "scada-builder-alarm-acknowledge-requested");
-            StringAssert.Contains(html, "scada-builder-emergency-stop-requested");
+            AssertHtmlReferencesSharedRuntime(html, exportRoot);
             StringAssert.Contains(manifest, "\"ButtonKind\": \"Command\"");
             StringAssert.Contains(manifest, "\"ButtonKind\": \"Navigation\"");
             StringAssert.Contains(manifest, "\"ButtonKind\": \"AlarmAcknowledge\"");
@@ -904,14 +893,7 @@ public sealed class Ft100SceneExporterTests
 
             StringAssert.Contains(html, "data-scada-read-tag=\"tf100.mapping.41\"");
             StringAssert.Contains(html, "data-scada-write-tag=\"tf100.mapping.42\"");
-            StringAssert.Contains(html, "scada-builder-read-tag-request");
-            StringAssert.Contains(html, "window.scadaBuilderSetTagValue");
-            StringAssert.Contains(html, "scada-builder-tag-value");
-            StringAssert.Contains(html, "scada-builder-tag-value-applied");
-            StringAssert.Contains(html, "readBindingsByTag");
-            StringAssert.Contains(html, "writeValueToElement");
-            StringAssert.Contains(html, "tf100webScadaBuilder.writeTag");
-            StringAssert.Contains(html, "scada-builder-write-value");
+            AssertHtmlReferencesSharedRuntime(html, exportRoot);
             StringAssert.Contains(manifest, "\"ReadTagId\": \"tf100.mapping.41\"");
             StringAssert.Contains(manifest, "\"WriteTagId\": \"tf100.mapping.42\"");
             StringAssert.Contains(manifest, "\"DisplayFormat\": \"fixed:1\"");
@@ -979,9 +961,7 @@ public sealed class Ft100SceneExporterTests
             var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
 
             StringAssert.Contains(html, "data-scada-events=");
-            StringAssert.Contains(html, "function evaluateCondition(condition)");
-            StringAssert.Contains(html, "tf100webScadaBuilder.getTagValue");
-            StringAssert.Contains(html, "window.scadaBuilderTagValues");
+            AssertHtmlReferencesSharedRuntime(html, exportRoot);
             StringAssert.Contains(manifest, "\"Kind\": \"show\"");
             StringAssert.Contains(manifest, "\"TargetElementId\": \"pump_status\"");
             StringAssert.Contains(manifest, "\"Condition\"");
@@ -1040,10 +1020,7 @@ public sealed class Ft100SceneExporterTests
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
 
-            StringAssert.Contains(html, "function evaluateConditionResult(condition)");
-            StringAssert.Contains(html, "function evaluateConditionGroup(group)");
-            StringAssert.Contains(html, "function evaluateActionConditions(action)");
-            StringAssert.Contains(html, "missingPolicy === 'allowaction'");
+            AssertHtmlReferencesSharedRuntime(html, exportRoot);
             StringAssert.Contains(manifest, "\"ConditionGroup\"");
             StringAssert.Contains(manifest, "\"Mode\": \"any\"");
             StringAssert.Contains(manifest, "\"MissingTagPolicy\": \"allowAction\"");
@@ -1078,13 +1055,7 @@ public sealed class Ft100SceneExporterTests
             var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
             var html = await File.ReadAllTextAsync(result.HtmlPath);
 
-            StringAssert.Contains(html, "window.scadaBuilderRuntime");
-            StringAssert.Contains(html, "function dispatchRuntimeEvent(name, detail)");
-            StringAssert.Contains(html, "function reportRuntimeError(error, context)");
-            StringAssert.Contains(html, "scada-builder-page-ready");
-            StringAssert.Contains(html, "scada-builder-action-executed");
-            StringAssert.Contains(html, "scada-builder-runtime-error");
-            StringAssert.Contains(html, "actionCount: Object.keys(actions).length");
+            AssertHtmlReferencesSharedRuntime(html, exportRoot);
         }
         finally
         {
@@ -1126,10 +1097,7 @@ public sealed class Ft100SceneExporterTests
             var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
 
             StringAssert.Contains(html, "data-scada-events=");
-            StringAssert.Contains(html, "function openPopup(targetPageId, popupOptions)");
-            StringAssert.Contains(html, "data-scada-popup-page-id");
-            StringAssert.Contains(html, "scada-builder-popup-opened");
-            StringAssert.Contains(html, "scada-builder-popup-closed");
+            AssertHtmlReferencesSharedRuntime(html, exportRoot);
             StringAssert.Contains(manifest, "\"Kind\": \"mountFragment\"");
             StringAssert.Contains(manifest, "\"TargetPageId\": \"popup_pump\"");
         }
@@ -1173,12 +1141,7 @@ public sealed class Ft100SceneExporterTests
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
 
-            StringAssert.Contains(html, "function closePopup(targetPageId)");
-            StringAssert.Contains(html, "function togglePopup(targetPageId, popupOptions)");
-            StringAssert.Contains(html, "postPopupRequestToParent('closePopup', targetPageId)");
-            StringAssert.Contains(html, "postPopupRequestToParent('togglePopup', targetPageId)");
-            StringAssert.Contains(html, "detail.action === 'closePopup'");
-            StringAssert.Contains(html, "detail.action === 'togglePopup'");
+            AssertHtmlReferencesSharedRuntime(html, exportRoot);
             StringAssert.Contains(manifest, "\"Kind\": \"closePopup\"");
             StringAssert.Contains(manifest, "\"Kind\": \"togglePopup\"");
             StringAssert.Contains(manifest, "\"TargetPageId\": \"popup_pump\"");
@@ -1231,12 +1194,7 @@ public sealed class Ft100SceneExporterTests
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
 
-            StringAssert.Contains(html, "function normalizePopupOptions(options)");
-            StringAssert.Contains(html, "function applyPopupPlacement(overlay, panel, options)");
-            StringAssert.Contains(html, "function applyPopupSize(panel, options)");
-            StringAssert.Contains(html, "options.AllowMultiple");
-            StringAssert.Contains(html, "scadaPopupInstance");
-            StringAssert.Contains(html, "getPopupHost(options)");
+            AssertHtmlReferencesSharedRuntime(html, exportRoot);
             StringAssert.Contains(manifest, "\"PopupOptions\"");
             StringAssert.Contains(manifest, "\"Position\": \"hostRegion\"");
             StringAssert.Contains(manifest, "\"SizePreset\": \"medium\"");
@@ -1287,7 +1245,7 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "<button type=\"button\"");
             StringAssert.Contains(html, "data-scada-disabled=\"true\" aria-disabled=\"true\"");
             StringAssert.Contains(html, "<button type=\"button\" data-scada-button-kind=\"Command\" disabled aria-disabled=\"true\"");
-            StringAssert.Contains(html, "if (element.getAttribute('data-scada-disabled') === 'true')");
+            AssertHtmlReferencesSharedRuntime(html, exportRoot);
             Assert.IsFalse(css.Contains("#ft100-win00008 #ft100-win00008__btn_disabled:hover", StringComparison.Ordinal));
             Assert.IsFalse(css.Contains("#ft100-win00008 #ft100-win00008__btn_disabled:active", StringComparison.Ordinal));
             StringAssert.Contains(css, "#ft100-win00008 .ft100-element--Button[data-scada-disabled=\"true\"], #ft100-win00008 .ft100-element--Button[data-scada-disabled=\"true\"] * { cursor: not-allowed; opacity: 0.62; }");
@@ -2052,5 +2010,82 @@ public sealed class Ft100SceneExporterTests
         Assert.IsFalse(
             System.Text.RegularExpressions.Regex.IsMatch(css, @"(?m)^\s*#(?!ft100-)"),
             "FT100 Element+ id selectors must use page-prefixed DOM ids under the exported page root.");
+    }
+
+    private static string AssertHtmlReferencesSharedRuntime(string html, string exportDirectory)
+    {
+        var runtimeFiles = Directory.GetFiles(exportDirectory, "scada-runtime.*.js");
+        Assert.AreEqual(1, runtimeFiles.Length, "Expected exactly one scada-runtime.*.js file in export directory.");
+        var fileName = Path.GetFileName(runtimeFiles[0]);
+        Assert.IsTrue(
+            System.Text.RegularExpressions.Regex.IsMatch(fileName, @"^scada-runtime\.[0-9a-f]{8}\.js$"),
+            "Runtime filename must be scada-runtime.<8-char-hex>.js");
+        StringAssert.Contains(html, $"../{fileName}");
+        StringAssert.Contains(html, "<script src=");
+        Assert.IsFalse(html.Contains("<script>\n"), "HTML must not contain inline script blocks - runtime must be external");
+        return fileName;
+    }
+
+    [TestMethod]
+    public async Task ExportProjectAsync_WritesSharedRuntimeFile()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "win00008_test.html");
+        await File.WriteAllTextAsync(
+            sourceHtmlPath,
+            """
+<!doctype html>
+<html>
+<body>
+  <div class="page"><div class="layer" data-id="1">Home</div></div>
+</body>
+</html>
+""");
+
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Home", new(1280, 873));
+        var project = ScadaProject.CreateDefault("Runtime") with
+        {
+            HomePageId = "win00008",
+            Scenes =
+            [
+                new ScadaSceneReference("win00008", "Home", "scenes/win00008.scene.json")
+            ]
+        };
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportProjectAsync(
+                project,
+                [new Ft100ProjectPageExportInput(scene, sourceHtmlPath)],
+                exportRoot);
+
+            var packageDirectory = result.ExportDirectory;
+
+            // Shared runtime file exists at package root with correct name pattern
+            var runtimeFiles = Directory.GetFiles(packageDirectory, "scada-runtime.*.js");
+            Assert.AreEqual(1, runtimeFiles.Length);
+            var runtimeFileName = Path.GetFileName(runtimeFiles[0]);
+            Assert.IsTrue(
+                System.Text.RegularExpressions.Regex.IsMatch(runtimeFileName, @"^scada-runtime\.[0-9a-f]{8}\.js$"));
+
+            // HTML references external runtime via <script src>, not inline script
+            var htmlPath = Path.Combine(packageDirectory, "win00008", "win00008.html");
+            var html = await File.ReadAllTextAsync(htmlPath);
+            StringAssert.Contains(html, $"<script src=\"../{runtimeFileName}\" defer></script>");
+            Assert.IsFalse(html.Contains("<script>\n"),
+                "HTML must not contain inline <script> blocks from BuildRuntimeScript");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
     }
 }

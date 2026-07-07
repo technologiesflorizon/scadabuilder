@@ -34,7 +34,8 @@ public sealed partial class Ft100SceneExporter
         string sourceHtmlPath,
         string exportDirectory,
         ScadaProject? project = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        string? runtimeHash = null)
     {
         ArgumentNullException.ThrowIfNull(scene);
         ArgumentException.ThrowIfNullOrWhiteSpace(sourceHtmlPath);
@@ -60,6 +61,8 @@ public sealed partial class Ft100SceneExporter
         {
             throw new FileNotFoundException("Source HTML not found.", sourceHtmlPath);
         }
+
+        runtimeHash ??= ExportSharedRuntime(exportDirectory);
 
         var sceneDirectory = Path.Combine(exportDirectory, scene.Id);
         var cssDirectory = Path.Combine(sceneDirectory, "css");
@@ -97,7 +100,7 @@ public sealed partial class Ft100SceneExporter
 
         await File.WriteAllTextAsync(
             htmlPath,
-            BuildHtml(scene, cssFileName, normalizedSourceContent),
+            BuildHtml(scene, cssFileName, normalizedSourceContent, runtimeHash),
             Encoding.UTF8,
             cancellationToken);
 
@@ -154,12 +157,13 @@ public sealed partial class Ft100SceneExporter
 
         var packageDirectory = ResolveProjectPackageDirectory(exportDirectory);
         RecreateProjectPackageDirectory(exportDirectory, packageDirectory);
+        var runtimeHash = ExportSharedRuntime(packageDirectory);
 
         var pageResults = new List<Ft100SceneExportResult>();
         foreach (var pageId in compiledPageIds.OrderBy(id => id, StringComparer.Ordinal))
         {
             var input = pageInputsById[pageId];
-            pageResults.Add(await ExportAsync(input.Scene, input.SourceHtmlPath, packageDirectory, project, cancellationToken));
+            pageResults.Add(await ExportAsync(input.Scene, input.SourceHtmlPath, packageDirectory, project, cancellationToken, runtimeHash));
         }
 
         var manifestPath = Path.Combine(packageDirectory, "manifest.json");
@@ -311,6 +315,34 @@ public sealed partial class Ft100SceneExporter
         var bytes = File.ReadAllBytes(filePath);
         var hash = sha.ComputeHash(bytes);
         return Convert.ToHexString(hash)[..8].ToLowerInvariant();
+    }
+
+    /// <summary>
+    /// Exports the shared SCADA runtime JavaScript to the package directory, returning its content hash.
+    /// The file is written as <c>scada-runtime.&lt;hash&gt;.js</c>.
+    /// </summary>
+    private static string ExportSharedRuntime(string packageDirectory)
+    {
+        Directory.CreateDirectory(packageDirectory);
+        var runtimeScript = GetRuntimeScript();
+        var tempDir = Path.Combine(Path.GetTempPath(), "scada-builder-v2-runtime", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(tempDir);
+        var tempFile = Path.Combine(tempDir, "runtime.js");
+        File.WriteAllText(tempFile, runtimeScript, Encoding.UTF8);
+        try
+        {
+            var hash = ContentHash(tempFile);
+            var finalPath = Path.Combine(packageDirectory, $"scada-runtime.{hash}.js");
+            File.Move(tempFile, finalPath);
+            return hash;
+        }
+        finally
+        {
+            if (Directory.Exists(tempDir))
+            {
+                Directory.Delete(tempDir, recursive: true);
+            }
+        }
     }
 
     private static string ResolveProjectPackageDirectory(string selectedDirectory)
@@ -690,7 +722,7 @@ public sealed partial class Ft100SceneExporter
         return style.Replace("\"", "&quot;", StringComparison.Ordinal);
     }
 
-    private static string BuildHtml(ScadaScene scene, string cssFileName, string sourceContent)
+    private static string BuildHtml(ScadaScene scene, string cssFileName, string sourceContent, string runtimeHash)
     {
         var scope = Ft100ExportScope.ForScene(scene);
         var title = HtmlEncoder.Default.Encode(scene.Title);
@@ -700,7 +732,6 @@ public sealed partial class Ft100SceneExporter
         var sceneType = HtmlEncoder.Default.Encode(ToManifestPageType(scene.PageType));
         var rootStyle = HtmlEncoder.Default.Encode(BuildSceneRootInlineStyle(scene));
         var modernElements = string.Concat(scene.Elements.Select(element => BuildElementHtml(element, 0, 0, scope)));
-        var runtimeScript = BuildRuntimeScript(scene, scope);
 
         return $$"""
 <!doctype html>
@@ -720,9 +751,7 @@ public sealed partial class Ft100SceneExporter
 {{Indent(modernElements, 6)}}
     </div>
   </div>
-  <script>
-{{Indent(runtimeScript, 4)}}
-  </script>
+  <script src="../scada-runtime.{{runtimeHash}}.js" defer></script>
 </body>
 </html>
 """;
