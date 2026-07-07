@@ -257,7 +257,7 @@ public partial class MainWindow
       pointer-events: none;
     }
     .scada-resize-input {
-      width: 48px;
+      min-width: 14px;
       border: 0;
       outline: 0;
       padding: 0;
@@ -2432,6 +2432,7 @@ public partial class MainWindow
     const west = westPair.input;
     const groupFor = input => (input === north ? northPair.group : westPair.group);
     const liveTypingPattern = /^\d{0,5}(\.\d?)?$/;
+    const RESIZE_INPUT_CLEARANCE = 26;
 
     const configureInput = (input, handleName) => {
       const currentWrapper = document.querySelector(`.scada-modern-element[data-id="${CSS.escape(targetId)}"]`);
@@ -2444,9 +2445,14 @@ public partial class MainWindow
       const geometry = readWrapperGeometry(currentWrapper);
       const currentValue = (handleName === 'n' || handleName === 's') ? geometry.height : geometry.width;
       const group = groupFor(input);
-      input.value = Math.round(currentValue).toString();
-      group.style.left = `${handleRect.left - surfaceRect.left + surface.scrollLeft + handleRect.width / 2}px`;
-      group.style.top = `${handleRect.top - surfaceRect.top + surface.scrollTop + handleRect.height / 2}px`;
+      const displayValue = Math.round(currentValue).toString();
+      input.value = displayValue;
+      input.size = Math.max(2, displayValue.length);
+      const centerX = handleRect.left - surfaceRect.left + surface.scrollLeft + handleRect.width / 2;
+      const centerY = handleRect.top - surfaceRect.top + surface.scrollTop + handleRect.height / 2;
+      const isNorth = input === north;
+      group.style.left = `${isNorth ? centerX : centerX - RESIZE_INPUT_CLEARANCE}px`;
+      group.style.top = `${isNorth ? centerY - RESIZE_INPUT_CLEARANCE : centerY}px`;
       group.style.display = 'flex';
       input.dataset.handle = handleName;
     };
@@ -2489,7 +2495,10 @@ public partial class MainWindow
       }
       const before = readWrapperGeometry(currentWrapper);
       const rotationDeg = getWrapperRotation(currentWrapper);
-      const clampedValue = Math.max(8, Math.round(parsed));
+      const canvasMax = (handleName === 'n' || handleName === 's')
+        ? getPageSurface().clientHeight
+        : getPageSurface().clientWidth;
+      const clampedValue = Math.max(8, Math.min(Math.round(parsed), Math.round(canvasMax) || Math.round(parsed)));
       const after = applyAxisResize(before, handleName, clampedValue, rotationDeg);
       setWrapperGeometry(currentWrapper, after);
       postModernGeometry(targetId, before, after);
