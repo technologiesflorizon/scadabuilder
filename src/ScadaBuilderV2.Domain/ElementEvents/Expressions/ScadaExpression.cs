@@ -1,3 +1,6 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 namespace ScadaBuilderV2.Domain.ElementEvents.Expressions;
 
 /// <summary>
@@ -9,6 +12,7 @@ namespace ScadaBuilderV2.Domain.ElementEvents.Expressions;
 /// Contracts: docs/superpowers/specs/2026-07-07-element-plus-state-command-events-design.md.
 /// Tests: tests/ScadaBuilderV2.Tests/ElementEvents/ScadaExpressionTests.cs.
 /// </remarks>
+[JsonConverter(typeof(ScadaExpressionConverter))]
 public sealed record ScadaExpression(string Source, ScadaExprNode? Ast, IReadOnlyList<string> ReferencedTags)
 {
     /// <summary>Parses <paramref name="source"/> and builds a <see cref="ScadaExpression"/>.</summary>
@@ -47,5 +51,35 @@ public sealed record ScadaExpression(string Source, ScadaExprNode? Ast, IReadOnl
 
                 break;
         }
+    }
+}
+
+/// <summary>
+/// Serializes <see cref="ScadaExpression"/> without the <see cref="ScadaExpression.Ast"/>,
+/// which is a polymorphic cache reconstructed from <see cref="ScadaExpression.Source"/> on read.
+/// </summary>
+public sealed class ScadaExpressionConverter : JsonConverter<ScadaExpression>
+{
+    private sealed class WireDto
+    {
+        public string Source { get; set; } = "";
+        public List<string> ReferencedTags { get; set; } = new();
+    }
+
+    public override ScadaExpression? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    {
+        var dto = JsonSerializer.Deserialize<WireDto>(ref reader, options);
+        if (dto is null || string.IsNullOrWhiteSpace(dto.Source))
+            return null;
+        return ScadaExpression.FromSource(dto.Source);
+    }
+
+    public override void Write(Utf8JsonWriter writer, ScadaExpression value, JsonSerializerOptions options)
+    {
+        writer.WriteStartObject();
+        writer.WriteString("Source", value.Source);
+        writer.WritePropertyName("ReferencedTags");
+        JsonSerializer.Serialize(writer, value.ReferencedTags, options);
+        writer.WriteEndObject();
     }
 }
