@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Data;
 using System.Windows.Threading;
 using Microsoft.Web.WebView2.Core;
+using ScadaBuilderV2.Application.Clipboard;
 using ScadaBuilderV2.Application.Commands;
 using ScadaBuilderV2.Application.Conversion;
 using ScadaBuilderV2.Application.ElementStudio;
@@ -59,6 +60,8 @@ public partial class MainWindow : Window
     private readonly HashSet<string> _hiddenSourceObjectIds = new(StringComparer.Ordinal);
     private readonly List<LegacyElementListItem> _sourceObjects = [];
     private readonly ActiveSelectionState _activeSelection = new();
+    private readonly ShortcutRegistry _shortcutRegistry = new();
+    private readonly SceneClipboard _sceneClipboard = new();
     private HashSet<string> _selectedSourceObjectIds => _activeSelection.SourceObjectIds;
     private HashSet<string> _selectedSceneObjectIds => _activeSelection.SceneObjectIds;
     private ScadaElement? _selectedSceneObject
@@ -1364,11 +1367,8 @@ public partial class MainWindow : Window
                 case "resizeSceneCanvas":
                     _ = ResizeActiveSceneCanvasFromPreviewAsync(message);
                     break;
-                case "undo":
-                    _ = UndoLastSceneOperationAsync();
-                    break;
-                case "redo":
-                    _ = RedoLastSceneOperationAsync();
+                case "shortcut":
+                    HandleShortcut(message.Key, message.CtrlKey, message.ShiftKey, message.AltKey);
                     break;
             }
         }
@@ -6433,6 +6433,56 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         if (!await _activeSceneTab.History.RedoAsync(CreateEditorHistoryContext()))
         {
             SetStatus("Aucune operation a retablir dans cette scene.");
+        }
+    }
+
+    private void HandleShortcut(string? key, bool ctrlKey, bool shiftKey, bool altKey)
+    {
+        if (!ctrlKey || !TryParseShortcutKey(key, out var shortcutKey))
+        {
+            return;
+        }
+
+        var modifiers = ShortcutModifiers.Control
+            | (shiftKey ? ShortcutModifiers.Shift : ShortcutModifiers.None)
+            | (altKey ? ShortcutModifiers.Alt : ShortcutModifiers.None);
+
+        switch (_shortcutRegistry.Resolve(shortcutKey, modifiers))
+        {
+            case "history.undo":
+                _ = UndoLastSceneOperationAsync();
+                break;
+            case "history.redo":
+                _ = RedoLastSceneOperationAsync();
+                break;
+        }
+    }
+
+    private static bool TryParseShortcutKey(string? key, out ShortcutKey shortcutKey)
+    {
+        switch ((key ?? "").ToLowerInvariant())
+        {
+            case "a":
+                shortcutKey = ShortcutKey.A;
+                return true;
+            case "c":
+                shortcutKey = ShortcutKey.C;
+                return true;
+            case "v":
+                shortcutKey = ShortcutKey.V;
+                return true;
+            case "x":
+                shortcutKey = ShortcutKey.X;
+                return true;
+            case "y":
+                shortcutKey = ShortcutKey.Y;
+                return true;
+            case "z":
+                shortcutKey = ShortcutKey.Z;
+                return true;
+            default:
+                shortcutKey = default;
+                return false;
         }
     }
 

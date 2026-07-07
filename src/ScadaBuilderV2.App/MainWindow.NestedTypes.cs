@@ -240,6 +240,14 @@ public partial class MainWindow
 
         public bool Toggle { get; set; }
 
+        public string? Key { get; set; }
+
+        public bool CtrlKey { get; set; }
+
+        public bool ShiftKey { get; set; }
+
+        public bool AltKey { get; set; }
+
         public double X { get; set; }
 
         public double Y { get; set; }

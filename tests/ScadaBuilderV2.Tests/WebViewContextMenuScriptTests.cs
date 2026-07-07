@@ -1398,6 +1398,38 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void KeydownPostsUnifiedShortcutMessageForCtrlCombinationsAndDispatchesInHost()
+    {
+        // Regression guard: Ctrl+Z/Ctrl+Y used to post ad hoc {type:'undo'|'redo'}
+        // messages directly from the keydown handler. They now go through the same
+        // generic 'shortcut' message as the newer Select All/Copy/Cut/Paste
+        // shortcuts, resolved host-side via ShortcutRegistry, so there is exactly
+        // one shortcut mechanism.
+        var source = NormalizeNewLines(ReadMainWindowSource());
+
+        Assert.IsFalse(
+            source.Contains("postMessage({ type: event.shiftKey ? 'redo' : 'undo' })", StringComparison.Ordinal),
+            "The old ad hoc undo/redo postMessage call must not be reintroduced.");
+
+        StringAssert.Contains(source, "type: 'shortcut'");
+        StringAssert.Contains(source, "['a', 'c', 'v', 'x', 'y', 'z']");
+
+        StringAssert.Contains(source, "case \"shortcut\":");
+        StringAssert.Contains(source, "HandleShortcut(message.Key, message.CtrlKey, message.ShiftKey, message.AltKey);");
+
+        var handlerStart = source.IndexOf("private void HandleShortcut(", StringComparison.Ordinal);
+        Assert.IsTrue(handlerStart >= 0, "HandleShortcut method not found");
+        var handlerEnd = source.IndexOf("\n    }\n", handlerStart, StringComparison.Ordinal);
+        Assert.IsTrue(handlerEnd >= 0, "End of HandleShortcut not found");
+        var handlerBody = source[handlerStart..handlerEnd];
+
+        StringAssert.Contains(handlerBody, "case \"history.undo\":");
+        StringAssert.Contains(handlerBody, "UndoLastSceneOperationAsync();");
+        StringAssert.Contains(handlerBody, "case \"history.redo\":");
+        StringAssert.Contains(handlerBody, "RedoLastSceneOperationAsync();");
+    }
+
+    [TestMethod]
     public void ResizeAndRotateHideSelectionChromeWhileDraggingAndRestoreOnRelease()
     {
         // While the operator is actively resizing, rotating, or moving an Element+, the

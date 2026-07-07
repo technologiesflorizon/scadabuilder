@@ -2538,17 +2538,20 @@ public partial class MainWindow
       event.stopPropagation();
       return;
     }
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'z') {
-      window.chrome?.webview?.postMessage({ type: event.shiftKey ? 'redo' : 'undo' });
-      event.preventDefault();
-      event.stopPropagation();
-      return;
-    }
-    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'y') {
-      window.chrome?.webview?.postMessage({ type: 'redo' });
-      event.preventDefault();
-      event.stopPropagation();
-      return;
+    if (event.ctrlKey || event.metaKey) {
+      const shortcutKey = event.key.toLowerCase();
+      if (['a', 'c', 'v', 'x', 'y', 'z'].includes(shortcutKey)) {
+        window.chrome?.webview?.postMessage({
+          type: 'shortcut',
+          key: shortcutKey,
+          ctrlKey: true,
+          shiftKey: event.shiftKey,
+          altKey: event.altKey
+        });
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
     }
 
     if (!selectedModernId) return;
