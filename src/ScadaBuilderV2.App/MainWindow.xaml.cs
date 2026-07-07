@@ -3905,6 +3905,14 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                         new EditorCommandDescriptor("object.rotation.270", "270°", "rotation"),
                         new EditorCommandDescriptor("object.rotation.custom", "Personnalisé...", "rotation"),
                     ]));
+
+                if (selected.Kind != ScadaElementKind.Group && selected.ChildElements.Count == 0)
+                {
+                    modernCommands.Add(new EditorCommandDescriptor(
+                        "object.resize",
+                        "Redimensionner",
+                        "resize"));
+                }
             }
 
             return modernCommands;

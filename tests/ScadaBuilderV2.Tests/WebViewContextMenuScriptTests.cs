@@ -1657,6 +1657,34 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(loopBody, "svg.style.height = '100%';");
     }
 
+    [TestMethod]
+    public void ContextMenuOffersResizeForSingleElementPlusSelectionWithoutChildren()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "\"object.resize\"");
+        StringAssert.Contains(source, "\"Redimensionner\"");
+
+        // object.resize must not have a case in ExecuteEditorCommandAsync; it is handled
+        // entirely client-side in JS (opens the quick-input tool), like object.rotation.custom.
+        Assert.IsFalse(
+            source.Contains("case \"object.resize\":", StringComparison.Ordinal),
+            "object.resize must NOT have a case in ExecuteEditorCommandAsync; it is handled client-side in JS.");
+
+        // Scoped inside the same single-selection guard as object.rotation, and gated on
+        // the element having no children (so groups/containers don't get the resize entry).
+        var guardStart = source.IndexOf("if (_selectedSceneObjectIds.Count == 1 && (_activeScene?.Elements.Any(e => e.Id == selected.Id) ?? false))", StringComparison.Ordinal);
+        Assert.IsTrue(guardStart >= 0, "Guard condition for single-element descriptor scope not found");
+        var scopeEnd = source.IndexOf("return modernCommands;", guardStart, StringComparison.Ordinal);
+        Assert.IsTrue(scopeEnd >= 0, "return modernCommands statement not found after guard");
+        var guardedScope = source[guardStart..scopeEnd];
+
+        StringAssert.Contains(guardedScope, "\"object.resize\"",
+            "object.resize descriptor must be inside the same single-element guard as object.rotation");
+        StringAssert.Contains(guardedScope, "selected.Kind != ScadaElementKind.Group && selected.ChildElements.Count == 0",
+            "object.resize must be gated on the selection having no children (not a group/container)");
+    }
+
     private static string ReadMainWindowSource()
     {
         // MainWindow code-behind is split into behavior-preserving partial-class files
