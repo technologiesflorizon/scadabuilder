@@ -1459,6 +1459,55 @@ public sealed class Ft100SceneExporterTests
     }
 
     [TestMethod]
+    public async Task ExportedElementStyleComposesFlipScaleWithRotationTransform()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "win00008_mirror.html");
+        await File.WriteAllTextAsync(
+            sourceHtmlPath,
+            """
+<!doctype html>
+<html>
+<body>
+  <div class="page"></div>
+</body>
+</html>
+""");
+
+        var input = ScadaElement.CreateInputText("input_mirror_001", "InputMirror001", 40, 50) with
+        {
+            Style = ScadaElementStyle.DefaultInput with
+            {
+                Rotation = 17,
+                FlipHorizontally = true,
+                FlipVertically = false
+            }
+        };
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Miroir", new(1280, 873))
+            .WithElement(input);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            StringAssert.Contains(html, "transform:rotate(17deg) scaleX(-1) scaleY(1);");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task ExportRendersStandardShapeElementAsScopedSvg()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
@@ -1570,7 +1619,7 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "stroke=\"#90C030\"");
             StringAssert.Contains(html, "stroke-dasharray=\"8 5\"");
             StringAssert.Contains(html, "opacity:0.42;");
-            StringAssert.Contains(html, "transform:rotate(17deg);");
+            StringAssert.Contains(html, "transform:rotate(17deg) scaleX(1) scaleY(1);");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_circle_001\"");
             StringAssert.Contains(html, "<svg id=\"shape-shape_circle_001\"");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_triangle_001\"");

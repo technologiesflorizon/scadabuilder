@@ -1180,7 +1180,9 @@ public sealed partial class Ft100SceneExporter
         css.Append($"box-shadow:{ShadowCss(style.ShadowPreset)};");
         css.Append($"opacity:{Format(Math.Clamp(style.Opacity, 0, 1))};");
         css.Append("transform-origin:center center;");
-        css.Append($"transform:rotate({Format(style.Rotation)}deg);");
+        var scaleX = style.FlipHorizontally ? -1 : 1;
+        var scaleY = style.FlipVertically ? -1 : 1;
+        css.Append($"transform:rotate({Format(style.Rotation)}deg) scaleX({scaleX}) scaleY({scaleY});");
         if (!string.IsNullOrWhiteSpace(style.AdvancedCss))
         {
             css.Append(style.AdvancedCss);
