@@ -695,7 +695,7 @@
       "DisplayName": "Nouveau composant",
       "Kind": "Custom",
       "Bounds": {
-        "X": 690,
+        "X": 691,
         "Y": 104,
         "Width": 199,
         "Height": 216
@@ -709,7 +709,7 @@
         "FontFamily": "Segoe UI",
         "FontSize": 16,
         "Foreground": "#0F2A30",
-        "Background": "Transparent",
+        "Background": "#D10A0A",
         "BorderColor": "Transparent",
         "BorderWidth": 0,
         "BorderStyle": "None",
@@ -744,7 +744,57 @@
       "ButtonBehavior": null,
       "ShapeKind": null,
       "ButtonKind": null,
-      "StateConfig": null,
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null
+        },
+        "States": [
+          {
+            "Id": "6db67677037d40e099ce4a1c0a389454",
+            "Name": "test2",
+            "Enabled": true,
+            "Expression": {
+              "Source": "{PE_16} == 100",
+              "ReferencedTags": [
+                "PE_16"
+              ]
+            },
+            "Effect": {
+              "BackgroundColor": "#FF0000",
+              "BorderColor": null,
+              "BorderWidth": null,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null
+            }
+          }
+        ]
+      },
       "CommandConfig": null
     },
     {
@@ -858,7 +908,57 @@
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
       "ButtonKind": null,
-      "StateConfig": null,
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null
+        },
+        "States": [
+          {
+            "Id": "6e5d27dfd5eb43ce9d8b01e13bce6f76",
+            "Name": "test",
+            "Enabled": true,
+            "Expression": {
+              "Source": "{PE_119} \u003E 100",
+              "ReferencedTags": [
+                "PE_119"
+              ]
+            },
+            "Effect": {
+              "BackgroundColor": "#FF0000",
+              "BorderColor": null,
+              "BorderWidth": null,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null
+            }
+          }
+        ]
+      },
       "CommandConfig": null
     },
     {

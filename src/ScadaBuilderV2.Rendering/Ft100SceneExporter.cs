@@ -302,6 +302,17 @@ public sealed partial class Ft100SceneExporter
         return sb.ToString();
     }
 
+    /// <summary>
+    /// Computes an 8-character lowercase hex content hash of the file at <paramref name="filePath"/>.
+    /// </summary>
+    public static string ContentHash(string filePath)
+    {
+        using var sha = System.Security.Cryptography.SHA256.Create();
+        var bytes = File.ReadAllBytes(filePath);
+        var hash = sha.ComputeHash(bytes);
+        return Convert.ToHexString(hash)[..8].ToLowerInvariant();
+    }
+
     private static string ResolveProjectPackageDirectory(string selectedDirectory)
     {
         var fullSelectedDirectory = Path.GetFullPath(selectedDirectory);

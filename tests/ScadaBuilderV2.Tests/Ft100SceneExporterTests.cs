@@ -1962,6 +1962,56 @@ public sealed class Ft100SceneExporterTests
         }
     }
 
+    [TestMethod]
+    public void ContentHash_Returns8CharLowercaseHex()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        try
+        {
+            var filePath = Path.Combine(root, "test.txt");
+            File.WriteAllText(filePath, "hello world");
+
+            var hash = Ft100SceneExporter.ContentHash(filePath);
+
+            Assert.AreEqual(8, hash.Length);
+            Assert.IsTrue(System.Text.RegularExpressions.Regex.IsMatch(hash, "^[0-9a-f]{8}$"));
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public void ContentHash_SameContent_SameHash()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        try
+        {
+            var file1 = Path.Combine(root, "a.txt");
+            var file2 = Path.Combine(root, "b.txt");
+            File.WriteAllText(file1, "same content");
+            File.WriteAllText(file2, "same content");
+
+            var hash1 = Ft100SceneExporter.ContentHash(file1);
+            var hash2 = Ft100SceneExporter.ContentHash(file2);
+
+            Assert.AreEqual(hash1, hash2);
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
     private static ScadaElement CreateSourceButton(string id, string sourceId, double x, double y)
     {
         return ScadaElement.CreateLegacyStatic(

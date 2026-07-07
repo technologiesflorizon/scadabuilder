@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace ScadaBuilderV2.Domain.ElementEvents.Expressions;
 
 /// <summary>
@@ -24,6 +26,13 @@ public enum ScadaExprBinaryOp
 /// Contracts: docs/superpowers/specs/2026-07-07-element-plus-state-command-events-design.md.
 /// Tests: tests/ScadaBuilderV2.Tests/ElementEvents/ScadaExprNodeTests.cs.
 /// </remarks>
+[JsonDerivedType(typeof(ScadaExprLiteralNumber), "literalNumber")]
+[JsonDerivedType(typeof(ScadaExprLiteralBool), "literalBool")]
+[JsonDerivedType(typeof(ScadaExprLiteralString), "literalString")]
+[JsonDerivedType(typeof(ScadaExprTagRef), "tagRef")]
+[JsonDerivedType(typeof(ScadaExprUnary), "unary")]
+[JsonDerivedType(typeof(ScadaExprBinary), "binary")]
+[JsonDerivedType(typeof(ScadaExprFunc), "func")]
 public abstract record ScadaExprNode;
 
 /// <summary>Numeric literal expression node.</summary>
