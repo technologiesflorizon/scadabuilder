@@ -1,5 +1,6 @@
 using System.Globalization;
 using System.IO.Compression;
+using System.Reflection;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
@@ -248,6 +249,57 @@ public sealed partial class Ft100SceneExporter
                 Directory.Delete(stagingRoot, recursive: true);
             }
         }
+    }
+
+    private static readonly string[] RuntimeModuleOrder =
+    [
+        "expression-evaluator.js",
+        "effect-applier.js",
+        "state-engine.js",
+        "animation-controller.js",
+        "command-dispatcher.js",
+        "tag-bridge.js",
+        "input-edit-guard.js",
+        "confirmation-modal.js",
+        "scada-runtime.js"
+    ];
+
+    /// <summary>Returns the concatenated SCADA runtime JavaScript from embedded resource modules.</summary>
+    /// <remarks>
+    /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/Runtime/RuntimeJsModulesTests.cs.
+    /// </remarks>
+    public static string GetRuntimeScript()
+    {
+        var assembly = typeof(Ft100SceneExporter).Assembly;
+        var resourceNames = assembly.GetManifestResourceNames();
+        var sb = new StringBuilder();
+        var version = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+
+        foreach (var moduleName in RuntimeModuleOrder)
+        {
+            var match = resourceNames.FirstOrDefault(name =>
+                name.EndsWith(moduleName, StringComparison.OrdinalIgnoreCase));
+
+            if (match == null)
+            {
+                continue;
+            }
+
+            using var stream = assembly.GetManifestResourceStream(match);
+            if (stream == null)
+            {
+                continue;
+            }
+
+            using var reader = new StreamReader(stream);
+            var content = reader.ReadToEnd();
+            content = content.Replace("{{RUNTIME_VERSION}}", version);
+            sb.Append(content);
+            sb.Append('\n');
+        }
+
+        return sb.ToString();
     }
 
     private static string ResolveProjectPackageDirectory(string selectedDirectory)

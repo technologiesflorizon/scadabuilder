@@ -1,4 +1,5 @@
 using System.Reflection;
+using ScadaBuilderV2.Rendering;
 
 namespace ScadaBuilderV2.Tests.Runtime;
 
@@ -226,6 +227,29 @@ public sealed class RuntimeJsModulesTests
 
         var source = ReadEmbeddedResource("confirmation-modal.js");
         StringAssert.Contains(source, "showConfirmation");
+    }
+
+    /// <summary>
+    /// GetRuntimeScript must return a non-empty concatenated script that contains
+    /// all module namespaces and the public API symbols.
+    /// </summary>
+    [TestMethod]
+    public void GetRuntimeScript_ReturnsConcatenatedModules()
+    {
+        var script = Ft100SceneExporter.GetRuntimeScript();
+
+        Assert.IsFalse(string.IsNullOrWhiteSpace(script), "GetRuntimeScript must return non-empty content");
+
+        StringAssert.Contains(script, "ExpressionEvaluator");
+        StringAssert.Contains(script, "EffectApplier");
+        StringAssert.Contains(script, "StateEngine");
+        StringAssert.Contains(script, "AnimationController");
+        StringAssert.Contains(script, "CommandDispatcher");
+        StringAssert.Contains(script, "TagBridge");
+        StringAssert.Contains(script, "InputEditGuard");
+        StringAssert.Contains(script, "showConfirmation");
+        StringAssert.Contains(script, "initPage");
+        StringAssert.Contains(script, "onTagValuesChanged");
     }
 
     /// <summary>
