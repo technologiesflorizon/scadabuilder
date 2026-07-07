@@ -242,8 +242,8 @@ public partial class MainWindow
       position: absolute;
       display: none;
       align-items: center;
-      gap: 4px;
-      padding: 3px 6px;
+      gap: 3px;
+      padding: 2px 5px;
       border: 1px solid #2090a0;
       border-radius: 4px;
       background: #ffffff;
@@ -257,10 +257,11 @@ public partial class MainWindow
       pointer-events: none;
     }
     .scada-resize-input {
-      min-width: 14px;
+      box-sizing: content-box;
       border: 0;
       outline: 0;
       padding: 0;
+      margin: 0;
       font: 12px "Segoe UI", sans-serif;
       background: transparent;
     }
@@ -2447,7 +2448,7 @@ public partial class MainWindow
       const group = groupFor(input);
       const displayValue = Math.round(currentValue).toString();
       input.value = displayValue;
-      input.size = Math.max(2, displayValue.length);
+      input.style.width = `${Math.max(2, displayValue.length)}ch`;
       const centerX = handleRect.left - surfaceRect.left + surface.scrollLeft + handleRect.width / 2;
       const centerY = handleRect.top - surfaceRect.top + surface.scrollTop + handleRect.height / 2;
       const isNorth = input === north;
@@ -2462,6 +2463,7 @@ public partial class MainWindow
       if (input.value !== '' && !liveTypingPattern.test(input.value)) {
         input.value = input.value.slice(0, -1);
       }
+      input.style.width = `${Math.max(2, input.value.length)}ch`;
     };
 
     const closeBoth = () => {
@@ -2926,6 +2928,13 @@ public partial class MainWindow
     if (!commandId) return;
     event.preventDefault();
     event.stopPropagation();
+    if (commandId.startsWith('object.rotation') && activeResizeEntry && activeResizeEntry.targetId === lastObjectContextTargetId) {
+      // Rotation changes the element's rotated bounding box, which the resize tool's
+      // handle-to-dimension binding was computed against; close it rather than show a
+      // now-mismatched value. Unlike drag-rotate (pointerup), a menu command has no
+      // natural "drag ended" moment to reopen from, so it's left closed.
+      activeResizeEntry.close();
+    }
     if (commandId === 'object.rotation.custom') {
       const anchorRect = event.target.getBoundingClientRect();
       hideMenu();
