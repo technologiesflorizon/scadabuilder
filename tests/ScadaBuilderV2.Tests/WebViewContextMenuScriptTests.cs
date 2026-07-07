@@ -1509,6 +1509,32 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void ResizeDragConvertsScreenDeltaIntoTheElementsRotatedLocalFrame()
+    {
+        // Regression guard: left/top/width/height are always defined in the element's
+        // own unrotated coordinate frame - CSS rotate() only changes how it's painted,
+        // not its layout box. A handle drag must therefore un-rotate the raw screen-space
+        // mouse delta before applying it to width/height, or resizing a rotated element
+        // moves/grows it in the wrong direction.
+        var source = NormalizeNewLines(ReadMainWindowSource());
+
+        StringAssert.Contains(source, "modernDrag.rotationDeg = getWrapperRotation(sceneMoveWrapper);");
+
+        var resizeElseStart = source.IndexOf("} else {\n        const rotationRad = (modernDrag.rotationDeg || 0)", StringComparison.Ordinal);
+        Assert.IsTrue(resizeElseStart >= 0, "Rotation-aware resize branch not found");
+        var resizeElseEnd = source.IndexOf("\n        setWrapperGeometry(modernDrag.wrapper, geometry);", resizeElseStart, StringComparison.Ordinal);
+        Assert.IsTrue(resizeElseEnd >= 0, "End of resize branch not found");
+        var resizeBody = source[resizeElseStart..resizeElseEnd];
+
+        StringAssert.Contains(resizeBody, "const localDx = dx * cosR + dy * sinR;");
+        StringAssert.Contains(resizeBody, "const localDy = -dx * sinR + dy * cosR;");
+        StringAssert.Contains(resizeBody, "clampNearAxis(modernDrag.startX, modernDrag.startWidth, localDx)");
+        StringAssert.Contains(resizeBody, "modernDrag.startWidth + localDx");
+        StringAssert.Contains(resizeBody, "clampNearAxis(modernDrag.startY, modernDrag.startHeight, localDy)");
+        StringAssert.Contains(resizeBody, "modernDrag.startHeight + localDy");
+    }
+
+    [TestMethod]
     public void ResizeAndRotateHideSelectionChromeWhileDraggingAndRestoreOnRelease()
     {
         // While the operator is actively resizing, rotating, or moving an Element+, the

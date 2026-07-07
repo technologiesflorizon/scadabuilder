@@ -1908,6 +1908,8 @@ public partial class MainWindow
           const startPivotX = rotateRect.left + rotateRect.width / 2;
           const startPivotY = rotateRect.top + rotateRect.height / 2;
           modernDrag.startAngle = Math.atan2(event.clientY - startPivotY, event.clientX - startPivotX) * (180 / Math.PI);
+        } else if (modernDrag.mode === 'resize') {
+          modernDrag.rotationDeg = getWrapperRotation(sceneMoveWrapper);
         }
         if (modernDrag.mode === 'resize' || modernDrag.mode === 'rotate') {
           sceneMoveWrapper.dataset.transforming = 'true';
@@ -2324,19 +2326,25 @@ public partial class MainWindow
           });
         });
       } else {
+        const rotationRad = (modernDrag.rotationDeg || 0) * Math.PI / 180;
+        const cosR = Math.cos(rotationRad);
+        const sinR = Math.sin(rotationRad);
+        const localDx = dx * cosR + dy * sinR;
+        const localDy = -dx * sinR + dy * cosR;
+
         if (modernDrag.handle.includes('w')) {
-          const clampedX = clampNearAxis(modernDrag.startX, modernDrag.startWidth, dx);
+          const clampedX = clampNearAxis(modernDrag.startX, modernDrag.startWidth, localDx);
           geometry.x = clampedX.pos;
           geometry.width = clampedX.size;
         } else if (modernDrag.handle.includes('e')) {
-          geometry.width = Math.max(8, modernDrag.startWidth + dx);
+          geometry.width = Math.max(8, modernDrag.startWidth + localDx);
         }
         if (modernDrag.handle.includes('n')) {
-          const clampedY = clampNearAxis(modernDrag.startY, modernDrag.startHeight, dy);
+          const clampedY = clampNearAxis(modernDrag.startY, modernDrag.startHeight, localDy);
           geometry.y = clampedY.pos;
           geometry.height = clampedY.size;
         } else if (modernDrag.handle.includes('s')) {
-          geometry.height = Math.max(8, modernDrag.startHeight + dy);
+          geometry.height = Math.max(8, modernDrag.startHeight + localDy);
         }
 
         if (event.ctrlKey && modernDrag.handle.length === 2 && modernDrag.aspectRatio) {
