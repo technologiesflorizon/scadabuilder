@@ -2385,8 +2385,8 @@ public partial class MainWindow
   function ensureResizeInputs() {
     const surface = getPageSurface();
     const specs = [
-      { groupId: 'scada-resize-group-north', inputId: 'scada-resize-input-north', label: 'X:' },
-      { groupId: 'scada-resize-group-west', inputId: 'scada-resize-input-west', label: 'Y:' }
+      { groupId: 'scada-resize-group-north', inputId: 'scada-resize-input-north', label: 'Y:' },
+      { groupId: 'scada-resize-group-west', inputId: 'scada-resize-input-west', label: 'X:' }
     ];
     return specs.map(spec => {
       let group = document.getElementById(spec.groupId);
