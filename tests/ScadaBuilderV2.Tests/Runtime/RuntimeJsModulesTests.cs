@@ -142,6 +142,57 @@ public sealed class RuntimeJsModulesTests
     }
 
     /// <summary>
+    /// The animation-controller.js module must be embedded in the Rendering assembly.
+    /// </summary>
+    [TestMethod]
+    public void AnimationControllerModule_IsEmbeddedResource()
+    {
+        var resourceNames = RenderingAssembly.GetManifestResourceNames();
+        var match = resourceNames.FirstOrDefault(name =>
+            name.EndsWith("animation-controller.js", StringComparison.OrdinalIgnoreCase));
+
+        Assert.IsNotNull(match, "animation-controller.js must be an embedded resource in ScadaBuilderV2.Rendering");
+    }
+
+    /// <summary>
+    /// The command-dispatcher.js module must be embedded and expose
+    /// WriteTag, Navigate, Toggle, and confirmation-gate symbols.
+    /// </summary>
+    [TestMethod]
+    public void CommandDispatcherModule_IsEmbeddedResource()
+    {
+        var resourceNames = RenderingAssembly.GetManifestResourceNames();
+        var match = resourceNames.FirstOrDefault(name =>
+            name.EndsWith("command-dispatcher.js", StringComparison.OrdinalIgnoreCase));
+
+        Assert.IsNotNull(match, "command-dispatcher.js must be an embedded resource in ScadaBuilderV2.Rendering");
+
+        var source = ReadEmbeddedResource("command-dispatcher.js");
+        StringAssert.Contains(source, "WriteTag");
+        StringAssert.Contains(source, "Navigate");
+        StringAssert.Contains(source, "Toggle");
+    }
+
+    /// <summary>
+    /// The tag-bridge.js module must be embedded and expose
+    /// getTagValue, writeTag, and reference window.tf100webScadaBuilder.
+    /// </summary>
+    [TestMethod]
+    public void TagBridgeModule_IsEmbeddedResource()
+    {
+        var resourceNames = RenderingAssembly.GetManifestResourceNames();
+        var match = resourceNames.FirstOrDefault(name =>
+            name.EndsWith("tag-bridge.js", StringComparison.OrdinalIgnoreCase));
+
+        Assert.IsNotNull(match, "tag-bridge.js must be an embedded resource in ScadaBuilderV2.Rendering");
+
+        var source = ReadEmbeddedResource("tag-bridge.js");
+        StringAssert.Contains(source, "getTagValue");
+        StringAssert.Contains(source, "writeTag");
+        StringAssert.Contains(source, "tf100webScadaBuilder");
+    }
+
+    /// <summary>
     /// Reads an embedded JS resource from the Rendering assembly.
     /// </summary>
     private static string ReadEmbeddedResource(string resourceFileName)
