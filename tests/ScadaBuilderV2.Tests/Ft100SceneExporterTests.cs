@@ -1,4 +1,7 @@
 using System.IO.Compression;
+using ScadaBuilderV2.Domain.ElementEvents.Command;
+using ScadaBuilderV2.Domain.ElementEvents.Expressions;
+using ScadaBuilderV2.Domain.ElementEvents.State;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
 using ScadaBuilderV2.Rendering;
@@ -2079,6 +2082,72 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, $"<script src=\"../{runtimeFileName}\" defer></script>");
             Assert.IsFalse(html.Contains("<script>\n"),
                 "HTML must not contain inline <script> blocks from BuildRuntimeScript");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public async Task ExportAsync_IncludesStateConfigInManifestAndHtml()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "state_config_test.html");
+        await File.WriteAllTextAsync(
+            sourceHtmlPath,
+            """
+<!doctype html>
+<html>
+<body>
+  <div class="page"></div>
+</body>
+</html>
+""");
+
+        var element = new ScadaElement(
+            "element_state_001",
+            "State Element",
+            ScadaElementKind.Text,
+            new SceneBounds(10, 20, 100, 30),
+            null,
+            ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultText,
+            new ScadaElementData("Stateful", null, null, null, null, null, null, null, null, false),
+            StateConfig: new ScadaElementStateConfig(
+                ScadaEffectBlock.Empty with { Opacity = 0.4, BorderColor = "#000000", BorderWidth = 2 },
+                ScadaEffectBlock.Empty,
+                [new ScadaStateRule(
+                    "alarm_state",
+                    "Alarm",
+                    true,
+                    ScadaExpression.FromSource("true"),
+                    new ScadaEffectBlock(Animation: ScadaAnimation.Blink))]
+            )
+        );
+
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "State Config Test", new(1280, 873))
+            .WithElement(element);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+
+            var manifest = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "manifest.json"));
+            StringAssert.Contains(manifest, "\"StateConfig\"");
+            StringAssert.Contains(manifest, "\"States\"");
+            StringAssert.Contains(manifest, "\"Animation\": \"blink\"");
+
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            StringAssert.Contains(html, "data-scada-state-config=\"");
         }
         finally
         {

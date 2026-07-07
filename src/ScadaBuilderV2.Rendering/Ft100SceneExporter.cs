@@ -6,6 +6,8 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using ScadaBuilderV2.Domain.ElementEvents.Command;
+using ScadaBuilderV2.Domain.ElementEvents.State;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
 
@@ -777,10 +779,11 @@ public sealed partial class Ft100SceneExporter
                 var groupInlineStyle = HtmlEncoder.Default.Encode(BuildRuntimeGroupInlineStyle(element, absoluteX, absoluteY));
                 var groupEventAttribute = BuildEventAttribute(element);
                 var groupValueBindingAttributes = BuildValueBindingAttributes(element);
+                var groupStateCommandAttributes = BuildStateCommandAttributes(element);
                 var children = string.Concat(element.ChildElements.Select(child => BuildElementHtml(child, 0, 0, scope)));
 
                 return $$"""
-<div id="{{groupId}}" class="ft100-element ft100-element--{{groupKind}}" data-scada-element-id="{{groupSceneElementId}}" data-name="{{groupName}}" style="{{groupInlineStyle}}"{{groupEventAttribute}}{{groupValueBindingAttributes}}>
+<div id="{{groupId}}" class="ft100-element ft100-element--{{groupKind}}" data-scada-element-id="{{groupSceneElementId}}" data-name="{{groupName}}" style="{{groupInlineStyle}}"{{groupEventAttribute}}{{groupValueBindingAttributes}}{{groupStateCommandAttributes}}>
 {{Indent(children, 2)}}
 </div>
 """;
@@ -798,9 +801,10 @@ public sealed partial class Ft100SceneExporter
         var eventAttribute = BuildEventAttribute(element);
         var valueBindingAttributes = BuildValueBindingAttributes(element);
         var buttonRuntimeAttributes = BuildButtonRuntimeAttributes(element);
+        var stateCommandAttributes = BuildStateCommandAttributes(element);
 
         return $$"""
-<div id="{{id}}" class="ft100-element ft100-element--{{kind}}" data-scada-element-id="{{sceneElementId}}" data-name="{{name}}" style="{{inlineStyle}}"{{eventAttribute}}{{valueBindingAttributes}}{{buttonRuntimeAttributes}}>
+<div id="{{id}}" class="ft100-element ft100-element--{{kind}}" data-scada-element-id="{{sceneElementId}}" data-name="{{name}}" style="{{inlineStyle}}"{{eventAttribute}}{{valueBindingAttributes}}{{buttonRuntimeAttributes}}{{stateCommandAttributes}}>
   {{content}}
 </div>
 """;
@@ -830,6 +834,46 @@ public sealed partial class Ft100SceneExporter
         return element.EffectiveButtonKind == ScadaButtonKind.Toggle
             ? attributes + " data-scada-toggle-state=\"off\""
             : attributes;
+    }
+
+    private static string BuildStateCommandAttributes(ScadaElement element)
+    {
+        var stateConfig = element.EffectiveStateConfig;
+        var commandConfig = element.EffectiveCommandConfig;
+        var hasStateConfig = stateConfig.States.Count > 0 || HasNonDefaultFallback(stateConfig);
+        var hasCommandConfig = commandConfig.Commands.Count > 0;
+
+        if (!hasStateConfig && !hasCommandConfig)
+        {
+            return "";
+        }
+
+        var attributes = new StringBuilder();
+        if (hasStateConfig)
+        {
+            var json = JsonSerializer.Serialize(stateConfig, ManifestJsonOptions);
+            attributes.Append(" data-scada-state-config=\"");
+            attributes.Append(HtmlEncoder.Default.Encode(json));
+            attributes.Append('"');
+        }
+
+        if (hasCommandConfig)
+        {
+            var json = JsonSerializer.Serialize(commandConfig, ManifestJsonOptions);
+            attributes.Append(" data-scada-command-config=\"");
+            attributes.Append(HtmlEncoder.Default.Encode(json));
+            attributes.Append('"');
+        }
+
+        return attributes.ToString();
+    }
+
+    private static bool HasNonDefaultFallback(ScadaElementStateConfig config)
+    {
+        return config.QualityFallback.Opacity != 0.4
+            || config.QualityFallback.BorderColor != "#000000"
+            || config.QualityFallback.BorderWidth != 2
+            || config.DefaultEffect != ScadaEffectBlock.Empty;
     }
 
     private static string BuildValueBindingAttributes(ScadaElement element)
@@ -1557,7 +1601,11 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
                     {
                         ReadTagId = element.Data?.ReadTagId,
                         WriteTagId = element.Data?.WriteTagId
-                    }
+                    },
+                    StateConfig = element.EffectiveStateConfig.States.Count > 0 || HasNonDefaultFallback(element.EffectiveStateConfig)
+                        ? element.EffectiveStateConfig : null,
+                    CommandConfig = element.EffectiveCommandConfig.Commands.Count > 0
+                        ? element.EffectiveCommandConfig : null
                 })
                 .ToArray()
         };
