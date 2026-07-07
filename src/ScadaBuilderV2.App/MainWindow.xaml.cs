@@ -5753,43 +5753,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         RefreshStateAndCommandTabs();
     }
 
-    private void OnEditDefaultStateEffectClick(object sender, RoutedEventArgs e) => EditFallbackEffect(isQuality: false);
-
-    private void OnEditQualityFallbackEffectClick(object sender, RoutedEventArgs e) => EditFallbackEffect(isQuality: true);
-
-    private void EditFallbackEffect(bool isQuality)
-    {
-        if (_activeScene is null || _selectedSceneObject is null)
-        {
-            return;
-        }
-
-        var element = _activeScene.FindElementRecursive(_selectedSceneObject.Id);
-        if (element is null)
-        {
-            return;
-        }
-
-        var placeholderRule = new ScadaStateRule(
-            "fallback-editor",
-            isQuality ? "Qualite" : "Repos",
-            true,
-            ScadaExpression.FromSource("true"),
-            isQuality ? element.EffectiveStateConfig.QualityFallback : element.EffectiveStateConfig.DefaultEffect);
-
-        var dialog = new ElementStateRuleDialog(placeholderRule, _modernProject?.TagCatalog) { Owner = this };
-        if (dialog.ShowDialog() != true || dialog.Result is null)
-        {
-            return;
-        }
-
-        var updatedConfig = isQuality
-            ? element.EffectiveStateConfig with { QualityFallback = dialog.Result.Effect }
-            : element.EffectiveStateConfig with { DefaultEffect = dialog.Result.Effect };
-        _activeScene = _activeScene.WithElementStateConfig(_selectedSceneObject.Id, updatedConfig);
-        RefreshStateAndCommandTabs();
-    }
-
     private void OnTestStateRuleToggleClick(object sender, RoutedEventArgs e)
     {
         if (StateRulesListBox.SelectedItem is not ScadaStateRule selected)

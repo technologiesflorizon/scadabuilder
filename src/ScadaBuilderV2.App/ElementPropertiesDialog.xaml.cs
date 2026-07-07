@@ -126,37 +126,6 @@ public partial class ElementPropertiesDialog : Window
         RefreshStateAndCommandLists();
     }
 
-    private void OnEditDefaultStateEffectClick(object sender, RoutedEventArgs e) => EditFallbackEffect(isQuality: false);
-
-    private void OnEditQualityFallbackEffectClick(object sender, RoutedEventArgs e) => EditFallbackEffect(isQuality: true);
-
-    private void EditFallbackEffect(bool isQuality)
-    {
-        if (SaveStateConfig is null)
-        {
-            return;
-        }
-
-        var placeholderRule = new ScadaStateRule(
-            "fallback-editor",
-            isQuality ? "Qualite" : "Repos",
-            true,
-            ScadaExpression.FromSource("true"),
-            isQuality ? currentElement.EffectiveStateConfig.QualityFallback : currentElement.EffectiveStateConfig.DefaultEffect);
-
-        var dialog = new ElementStateRuleDialog(placeholderRule, tagCatalog) { Owner = this };
-        if (dialog.ShowDialog() != true || dialog.Result is null)
-        {
-            return;
-        }
-
-        var updatedConfig = isQuality
-            ? currentElement.EffectiveStateConfig with { QualityFallback = dialog.Result.Effect }
-            : currentElement.EffectiveStateConfig with { DefaultEffect = dialog.Result.Effect };
-        currentElement = SaveStateConfig(updatedConfig);
-        RefreshStateAndCommandLists();
-    }
-
     private void OnAddCommandClick(object sender, RoutedEventArgs e)
     {
         var dialog = new ElementCommandDialog(null, pageReferences, tagCatalog) { Owner = this };
