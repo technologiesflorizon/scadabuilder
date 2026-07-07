@@ -1832,6 +1832,7 @@ public partial class MainWindow
       const badge = document.createElement('div');
       badge.className = 'scada-modern-badge';
       badge.textContent = `${element.DisplayName || element.Id} - ${element.Kind}`;
+      badge.style.transform = `rotate(${-Number(style.Rotation ?? 0)}deg)`;
       wrapper.appendChild(badge);
 
       ['nw', 'ne', 'sw', 'se', 'n', 's', 'e', 'w'].forEach(handle => {
@@ -2316,6 +2317,10 @@ public partial class MainWindow
         modernDrag.wrapper.style.transformOrigin = 'center center';
         modernDrag.wrapper.style.transform = `rotate(${normalized}deg)`;
         modernDrag.currentRotation = normalized;
+        const draggedBadge = modernDrag.wrapper.querySelector(':scope > .scada-modern-badge');
+        if (draggedBadge) {
+          draggedBadge.style.transform = `rotate(${-normalized}deg)`;
+        }
         updateRotationBadge(event.clientX, event.clientY, normalized);
       } else if (modernDrag.mode === 'move') {
         (modernDrag.items || []).forEach(item => {

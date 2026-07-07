@@ -1554,6 +1554,19 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void NameBadgeCounterRotatesToStayUprightAtRenderTimeAndDuringLiveRotateDrag()
+    {
+        // Regression guard: the name/type badge is a child of the rotated wrapper, so
+        // it inherits the parent's visual rotation and becomes hard to read at most
+        // angles. Counter-rotate it (both at render time and live during a rotate
+        // drag) so it always stays upright, matching standard design-tool behavior.
+        var source = NormalizeNewLines(ReadMainWindowSource());
+
+        StringAssert.Contains(source, "badge.style.transform = `rotate(${-Number(style.Rotation ?? 0)}deg)`;");
+        StringAssert.Contains(source, "draggedBadge.style.transform = `rotate(${-normalized}deg)`;");
+    }
+
+    [TestMethod]
     public void ResizeAndRotateHideSelectionChromeWhileDraggingAndRestoreOnRelease()
     {
         // While the operator is actively resizing, rotating, or moving an Element+, the
