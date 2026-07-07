@@ -4149,19 +4149,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
-        var dialog = new ElementPropertiesDialog(current, FormatElementEventsSummary(current))
+        var dialog = new ElementPropertiesDialog(current, GetCurrentSceneReferences(), _modernProject?.TagCatalog)
         {
             Owner = this
         };
-        dialog.OpenEvents = () =>
-        {
-            OpenElementEventDialog(current.Id, dialog);
-            var latestWithEvents = _activeScene?.FindElementRecursive(current.Id);
-            if (latestWithEvents is not null)
-            {
-                dialog.SetEventSummary(FormatElementEventsSummary(latestWithEvents));
-            }
-        };
+        dialog.SaveStateConfig = config => SaveElementStateConfigFromDialog(current.Id, config);
+        dialog.SaveCommandConfig = config => SaveElementCommandConfigFromDialog(current.Id, config);
         if (dialog.ShowDialog() != true || dialog.Result is null)
         {
             return;
@@ -4176,6 +4169,32 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         var updated = BuildUpdatedElementFromDialog(latest, dialog.Result);
         CommitModernElementProperties(latest, updated);
+    }
+
+    private ScadaElement SaveElementStateConfigFromDialog(string elementId, ScadaElementStateConfig config)
+    {
+        if (_activeScene is null)
+        {
+            return ScadaElement.CreateInputText(elementId, elementId, 0, 0);
+        }
+
+        _activeScene = _activeScene.WithElementStateConfig(elementId, config);
+        MarkActiveSceneDirty();
+        RefreshModernSceneUi();
+        return _activeScene.FindElementRecursive(elementId) ?? ScadaElement.CreateInputText(elementId, elementId, 0, 0);
+    }
+
+    private ScadaElement SaveElementCommandConfigFromDialog(string elementId, ScadaElementCommandConfig config)
+    {
+        if (_activeScene is null)
+        {
+            return ScadaElement.CreateInputText(elementId, elementId, 0, 0);
+        }
+
+        _activeScene = _activeScene.WithElementCommandConfig(elementId, config);
+        MarkActiveSceneDirty();
+        RefreshModernSceneUi();
+        return _activeScene.FindElementRecursive(elementId) ?? ScadaElement.CreateInputText(elementId, elementId, 0, 0);
     }
 
     private void ShowModernElementEvents(string? elementId)
