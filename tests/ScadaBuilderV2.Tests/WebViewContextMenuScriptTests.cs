@@ -1446,6 +1446,22 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void CopyShortcutDispatchesToCopySelectionToClipboard()
+    {
+        var source = NormalizeNewLines(ReadMainWindowSource());
+
+        var handlerStart = source.IndexOf("private void HandleShortcut(", StringComparison.Ordinal);
+        var handlerEnd = source.IndexOf("\n    }\n", handlerStart, StringComparison.Ordinal);
+        var handlerBody = source[handlerStart..handlerEnd];
+
+        StringAssert.Contains(handlerBody, "case \"clipboard.copy\":");
+        StringAssert.Contains(handlerBody, "CopySelectionToClipboard();");
+
+        StringAssert.Contains(source, "private void CopySelectionToClipboard()");
+        StringAssert.Contains(source, "private IReadOnlyList<ScadaElement> ResolveTopLevelSelectedElements()");
+    }
+
+    [TestMethod]
     public void ResizeAndRotateHideSelectionChromeWhileDraggingAndRestoreOnRelease()
     {
         // While the operator is actively resizing, rotating, or moving an Element+, the

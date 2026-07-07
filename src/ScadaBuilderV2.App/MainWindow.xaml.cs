@@ -5921,6 +5921,39 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         return element.Id == elementId || element.ChildElements.Any(child => ContainsElement(child, elementId));
     }
 
+    private IReadOnlyList<ScadaElement> ResolveTopLevelSelectedElements()
+    {
+        if (_activeScene is null)
+        {
+            return Array.Empty<ScadaElement>();
+        }
+
+        var selected = _selectedSceneObjectIds
+            .Select(id => _activeScene.FindElementRecursive(id))
+            .Where(element => element is not null)
+            .Select(element => element!)
+            .ToArray();
+
+        return selected
+            .Where(element => !selected.Any(candidate =>
+                !string.Equals(candidate.Id, element.Id, StringComparison.Ordinal) &&
+                ContainsElement(candidate, element.Id)))
+            .ToArray();
+    }
+
+    private void CopySelectionToClipboard()
+    {
+        var selectedElements = ResolveTopLevelSelectedElements();
+        if (selectedElements.Count == 0)
+        {
+            SetStatus("Aucun objet selectionne a copier.");
+            return;
+        }
+
+        _sceneClipboard.Copy(selectedElements);
+        SetStatus($"{selectedElements.Count} objet(s) copie(s).");
+    }
+
     private async Task ApplyLegacyTextOverridesAsync(IReadOnlyList<LegacyTextOverride> overrides)
     {
         if (PreviewWebView.CoreWebView2 is null)
@@ -6472,6 +6505,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         {
             case "selection.select-all":
                 SelectAllSceneObjects();
+                break;
+            case "clipboard.copy":
+                CopySelectionToClipboard();
                 break;
             case "history.undo":
                 _ = UndoLastSceneOperationAsync();
