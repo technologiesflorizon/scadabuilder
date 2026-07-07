@@ -169,8 +169,7 @@ public sealed class StudioElementPlusContractTests
         StringAssert.Contains(xaml, "<WrapPanel/>");
         StringAssert.Contains(xaml, "PreviewMouseMove=\"OnElementLibraryPreviewMouseMove\"");
         StringAssert.Contains(xaml, "MouseDoubleClick=\"OnElementLibraryMouseDoubleClick\"");
-        StringAssert.Contains(xaml, "local:HtmlPreviewControl");
-        StringAssert.Contains(xaml, "Markup=\"{Binding PreviewMarkup}\"");
+        StringAssert.Contains(xaml, "Source=\"{Binding PreviewImage}\"");
         StringAssert.Contains(xaml, "AllowDrop=\"True\"");
         StringAssert.Contains(xaml, "Drop=\"OnPreviewWebViewDrop\"");
         StringAssert.Contains(code, "ElementPlusLibraryReader");
@@ -189,9 +188,6 @@ public sealed class StudioElementPlusContractTests
         StringAssert.Contains(code, "wrapper.style.padding = '0'");
         StringAssert.Contains(code, "\"library\"");
         StringAssert.Contains(code, "\"elements\"");
-        StringAssert.Contains(
-            ReadProjectFile("src", "ScadaBuilderV2.App", "HtmlPreviewControl.cs"),
-            "NavigateToString");
         StringAssert.Contains(modernProjectStore, "Path.Combine(projectRoot, \"library\", \"elements\")");
         StringAssert.Contains(studioCode, "workspace.Package.TargetLibraryPath");
         StringAssert.Contains(studioCode, "Directory.CreateDirectory(explicitLibrary)");

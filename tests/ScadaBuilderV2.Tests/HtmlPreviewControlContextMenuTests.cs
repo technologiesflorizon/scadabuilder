@@ -4,17 +4,6 @@ namespace ScadaBuilderV2.Tests;
 public sealed class HtmlPreviewControlContextMenuTests
 {
     [TestMethod]
-    public void AppHtmlPreviewControlSuppressesNativeContextMenuAndOpensWpfOne()
-    {
-        var code = ReadProjectFile("src", "ScadaBuilderV2.App", "HtmlPreviewControl.cs");
-
-        StringAssert.Contains(code, "ObjectForScripting");
-        StringAssert.Contains(code, "oncontextmenu");
-        StringAssert.Contains(code, "RequestContextMenu");
-        StringAssert.Contains(code, "contextMenu.IsOpen = true");
-    }
-
-    [TestMethod]
     public void StudioHtmlPreviewControlSuppressesNativeContextMenuAndOpensWpfOne()
     {
         var code = ReadProjectFile("src", "ScadaBuilderV2.ElementStudio.App", "HtmlPreviewControl.cs");
