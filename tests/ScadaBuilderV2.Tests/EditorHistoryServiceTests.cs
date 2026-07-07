@@ -87,6 +87,25 @@ public sealed class EditorHistoryServiceTests
     }
 
     [TestMethod]
+    public async Task ModernElementChangeActionUndoRedoRestoresFlipHorizontally()
+    {
+        var element = ScadaElement.CreateInputText("input-001", "Input001", 10, 20);
+        var updated = element with { Style = element.Style with { FlipHorizontally = true } };
+        var scene = ScadaScene.CreateEmpty("win00008", "win00008", new(1280, 873))
+            .WithElement(updated);
+        var history = new EditorHistoryService();
+        var context = CreateContext(scene, replacement => scene = replacement);
+
+        history.Push(new ModernElementChangedAction(scene.Id, element, updated, "proprietes Element+"));
+
+        Assert.IsTrue(await history.UndoAsync(context));
+        Assert.IsFalse(scene.FindElementRecursive(element.Id)?.Style.FlipHorizontally);
+
+        Assert.IsTrue(await history.RedoAsync(context));
+        Assert.IsTrue(scene.FindElementRecursive(element.Id)?.Style.FlipHorizontally);
+    }
+
+    [TestMethod]
     public async Task ConsecutiveModernElementChangesMergeForSingleUndoStep()
     {
         var initial = ScadaElement.CreateText("text-001", "Text001", 10, 20);

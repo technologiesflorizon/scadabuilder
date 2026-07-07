@@ -204,7 +204,9 @@ public sealed record ScadaElementStyle(
     string ShadowPreset,
     string? AdvancedCss,
     double Opacity = 1,
-    double Rotation = 0)
+    double Rotation = 0,
+    bool FlipHorizontally = false,
+    bool FlipVertically = false)
 {
     public static ScadaElementStyle DefaultText { get; } = new(
         "Segoe UI",

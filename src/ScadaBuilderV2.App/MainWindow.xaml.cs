@@ -3905,6 +3905,17 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                         new EditorCommandDescriptor("object.rotation.270", "270°", "rotation"),
                         new EditorCommandDescriptor("object.rotation.custom", "Personnalisé...", "rotation"),
                     ]));
+                modernCommands.Add(new EditorCommandDescriptor(
+                    "object.mirror",
+                    "Miroir",
+                    "mirror",
+                    Children:
+                    [
+                        new EditorCommandDescriptor("object.mirror.horizontal", "Horizontale", "mirror",
+                            IsChecked: selected.Style.FlipHorizontally),
+                        new EditorCommandDescriptor("object.mirror.vertical", "Verticale", "mirror",
+                            IsChecked: selected.Style.FlipVertically),
+                    ]));
 
                 if (selected.Kind != ScadaElementKind.Group && selected.ChildElements.Count == 0)
                 {
@@ -4061,6 +4072,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 break;
             case "object.rotation.270":
                 UpdateModernElementRotation(message.Id, 270);
+                break;
+            case "object.mirror.horizontal":
+                ToggleModernElementMirror(message.Id, vertical: false);
+                break;
+            case "object.mirror.vertical":
+                ToggleModernElementMirror(message.Id, vertical: true);
                 break;
             case "object.delete":
             case "element-plus.delete":
@@ -4966,6 +4983,28 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
 
         var updated = current with { Style = current.Style with { Rotation = normalized } };
+        CommitModernElementProperties(current, updated);
+    }
+
+    private void ToggleModernElementMirror(string? id, bool vertical)
+    {
+        var targetId = string.IsNullOrWhiteSpace(id)
+            ? _selectedSceneObject?.Id
+            : id;
+        if (_activeScene is null || string.IsNullOrWhiteSpace(targetId))
+        {
+            return;
+        }
+
+        var current = _activeScene.FindElementRecursive(targetId);
+        if (current is null)
+        {
+            return;
+        }
+
+        var updated = vertical
+            ? current with { Style = current.Style with { FlipVertically = !current.Style.FlipVertically } }
+            : current with { Style = current.Style with { FlipHorizontally = !current.Style.FlipHorizontally } };
         CommitModernElementProperties(current, updated);
     }
 

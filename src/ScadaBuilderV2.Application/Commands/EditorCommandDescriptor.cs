@@ -16,6 +16,7 @@ public sealed record EditorCommandDescriptor(
     string Label,
     string Category,
     bool IsEnabled = true,
+    bool IsChecked = false,
     string? DisabledReason = null,
     string? IconKey = null,
     IReadOnlyList<EditorCommandDescriptor>? Children = null);

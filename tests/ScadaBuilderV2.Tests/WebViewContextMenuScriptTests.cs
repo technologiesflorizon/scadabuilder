@@ -1247,6 +1247,55 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void ContextMenuOffersMirrorTogglesForSingleElementPlusSelection()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "\"object.mirror\"");
+        StringAssert.Contains(source, "\"object.mirror.horizontal\"");
+        StringAssert.Contains(source, "\"object.mirror.vertical\"");
+        StringAssert.Contains(source, "case \"object.mirror.horizontal\":");
+        StringAssert.Contains(source, "case \"object.mirror.vertical\":");
+
+        var guardStart = source.IndexOf("if (_selectedSceneObjectIds.Count == 1 && (_activeScene?.Elements.Any(e => e.Id == selected.Id) ?? false))", StringComparison.Ordinal);
+        Assert.IsTrue(guardStart >= 0, "Guard condition for single-element descriptor scope not found");
+        var scopeEnd = source.IndexOf("return modernCommands;", guardStart, StringComparison.Ordinal);
+        Assert.IsTrue(scopeEnd >= 0, "return modernCommands statement not found after guard");
+        var guardedScope = source[guardStart..scopeEnd];
+
+        StringAssert.Contains(guardedScope, "\"object.mirror\"",
+            "object.mirror descriptor must be inside the same single-element guard as object.rotation");
+    }
+
+    [TestMethod]
+    public void MirrorMenuChildrenReflectCurrentFlipStateViaIsChecked()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "IsChecked: selected.Style.FlipHorizontally");
+        StringAssert.Contains(source, "IsChecked: selected.Style.FlipVertically");
+    }
+
+    [TestMethod]
+    public void ToggleModernElementMirrorFlipsCorrectAxisAndCommitsThroughSharedPath()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "private void ToggleModernElementMirror(string? id, bool vertical)");
+
+        var methodStart = source.IndexOf("private void ToggleModernElementMirror(string? id, bool vertical)", StringComparison.Ordinal);
+        Assert.IsTrue(methodStart >= 0);
+        var methodEnd = source.IndexOf("\n    private ", methodStart + 1, StringComparison.Ordinal);
+        Assert.IsTrue(methodEnd > methodStart, "Could not locate end of ToggleModernElementMirror method");
+        var methodBody = source[methodStart..methodEnd];
+
+        StringAssert.Contains(methodBody, "FindElementRecursive(targetId)");
+        StringAssert.Contains(methodBody, "FlipVertically = !current.Style.FlipVertically");
+        StringAssert.Contains(methodBody, "FlipHorizontally = !current.Style.FlipHorizontally");
+        StringAssert.Contains(methodBody, "CommitModernElementProperties(current, updated);");
+    }
+
+    [TestMethod]
     public void ContextMenuCustomRotationOpensValidatedInlineInput()
     {
         var source = ReadMainWindowSource();
