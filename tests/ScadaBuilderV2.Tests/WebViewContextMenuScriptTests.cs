@@ -1430,6 +1430,22 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void SelectAllShortcutDispatchesToSelectAllSceneObjects()
+    {
+        var source = NormalizeNewLines(ReadMainWindowSource());
+
+        var handlerStart = source.IndexOf("private void HandleShortcut(", StringComparison.Ordinal);
+        Assert.IsTrue(handlerStart >= 0, "HandleShortcut method not found");
+        var handlerEnd = source.IndexOf("\n    }\n", handlerStart, StringComparison.Ordinal);
+        var handlerBody = source[handlerStart..handlerEnd];
+
+        StringAssert.Contains(handlerBody, "case \"selection.select-all\":");
+        StringAssert.Contains(handlerBody, "SelectAllSceneObjects();");
+
+        StringAssert.Contains(source, "private void SelectAllSceneObjects()");
+    }
+
+    [TestMethod]
     public void ResizeAndRotateHideSelectionChromeWhileDraggingAndRestoreOnRelease()
     {
         // While the operator is actively resizing, rotating, or moving an Element+, the

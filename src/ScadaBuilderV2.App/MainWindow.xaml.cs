@@ -4770,6 +4770,27 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         _ = ExecuteLegacyViewerCommandAsync(new LegacyViewerCommand("selectObject", Ids: _selectedSceneObjectIds.ToArray()));
     }
 
+    private void SelectAllSceneObjects()
+    {
+        if (_activeScene is null)
+        {
+            return;
+        }
+
+        _selectedSourceObjectIds.Clear();
+        _selectedSceneObjectIds.Clear();
+        foreach (var element in _activeScene.Elements)
+        {
+            _selectedSceneObjectIds.Add(element.Id);
+        }
+
+        _selectedSceneObject = _activeScene.Elements.Count > 0 ? _activeScene.Elements[^1] : null;
+
+        RefreshSelectionUi();
+        RefreshModernSceneUi();
+        _ = ExecuteLegacyViewerCommandAsync(new LegacyViewerCommand("selectObject", Ids: _selectedSceneObjectIds.ToArray()));
+    }
+
     private void UpdateModernElementGeometry(
         string? id,
         double x,
@@ -6449,6 +6470,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         switch (_shortcutRegistry.Resolve(shortcutKey, modifiers))
         {
+            case "selection.select-all":
+                SelectAllSceneObjects();
+                break;
             case "history.undo":
                 _ = UndoLastSceneOperationAsync();
                 break;
