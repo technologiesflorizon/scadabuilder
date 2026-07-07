@@ -1728,6 +1728,60 @@ public sealed class WebViewContextMenuScriptTests
             "tie-break must keep the earlier (preferred) handle on a near-exact tie, not the later one");
     }
 
+    [TestMethod]
+    public void ContextMenuResizeOpensQuickInputToolAtVisualHandles()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "function ensureResizeInputs()");
+        StringAssert.Contains(source, "function beginResizeEntry()");
+        StringAssert.Contains(source, "commandId === 'object.resize'");
+        StringAssert.Contains(source, "beginResizeEntry();");
+        StringAssert.Contains(source, "'scada-resize-input-north'");
+        StringAssert.Contains(source, "'scada-resize-input-west'");
+
+        // Both inputs must re-derive the current wrapper from the DOM at commit time
+        // instead of holding a stale reference, since the host may have already
+        // re-rendered (replacing wrapper/handle nodes) after an earlier commit on
+        // the other input.
+        var commitStart = source.IndexOf("const commit = input => {", StringComparison.Ordinal);
+        Assert.IsTrue(commitStart >= 0, "commit() function not found");
+        var commitEnd = source.IndexOf("const onKeyDown = event => {", commitStart, StringComparison.Ordinal);
+        Assert.IsTrue(commitEnd >= 0, "onKeyDown definition not found after commit()");
+        var commitBody = source[commitStart..commitEnd];
+        StringAssert.Contains(commitBody, "document.querySelector(`.scada-modern-element[data-id=\"${CSS.escape(targetId)}\"]`)",
+            "commit() must re-query the current wrapper by id rather than reuse a captured reference");
+        StringAssert.Contains(commitBody, "postModernGeometry(targetId, before, after);");
+        StringAssert.Contains(commitBody, "configureInput(north, north.dataset.handle);",
+            "committing one input must refresh the other input's position too, since resizing can shift both handles on screen");
+        StringAssert.Contains(commitBody, "configureInput(west, west.dataset.handle);");
+    }
+
+    [TestMethod]
+    public void ResizeQuickInputEscapeClosesWithoutCommittingAndBlurRequiresBothInputsToLoseFocus()
+    {
+        var source = ReadMainWindowSource();
+
+        var start = source.IndexOf("function beginResizeEntry()", StringComparison.Ordinal);
+        Assert.IsTrue(start >= 0, "beginResizeEntry not found");
+        var end = source.IndexOf("document.addEventListener('pointermove', event => {", start, StringComparison.Ordinal);
+        Assert.IsTrue(end >= 0, "pointermove listener not found after beginResizeEntry");
+        var body = source[start..end];
+
+        StringAssert.Contains(body, "document.activeElement !== north && document.activeElement !== west",
+            "blur must only close the tool once focus has left both inputs");
+
+        var escapeStart = body.IndexOf("} else if (event.key === 'Escape') {", StringComparison.Ordinal);
+        Assert.IsTrue(escapeStart >= 0, "Escape branch not found in onKeyDown");
+        var escapeEnd = body.IndexOf("}", escapeStart + "} else if (event.key === 'Escape') {".Length, StringComparison.Ordinal);
+        Assert.IsTrue(escapeEnd >= 0, "End of Escape branch not found");
+        var escapeBranch = body[escapeStart..escapeEnd];
+
+        StringAssert.Contains(escapeBranch, "closeBoth();");
+        Assert.IsFalse(escapeBranch.Contains("commit(", StringComparison.Ordinal),
+            "Escape must not commit the pending typed value");
+    }
+
     private static string ReadMainWindowSource()
     {
         // MainWindow code-behind is split into behavior-preserving partial-class files

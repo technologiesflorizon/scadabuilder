@@ -238,6 +238,17 @@ public partial class MainWindow
       font: 12px "Segoe UI", sans-serif;
       z-index: 9999;
     }
+    .scada-resize-input {
+      position: fixed;
+      display: none;
+      width: 64px;
+      padding: 3px 6px;
+      border: 1px solid #2090a0;
+      border-radius: 4px;
+      font: 12px "Segoe UI", sans-serif;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+    }
     body.scada-placement-active,
     body.scada-placement-active * {
       cursor: crosshair !important;
@@ -2347,6 +2358,119 @@ public partial class MainWindow
     input.select();
   }
 
+  function ensureResizeInputs() {
+    return ['scada-resize-input-north', 'scada-resize-input-west'].map(id => {
+      let input = document.getElementById(id);
+      if (!input) {
+        input = document.createElement('input');
+        input.id = id;
+        input.type = 'text';
+        input.className = 'scada-resize-input';
+        document.body.appendChild(input);
+      }
+      return input;
+    });
+  }
+
+  function beginResizeEntry() {
+    if (!lastObjectContextTargetId) return;
+    const targetId = lastObjectContextTargetId;
+    const wrapper = document.querySelector(`.scada-modern-element[data-id="${CSS.escape(targetId)}"]`);
+    if (!wrapper) return;
+
+    const northHandleName = pickVisualHandle(wrapper, ['n', 'w', 's', 'e'], 'y');
+    let westHandleName = pickVisualHandle(wrapper, ['w', 'n', 'e', 's'], 'x', northHandleName);
+    if (!westHandleName) {
+      westHandleName = pickVisualHandle(wrapper, ['w', 'n', 'e', 's'], 'x');
+    }
+    if (!northHandleName || !westHandleName) return;
+
+    const [north, west] = ensureResizeInputs();
+    const liveTypingPattern = /^\d{0,5}(\.\d?)?$/;
+
+    const configureInput = (input, handleName) => {
+      const currentWrapper = document.querySelector(`.scada-modern-element[data-id="${CSS.escape(targetId)}"]`);
+      if (!currentWrapper) return;
+      const handleEl = currentWrapper.querySelector(`:scope > .scada-modern-handle[data-handle="${handleName}"]`);
+      if (!handleEl) return;
+      const rect = handleEl.getBoundingClientRect();
+      const geometry = readWrapperGeometry(currentWrapper);
+      const currentValue = (handleName === 'n' || handleName === 's') ? geometry.height : geometry.width;
+      input.value = Math.round(currentValue).toString();
+      input.style.left = `${rect.left + rect.width / 2}px`;
+      input.style.top = `${rect.top + rect.height / 2}px`;
+      input.style.display = 'block';
+      input.dataset.handle = handleName;
+    };
+
+    const onInput = event => {
+      const input = event.target;
+      if (input.value !== '' && !liveTypingPattern.test(input.value)) {
+        input.value = input.value.slice(0, -1);
+      }
+    };
+
+    const closeBoth = () => {
+      [north, west].forEach(input => {
+        input.removeEventListener('input', onInput);
+        input.removeEventListener('keydown', onKeyDown);
+        input.removeEventListener('blur', onBlur);
+        input.style.display = 'none';
+        delete input.dataset.handle;
+      });
+    };
+
+    const onBlur = () => {
+      window.setTimeout(() => {
+        if (document.activeElement !== north && document.activeElement !== west) {
+          closeBoth();
+        }
+      }, 0);
+    };
+
+    const commit = input => {
+      const handleName = input.dataset.handle;
+      const parsed = parseFloat(input.value);
+      const currentWrapper = document.querySelector(`.scada-modern-element[data-id="${CSS.escape(targetId)}"]`);
+      if (!currentWrapper || Number.isNaN(parsed) || parsed <= 0) {
+        if (currentWrapper) configureInput(input, handleName);
+        return;
+      }
+      const before = readWrapperGeometry(currentWrapper);
+      const rotationDeg = getWrapperRotation(currentWrapper);
+      const clampedValue = Math.max(8, Math.round(parsed));
+      const after = applyAxisResize(before, handleName, clampedValue, rotationDeg);
+      setWrapperGeometry(currentWrapper, after);
+      postModernGeometry(targetId, before, after);
+      configureInput(north, north.dataset.handle);
+      configureInput(west, west.dataset.handle);
+    };
+
+    const onKeyDown = event => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        commit(event.target);
+        event.target.focus();
+        event.target.select();
+      } else if (event.key === 'Escape') {
+        event.preventDefault();
+        closeBoth();
+      }
+    };
+
+    configureInput(north, northHandleName);
+    configureInput(west, westHandleName);
+
+    [north, west].forEach(input => {
+      input.addEventListener('input', onInput);
+      input.addEventListener('keydown', onKeyDown);
+      input.addEventListener('blur', onBlur);
+    });
+
+    north.focus();
+    north.select();
+  }
+
   document.addEventListener('pointermove', event => {
     if (placementKind && placementIsTwoPoint && placementStart) {
       updateTwoPointPlacementPreview(getSurfacePoint(event));
@@ -2734,6 +2858,11 @@ public partial class MainWindow
       const anchorRect = event.target.getBoundingClientRect();
       hideMenu();
       beginCustomRotationEntry(anchorRect.left, anchorRect.top);
+      return;
+    }
+    if (commandId === 'object.resize') {
+      hideMenu();
+      beginResizeEntry();
       return;
     }
     hideMenu();
