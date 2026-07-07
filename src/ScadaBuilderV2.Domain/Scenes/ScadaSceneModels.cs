@@ -1,3 +1,5 @@
+using ScadaBuilderV2.Domain.ElementEvents.Command;
+using ScadaBuilderV2.Domain.ElementEvents.State;
 using ScadaBuilderV2.Domain.Projects;
 using System.Text.Json.Serialization;
 
@@ -507,7 +509,9 @@ public sealed record ScadaElement(
     IReadOnlyList<ScadaObjectEventBinding>? Events = null,
     ScadaButtonBehavior? ButtonBehavior = null,
     ScadaShapeKind? ShapeKind = null,
-    ScadaButtonKind? ButtonKind = null)
+    ScadaButtonKind? ButtonKind = null,
+    ScadaElementStateConfig? StateConfig = null,
+    ScadaElementCommandConfig? CommandConfig = null)
 {
     [JsonIgnore]
     public string UserLabel => string.IsNullOrWhiteSpace(DisplayName) ? Id : DisplayName;
@@ -523,6 +527,12 @@ public sealed record ScadaElement(
 
     [JsonIgnore]
     public IReadOnlyList<ScadaObjectEventBinding> EventBindings => Events ?? Array.Empty<ScadaObjectEventBinding>();
+
+    [JsonIgnore]
+    public ScadaElementStateConfig EffectiveStateConfig => StateConfig ?? ScadaElementStateConfig.Default;
+
+    [JsonIgnore]
+    public ScadaElementCommandConfig EffectiveCommandConfig => CommandConfig ?? ScadaElementCommandConfig.Default;
 
     /// <summary>
     /// Gets whether this Element+ can provide an operator-entered runtime value.
@@ -1265,6 +1275,50 @@ public sealed record ScadaScene(
         };
 
         return WithReplacedElementRecursive(element with { Data = updatedData });
+    }
+
+    /// <summary>
+    /// Replaces the display-state configuration of one Element+ object.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0036.
+    /// Contracts: docs/superpowers/specs/2026-07-07-element-plus-state-command-events-design.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/ElementEvents/ScadaSceneElementEventsTests.cs.
+    /// </remarks>
+    public ScadaScene WithElementStateConfig(string elementId, ScadaElementStateConfig config)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
+        ArgumentNullException.ThrowIfNull(config);
+
+        var element = FindElementRecursive(elementId);
+        if (element is null)
+        {
+            return this;
+        }
+
+        return WithReplacedElementRecursive(element with { StateConfig = config });
+    }
+
+    /// <summary>
+    /// Replaces the command configuration of one Element+ object.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0036.
+    /// Contracts: docs/superpowers/specs/2026-07-07-element-plus-state-command-events-design.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/ElementEvents/ScadaSceneElementEventsTests.cs.
+    /// </remarks>
+    public ScadaScene WithElementCommandConfig(string elementId, ScadaElementCommandConfig config)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
+        ArgumentNullException.ThrowIfNull(config);
+
+        var element = FindElementRecursive(elementId);
+        if (element is null)
+        {
+            return this;
+        }
+
+        return WithReplacedElementRecursive(element with { CommandConfig = config });
     }
 
     /// <summary>
