@@ -1487,6 +1487,28 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void PasteShortcutDispatchesToPasteClipboardAndOffsetsByTwentyPixels()
+    {
+        var source = NormalizeNewLines(ReadMainWindowSource());
+
+        var handlerStart = source.IndexOf("private void HandleShortcut(", StringComparison.Ordinal);
+        var handlerEnd = source.IndexOf("\n    }\n", handlerStart, StringComparison.Ordinal);
+        var handlerBody = source[handlerStart..handlerEnd];
+
+        StringAssert.Contains(handlerBody, "case \"clipboard.paste\":");
+        StringAssert.Contains(handlerBody, "PasteClipboard();");
+
+        StringAssert.Contains(source, "private void PasteClipboard()");
+        StringAssert.Contains(source, "CloneWithNewIds(element, 20, 20)");
+
+        var cloneStart = source.IndexOf("private static ScadaElement CloneWithNewIds(", StringComparison.Ordinal);
+        Assert.IsTrue(cloneStart >= 0, "CloneWithNewIds method not found");
+        var cloneEnd = source.IndexOf("\n    }\n", cloneStart, StringComparison.Ordinal);
+        var cloneBody = source[cloneStart..cloneEnd];
+        StringAssert.Contains(cloneBody, "Guid.NewGuid()");
+    }
+
+    [TestMethod]
     public void ResizeAndRotateHideSelectionChromeWhileDraggingAndRestoreOnRelease()
     {
         // While the operator is actively resizing, rotating, or moving an Element+, the

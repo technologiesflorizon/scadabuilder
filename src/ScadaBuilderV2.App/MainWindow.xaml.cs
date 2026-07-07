@@ -2158,6 +2158,48 @@ public partial class MainWindow : Window
         SetStatus($"{deletedSnapshots.Length} objet(s) coupe(s). Undo disponible. Presse-papier mis a jour.");
     }
 
+    private void PasteClipboard()
+    {
+        if (_activeScene is null || !_sceneClipboard.HasContent)
+        {
+            SetStatus("Presse-papier vide ou aucune scene active.");
+            return;
+        }
+
+        var pasted = _sceneClipboard.Content!
+            .Select(element => CloneWithNewIds(element, 20, 20))
+            .ToArray();
+
+        var scene = _activeScene;
+        foreach (var element in pasted)
+        {
+            scene = scene.WithElement(element);
+        }
+
+        var addedSnapshots = pasted
+            .Select(element => new DeletedSceneObjectSnapshot(element, null, GetSiblingIndex(scene, element)))
+            .ToArray();
+
+        _activeScene = scene;
+        _activeSceneTab?.History.Push(new SceneObjectsAddedAction(_activeScene.Id, addedSnapshots));
+
+        _selectedSourceObjectIds.Clear();
+        _selectedSceneObjectIds.Clear();
+        foreach (var element in pasted)
+        {
+            _selectedSceneObjectIds.Add(element.Id);
+        }
+
+        _selectedSceneObject = pasted.Length > 0 ? pasted[^1] : null;
+
+        MarkActiveSceneDirty();
+        RefreshSelectionUi();
+        RefreshModernSceneUi();
+        _ = RenderModernSceneAsync();
+        _ = ExecuteLegacyViewerCommandAsync(new LegacyViewerCommand("selectObject", Ids: _selectedSceneObjectIds.ToArray()));
+        SetStatus($"{pasted.Length} objet(s) colle(s). Undo disponible.");
+    }
+
     private IReadOnlyList<ScadaElement> ResolveSelectedSceneObjects(string? fallbackElementId = null)
     {
         if (_activeScene is null)
@@ -5991,6 +6033,20 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         SetStatus($"{selectedElements.Count} objet(s) copie(s).");
     }
 
+    private static ScadaElement CloneWithNewIds(ScadaElement element, double offsetX, double offsetY)
+    {
+        var clonedChildren = element.Children?
+            .Select(child => CloneWithNewIds(child, 0, 0))
+            .ToArray();
+
+        return element with
+        {
+            Id = Guid.NewGuid().ToString("N"),
+            Bounds = element.Bounds with { X = element.Bounds.X + offsetX, Y = element.Bounds.Y + offsetY },
+            Children = clonedChildren
+        };
+    }
+
     private async Task ApplyLegacyTextOverridesAsync(IReadOnlyList<LegacyTextOverride> overrides)
     {
         if (PreviewWebView.CoreWebView2 is null)
@@ -6548,6 +6604,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 break;
             case "clipboard.cut":
                 _ = CutSelectionAsync();
+                break;
+            case "clipboard.paste":
+                PasteClipboard();
                 break;
             case "history.undo":
                 _ = UndoLastSceneOperationAsync();
