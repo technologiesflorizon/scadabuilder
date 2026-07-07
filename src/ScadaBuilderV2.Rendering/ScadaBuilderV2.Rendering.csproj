@@ -2,6 +2,8 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Runtime\expression-evaluator.js" />
+    <EmbeddedResource Include="Runtime\effect-applier.js" />
+    <EmbeddedResource Include="Runtime\state-engine.js" />
   </ItemGroup>
 
   <ItemGroup>

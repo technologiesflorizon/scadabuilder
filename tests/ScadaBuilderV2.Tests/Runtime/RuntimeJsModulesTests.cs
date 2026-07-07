@@ -116,6 +116,32 @@ public sealed class RuntimeJsModulesTests
     }
 
     /// <summary>
+    /// The effect-applier.js module must be embedded in the Rendering assembly.
+    /// </summary>
+    [TestMethod]
+    public void EffectApplierModule_IsEmbeddedResource()
+    {
+        var resourceNames = RenderingAssembly.GetManifestResourceNames();
+        var match = resourceNames.FirstOrDefault(name =>
+            name.EndsWith("effect-applier.js", StringComparison.OrdinalIgnoreCase));
+
+        Assert.IsNotNull(match, "effect-applier.js must be an embedded resource in ScadaBuilderV2.Rendering");
+    }
+
+    /// <summary>
+    /// The state-engine.js module must be embedded in the Rendering assembly.
+    /// </summary>
+    [TestMethod]
+    public void StateEngineModule_IsEmbeddedResource()
+    {
+        var resourceNames = RenderingAssembly.GetManifestResourceNames();
+        var match = resourceNames.FirstOrDefault(name =>
+            name.EndsWith("state-engine.js", StringComparison.OrdinalIgnoreCase));
+
+        Assert.IsNotNull(match, "state-engine.js must be an embedded resource in ScadaBuilderV2.Rendering");
+    }
+
+    /// <summary>
     /// Reads an embedded JS resource from the Rendering assembly.
     /// </summary>
     private static string ReadEmbeddedResource(string resourceFileName)
