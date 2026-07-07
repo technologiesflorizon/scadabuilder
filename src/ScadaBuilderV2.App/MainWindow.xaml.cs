@@ -18,6 +18,9 @@ using ScadaBuilderV2.Application.ElementStudio;
 using ScadaBuilderV2.Application.History;
 using ScadaBuilderV2.Application.Selection;
 using ScadaBuilderV2.Domain.Editor;
+using ScadaBuilderV2.Domain.ElementEvents.Command;
+using ScadaBuilderV2.Domain.ElementEvents.Expressions;
+using ScadaBuilderV2.Domain.ElementEvents.State;
 using ScadaBuilderV2.Domain.Elements;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
@@ -5515,7 +5518,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ElementUnitTextBox.IsEnabled = isEnabled;
             ElementFormatTextBox.IsEnabled = isEnabled;
             ElementTagBindingTextBox.IsEnabled = isEnabled;
-            OpenElementEventsButton.IsEnabled = isEnabled;
 
             if (element is null)
             {
@@ -5553,7 +5555,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 ElementUnitTextBox.Text = "";
                 ElementFormatTextBox.Text = "";
                 ElementTagBindingTextBox.Text = "";
-                ElementEventsSummaryText.Text = "Aucun evenement";
+                RefreshStateAndCommandTabs();
                 return;
             }
 
@@ -5599,7 +5601,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ElementUnitTextBox.Text = data.Unit ?? "";
             ElementFormatTextBox.Text = data.DisplayFormat ?? "";
             ElementTagBindingTextBox.Text = data.TagBinding ?? "";
-            ElementEventsSummaryText.Text = FormatElementEventsSummary(element);
+            RefreshStateAndCommandTabs();
         }
         finally
         {
@@ -5607,9 +5609,258 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
     }
 
-    private void OnOpenSelectedElementEventsClick(object sender, RoutedEventArgs e)
+    private ScadaStateRule? _testedStateRule;
+
+    private void RefreshStateAndCommandTabs()
     {
-        OpenElementEventDialog(_selectedSceneObject?.Id);
+        var element = _activeScene?.FindElementRecursive(_selectedSceneObject?.Id ?? string.Empty);
+        StateRulesListBox.ItemsSource = element?.EffectiveStateConfig.States;
+        CommandsListBox.ItemsSource = element?.EffectiveCommandConfig.Commands;
+    }
+
+    private void OnAddStateRuleClick(object sender, RoutedEventArgs e)
+    {
+        if (_activeScene is null || _selectedSceneObject is null)
+        {
+            return;
+        }
+
+        var dialog = new ElementStateRuleDialog(null, _modernProject?.TagCatalog) { Owner = this };
+        if (dialog.ShowDialog() != true || dialog.Result is null)
+        {
+            return;
+        }
+
+        var element = _activeScene.FindElementRecursive(_selectedSceneObject.Id);
+        if (element is null)
+        {
+            return;
+        }
+
+        var config = element.EffectiveStateConfig with
+        {
+            States = element.EffectiveStateConfig.States.Append(dialog.Result).ToArray()
+        };
+        _activeScene = _activeScene.WithElementStateConfig(_selectedSceneObject.Id, config);
+        RefreshStateAndCommandTabs();
+    }
+
+    private void OnEditStateRuleClick(object sender, RoutedEventArgs e)
+    {
+        if (_activeScene is null || _selectedSceneObject is null)
+        {
+            return;
+        }
+
+        if (StateRulesListBox.SelectedItem is not ScadaStateRule selected)
+        {
+            return;
+        }
+
+        var dialog = new ElementStateRuleDialog(selected, _modernProject?.TagCatalog) { Owner = this };
+        if (dialog.ShowDialog() != true || dialog.Result is null)
+        {
+            return;
+        }
+
+        var element = _activeScene.FindElementRecursive(_selectedSceneObject.Id);
+        if (element is null)
+        {
+            return;
+        }
+
+        var states = element.EffectiveStateConfig.States
+            .Select(rule => rule.Id == dialog.Result.Id ? dialog.Result : rule)
+            .ToArray();
+        _activeScene = _activeScene.WithElementStateConfig(_selectedSceneObject.Id, element.EffectiveStateConfig with { States = states });
+        RefreshStateAndCommandTabs();
+    }
+
+    private void OnDeleteStateRuleClick(object sender, RoutedEventArgs e)
+    {
+        if (_activeScene is null || _selectedSceneObject is null)
+        {
+            return;
+        }
+
+        if (StateRulesListBox.SelectedItem is not ScadaStateRule selected)
+        {
+            return;
+        }
+
+        var element = _activeScene.FindElementRecursive(_selectedSceneObject.Id);
+        if (element is null)
+        {
+            return;
+        }
+
+        var states = element.EffectiveStateConfig.States.Where(rule => rule.Id != selected.Id).ToArray();
+        _activeScene = _activeScene.WithElementStateConfig(_selectedSceneObject.Id, element.EffectiveStateConfig with { States = states });
+        RefreshStateAndCommandTabs();
+    }
+
+    private void OnMoveStateRuleUpClick(object sender, RoutedEventArgs e) => MoveSelectedStateRule(-1);
+
+    private void OnMoveStateRuleDownClick(object sender, RoutedEventArgs e) => MoveSelectedStateRule(1);
+
+    private void MoveSelectedStateRule(int offset)
+    {
+        if (_activeScene is null || _selectedSceneObject is null)
+        {
+            return;
+        }
+
+        if (StateRulesListBox.SelectedItem is not ScadaStateRule selected)
+        {
+            return;
+        }
+
+        var element = _activeScene.FindElementRecursive(_selectedSceneObject.Id);
+        if (element is null)
+        {
+            return;
+        }
+
+        var states = element.EffectiveStateConfig.States.ToList();
+        var index = states.FindIndex(rule => rule.Id == selected.Id);
+        var newIndex = index + offset;
+        if (index < 0 || newIndex < 0 || newIndex >= states.Count)
+        {
+            return;
+        }
+
+        (states[index], states[newIndex]) = (states[newIndex], states[index]);
+        _activeScene = _activeScene.WithElementStateConfig(_selectedSceneObject.Id, element.EffectiveStateConfig with { States = states });
+        RefreshStateAndCommandTabs();
+    }
+
+    private void OnEditDefaultStateEffectClick(object sender, RoutedEventArgs e) => EditFallbackEffect(isQuality: false);
+
+    private void OnEditQualityFallbackEffectClick(object sender, RoutedEventArgs e) => EditFallbackEffect(isQuality: true);
+
+    private void EditFallbackEffect(bool isQuality)
+    {
+        if (_activeScene is null || _selectedSceneObject is null)
+        {
+            return;
+        }
+
+        var element = _activeScene.FindElementRecursive(_selectedSceneObject.Id);
+        if (element is null)
+        {
+            return;
+        }
+
+        var placeholderRule = new ScadaStateRule(
+            "fallback-editor",
+            isQuality ? "Qualite" : "Repos",
+            true,
+            ScadaExpression.FromSource("true"),
+            isQuality ? element.EffectiveStateConfig.QualityFallback : element.EffectiveStateConfig.DefaultEffect);
+
+        var dialog = new ElementStateRuleDialog(placeholderRule, _modernProject?.TagCatalog) { Owner = this };
+        if (dialog.ShowDialog() != true || dialog.Result is null)
+        {
+            return;
+        }
+
+        var updatedConfig = isQuality
+            ? element.EffectiveStateConfig with { QualityFallback = dialog.Result.Effect }
+            : element.EffectiveStateConfig with { DefaultEffect = dialog.Result.Effect };
+        _activeScene = _activeScene.WithElementStateConfig(_selectedSceneObject.Id, updatedConfig);
+        RefreshStateAndCommandTabs();
+    }
+
+    private void OnTestStateRuleToggleClick(object sender, RoutedEventArgs e)
+    {
+        if (StateRulesListBox.SelectedItem is not ScadaStateRule selected)
+        {
+            TestStateRuleToggle.IsChecked = false;
+            return;
+        }
+
+        _testedStateRule = TestStateRuleToggle.IsChecked == true ? selected : null;
+    }
+
+    private void OnAddCommandClick(object sender, RoutedEventArgs e)
+    {
+        if (_activeScene is null || _selectedSceneObject is null)
+        {
+            return;
+        }
+
+        var dialog = new ElementCommandDialog(null, GetCurrentSceneReferences(), _modernProject?.TagCatalog) { Owner = this };
+        if (dialog.ShowDialog() != true || dialog.Result is null)
+        {
+            return;
+        }
+
+        var element = _activeScene.FindElementRecursive(_selectedSceneObject.Id);
+        if (element is null)
+        {
+            return;
+        }
+
+        var config = element.EffectiveCommandConfig with
+        {
+            Commands = element.EffectiveCommandConfig.Commands.Append(dialog.Result).ToArray()
+        };
+        _activeScene = _activeScene.WithElementCommandConfig(_selectedSceneObject.Id, config);
+        RefreshStateAndCommandTabs();
+    }
+
+    private void OnEditCommandClick(object sender, RoutedEventArgs e)
+    {
+        if (_activeScene is null || _selectedSceneObject is null)
+        {
+            return;
+        }
+
+        if (CommandsListBox.SelectedItem is not ScadaCommandBinding selected)
+        {
+            return;
+        }
+
+        var dialog = new ElementCommandDialog(selected, GetCurrentSceneReferences(), _modernProject?.TagCatalog) { Owner = this };
+        if (dialog.ShowDialog() != true || dialog.Result is null)
+        {
+            return;
+        }
+
+        var element = _activeScene.FindElementRecursive(_selectedSceneObject.Id);
+        if (element is null)
+        {
+            return;
+        }
+
+        var commands = element.EffectiveCommandConfig.Commands
+            .Select(command => command.Id == dialog.Result.Id ? dialog.Result : command)
+            .ToArray();
+        _activeScene = _activeScene.WithElementCommandConfig(_selectedSceneObject.Id, element.EffectiveCommandConfig with { Commands = commands });
+        RefreshStateAndCommandTabs();
+    }
+
+    private void OnDeleteCommandClick(object sender, RoutedEventArgs e)
+    {
+        if (_activeScene is null || _selectedSceneObject is null)
+        {
+            return;
+        }
+
+        if (CommandsListBox.SelectedItem is not ScadaCommandBinding selected)
+        {
+            return;
+        }
+
+        var element = _activeScene.FindElementRecursive(_selectedSceneObject.Id);
+        if (element is null)
+        {
+            return;
+        }
+
+        var commands = element.EffectiveCommandConfig.Commands.Where(command => command.Id != selected.Id).ToArray();
+        _activeScene = _activeScene.WithElementCommandConfig(_selectedSceneObject.Id, element.EffectiveCommandConfig with { Commands = commands });
+        RefreshStateAndCommandTabs();
     }
 
     private static ScadaElement BuildUpdatedElementFromDialog(
