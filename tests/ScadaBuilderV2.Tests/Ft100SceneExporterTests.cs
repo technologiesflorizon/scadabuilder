@@ -1909,6 +1909,11 @@ public sealed class Ft100SceneExporterTests
     }
 """);
 
+            // Include a mock runtime JS to satisfy package validation
+            await File.WriteAllTextAsync(
+                Path.Combine(packageRoot, "scada-runtime.a0000000.js"),
+                "// mock runtime\n");
+
             var validation = Ft100PackageValidator.ValidatePackageDirectory(packageRoot);
 
             Assert.IsFalse(validation.Errors.Any(issue => issue.Code == "global-id-selector"));
@@ -2206,4 +2211,66 @@ public sealed class Ft100SceneExporterTests
             }
         }
     }
+    [TestMethod]
+    public void ValidatePackageDirectory_ErrorsWhenRuntimeJsIsMissing()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var packageRoot = Path.Combine(root, Ft100SceneExporter.ProjectPackageDirectoryName);
+        var pageRoot = Path.Combine(packageRoot, "win00002");
+        var cssRoot = Path.Combine(pageRoot, "css");
+        Directory.CreateDirectory(cssRoot);
+
+        try
+        {
+            File.WriteAllText(
+                Path.Combine(packageRoot, "manifest.json"),
+                """
+{
+  "Name": "Runtime",
+  "HomePageId": "win00002",
+  "Pages": [
+    {
+      "Id": "win00002",
+      "Title": "Header",
+      "Type": "header",
+      "IncludeInBuild": true,
+      "RelativePath": "win00002/win00002.html"
+    }
+  ]
+}
+""");
+            File.WriteAllText(
+                Path.Combine(pageRoot, "win00002.html"),
+                """
+<!doctype html>
+<html>
+<body>
+  <div id="ft100-win00002"><div id="ft100-win00002__element_1"></div></div>
+</body>
+</html>
+""");
+            File.WriteAllText(
+                Path.Combine(cssRoot, "win00002.css"),
+                """
+#ft100-win00002 {
+  position: relative;
+}
+""");
+
+            var validation = Ft100PackageValidator.ValidatePackageDirectory(packageRoot);
+
+            Assert.IsFalse(validation.IsValid);
+            Assert.IsTrue(
+                validation.Errors.Any(e => e.Message.Contains("runtime", StringComparison.OrdinalIgnoreCase)),
+                "Expected at least one error mentioning 'runtime'.");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
 }

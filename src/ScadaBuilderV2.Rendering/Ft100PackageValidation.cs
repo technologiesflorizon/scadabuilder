@@ -131,6 +131,8 @@ public static partial class Ft100PackageValidator
             }
         }
 
+        ValidateRuntimeJs(fullPackageDirectory, issues);
+
         return new Ft100PackageValidationResult(issues);
     }
 
@@ -353,6 +355,19 @@ public static partial class Ft100PackageValidator
         if (!string.Equals(referencedPage.Type, expectedType, StringComparison.OrdinalIgnoreCase))
         {
             issues.Add(Error($"wrong-{fieldName.ToLowerInvariant()}-type", $"Page '{page.Id}' references {fieldName} '{referencedPageId}' with type '{referencedPage.Type}', expected '{expectedType}'.", page.Id));
+        }
+    }
+
+    private static void ValidateRuntimeJs(string packageDirectory, List<Ft100PackageValidationIssue> issues)
+    {
+        var runtimeJsFiles = Directory.GetFiles(packageDirectory, "scada-runtime.*.js");
+        if (runtimeJsFiles.Length == 0)
+        {
+            issues.Add(Error("missing-runtime-js", "Missing scada-runtime.<hash>.js at package root."));
+        }
+        else if (runtimeJsFiles.Length > 1)
+        {
+            issues.Add(Error("multiple-runtime-js", "Multiple scada-runtime.<hash>.js files found. Exactly one is required."));
         }
     }
 
