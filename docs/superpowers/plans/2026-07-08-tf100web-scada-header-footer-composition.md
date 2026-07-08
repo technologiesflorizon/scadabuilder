@@ -959,16 +959,51 @@ Append this test method to `ScadaPackagePageServesNewEffectFieldsTests` (same cl
                 self.assertEqual(payload["height"], 1020)
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [ ] **Step 4: Add a station-type-gate test against the real endpoint**
+
+`ScadaBuilderPackagePageViewTests.test_page_endpoint_requires_scada_builder_station_type` (removed in Task 5) currently passes today, but only incidentally — its `SCADA_IMPORT_ROOT`-based fixture never gets read, because the station-type check raises `Http404` before the view ever reaches `STATIC_ROOT`. Real coverage for "a non-`SCADA_BUILDER_2` station 404s" must be preserved against the actual endpoint. Append this test method to `ScadaPackagePageServesNewEffectFieldsTests` (same class, after `test_page_with_header_and_footer_composes_all_three_parts`):
+
+```python
+    def test_page_endpoint_requires_scada_builder_station_type(self):
+        with TemporaryDirectory() as static_root, TemporaryDirectory() as pkg_dir:
+            manifest = {
+                "HomePageId": "win00009",
+                "Pages": [{"Id": "win00009", "Type": "default", "IncludeInBuild": True}],
+            }
+            package_path = Path(pkg_dir) / "export.sb2"
+            with zipfile.ZipFile(package_path, "w") as zf:
+                zf.writestr(f"{SCADA_PACKAGE_DIR_NAME}/manifest.json", json.dumps(manifest))
+                zf.writestr(f"{SCADA_PACKAGE_DIR_NAME}/win00009/win00009.html", '<div id="ft100-win00009"></div>')
+                zf.writestr(f"{SCADA_PACKAGE_DIR_NAME}/win00009/css/win00009.abc12345.css", "")
+
+            with override_settings(STATIC_ROOT=static_root, TF100_INDUSTRIAL_DEPLOYMENT=True):
+                call_command("deploy_scada_builder", str(package_path))
+
+                from django.contrib.auth import get_user_model
+
+                from .models import StationConfig
+
+                User = get_user_model()
+                user = User.objects.create_user(username="tester4", password="x")
+                self.client.force_login(user)
+                StationConfig.objects.update_or_create(
+                    pk=1, defaults={"station_type": StationConfig.StationTypeChoices.SANITAIRE}
+                )
+
+                response = self.client.get("/visualisation/scada/page/win00009/")
+                self.assertEqual(response.status_code, 404)
+```
+
+- [ ] **Step 5: Run tests to verify they pass**
 
 Run: `python manage.py test frontend.tests_scada_deploy -v 2`
 Expected: all tests in the file PASS.
 
-- [ ] **Step 5: Commit**
+- [ ] **Step 6: Commit**
 
 ```bash
 git add frontend/tests_scada_deploy.py
-git commit -m "test: cover composed header/body/footer response via scada_package_page endpoint"
+git commit -m "test: cover composed header/body/footer response and station-type gate via scada_package_page endpoint"
 ```
 
 ---
@@ -978,7 +1013,12 @@ git commit -m "test: cover composed header/body/footer response via scada_packag
 **Files:**
 - Modify: `frontend/tests_scada_package.py`
 
-Ces trois tests (`test_page_endpoint_returns_requested_page_fragment`, `test_page_endpoint_requires_scada_builder_station_type`, `test_page_endpoint_injects_manual_navigate_actions`) monkeypatchent `views.SCADA_IMPORT_ROOT` avec l'ancienne arborescence de paquet (`SCADA_PACKAGE_DIR_NAME/<id>/<id>.html`), mais `scada_package_page` lit `STATIC_ROOT/scada/pages/` — ils étaient déjà cassés avant ce plan (constat du design doc), et testent en partie un comportement (`title`, `actions`, injection d'actions manuelles) qui n'a jamais existé dans ce endpoint : il appartient à `_load_scada_scene` (le chemin `_load_scada_scene`, legacy, distinct — voir `views.py:679-712`). La couverture réelle de `scada_package_page` vit maintenant dans `frontend/tests_scada_deploy.py` (Task 4) et `frontend/tests_scada_page_composition.py` (Tasks 1-2).
+Ces trois tests monkeypatchent `views.SCADA_IMPORT_ROOT` avec l'ancienne arborescence de paquet (`SCADA_PACKAGE_DIR_NAME/<id>/<id>.html`), mais `scada_package_page` lit `STATIC_ROOT/scada/pages/`. Confirmé par exécution avant ce plan (baseline) :
+
+- `test_page_endpoint_returns_requested_page_fragment` et `test_page_endpoint_injects_manual_navigate_actions` **échouent déjà** aujourd'hui (`Http404` — la vue ne trouve jamais le fichier sous `SCADA_IMPORT_ROOT`), et testent en partie un comportement (`title`, `actions`, injection d'actions manuelles) qui n'a jamais existé dans ce endpoint : il appartient à `_load_scada_scene` (chemin legacy distinct — voir `views.py:679-712`).
+- `test_page_endpoint_requires_scada_builder_station_type` **passe** aujourd'hui, mais accidentellement : la vérification du type de station lève `Http404` avant même que la vue n'atteigne `STATIC_ROOT`, donc le fixture `SCADA_IMPORT_ROOT` erroné n'est jamais sollicité. Sa couverture réelle (« une station non-`SCADA_BUILDER_2` retourne 404 ») est préservée par `test_page_endpoint_requires_scada_builder_station_type` ajouté dans `frontend/tests_scada_deploy.py` (Task 4 Step 4), qui exerce le vrai endpoint via `self.client.get(...)`.
+
+La couverture réelle de `scada_package_page` vit maintenant dans `frontend/tests_scada_deploy.py` (Task 4) et `frontend/tests_scada_page_composition.py` (Tasks 1-2).
 
 - [ ] **Step 1: Remove the three obsolete tests**
 
