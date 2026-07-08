@@ -52,6 +52,43 @@ public partial class ElementPropertiesDialog : Window
     {
         StateRulesListBox.ItemsSource = currentElement.EffectiveStateConfig.States;
         CommandsListBox.ItemsSource = currentElement.EffectiveCommandConfig.Commands;
+
+        var readVariable = currentElement.EffectiveStateConfig.ReadVariable;
+        var hasReadVariable = readVariable is not null;
+        ReadVariableSummaryText.Text = hasReadVariable
+            ? $"Lecture: {readVariable!.TagId}{(string.IsNullOrWhiteSpace(readVariable.DisplayFormat) ? "" : $" -> {readVariable.DisplayFormat}")}"
+            : "Aucune lecture de variable configuree.";
+        AddReadVariableButton.Visibility = hasReadVariable ? Visibility.Collapsed : Visibility.Visible;
+        EditReadVariableButton.Visibility = hasReadVariable ? Visibility.Visible : Visibility.Collapsed;
+        RemoveReadVariableButton.Visibility = hasReadVariable ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void OnEditReadVariableClick(object sender, RoutedEventArgs e)
+    {
+        if (SaveStateConfig is null)
+        {
+            return;
+        }
+
+        var dialog = new ElementReadVariableDialog(currentElement.EffectiveStateConfig.ReadVariable, tagCatalog) { Owner = this };
+        if (dialog.ShowDialog() != true || dialog.Result is null)
+        {
+            return;
+        }
+
+        currentElement = SaveStateConfig(currentElement.EffectiveStateConfig with { ReadVariable = dialog.Result });
+        RefreshStateAndCommandLists();
+    }
+
+    private void OnRemoveReadVariableClick(object sender, RoutedEventArgs e)
+    {
+        if (SaveStateConfig is null)
+        {
+            return;
+        }
+
+        currentElement = SaveStateConfig(currentElement.EffectiveStateConfig with { ReadVariable = null });
+        RefreshStateAndCommandLists();
     }
 
     private void OnAddStateRuleClick(object sender, RoutedEventArgs e)
