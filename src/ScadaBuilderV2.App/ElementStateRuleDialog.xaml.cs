@@ -282,7 +282,7 @@ public partial class ElementStateRuleDialog : Window
         var items = (_tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
             .Where(tag => tag.Enabled)
             .OrderBy(tag => tag.DisplayName, StringComparer.CurrentCultureIgnoreCase)
-            .Select(tag => new TagItem(tag.Id, string.IsNullOrWhiteSpace(tag.DisplayName) ? tag.Id : tag.DisplayName))
+            .Select(tag => new TagItem(tag.Id, tag.KeywordLabel ?? tag.DisplayName ?? tag.Id))
             .ToArray();
         TagComboBox.ItemsSource = items;
     }
