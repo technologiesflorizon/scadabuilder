@@ -44,8 +44,143 @@ public partial class ElementStateRuleDialog : Window
             LoadEffect(existingRule.Effect);
         }
 
+        RefreshEffectTypeComboBox();
+        RefreshActiveEffectsList();
+        if (_activeKinds.Count > 0)
+        {
+            ShowEffectEditor(_activeKinds.First());
+            ActiveEffectsListBox.SelectedIndex = 0;
+        }
+
         if (ExpressionModeRadio.IsChecked == true)
             ValidateExpression();
+    }
+
+    private enum EffectKind { BackgroundColor, Border, Text, ElementVisible, Opacity, Rotation, Animation, ColorFilter }
+
+    private sealed record EffectTypeItem(EffectKind Kind, string Label)
+    {
+        public override string ToString() => Label;
+    }
+
+    private sealed record EffectListItem(EffectKind Kind, string Summary);
+
+    private static readonly (EffectKind Kind, string Label)[] _effectTypeLabels =
+    [
+        (EffectKind.BackgroundColor, "Couleur de fond"),
+        (EffectKind.Border, "Bordure"),
+        (EffectKind.Text, "Texte"),
+        (EffectKind.ElementVisible, "Visibilite"),
+        (EffectKind.Opacity, "Opacite"),
+        (EffectKind.Rotation, "Rotation"),
+        (EffectKind.Animation, "Animation"),
+        (EffectKind.ColorFilter, "Filtre de couleur")
+    ];
+
+    private readonly HashSet<EffectKind> _activeKinds = new();
+
+    private void RefreshEffectTypeComboBox()
+    {
+        var available = _effectTypeLabels
+            .Where(x => !_activeKinds.Contains(x.Kind))
+            .Select(x => new EffectTypeItem(x.Kind, x.Label))
+            .ToArray();
+        EffectTypeComboBox.ItemsSource = available;
+        if (available.Length > 0)
+        {
+            EffectTypeComboBox.SelectedIndex = 0;
+        }
+    }
+
+    private void RefreshActiveEffectsList()
+    {
+        var items = _effectTypeLabels
+            .Where(x => _activeKinds.Contains(x.Kind))
+            .Select(x => new EffectListItem(x.Kind, BuildEffectSummary(x.Kind)))
+            .ToArray();
+        ActiveEffectsListBox.ItemsSource = items;
+    }
+
+    private string BuildEffectSummary(EffectKind kind) => kind switch
+    {
+        EffectKind.BackgroundColor => $"Couleur de fond: {BackgroundColorPicker.Value}",
+        EffectKind.Border => $"Bordure: {BorderColorPicker.Value} ({BorderWidthTextBox.Text}px)",
+        EffectKind.Text => $"Texte: {(string.IsNullOrWhiteSpace(TextContentTextBox.Text) ? "(vide)" : TextContentTextBox.Text)}",
+        EffectKind.ElementVisible => $"Visibilite: {(ElementVisibleCheckBox.IsChecked == true ? "Visible" : "Masque")}",
+        EffectKind.Opacity => $"Opacite: {OpacitySlider.Value:0.00}",
+        EffectKind.Rotation => $"Rotation: {RotationTextBox.Text} deg",
+        EffectKind.Animation => $"Animation: {AnimationComboBox.SelectedItem}",
+        EffectKind.ColorFilter => $"Filtre de couleur: {ColorFilterColorPicker.Value} ({ColorFilterOpacitySlider.Value:0.00}){(ColorFilterHaloCheckBox.IsChecked == true ? ", halo" : "")}",
+        _ => kind.ToString()
+    };
+
+    private void ShowEffectEditor(EffectKind kind)
+    {
+        EffectEditorPanel.Visibility = Visibility.Visible;
+        BackgroundColorEditor.Visibility = kind == EffectKind.BackgroundColor ? Visibility.Visible : Visibility.Collapsed;
+        BorderEditor.Visibility = kind == EffectKind.Border ? Visibility.Visible : Visibility.Collapsed;
+        TextEditor.Visibility = kind == EffectKind.Text ? Visibility.Visible : Visibility.Collapsed;
+        ElementVisibleEditor.Visibility = kind == EffectKind.ElementVisible ? Visibility.Visible : Visibility.Collapsed;
+        OpacityEditor.Visibility = kind == EffectKind.Opacity ? Visibility.Visible : Visibility.Collapsed;
+        RotationEditor.Visibility = kind == EffectKind.Rotation ? Visibility.Visible : Visibility.Collapsed;
+        AnimationEditor.Visibility = kind == EffectKind.Animation ? Visibility.Visible : Visibility.Collapsed;
+        ColorFilterEditor.Visibility = kind == EffectKind.ColorFilter ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void OnAddActiveEffectClick(object sender, RoutedEventArgs e)
+    {
+        if (EffectTypeComboBox.SelectedItem is not EffectTypeItem item)
+        {
+            return;
+        }
+
+        _activeKinds.Add(item.Kind);
+        if (item.Kind == EffectKind.ColorFilter)
+        {
+            if (string.IsNullOrWhiteSpace(ColorFilterColorPicker.Value))
+            {
+                ColorFilterColorPicker.SetColor("#E53935");
+            }
+            if (string.IsNullOrWhiteSpace(ColorFilterHaloColorPicker.Value))
+            {
+                ColorFilterHaloColorPicker.SetColor(ColorFilterColorPicker.Value);
+            }
+        }
+
+        RefreshEffectTypeComboBox();
+        RefreshActiveEffectsList();
+        ShowEffectEditor(item.Kind);
+        UpdatePreview();
+    }
+
+    private void OnEditActiveEffectClick(object sender, RoutedEventArgs e)
+    {
+        if (ActiveEffectsListBox.SelectedItem is not EffectListItem item)
+        {
+            return;
+        }
+
+        ShowEffectEditor(item.Kind);
+    }
+
+    private void OnRemoveActiveEffectClick(object sender, RoutedEventArgs e)
+    {
+        if (ActiveEffectsListBox.SelectedItem is not EffectListItem item)
+        {
+            return;
+        }
+
+        _activeKinds.Remove(item.Kind);
+        RefreshEffectTypeComboBox();
+        RefreshActiveEffectsList();
+        EffectEditorPanel.Visibility = Visibility.Collapsed;
+        UpdatePreview();
+    }
+
+    private void OnColorFilterHaloChanged(object sender, RoutedEventArgs e)
+    {
+        ColorFilterHaloPanel.Visibility = ColorFilterHaloCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
+        RefreshActiveEffectsList();
     }
 
     private void RestoreExpression(string source)
@@ -156,20 +291,20 @@ public partial class ElementStateRuleDialog : Window
     {
         if (effect.BackgroundColor is not null)
         {
-            BackgroundEnabledCheckBox.IsChecked = true;
+            _activeKinds.Add(EffectKind.BackgroundColor);
             BackgroundColorPicker.SetColor(effect.BackgroundColor);
         }
 
         if (effect.BorderColor is not null)
         {
-            BorderEnabledCheckBox.IsChecked = true;
+            _activeKinds.Add(EffectKind.Border);
             BorderColorPicker.SetColor(effect.BorderColor);
             BorderWidthTextBox.Text = (effect.BorderWidth ?? 1).ToString(CultureInfo.InvariantCulture);
         }
 
         if (effect.TextContent is not null || effect.TextColor is not null || effect.TextVisible is not null)
         {
-            TextEnabledCheckBox.IsChecked = true;
+            _activeKinds.Add(EffectKind.Text);
             TextContentTextBox.Text = effect.TextContent ?? string.Empty;
             TextColorPicker.SetColor(effect.TextColor ?? "#000000");
             TextVisibleCheckBox.IsChecked = effect.TextVisible ?? true;
@@ -177,30 +312,38 @@ public partial class ElementStateRuleDialog : Window
 
         if (effect.ElementVisible is not null)
         {
-            ElementVisibleEnabledCheckBox.IsChecked = true;
+            _activeKinds.Add(EffectKind.ElementVisible);
             ElementVisibleCheckBox.IsChecked = effect.ElementVisible;
         }
 
         if (effect.Opacity is not null)
         {
-            OpacityEnabledCheckBox.IsChecked = true;
+            _activeKinds.Add(EffectKind.Opacity);
             OpacitySlider.Value = effect.Opacity.Value;
         }
 
         if (effect.Rotation is not null)
         {
-            RotationEnabledCheckBox.IsChecked = true;
+            _activeKinds.Add(EffectKind.Rotation);
             RotationTextBox.Text = effect.Rotation.Value.ToString(CultureInfo.InvariantCulture);
         }
 
         if (effect.Animation is not null)
         {
-            AnimationEnabledCheckBox.IsChecked = true;
+            _activeKinds.Add(EffectKind.Animation);
             AnimationComboBox.SelectedItem = effect.Animation.Value;
         }
-    }
 
-    private void OnEffectToggleChanged(object sender, RoutedEventArgs e) => UpdatePreview();
+        if (effect.ColorFilterColor is not null)
+        {
+            _activeKinds.Add(EffectKind.ColorFilter);
+            ColorFilterColorPicker.SetColor(effect.ColorFilterColor);
+            ColorFilterOpacitySlider.Value = effect.ColorFilterOpacity ?? 1.0;
+            ColorFilterHaloCheckBox.IsChecked = effect.ColorFilterHalo ?? false;
+            ColorFilterHaloPanel.Visibility = ColorFilterHaloCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
+            ColorFilterHaloColorPicker.SetColor(effect.ColorFilterHaloColor ?? effect.ColorFilterColor);
+        }
+    }
 
     private void OnExpressionTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e) => ValidateExpression();
 
@@ -286,16 +429,20 @@ public partial class ElementStateRuleDialog : Window
     private ScadaEffectBlock BuildEffectFromUi()
     {
         return new ScadaEffectBlock(
-            BackgroundColor: BackgroundEnabledCheckBox.IsChecked == true ? BackgroundColorPicker.Value : null,
-            BorderColor: BorderEnabledCheckBox.IsChecked == true ? BorderColorPicker.Value : null,
-            BorderWidth: BorderEnabledCheckBox.IsChecked == true && double.TryParse(BorderWidthTextBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out var width) ? width : null,
-            TextColor: TextEnabledCheckBox.IsChecked == true ? TextColorPicker.Value : null,
-            TextContent: TextEnabledCheckBox.IsChecked == true ? TextContentTextBox.Text : null,
-            TextVisible: TextEnabledCheckBox.IsChecked == true ? TextVisibleCheckBox.IsChecked : null,
-            ElementVisible: ElementVisibleEnabledCheckBox.IsChecked == true ? ElementVisibleCheckBox.IsChecked : null,
-            Opacity: OpacityEnabledCheckBox.IsChecked == true ? OpacitySlider.Value : null,
-            Rotation: RotationEnabledCheckBox.IsChecked == true && double.TryParse(RotationTextBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out var rotation) ? rotation : null,
-            Animation: AnimationEnabledCheckBox.IsChecked == true ? (ScadaAnimation?)AnimationComboBox.SelectedItem : null);
+            BackgroundColor: _activeKinds.Contains(EffectKind.BackgroundColor) ? BackgroundColorPicker.Value : null,
+            BorderColor: _activeKinds.Contains(EffectKind.Border) ? BorderColorPicker.Value : null,
+            BorderWidth: _activeKinds.Contains(EffectKind.Border) && double.TryParse(BorderWidthTextBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out var width) ? width : null,
+            TextColor: _activeKinds.Contains(EffectKind.Text) ? TextColorPicker.Value : null,
+            TextContent: _activeKinds.Contains(EffectKind.Text) ? TextContentTextBox.Text : null,
+            TextVisible: _activeKinds.Contains(EffectKind.Text) ? TextVisibleCheckBox.IsChecked : null,
+            ElementVisible: _activeKinds.Contains(EffectKind.ElementVisible) ? ElementVisibleCheckBox.IsChecked : null,
+            Opacity: _activeKinds.Contains(EffectKind.Opacity) ? OpacitySlider.Value : null,
+            Rotation: _activeKinds.Contains(EffectKind.Rotation) && double.TryParse(RotationTextBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out var rotation) ? rotation : null,
+            Animation: _activeKinds.Contains(EffectKind.Animation) ? (ScadaAnimation?)AnimationComboBox.SelectedItem : null,
+            ColorFilterColor: _activeKinds.Contains(EffectKind.ColorFilter) ? ColorFilterColorPicker.Value : null,
+            ColorFilterOpacity: _activeKinds.Contains(EffectKind.ColorFilter) ? ColorFilterOpacitySlider.Value : null,
+            ColorFilterHalo: _activeKinds.Contains(EffectKind.ColorFilter) ? ColorFilterHaloCheckBox.IsChecked : null,
+            ColorFilterHaloColor: _activeKinds.Contains(EffectKind.ColorFilter) && ColorFilterHaloCheckBox.IsChecked == true ? ColorFilterHaloColorPicker.Value : null);
     }
 
     private static bool IsBooleanDatatype(string? datatype)

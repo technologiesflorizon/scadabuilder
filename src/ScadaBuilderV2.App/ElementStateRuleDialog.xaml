@@ -76,33 +76,72 @@
 
         <ScrollViewer Grid.Row="1">
             <StackPanel>
-                <CheckBox x:Name="BackgroundEnabledCheckBox" Content="Couleur de fond" Checked="OnEffectToggleChanged" Unchecked="OnEffectToggleChanged"/>
-                <local:ColorPickerField x:Name="BackgroundColorPicker" Margin="20,2,0,8"/>
-
-                <CheckBox x:Name="BorderEnabledCheckBox" Content="Bordure" Checked="OnEffectToggleChanged" Unchecked="OnEffectToggleChanged"/>
-                <StackPanel Orientation="Horizontal" Margin="20,2,0,8">
-                    <local:ColorPickerField x:Name="BorderColorPicker"/>
-                    <TextBox x:Name="BorderWidthTextBox" Width="60" Margin="8,0,0,0"/>
+                <TextBlock Text="Modifications d'apparence" FontWeight="SemiBold" Foreground="{StaticResource InkBrush}" Margin="0,0,0,4"/>
+                <ListBox x:Name="ActiveEffectsListBox" Height="90" SelectionMode="Single" Margin="0,0,0,4"
+                         DisplayMemberPath="Summary"
+                         MouseDoubleClick="OnEditActiveEffectClick"/>
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                    <ComboBox x:Name="EffectTypeComboBox" Width="160" Margin="0,0,6,0" DisplayMemberPath="Label"/>
+                    <Button Content="+ Ajouter" Click="OnAddActiveEffectClick" Margin="0,0,6,0"/>
+                    <Button Content="Editer" Click="OnEditActiveEffectClick" Margin="0,0,6,0"/>
+                    <Button Content="Supprimer" Click="OnRemoveActiveEffectClick"/>
                 </StackPanel>
 
-                <CheckBox x:Name="TextEnabledCheckBox" Content="Texte" Checked="OnEffectToggleChanged" Unchecked="OnEffectToggleChanged"/>
-                <StackPanel Margin="20,2,0,8">
-                    <TextBox x:Name="TextContentTextBox" Margin="0,0,0,4"/>
-                    <local:ColorPickerField x:Name="TextColorPicker"/>
-                    <CheckBox x:Name="TextVisibleCheckBox" Content="Visible" Margin="0,4,0,0"/>
-                </StackPanel>
+                <Border BorderBrush="{StaticResource BorderBrushSoft}" BorderThickness="1" Padding="8" Margin="0,0,0,8">
+                    <StackPanel x:Name="EffectEditorPanel" Visibility="Collapsed">
+                        <StackPanel x:Name="BackgroundColorEditor" Visibility="Collapsed">
+                            <TextBlock Text="Couleur de fond" Foreground="{StaticResource MutedBrush}"/>
+                            <local:ColorPickerField x:Name="BackgroundColorPicker" Margin="0,2,0,0"/>
+                        </StackPanel>
 
-                <CheckBox x:Name="ElementVisibleEnabledCheckBox" Content="Visibilite de l'element" Checked="OnEffectToggleChanged" Unchecked="OnEffectToggleChanged"/>
-                <CheckBox x:Name="ElementVisibleCheckBox" Content="Visible" Margin="20,2,0,8"/>
+                        <StackPanel x:Name="BorderEditor" Visibility="Collapsed">
+                            <TextBlock Text="Bordure" Foreground="{StaticResource MutedBrush}"/>
+                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                <local:ColorPickerField x:Name="BorderColorPicker"/>
+                                <TextBox x:Name="BorderWidthTextBox" Width="60" Margin="8,0,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
 
-                <CheckBox x:Name="OpacityEnabledCheckBox" Content="Opacite" Checked="OnEffectToggleChanged" Unchecked="OnEffectToggleChanged"/>
-                <Slider x:Name="OpacitySlider" Minimum="0" Maximum="1" Margin="20,2,0,8"/>
+                        <StackPanel x:Name="TextEditor" Visibility="Collapsed">
+                            <TextBlock Text="Texte" Foreground="{StaticResource MutedBrush}"/>
+                            <TextBox x:Name="TextContentTextBox" Margin="0,2,0,4"/>
+                            <local:ColorPickerField x:Name="TextColorPicker" Margin="0,0,0,4"/>
+                            <CheckBox x:Name="TextVisibleCheckBox" Content="Visible"/>
+                        </StackPanel>
 
-                <CheckBox x:Name="RotationEnabledCheckBox" Content="Rotation (deg)" Checked="OnEffectToggleChanged" Unchecked="OnEffectToggleChanged"/>
-                <TextBox x:Name="RotationTextBox" Width="80" Margin="20,2,0,8" HorizontalAlignment="Left"/>
+                        <StackPanel x:Name="ElementVisibleEditor" Visibility="Collapsed">
+                            <TextBlock Text="Visibilite de l'element" Foreground="{StaticResource MutedBrush}"/>
+                            <CheckBox x:Name="ElementVisibleCheckBox" Content="Visible" Margin="0,2,0,0"/>
+                        </StackPanel>
 
-                <CheckBox x:Name="AnimationEnabledCheckBox" Content="Animation" Checked="OnEffectToggleChanged" Unchecked="OnEffectToggleChanged"/>
-                <ComboBox x:Name="AnimationComboBox" Margin="20,2,0,8" HorizontalAlignment="Left" Width="160"/>
+                        <StackPanel x:Name="OpacityEditor" Visibility="Collapsed">
+                            <TextBlock Text="Opacite" Foreground="{StaticResource MutedBrush}"/>
+                            <Slider x:Name="OpacitySlider" Minimum="0" Maximum="1" Margin="0,2,0,0"/>
+                        </StackPanel>
+
+                        <StackPanel x:Name="RotationEditor" Visibility="Collapsed">
+                            <TextBlock Text="Rotation (deg)" Foreground="{StaticResource MutedBrush}"/>
+                            <TextBox x:Name="RotationTextBox" Width="80" Margin="0,2,0,0" HorizontalAlignment="Left"/>
+                        </StackPanel>
+
+                        <StackPanel x:Name="AnimationEditor" Visibility="Collapsed">
+                            <TextBlock Text="Animation" Foreground="{StaticResource MutedBrush}"/>
+                            <ComboBox x:Name="AnimationComboBox" Margin="0,2,0,0" HorizontalAlignment="Left" Width="160"/>
+                        </StackPanel>
+
+                        <StackPanel x:Name="ColorFilterEditor" Visibility="Collapsed">
+                            <TextBlock Text="Filtre de couleur" Foreground="{StaticResource MutedBrush}"/>
+                            <local:ColorPickerField x:Name="ColorFilterColorPicker" Margin="0,2,0,4"/>
+                            <TextBlock Text="Opacite du filtre" Foreground="{StaticResource MutedBrush}"/>
+                            <Slider x:Name="ColorFilterOpacitySlider" Minimum="0" Maximum="1" Margin="0,2,0,4"/>
+                            <CheckBox x:Name="ColorFilterHaloCheckBox" Content="Halo" Checked="OnColorFilterHaloChanged" Unchecked="OnColorFilterHaloChanged"/>
+                            <StackPanel x:Name="ColorFilterHaloPanel" Visibility="Collapsed" Margin="0,4,0,0">
+                                <TextBlock Text="Couleur du halo" Foreground="{StaticResource MutedBrush}"/>
+                                <local:ColorPickerField x:Name="ColorFilterHaloColorPicker" Margin="0,2,0,0"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
 
                 <TextBlock Text="Apercu" Foreground="{StaticResource MutedBrush}" Margin="0,8,0,4"/>
                 <Border x:Name="PreviewBorder" Width="160" Height="90" BorderBrush="{StaticResource BorderBrushSoft}" BorderThickness="1">
