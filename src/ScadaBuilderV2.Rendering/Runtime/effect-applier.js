@@ -100,6 +100,30 @@
         classList.add('scada-anim-' + effect.animation);
       }
     }
+
+    // ── color filter (translucent overlay, works on any element incl. SVG .sep) ──
+    var existingOverlay = element.querySelector('[data-scada-color-filter-overlay]');
+    if (effect.colorFilterColor != null) {
+      var overlay = existingOverlay;
+      if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.setAttribute('data-scada-color-filter-overlay', '1');
+        overlay.style.position = 'absolute';
+        overlay.style.inset = '0';
+        overlay.style.pointerEvents = 'none';
+        element.appendChild(overlay);
+      }
+      overlay.style.backgroundColor = effect.colorFilterColor;
+      overlay.style.opacity = effect.colorFilterOpacity != null ? effect.colorFilterOpacity : 1;
+      if (effect.colorFilterHalo) {
+        overlay.classList.add('scada-anim-halo');
+        overlay.style.color = effect.colorFilterHaloColor || effect.colorFilterColor;
+      } else {
+        overlay.classList.remove('scada-anim-halo');
+      }
+    } else if (existingOverlay) {
+      element.removeChild(existingOverlay);
+    }
   }
 
   // ── public API ──────────────────────────────────────────────────────────
