@@ -55,8 +55,14 @@ public partial class ElementPropertiesDialog : Window
 
         var readVariable = currentElement.EffectiveStateConfig.ReadVariable;
         var hasReadVariable = readVariable is not null;
+        var readVarTagLabel = hasReadVariable
+            ? (tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
+                .Where(t => t.Id == readVariable!.TagId)
+                .Select(t => t.KeywordLabel ?? t.DisplayName ?? t.Id)
+                .FirstOrDefault() ?? readVariable.TagId
+            : null;
         ReadVariableSummaryText.Text = hasReadVariable
-            ? $"Lecture: {readVariable!.TagId}{(string.IsNullOrWhiteSpace(readVariable.DisplayFormat) ? "" : $" -> {readVariable.DisplayFormat}")}"
+            ? $"Lecture: {readVarTagLabel}{(string.IsNullOrWhiteSpace(readVariable!.DisplayFormat) ? "" : $" -> {readVariable.DisplayFormat}")}"
             : "Aucune lecture de variable configuree.";
         AddReadVariableButton.Visibility = hasReadVariable ? Visibility.Collapsed : Visibility.Visible;
         EditReadVariableButton.Visibility = hasReadVariable ? Visibility.Visible : Visibility.Collapsed;
