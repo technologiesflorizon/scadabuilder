@@ -755,7 +755,11 @@
           "ElementVisible": null,
           "Opacity": 0.4,
           "Rotation": null,
-          "Animation": null
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
         },
         "DefaultEffect": {
           "BackgroundColor": null,
@@ -767,7 +771,11 @@
           "ElementVisible": null,
           "Opacity": null,
           "Rotation": null,
-          "Animation": null
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
         },
         "States": [
           {
@@ -802,10 +810,15 @@
               "ElementVisible": null,
               "Opacity": null,
               "Rotation": null,
-              "Animation": null
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
             }
           }
-        ]
+        ],
+        "ReadVariable": null
       },
       "CommandConfig": null
     },
@@ -931,7 +944,11 @@
           "ElementVisible": null,
           "Opacity": 0.4,
           "Rotation": null,
-          "Animation": null
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
         },
         "DefaultEffect": {
           "BackgroundColor": null,
@@ -943,45 +960,17 @@
           "ElementVisible": null,
           "Opacity": null,
           "Rotation": null,
-          "Animation": null
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
         },
-        "States": [
-          {
-            "Id": "6e5d27dfd5eb43ce9d8b01e13bce6f76",
-            "Name": "test",
-            "Enabled": true,
-            "Expression": {
-              "source": "{PE_119} \u003E 100",
-              "referencedTags": [
-                "PE_119"
-              ],
-              "ast": {
-                "type": "binary",
-                "Op": "GreaterThan",
-                "Left": {
-                  "type": "tagRef",
-                  "TagName": "PE_119"
-                },
-                "Right": {
-                  "type": "literalNumber",
-                  "Value": 100
-                }
-              }
-            },
-            "Effect": {
-              "BackgroundColor": "#FF0000",
-              "BorderColor": null,
-              "BorderWidth": null,
-              "TextColor": null,
-              "TextContent": null,
-              "TextVisible": null,
-              "ElementVisible": null,
-              "Opacity": null,
-              "Rotation": null,
-              "Animation": null
-            }
-          }
-        ]
+        "States": [],
+        "ReadVariable": {
+          "TagId": "tf100.mapping.161",
+          "DisplayFormat": null
+        }
       },
       "CommandConfig": null
     },

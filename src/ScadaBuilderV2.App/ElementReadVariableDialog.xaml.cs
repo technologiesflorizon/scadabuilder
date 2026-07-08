@@ -18,7 +18,7 @@ public partial class ElementReadVariableDialog : Window
         var items = (tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
             .Where(tag => tag.Enabled)
             .OrderBy(tag => tag.DisplayName, StringComparer.CurrentCultureIgnoreCase)
-            .Select(tag => new TagItem(tag.Id, tag.AuthoringLabel))
+            .Select(tag => new TagItem(tag.Id, string.IsNullOrWhiteSpace(tag.DisplayName) ? tag.Id : tag.DisplayName))
             .ToArray();
         TagComboBox.ItemsSource = items;
 

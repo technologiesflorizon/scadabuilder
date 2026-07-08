@@ -17,6 +17,8 @@ public partial class ColorPickerDialog : Window
     private double _saturation;
     private double _value;
 
+    private readonly string _initialColor;
+
     /// <summary>
     /// Initializes a new color picker dialog with the current CSS color value.
     /// </summary>
@@ -24,7 +26,14 @@ public partial class ColorPickerDialog : Window
     public ColorPickerDialog(string currentValue)
     {
         InitializeComponent();
-        SetColorControls(string.IsNullOrWhiteSpace(currentValue) ? "#FFFFFF" : currentValue.Trim());
+        _initialColor = string.IsNullOrWhiteSpace(currentValue) ? "#FFFFFF" : currentValue.Trim();
+        Loaded += OnLoaded;
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        Loaded -= OnLoaded;
+        SetColorControls(_initialColor);
     }
 
     /// <summary>
