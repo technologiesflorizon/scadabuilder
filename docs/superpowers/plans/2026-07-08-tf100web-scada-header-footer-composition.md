@@ -6,13 +6,13 @@
 
 **Architecture:** Nouveau module pur et testable `frontend/scada_builder_composition.py` (résolution manifest + chargement de fragments, réutilise `_compiled_pages`/`_page_id`/`_page_type` de `scada_package.py` par import en lecture seule) appelé par un `views.scada_package_page` amaigri. Le contrat JSON devient uniforme : toujours une liste `parts` (1 à 3 entrées `role: header|body|footer`). Côté JS, `ScadaHost` traque l'id de page actuellement affiché par rôle et ne redessine que ce qui a changé.
 
-**Tech Stack:** Python 3 / Django (TF100Web), vanilla JS (`visualisation_import.js`), Django test framework (`unittest.TestCase` pour la logique pure, `django.test.TestCase` pour les tests bout-en-bout).
+**Tech Stack:** Python 3 / Django (TF100Web), vanilla JS (`visualisation_import.js`), Django test framework (`unittest.TestCase` pour la logique pure, `django.test.TestCase` pour les tests bout-en-bout). Task 0 touche un second repo : Node.js built-in test runner (`node:test`, `node:vm`) pour les modules runtime JS de SCADA Builder V2.
 
 **Design doc:** `docs/superpowers/specs/2026-07-08-tf100web-scada-header-footer-composition-design.md`
 
 ## Global Constraints
 
-- **Repo d'implémentation :** `F:\Projet\Git\TF100Web`, branche `feature/element-plus-state-command-events`. Toutes les commandes `pytest`/`python manage.py test`/`git` de ce plan s'exécutent depuis ce repo, pas depuis `SCADA_AMR_GROUP`.
+- **Deux repos distincts.** Task 0 s'exécute dans `F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2` (ce repo). Tasks 1-8 s'exécutent dans `F:\Projet\Git\TF100Web`, branche `feature/element-plus-state-command-events`. Toutes les commandes `pytest`/`python manage.py test`/`git` des Tasks 1-8 s'exécutent depuis ce dernier, pas depuis `SCADA_AMR_GROUP`.
 - Ne pas modifier `frontend/scada_package.py` ni `frontend/scada_projects.py` (chemin legacy, hors scope). Import en lecture seule de `_compiled_pages`, `_page_id`, `_page_type` uniquement.
 - KISS : composition à la volée par requête, pas de cache de fragments composés.
 - Seules les pages de type `"default"` composent un header/footer. Les pages `"fragment"` (popups, rendues en overlay par `ScadaHost._createPopup`) ne composent jamais, même si leur entrée manifest contient un `HeaderPageId`/`FooterPageId` par erreur d'authoring.
@@ -20,6 +20,161 @@
 - Contrat JSON uniforme : `parts` est toujours une liste avec exactement une entrée `role: "body"`, et 0 ou 1 entrée `role: "header"` / `role: "footer"`. Pas de format alternatif pour le cas non composé.
 - `_createPopup()` ne gagne aucune capacité de composition — son seul changement est la lecture de `parts[0]` (toujours l'unique part `body` pour une page fragment) au lieu du format racine `data.html`/`data.css_hash`.
 - Dimensions composées : largeur = max, hauteur = somme, calculées depuis les attributs HTML `data-scada-width`/`data-scada-height` de chaque part présente (jamais depuis les champs manifest `Width`/`Height`).
+
+---
+
+## Task 0: Fix `StateEngine.initPage` pour ne réinitialiser que son propre conteneur (repo `SCADA_BUILDER_V2`)
+
+**Files:**
+- Modify: `src/ScadaBuilderV2.Rendering/Runtime/state-engine.js:265-288`
+- Test: `tests/runtime-js/state-engine.test.mjs`
+
+**Repo :** `F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2` — distinct du repo TF100Web des Tasks 1-8. Toutes les commandes de cette tâche s'exécutent depuis ce repo.
+
+**Contexte (découvert pendant le brainstorming de ce plan, voir design doc) :** `StateEngine.initPage(container, pageId)` réinitialise aujourd'hui `_paused` et `_stateCache` **globalement**, sans les restreindre à `container`. `_paused` n'est pas cosmétique : `InputEditGuard.lock()` (`input-edit-guard.js:96-98`) appelle `StateEngine.pauseElement(elementId)` au focus d'un champ éditable, précisément pour empêcher le moteur d'état d'écraser une valeur en cours de saisie. La Task 7 de ce plan appelle `ScadaRuntime.initPage()` sur le slot `body` à chaque navigation (comme aujourd'hui). Avec la persistance du header/footer introduite par ce plan, un header/footer inchangé **survit** désormais à une navigation de body — mais l'appel `initPage` du body continuerait de purger `_paused` pour **toute la page**, y compris pour un champ en cours d'édition dans le header/footer persistant, alors que ce dernier reste visuellement verrouillé (overlay, timer de 30s) sans plus être réellement protégé côté moteur d'état. Ce bug latent existait déjà dans le runtime mais était sans conséquence tant que toute navigation détruisait l'intégralité du DOM (l'élément en cours d'édition disparaissait de toute façon) ; la persistance le rend observable. Cette tâche corrige la cause racine dans le runtime partagé.
+
+**Note pour la Task 8 :** un `.sb2` déjà exporté avant ce fix embarque l'ancien runtime (reset global). Ré-exporter le paquet de test utilisé pour la vérification manuelle de la Task 8 (Ft100SceneExporter regénère `state-engine.js` à chaque export) avant d'exécuter la Task 8 Step 6.
+
+- [ ] **Step 1: Write the failing test**
+
+In `tests/runtime-js/state-engine.test.mjs`, add this test (reusing the file's existing `makeFakeElement` helper defined at the top):
+
+```javascript
+test('initPage only resets pause/cache state for elements within its own container, not the whole page', () => {
+  const window = loadRuntime(['tag-bridge.js', 'expression-evaluator.js', 'effect-applier.js', 'state-engine.js']);
+
+  window.tf100webScadaBuilder = {
+    getTagValue(tagId) {
+      const mappingId = String(tagId).replace(/^tf100\.mapping\./, '');
+      return { '42': 95 }[mappingId] ?? null;
+    },
+  };
+
+  const stateConfig = {
+    defaultEffect: {},
+    states: [
+      {
+        id: 's1',
+        name: 'Alarme',
+        enabled: true,
+        expression: {
+          ast: {
+            type: 'binary',
+            op: 'GreaterThan',
+            left: { type: 'tagRef', tagName: 'tf100.mapping.42' },
+            right: { type: 'literalNumber', value: 80 },
+          },
+        },
+        effect: { backgroundColor: '#E53935' },
+      },
+    ],
+  };
+
+  const applied = [];
+  window.ScadaRuntime.EffectApplier.apply = (element, effect) => applied.push({ id: element.id, effect });
+
+  const headerElement = makeFakeElement('header_el1', JSON.stringify(stateConfig));
+  const headerContainer = { querySelectorAll: (sel) => (sel === '[data-scada-state-config]' ? [headerElement] : []) };
+  const bodyContainer = { querySelectorAll: () => [] };
+
+  // Header initializes once; its bound input gets locked for editing (pauseElement).
+  window.ScadaRuntime.StateEngine.initPage(headerContainer, 'hdr01');
+  window.ScadaRuntime.StateEngine.pauseElement('header_el1');
+
+  // A body-only navigation re-initializes an unrelated container.
+  window.ScadaRuntime.StateEngine.initPage(bodyContainer, 'win00009');
+
+  // The header's element must still be paused: initPage on a different container
+  // must not resume elements it doesn't own.
+  window.ScadaRuntime.StateEngine.evaluate(headerElement, { '42': 95 });
+
+  assert.equal(applied.length, 0,
+    'header_el1 was edit-locked (paused) and must stay paused after an unrelated container re-initializes');
+});
+```
+
+- [ ] **Step 2: Run test to verify it fails**
+
+Run: `cd "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2\tests\runtime-js" && node --test state-engine.test.mjs`
+Expected: FAIL — `applied.length` is `1`, not `0` (the second `initPage` call wiped `header_el1`'s pause).
+
+- [ ] **Step 3: Fix `initPage`**
+
+In `src/ScadaBuilderV2.Rendering/Runtime/state-engine.js`, replace:
+
+```javascript
+  /**
+   * Resets caches and scans the container for elements with data-scada-state-config.
+   * Does NOT evaluate — the host calls evaluate() per element after initPage.
+   *
+   * @param {Element} container  - The DOM container to scan (e.g. page root).
+   * @param {string}  pageId     - Unique page identifier (for namespacing).
+   */
+  function initPage(container, pageId) {
+    // Reset paused state and state cache
+    _paused = {};
+    _stateCache = {};
+
+    if (!container) {
+      return;
+    }
+
+    // Pre-cache all elements with data-scada-state-config
+    var elements = container.querySelectorAll('[data-scada-state-config]');
+    for (var i = 0; i < elements.length; i++) {
+      _stateCache[elements[i].getAttribute('data-scada-element-id') || elements[i].id] = null;
+    }
+  }
+```
+
+with:
+
+```javascript
+  /**
+   * Scans the container for elements with data-scada-state-config and resets
+   * their pause/cache state only — never other containers' elements.
+   *
+   * Multiple containers (e.g. a composed page's header/body/footer slots) can
+   * each call initPage independently without clobbering each other's edit-lock
+   * (pauseElement) or state-cache entries. Does NOT evaluate — the host calls
+   * evaluate() per element after initPage.
+   *
+   * @param {Element} container  - The DOM container to scan (e.g. a page root).
+   * @param {string}  pageId     - Unique page identifier (for namespacing).
+   */
+  function initPage(container, pageId) {
+    if (!container) {
+      return;
+    }
+
+    var elements = container.querySelectorAll('[data-scada-state-config]');
+    for (var i = 0; i < elements.length; i++) {
+      var id = elements[i].getAttribute('data-scada-element-id') || elements[i].id;
+      if (!id) {
+        continue;
+      }
+      delete _paused[id];
+      _stateCache[id] = null;
+    }
+  }
+```
+
+- [ ] **Step 4: Run tests to verify they pass**
+
+Run: `cd "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2\tests\runtime-js" && node --test state-engine.test.mjs`
+Expected: all tests in the file PASS, including the new one.
+
+- [ ] **Step 5: Run the full runtime-js suite to check for regressions in sibling modules**
+
+Run: `cd "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2\tests\runtime-js" && node --test .`
+Expected: all tests PASS.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add src/ScadaBuilderV2.Rendering/Runtime/state-engine.js tests/runtime-js/state-engine.test.mjs
+git commit -m "fix: scope StateEngine.initPage pause/cache reset to its own container"
+```
 
 ---
 
@@ -1314,6 +1469,6 @@ Return to `superpowers:systematic-debugging` Phase 1 rather than patching ad hoc
 
 ## Self-Review Notes
 
-- **Spec coverage:** Task 1-2 cover manifest resolution + fragment loading (design §Architecture). Task 3 covers the view wiring. Task 4-5 cover the design's Tests section (rewriting the obsolete test class, adding composed-page coverage, fixing the currently-passing test broken by the contract change). Task 6 covers the DOM slot + CSS selector change. Task 7 covers the JS diffing behavior and the `_createPopup` contract fix. Task 8 covers the design's "Hors scope" boundary by manually verifying popups are never touched by composition, and explicitly re-verifies read/write/navigate/state/command event parity (ScadaTagCache polling and tf100webScadaBuilder.writeTag are host-level and unaffected by slot structure; ChangePage/OpenPopup/TogglePopup route through the untouched postMessage listener; state/command events are initialized per-DOM-subtree via `ScadaRuntime.initPage`, the same scoping contract `_createPopup` already relies on today for its nested `content` div) — with particular attention to a persisted header/footer's listeners surviving a body-only navigation, since Task 7 deliberately skips re-initializing slots that didn't change.
+- **Spec coverage:** Task 0 fixes a latent shared-runtime bug (`StateEngine.initPage`'s global pause/cache reset) discovered during design review, newly exposed by header/footer persistence — not in the original design doc, added after the design was approved; the design doc's Hors scope section should be read alongside this addition. Task 1-2 cover manifest resolution + fragment loading (design §Architecture). Task 3 covers the view wiring. Task 4-5 cover the design's Tests section (rewriting the obsolete test class, adding composed-page coverage, fixing the currently-passing test broken by the contract change). Task 6 covers the DOM slot + CSS selector change. Task 7 covers the JS diffing behavior and the `_createPopup` contract fix. Task 8 covers the design's "Hors scope" boundary by manually verifying popups are never touched by composition, and explicitly re-verifies read/write/navigate/state/command event parity (ScadaTagCache polling and tf100webScadaBuilder.writeTag are host-level and unaffected by slot structure; ChangePage/OpenPopup/TogglePopup route through the untouched postMessage listener; state/command events are initialized per-DOM-subtree via `ScadaRuntime.initPage`, the same scoping contract `_createPopup` already relies on today for its nested `content` div) — with particular attention to a persisted header/footer's listeners surviving a body-only navigation, since Task 7 deliberately skips re-initializing slots that didn't change.
 - **Placeholder scan:** no TBD/TODO; every step has complete, runnable code.
 - **Type consistency:** `load_composed_page` (Task 2) returns `parts: list[dict]` with keys `role`/`page_id`/`html`/`css_hash`/`width`/`height` — the same keys are read in Task 3's `views.py` (as opaque `result`), Task 4's test assertions, and Task 7's JS (`part.role`, `part.page_id`, `part.html`, `part.css_hash`). `_resolve_composed_page_ids`'s tuple shape `(role, page_id)` is only consumed internally by `load_composed_page` in the same module — no cross-task mismatch.
