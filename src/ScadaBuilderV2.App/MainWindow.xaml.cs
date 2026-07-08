@@ -5854,14 +5854,15 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
-        var dialog = new ElementCommandDialog(null, GetCurrentSceneReferences(), _modernProject?.TagCatalog) { Owner = this };
-        if (dialog.ShowDialog() != true || dialog.Result is null)
+        var element = _activeScene.FindElementRecursive(_selectedSceneObject.Id);
+        if (element is null)
         {
             return;
         }
 
-        var element = _activeScene.FindElementRecursive(_selectedSceneObject.Id);
-        if (element is null)
+        var usedKinds = element.EffectiveCommandConfig.Commands.Select(c => c.Kind).ToArray();
+        var dialog = new ElementCommandDialog(null, GetCurrentSceneReferences(), _modernProject?.TagCatalog, usedKinds) { Owner = this };
+        if (dialog.ShowDialog() != true || dialog.Result is null)
         {
             return;
         }
@@ -5891,14 +5892,18 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
-        var dialog = new ElementCommandDialog(selected, GetCurrentSceneReferences(), _modernProject?.TagCatalog) { Owner = this };
-        if (dialog.ShowDialog() != true || dialog.Result is null)
+        var element = _activeScene.FindElementRecursive(_selectedSceneObject.Id);
+        if (element is null)
         {
             return;
         }
 
-        var element = _activeScene.FindElementRecursive(_selectedSceneObject.Id);
-        if (element is null)
+        var usedKinds = element.EffectiveCommandConfig.Commands
+            .Where(c => c.Id != selected.Id)
+            .Select(c => c.Kind)
+            .ToArray();
+        var dialog = new ElementCommandDialog(selected, GetCurrentSceneReferences(), _modernProject?.TagCatalog, usedKinds) { Owner = this };
+        if (dialog.ShowDialog() != true || dialog.Result is null)
         {
             return;
         }

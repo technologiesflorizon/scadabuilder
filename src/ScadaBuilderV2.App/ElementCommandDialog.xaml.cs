@@ -15,14 +15,21 @@ public partial class ElementCommandDialog : Window
     private readonly IReadOnlyList<ScadaSceneReference> _pageReferences;
     private readonly string _commandId;
 
-    public ElementCommandDialog(ScadaCommandBinding? existingCommand, IReadOnlyList<ScadaSceneReference> pageReferences, ScadaTagCatalog? tagCatalog)
+    private readonly IReadOnlyCollection<ScadaCommandKind> _usedKinds;
+
+    public ElementCommandDialog(
+        ScadaCommandBinding? existingCommand,
+        IReadOnlyList<ScadaSceneReference> pageReferences,
+        ScadaTagCatalog? tagCatalog,
+        IReadOnlyCollection<ScadaCommandKind> usedKinds)
     {
         InitializeComponent();
         _pageReferences = pageReferences;
         _commandId = existingCommand?.Id ?? Guid.NewGuid().ToString("n");
+        _usedKinds = usedKinds;
 
         TriggerComboBox.ItemsSource = Enum.GetValues<ScadaCommandTrigger>();
-        KindComboBox.ItemsSource = Enum.GetValues<ScadaCommandKind>();
+        KindComboBox.ItemsSource = Enum.GetValues<ScadaCommandKind>().Where(kind => !usedKinds.Contains(kind)).ToArray();
         WriteModeComboBox.ItemsSource = Enum.GetValues<ScadaWriteMode>();
         TargetPageComboBox.ItemsSource = pageReferences;
 
@@ -92,6 +99,12 @@ public partial class ElementCommandDialog : Window
         }
 
         var kind = (ScadaCommandKind)KindComboBox.SelectedItem;
+        if (_usedKinds.Contains(kind))
+        {
+            ValidationText.Text = $"Une commande '{kind}' existe deja pour cet Element+.";
+            return;
+        }
+
         Result = new ScadaCommandBinding(
             _commandId,
             NameTextBox.Text.Trim(),

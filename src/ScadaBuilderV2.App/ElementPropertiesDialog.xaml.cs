@@ -170,7 +170,8 @@ public partial class ElementPropertiesDialog : Window
 
     private void OnAddCommandClick(object sender, RoutedEventArgs e)
     {
-        var dialog = new ElementCommandDialog(null, pageReferences, tagCatalog) { Owner = this };
+        var usedKinds = currentElement.EffectiveCommandConfig.Commands.Select(c => c.Kind).ToArray();
+        var dialog = new ElementCommandDialog(null, pageReferences, tagCatalog, usedKinds) { Owner = this };
         if (dialog.ShowDialog() != true || dialog.Result is null || SaveCommandConfig is null)
         {
             return;
@@ -196,7 +197,11 @@ public partial class ElementPropertiesDialog : Window
             return;
         }
 
-        var dialog = new ElementCommandDialog(selected, pageReferences, tagCatalog) { Owner = this };
+        var usedKinds = currentElement.EffectiveCommandConfig.Commands
+            .Where(c => c.Id != selected.Id)
+            .Select(c => c.Kind)
+            .ToArray();
+        var dialog = new ElementCommandDialog(selected, pageReferences, tagCatalog, usedKinds) { Owner = this };
         if (dialog.ShowDialog() != true || dialog.Result is null)
         {
             return;
