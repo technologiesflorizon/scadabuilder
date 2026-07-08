@@ -945,7 +945,7 @@ public sealed partial class Ft100SceneExporter
         var data = element.Data ?? new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
         return element.Kind switch
         {
-            ScadaElementKind.Custom => data.Text ?? "",
+            ScadaElementKind.Custom => ScopeSvgIds(data.Text ?? "", element.Id),
             ScadaElementKind.Text => HtmlEncoder.Default.Encode(data.Text ?? element.DisplayName),
             ScadaElementKind.InputNumeric when data.IsReadOnly => HtmlEncoder.Default.Encode(
                 data.Value?.ToString(CultureInfo.InvariantCulture) ?? data.DisplayFormat ?? data.Placeholder ?? ""),
@@ -1889,10 +1889,54 @@ Apply any viewport scale to the composed page container, not independently to he
         return string.Concat(value.Select(character => char.IsLetterOrDigit(character) || character is '-' or '_' ? character : '_'));
     }
 
+    /// <summary>
+    /// Rewrites <c>id="..."</c> attributes and <c>url(#...)</c> references inside SVG markup
+    /// so that each element instance gets unique DOM ids. Library .sep components share the
+    /// same internal part ids (e.g. <c>Element001</c>); without scoping, placing the same
+    /// component twice on a page produces duplicate DOM ids.
+    /// </summary>
+    private static string ScopeSvgIds(string svgMarkup, string elementId)
+    {
+        if (string.IsNullOrWhiteSpace(svgMarkup))
+            return svgMarkup;
+
+        var safeId = CssIdentifier(elementId);
+        if (string.IsNullOrWhiteSpace(safeId))
+            safeId = "el";
+
+        // Rewrite id="X" → id="el-{safeId}__X"
+        var scoped = SvgIdAttributeRegex().Replace(svgMarkup, match =>
+        {
+            var originalId = match.Groups["value"].Value;
+            if (originalId.Contains("__", StringComparison.Ordinal))
+                return match.Value;
+
+            return $"{match.Groups["prefix"].Value}{match.Groups["quote"].Value}el-{safeId}__{originalId}{match.Groups["quote"].Value}";
+        });
+
+        // Rewrite url(#X) → url(#el-{safeId}__X)
+        scoped = SvgUrlRefRegex().Replace(scoped, match =>
+        {
+            var refId = match.Groups["ref"].Value;
+            if (refId.Contains("__", StringComparison.Ordinal))
+                return match.Value;
+
+            return $"url(#{match.Groups["prefix"].Value}el-{safeId}__{refId}{match.Groups["suffix"].Value}";
+        });
+
+        return scoped;
+    }
+
     private static string CssEscape(string value)
     {
         return value.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("\"", "\\\"", StringComparison.Ordinal);
     }
+
+    [GeneratedRegex("""(?<prefix>(?<![\w:-])id\s*=\s*)(?<quote>["'])(?<value>[^"']+)\k<quote>""", RegexOptions.IgnoreCase)]
+    private static partial Regex SvgIdAttributeRegex();
+
+    [GeneratedRegex("""url\(\s*#(?<prefix>\s*)(?<ref>[^)\s]+?)(?<suffix>\s*)\)""", RegexOptions.IgnoreCase)]
+    private static partial Regex SvgUrlRefRegex();
 
     [GeneratedRegex("""<div\b[^>]*class=["'][^"']*\bpage\b[^"']*["'][^>]*>""", RegexOptions.IgnoreCase)]
     private static partial Regex PageDivRegex();

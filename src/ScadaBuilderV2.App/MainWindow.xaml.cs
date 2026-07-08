@@ -4402,11 +4402,38 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         catch (Exception ex) when (ex is IOException or InvalidOperationException or UnauthorizedAccessException or ArgumentException)
         {
             SetStatus($"Export FT100 .sb2 impossible: {ex.Message}");
+            AppendExportLog(ex);
         }
         finally
         {
             _isFt100Sb2ExportRunning = false;
             SetFt100ExportProgress(false);
+        }
+    }
+
+    private static void AppendExportLog(Exception ex)
+    {
+        try
+        {
+            var logDir = Path.Combine(Path.GetTempPath(), "scada-builder-v2-logs");
+            Directory.CreateDirectory(logDir);
+            var logPath = Path.Combine(logDir, "export-errors.log");
+            var entry = $"{DateTime.UtcNow:O} | {ex.GetType().Name}: {ex.Message}{Environment.NewLine}";
+            if (ex is AggregateException agg)
+            {
+                foreach (var inner in agg.InnerExceptions)
+                    entry += $"  Inner: {inner.GetType().Name}: {inner.Message}{Environment.NewLine}";
+            }
+            else if (ex.InnerException is not null)
+            {
+                entry += $"  Inner: {ex.InnerException.GetType().Name}: {ex.InnerException.Message}{Environment.NewLine}";
+            }
+            entry += Environment.NewLine;
+            File.AppendAllText(logPath, entry);
+        }
+        catch
+        {
+            // Logging must never throw.
         }
     }
 
