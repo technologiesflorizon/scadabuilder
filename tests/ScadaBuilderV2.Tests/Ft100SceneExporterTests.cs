@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using System.Text.Json;
 using ScadaBuilderV2.Domain.ElementEvents.Command;
 using ScadaBuilderV2.Domain.ElementEvents.Expressions;
 using ScadaBuilderV2.Domain.ElementEvents.State;
@@ -2273,4 +2274,99 @@ public sealed class Ft100SceneExporterTests
         }
     }
 
+    [TestMethod]
+    public async Task ExportProjectArchive_ProducesCompleteSb2WithStateCommandRuntime()
+    {
+        var project = ScadaProject.CreateDefault("e2e-project");
+        var scene = ScadaScene.CreateEmpty("e2e-page", "E2E Page", new(1280, 873));
+
+        var stateConfig = new ScadaElementStateConfig(
+            QualityFallback: ScadaEffectBlock.Empty with { Opacity = 0.4, BorderColor = "#000000", BorderWidth = 2 },
+            DefaultEffect: ScadaEffectBlock.Empty,
+            States: new[] {
+                new ScadaStateRule("s1", "Running", true,
+                    new ScadaExpression("{Motor}>0",
+                        new ScadaExprBinary(ScadaExprBinaryOp.GreaterThan,
+                            new ScadaExprTagRef("Motor"), new ScadaExprLiteralNumber(0)),
+                        new[] { "Motor" }),
+                    ScadaEffectBlock.Empty with { BackgroundColor = "#4CAF50", Animation = ScadaAnimation.Spin })
+            });
+
+        var commandConfig = new ScadaElementCommandConfig(new[] {
+            new ScadaCommandBinding("c1", "Start", true, ScadaCommandTrigger.OnClick,
+                ScadaCommandKind.WriteTag, WriteTagId: "tf100.mapping.42",
+                WriteMode: ScadaWriteMode.Toggle,
+                Confirmation: new ScadaConfirmation("Start motor?"))
+        });
+
+        var element = new ScadaElement("elem1", "Motor", ScadaElementKind.Button,
+            new SceneBounds(10, 20, 100, 80),
+            null,
+            StateConfig: stateConfig,
+            CommandConfig: commandConfig);
+
+        scene = scene.WithElement(element);
+        project = project with
+        {
+            HomePageId = "e2e-page",
+            Scenes = [new ScadaSceneReference("e2e-page", "E2E Page", "scenes/e2e-page.scene.json")]
+        };
+
+        var tmpDir = Path.Combine(Path.GetTempPath(), "scada-e2e-" + Guid.NewGuid().ToString("N"));
+        var sourceHtml = Path.Combine(tmpDir, "e2e-page.html");
+        Directory.CreateDirectory(tmpDir);
+        File.WriteAllText(sourceHtml, "<!doctype html><html><body><div class=\"page\"><div id=\"ft100-e2e-page\">x</div></div></body></html>");
+
+        try
+        {
+            var exporter = new Ft100SceneExporter();
+            var input = new Ft100ProjectPageExportInput(scene, sourceHtml);
+            var archivePath = Path.Combine(tmpDir, "export.sb2");
+            var result = await exporter.ExportProjectArchiveAsync(project, new[] { input }, archivePath);
+
+            Assert.IsTrue(result.Validation.IsValid, "Package must pass validation");
+            Assert.IsTrue(File.Exists(result.ArchivePath), "Archive file must exist");
+
+            using var zip = ZipFile.OpenRead(result.ArchivePath);
+            var entries = zip.Entries.Select(e => e.FullName).ToArray();
+
+            Assert.IsTrue(entries.Any(e => e.StartsWith("scada-builder-v2-ft100-package/manifest.json")),
+                "Must contain manifest");
+            Assert.IsTrue(entries.Any(e => e.Contains("scada-runtime.") && e.EndsWith(".js")),
+                "Must contain runtime JS");
+            Assert.IsTrue(entries.Any(e => e.Contains("/e2e-page.html")),
+                "Must contain page HTML");
+            Assert.IsTrue(entries.Any(e => e.Contains("/css/e2e-page.") && e.EndsWith(".css")),
+                "Must contain CSS with content hash");
+
+            // Verify manifest content
+            var manifestEntry = zip.Entries.First(e => e.FullName.EndsWith("manifest.json"));
+            using var manifestStream = manifestEntry.Open();
+            using var manifestDoc = await JsonDocument.ParseAsync(manifestStream);
+            var root = manifestDoc.RootElement;
+            var pages = root.GetProperty("Pages");
+            var firstPage = pages[0];
+            var objects = firstPage.GetProperty("Objects");
+            var firstObject = objects[0];
+
+            Assert.IsTrue(firstObject.TryGetProperty("StateConfig", out var _),
+                "Manifest must have StateConfig");
+            Assert.IsTrue(firstObject.TryGetProperty("CommandConfig", out var _),
+                "Manifest must have CommandConfig");
+
+            // Verify HTML content
+            var htmlEntry = zip.Entries.First(e => e.FullName.EndsWith(".html"));
+            using var htmlStream = htmlEntry.Open();
+            using var htmlReader = new StreamReader(htmlStream);
+            var html = await htmlReader.ReadToEndAsync();
+
+            Assert.IsTrue(html.Contains("data-scada-state-config"), "HTML must have data-scada-state-config");
+            Assert.IsTrue(html.Contains("data-scada-command-config"), "HTML must have data-scada-command-config");
+            Assert.IsTrue(html.Contains("<script src="), "HTML must use external script reference");
+        }
+        finally
+        {
+            if (Directory.Exists(tmpDir)) Directory.Delete(tmpDir, recursive: true);
+        }
+    }
 }
