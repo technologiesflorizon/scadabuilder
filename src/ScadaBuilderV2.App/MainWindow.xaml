@@ -1020,6 +1020,14 @@
                                                     <Button Content="Supprimer" Click="OnDeleteStateRuleClick" Margin="0,0,6,0"/>
                                                     <ToggleButton x:Name="TestStateRuleToggle" Content="Test" Click="OnTestStateRuleToggleClick"/>
                                                 </StackPanel>
+
+                                                <TextBlock Text="Lecture de variable" Margin="0,16,0,0"/>
+                                                <TextBlock x:Name="ReadVariableSummaryText" Foreground="{StaticResource MutedBrush}" Margin="0,4,0,4" TextWrapping="Wrap"/>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Button x:Name="AddReadVariableButton" Content="+ Lecture de variable..." Click="OnEditReadVariableClick" Margin="0,0,6,0"/>
+                                                    <Button x:Name="EditReadVariableButton" Content="Modifier..." Click="OnEditReadVariableClick" Margin="0,0,6,0"/>
+                                                    <Button x:Name="RemoveReadVariableButton" Content="Supprimer" Click="OnRemoveReadVariableClick"/>
+                                                </StackPanel>
                                             </StackPanel>
                                         </TabItem>
                                         <TabItem Header="Commande">

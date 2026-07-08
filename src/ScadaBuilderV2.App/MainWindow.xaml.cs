@@ -5662,6 +5662,57 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         var element = _activeScene?.FindElementRecursive(_selectedSceneObject?.Id ?? string.Empty);
         StateRulesListBox.ItemsSource = element?.EffectiveStateConfig.States;
         CommandsListBox.ItemsSource = element?.EffectiveCommandConfig.Commands;
+
+        var readVariable = element?.EffectiveStateConfig.ReadVariable;
+        var hasReadVariable = readVariable is not null;
+        ReadVariableSummaryText.Text = hasReadVariable
+            ? $"Lecture: {FormatProjectTag(readVariable!.TagId)}{(string.IsNullOrWhiteSpace(readVariable.DisplayFormat) ? "" : $" -> {readVariable.DisplayFormat}")}"
+            : "Aucune lecture de variable configuree.";
+        AddReadVariableButton.Visibility = hasReadVariable ? Visibility.Collapsed : Visibility.Visible;
+        EditReadVariableButton.Visibility = hasReadVariable ? Visibility.Visible : Visibility.Collapsed;
+        RemoveReadVariableButton.Visibility = hasReadVariable ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void OnEditReadVariableClick(object sender, RoutedEventArgs e)
+    {
+        if (_activeScene is null || _selectedSceneObject is null)
+        {
+            return;
+        }
+
+        var element = _activeScene.FindElementRecursive(_selectedSceneObject.Id);
+        if (element is null)
+        {
+            return;
+        }
+
+        var dialog = new ElementReadVariableDialog(element.EffectiveStateConfig.ReadVariable, _modernProject?.TagCatalog) { Owner = this };
+        if (dialog.ShowDialog() != true || dialog.Result is null)
+        {
+            return;
+        }
+
+        var config = element.EffectiveStateConfig with { ReadVariable = dialog.Result };
+        _activeScene = _activeScene.WithElementStateConfig(_selectedSceneObject.Id, config);
+        RefreshStateAndCommandTabs();
+    }
+
+    private void OnRemoveReadVariableClick(object sender, RoutedEventArgs e)
+    {
+        if (_activeScene is null || _selectedSceneObject is null)
+        {
+            return;
+        }
+
+        var element = _activeScene.FindElementRecursive(_selectedSceneObject.Id);
+        if (element is null)
+        {
+            return;
+        }
+
+        var config = element.EffectiveStateConfig with { ReadVariable = null };
+        _activeScene = _activeScene.WithElementStateConfig(_selectedSceneObject.Id, config);
+        RefreshStateAndCommandTabs();
     }
 
     private void OnAddStateRuleClick(object sender, RoutedEventArgs e)
