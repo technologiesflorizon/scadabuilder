@@ -265,25 +265,30 @@
   // ── initPage ────────────────────────────────────────────────────────────
 
   /**
-   * Resets caches and scans the container for elements with data-scada-state-config.
-   * Does NOT evaluate — the host calls evaluate() per element after initPage.
+   * Scans the container for elements with data-scada-state-config and resets
+   * their pause/cache state only — never other containers' elements.
    *
-   * @param {Element} container  - The DOM container to scan (e.g. page root).
+   * Multiple containers (e.g. a composed page's header/body/footer slots) can
+   * each call initPage independently without clobbering each other's edit-lock
+   * (pauseElement) or state-cache entries. Does NOT evaluate — the host calls
+   * evaluate() per element after initPage.
+   *
+   * @param {Element} container  - The DOM container to scan (e.g. a page root).
    * @param {string}  pageId     - Unique page identifier (for namespacing).
    */
   function initPage(container, pageId) {
-    // Reset paused state and state cache
-    _paused = {};
-    _stateCache = {};
-
     if (!container) {
       return;
     }
 
-    // Pre-cache all elements with data-scada-state-config
     var elements = container.querySelectorAll('[data-scada-state-config]');
     for (var i = 0; i < elements.length; i++) {
-      _stateCache[elements[i].getAttribute('data-scada-element-id') || elements[i].id] = null;
+      var id = elements[i].getAttribute('data-scada-element-id') || elements[i].id;
+      if (!id) {
+        continue;
+      }
+      delete _paused[id];
+      _stateCache[id] = null;
     }
   }
 

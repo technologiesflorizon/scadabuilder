@@ -136,3 +136,55 @@ test('evaluate() lets a matched state\'s own textContent override readVariable f
 
   assert.equal(textTarget.textContent, '---', "the matched state's explicit textContent must win over readVariable");
 });
+
+test('initPage only resets pause/cache state for elements within its own container, not the whole page', () => {
+  const window = loadRuntime(['tag-bridge.js', 'expression-evaluator.js', 'effect-applier.js', 'state-engine.js']);
+
+  window.tf100webScadaBuilder = {
+    getTagValue(tagId) {
+      const mappingId = String(tagId).replace(/^tf100\.mapping\./, '');
+      return { '42': 95 }[mappingId] ?? null;
+    },
+  };
+
+  const stateConfig = {
+    defaultEffect: {},
+    states: [
+      {
+        id: 's1',
+        name: 'Alarme',
+        enabled: true,
+        expression: {
+          ast: {
+            type: 'binary',
+            op: 'GreaterThan',
+            left: { type: 'tagRef', tagName: 'tf100.mapping.42' },
+            right: { type: 'literalNumber', value: 80 },
+          },
+        },
+        effect: { backgroundColor: '#E53935' },
+      },
+    ],
+  };
+
+  const applied = [];
+  window.ScadaRuntime.EffectApplier.apply = (element, effect) => applied.push({ id: element.id, effect });
+
+  const headerElement = makeFakeElement('header_el1', JSON.stringify(stateConfig));
+  const headerContainer = { querySelectorAll: (sel) => (sel === '[data-scada-state-config]' ? [headerElement] : []) };
+  const bodyContainer = { querySelectorAll: () => [] };
+
+  // Header initializes once; its bound input gets locked for editing (pauseElement).
+  window.ScadaRuntime.StateEngine.initPage(headerContainer, 'hdr01');
+  window.ScadaRuntime.StateEngine.pauseElement('header_el1');
+
+  // A body-only navigation re-initializes an unrelated container.
+  window.ScadaRuntime.StateEngine.initPage(bodyContainer, 'win00009');
+
+  // The header's element must still be paused: initPage on a different container
+  // must not resume elements it doesn't own.
+  window.ScadaRuntime.StateEngine.evaluate(headerElement, { '42': 95 });
+
+  assert.equal(applied.length, 0,
+    'header_el1 was edit-locked (paused) and must stay paused after an unrelated container re-initializes');
+});
