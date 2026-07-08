@@ -121,7 +121,7 @@
     switch (cmd.kind) {
       // ── WriteTag variants ──────────────────────────────────────────────
       case 'WriteTag':
-        _writeTagCommand(cmd);
+        _writeTagCommand(cmd, element);
         break;
 
       // ── Navigation ─────────────────────────────────────────────────────
@@ -131,15 +131,15 @@
 
       // ── Popup commands ─────────────────────────────────────────────────
       case 'OpenPopup':
-        _postMessage('openPopup', { pageId: cmd.targetPageId, options: cmd.popupOptions });
+        _postMessage('openPopup', cmd.targetPageId, cmd.popupOptions);
         break;
 
       case 'ClosePopup':
-        _postMessage('closePopup', { pageId: cmd.targetPageId });
+        _postMessage('closePopup', cmd.targetPageId);
         break;
 
       case 'TogglePopup':
-        _postMessage('togglePopup', { pageId: cmd.targetPageId, options: cmd.popupOptions });
+        _postMessage('togglePopup', cmd.targetPageId, cmd.popupOptions);
         break;
 
       // ── OpenUrl ────────────────────────────────────────────────────────
@@ -167,7 +167,7 @@
    *
    * @param {object} cmd - The full command object.
    */
-  function _writeTagCommand(cmd) {
+  function _writeTagCommand(cmd, element) {
     if (!cmd || !cmd.writeTagId) {
       return;
     }
@@ -195,7 +195,7 @@
         break;
 
       case 'SetFromInput':
-        var input = element.querySelector('input, textarea');
+        var input = element ? element.querySelector('input, textarea') : null;
         if (input) {
           bridge.writeTag(cmd.writeTagId, input.value, { mode: 'SetFromInput' });
         }
@@ -224,11 +224,14 @@
     }, '*');
   }
 
-  function _postMessage(action, payload) {
+  function _postMessage(action, pageId, options) {
+    // Flat shape — matches _navigateCommand and the TF100Web host listener
+    // (visualisation_import.js reads msg.pageId / msg.options directly).
     window.postMessage({
       source: 'scada-builder-v2',
       action: action,
-      payload: payload
+      pageId: pageId,
+      options: options
     }, '*');
   }
 
