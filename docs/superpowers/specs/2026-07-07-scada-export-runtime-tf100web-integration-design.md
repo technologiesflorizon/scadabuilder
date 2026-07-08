@@ -29,8 +29,10 @@ Le pipeline actuel Builder V2 → TF100Web a trois fractures structurelles :
 Un pipeline direct et maîtrisé où le Builder est la source unique de vérité :
 
 ```
-Builder → export .sb2 → script sh TF100Web → fichiers dans templates/static
-       → collectstatic → restart → pages servies → script runtime EXÉCUTÉ
+Builder → export .sb2 → TF100Web web upload OU management command
+       → décompresse dans static/scada/ → collectstatic
+       → pages servies directement par nginx → script runtime EXÉCUTÉ
+       → AUCUN restart Gunicorn nécessaire
 ```
 
 - **Le `<script>` exporté par le Builder devient LA source unique du runtime.**
@@ -67,20 +69,22 @@ Builder → export .sb2 → script sh TF100Web → fichiers dans templates/stati
 │                                                                       │
 │  management command: deploy_scada_builder <path/to/package.sb2>       │
 │  ├─ Décompresse le .sb2                                              │
-│  ├─ Copie <page>/*.html  → templates/frontend/scada/pages/           │
+│  ├─ Copie <page>/*.html  → static/scada/pages/  (servi par nginx)    │
 │  ├─ Copie <page>/css/    → static/scada/css/                         │
 │  ├─ Copie <page>/images/ → static/scada/images/                      │
-│  ├─ Copie scada-runtime  → static/scada/js/                          │
+│  ├─ Copie scada-runtime  → static/scada/js/scada-runtime.js (stable) │
+│  ├─ Copie scada-runtime  → static/scada/js/scada-runtime.<hash>.js   │
 │  └─ Lance collectstatic --noinput                                    │
 │                                                                       │
-│  Vue Django: scada_page(request, page_id)                            │
-│  ├─ Rend le template HTML complet (script inclus → exécuté)          │
+│  Vue Django: scada_package_page(request, page_id)                    │
+│  ├─ Lit le fichier depuis STATIC_ROOT/scada/pages/<id>/<id>.html     │
+│  ├─ open() → extrait fragment → JSON (pas de template rendering)     │
 │  └─ Gated: TF100_INDUSTRIAL_DEPLOYMENT + SCADA_BUILDER_2             │
 │                                                                       │
 │  Navigation AJAX (gardée):                                            │
-│  ├─ GET /scada/api/page/<page_id>/ → HTML complet + métadonnées      │
-│  └─ visualisation_import.js: DOMParser → fragment → innerHTML        │
-│     Le <script> est déjà chargé en amont, pas dans le fragment        │
+│  ├─ GET /visualisation/scada/page/<page_id>/ → JSON {html, css_hash}│
+│  └─ visualisation_import.js: innerHTML (fragment)                    │
+│     Runtime déjà chargé via <script src="scada-runtime.js">           │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
