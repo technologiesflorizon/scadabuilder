@@ -12,7 +12,8 @@ namespace ScadaBuilderV2.Domain.ElementEvents.State;
 public sealed record ScadaElementStateConfig(
     ScadaEffectBlock QualityFallback,
     ScadaEffectBlock DefaultEffect,
-    IReadOnlyList<ScadaStateRule> States)
+    IReadOnlyList<ScadaStateRule> States,
+    ScadaReadVariableRule? ReadVariable = null)
 {
     /// <summary>
     /// Gets the default configuration: no states, empty rest appearance, and the standard

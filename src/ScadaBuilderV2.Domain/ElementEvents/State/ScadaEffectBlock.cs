@@ -31,7 +31,11 @@ public sealed record ScadaEffectBlock(
     bool? ElementVisible = null,
     double? Opacity = null,
     double? Rotation = null,
-    ScadaAnimation? Animation = null)
+    ScadaAnimation? Animation = null,
+    string? ColorFilterColor = null,
+    double? ColorFilterOpacity = null,
+    bool? ColorFilterHalo = null,
+    string? ColorFilterHaloColor = null)
 {
     /// <summary>
     /// Gets an effect block with every property unset.

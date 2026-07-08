@@ -44,4 +44,27 @@ public sealed class ScadaElementStateConfigTests
         Assert.AreEqual("First", config.States[0].Name);
         Assert.AreEqual("Second", config.States[1].Name);
     }
+
+    [TestMethod]
+    public void Default_HasNoReadVariable()
+    {
+        Assert.IsNull(ScadaElementStateConfig.Default.ReadVariable);
+    }
+
+    [TestMethod]
+    public void ReadVariable_IsIndependentOfStates()
+    {
+        var config = ScadaElementStateConfig.Default with
+        {
+            ReadVariable = new ScadaReadVariableRule("tf100.mapping.42", "Debit: {valeur} L/min"),
+            States = [new ScadaStateRule(
+                "s1", "Alarme", true,
+                ScadaExpression.FromSource("{Temp} > 80"),
+                ScadaEffectBlock.Empty with { BackgroundColor = "#E53935" })]
+        };
+
+        Assert.IsNotNull(config.ReadVariable);
+        Assert.AreEqual("tf100.mapping.42", config.ReadVariable.TagId);
+        Assert.AreEqual(1, config.States.Count);
+    }
 }
