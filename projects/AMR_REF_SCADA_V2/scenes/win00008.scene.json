@@ -967,10 +967,7 @@
           "ColorFilterHaloColor": null
         },
         "States": [],
-        "ReadVariable": {
-          "TagId": "tf100.mapping.161",
-          "DisplayFormat": null
-        }
+        "ReadVariable": null
       },
       "CommandConfig": null
     },
@@ -3809,14 +3806,34 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "0a689be33553423c86721bc1e6934f4d",
+            "Name": "Lecture\u002BEcriture",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "WriteTag",
+            "Confirmation": null,
+            "WriteTagId": "tf100.mapping.161",
+            "ReadTagId": null,
+            "WriteMode": null,
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": null,
+            "Url": null,
+            "NewTab": false
+          }
+        ]
+      }
     },
     {
       "Id": "elementplus_numeric_display_789",
       "DisplayName": "Element\u002B Text24",
       "Kind": "InputNumeric",
       "Bounds": {
-        "X": 57,
+        "X": 56,
         "Y": 235,
         "Width": 59,
         "Height": 25
@@ -3871,7 +3888,45 @@
       "ButtonBehavior": null,
       "ShapeKind": null,
       "ButtonKind": null,
-      "StateConfig": null,
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [],
+        "ReadVariable": {
+          "TagId": "tf100.mapping.161",
+          "DisplayFormat": null
+        }
+      },
       "CommandConfig": null
     },
     {
@@ -4148,63 +4203,6 @@
         "Unit": null,
         "DisplayFormat": "Svg",
         "TagBinding": "Triangle.sep",
-        "IsReadOnly": false,
-        "ReadTagId": null,
-        "WriteTagId": null,
-        "ShapeStartX": null,
-        "ShapeStartY": null,
-        "ShapeEndX": null,
-        "ShapeEndY": null
-      },
-      "Children": null,
-      "LegacyPayload": null,
-      "Events": null,
-      "ButtonBehavior": null,
-      "ShapeKind": null,
-      "ButtonKind": null,
-      "StateConfig": null,
-      "CommandConfig": null
-    },
-    {
-      "Id": "lib_nouveau_composant_14",
-      "DisplayName": "Nouveau composant",
-      "Kind": "Custom",
-      "Bounds": {
-        "X": 350,
-        "Y": 160,
-        "Width": 24,
-        "Height": 50
-      },
-      "LegacySource": null,
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "Segoe UI",
-        "FontSize": 16,
-        "Foreground": "#0F2A30",
-        "Background": "Transparent",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null,
-        "Opacity": 1,
-        "Rotation": 359.8,
-        "FlipHorizontally": false,
-        "FlipVertically": false
-      },
-      "Data": {
-        "Text": "\u003Csvg xmlns=\u0022http://www.w3.org/2000/svg\u0022 width=\u002218\u0022 height=\u002250\u0022 viewBox=\u00220 0 18 50\u0022\u003E\r\n  \u003Cg id=\u0022Element001\u0022 data-source-name=\u0022SensorHead\u0022\u003E\r\n    \u003Cpolygon points=\u00224,0 18,0 18,11 16,11 16,18 10,18 10,12 4,12 0,9 0,2\u0022 fill=\u0022#99ffff\u0022 stroke=\u0022#1f2933\u0022 stroke-width=\u00221\u0022 /\u003E\r\n  \u003C/g\u003E\r\n  \u003Cg id=\u0022Element002\u0022 data-source-name=\u0022ProbeBody\u0022\u003E\r\n    \u003Crect x=\u002212\u0022 y=\u002218\u0022 width=\u00223\u0022 height=\u002213\u0022 fill=\u0022#7b8794\u0022 stroke=\u0022#1f2933\u0022 stroke-width=\u00221\u0022 /\u003E\u003Cpolygon points=\u002212,31 15,31 16,34 11,34\u0022 fill=\u0022#8795a1\u0022 stroke=\u0022#1f2933\u0022 stroke-width=\u00221\u0022 /\u003E\u003Crect x=\u002211\u0022 y=\u002234\u0022 width=\u00225\u0022 height=\u002216\u0022 fill=\u0022#8795a1\u0022 /\u003E\u003Crect x=\u002211\u0022 y=\u002234\u0022 width=\u00221\u0022 height=\u002216\u0022 fill=\u0022#5b6b7c\u0022 /\u003E\u003Crect x=\u002214\u0022 y=\u002234\u0022 width=\u00222\u0022 height=\u002216\u0022 fill=\u0022#aab4bd\u0022 /\u003E\u003Crect x=\u002213\u0022 y=\u002240\u0022 width=\u00221\u0022 height=\u00224\u0022 fill=\u0022#d8dee3\u0022 /\u003E\u003Crect x=\u002211\u0022 y=\u002234\u0022 width=\u00225\u0022 height=\u002216\u0022 fill=\u0022none\u0022 stroke=\u0022#1f2933\u0022 stroke-width=\u00221\u0022 /\u003E\r\n  \u003C/g\u003E\r\n\u003C/svg\u003E\r\n",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": "Svg",
-        "TagBinding": "sonde.sep",
         "IsReadOnly": false,
         "ReadTagId": null,
         "WriteTagId": null,
