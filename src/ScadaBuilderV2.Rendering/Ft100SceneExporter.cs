@@ -839,7 +839,7 @@ public sealed partial class Ft100SceneExporter
         var name = HtmlEncoder.Default.Encode(element.DisplayName);
         var kind = HtmlEncoder.Default.Encode(element.Kind.ToString());
         var inlineStyle = HtmlEncoder.Default.Encode(BuildElementInlineStyle(element, absoluteX, absoluteY));
-        var content = BuildElementContent(element);
+        var content = BuildElementContent(element, scope);
         var eventAttribute = BuildEventAttribute(element);
         var valueBindingAttributes = BuildValueBindingAttributes(element);
         var buttonRuntimeAttributes = BuildButtonRuntimeAttributes(element);
@@ -940,12 +940,12 @@ public sealed partial class Ft100SceneExporter
         return attributes.ToString();
     }
 
-    private static string BuildElementContent(ScadaElement element)
+    private static string BuildElementContent(ScadaElement element, Ft100ExportScope scope)
     {
         var data = element.Data ?? new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
         return element.Kind switch
         {
-            ScadaElementKind.Custom => ScopeSvgIds(data.Text ?? "", element.Id),
+            ScadaElementKind.Custom => ScopeSvgIds(data.Text ?? "", scope),
             ScadaElementKind.Text => HtmlEncoder.Default.Encode(data.Text ?? element.DisplayName),
             ScadaElementKind.InputNumeric when data.IsReadOnly => HtmlEncoder.Default.Encode(
                 data.Value?.ToString(CultureInfo.InvariantCulture) ?? data.DisplayFormat ?? data.Placeholder ?? ""),
@@ -1895,33 +1895,29 @@ Apply any viewport scale to the composed page container, not independently to he
     /// same internal part ids (e.g. <c>Element001</c>); without scoping, placing the same
     /// component twice on a page produces duplicate DOM ids.
     /// </summary>
-    private static string ScopeSvgIds(string svgMarkup, string elementId)
+    private static string ScopeSvgIds(string svgMarkup, Ft100ExportScope scope)
     {
         if (string.IsNullOrWhiteSpace(svgMarkup))
             return svgMarkup;
 
-        var safeId = CssIdentifier(elementId);
-        if (string.IsNullOrWhiteSpace(safeId))
-            safeId = "el";
-
-        // Rewrite id="X" → id="el-{safeId}__X"
+        // Rewrite id="X" → id="{rootDomId}__svg-X"
         var scoped = SvgIdAttributeRegex().Replace(svgMarkup, match =>
         {
             var originalId = match.Groups["value"].Value;
             if (originalId.Contains("__", StringComparison.Ordinal))
                 return match.Value;
 
-            return $"{match.Groups["prefix"].Value}{match.Groups["quote"].Value}el-{safeId}__{originalId}{match.Groups["quote"].Value}";
+            return $"{match.Groups["prefix"].Value}{match.Groups["quote"].Value}{scope.RootDomId}__svg-{originalId}{match.Groups["quote"].Value}";
         });
 
-        // Rewrite url(#X) → url(#el-{safeId}__X)
+        // Rewrite url(#X) → url(#{rootDomId}__svg-X)
         scoped = SvgUrlRefRegex().Replace(scoped, match =>
         {
             var refId = match.Groups["ref"].Value;
             if (refId.Contains("__", StringComparison.Ordinal))
                 return match.Value;
 
-            return $"url(#{match.Groups["prefix"].Value}el-{safeId}__{refId}{match.Groups["suffix"].Value}";
+            return $"url(#{match.Groups["prefix"].Value}{scope.RootDomId}__svg-{refId}{match.Groups["suffix"].Value}";
         });
 
         return scoped;
