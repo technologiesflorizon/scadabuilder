@@ -177,11 +177,15 @@
         continue;
       }
 
-      // Collect tags from expression AST, skip state if any tag is null
+      // Collect tags from expression AST, skip state if any tag is null.
+      // Resolve through TagBridge (same as ExpressionEvaluator.walk) so the null-check
+      // and the actual evaluation agree on where a tag's value comes from.
+      var bridge = window.ScadaRuntime && window.ScadaRuntime.TagBridge;
       var tags = _collectTags(expression.ast);
       var anyNull = false;
       for (var t = 0; t < tags.length; t++) {
-        if (tagValues[tags[t]] === null || tagValues[tags[t]] === undefined) {
+        var tv = bridge ? bridge.getTagValue(tags[t]) : tagValues[tags[t]];
+        if (tv === null || tv === undefined) {
           anyNull = true;
           break;
         }

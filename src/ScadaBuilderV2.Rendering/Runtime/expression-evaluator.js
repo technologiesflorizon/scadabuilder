@@ -48,7 +48,11 @@
         if (!tagName) {
           return null;
         }
-        var val = tagValues && tagValues[tagName];
+        // Prefer TagBridge (which knows how to talk to the host's
+        // window.tf100webScadaBuilder and strips id prefixes like "tf100.mapping.").
+        // Fall back to the raw tagValues map only when TagBridge isn't loaded.
+        var bridge = window.ScadaRuntime && window.ScadaRuntime.TagBridge;
+        var val = bridge ? bridge.getTagValue(tagName) : (tagValues && tagValues[tagName]);
         if (val === null || val === undefined) {
           return null;
         }
