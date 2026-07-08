@@ -75,6 +75,37 @@
     return tags;
   }
 
+  // ── independent read-variable ────────────────────────────────────────────
+
+  /**
+   * Writes the live value of readVariable.tagId onto [data-scada-text], independently of the
+   * States first-match-wins loop. A matched state's own explicit textContent (applied afterward
+   * by the normal loop) overrides this for that cycle.
+   *
+   * @param {Element} element      - DOM element with data-scada-state-config.
+   * @param {object}  readVariable - { tagId, displayFormat? } or undefined/null if not configured.
+   * @param {object}  tagValues    - unused directly (resolution goes through TagBridge).
+   */
+  function _applyReadVariable(element, readVariable, tagValues) {
+    if (!readVariable || !readVariable.tagId) {
+      return;
+    }
+
+    var bridge = window.ScadaRuntime && window.ScadaRuntime.TagBridge;
+    var value = bridge ? bridge.getTagValue(readVariable.tagId) : tagValues[readVariable.tagId];
+    var text = value === null || value === undefined ? '---' : String(value);
+
+    var format = readVariable.displayFormat;
+    var resolved = format && format.indexOf('{valeur}') !== -1
+      ? format.replace(/\{valeur\}/g, text)
+      : text;
+
+    var textTarget = element.querySelector('[data-scada-text]');
+    if (textTarget) {
+      textTarget.textContent = resolved;
+    }
+  }
+
   // ── error badge ───────────────────────────────────────────────────────────
 
   /**
@@ -149,7 +180,14 @@
       return;
     }
 
-    if (!config || !Array.isArray(config.states)) {
+    if (!config) {
+      return;
+    }
+
+    // Independent pass: readVariable is never blocked by, and never blocks, the States loop below.
+    _applyReadVariable(element, config.readVariable, tagValues);
+
+    if (!Array.isArray(config.states)) {
       return;
     }
 

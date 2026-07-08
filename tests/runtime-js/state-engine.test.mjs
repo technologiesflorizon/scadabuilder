@@ -64,3 +64,75 @@ test('evaluate() applies the matching state effect when the tag comes from the h
   assert.equal(applied[0].backgroundColor, '#E53935',
     'expected the matching state effect, not QualityFallback ({ opacity: 0.4 })');
 });
+
+test('evaluate() applies readVariable text independently of which state matches', () => {
+  const window = loadRuntime(['tag-bridge.js', 'expression-evaluator.js', 'effect-applier.js', 'state-engine.js']);
+
+  window.tf100webScadaBuilder = {
+    getTagValue(tagId) {
+      const mappingId = String(tagId).replace(/^tf100\.mapping\./, '');
+      return { '42': '95' }[mappingId] ?? null;
+    },
+  };
+
+  const stateConfig = {
+    qualityFallback: { opacity: 0.4 },
+    defaultEffect: {},
+    readVariable: { tagId: 'tf100.mapping.42', displayFormat: 'Debit: {valeur} L/min' },
+    states: [
+      {
+        id: 's1', name: 'Alarme', enabled: true,
+        expression: { ast: { type: 'literalBool', value: true } },
+        effect: { backgroundColor: '#E53935' }, // no textContent — must not block readVariable's text
+      },
+    ],
+  };
+
+  const applied = [];
+  window.ScadaRuntime.EffectApplier.apply = (el, effect) => applied.push(effect);
+
+  const textTarget = { textContent: '' };
+  const element = {
+    id: 'el1',
+    _attrs: { 'data-scada-state-config': JSON.stringify(stateConfig) },
+    getAttribute(name) { return Object.prototype.hasOwnProperty.call(this._attrs, name) ? this._attrs[name] : null; },
+    querySelector(selector) { return selector === '[data-scada-text]' ? textTarget : null; },
+  };
+
+  window.ScadaRuntime.StateEngine.evaluate(element, {});
+
+  assert.equal(textTarget.textContent, 'Debit: 95 L/min', 'readVariable must set the text independently of EffectApplier.apply being stubbed out');
+  assert.equal(applied.length, 1, 'the matching state effect must still apply (background color)');
+  assert.equal(applied[0].backgroundColor, '#E53935');
+});
+
+test('evaluate() lets a matched state\'s own textContent override readVariable for that cycle', () => {
+  const window = loadRuntime(['tag-bridge.js', 'expression-evaluator.js', 'effect-applier.js', 'state-engine.js']);
+
+  window.tf100webScadaBuilder = { getTagValue: (tagId) => ({ '42': '95' }[tagId.replace(/^tf100\.mapping\./, '')] ?? null) };
+
+  const stateConfig = {
+    qualityFallback: {},
+    defaultEffect: {},
+    readVariable: { tagId: 'tf100.mapping.42' },
+    states: [
+      {
+        id: 's1', name: 'Erreur', enabled: true,
+        expression: { ast: { type: 'literalBool', value: true } },
+        effect: { textContent: '---' },
+      },
+    ],
+  };
+
+  const textTarget = { textContent: '' };
+  const element = {
+    id: 'el1',
+    _attrs: { 'data-scada-state-config': JSON.stringify(stateConfig) },
+    getAttribute(name) { return Object.prototype.hasOwnProperty.call(this._attrs, name) ? this._attrs[name] : null; },
+    querySelector(selector) { return selector === '[data-scada-text]' ? textTarget : null; },
+  };
+
+  window.ScadaRuntime.StateEngine.evaluate(element, {});
+
+  assert.equal(textTarget.textContent, '---', "the matched state's explicit textContent must win over readVariable");
+});
