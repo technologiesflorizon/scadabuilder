@@ -58,7 +58,11 @@ public partial class ElementPropertiesDialog : Window
         var readVarTagLabel = hasReadVariable
             ? (tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
                 .Where(t => t.Id == readVariable!.TagId)
-                .Select(t => t.KeywordLabel ?? t.DisplayName ?? t.Id)
+                .Select(t =>
+                {
+                    var name = t.KeywordLabel ?? t.DisplayName ?? t.Id;
+                    return string.IsNullOrWhiteSpace(t.Device) ? name : $"{name} ({t.Device})";
+                })
                 .FirstOrDefault() ?? readVariable.TagId
             : null;
         ReadVariableSummaryText.Text = hasReadVariable

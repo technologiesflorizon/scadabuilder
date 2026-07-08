@@ -18,7 +18,7 @@ public partial class ElementReadVariableDialog : Window
         var items = (tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
             .Where(tag => tag.Enabled)
             .OrderBy(tag => tag.DisplayName, StringComparer.CurrentCultureIgnoreCase)
-            .Select(tag => new TagItem(tag.Id, tag.KeywordLabel ?? tag.DisplayName ?? tag.Id))
+            .Select(tag => new TagItem(tag.Id, TagLabel(tag)))
             .ToArray();
         TagComboBox.ItemsSource = items;
 
@@ -31,6 +31,12 @@ public partial class ElementReadVariableDialog : Window
         {
             TagComboBox.SelectedIndex = 0;
         }
+    }
+
+    private static string TagLabel(ScadaTagDefinition tag)
+    {
+        var name = tag.KeywordLabel ?? tag.DisplayName ?? tag.Id;
+        return string.IsNullOrWhiteSpace(tag.Device) ? name : $"{name} ({tag.Device})";
     }
 
     public ScadaReadVariableRule? Result { get; private set; }

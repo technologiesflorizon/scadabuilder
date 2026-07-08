@@ -282,7 +282,7 @@ public partial class ElementStateRuleDialog : Window
         var items = (_tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
             .Where(tag => tag.Enabled)
             .OrderBy(tag => tag.DisplayName, StringComparer.CurrentCultureIgnoreCase)
-            .Select(tag => new TagItem(tag.Id, tag.KeywordLabel ?? tag.DisplayName ?? tag.Id))
+            .Select(tag => new TagItem(tag.Id, TagLabel(tag)))
             .ToArray();
         TagComboBox.ItemsSource = items;
     }
@@ -508,6 +508,12 @@ public partial class ElementStateRuleDialog : Window
             Effect: BuildEffectFromUi());
 
         DialogResult = true;
+    }
+
+    private static string TagLabel(ScadaTagDefinition tag)
+    {
+        var name = tag.KeywordLabel ?? tag.DisplayName ?? tag.Id;
+        return string.IsNullOrWhiteSpace(tag.Device) ? name : $"{name} ({tag.Device})";
     }
 
     private sealed record TagItem(string TagId, string DisplayName);
