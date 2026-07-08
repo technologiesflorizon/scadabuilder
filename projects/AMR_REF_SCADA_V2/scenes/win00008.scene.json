@@ -775,10 +775,22 @@
             "Name": "test2",
             "Enabled": true,
             "Expression": {
-              "Source": "{PE_16} == 100",
-              "ReferencedTags": [
+              "source": "{PE_16} == 100",
+              "referencedTags": [
                 "PE_16"
-              ]
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "PE_16"
+                },
+                "Right": {
+                  "type": "literalNumber",
+                  "Value": 100
+                }
+              }
             },
             "Effect": {
               "BackgroundColor": "#FF0000",
@@ -939,10 +951,22 @@
             "Name": "test",
             "Enabled": true,
             "Expression": {
-              "Source": "{PE_119} \u003E 100",
-              "ReferencedTags": [
+              "source": "{PE_119} \u003E 100",
+              "referencedTags": [
                 "PE_119"
-              ]
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "GreaterThan",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "PE_119"
+                },
+                "Right": {
+                  "type": "literalNumber",
+                  "Value": 100
+                }
+              }
             },
             "Effect": {
               "BackgroundColor": "#FF0000",
@@ -4101,7 +4125,7 @@
       "Kind": "Custom",
       "Bounds": {
         "X": 1048,
-        "Y": 271,
+        "Y": 273,
         "Width": 79,
         "Height": 45
       },
