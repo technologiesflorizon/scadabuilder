@@ -249,22 +249,41 @@ public static partial class Ft100PackageValidator
             ValidatePageHtml(page, html, issues);
         }
 
-        var cssRelativePath = Path.Combine(
+        var cssDirRelativePath = Path.Combine(
             Path.GetDirectoryName(relativePath.Replace('\\', Path.DirectorySeparatorChar)) ?? "",
-            "css",
-            $"{page.Id}.css");
-        var cssPath = SafeJoin(packageDirectory, cssRelativePath);
-        if (cssPath is null)
+            "css");
+        var cssDir = SafeJoin(packageDirectory, cssDirRelativePath);
+        if (cssDir is null)
         {
             issues.Add(Error("unsafe-css-path", $"Page '{page.Id}' CSS path is unsafe.", page.Id));
         }
-        else if (!File.Exists(cssPath))
-        {
-            issues.Add(Warning("missing-css", $"Page '{page.Id}' CSS file is missing.", page.Id));
-        }
         else
         {
-            ValidatePageCss(page, cssPath, issues);
+            // CSS filenames carry a content hash for cache-busting (e.g. "win00008.a1b2c3d4.css"),
+            // so the plain "{page.Id}.css" name generally won't exist. Fall back to the hashed pattern.
+            var cssPath = Path.Combine(cssDir, $"{page.Id}.css");
+            if (!File.Exists(cssPath) && Directory.Exists(cssDir))
+            {
+                var hashedMatches = Directory.GetFiles(cssDir, $"{page.Id}.*.css");
+                if (hashedMatches.Length == 1)
+                {
+                    cssPath = hashedMatches[0];
+                }
+                else if (hashedMatches.Length > 1)
+                {
+                    issues.Add(Error("multiple-css", $"Page '{page.Id}' has multiple CSS files matching the content-hash pattern.", page.Id));
+                    cssPath = hashedMatches[0];
+                }
+            }
+
+            if (!File.Exists(cssPath))
+            {
+                issues.Add(Warning("missing-css", $"Page '{page.Id}' CSS file is missing.", page.Id));
+            }
+            else
+            {
+                ValidatePageCss(page, cssPath, issues);
+            }
         }
 
         ValidatePageReference(page, "HeaderPageId", page.HeaderPageId, "header", pagesById, issues);

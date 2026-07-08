@@ -1482,8 +1482,8 @@ public sealed class Ft100SceneExporterTests
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_arrow_001\"");
             StringAssert.Contains(html, "data-scada-element-id=\"shape_arrow_001\"");
-            StringAssert.Contains(html, "<svg id=\"shape-shape_arrow_001\"");
-            StringAssert.Contains(html, "marker-end=\"url(#arrow-shape_arrow_001)\"");
+            StringAssert.Contains(html, "<svg id=\"ft100-win00008__shape_arrow_001__shape\"");
+            StringAssert.Contains(html, "marker-end=\"url(#ft100-win00008__shape_arrow_001__arrow)\"");
             StringAssert.Contains(html, "x1=\"7\"");
             StringAssert.Contains(html, "y1=\"9\"");
             StringAssert.Contains(html, "x2=\"124\"");
@@ -1493,22 +1493,22 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "opacity:0.42;");
             StringAssert.Contains(html, "transform:rotate(17deg) scaleX(1) scaleY(1);");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_circle_001\"");
-            StringAssert.Contains(html, "<svg id=\"shape-shape_circle_001\"");
+            StringAssert.Contains(html, "<svg id=\"ft100-win00008__shape_circle_001__shape\"");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_triangle_001\"");
-            StringAssert.Contains(html, "<svg id=\"shape-shape_triangle_001\"");
+            StringAssert.Contains(html, "<svg id=\"ft100-win00008__shape_triangle_001__shape\"");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_star_001\"");
-            StringAssert.Contains(html, "<svg id=\"shape-shape_star_001\"");
+            StringAssert.Contains(html, "<svg id=\"ft100-win00008__shape_star_001__shape\"");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_lamp_001\"");
-            StringAssert.Contains(html, "radialGradient id=\"lamp-gradient-shape_lamp_001\"");
+            StringAssert.Contains(html, "radialGradient id=\"ft100-win00008__shape_lamp_001__lamp-gradient\"");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_bar_001\"");
             StringAssert.Contains(html, "width=\"63.84\"");
             StringAssert.Contains(html, "height=\"24\"");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_tank_001\"");
-            StringAssert.Contains(html, "<svg id=\"shape-shape_tank_001\"");
+            StringAssert.Contains(html, "<svg id=\"ft100-win00008__shape_tank_001__shape\"");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_pipe_001\"");
-            StringAssert.Contains(html, "<svg id=\"shape-shape_pipe_001\"");
+            StringAssert.Contains(html, "<svg id=\"ft100-win00008__shape_pipe_001__shape\"");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_pipe_v_001\"");
-            StringAssert.Contains(html, "<svg id=\"shape-shape_pipe_v_001\"");
+            StringAssert.Contains(html, "<svg id=\"ft100-win00008__shape_pipe_v_001__shape\"");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_valve_001\"");
             StringAssert.Contains(html, "<polygon points=");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_pump_001\"");
@@ -2171,6 +2171,179 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "data-scada-state-config=\"");
             // HTML data attribute uses &quot; encoding for JSON string delimiters.
             StringAssert.Contains(html, "&quot;ast&quot;");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public async Task ExportAsync_TwoInstancesOfSameLibraryComponent_ProduceDistinctScopedSvgIds()
+    {
+        // Regression: library .sep components share internal part ids (e.g. "Element001").
+        // Placing two instances of the same component on one page must not collide after
+        // scoping (see docs/superpowers/specs export runtime refactor, win00008 export failure
+        // "duplicate DOM id 'ft100-win00008__svg-Element001'").
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "win00008_test.html");
+        await File.WriteAllTextAsync(
+            sourceHtmlPath,
+            """
+<!doctype html>
+<html>
+<body>
+  <div class="page"></div>
+</body>
+</html>
+""");
+
+        static ScadaElement CreatePumpInstance(string elementId) => new(
+            elementId,
+            elementId,
+            ScadaElementKind.Custom,
+            new SceneBounds(10, 20, 100, 30),
+            null,
+            ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultText,
+            new ScadaElementData(
+                "<svg viewBox=\"0 0 24 80\"><rect id=\"Element001\" width=\"24\" height=\"80\" fill=\"url(#Element001)\" /></svg>",
+                null, null, null, null, null, null,
+                "Svg",
+                "pump.sep",
+                false));
+
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Two Pumps", new(1280, 873))
+            .WithElement(CreatePumpInstance("pump_1"))
+            .WithElement(CreatePumpInstance("pump_2"));
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            var ids = System.Text.RegularExpressions.Regex.Matches(html, """(?<![\w:-])id\s*=\s*["']([^"']+)["']""")
+                .Select(match => match.Groups[1].Value)
+                .ToArray();
+            var duplicates = ids.GroupBy(id => id, StringComparer.Ordinal).Where(group => group.Count() > 1).Select(group => group.Key).ToArray();
+            Assert.AreEqual(0, duplicates.Length, $"Duplicate DOM ids found: {string.Join(", ", duplicates)}");
+
+            StringAssert.Contains(html, "ft100-win00008__pump_1__svg-Element001");
+            StringAssert.Contains(html, "ft100-win00008__pump_2__svg-Element001");
+
+            var validation = Ft100PackageValidator.ValidatePackageDirectory(result.ExportDirectory);
+            Assert.IsFalse(validation.Errors.Any(issue => issue.Code is "duplicate-dom-id" or "unscoped-dom-id"),
+                string.Join("; ", validation.Errors.Select(issue => issue.Message)));
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public async Task ExportAsync_ShapeElement_ProducesPageScopedSvgIds()
+    {
+        // Regression: BuildShape emitted unscoped internal ids ("shape-{elementId}",
+        // "arrow-{elementId}", "lamp-gradient-{elementId}") that never carried the
+        // "ft100-{page}__" prefix required by Ft100PackageValidator, so any page with a
+        // Shape element failed export with "contains non page-scoped DOM id 'shape-...'".
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "win00008_test.html");
+        await File.WriteAllTextAsync(
+            sourceHtmlPath,
+            """
+<!doctype html>
+<html>
+<body>
+  <div class="page"></div>
+</body>
+</html>
+""");
+
+        var arrow = ScadaElement.CreateShape("ba1625de403e4c589b88826fa2a601de", "Fleche", ScadaShapeKind.Arrow, 40, 50);
+        var lamp = ScadaElement.CreateShape("shape_lamp_regress", "Voyant", ScadaShapeKind.IndicatorLamp, 80, 120);
+
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Formes", new(1280, 873))
+            .WithElement(arrow)
+            .WithElement(lamp);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            StringAssert.Contains(html, "<svg id=\"ft100-win00008__ba1625de403e4c589b88826fa2a601de__shape\"");
+            StringAssert.Contains(html, "marker-end=\"url(#ft100-win00008__ba1625de403e4c589b88826fa2a601de__arrow)\"");
+            StringAssert.Contains(html, "radialGradient id=\"ft100-win00008__shape_lamp_regress__lamp-gradient\"");
+
+            var validation = Ft100PackageValidator.ValidatePackageDirectory(result.ExportDirectory);
+            Assert.IsFalse(validation.Errors.Any(issue => issue.Code is "duplicate-dom-id" or "unscoped-dom-id"),
+                string.Join("; ", validation.Errors.Select(issue => issue.Message)));
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public async Task ValidatePackageDirectory_FindsContentHashedCssFile_NoMissingCssWarning()
+    {
+        // Regression: the exporter renames "<page>.css" to "<page>.<hash>.css" for cache-busting
+        // (ContentHash, ExportAsync). Ft100PackageValidator looked for the exact un-hashed
+        // filename, so every exported page produced a spurious "missing-css" warning and its
+        // CSS content was never actually validated (global-selector checks silently skipped).
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "win00008_test.html");
+        await File.WriteAllTextAsync(
+            sourceHtmlPath,
+            """
+<!doctype html>
+<html>
+<body>
+  <div class="page"></div>
+</body>
+</html>
+""");
+
+        var scene = ScadaScene.CreateEmpty("win00008", "Home", new(1280, 873));
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+
+            var cssDirectory = Path.GetDirectoryName(result.CssPath)!;
+            var cssFiles = Directory.GetFiles(cssDirectory, "win00008.*.css");
+            Assert.AreEqual(1, cssFiles.Length, "Expected content-hashed CSS file to exist.");
+            Assert.IsFalse(File.Exists(Path.Combine(cssDirectory, "win00008.css")), "Un-hashed CSS filename should not exist.");
+
+            var validation = Ft100PackageValidator.ValidatePackageDirectory(result.ExportDirectory);
+            Assert.IsFalse(validation.Warnings.Any(issue => issue.Code == "missing-css"),
+                string.Join("; ", validation.Warnings.Select(issue => issue.Message)));
         }
         finally
         {

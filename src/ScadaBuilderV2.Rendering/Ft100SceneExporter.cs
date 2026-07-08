@@ -945,19 +945,19 @@ public sealed partial class Ft100SceneExporter
         var data = element.Data ?? new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
         return element.Kind switch
         {
-            ScadaElementKind.Custom => ScopeSvgIds(data.Text ?? "", scope),
+            ScadaElementKind.Custom => ScopeSvgIds(data.Text ?? "", scope, element.Id),
             ScadaElementKind.Text => HtmlEncoder.Default.Encode(data.Text ?? element.DisplayName),
             ScadaElementKind.InputNumeric when data.IsReadOnly => HtmlEncoder.Default.Encode(
                 data.Value?.ToString(CultureInfo.InvariantCulture) ?? data.DisplayFormat ?? data.Placeholder ?? ""),
             ScadaElementKind.InputNumeric => BuildInput(element, "number"),
             ScadaElementKind.InputText => BuildInput(element, "text"),
-            ScadaElementKind.Shape => BuildShape(element),
+            ScadaElementKind.Shape => BuildShape(element, scope),
             ScadaElementKind.Button => BuildButton(element),
             _ => ""
         };
     }
 
-    private static string BuildShape(ScadaElement element)
+    private static string BuildShape(ScadaElement element, Ft100ExportScope scope)
     {
         var style = element.Style ?? ScadaElementStyle.DefaultText;
         var data = element.Data ?? new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
@@ -973,9 +973,9 @@ public sealed partial class Ft100SceneExporter
         var dashAttribute = string.IsNullOrWhiteSpace(dashArray)
             ? ""
             : $" stroke-dasharray=\"{dashArray}\"";
-        var svgId = HtmlEncoder.Default.Encode($"shape-{CssIdentifier(element.Id)}");
-        var markerId = HtmlEncoder.Default.Encode($"arrow-{CssIdentifier(element.Id)}");
-        var gradientId = HtmlEncoder.Default.Encode($"lamp-gradient-{CssIdentifier(element.Id)}");
+        var svgId = HtmlEncoder.Default.Encode($"{scope.ElementDomId(element.Id)}__shape");
+        var markerId = HtmlEncoder.Default.Encode($"{scope.ElementDomId(element.Id)}__arrow");
+        var gradientId = HtmlEncoder.Default.Encode($"{scope.ElementDomId(element.Id)}__lamp-gradient");
         var common = $"stroke=\"{stroke}\" stroke-width=\"{Format(strokeWidth)}\"{dashAttribute} vector-effect=\"non-scaling-stroke\"";
         var body = element.EffectiveShapeKind switch
         {
@@ -1895,29 +1895,34 @@ Apply any viewport scale to the composed page container, not independently to he
     /// same internal part ids (e.g. <c>Element001</c>); without scoping, placing the same
     /// component twice on a page produces duplicate DOM ids.
     /// </summary>
-    private static string ScopeSvgIds(string svgMarkup, Ft100ExportScope scope)
+    private static string ScopeSvgIds(string svgMarkup, Ft100ExportScope scope, string elementId)
     {
         if (string.IsNullOrWhiteSpace(svgMarkup))
             return svgMarkup;
 
-        // Rewrite id="X" → id="{rootDomId}__svg-X"
+        // Elements share library-instance ids (e.g. "Element001"); the page root alone doesn't
+        // disambiguate two instances on the same page, so the element id must be part of the
+        // prefix too. Using scope.ElementDomId keeps the required "{rootDomId}__" prefix intact.
+        var prefix = $"{scope.ElementDomId(elementId)}__svg-";
+
+        // Rewrite id="X" → id="{rootDomId}__{elementId}__svg-X"
         var scoped = SvgIdAttributeRegex().Replace(svgMarkup, match =>
         {
             var originalId = match.Groups["value"].Value;
             if (originalId.Contains("__", StringComparison.Ordinal))
                 return match.Value;
 
-            return $"{match.Groups["prefix"].Value}{match.Groups["quote"].Value}{scope.RootDomId}__svg-{originalId}{match.Groups["quote"].Value}";
+            return $"{match.Groups["prefix"].Value}{match.Groups["quote"].Value}{prefix}{originalId}{match.Groups["quote"].Value}";
         });
 
-        // Rewrite url(#X) → url(#{rootDomId}__svg-X)
+        // Rewrite url(#X) → url(#{rootDomId}__{elementId}__svg-X)
         scoped = SvgUrlRefRegex().Replace(scoped, match =>
         {
             var refId = match.Groups["ref"].Value;
             if (refId.Contains("__", StringComparison.Ordinal))
                 return match.Value;
 
-            return $"url(#{match.Groups["prefix"].Value}{scope.RootDomId}__svg-{refId}{match.Groups["suffix"].Value}";
+            return $"url(#{match.Groups["prefix"].Value}{prefix}{refId}{match.Groups["suffix"].Value}";
         });
 
         return scoped;
