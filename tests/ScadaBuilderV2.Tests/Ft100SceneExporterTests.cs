@@ -90,7 +90,7 @@ public sealed class Ft100SceneExporterTests
             var css = await File.ReadAllTextAsync(result.CssPath);
             StringAssert.Contains(html, "class=\"ft100-source-layer\"");
             StringAssert.Contains(css, "#ft100-win00008 .ft100-source-layer .shape-layer");
-            StringAssert.Contains(css, "#ft100-win00008 [data-id=\"784\"] { display: none !important; }");
+            StringAssert.Contains(css, "#ft100-win00008 .ft100-source-layer [data-id=\"784\"], #ft100-win00008 .ft100-legacy-layer [data-id=\"784\"] { display: none !important; }");
             StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__custom_pipe-001");
             AssertExportCssHasNoGlobalRuntimeSelectors(css);
             Assert.IsFalse(
@@ -170,7 +170,7 @@ public sealed class Ft100SceneExporterTests
             var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
 
             var css = await File.ReadAllTextAsync(result.CssPath);
-            StringAssert.Contains(css, "#ft100-win00003 [data-id=\"8\"] {");
+            StringAssert.Contains(css, "#ft100-win00003 .ft100-source-layer [data-id=\"8\"], #ft100-win00003 .ft100-legacy-layer [data-id=\"8\"] {");
             StringAssert.Contains(css, "left: 1144px !important;");
             StringAssert.Contains(css, "top: 14px !important;");
             StringAssert.Contains(css, "width: 138px;");
@@ -264,7 +264,7 @@ public sealed class Ft100SceneExporterTests
             Assert.IsFalse(html.Contains("id=\"legacy_1\"", StringComparison.Ordinal));
 
             var css = await File.ReadAllTextAsync(result.CssPath);
-            StringAssert.Contains(css, "#ft100-win00002 [data-id=\"1\"] {");
+            StringAssert.Contains(css, "#ft100-win00002 .ft100-source-layer [data-id=\"1\"], #ft100-win00002 .ft100-legacy-layer [data-id=\"1\"] {");
             StringAssert.Contains(css, "left: 12px !important;");
             StringAssert.Contains(css, "#ft100-win00002 #ft100-win00002__modern_text_1");
             AssertExportCssHasNoGlobalRuntimeSelectors(css);
@@ -1759,9 +1759,9 @@ public sealed class Ft100SceneExporterTests
             var homeHtml = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "win00008", "win00008.html"));
             var headerHtml = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "header_main", "header_main.html"));
 
-            StringAssert.Contains(footerCss, "#ft100-win00003 [data-id=\"1\"] {");
-            StringAssert.Contains(homeCss, "#ft100-win00008 [data-id=\"1\"] {");
-            StringAssert.Contains(homeCss, "#ft100-win00008 [data-id=\"999\"] { display: none !important; }");
+            StringAssert.Contains(footerCss, "#ft100-win00003 .ft100-source-layer [data-id=\"1\"], #ft100-win00003 .ft100-legacy-layer [data-id=\"1\"] {");
+            StringAssert.Contains(homeCss, "#ft100-win00008 .ft100-source-layer [data-id=\"1\"], #ft100-win00008 .ft100-legacy-layer [data-id=\"1\"] {");
+            StringAssert.Contains(homeCss, "#ft100-win00008 .ft100-source-layer [data-id=\"999\"], #ft100-win00008 .ft100-legacy-layer [data-id=\"999\"] { display: none !important; }");
             StringAssert.Contains(headerCss, "#ft100-header_main #ft100-header_main__Button1");
             StringAssert.Contains(homeCss, "#ft100-win00008 #ft100-win00008__Button1");
             StringAssert.Contains(footerCss, "#ft100-win00003 #ft100-win00003__Button1");
@@ -2346,6 +2346,149 @@ public sealed class Ft100SceneExporterTests
 
             Assert.IsTrue(thirdIndex >= 0 && firstIndex > thirdIndex && secondIndex > firstIndex,
                 "States must serialize in the exact list order (Troisieme, Premiere, Deuxieme), not sorted.");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public async Task ExportAsync_CustomElementWithMismatchedViewBox_ForcesPreserveAspectRatioNone()
+    {
+        // Regression: a library .sep component's native SVG viewBox (authored size) can differ
+        // from the instance's placed/resized Bounds (e.g. Vertical_Piping: Bounds 15x218 vs
+        // native viewBox 11x333, seen in win00008's exported pompeAmmoniac/Vertical_Piping
+        // instances). Without preserveAspectRatio="none", the browser's default "xMidYMid meet"
+        // letterboxes/crops the artwork inside the resized box instead of stretching it to fill,
+        // mirroring the WebView preview's runtime normalization (MainWindow.WebViewScript.cs,
+        // Custom element handling) which always forces preserveAspectRatio="none".
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "win00008_test.html");
+        await File.WriteAllTextAsync(
+            sourceHtmlPath,
+            """
+<!doctype html>
+<html>
+<body>
+  <div class="page"></div>
+</body>
+</html>
+""");
+
+        var element = new ScadaElement(
+            "pump_1",
+            "pump_1",
+            ScadaElementKind.Custom,
+            new SceneBounds(10, 20, 15, 218),
+            null,
+            ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultText,
+            new ScadaElementData(
+                "<svg viewBox=\"0 0 11 333\"><rect width=\"11\" height=\"333\" fill=\"gray\" /></svg>",
+                null, null, null, null, null, null,
+                "Svg",
+                "Vertical_Piping.sep",
+                false));
+
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Mismatched Custom", new(1280, 873))
+            .WithElement(element);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            StringAssert.Contains(html, "preserveAspectRatio=\"none\"");
+
+            var svgTagStart = html.IndexOf("<svg viewBox=\"0 0 11 333\"", StringComparison.Ordinal);
+            Assert.AreNotEqual(-1, svgTagStart, "Expected the Custom element's native SVG to survive export.");
+            var svgTagEnd = html.IndexOf('>', svgTagStart);
+            var svgOpenTag = html[svgTagStart..(svgTagEnd + 1)];
+            StringAssert.Contains(svgOpenTag, "preserveAspectRatio=\"none\"");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public async Task ExportAsync_CustomElementSharesDataIdWithSuppressedLegacySource_DoesNotHideItsOwnSvgContent()
+    {
+        // Regression: pompeAmmoniac (win00008) was built by converting an existing legacy pump
+        // icon (raw SVG shapes with numeric data-id, e.g. "228"/Polygon139) into a Custom .sep
+        // library component. The Custom element's own SVG markup preserves those original
+        // data-id attributes on its shapes. Converting a legacy element registers its source id
+        // as "suppressed" (scene.GetSuppressedSourceElementIds()) so the leftover legacy copy in
+        // .ft100-source-layer gets hidden — but the CSS selector previously wasn't scoped to that
+        // layer, so "[data-id=\"228\"] { display: none !important; }" also matched — and hid —
+        // the identically-numbered shape living inside the Custom element's own SVG in
+        // .ft100-elementplus-layer, making the component render as empty/near-invisible.
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "win00008_test.html");
+        await File.WriteAllTextAsync(
+            sourceHtmlPath,
+            """
+<!doctype html>
+<html>
+<body>
+  <div class="page"></div>
+</body>
+</html>
+""");
+
+        var pumpElement = new ScadaElement(
+            "pump_1",
+            "pompeAmmoniac",
+            ScadaElementKind.Custom,
+            new SceneBounds(10, 20, 140, 60),
+            new LegacySourceTrace("html", "win00008_test.html", "228", "Polygon139", null),
+            null,
+            ScadaElementStyle.DefaultText,
+            new ScadaElementData(
+                "<svg viewBox=\"0 0 140 60\"><polygon points=\"1,1 2,1 2,2 1,2\" fill=\"gray\" data-name=\"Polygon139\" data-id=\"228\" /></svg>",
+                null, null, null, null, null, null,
+                "Svg",
+                "pompeAmmoniac.sep",
+                false));
+
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Pump conversion", new(1280, 873))
+            .WithElement(pumpElement);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+
+            var css = await File.ReadAllTextAsync(result.CssPath);
+            StringAssert.Contains(
+                css,
+                "#ft100-win00008 .ft100-source-layer [data-id=\"228\"], #ft100-win00008 .ft100-legacy-layer [data-id=\"228\"] { display: none !important; }");
+            Assert.IsFalse(
+                css.Contains("\n#ft100-win00008 [data-id=\"228\"] {", StringComparison.Ordinal),
+                "Suppression rule must not use a bare page-scoped selector that also matches data-id copies inside .ft100-elementplus-layer.");
+
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            var svgStart = html.IndexOf("<svg viewBox=\"0 0 140 60\"", StringComparison.Ordinal);
+            Assert.AreNotEqual(-1, svgStart, "Expected the Custom element's native SVG to survive export.");
+            var polygonStart = html.IndexOf("data-id=\"228\"", svgStart, StringComparison.Ordinal);
+            Assert.AreNotEqual(-1, polygonStart, "Expected the converted polygon to keep its original data-id.");
         }
         finally
         {

@@ -945,7 +945,7 @@ public sealed partial class Ft100SceneExporter
         var data = element.Data ?? new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
         return element.Kind switch
         {
-            ScadaElementKind.Custom => ScopeSvgIds(data.Text ?? "", scope, element.Id),
+            ScadaElementKind.Custom => ForceCustomSvgAspectRatio(ScopeSvgIds(data.Text ?? "", scope, element.Id)),
             ScadaElementKind.Text => $"<span data-scada-text>{HtmlEncoder.Default.Encode(data.Text ?? element.DisplayName)}</span>",
             ScadaElementKind.InputNumeric when data.IsReadOnly => HtmlEncoder.Default.Encode(
                 data.Value?.ToString(CultureInfo.InvariantCulture) ?? data.DisplayFormat ?? data.Placeholder ?? ""),
@@ -1863,9 +1863,18 @@ Apply any viewport scale to the composed page container, not independently to he
             return $"{RootSelector} {selector}";
         }
 
+        /// <summary>
+        /// Selects a legacy shape by its original numeric <c>data-id</c>, scoped to the
+        /// source/legacy overlay layers only. Custom (library .sep) components preserve the
+        /// same <c>data-id</c> on their own copies of converted legacy shapes (see ScopeSvgIds,
+        /// which only rewrites "id" attributes and url(#...) references, not "data-id"), so an
+        /// unscoped "[data-id=...]" selector would also match — and, for the suppression rule,
+        /// incorrectly hide — the shape's live copy inside .ft100-elementplus-layer.
+        /// </summary>
         public string SourceDataIdSelector(string sourceElementId)
         {
-            return $"{RootSelector} [data-id=\"{CssEscape(sourceElementId)}\"]";
+            var idSelector = $"[data-id=\"{CssEscape(sourceElementId)}\"]";
+            return $"{RootSelector} .ft100-source-layer {idSelector}, {RootSelector} .ft100-legacy-layer {idSelector}";
         }
 
         public string ElementDomId(string elementId)
@@ -1932,6 +1941,35 @@ Apply any viewport scale to the composed page container, not independently to he
     {
         return value.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("\"", "\\\"", StringComparison.Ordinal);
     }
+
+    /// <summary>
+    /// Forces <c>preserveAspectRatio="none"</c> on every root-level &lt;svg&gt; tag in a Custom
+    /// (library .sep component) element's markup, mirroring the WebView preview's runtime
+    /// normalization (see MainWindow.WebViewScript.cs, Custom element handling) so an instance
+    /// resized on canvas stretches to fill its Bounds instead of being letterboxed/cropped by
+    /// the browser's default "xMidYMid meet" aspect-ratio preservation when the component's
+    /// native viewBox doesn't match the placed Bounds.
+    /// </summary>
+    private static string ForceCustomSvgAspectRatio(string svgMarkup)
+    {
+        if (string.IsNullOrWhiteSpace(svgMarkup))
+            return svgMarkup;
+
+        const string attribute = "preserveAspectRatio=\"none\"";
+        return SvgOpenTagRegex().Replace(svgMarkup, match =>
+        {
+            var tag = match.Value;
+            return PreserveAspectRatioAttributeRegex().IsMatch(tag)
+                ? PreserveAspectRatioAttributeRegex().Replace(tag, attribute)
+                : tag[..^1] + " " + attribute + ">";
+        });
+    }
+
+    [GeneratedRegex("""<svg\b[^>]*>""", RegexOptions.IgnoreCase)]
+    private static partial Regex SvgOpenTagRegex();
+
+    [GeneratedRegex("""preserveAspectRatio\s*=\s*["'][^"']*["']""", RegexOptions.IgnoreCase)]
+    private static partial Regex PreserveAspectRatioAttributeRegex();
 
     [GeneratedRegex("""(?<prefix>(?<![\w:-])id\s*=\s*)(?<quote>["'])(?<value>[^"']+)\k<quote>""", RegexOptions.IgnoreCase)]
     private static partial Regex SvgIdAttributeRegex();
