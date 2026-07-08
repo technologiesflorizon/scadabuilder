@@ -70,14 +70,18 @@ public sealed class Ft100SceneExporterTests
 
             Assert.IsTrue(File.Exists(result.HtmlPath));
             Assert.IsTrue(File.Exists(result.CssPath));
-            Assert.IsTrue(File.Exists(Path.Combine(result.ImagesDirectory, "pump.png")));
+            // Image filenames now include content hash (e.g., pump.a1b2c3d.png).
+            var pumpFiles = Directory.GetFiles(result.ImagesDirectory, "pump.*.png");
+            Assert.AreEqual(1, pumpFiles.Length, "Pump image must exist with content hash");
             Assert.AreEqual(1, result.CopiedImageCount);
             Assert.AreEqual("win00008.html", Path.GetFileName(result.HtmlPath));
             Assert.IsFalse(File.Exists(Path.Combine(result.ExportDirectory, "index.html")));
 
             var html = await File.ReadAllTextAsync(result.HtmlPath);
-            StringAssert.Contains(html, "<link rel=\"stylesheet\" href=\"css/win00008.css\">");
-            StringAssert.Contains(html, "src=\"images/pump.png\"");
+            StringAssert.Contains(html, "<link rel=\"stylesheet\" href=\"css/win00008.");
+            StringAssert.Contains(html, ".css\">");
+            StringAssert.Contains(html, "src=\"images/pump.");
+            StringAssert.Contains(html, ".png\"");
             StringAssert.Contains(html, "id=\"ft100-win00008__custom_pipe-001\"");
             StringAssert.Contains(html, "data-scada-element-id=\"custom:pipe-001\"");
             Assert.IsFalse(html.Contains("F:\\", StringComparison.OrdinalIgnoreCase));
@@ -489,9 +493,12 @@ public sealed class Ft100SceneExporterTests
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             Assert.IsFalse(html.Contains("removed.png", StringComparison.Ordinal));
             Assert.IsFalse(html.Contains("data-id=\"3\"", StringComparison.Ordinal));
-            StringAssert.Contains(html, "kept.png");
+            StringAssert.Contains(html, "kept.");
+            StringAssert.Contains(html, ".png");
             Assert.IsFalse(File.Exists(Path.Combine(result.ImagesDirectory, "removed.png")));
-            Assert.IsTrue(File.Exists(Path.Combine(result.ImagesDirectory, "kept.png")));
+            // Image filenames now include content hash (e.g., kept.a1b2c3d.png).
+            var keptFiles = Directory.GetFiles(result.ImagesDirectory, "kept.*.png");
+            Assert.AreEqual(1, keptFiles.Length, "Kept image must exist with content hash");
             Assert.AreEqual(1, result.CopiedImageCount);
         }
         finally
@@ -1741,9 +1748,13 @@ public sealed class Ft100SceneExporterTests
                 ],
                 exportRoot);
 
-            var footerCss = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "win00003", "css", "win00003.css"));
-            var homeCss = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "win00008", "css", "win00008.css"));
-            var headerCss = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "header_main", "css", "header_main.css"));
+            // CSS filenames now include content hash (e.g., win00003.a1b2c3d.css).
+            var footerCssPath = Directory.GetFiles(Path.Combine(result.ExportDirectory, "win00003", "css"), "win00003.*.css").First();
+            var homeCssPath = Directory.GetFiles(Path.Combine(result.ExportDirectory, "win00008", "css"), "win00008.*.css").First();
+            var headerCssPath = Directory.GetFiles(Path.Combine(result.ExportDirectory, "header_main", "css"), "header_main.*.css").First();
+            var footerCss = await File.ReadAllTextAsync(footerCssPath);
+            var homeCss = await File.ReadAllTextAsync(homeCssPath);
+            var headerCss = await File.ReadAllTextAsync(headerCssPath);
             var footerHtml = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "win00003", "win00003.html"));
             var homeHtml = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "win00008", "win00008.html"));
             var headerHtml = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "header_main", "header_main.html"));
@@ -2151,9 +2162,15 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(manifest, "\"StateConfig\"");
             StringAssert.Contains(manifest, "\"States\"");
             StringAssert.Contains(manifest, "\"Animation\": \"blink\"");
+            // Verify AST is serialized (the JS runtime reads expression.ast to evaluate states).
+            StringAssert.Contains(manifest, "\"ast\"");
+            // Manifest is PascalCase (backward compat), so Animation is PascalCase with camelCase enum value.
+            StringAssert.Contains(manifest, "\"Animation\": \"blink\"");
 
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             StringAssert.Contains(html, "data-scada-state-config=\"");
+            // HTML data attribute uses &quot; encoding for JSON string delimiters.
+            StringAssert.Contains(html, "&quot;ast&quot;");
         }
         finally
         {

@@ -168,7 +168,7 @@
       var state = config.states[i];
 
       // Skip disabled states
-      if (state.disabled) {
+      if (state.enabled === false) {
         continue;
       }
 
@@ -194,26 +194,26 @@
       var result = evaluator.walk(expression.ast, tagValues);
 
       if (result === true) {
-        // Match — apply effect, cache state id, return
-        if (state.effect) {
+        // Match — apply effect if state changed, cache state id, return
+        if (state.effect && _stateCache[elementId] !== state.id) {
           applier.apply(element, state.effect);
-        }
-        if (elementId && state.id) {
-          _paused[elementId] = state.id;
+          _stateCache[elementId] = state.id;
         }
         return;
       }
     }
 
     // All states skipped — apply qualityFallback if present
-    if (config.qualityFallback && config.qualityFallback.effect) {
-      applier.apply(element, config.qualityFallback.effect);
+    if (config.qualityFallback && _stateCache[elementId] !== '__quality__') {
+      applier.apply(element, config.qualityFallback);
+      _stateCache[elementId] = '__quality__';
       return;
     }
 
     // No match — apply defaultEffect if present
-    if (config.defaultEffect) {
+    if (config.defaultEffect && _stateCache[elementId] !== '__default__') {
       applier.apply(element, config.defaultEffect);
+      _stateCache[elementId] = '__default__';
     }
 
     // Check for expression evaluation errors and show/hide the badge

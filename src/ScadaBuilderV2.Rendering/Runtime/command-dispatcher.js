@@ -27,7 +27,9 @@
 
   /**
    * Reads data-scada-command-config from the element, parses it, and binds
-   * the configured triggers to DOM events.
+   * the configured triggers to DOM events. Passes the full command object
+   * to the handler so it can access kind, writeTagId, readTagId, writeMode,
+   * fixedValue, targetPageId, url, etc.
    *
    * @param {Element} element  - DOM element with data-scada-command-config.
    */
@@ -61,87 +63,95 @@
       var trigger = cmd.trigger || 'OnClick';
       var domEvent = TRIGGER_MAP[trigger] || 'click';
 
-      (function (el, command, phase) {
-        el.addEventListener(domEvent, function (e) {
-          execute(el, command, phase);
+      // Capture cmd and domEvent in a per-iteration closure.
+      (function (capturedCmd, capturedDomEvent) {
+        element.addEventListener(capturedDomEvent, function (e) {
+          execute(element, capturedCmd);
         });
-      })(element, cmd.command, cmd.phase);
+      })(cmd, domEvent);
     }
   }
 
   // ── execute ─────────────────────────────────────────────────────────────
 
   /**
-   * Executes a command on an element. If the command has a confirmation gate,
-   * the gate is checked before _run is invoked.
+   * Executes a command object on an element. If the command has a confirmation
+   * gate, the gate is checked before _run is invoked.
    *
    * @param {Element} element  - DOM element the command is bound to.
-   * @param {string}  command  - Command name (WriteTag, Navigate, OpenPopup, etc.).
-   * @param {string}  [phase]  - Optional phase (Momentary, Toggle, SetFixed, SetFromInput).
+   * @param {object}  cmd      - The full command object from JSON.
    */
-  function execute(element, command, phase) {
-    if (!element || !command) {
+  function execute(element, cmd) {
+    if (!element || !cmd) {
       return;
     }
 
-    // Confirmation gate — check for data-scada-confirm attribute
-    var confirmMessage = element.getAttribute('data-scada-confirm');
-    if (confirmMessage) {
-      if (!window.confirm(confirmMessage)) {
+    // Confirmation gate — check for confirmation.message on the command object
+    if (cmd.confirmation && cmd.confirmation.message) {
+      var confirmFn = window.ScadaRuntime && window.ScadaRuntime.showConfirmation;
+      if (typeof confirmFn === 'function') {
+        confirmFn(cmd.confirmation.message, function () {
+          _run(element, cmd);
+        });
+        return;
+      }
+      // Fallback: native confirm
+      if (!window.confirm(cmd.confirmation.message)) {
         return;
       }
     }
 
-    _run(element, command, phase);
+    _run(element, cmd);
   }
 
   // ── _run ────────────────────────────────────────────────────────────────
 
   /**
    * Internal command dispatch. Routes to the correct handler based on the
-   * command name.
+   * command kind.
    *
    * @param {Element} element  - DOM element the command is bound to.
-   * @param {string}  command  - Command name.
-   * @param {string}  [phase]  - Optional phase.
+   * @param {object}  cmd      - The full command object.
    */
-  function _run(element, command, phase) {
-    if (!element || !command) {
+  function _run(element, cmd) {
+    if (!element || !cmd) {
       return;
     }
 
-    switch (command) {
+    switch (cmd.kind) {
       // ── WriteTag variants ──────────────────────────────────────────────
       case 'WriteTag':
-        _writeTagCommand(element, phase);
+        _writeTagCommand(cmd);
         break;
 
       // ── Navigation ─────────────────────────────────────────────────────
       case 'Navigate':
-        _navigateCommand(element);
+        _navigateCommand(cmd);
         break;
 
       // ── Popup commands ─────────────────────────────────────────────────
       case 'OpenPopup':
-        _postMessage('openPopup', _getCommandConfig(element));
+        _postMessage('openPopup', { pageId: cmd.targetPageId, options: cmd.popupOptions });
         break;
 
       case 'ClosePopup':
-        _postMessage('closePopup', _getCommandConfig(element));
+        _postMessage('closePopup', { pageId: cmd.targetPageId });
         break;
 
       case 'TogglePopup':
-        _postMessage('togglePopup', _getCommandConfig(element));
+        _postMessage('togglePopup', { pageId: cmd.targetPageId, options: cmd.popupOptions });
         break;
 
       // ── OpenUrl ────────────────────────────────────────────────────────
       case 'OpenUrl':
-        _openUrlCommand(element);
+        if (cmd.url) {
+          window.open(cmd.url, cmd.newTab ? '_blank' : '_self');
+        }
         break;
 
       // ── Back ───────────────────────────────────────────────────────────
       case 'Back':
-        _postMessage('back', null);
+        window.history.back();
         break;
 
       default:
@@ -151,78 +161,75 @@
 
   // ── command helpers ─────────────────────────────────────────────────────
 
-  function _getCommandConfig(element) {
-    var configRaw = element.getAttribute('data-scada-command-config');
-    if (!configRaw) {
-      return null;
-    }
-    try {
-      return JSON.parse(configRaw);
-    } catch (e) {
-      return null;
-    }
-  }
-
-  function _writeTagCommand(element, phase) {
-    var config = _getCommandConfig(element);
-    if (!config || !config.tagId) {
+  /**
+   * Executes a WriteTag command. Uses the command object's writeTagId,
+   * writeMode, onValue/offValue, fixedValue, readTagId properties.
+   *
+   * @param {object} cmd - The full command object.
+   */
+  function _writeTagCommand(cmd) {
+    if (!cmd || !cmd.writeTagId) {
       return;
     }
 
-    var value;
-    switch (phase) {
+    var bridge = window.ScadaRuntime && window.ScadaRuntime.TagBridge;
+    if (!bridge) {
+      return;
+    }
+
+    switch (cmd.writeMode) {
       case 'Momentary':
-        value = 1;
+        // Momentary is handled as two commands: press (onValue) and release (offValue).
+        // For a single click/dispatch, default to press cycle.
+        bridge.writeTag(cmd.writeTagId, cmd.onValue, { phase: 'press' });
         break;
+
       case 'Toggle':
-        value = null; // toggled value determined by host
+        var current = bridge.getTagValue(cmd.readTagId || cmd.writeTagId);
+        var boolVal = !!(current && current !== '0' && current !== 'false');
+        bridge.writeTag(cmd.writeTagId, boolVal ? '0' : '1', { mode: 'Toggle' });
         break;
+
       case 'SetFixed':
-        value = config.fixedValue;
+        bridge.writeTag(cmd.writeTagId, cmd.fixedValue, { mode: 'SetFixed' });
         break;
+
       case 'SetFromInput':
-        value = config.inputValue;
+        var input = element.querySelector('input, textarea');
+        if (input) {
+          bridge.writeTag(cmd.writeTagId, input.value, { mode: 'SetFromInput' });
+        }
         break;
+
       default:
-        value = config.fixedValue;
+        bridge.writeTag(cmd.writeTagId, cmd.fixedValue, { mode: 'SetFixed' });
         break;
     }
-
-    _postMessage('writeTag', {
-      tagId: config.tagId,
-      value: value,
-      phase: phase
-    });
   }
 
-  function _navigateCommand(element) {
-    var config = _getCommandConfig(element);
-    if (!config || !config.pageId) {
+  /**
+   * Executes a Navigate command. Uses the command object's targetPageId.
+   *
+   * @param {object} cmd - The full command object.
+   */
+  function _navigateCommand(cmd) {
+    if (!cmd || !cmd.targetPageId) {
       return;
     }
 
-    _postMessage('navigate', {
-      pageId: config.pageId
-    });
-  }
-
-  function _openUrlCommand(element) {
-    var config = _getCommandConfig(element);
-    if (!config || !config.url) {
-      return;
-    }
-
-    window.open(config.url, config.target || '_blank');
+    window.postMessage({
+      source: 'scada-builder-v2',
+      action: 'navigate',
+      pageId: cmd.targetPageId
+    }, '*');
   }
 
   function _postMessage(action, payload) {
-    if (window.parent && window.parent !== window) {
-      window.parent.postMessage({
-        type: 'scada-command',
-        action: action,
-        payload: payload
-      }, '*');
-    }
+    window.postMessage({
+      source: 'scada-builder-v2',
+      action: action,
+      payload: payload
+    }, '*');
   }
 
   // ── public API ──────────────────────────────────────────────────────────

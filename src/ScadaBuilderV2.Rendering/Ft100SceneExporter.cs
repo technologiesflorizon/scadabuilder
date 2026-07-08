@@ -31,6 +31,18 @@ public sealed partial class Ft100SceneExporter
         Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
     };
 
+    /// <summary>
+    /// Options used for state/command config serialization in both manifest and
+    /// HTML data attributes. Uses camelCase so the JS runtime can read properties
+    /// directly (the JS modules use camelCase per convention).
+    /// </summary>
+    private static readonly JsonSerializerOptions StateCommandJsonOptions = new()
+    {
+        WriteIndented = false,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+    };
+
     public async Task<Ft100SceneExportResult> ExportAsync(
         ScadaScene scene,
         string sourceHtmlPath,
@@ -99,6 +111,17 @@ public sealed partial class Ft100SceneExporter
             BuildCss(scene),
             Encoding.UTF8,
             cancellationToken);
+
+        // Content-hash CSS filename for immutable cache-busting (§4.1).
+        var cssHash = ContentHash(cssPath);
+        if (!string.IsNullOrEmpty(cssHash))
+        {
+            var hashedCssFileName = $"{scene.Id}.{cssHash}.css";
+            var hashedCssPath = Path.Combine(cssDirectory, hashedCssFileName);
+            File.Move(cssPath, hashedCssPath);
+            cssFileName = hashedCssFileName;
+            cssPath = hashedCssPath;
+        }
 
         await File.WriteAllTextAsync(
             htmlPath,
@@ -289,7 +312,9 @@ public sealed partial class Ft100SceneExporter
 
             if (match == null)
             {
-                continue;
+                throw new InvalidOperationException(
+                    $"Runtime module '{moduleName}' not found as embedded resource. " +
+                    "Ensure the file is included in the project with build action EmbeddedResource.");
             }
 
             using var stream = assembly.GetManifestResourceStream(match);
@@ -300,7 +325,9 @@ public sealed partial class Ft100SceneExporter
 
             using var reader = new StreamReader(stream);
             var content = reader.ReadToEnd();
-            content = content.Replace("{{RUNTIME_VERSION}}", version);
+            // Only replace the version placeholder, not arbitrary {{...}} patterns in tag names.
+            content = content.Replace("{{RUNTIME_VERSION}}", version)
+                             .Replace("{{SCADA_RUNTIME_VERSION}}", version);
             sb.Append(content);
             sb.Append('\n');
         }
@@ -456,6 +483,21 @@ public sealed partial class Ft100SceneExporter
             {
                 File.Copy(sourcePath, targetPath);
                 copied++;
+            }
+
+            // Content-hash image filename for immutable cache-busting (§4.1).
+            var imageHash = ContentHash(targetPath);
+            if (!string.IsNullOrEmpty(imageHash))
+            {
+                var ext = Path.GetExtension(fileName);
+                var baseName = Path.GetFileNameWithoutExtension(fileName);
+                var hashedFileName = $"{baseName}.{imageHash}{ext}";
+                var hashedTargetPath = Path.Combine(imagesDirectory, hashedFileName);
+                if (!File.Exists(hashedTargetPath))
+                {
+                    File.Move(targetPath, hashedTargetPath);
+                }
+                fileName = hashedFileName;
             }
 
             return $"src={quote}images/{HtmlEncoder.Default.Encode(fileName)}{quote}";
@@ -851,7 +893,7 @@ public sealed partial class Ft100SceneExporter
         var attributes = new StringBuilder();
         if (hasStateConfig)
         {
-            var json = JsonSerializer.Serialize(stateConfig, ManifestJsonOptions);
+            var json = JsonSerializer.Serialize(stateConfig, StateCommandJsonOptions);
             attributes.Append(" data-scada-state-config=\"");
             attributes.Append(HtmlEncoder.Default.Encode(json));
             attributes.Append('"');
@@ -859,7 +901,7 @@ public sealed partial class Ft100SceneExporter
 
         if (hasCommandConfig)
         {
-            var json = JsonSerializer.Serialize(commandConfig, ManifestJsonOptions);
+            var json = JsonSerializer.Serialize(commandConfig, StateCommandJsonOptions);
             attributes.Append(" data-scada-command-config=\"");
             attributes.Append(HtmlEncoder.Default.Encode(json));
             attributes.Append('"');
@@ -870,9 +912,11 @@ public sealed partial class Ft100SceneExporter
 
     private static bool HasNonDefaultFallback(ScadaElementStateConfig config)
     {
-        return config.QualityFallback.Opacity != 0.4
-            || config.QualityFallback.BorderColor != "#000000"
-            || config.QualityFallback.BorderWidth != 2
+        var fallback = config.QualityFallback;
+        var defaultFallback = ScadaElementStateConfig.Default.QualityFallback;
+        return fallback.Opacity != defaultFallback.Opacity
+            || fallback.BorderColor != defaultFallback.BorderColor
+            || fallback.BorderWidth != defaultFallback.BorderWidth
             || config.DefaultEffect != ScadaEffectBlock.Empty;
     }
 

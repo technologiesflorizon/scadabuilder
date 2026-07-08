@@ -36,7 +36,7 @@
 
     // Cancel button — removes overlay
     var cancelBtn = document.createElement('button');
-    cancelBtn.textContent = 'Cancel';
+    cancelBtn.textContent = 'Annuler';
     cancelBtn.style.cssText =
       'padding:8px 16px;border:1px solid #ccc;border-radius:4px;background:#fff;color:#333;cursor:pointer;font-size:14px';
     cancelBtn.addEventListener('click', function () {
@@ -45,7 +45,7 @@
 
     // Confirm button — removes overlay, calls onAccepted
     var confirmBtn = document.createElement('button');
-    confirmBtn.textContent = 'Confirm';
+    confirmBtn.textContent = 'Confirmer';
     confirmBtn.style.cssText =
       'padding:8px 16px;border:none;border-radius:4px;background:#1565C0;color:#fff;cursor:pointer;font-size:14px';
     confirmBtn.addEventListener('click', function () {

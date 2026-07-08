@@ -55,8 +55,9 @@ public sealed record ScadaExpression(string Source, ScadaExprNode? Ast, IReadOnl
 }
 
 /// <summary>
-/// Serializes <see cref="ScadaExpression"/> without the <see cref="ScadaExpression.Ast"/>,
-/// which is a polymorphic cache reconstructed from <see cref="ScadaExpression.Source"/> on read.
+/// Serializes <see cref="ScadaExpression"/> with its source text, referenced tags, and
+/// polymorphic AST. The AST is the runtime contract source of truth; <see cref="ScadaExpression.Source"/>
+/// is kept for re-editing in the Builder UI.
 /// </summary>
 public sealed class ScadaExpressionConverter : JsonConverter<ScadaExpression>
 {
@@ -64,6 +65,7 @@ public sealed class ScadaExpressionConverter : JsonConverter<ScadaExpression>
     {
         public string Source { get; set; } = "";
         public List<string> ReferencedTags { get; set; } = new();
+        public ScadaExprNode? Ast { get; set; }
     }
 
     public override ScadaExpression? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
@@ -71,15 +73,23 @@ public sealed class ScadaExpressionConverter : JsonConverter<ScadaExpression>
         var dto = JsonSerializer.Deserialize<WireDto>(ref reader, options);
         if (dto is null || string.IsNullOrWhiteSpace(dto.Source))
             return null;
-        return ScadaExpression.FromSource(dto.Source);
+        // Prefer the deserialized AST if present (runtime round-trip);
+        // otherwise fall back to re-parsing from source (legacy data).
+        var ast = dto.Ast ?? ScadaExpressionParser.Parse(dto.Source).Root;
+        return new ScadaExpression(dto.Source, ast, dto.ReferencedTags);
     }
 
     public override void Write(Utf8JsonWriter writer, ScadaExpression value, JsonSerializerOptions options)
     {
         writer.WriteStartObject();
-        writer.WriteString("Source", value.Source);
-        writer.WritePropertyName("ReferencedTags");
+        writer.WriteString("source", value.Source);
+        writer.WritePropertyName("referencedTags");
         JsonSerializer.Serialize(writer, value.ReferencedTags, options);
+        if (value.Ast is not null)
+        {
+            writer.WritePropertyName("ast");
+            JsonSerializer.Serialize(writer, value.Ast, options);
+        }
         writer.WriteEndObject();
     }
 }
