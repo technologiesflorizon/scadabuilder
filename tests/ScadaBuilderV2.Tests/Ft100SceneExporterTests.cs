@@ -2182,6 +2182,181 @@ public sealed class Ft100SceneExporterTests
     }
 
     [TestMethod]
+    public async Task ExportAsync_WrapsTextElementContentInDataScadaTextSpan()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "text_span_test.html");
+        await File.WriteAllTextAsync(
+            sourceHtmlPath,
+            """
+<!doctype html>
+<html>
+<body>
+  <div class="page"></div>
+</body>
+</html>
+""");
+
+        var element = new ScadaElement(
+            "text_001",
+            "Label",
+            ScadaElementKind.Text,
+            new SceneBounds(10, 20, 100, 30),
+            null,
+            ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultText,
+            new ScadaElementData("Valeur initiale", null, null, null, null, null, null, null, null, false));
+
+        var scene = ScadaScene.CreateEmpty("win00008", "Text Span Test", new(1280, 873)).WithElement(element);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            StringAssert.Contains(html, "<span data-scada-text>Valeur initiale</span>");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public async Task ExportAsync_IncludesReadVariableAndColorFilterInManifestAndHtml()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "read_variable_test.html");
+        await File.WriteAllTextAsync(
+            sourceHtmlPath,
+            """
+<!doctype html>
+<html>
+<body>
+  <div class="page"></div>
+</body>
+</html>
+""");
+
+        var element = new ScadaElement(
+            "text_002",
+            "Debit",
+            ScadaElementKind.Text,
+            new SceneBounds(10, 20, 100, 30),
+            null,
+            ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultText,
+            new ScadaElementData("---", null, null, null, null, null, null, null, null, false),
+            StateConfig: new ScadaElementStateConfig(
+                ScadaEffectBlock.Empty with { Opacity = 0.4, BorderColor = "#000000", BorderWidth = 2 },
+                ScadaEffectBlock.Empty,
+                [new ScadaStateRule(
+                    "s1", "Alarme", true,
+                    ScadaExpression.FromSource("true"),
+                    new ScadaEffectBlock(
+                        ColorFilterColor: "#E53935",
+                        ColorFilterOpacity: 0.35,
+                        ColorFilterHalo: true,
+                        ColorFilterHaloColor: "#E53935"))],
+                ReadVariable: new ScadaReadVariableRule("tf100.mapping.42", "Debit: {valeur} L/min")));
+
+        var scene = ScadaScene.CreateEmpty("win00008", "Read Variable Test", new(1280, 873)).WithElement(element);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+
+            var manifest = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "manifest.json"));
+            StringAssert.Contains(manifest, "\"ReadVariable\"");
+            StringAssert.Contains(manifest, "tf100.mapping.42");
+            StringAssert.Contains(manifest, "\"ColorFilterColor\"");
+            StringAssert.Contains(manifest, "\"ColorFilterHalo\": true");
+
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            StringAssert.Contains(html, "&quot;readVariable&quot;");
+            StringAssert.Contains(html, "&quot;colorFilterColor&quot;");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public async Task ExportAsync_PreservesStateAndCommandListOrderInJson()
+    {
+        // Regression: manifest/HTML JSON must preserve the exact UI list order of States/Commands
+        // (first-match-wins depends on it; ordering is the user's responsibility to set correctly).
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "order_test.html");
+        await File.WriteAllTextAsync(
+            sourceHtmlPath,
+            """
+<!doctype html>
+<html>
+<body>
+  <div class="page"></div>
+</body>
+</html>
+""");
+
+        ScadaStateRule Rule(string id, string name) => new(
+            id, name, true, ScadaExpression.FromSource("true"), ScadaEffectBlock.Empty with { BackgroundColor = "#000000" });
+
+        var element = new ScadaElement(
+            "order_001",
+            "Order",
+            ScadaElementKind.Shape,
+            new SceneBounds(10, 20, 100, 30),
+            null,
+            ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultInput,
+            new ScadaElementData(null, null, null, null, null, null, null, null, null, false),
+            StateConfig: new ScadaElementStateConfig(
+                ScadaEffectBlock.Empty, ScadaEffectBlock.Empty,
+                [Rule("s-third", "Troisieme"), Rule("s-first", "Premiere"), Rule("s-second", "Deuxieme")]));
+
+        var scene = ScadaScene.CreateEmpty("win00008", "Order Test", new(1280, 873)).WithElement(element);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+            var manifest = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "manifest.json"));
+
+            var thirdIndex = manifest.IndexOf("s-third", StringComparison.Ordinal);
+            var firstIndex = manifest.IndexOf("s-first", StringComparison.Ordinal);
+            var secondIndex = manifest.IndexOf("s-second", StringComparison.Ordinal);
+
+            Assert.IsTrue(thirdIndex >= 0 && firstIndex > thirdIndex && secondIndex > firstIndex,
+                "States must serialize in the exact list order (Troisieme, Premiere, Deuxieme), not sorted.");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task ExportAsync_TwoInstancesOfSameLibraryComponent_ProduceDistinctScopedSvgIds()
     {
         // Regression: library .sep components share internal part ids (e.g. "Element001").

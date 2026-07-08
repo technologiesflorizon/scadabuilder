@@ -946,7 +946,7 @@ public sealed partial class Ft100SceneExporter
         return element.Kind switch
         {
             ScadaElementKind.Custom => ScopeSvgIds(data.Text ?? "", scope, element.Id),
-            ScadaElementKind.Text => HtmlEncoder.Default.Encode(data.Text ?? element.DisplayName),
+            ScadaElementKind.Text => $"<span data-scada-text>{HtmlEncoder.Default.Encode(data.Text ?? element.DisplayName)}</span>",
             ScadaElementKind.InputNumeric when data.IsReadOnly => HtmlEncoder.Default.Encode(
                 data.Value?.ToString(CultureInfo.InvariantCulture) ?? data.DisplayFormat ?? data.Placeholder ?? ""),
             ScadaElementKind.InputNumeric => BuildInput(element, "number"),
