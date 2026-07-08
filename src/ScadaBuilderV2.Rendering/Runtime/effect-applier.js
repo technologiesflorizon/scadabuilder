@@ -7,6 +7,25 @@
    *
    * All effect properties are optional (null/undefined = skip).
    */
+
+  /**
+   * Resolves {TagId} tokens in a text template using TagBridge. Unresolved tokens
+   * (tag missing or value null) become "---", consistent with the state-engine error badge.
+   *
+   * @param {string} template - Text containing zero or more {TagId} tokens.
+   * @returns {string}
+   */
+  function resolveTagTokens(template) {
+    var bridge = window.ScadaRuntime && window.ScadaRuntime.TagBridge;
+    if (!bridge) {
+      return template;
+    }
+    return template.replace(/\{([^}]+)\}/g, function (match, tagId) {
+      var value = bridge.getTagValue(tagId);
+      return value === null || value === undefined ? '---' : String(value);
+    });
+  }
+
   function apply(element, effect) {
     if (!element || !effect) {
       return;
@@ -36,7 +55,7 @@
     if (effect.textContent != null) {
       var textTarget = element.querySelector('[data-scada-text]');
       if (textTarget) {
-        textTarget.textContent = effect.textContent;
+        textTarget.textContent = resolveTagTokens(effect.textContent);
       }
     }
 
@@ -88,6 +107,7 @@
   window.ScadaRuntime = window.ScadaRuntime || {};
 
   window.ScadaRuntime.EffectApplier = {
-    apply: apply
+    apply: apply,
+    resolveTagTokens: resolveTagTokens
   };
 })();
