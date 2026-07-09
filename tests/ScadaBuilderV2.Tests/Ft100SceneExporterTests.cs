@@ -3043,4 +3043,184 @@ public sealed class Ft100SceneExporterTests
             element.Events is null or { Count: 0 },
             "New Navigate CommandConfig must not produce legacy EventBindings");
     }
+
+    [TestMethod]
+    public async Task ExportAsync_TagRefWithTagId_ExportsCanonicalTagName()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceDir = Path.Combine(root, "source");
+        Directory.CreateDirectory(sourceDir);
+        var sourceHtmlPath = Path.Combine(sourceDir, "tagid_test.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var expr = new ScadaExpression(
+            "{PE_16} == true",
+            new ScadaExprBinary(ScadaExprBinaryOp.Equal,
+                new ScadaExprTagRef("PE_16", "tf100.mapping.161"),
+                new ScadaExprLiteralBool(true)),
+            new[] { "PE_16" });
+
+        var element = new ScadaElement(
+            "el_canonical", "Canonical", ScadaElementKind.Text,
+            new SceneBounds(10, 20, 100, 30), null, ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultText,
+            new ScadaElementData("test", null, null, null, null, null, null, null, null, false),
+            StateConfig: new ScadaElementStateConfig(
+                ScadaEffectBlock.Empty with { Opacity = 0.4, BorderColor = "#000000", BorderWidth = 2 },
+                ScadaEffectBlock.Empty,
+                new[] { new ScadaStateRule("s1", "Running", true, expr,
+                    new ScadaEffectBlock(ColorFilterColor: "#12B729")) }));
+
+        var scene = ScadaScene.CreateEmpty("win00008", "Test", new(1280, 873)).WithElement(element);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, Path.Combine(root, "export"));
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            var decoded = html.Replace("&quot;", "\"");
+
+            StringAssert.Contains(decoded, "\"tagName\":\"tf100.mapping.161\"",
+                "Exported AST must use canonical Id as tagName.");
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
+    public async Task ExportAsync_TagRefWithTagId_NormalizesEvenWithoutCatalog()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceDir = Path.Combine(root, "source");
+        Directory.CreateDirectory(sourceDir);
+        var sourceHtmlPath = Path.Combine(sourceDir, "nocat_test.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var expr = new ScadaExpression(
+            "{PE_16} == true",
+            new ScadaExprBinary(ScadaExprBinaryOp.Equal,
+                new ScadaExprTagRef("PE_16", "tf100.mapping.161"),
+                new ScadaExprLiteralBool(true)),
+            new[] { "PE_16" });
+
+        var element = new ScadaElement(
+            "el_nocat", "NoCatalog", ScadaElementKind.Text,
+            new SceneBounds(10, 20, 100, 30), null, ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultText,
+            new ScadaElementData("test", null, null, null, null, null, null, null, null, false),
+            StateConfig: new ScadaElementStateConfig(
+                ScadaEffectBlock.Empty with { Opacity = 0.4, BorderColor = "#000000", BorderWidth = 2 },
+                ScadaEffectBlock.Empty,
+                new[] { new ScadaStateRule("s1", "R", true, expr,
+                    new ScadaEffectBlock(ColorFilterColor: "#12B729")) }));
+
+        var scene = ScadaScene.CreateEmpty("win00008", "NoCat", new(1280, 873)).WithElement(element);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, Path.Combine(root, "export"));
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            var decoded = html.Replace("&quot;", "\"");
+
+            StringAssert.Contains(decoded, "\"tagName\":\"tf100.mapping.161\"",
+                "TagRef with TagId must be normalized even without a catalog.");
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
+    public async Task ExportAsync_UnresolvedTagRef_EmitsWarning()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceDir = Path.Combine(root, "source");
+        Directory.CreateDirectory(sourceDir);
+        var sourceHtmlPath = Path.Combine(sourceDir, "unresolved_test.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var expr = new ScadaExpression(
+            "{TagInconnu} == true",
+            new ScadaExprBinary(ScadaExprBinaryOp.Equal,
+                new ScadaExprTagRef("TagInconnu"),
+                new ScadaExprLiteralBool(true)),
+            new[] { "TagInconnu" });
+
+        var element = new ScadaElement(
+            "el_unresolved", "Unresolved", ScadaElementKind.Text,
+            new SceneBounds(10, 20, 100, 30), null, ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultText,
+            new ScadaElementData("test", null, null, null, null, null, null, null, null, false),
+            StateConfig: new ScadaElementStateConfig(
+                ScadaEffectBlock.Empty with { Opacity = 0.4, BorderColor = "#000000", BorderWidth = 2 },
+                ScadaEffectBlock.Empty,
+                new[] { new ScadaStateRule("s1", "Unk", true, expr,
+                    new ScadaEffectBlock(ColorFilterColor: "#E53935")) }));
+
+        var scene = ScadaScene.CreateEmpty("win00008", "Unresolved", new(1280, 873)).WithElement(element);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, Path.Combine(root, "export"));
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            var decoded = html.Replace("&quot;", "\"");
+
+            StringAssert.Contains(decoded, "\"tagName\":\"TagInconnu\"",
+                "Unresolved tag ref must be left as-is for qualityFallback.");
+            Assert.IsTrue(result.Warnings.Count > 0,
+                "Export must warn about unresolved tag references.");
+            Assert.IsTrue(result.Warnings.Any(w => w.Contains("TagInconnu")),
+                "Warning must mention the unresolved tag name.");
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
+    public async Task ExportAsync_AmbiguousTagRef_ThrowsInvalidOperationException()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceDir = Path.Combine(root, "source");
+        Directory.CreateDirectory(sourceDir);
+        var sourceHtmlPath = Path.Combine(sourceDir, "ambiguous_test.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var expr = new ScadaExpression(
+            "{DuplicateLabel} == true",
+            new ScadaExprBinary(ScadaExprBinaryOp.Equal,
+                new ScadaExprTagRef("DuplicateLabel"),
+                new ScadaExprLiteralBool(true)),
+            new[] { "DuplicateLabel" });
+
+        var element = new ScadaElement(
+            "el_ambig", "Ambiguous", ScadaElementKind.Text,
+            new SceneBounds(10, 20, 100, 30), null, ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultText,
+            new ScadaElementData("test", null, null, null, null, null, null, null, null, false),
+            StateConfig: new ScadaElementStateConfig(
+                ScadaEffectBlock.Empty with { Opacity = 0.4, BorderColor = "#000000", BorderWidth = 2 },
+                ScadaEffectBlock.Empty,
+                new[] { new ScadaStateRule("s1", "Amb", true, expr,
+                    new ScadaEffectBlock(ColorFilterColor: "#E53935")) }));
+
+        var scene = ScadaScene.CreateEmpty("win00008", "Ambiguous", new(1280, 873)).WithElement(element);
+
+        var catalog = new ScadaTagCatalog("v1", new[]
+        {
+            new ScadaTagDefinition("tf100.mapping.200", "DuplicateLabel", Datatype: "float"),
+            new ScadaTagDefinition("tf100.mapping.201", "DuplicateLabel", Datatype: "bool"),
+        });
+        var project = ScadaProject.CreateDefault("TestProject") with { TagCatalog = catalog };
+
+        try
+        {
+            await Assert.ThrowsExceptionAsync<InvalidOperationException>(
+                () => new Ft100SceneExporter().ExportAsync(
+                    scene, sourceHtmlPath, Path.Combine(root, "export"), project),
+                "Ambiguous tag reference must block export (D8).");
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
 }

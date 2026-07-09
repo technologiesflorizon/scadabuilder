@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO.Compression;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -8,6 +9,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using ScadaBuilderV2.Domain.ElementEvents.Command;
+using ScadaBuilderV2.Domain.ElementEvents.Expressions;
 using ScadaBuilderV2.Domain.ElementEvents.State;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
@@ -72,6 +74,9 @@ public sealed partial class Ft100SceneExporter
             }
         }
 
+        var tagCatalog = project?.TagCatalog;
+        var warnings = new List<string>();
+
         if (!File.Exists(sourceHtmlPath))
         {
             throw new FileNotFoundException("Source HTML not found.", sourceHtmlPath);
@@ -126,13 +131,13 @@ public sealed partial class Ft100SceneExporter
 
         await File.WriteAllTextAsync(
             htmlPath,
-            BuildHtml(scene, cssFileName, normalizedSourceContent, runtimeHash),
+            BuildHtml(scene, cssFileName, normalizedSourceContent, runtimeHash, tagCatalog, warnings),
             Encoding.UTF8,
             cancellationToken);
 
         await File.WriteAllTextAsync(
             manifestPath,
-            BuildManifest(scene, project),
+            BuildManifest(scene, project, warnings),
             Encoding.UTF8,
             cancellationToken);
 
@@ -142,7 +147,7 @@ public sealed partial class Ft100SceneExporter
             Encoding.UTF8,
             cancellationToken);
 
-        return new Ft100SceneExportResult(sceneDirectory, htmlPath, cssPath, imagesDirectory, copiedImages);
+        return new Ft100SceneExportResult(sceneDirectory, htmlPath, cssPath, imagesDirectory, copiedImages, warnings);
     }
 
     public async Task<Ft100ProjectExportResult> ExportProjectAsync(
@@ -195,7 +200,7 @@ public sealed partial class Ft100SceneExporter
         var manifestPath = Path.Combine(packageDirectory, "manifest.json");
         await File.WriteAllTextAsync(
             manifestPath,
-            BuildProjectManifest(project, pageInputsById.Values.Select(input => input.Scene).ToArray()),
+            BuildProjectManifest(project, pageInputsById.Values.Select(input => input.Scene).ToArray(), new List<string>()),
             Encoding.UTF8,
             cancellationToken);
 
@@ -767,7 +772,191 @@ public sealed partial class Ft100SceneExporter
         return style.Replace("\"", "&quot;", StringComparison.Ordinal);
     }
 
-    private static string BuildHtml(ScadaScene scene, string cssFileName, string sourceContent, string runtimeHash)
+    /// <summary>
+    /// Normalizes a <see cref="ScadaElementStateConfig"/> for export by replacing
+    /// <see cref="ScadaExprTagRef.TagName"/> with the canonical identifier in all
+    /// expression ASTs. Returns the normalized config and adds warnings for
+    /// unresolved references. Throws on ambiguous references.
+    /// </summary>
+    private static ScadaElementStateConfig NormalizeStateConfigForExport(
+        ScadaElementStateConfig config,
+        ScadaTagCatalog? catalog,
+        List<string> warnings)
+    {
+        if (config.States.Count == 0) return config;
+
+        var hasAmbiguous = false;
+        var ambiguousMessages = new List<string>();
+
+        var normalizedStates = config.States.Select(state =>
+        {
+            if (state.Expression?.Ast is null) return state;
+
+            var (normalizedAst, ambiguous) = NormalizeAstForExport(
+                state.Expression.Ast, catalog, state.Expression.Source);
+            if (ambiguous.Count > 0)
+            {
+                hasAmbiguous = true;
+                ambiguousMessages.AddRange(ambiguous);
+            }
+
+            EmitUnresolvedWarnings(normalizedAst, state.Expression.Source, warnings);
+
+            var referencedTags = CollectCanonicalTags(normalizedAst);
+            var normalizedExpression = new ScadaExpression(
+                state.Expression.Source, normalizedAst, referencedTags);
+
+            return new ScadaStateRule(state.Id, state.Name, state.Enabled,
+                normalizedExpression, state.Effect);
+        }).ToArray();
+
+        if (hasAmbiguous)
+        {
+            throw new InvalidOperationException(
+                "L'export est bloque car des references de tag dans les expressions d'etat " +
+                "sont ambigues :\n" + string.Join("\n", ambiguousMessages));
+        }
+
+        return new ScadaElementStateConfig(
+            config.QualityFallback, config.DefaultEffect, normalizedStates, config.ReadVariable);
+    }
+
+    private static (ScadaExprNode Node, List<string> Ambiguous) NormalizeAstForExport(
+        ScadaExprNode node, ScadaTagCatalog? catalog, string expressionSource)
+    {
+        return node switch
+        {
+            ScadaExprTagRef tagRef =>
+                (NormalizeTagRefForExport(tagRef, catalog, expressionSource, out var amb), amb),
+            ScadaExprUnary unary =>
+                NormalizeUnaryForExport(unary, catalog, expressionSource),
+            ScadaExprBinary binary =>
+                NormalizeBinaryForExport(binary, catalog, expressionSource),
+            ScadaExprFunc func =>
+                NormalizeFuncForExport(func, catalog, expressionSource),
+            _ => (node, new List<string>())
+        };
+    }
+
+    private static ScadaExprTagRef NormalizeTagRefForExport(
+        ScadaExprTagRef tagRef, ScadaTagCatalog? catalog, string source,
+        out List<string> ambiguous)
+    {
+        ambiguous = new List<string>();
+
+        // Priority 1: TagId already present → direct normalization
+        if (!string.IsNullOrWhiteSpace(tagRef.TagId))
+            return new ScadaExprTagRef(tagRef.TagId, tagRef.TagId);
+
+        // Priority 2: resolve TagName via catalog
+        if (catalog is not null)
+        {
+            var result = ScadaExpressionValidator.TryResolveTagReference(
+                tagRef.TagName, catalog);
+            switch (result.Status)
+            {
+                case TagResolveStatus.Resolved when result.CanonicalId is not null:
+                    return new ScadaExprTagRef(result.CanonicalId, result.CanonicalId);
+                case TagResolveStatus.Ambiguous:
+                    ambiguous.Add(
+                        $"Expression \"{source}\" : le tag '{{{tagRef.TagName}}}' est ambigu " +
+                        $"({string.Join(", ", result.Matches)}). Remplacez-le par l'Id canonique.");
+                    break;
+            }
+        }
+
+        // Unresolved: leave TagName as-is → qualityFallback at runtime
+        return tagRef;
+    }
+
+    private static (ScadaExprNode Node, List<string> Ambiguous) NormalizeUnaryForExport(
+        ScadaExprUnary unary, ScadaTagCatalog? catalog, string source)
+    {
+        var (operand, amb) = NormalizeAstForExport(unary.Operand, catalog, source);
+        return (new ScadaExprUnary(unary.Op, operand), amb);
+    }
+
+    private static (ScadaExprNode Node, List<string> Ambiguous) NormalizeBinaryForExport(
+        ScadaExprBinary binary, ScadaTagCatalog? catalog, string source)
+    {
+        var (left, ambL) = NormalizeAstForExport(binary.Left, catalog, source);
+        var (right, ambR) = NormalizeAstForExport(binary.Right, catalog, source);
+        var allAmb = new List<string>();
+        allAmb.AddRange(ambL);
+        allAmb.AddRange(ambR);
+        return (new ScadaExprBinary(binary.Op, left, right), allAmb);
+    }
+
+    private static (ScadaExprNode Node, List<string> Ambiguous) NormalizeFuncForExport(
+        ScadaExprFunc func, ScadaTagCatalog? catalog, string source)
+    {
+        var allAmb = new List<string>();
+        var normalizedArgs = func.Args.Select(arg =>
+        {
+            var (a, amb) = NormalizeAstForExport(arg, catalog, source);
+            allAmb.AddRange(amb);
+            return a;
+        }).ToArray();
+        return (new ScadaExprFunc(func.Name, normalizedArgs), allAmb);
+    }
+
+    private static void EmitUnresolvedWarnings(
+        ScadaExprNode node, string expressionSource, List<string> warnings)
+    {
+        switch (node)
+        {
+            case ScadaExprTagRef tagRef:
+                if (!tagRef.TagName.StartsWith("tf100.mapping.", StringComparison.OrdinalIgnoreCase))
+                {
+                    warnings.Add(
+                        $"Expression \"{expressionSource}\" : la reference '{{{tagRef.TagName}}}' " +
+                        "n'a pas pu etre resolue en Id canonique. Le runtime appliquera qualityFallback.");
+                }
+                break;
+            case ScadaExprUnary unary:
+                EmitUnresolvedWarnings(unary.Operand, expressionSource, warnings);
+                break;
+            case ScadaExprBinary binary:
+                EmitUnresolvedWarnings(binary.Left, expressionSource, warnings);
+                EmitUnresolvedWarnings(binary.Right, expressionSource, warnings);
+                break;
+            case ScadaExprFunc func:
+                foreach (var arg in func.Args)
+                    EmitUnresolvedWarnings(arg, expressionSource, warnings);
+                break;
+        }
+    }
+
+    private static IReadOnlyList<string> CollectCanonicalTags(ScadaExprNode node)
+    {
+        var tags = new List<string>();
+        CollectTagsForExport(node, tags);
+        return tags;
+    }
+
+    private static void CollectTagsForExport(ScadaExprNode node, List<string> tags)
+    {
+        switch (node)
+        {
+            case ScadaExprTagRef tagRef:
+                tags.Add(tagRef.TagName);
+                break;
+            case ScadaExprUnary unary:
+                CollectTagsForExport(unary.Operand, tags);
+                break;
+            case ScadaExprBinary binary:
+                CollectTagsForExport(binary.Left, tags);
+                CollectTagsForExport(binary.Right, tags);
+                break;
+            case ScadaExprFunc func:
+                foreach (var arg in func.Args)
+                    CollectTagsForExport(arg, tags);
+                break;
+        }
+    }
+
+    private static string BuildHtml(ScadaScene scene, string cssFileName, string sourceContent, string runtimeHash,
+        ScadaTagCatalog? tagCatalog, List<string> warnings)
     {
         var scope = Ft100ExportScope.ForScene(scene);
         var title = HtmlEncoder.Default.Encode(scene.Title);
@@ -776,7 +965,8 @@ public sealed partial class Ft100SceneExporter
         var pageClass = HtmlEncoder.Default.Encode(CssIdentifier(scene.Id));
         var sceneType = HtmlEncoder.Default.Encode(ToManifestPageType(scene.PageType));
         var rootStyle = HtmlEncoder.Default.Encode(BuildSceneRootInlineStyle(scene));
-        var modernElements = string.Concat(scene.Elements.Select(element => BuildElementHtml(element, 0, 0, scope)));
+        var modernElements = string.Concat(scene.Elements.Select(
+            element => BuildElementHtml(element, 0, 0, scope, tagCatalog, warnings)));
 
         return $$"""
 <!doctype html>
@@ -802,7 +992,8 @@ public sealed partial class Ft100SceneExporter
 """;
     }
 
-    private static string BuildElementHtml(ScadaElement element, double parentX, double parentY, Ft100ExportScope scope)
+    private static string BuildElementHtml(ScadaElement element, double parentX, double parentY, Ft100ExportScope scope,
+        ScadaTagCatalog? tagCatalog, List<string> warnings)
     {
         if (element.IsLegacyStatic)
         {
@@ -822,8 +1013,8 @@ public sealed partial class Ft100SceneExporter
                 var groupInlineStyle = HtmlEncoder.Default.Encode(BuildRuntimeGroupInlineStyle(element, absoluteX, absoluteY));
                 var groupEventAttribute = BuildEventAttribute(element);
                 var groupValueBindingAttributes = BuildValueBindingAttributes(element);
-                var groupStateCommandAttributes = BuildStateCommandAttributes(element);
-                var children = string.Concat(element.ChildElements.Select(child => BuildElementHtml(child, 0, 0, scope)));
+                var groupStateCommandAttributes = BuildStateCommandAttributes(element, tagCatalog, warnings);
+                var children = string.Concat(element.ChildElements.Select(child => BuildElementHtml(child, 0, 0, scope, tagCatalog, warnings)));
 
                 return $$"""
 <div id="{{groupId}}" class="ft100-element ft100-element--{{groupKind}}" data-scada-element-id="{{groupSceneElementId}}" data-name="{{groupName}}" style="{{groupInlineStyle}}"{{groupEventAttribute}}{{groupValueBindingAttributes}}{{groupStateCommandAttributes}}>
@@ -832,7 +1023,7 @@ public sealed partial class Ft100SceneExporter
 """;
             }
 
-            return string.Concat(element.ChildElements.Select(child => BuildElementHtml(child, absoluteX, absoluteY, scope)));
+            return string.Concat(element.ChildElements.Select(child => BuildElementHtml(child, absoluteX, absoluteY, scope, tagCatalog, warnings)));
         }
 
         var id = HtmlEncoder.Default.Encode(scope.ElementDomId(element.Id));
@@ -844,7 +1035,7 @@ public sealed partial class Ft100SceneExporter
         var eventAttribute = BuildEventAttribute(element);
         var valueBindingAttributes = BuildValueBindingAttributes(element);
         var buttonRuntimeAttributes = BuildButtonRuntimeAttributes(element);
-        var stateCommandAttributes = BuildStateCommandAttributes(element);
+        var stateCommandAttributes = BuildStateCommandAttributes(element, tagCatalog, warnings);
 
         return $$"""
 <div id="{{id}}" class="ft100-element ft100-element--{{kind}}" data-scada-element-id="{{sceneElementId}}" data-name="{{name}}" style="{{inlineStyle}}"{{eventAttribute}}{{valueBindingAttributes}}{{buttonRuntimeAttributes}}{{stateCommandAttributes}}>
@@ -879,7 +1070,8 @@ public sealed partial class Ft100SceneExporter
             : attributes;
     }
 
-    private static string BuildStateCommandAttributes(ScadaElement element)
+    private static string BuildStateCommandAttributes(
+        ScadaElement element, ScadaTagCatalog? catalog, List<string> warnings)
     {
         var stateConfig = element.EffectiveStateConfig;
         var commandConfig = element.EffectiveCommandConfig;
@@ -894,7 +1086,8 @@ public sealed partial class Ft100SceneExporter
         var attributes = new StringBuilder();
         if (hasStateConfig)
         {
-            var json = JsonSerializer.Serialize(stateConfig, StateCommandJsonOptions);
+            var exportConfig = NormalizeStateConfigForExport(stateConfig, catalog, warnings);
+            var json = JsonSerializer.Serialize(exportConfig, StateCommandJsonOptions);
             attributes.Append(" data-scada-state-config=\"");
             attributes.Append(HtmlEncoder.Default.Encode(json));
             attributes.Append('"');
@@ -1584,15 +1777,16 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
 """;
     }
 
-    private static string BuildManifest(ScadaScene scene, ScadaProject? project)
+    private static string BuildManifest(ScadaScene scene, ScadaProject? project, List<string> warnings)
     {
+        var tagCatalog = project?.TagCatalog;
         var homePageId = project?.EffectiveHomePageId;
         var manifest = new
         {
             Name = scene.Title,
             ManifestVersion = "2.1",
             HomePageId = homePageId,
-            Pages = new[] { BuildManifestPage(scene, homePageId, projectRelativePath: false) },
+            Pages = new[] { BuildManifestPage(scene, homePageId, projectRelativePath: false, tagCatalog, warnings) },
             Actions = scene.ActionDefinitions,
             Tags = project?.TagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>()
         };
@@ -1600,8 +1794,9 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
         return JsonSerializer.Serialize(manifest, ManifestJsonOptions);
     }
 
-    private static string BuildProjectManifest(ScadaProject project, IReadOnlyList<ScadaScene> scenes)
+    private static string BuildProjectManifest(ScadaProject project, IReadOnlyList<ScadaScene> scenes, List<string> warnings)
     {
+        var tagCatalog = project.TagCatalog;
         var homePageId = project.EffectiveHomePageId;
         var scenesById = scenes.ToDictionary(scene => scene.Id, StringComparer.Ordinal);
         var exportedScenes = project.Scenes
@@ -1619,7 +1814,7 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
             ManifestVersion = "2.1",
             HomePageId = homePageId,
             Pages = exportedScenes
-                .Select(scene => BuildManifestPage(scene, homePageId, projectRelativePath: true))
+                .Select(scene => BuildManifestPage(scene, homePageId, projectRelativePath: true, tagCatalog, warnings))
                 .ToArray(),
             Actions = actions,
             Tags = project.TagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>()
@@ -1628,7 +1823,8 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
         return JsonSerializer.Serialize(manifest, ManifestJsonOptions);
     }
 
-    private static object BuildManifestPage(ScadaScene scene, string? homePageId, bool projectRelativePath)
+    private static object BuildManifestPage(ScadaScene scene, string? homePageId, bool projectRelativePath,
+        ScadaTagCatalog? tagCatalog, List<string> warnings)
     {
         var requiredDisplaySize = CalculateRequiredDisplaySize(scene);
         return new
@@ -1664,7 +1860,7 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
                         WriteTagId = element.Data?.WriteTagId
                     },
                     StateConfig = element.EffectiveStateConfig.States.Count > 0 || HasNonDefaultFallback(element.EffectiveStateConfig)
-                        ? element.EffectiveStateConfig : null,
+                        ? NormalizeStateConfigForExport(element.EffectiveStateConfig, tagCatalog, warnings) : null,
                     CommandConfig = element.EffectiveCommandConfig.Commands.Count > 0
                         ? element.EffectiveCommandConfig : null
                 })
