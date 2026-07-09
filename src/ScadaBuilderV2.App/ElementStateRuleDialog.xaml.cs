@@ -56,14 +56,7 @@ public partial class ElementStateRuleDialog : Window
             ValidateExpression();
     }
 
-    private enum EffectKind { BackgroundColor, Border, Text, ElementVisible, Opacity, Rotation, Animation, ColorFilter }
-
-    private sealed record EffectTypeItem(EffectKind Kind, string Label)
-    {
-        public override string ToString() => Label;
-    }
-
-    private sealed record EffectListItem(EffectKind Kind, string Summary);
+private sealed record EffectListItem(EffectKind Kind, string Summary);
 
     private static readonly (EffectKind Kind, string Label)[] _effectTypeLabels =
     [
