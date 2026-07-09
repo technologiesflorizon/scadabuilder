@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO.Compression;
 using System.Reflection;
@@ -70,6 +71,13 @@ public sealed partial class Ft100SceneExporter
             {
                 throw new InvalidOperationException(errors[0].Message);
             }
+        }
+
+        // Audit for orphaned legacy EventBindings — warnings only, does not block export.
+        var eventAuditWarnings = AuditOrphanedEventBindings(scene);
+        foreach (var warning in eventAuditWarnings)
+        {
+            Debug.WriteLine($"[SCADA Export Audit] {warning.Message}");
         }
 
         if (!File.Exists(sourceHtmlPath))
@@ -179,6 +187,15 @@ public sealed partial class Ft100SceneExporter
         if (errors.Length > 0)
         {
             throw new InvalidOperationException(errors[0].Message);
+        }
+
+        // Audit all compiled scenes for orphaned legacy EventBindings — warnings only.
+        foreach (var scene in pageInputsById.Values.Select(input => input.Scene))
+        {
+            foreach (var warning in AuditOrphanedEventBindings(scene))
+            {
+                Debug.WriteLine($"[SCADA Export Audit] {warning.Message}");
+            }
         }
 
         var packageDirectory = ResolveProjectPackageDirectory(exportDirectory);

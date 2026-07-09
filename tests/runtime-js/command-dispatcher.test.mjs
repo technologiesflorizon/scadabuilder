@@ -75,7 +75,7 @@ test('bind is idempotent — double bind on the same element fires command only 
 
   var config = { commands: [{ kind: 'navigate', trigger: 'onClick', targetPageId: 'win00059' }] };
   var configJson = JSON.stringify(config);
-  var clickHandler = null;
+  var clickHandlers = [];
   var element = {
     _attrs: { 'data-scada-command-config': configJson },
     _dataset: {},
@@ -85,10 +85,10 @@ test('bind is idempotent — double bind on the same element fires command only 
       return Object.prototype.hasOwnProperty.call(this._attrs, name) ? this._attrs[name] : null;
     },
     addEventListener: function (event, handler) {
-      clickHandler = handler;
+      clickHandlers.push(handler);
     },
     click: function () {
-      if (clickHandler) clickHandler({});
+      clickHandlers.forEach(function (h) { h({}); });
     },
   };
 
