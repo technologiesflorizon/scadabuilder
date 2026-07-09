@@ -309,6 +309,17 @@ public sealed class ElementStudioSourceRenderingTests
         StringAssert.Contains(code, "SanitizeLegacyMarkup(item.LegacyMarkup)");
     }
 
+    [TestMethod]
+    public void StudioAppHandlesDispatcherUnhandledExceptions()
+    {
+        var xaml = ReadStudioFile("App.xaml");
+        var code = ReadStudioFile("App.xaml.cs");
+
+        StringAssert.Contains(xaml, "DispatcherUnhandledException=\"OnDispatcherUnhandledException\"");
+        StringAssert.Contains(code, "private void OnDispatcherUnhandledException(");
+        StringAssert.Contains(code, "e.Handled = true;");
+    }
+
     private static string ReadStudioFile(string fileName)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

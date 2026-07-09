@@ -24,4 +24,17 @@ public partial class App : System.Windows.Application
                 System.Windows.MessageBoxImage.Error);
         }
     }
+
+    private void OnDispatcherUnhandledException(
+        object sender,
+        System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
+    {
+        System.Windows.MessageBox.Show(
+            $"Erreur imprevue dans Studio Element+:\n\n{e.Exception.GetType().Name}: {e.Exception.Message}\n\n" +
+            "L'operation a echoue mais le Studio reste ouvert.",
+            "Studio Element+ - Erreur",
+            System.Windows.MessageBoxButton.OK,
+            System.Windows.MessageBoxImage.Error);
+        e.Handled = true;
+    }
 }
