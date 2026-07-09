@@ -147,7 +147,7 @@ public sealed class WebViewContextMenuScriptTests
 
         StringAssert.Contains(source, "window.chrome?.webview?.postMessage({ type: 'openSceneObjectProperties', id: element.Id });");
         StringAssert.Contains(source, "ShowModernElementProperties(message.Id);");
-        StringAssert.Contains(source, "var dialog = new ElementPropertiesDialog(current, FormatElementEventsSummary(current))");
+        StringAssert.Contains(source, "var dialog = new ElementPropertiesDialog(current, GetCurrentSceneReferences(), _modernProject?.TagCatalog)");
         Assert.IsFalse(
             source.Contains("openModernEditor(", StringComparison.Ordinal),
             "Double-click properties must use the WPF ElementPropertiesDialog, not the old WebView floating editor.");
@@ -175,21 +175,20 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
-    public void ElementPropertiesDialogKeepsEventEntryPoint()
+    public void ElementPropertiesDialogKeepsStateAndCommandEntryPoints()
     {
         var xaml = ReadMainWindowFile("ElementPropertiesDialog.xaml");
         var dialogCode = ReadMainWindowFile("ElementPropertiesDialog.xaml.cs");
         var source = ReadMainWindowSource();
 
-        StringAssert.Contains(xaml, "<TabItem Header=\"Evenement\">");
-        StringAssert.Contains(xaml, "x:Name=\"EventSummaryText\"");
-        StringAssert.Contains(xaml, "x:Name=\"OpenEventsButton\"");
-        StringAssert.Contains(xaml, "Click=\"OnOpenEventsClick\"");
-        StringAssert.Contains(dialogCode, "public Action? OpenEvents { get; set; }");
-        StringAssert.Contains(dialogCode, "OpenEvents?.Invoke();");
-        StringAssert.Contains(source, "dialog.OpenEvents = () =>");
-        StringAssert.Contains(source, "OpenElementEventDialog(current.Id, dialog);");
-        StringAssert.Contains(source, "dialog.SetEventSummary(FormatElementEventsSummary(latestWithEvents));");
+        StringAssert.Contains(xaml, "<TabItem Header=\"Etat\">");
+        StringAssert.Contains(xaml, "<TabItem Header=\"Commande\">");
+        StringAssert.Contains(xaml, "x:Name=\"StateRulesListBox\"");
+        StringAssert.Contains(xaml, "x:Name=\"CommandsListBox\"");
+        StringAssert.Contains(dialogCode, "public Func<ScadaElementStateConfig, ScadaElement>? SaveStateConfig { get; set; }");
+        StringAssert.Contains(dialogCode, "public Func<ScadaElementCommandConfig, ScadaElement>? SaveCommandConfig { get; set; }");
+        StringAssert.Contains(source, "dialog.SaveStateConfig = config => SaveElementStateConfigFromDialog(current.Id, config);");
+        StringAssert.Contains(source, "dialog.SaveCommandConfig = config => SaveElementCommandConfigFromDialog(current.Id, config);");
     }
 
     [TestMethod]

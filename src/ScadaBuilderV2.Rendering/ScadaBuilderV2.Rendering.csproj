@@ -1,6 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <EmbeddedResource Include="Runtime\expression-evaluator.js" />
+    <EmbeddedResource Include="Runtime\effect-applier.js" />
+    <EmbeddedResource Include="Runtime\state-engine.js" />
+    <EmbeddedResource Include="Runtime\animation-controller.js" />
+    <EmbeddedResource Include="Runtime\command-dispatcher.js" />
+    <EmbeddedResource Include="Runtime\tag-bridge.js" />
+    <EmbeddedResource Include="Runtime\input-edit-guard.js" />
+    <EmbeddedResource Include="Runtime\confirmation-modal.js" />
+    <EmbeddedResource Include="Runtime\scada-runtime.js" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ScadaBuilderV2.Domain\ScadaBuilderV2.Domain.csproj" />
   </ItemGroup>
 

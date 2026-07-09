@@ -105,59 +105,6 @@ public static class ScadaEventRegistry
     public const string ToggleVisibilityFunction = "ToggleVisibility";
 
     /// <summary>
-    /// Runtime function name for showing the standard runtime border on a target Element+ object.
-    /// </summary>
-    public const string ShowBorderFunction = "ShowBorder";
-
-    /// <summary>
-    /// Runtime function name for hiding the standard runtime border on a target Element+ object.
-    /// </summary>
-    public const string HideBorderFunction = "HideBorder";
-
-    /// <summary>
-    /// Runtime function name for toggling the standard runtime border on a target Element+ object.
-    /// </summary>
-    public const string ToggleBorderFunction = "ToggleBorder";
-
-    /// <summary>
-    /// Runtime function names for standard visual effect actions.
-    /// </summary>
-    public const string StartBlinkEffectFunction = "StartBlinkEffect";
-    public const string StopBlinkEffectFunction = "StopBlinkEffect";
-    public const string ToggleBlinkEffectFunction = "ToggleBlinkEffect";
-    public const string StartGlowEffectFunction = "StartGlowEffect";
-    public const string StopGlowEffectFunction = "StopGlowEffect";
-    public const string ToggleGlowEffectFunction = "ToggleGlowEffect";
-    public const string StartPulseEffectFunction = "StartPulseEffect";
-    public const string StopPulseEffectFunction = "StopPulseEffect";
-    public const string TogglePulseEffectFunction = "TogglePulseEffect";
-    public const string StartAlarmEffectFunction = "StartAlarmEffect";
-    public const string StopAlarmEffectFunction = "StopAlarmEffect";
-    public const string ToggleAlarmEffectFunction = "ToggleAlarmEffect";
-    public const string StartDegradedEffectFunction = "StartDegradedEffect";
-    public const string StopDegradedEffectFunction = "StopDegradedEffect";
-    public const string ToggleDegradedEffectFunction = "ToggleDegradedEffect";
-
-    /// <summary>
-    /// Page-scoped CSS class used by runtime border highlight actions.
-    /// </summary>
-    public const string RuntimeBorderHighlightClass = "scada-runtime-border-highlight";
-
-    /// <summary>
-    /// Page-scoped CSS classes used by standard runtime visual effect actions.
-    /// </summary>
-    public const string RuntimeBlinkEffectClass = "scada-runtime-effect-blink";
-    public const string RuntimeGlowEffectClass = "scada-runtime-effect-glow";
-    public const string RuntimePulseEffectClass = "scada-runtime-effect-pulse";
-    public const string RuntimeAlarmEffectClass = "scada-runtime-effect-alarm";
-    public const string RuntimeDegradedEffectClass = "scada-runtime-effect-degraded";
-
-    /// <summary>
-    /// Runtime function name for writing a value to a TF100Web tag.
-    /// </summary>
-    public const string WriteTagFunction = "WriteTag";
-
-    /// <summary>
     /// Authoring function name for binding an Element+ value display to a tag.
     /// </summary>
     public const string ReadValueFunction = "ReadValue";
@@ -230,26 +177,7 @@ public static class ScadaEventRegistry
         new(WriteValueFunction, ScadaActionKind.WriteValue, "Ecrire valeur", ["TagId"], true, "Lie la valeur saisie par l'operateur a un tag runtime."),
         new(ShowFunction, ScadaActionKind.Show, "Afficher objet", ["TargetElementId"], true, "Affiche un Element+ cible."),
         new(HideFunction, ScadaActionKind.Hide, "Masquer objet", ["TargetElementId"], true, "Masque un Element+ cible."),
-        new(ToggleVisibilityFunction, ScadaActionKind.ToggleVisibility, "Basculer visibilite", ["TargetElementId"], true, "Bascule la visibilite d'un Element+ cible."),
-        new(ShowBorderFunction, ScadaActionKind.SetClass, "Afficher bordure", ["TargetElementId"], true, "Affiche la bordure runtime standard sur un Element+ cible."),
-        new(HideBorderFunction, ScadaActionKind.RemoveClass, "Masquer bordure", ["TargetElementId"], true, "Masque la bordure runtime standard sur un Element+ cible."),
-        new(ToggleBorderFunction, ScadaActionKind.ToggleClass, "Basculer bordure", ["TargetElementId"], true, "Bascule la bordure runtime standard sur un Element+ cible."),
-        new(StartBlinkEffectFunction, ScadaActionKind.SetClass, "Demarrer clignotement", ["TargetElementId"], true, "Demarre l'effet runtime clignotement sur un Element+ cible."),
-        new(StopBlinkEffectFunction, ScadaActionKind.RemoveClass, "Arreter clignotement", ["TargetElementId"], true, "Arrete l'effet runtime clignotement sur un Element+ cible."),
-        new(ToggleBlinkEffectFunction, ScadaActionKind.ToggleClass, "Basculer clignotement", ["TargetElementId"], true, "Bascule l'effet runtime clignotement sur un Element+ cible."),
-        new(StartGlowEffectFunction, ScadaActionKind.SetClass, "Demarrer halo", ["TargetElementId"], true, "Demarre l'effet runtime halo sur un Element+ cible."),
-        new(StopGlowEffectFunction, ScadaActionKind.RemoveClass, "Arreter halo", ["TargetElementId"], true, "Arrete l'effet runtime halo sur un Element+ cible."),
-        new(ToggleGlowEffectFunction, ScadaActionKind.ToggleClass, "Basculer halo", ["TargetElementId"], true, "Bascule l'effet runtime halo sur un Element+ cible."),
-        new(StartPulseEffectFunction, ScadaActionKind.SetClass, "Demarrer pulsation", ["TargetElementId"], true, "Demarre l'effet runtime pulsation sur un Element+ cible."),
-        new(StopPulseEffectFunction, ScadaActionKind.RemoveClass, "Arreter pulsation", ["TargetElementId"], true, "Arrete l'effet runtime pulsation sur un Element+ cible."),
-        new(TogglePulseEffectFunction, ScadaActionKind.ToggleClass, "Basculer pulsation", ["TargetElementId"], true, "Bascule l'effet runtime pulsation sur un Element+ cible."),
-        new(StartAlarmEffectFunction, ScadaActionKind.SetClass, "Demarrer alarme visuelle", ["TargetElementId"], true, "Demarre l'effet runtime alarme visuelle sur un Element+ cible."),
-        new(StopAlarmEffectFunction, ScadaActionKind.RemoveClass, "Arreter alarme visuelle", ["TargetElementId"], true, "Arrete l'effet runtime alarme visuelle sur un Element+ cible."),
-        new(ToggleAlarmEffectFunction, ScadaActionKind.ToggleClass, "Basculer alarme visuelle", ["TargetElementId"], true, "Bascule l'effet runtime alarme visuelle sur un Element+ cible."),
-        new(StartDegradedEffectFunction, ScadaActionKind.SetClass, "Demarrer traitement degrade", ["TargetElementId"], true, "Demarre l'effet runtime traitement degrade sur un Element+ cible."),
-        new(StopDegradedEffectFunction, ScadaActionKind.RemoveClass, "Arreter traitement degrade", ["TargetElementId"], true, "Arrete l'effet runtime traitement degrade sur un Element+ cible."),
-        new(ToggleDegradedEffectFunction, ScadaActionKind.ToggleClass, "Basculer traitement degrade", ["TargetElementId"], true, "Bascule l'effet runtime traitement degrade sur un Element+ cible."),
-        new(WriteTagFunction, ScadaActionKind.WriteTag, "Ecrire tag", ["TagId", "Value"], false, "Compatibilite legacy pour ecriture de valeur fixe.")
+        new(ToggleVisibilityFunction, ScadaActionKind.ToggleVisibility, "Basculer visibilite", ["TargetElementId"], true, "Bascule la visibilite d'un Element+ cible.")
     ];
 
     /// <summary>
@@ -282,42 +210,4 @@ public static class ScadaEventRegistry
             string.Equals(action.Kind.ToString(), functionNameOrKind, StringComparison.OrdinalIgnoreCase));
     }
 
-    /// <summary>
-    /// Determines whether a function is one of the standard runtime visual effect functions.
-    /// </summary>
-    public static bool IsVisualEffectFunction(string? functionName)
-    {
-        return TryResolveVisualEffectFunction(functionName, out _, out _);
-    }
-
-    /// <summary>
-    /// Resolves a standard visual effect function to its persisted class action and CSS class.
-    /// </summary>
-    public static bool TryResolveVisualEffectFunction(
-        string? functionName,
-        out ScadaActionKind actionKind,
-        out string className)
-    {
-        (actionKind, className) = functionName switch
-        {
-            StartBlinkEffectFunction => (ScadaActionKind.SetClass, RuntimeBlinkEffectClass),
-            StopBlinkEffectFunction => (ScadaActionKind.RemoveClass, RuntimeBlinkEffectClass),
-            ToggleBlinkEffectFunction => (ScadaActionKind.ToggleClass, RuntimeBlinkEffectClass),
-            StartGlowEffectFunction => (ScadaActionKind.SetClass, RuntimeGlowEffectClass),
-            StopGlowEffectFunction => (ScadaActionKind.RemoveClass, RuntimeGlowEffectClass),
-            ToggleGlowEffectFunction => (ScadaActionKind.ToggleClass, RuntimeGlowEffectClass),
-            StartPulseEffectFunction => (ScadaActionKind.SetClass, RuntimePulseEffectClass),
-            StopPulseEffectFunction => (ScadaActionKind.RemoveClass, RuntimePulseEffectClass),
-            TogglePulseEffectFunction => (ScadaActionKind.ToggleClass, RuntimePulseEffectClass),
-            StartAlarmEffectFunction => (ScadaActionKind.SetClass, RuntimeAlarmEffectClass),
-            StopAlarmEffectFunction => (ScadaActionKind.RemoveClass, RuntimeAlarmEffectClass),
-            ToggleAlarmEffectFunction => (ScadaActionKind.ToggleClass, RuntimeAlarmEffectClass),
-            StartDegradedEffectFunction => (ScadaActionKind.SetClass, RuntimeDegradedEffectClass),
-            StopDegradedEffectFunction => (ScadaActionKind.RemoveClass, RuntimeDegradedEffectClass),
-            ToggleDegradedEffectFunction => (ScadaActionKind.ToggleClass, RuntimeDegradedEffectClass),
-            _ => (default, string.Empty)
-        };
-
-        return !string.IsNullOrWhiteSpace(className);
-    }
 }

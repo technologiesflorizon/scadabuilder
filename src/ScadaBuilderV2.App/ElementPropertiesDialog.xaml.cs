@@ -1,5 +1,9 @@
 using System.Windows;
 using System.Windows.Controls;
+using ScadaBuilderV2.Domain.ElementEvents.Command;
+using ScadaBuilderV2.Domain.ElementEvents.Expressions;
+using ScadaBuilderV2.Domain.ElementEvents.State;
+using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
 
 namespace ScadaBuilderV2.App;
@@ -13,25 +17,223 @@ namespace ScadaBuilderV2.App;
 public partial class ElementPropertiesDialog : Window
 {
     private readonly ScadaElement element;
+    private readonly IReadOnlyList<ScadaSceneReference> pageReferences;
+    private readonly ScadaTagCatalog? tagCatalog;
+    private ScadaElement currentElement;
 
-    public ElementPropertiesDialog(ScadaElement element, string eventSummary)
+    public ElementPropertiesDialog(
+        ScadaElement element,
+        IReadOnlyList<ScadaSceneReference> pageReferences,
+        ScadaTagCatalog? tagCatalog)
     {
         ArgumentNullException.ThrowIfNull(element);
         this.element = element;
+        this.pageReferences = pageReferences;
+        this.tagCatalog = tagCatalog;
+        currentElement = element;
         InitializeComponent();
         LoadElement(element);
-        SetEventSummary(eventSummary);
+        RefreshStateAndCommandLists();
     }
 
     public ElementPropertiesDialogResult? Result { get; private set; }
 
-    public Action? OpenEvents { get; set; }
+    /// <summary>
+    /// Invoked to persist a new state config on the underlying element; returns the latest element.
+    /// </summary>
+    public Func<ScadaElementStateConfig, ScadaElement>? SaveStateConfig { get; set; }
 
-    public void SetEventSummary(string eventSummary)
+    /// <summary>
+    /// Invoked to persist a new command config on the underlying element; returns the latest element.
+    /// </summary>
+    public Func<ScadaElementCommandConfig, ScadaElement>? SaveCommandConfig { get; set; }
+
+    private void RefreshStateAndCommandLists()
     {
-        EventSummaryText.Text = string.IsNullOrWhiteSpace(eventSummary)
-            ? "Aucun evenement"
-            : eventSummary;
+        StateRulesListBox.ItemsSource = currentElement.EffectiveStateConfig.States;
+        CommandsListBox.ItemsSource = currentElement.EffectiveCommandConfig.Commands;
+
+        var readVariable = currentElement.EffectiveStateConfig.ReadVariable;
+        var hasReadVariable = readVariable is not null;
+        var readVarTagLabel = hasReadVariable
+            ? (tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
+                .Where(t => t.Id == readVariable!.TagId)
+                .Select(t =>
+                {
+                    var name = t.KeywordLabel ?? t.DisplayName ?? t.Id;
+                    return string.IsNullOrWhiteSpace(t.Device) ? name : $"{name} ({t.Device})";
+                })
+                .FirstOrDefault() ?? readVariable.TagId
+            : null;
+        ReadVariableSummaryText.Text = hasReadVariable
+            ? $"Lecture: {readVarTagLabel}{(string.IsNullOrWhiteSpace(readVariable!.DisplayFormat) ? "" : $" -> {readVariable.DisplayFormat}")}"
+            : "Aucune lecture de variable configuree.";
+        AddReadVariableButton.Visibility = hasReadVariable ? Visibility.Collapsed : Visibility.Visible;
+        EditReadVariableButton.Visibility = hasReadVariable ? Visibility.Visible : Visibility.Collapsed;
+        RemoveReadVariableButton.Visibility = hasReadVariable ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private void OnEditReadVariableClick(object sender, RoutedEventArgs e)
+    {
+        if (SaveStateConfig is null)
+        {
+            return;
+        }
+
+        var dialog = new ElementReadVariableDialog(currentElement.EffectiveStateConfig.ReadVariable, tagCatalog) { Owner = this };
+        if (dialog.ShowDialog() != true || dialog.Result is null)
+        {
+            return;
+        }
+
+        currentElement = SaveStateConfig(currentElement.EffectiveStateConfig with { ReadVariable = dialog.Result });
+        RefreshStateAndCommandLists();
+    }
+
+    private void OnRemoveReadVariableClick(object sender, RoutedEventArgs e)
+    {
+        if (SaveStateConfig is null)
+        {
+            return;
+        }
+
+        currentElement = SaveStateConfig(currentElement.EffectiveStateConfig with { ReadVariable = null });
+        RefreshStateAndCommandLists();
+    }
+
+    private void OnAddStateRuleClick(object sender, RoutedEventArgs e)
+    {
+        var dialog = new ElementStateRuleDialog(null, tagCatalog) { Owner = this };
+        if (dialog.ShowDialog() != true || dialog.Result is null || SaveStateConfig is null)
+        {
+            return;
+        }
+
+        var config = currentElement.EffectiveStateConfig with
+        {
+            States = currentElement.EffectiveStateConfig.States.Append(dialog.Result).ToArray()
+        };
+        currentElement = SaveStateConfig(config);
+        RefreshStateAndCommandLists();
+    }
+
+    private void OnStateRuleDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        OnEditStateRuleClick(sender, e);
+    }
+
+    private void OnEditStateRuleClick(object sender, RoutedEventArgs e)
+    {
+        if (StateRulesListBox.SelectedItem is not ScadaStateRule selected || SaveStateConfig is null)
+        {
+            return;
+        }
+
+        var dialog = new ElementStateRuleDialog(selected, tagCatalog) { Owner = this };
+        if (dialog.ShowDialog() != true || dialog.Result is null)
+        {
+            return;
+        }
+
+        var states = currentElement.EffectiveStateConfig.States
+            .Select(rule => rule.Id == dialog.Result.Id ? dialog.Result : rule)
+            .ToArray();
+        currentElement = SaveStateConfig(currentElement.EffectiveStateConfig with { States = states });
+        RefreshStateAndCommandLists();
+    }
+
+    private void OnDeleteStateRuleClick(object sender, RoutedEventArgs e)
+    {
+        if (StateRulesListBox.SelectedItem is not ScadaStateRule selected || SaveStateConfig is null)
+        {
+            return;
+        }
+
+        var states = currentElement.EffectiveStateConfig.States.Where(rule => rule.Id != selected.Id).ToArray();
+        currentElement = SaveStateConfig(currentElement.EffectiveStateConfig with { States = states });
+        RefreshStateAndCommandLists();
+    }
+
+    private void OnMoveStateRuleUpClick(object sender, RoutedEventArgs e) => MoveSelectedStateRule(-1);
+
+    private void OnMoveStateRuleDownClick(object sender, RoutedEventArgs e) => MoveSelectedStateRule(1);
+
+    private void MoveSelectedStateRule(int offset)
+    {
+        if (StateRulesListBox.SelectedItem is not ScadaStateRule selected || SaveStateConfig is null)
+        {
+            return;
+        }
+
+        var states = currentElement.EffectiveStateConfig.States.ToList();
+        var index = states.FindIndex(rule => rule.Id == selected.Id);
+        var newIndex = index + offset;
+        if (index < 0 || newIndex < 0 || newIndex >= states.Count)
+        {
+            return;
+        }
+
+        (states[index], states[newIndex]) = (states[newIndex], states[index]);
+        currentElement = SaveStateConfig(currentElement.EffectiveStateConfig with { States = states });
+        RefreshStateAndCommandLists();
+    }
+
+    private void OnAddCommandClick(object sender, RoutedEventArgs e)
+    {
+        var usedKinds = currentElement.EffectiveCommandConfig.Commands.Select(c => c.Kind).ToArray();
+        var dialog = new ElementCommandDialog(null, pageReferences, tagCatalog, usedKinds) { Owner = this };
+        if (dialog.ShowDialog() != true || dialog.Result is null || SaveCommandConfig is null)
+        {
+            return;
+        }
+
+        var config = currentElement.EffectiveCommandConfig with
+        {
+            Commands = currentElement.EffectiveCommandConfig.Commands.Append(dialog.Result).ToArray()
+        };
+        currentElement = SaveCommandConfig(config);
+        RefreshStateAndCommandLists();
+    }
+
+    private void OnCommandDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        OnEditCommandClick(sender, e);
+    }
+
+    private void OnEditCommandClick(object sender, RoutedEventArgs e)
+    {
+        if (CommandsListBox.SelectedItem is not ScadaCommandBinding selected || SaveCommandConfig is null)
+        {
+            return;
+        }
+
+        var usedKinds = currentElement.EffectiveCommandConfig.Commands
+            .Where(c => c.Id != selected.Id)
+            .Select(c => c.Kind)
+            .ToArray();
+        var dialog = new ElementCommandDialog(selected, pageReferences, tagCatalog, usedKinds) { Owner = this };
+        if (dialog.ShowDialog() != true || dialog.Result is null)
+        {
+            return;
+        }
+
+        var commands = currentElement.EffectiveCommandConfig.Commands
+            .Select(command => command.Id == dialog.Result.Id ? dialog.Result : command)
+            .ToArray();
+        currentElement = SaveCommandConfig(currentElement.EffectiveCommandConfig with { Commands = commands });
+        RefreshStateAndCommandLists();
+    }
+
+    private void OnDeleteCommandClick(object sender, RoutedEventArgs e)
+    {
+        if (CommandsListBox.SelectedItem is not ScadaCommandBinding selected || SaveCommandConfig is null)
+        {
+            return;
+        }
+
+        var commands = currentElement.EffectiveCommandConfig.Commands.Where(command => command.Id != selected.Id).ToArray();
+        currentElement = SaveCommandConfig(currentElement.EffectiveCommandConfig with { Commands = commands });
+        RefreshStateAndCommandLists();
     }
 
     private void LoadElement(ScadaElement current)
@@ -176,11 +378,6 @@ public partial class ElementPropertiesDialog : Window
             IsReadOnly: ReadOnlyCheckBox.IsChecked == true);
 
         DialogResult = true;
-    }
-
-    private void OnOpenEventsClick(object sender, RoutedEventArgs e)
-    {
-        OpenEvents?.Invoke();
     }
 
     private bool TryReadDouble(string value, string fieldName, out double result)

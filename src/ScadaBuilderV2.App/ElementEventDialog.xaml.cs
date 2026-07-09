@@ -167,10 +167,7 @@ public partial class ElementEventDialog : Window
             return;
         }
 
-        var isObjectTargetAction =
-            IsObjectVisibilityFunction(action.FunctionName) ||
-            IsObjectBorderFunction(action.FunctionName) ||
-            IsObjectVisualEffectFunction(action.FunctionName);
+        var isObjectTargetAction = IsObjectVisibilityFunction(action.FunctionName);
         if (isObjectTargetAction)
         {
             if (TargetElementComboBox.SelectedItem is not TargetElementItem targetElement)
@@ -245,9 +242,7 @@ public partial class ElementEventDialog : Window
         var isObjectVisibilityAction = ActionComboBox.SelectedItem is ScadaActionFunctionContract objectVisibilityAction &&
             IsObjectVisibilityFunction(objectVisibilityAction.FunctionName);
         var isObjectTargetAction = ActionComboBox.SelectedItem is ScadaActionFunctionContract objectAction &&
-            (IsObjectVisibilityFunction(objectAction.FunctionName) ||
-             IsObjectBorderFunction(objectAction.FunctionName) ||
-             IsObjectVisualEffectFunction(objectAction.FunctionName));
+            IsObjectVisibilityFunction(objectAction.FunctionName);
         var isValueBinding = ActionComboBox.SelectedItem is ScadaActionFunctionContract tagAction &&
             (string.Equals(tagAction.FunctionName, ScadaEventRegistry.ReadValueFunction, StringComparison.Ordinal) ||
              string.Equals(tagAction.FunctionName, ScadaEventRegistry.WriteValueFunction, StringComparison.Ordinal));
@@ -298,9 +293,6 @@ public partial class ElementEventDialog : Window
                 $" -> {action.TargetPageId}",
             ScadaActionKind.Show or ScadaActionKind.Hide or ScadaActionKind.ToggleVisibility when !string.IsNullOrWhiteSpace(action.TargetElementId) =>
                 $" -> {action.TargetElementId}{FormatCondition(action.Condition)}",
-            ScadaActionKind.SetClass or ScadaActionKind.RemoveClass or ScadaActionKind.ToggleClass when !string.IsNullOrWhiteSpace(action.TargetElementId) =>
-                $" -> {action.TargetElementId}",
-            ScadaActionKind.WriteTag when !string.IsNullOrWhiteSpace(action.TagId) => $" -> {action.TagId} = {action.Value}",
             _ => ""
         };
         return $"{trigger?.FrenchLabel ?? binding.Trigger} | {actionContract?.FrenchLabel ?? action?.Kind.ToString() ?? binding.ActionId}{target}";
@@ -372,20 +364,6 @@ public partial class ElementEventDialog : Window
         return string.Equals(functionName, ScadaEventRegistry.ShowFunction, StringComparison.Ordinal) ||
             string.Equals(functionName, ScadaEventRegistry.HideFunction, StringComparison.Ordinal) ||
             string.Equals(functionName, ScadaEventRegistry.ToggleVisibilityFunction, StringComparison.Ordinal);
-    }
-
-    // Groups runtime border functions so they reuse the Element+ target selector without condition UI.
-    private static bool IsObjectBorderFunction(string? functionName)
-    {
-        return string.Equals(functionName, ScadaEventRegistry.ShowBorderFunction, StringComparison.Ordinal) ||
-            string.Equals(functionName, ScadaEventRegistry.HideBorderFunction, StringComparison.Ordinal) ||
-            string.Equals(functionName, ScadaEventRegistry.ToggleBorderFunction, StringComparison.Ordinal);
-    }
-
-    // Groups standard runtime visual effects so they reuse the Element+ target selector without condition UI.
-    private static bool IsObjectVisualEffectFunction(string? functionName)
-    {
-        return ScadaEventRegistry.IsVisualEffectFunction(functionName);
     }
 
     // Keeps page target choices aligned with the selected runtime function contract.

@@ -222,20 +222,45 @@
                 </ScrollViewer>
             </TabItem>
 
-            <TabItem Header="Evenement">
+            <TabItem Header="Etat">
                 <StackPanel Margin="0,8,8,0">
-                    <TextBlock Text="Evenements runtime"
+                    <TextBlock Text="Evenement d'affichage d'etat"
                                FontWeight="SemiBold"
                                Foreground="{StaticResource InkBrush}"/>
-                    <TextBlock x:Name="EventSummaryText"
-                               Text="Aucun evenement"
-                               Margin="0,4,0,12"
-                               TextWrapping="Wrap"
-                               Foreground="{StaticResource MutedBrush}"/>
-                    <Button x:Name="OpenEventsButton"
-                            Content="Evenement"
-                            HorizontalAlignment="Left"
-                            Click="OnOpenEventsClick"/>
+                    <ListBox x:Name="StateRulesListBox" Height="220" SelectionMode="Single" Margin="0,8,0,0"
+                             DisplayMemberPath="Name"
+                             MouseDoubleClick="OnStateRuleDoubleClick"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <Button Content="+ Ajouter" Click="OnAddStateRuleClick" Margin="0,0,6,0"/>
+                        <Button Content="Monter" Click="OnMoveStateRuleUpClick" Margin="0,0,6,0"/>
+                        <Button Content="Descendre" Click="OnMoveStateRuleDownClick" Margin="0,0,6,0"/>
+                        <Button Content="Editer" Click="OnEditStateRuleClick" Margin="0,0,6,0"/>
+                        <Button Content="Supprimer" Click="OnDeleteStateRuleClick"/>
+                    </StackPanel>
+
+                    <TextBlock Text="Lecture de variable" FontWeight="SemiBold" Foreground="{StaticResource InkBrush}" Margin="0,16,0,0"/>
+                    <TextBlock x:Name="ReadVariableSummaryText" Foreground="{StaticResource MutedBrush}" Margin="0,4,0,4" TextWrapping="Wrap"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button x:Name="AddReadVariableButton" Content="+ Lecture de variable..." Click="OnEditReadVariableClick" Margin="0,0,6,0"/>
+                        <Button x:Name="EditReadVariableButton" Content="Modifier..." Click="OnEditReadVariableClick" Margin="0,0,6,0"/>
+                        <Button x:Name="RemoveReadVariableButton" Content="Supprimer" Click="OnRemoveReadVariableClick"/>
+                    </StackPanel>
+                </StackPanel>
+            </TabItem>
+
+            <TabItem Header="Commande">
+                <StackPanel Margin="0,8,8,0">
+                    <TextBlock Text="Evenement de commande"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource InkBrush}"/>
+                    <ListBox x:Name="CommandsListBox" Height="240" SelectionMode="Single" Margin="0,8,0,8"
+                             DisplayMemberPath="Name"
+                             MouseDoubleClick="OnCommandDoubleClick"/>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="+ Ajouter" Click="OnAddCommandClick" Margin="0,0,6,0"/>
+                        <Button Content="Editer" Click="OnEditCommandClick" Margin="0,0,6,0"/>
+                        <Button Content="Supprimer" Click="OnDeleteCommandClick"/>
+                    </StackPanel>
                 </StackPanel>
             </TabItem>
         </TabControl>

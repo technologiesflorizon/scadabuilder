@@ -1,10 +1,13 @@
 using System.Globalization;
 using System.IO.Compression;
+using System.Reflection;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using ScadaBuilderV2.Domain.ElementEvents.Command;
+using ScadaBuilderV2.Domain.ElementEvents.State;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
 
@@ -28,12 +31,25 @@ public sealed partial class Ft100SceneExporter
         Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
     };
 
+    /// <summary>
+    /// Options used for state/command config serialization in both manifest and
+    /// HTML data attributes. Uses camelCase so the JS runtime can read properties
+    /// directly (the JS modules use camelCase per convention).
+    /// </summary>
+    private static readonly JsonSerializerOptions StateCommandJsonOptions = new()
+    {
+        WriteIndented = false,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+    };
+
     public async Task<Ft100SceneExportResult> ExportAsync(
         ScadaScene scene,
         string sourceHtmlPath,
         string exportDirectory,
         ScadaProject? project = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        string? runtimeHash = null)
     {
         ArgumentNullException.ThrowIfNull(scene);
         ArgumentException.ThrowIfNullOrWhiteSpace(sourceHtmlPath);
@@ -59,6 +75,8 @@ public sealed partial class Ft100SceneExporter
         {
             throw new FileNotFoundException("Source HTML not found.", sourceHtmlPath);
         }
+
+        runtimeHash ??= ExportSharedRuntime(exportDirectory);
 
         var sceneDirectory = Path.Combine(exportDirectory, scene.Id);
         var cssDirectory = Path.Combine(sceneDirectory, "css");
@@ -94,9 +112,20 @@ public sealed partial class Ft100SceneExporter
             Encoding.UTF8,
             cancellationToken);
 
+        // Content-hash CSS filename for immutable cache-busting (§4.1).
+        var cssHash = ContentHash(cssPath);
+        if (!string.IsNullOrEmpty(cssHash))
+        {
+            var hashedCssFileName = $"{scene.Id}.{cssHash}.css";
+            var hashedCssPath = Path.Combine(cssDirectory, hashedCssFileName);
+            File.Move(cssPath, hashedCssPath);
+            cssFileName = hashedCssFileName;
+            cssPath = hashedCssPath;
+        }
+
         await File.WriteAllTextAsync(
             htmlPath,
-            BuildHtml(scene, cssFileName, normalizedSourceContent),
+            BuildHtml(scene, cssFileName, normalizedSourceContent, runtimeHash),
             Encoding.UTF8,
             cancellationToken);
 
@@ -153,12 +182,13 @@ public sealed partial class Ft100SceneExporter
 
         var packageDirectory = ResolveProjectPackageDirectory(exportDirectory);
         RecreateProjectPackageDirectory(exportDirectory, packageDirectory);
+        var runtimeHash = ExportSharedRuntime(packageDirectory);
 
         var pageResults = new List<Ft100SceneExportResult>();
         foreach (var pageId in compiledPageIds.OrderBy(id => id, StringComparer.Ordinal))
         {
             var input = pageInputsById[pageId];
-            pageResults.Add(await ExportAsync(input.Scene, input.SourceHtmlPath, packageDirectory, project, cancellationToken));
+            pageResults.Add(await ExportAsync(input.Scene, input.SourceHtmlPath, packageDirectory, project, cancellationToken, runtimeHash));
         }
 
         var manifestPath = Path.Combine(packageDirectory, "manifest.json");
@@ -246,6 +276,100 @@ public sealed partial class Ft100SceneExporter
             if (Directory.Exists(stagingRoot))
             {
                 Directory.Delete(stagingRoot, recursive: true);
+            }
+        }
+    }
+
+    private static readonly string[] RuntimeModuleOrder =
+    [
+        "expression-evaluator.js",
+        "effect-applier.js",
+        "state-engine.js",
+        "animation-controller.js",
+        "command-dispatcher.js",
+        "tag-bridge.js",
+        "input-edit-guard.js",
+        "confirmation-modal.js",
+        "scada-runtime.js"
+    ];
+
+    /// <summary>Returns the concatenated SCADA runtime JavaScript from embedded resource modules.</summary>
+    /// <remarks>
+    /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/Runtime/RuntimeJsModulesTests.cs.
+    /// </remarks>
+    public static string GetRuntimeScript()
+    {
+        var assembly = typeof(Ft100SceneExporter).Assembly;
+        var resourceNames = assembly.GetManifestResourceNames();
+        var sb = new StringBuilder();
+        var version = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+
+        foreach (var moduleName in RuntimeModuleOrder)
+        {
+            var match = resourceNames.FirstOrDefault(name =>
+                name.EndsWith(moduleName, StringComparison.OrdinalIgnoreCase));
+
+            if (match == null)
+            {
+                throw new InvalidOperationException(
+                    $"Runtime module '{moduleName}' not found as embedded resource. " +
+                    "Ensure the file is included in the project with build action EmbeddedResource.");
+            }
+
+            using var stream = assembly.GetManifestResourceStream(match);
+            if (stream == null)
+            {
+                continue;
+            }
+
+            using var reader = new StreamReader(stream);
+            var content = reader.ReadToEnd();
+            // Only replace the version placeholder, not arbitrary {{...}} patterns in tag names.
+            content = content.Replace("{{RUNTIME_VERSION}}", version)
+                             .Replace("{{SCADA_RUNTIME_VERSION}}", version);
+            sb.Append(content);
+            sb.Append('\n');
+        }
+
+        return sb.ToString();
+    }
+
+    /// <summary>
+    /// Computes an 8-character lowercase hex content hash of the file at <paramref name="filePath"/>.
+    /// </summary>
+    public static string ContentHash(string filePath)
+    {
+        using var sha = System.Security.Cryptography.SHA256.Create();
+        var bytes = File.ReadAllBytes(filePath);
+        var hash = sha.ComputeHash(bytes);
+        return Convert.ToHexString(hash)[..8].ToLowerInvariant();
+    }
+
+    /// <summary>
+    /// Exports the shared SCADA runtime JavaScript to the package directory, returning its content hash.
+    /// The file is written as <c>scada-runtime.&lt;hash&gt;.js</c>.
+    /// </summary>
+    private static string ExportSharedRuntime(string packageDirectory)
+    {
+        Directory.CreateDirectory(packageDirectory);
+        var runtimeScript = GetRuntimeScript();
+        var tempDir = Path.Combine(Path.GetTempPath(), "scada-builder-v2-runtime", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(tempDir);
+        var tempFile = Path.Combine(tempDir, "runtime.js");
+        File.WriteAllText(tempFile, runtimeScript, Encoding.UTF8);
+        try
+        {
+            var hash = ContentHash(tempFile);
+            var finalPath = Path.Combine(packageDirectory, $"scada-runtime.{hash}.js");
+            File.Move(tempFile, finalPath);
+            return hash;
+        }
+        finally
+        {
+            if (Directory.Exists(tempDir))
+            {
+                Directory.Delete(tempDir, recursive: true);
             }
         }
     }
@@ -359,6 +483,21 @@ public sealed partial class Ft100SceneExporter
             {
                 File.Copy(sourcePath, targetPath);
                 copied++;
+            }
+
+            // Content-hash image filename for immutable cache-busting (§4.1).
+            var imageHash = ContentHash(targetPath);
+            if (!string.IsNullOrEmpty(imageHash))
+            {
+                var ext = Path.GetExtension(fileName);
+                var baseName = Path.GetFileNameWithoutExtension(fileName);
+                var hashedFileName = $"{baseName}.{imageHash}{ext}";
+                var hashedTargetPath = Path.Combine(imagesDirectory, hashedFileName);
+                if (!File.Exists(hashedTargetPath))
+                {
+                    File.Move(targetPath, hashedTargetPath);
+                }
+                fileName = hashedFileName;
             }
 
             return $"src={quote}images/{HtmlEncoder.Default.Encode(fileName)}{quote}";
@@ -627,7 +766,7 @@ public sealed partial class Ft100SceneExporter
         return style.Replace("\"", "&quot;", StringComparison.Ordinal);
     }
 
-    private static string BuildHtml(ScadaScene scene, string cssFileName, string sourceContent)
+    private static string BuildHtml(ScadaScene scene, string cssFileName, string sourceContent, string runtimeHash)
     {
         var scope = Ft100ExportScope.ForScene(scene);
         var title = HtmlEncoder.Default.Encode(scene.Title);
@@ -637,7 +776,6 @@ public sealed partial class Ft100SceneExporter
         var sceneType = HtmlEncoder.Default.Encode(ToManifestPageType(scene.PageType));
         var rootStyle = HtmlEncoder.Default.Encode(BuildSceneRootInlineStyle(scene));
         var modernElements = string.Concat(scene.Elements.Select(element => BuildElementHtml(element, 0, 0, scope)));
-        var runtimeScript = BuildRuntimeScript(scene, scope);
 
         return $$"""
 <!doctype html>
@@ -657,9 +795,7 @@ public sealed partial class Ft100SceneExporter
 {{Indent(modernElements, 6)}}
     </div>
   </div>
-  <script>
-{{Indent(runtimeScript, 4)}}
-  </script>
+  <script src="../scada-runtime.{{runtimeHash}}.js" defer></script>
 </body>
 </html>
 """;
@@ -685,10 +821,11 @@ public sealed partial class Ft100SceneExporter
                 var groupInlineStyle = HtmlEncoder.Default.Encode(BuildRuntimeGroupInlineStyle(element, absoluteX, absoluteY));
                 var groupEventAttribute = BuildEventAttribute(element);
                 var groupValueBindingAttributes = BuildValueBindingAttributes(element);
+                var groupStateCommandAttributes = BuildStateCommandAttributes(element);
                 var children = string.Concat(element.ChildElements.Select(child => BuildElementHtml(child, 0, 0, scope)));
 
                 return $$"""
-<div id="{{groupId}}" class="ft100-element ft100-element--{{groupKind}}" data-scada-element-id="{{groupSceneElementId}}" data-name="{{groupName}}" style="{{groupInlineStyle}}"{{groupEventAttribute}}{{groupValueBindingAttributes}}>
+<div id="{{groupId}}" class="ft100-element ft100-element--{{groupKind}}" data-scada-element-id="{{groupSceneElementId}}" data-name="{{groupName}}" style="{{groupInlineStyle}}"{{groupEventAttribute}}{{groupValueBindingAttributes}}{{groupStateCommandAttributes}}>
 {{Indent(children, 2)}}
 </div>
 """;
@@ -702,13 +839,14 @@ public sealed partial class Ft100SceneExporter
         var name = HtmlEncoder.Default.Encode(element.DisplayName);
         var kind = HtmlEncoder.Default.Encode(element.Kind.ToString());
         var inlineStyle = HtmlEncoder.Default.Encode(BuildElementInlineStyle(element, absoluteX, absoluteY));
-        var content = BuildElementContent(element);
+        var content = BuildElementContent(element, scope);
         var eventAttribute = BuildEventAttribute(element);
         var valueBindingAttributes = BuildValueBindingAttributes(element);
         var buttonRuntimeAttributes = BuildButtonRuntimeAttributes(element);
+        var stateCommandAttributes = BuildStateCommandAttributes(element);
 
         return $$"""
-<div id="{{id}}" class="ft100-element ft100-element--{{kind}}" data-scada-element-id="{{sceneElementId}}" data-name="{{name}}" style="{{inlineStyle}}"{{eventAttribute}}{{valueBindingAttributes}}{{buttonRuntimeAttributes}}>
+<div id="{{id}}" class="ft100-element ft100-element--{{kind}}" data-scada-element-id="{{sceneElementId}}" data-name="{{name}}" style="{{inlineStyle}}"{{eventAttribute}}{{valueBindingAttributes}}{{buttonRuntimeAttributes}}{{stateCommandAttributes}}>
   {{content}}
 </div>
 """;
@@ -740,6 +878,48 @@ public sealed partial class Ft100SceneExporter
             : attributes;
     }
 
+    private static string BuildStateCommandAttributes(ScadaElement element)
+    {
+        var stateConfig = element.EffectiveStateConfig;
+        var commandConfig = element.EffectiveCommandConfig;
+        var hasStateConfig = stateConfig.States.Count > 0 || HasNonDefaultFallback(stateConfig);
+        var hasCommandConfig = commandConfig.Commands.Count > 0;
+
+        if (!hasStateConfig && !hasCommandConfig)
+        {
+            return "";
+        }
+
+        var attributes = new StringBuilder();
+        if (hasStateConfig)
+        {
+            var json = JsonSerializer.Serialize(stateConfig, StateCommandJsonOptions);
+            attributes.Append(" data-scada-state-config=\"");
+            attributes.Append(HtmlEncoder.Default.Encode(json));
+            attributes.Append('"');
+        }
+
+        if (hasCommandConfig)
+        {
+            var json = JsonSerializer.Serialize(commandConfig, StateCommandJsonOptions);
+            attributes.Append(" data-scada-command-config=\"");
+            attributes.Append(HtmlEncoder.Default.Encode(json));
+            attributes.Append('"');
+        }
+
+        return attributes.ToString();
+    }
+
+    private static bool HasNonDefaultFallback(ScadaElementStateConfig config)
+    {
+        var fallback = config.QualityFallback;
+        var defaultFallback = ScadaElementStateConfig.Default.QualityFallback;
+        return fallback.Opacity != defaultFallback.Opacity
+            || fallback.BorderColor != defaultFallback.BorderColor
+            || fallback.BorderWidth != defaultFallback.BorderWidth
+            || config.DefaultEffect != ScadaEffectBlock.Empty;
+    }
+
     private static string BuildValueBindingAttributes(ScadaElement element)
     {
         var attributes = new StringBuilder();
@@ -760,24 +940,24 @@ public sealed partial class Ft100SceneExporter
         return attributes.ToString();
     }
 
-    private static string BuildElementContent(ScadaElement element)
+    private static string BuildElementContent(ScadaElement element, Ft100ExportScope scope)
     {
         var data = element.Data ?? new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
         return element.Kind switch
         {
-            ScadaElementKind.Custom => data.Text ?? "",
-            ScadaElementKind.Text => HtmlEncoder.Default.Encode(data.Text ?? element.DisplayName),
+            ScadaElementKind.Custom => ForceCustomSvgAspectRatio(ScopeSvgIds(data.Text ?? "", scope, element.Id)),
+            ScadaElementKind.Text => $"<span data-scada-text>{HtmlEncoder.Default.Encode(data.Text ?? element.DisplayName)}</span>",
             ScadaElementKind.InputNumeric when data.IsReadOnly => HtmlEncoder.Default.Encode(
                 data.Value?.ToString(CultureInfo.InvariantCulture) ?? data.DisplayFormat ?? data.Placeholder ?? ""),
             ScadaElementKind.InputNumeric => BuildInput(element, "number"),
             ScadaElementKind.InputText => BuildInput(element, "text"),
-            ScadaElementKind.Shape => BuildShape(element),
+            ScadaElementKind.Shape => BuildShape(element, scope),
             ScadaElementKind.Button => BuildButton(element),
             _ => ""
         };
     }
 
-    private static string BuildShape(ScadaElement element)
+    private static string BuildShape(ScadaElement element, Ft100ExportScope scope)
     {
         var style = element.Style ?? ScadaElementStyle.DefaultText;
         var data = element.Data ?? new ScadaElementData(null, null, null, null, null, null, null, null, null, false);
@@ -793,9 +973,9 @@ public sealed partial class Ft100SceneExporter
         var dashAttribute = string.IsNullOrWhiteSpace(dashArray)
             ? ""
             : $" stroke-dasharray=\"{dashArray}\"";
-        var svgId = HtmlEncoder.Default.Encode($"shape-{CssIdentifier(element.Id)}");
-        var markerId = HtmlEncoder.Default.Encode($"arrow-{CssIdentifier(element.Id)}");
-        var gradientId = HtmlEncoder.Default.Encode($"lamp-gradient-{CssIdentifier(element.Id)}");
+        var svgId = HtmlEncoder.Default.Encode($"{scope.ElementDomId(element.Id)}__shape");
+        var markerId = HtmlEncoder.Default.Encode($"{scope.ElementDomId(element.Id)}__arrow");
+        var gradientId = HtmlEncoder.Default.Encode($"{scope.ElementDomId(element.Id)}__lamp-gradient");
         var common = $"stroke=\"{stroke}\" stroke-width=\"{Format(strokeWidth)}\"{dashAttribute} vector-effect=\"non-scaling-stroke\"";
         var body = element.EffectiveShapeKind switch
         {
@@ -1223,14 +1403,6 @@ public sealed partial class Ft100SceneExporter
         css.AppendLine($"{scope.Descendant(".ft100-element--Button *")}, {scope.Descendant("[data-scada-events] *")} {{ cursor: pointer; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element--Button:active")}, {scope.Descendant("[data-scada-events]:active")} {{ cursor: pointer; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element--Button[data-scada-disabled=\"true\"]")}, {scope.Descendant(".ft100-element--Button[data-scada-disabled=\"true\"] *")} {{ cursor: not-allowed; opacity: 0.62; }}");
-        css.AppendLine($"{scope.Descendant($".{ScadaEventRegistry.RuntimeBorderHighlightClass}")} {{ outline: 2px solid #00a3ff; outline-offset: 2px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.85), 0 0 8px rgba(0, 163, 255, 0.65); }}");
-        css.AppendLine($"@keyframes {scope.AnimationName("scada-blink")} {{ 0%, 100% {{ opacity: 1; }} 50% {{ opacity: 0.35; }} }}");
-        css.AppendLine($"@keyframes {scope.AnimationName("scada-pulse")} {{ 0%, 100% {{ transform: scale(1); }} 50% {{ transform: scale(1.035); }} }}");
-        css.AppendLine($"{scope.Descendant($".{ScadaEventRegistry.RuntimeBlinkEffectClass}")} {{ animation: {scope.AnimationName("scada-blink")} 1s steps(2, start) infinite; }}");
-        css.AppendLine($"{scope.Descendant($".{ScadaEventRegistry.RuntimeGlowEffectClass}")} {{ box-shadow: 0 0 0 2px rgba(0, 163, 255, 0.55), 0 0 18px rgba(0, 163, 255, 0.85) !important; }}");
-        css.AppendLine($"{scope.Descendant($".{ScadaEventRegistry.RuntimePulseEffectClass}")} {{ animation: {scope.AnimationName("scada-pulse")} 1.25s ease-in-out infinite; transform-origin: center; }}");
-        css.AppendLine($"{scope.Descendant($".{ScadaEventRegistry.RuntimeAlarmEffectClass}")} {{ outline: 3px solid #f43f3f; outline-offset: 2px; box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.85), 0 0 14px rgba(244, 63, 63, 0.8) !important; }}");
-        css.AppendLine($"{scope.Descendant($".{ScadaEventRegistry.RuntimeDegradedEffectClass}")} {{ filter: grayscale(0.75) contrast(0.9); opacity: 0.72; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element svg")} {{ display: block; width: 100%; height: 100%; overflow: visible; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element input")} {{ width: 100%; height: 100%; box-sizing: border-box; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element button")} {{ width: 100%; height: 100%; box-sizing: border-box; font: inherit; color: inherit; }}");
@@ -1244,6 +1416,8 @@ public sealed partial class Ft100SceneExporter
         {
             AppendElementCss(css, element, 0, 0, scope);
         }
+
+        AppendAnimationKeyframes(css, scope);
 
         return css.ToString();
     }
@@ -1375,6 +1549,20 @@ public sealed partial class Ft100SceneExporter
         css.AppendLine("}");
     }
 
+    private static void AppendAnimationKeyframes(StringBuilder css, Ft100ExportScope scope)
+    {
+        css.AppendLine();
+        css.AppendLine($"@keyframes {scope.AnimationName("scada-blink")} {{ 0%,100%{{opacity:1}} 50%{{opacity:0.15}} }}");
+        css.AppendLine($"@keyframes {scope.AnimationName("scada-pulse")} {{ 0%,100%{{transform:scale(1)}} 50%{{transform:scale(1.05)}} }}");
+        css.AppendLine($"@keyframes {scope.AnimationName("scada-halo")} {{ 0%,100%{{box-shadow:0 0 2px currentColor}} 50%{{box-shadow:0 0 14px currentColor}} }}");
+        css.AppendLine($"@keyframes {scope.AnimationName("scada-spin")} {{ 0%{{transform:rotate(0deg)}} 100%{{transform:rotate(360deg)}} }}");
+        css.AppendLine();
+        css.AppendLine($".scada-anim-blink {{ animation: {scope.AnimationName("scada-blink")} 0.6s step-end infinite; }}");
+        css.AppendLine($".scada-anim-pulse {{ animation: {scope.AnimationName("scada-pulse")} 1s ease-in-out infinite; }}");
+        css.AppendLine($".scada-anim-halo  {{ animation: {scope.AnimationName("scada-halo")} 1.8s ease-in-out infinite; }}");
+        css.AppendLine($".scada-anim-spin  {{ animation: {scope.AnimationName("scada-spin")} 1.2s linear infinite; }}");
+    }
+
     private static string BuildReadme(ScadaScene scene)
     {
         return $"""
@@ -1473,7 +1661,11 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
                     {
                         ReadTagId = element.Data?.ReadTagId,
                         WriteTagId = element.Data?.WriteTagId
-                    }
+                    },
+                    StateConfig = element.EffectiveStateConfig.States.Count > 0 || HasNonDefaultFallback(element.EffectiveStateConfig)
+                        ? element.EffectiveStateConfig : null,
+                    CommandConfig = element.EffectiveCommandConfig.Commands.Count > 0
+                        ? element.EffectiveCommandConfig : null
                 })
                 .ToArray()
         };
@@ -1562,668 +1754,6 @@ Composition:
 Use the root manifest as the page inventory. Render default pages by composing the referenced header page, body page, and footer page as separate slots.
 Each slot must preserve the complete exported page root and load that page's CSS from the same package version.
 Apply any viewport scale to the composed page container, not independently to header, body, and footer slots.
-""";
-    }
-
-    private static string BuildRuntimeScript(ScadaScene scene, Ft100ExportScope scope)
-    {
-        var actionsJson = JsonSerializer.Serialize(
-            scene.ActionDefinitions.ToDictionary(action => action.Id, StringComparer.Ordinal),
-            ManifestJsonOptions);
-        var rootIdJson = JsonSerializer.Serialize(scope.RootDomId);
-        return $$"""
-(function () {
-  const root = document.getElementById({{rootIdJson}});
-  if (!root) {
-    return;
-  }
-
-  const actions = {{actionsJson}};
-
-  function dispatchRuntimeEvent(name, detail) {
-    window.dispatchEvent(new CustomEvent(name, {
-      detail: Object.assign({
-        pageId: root.getAttribute('data-scada-page-id'),
-        rootId: root.id
-      }, detail || {})
-    }));
-  }
-
-  function reportRuntimeError(error, context) {
-    dispatchRuntimeEvent('scada-builder-runtime-error', {
-      message: error && error.message ? error.message : String(error),
-      context: context || null
-    });
-  }
-
-  window.scadaBuilderRuntime = Object.assign(window.scadaBuilderRuntime || {}, {
-    pageId: root.getAttribute('data-scada-page-id'),
-    rootId: root.id,
-    actions: actions,
-    dispatch: dispatchRuntimeEvent
-  });
-
-  function navigate(targetPageId) {
-    if (!targetPageId) {
-      return;
-    }
-
-    window.location.href = '../' + encodeURIComponent(targetPageId) + '/' + encodeURIComponent(targetPageId) + '.html';
-  }
-
-  function normalizePopupOptions(options) {
-    return Object.assign({
-      Position: 'center',
-      SizePreset: 'large',
-      AllowMultiple: false,
-      ResetOnOpen: true,
-      HostRegionId: null
-    }, options || {});
-  }
-
-  function getPopupBaseId(targetPageId) {
-    return root.id + '__popup_' + sanitizeElementId(targetPageId);
-  }
-
-  function getPopupOverlays(targetPageId) {
-    return Array.from(root.querySelectorAll('[data-scada-popup-page-id="' + cssEscape(targetPageId) + '"]'));
-  }
-
-  function closePopupLocal(targetPageId) {
-    const existing = getPopupOverlays(targetPageId).pop();
-    if (!existing) {
-      return false;
-    }
-
-    existing.remove();
-    window.dispatchEvent(new CustomEvent('scada-builder-popup-closed', {
-      detail: { pageId: targetPageId }
-    }));
-    return true;
-  }
-
-  function postPopupRequestToParent(action, targetPageId) {
-    if (window.parent && window.parent !== window) {
-      window.parent.postMessage({
-        source: 'scada-builder-v2',
-        action: action,
-        pageId: targetPageId
-      }, '*');
-      return true;
-    }
-
-    return false;
-  }
-
-  function getPopupHost(options) {
-    if (String(options.Position || '').toLowerCase() !== 'hostregion' || !options.HostRegionId) {
-      return root;
-    }
-
-    const host = getPageElement(options.HostRegionId) || root;
-    if (host !== root && window.getComputedStyle(host).position === 'static') {
-      host.style.position = 'relative';
-    }
-
-    return host;
-  }
-
-  function applyPopupSize(panel, options) {
-    const size = String(options.SizePreset || 'large').toLowerCase();
-    if (size === 'small') {
-      panel.style.width = '360px';
-      panel.style.height = '240px';
-      panel.style.maxWidth = '60%';
-      panel.style.maxHeight = '60%';
-    } else if (size === 'medium') {
-      panel.style.width = '560px';
-      panel.style.height = '420px';
-      panel.style.maxWidth = '75%';
-      panel.style.maxHeight = '75%';
-    } else if (size === 'fullscreen') {
-      panel.style.width = '100%';
-      panel.style.height = '100%';
-      panel.style.maxWidth = '100%';
-      panel.style.maxHeight = '100%';
-    } else {
-      panel.style.width = '80%';
-      panel.style.height = '80%';
-      panel.style.maxWidth = '960px';
-      panel.style.maxHeight = '720px';
-    }
-  }
-
-  function applyPopupPlacement(overlay, panel, options) {
-    const position = String(options.Position || 'center').toLowerCase();
-    overlay.style.display = 'flex';
-    overlay.style.alignItems = 'center';
-    overlay.style.justifyContent = 'center';
-    if (position === 'topleft') {
-      overlay.style.alignItems = 'flex-start';
-      overlay.style.justifyContent = 'flex-start';
-    } else if (position === 'topright') {
-      overlay.style.alignItems = 'flex-start';
-      overlay.style.justifyContent = 'flex-end';
-    } else if (position === 'bottomleft') {
-      overlay.style.alignItems = 'flex-end';
-      overlay.style.justifyContent = 'flex-start';
-    } else if (position === 'bottomright') {
-      overlay.style.alignItems = 'flex-end';
-      overlay.style.justifyContent = 'flex-end';
-    } else if (position === 'dockleft') {
-      overlay.style.alignItems = 'stretch';
-      overlay.style.justifyContent = 'flex-start';
-      panel.style.height = '100%';
-      panel.style.maxHeight = '100%';
-    } else if (position === 'dockright') {
-      overlay.style.alignItems = 'stretch';
-      overlay.style.justifyContent = 'flex-end';
-      panel.style.height = '100%';
-      panel.style.maxHeight = '100%';
-    } else if (position === 'docktop') {
-      overlay.style.alignItems = 'flex-start';
-      overlay.style.justifyContent = 'stretch';
-      panel.style.width = '100%';
-      panel.style.maxWidth = '100%';
-    } else if (position === 'dockbottom') {
-      overlay.style.alignItems = 'flex-end';
-      overlay.style.justifyContent = 'stretch';
-      panel.style.width = '100%';
-      panel.style.maxWidth = '100%';
-    } else if (position === 'hostregion') {
-      overlay.style.position = 'absolute';
-      overlay.style.inset = '0';
-      panel.style.width = '100%';
-      panel.style.height = '100%';
-      panel.style.maxWidth = '100%';
-      panel.style.maxHeight = '100%';
-    }
-  }
-
-  function openPopup(targetPageId, popupOptions) {
-    if (!targetPageId) {
-      return;
-    }
-
-    const options = normalizePopupOptions(popupOptions);
-    if (!options.AllowMultiple) {
-      while (closePopupLocal(targetPageId)) {
-      }
-    }
-
-    const host = getPopupHost(options);
-    const overlay = document.createElement('div');
-    overlay.id = options.AllowMultiple ? getPopupBaseId(targetPageId) + '_' + Date.now().toString(36) : getPopupBaseId(targetPageId);
-    overlay.setAttribute('data-scada-popup-page-id', targetPageId);
-    overlay.setAttribute('data-scada-popup-position', options.Position || 'Center');
-    overlay.setAttribute('data-scada-popup-size', options.SizePreset || 'Large');
-    overlay.style.position = 'absolute';
-    overlay.style.inset = '0';
-    overlay.style.zIndex = '10000';
-    overlay.style.background = 'rgba(0, 0, 0, 0.28)';
-    overlay.style.pointerEvents = 'auto';
-
-    const panel = document.createElement('div');
-    panel.style.position = 'relative';
-    panel.style.background = '#fff';
-    panel.style.border = '1px solid rgba(15, 42, 48, 0.24)';
-    panel.style.boxShadow = '0 16px 42px rgba(15, 42, 48, 0.28)';
-    applyPopupSize(panel, options);
-    applyPopupPlacement(overlay, panel, options);
-
-    const close = document.createElement('button');
-    close.type = 'button';
-    close.textContent = 'Fermer';
-    close.style.position = 'absolute';
-    close.style.top = '8px';
-    close.style.right = '8px';
-    close.style.zIndex = '1';
-    close.addEventListener('click', function () {
-      closePopupLocal(targetPageId);
-    });
-
-    const iframe = document.createElement('iframe');
-    iframe.title = targetPageId;
-    const iframeUrl = '../' + encodeURIComponent(targetPageId) + '/' + encodeURIComponent(targetPageId) + '.html';
-    iframe.src = options.ResetOnOpen === false ? iframeUrl : iframeUrl + '?scadaPopupInstance=' + encodeURIComponent(overlay.id);
-    iframe.style.width = '100%';
-    iframe.style.height = '100%';
-    iframe.style.border = '0';
-
-    panel.appendChild(close);
-    panel.appendChild(iframe);
-    overlay.appendChild(panel);
-    overlay.addEventListener('click', function (event) {
-      if (event.target === overlay) {
-        close.click();
-      }
-    });
-    host.appendChild(overlay);
-    window.dispatchEvent(new CustomEvent('scada-builder-popup-opened', {
-      detail: { pageId: targetPageId, elementId: root.getAttribute('data-scada-page-id'), options: options }
-    }));
-  }
-
-  function closePopup(targetPageId) {
-    if (!targetPageId) {
-      return;
-    }
-
-    if (!closePopupLocal(targetPageId)) {
-      postPopupRequestToParent('closePopup', targetPageId);
-    }
-  }
-
-  function togglePopup(targetPageId, popupOptions) {
-    if (!targetPageId) {
-      return;
-    }
-
-    if (closePopupLocal(targetPageId)) {
-      return;
-    }
-
-    if (!postPopupRequestToParent('togglePopup', targetPageId)) {
-      openPopup(targetPageId, popupOptions);
-    }
-  }
-
-  window.addEventListener('message', function (event) {
-    const detail = event.data || {};
-    if (detail.source !== 'scada-builder-v2' || !detail.pageId) {
-      return;
-    }
-
-    if (detail.action === 'closePopup') {
-      closePopupLocal(detail.pageId);
-    } else if (detail.action === 'togglePopup') {
-      if (!closePopupLocal(detail.pageId)) {
-            openPopup(detail.pageId, null);
-          }
-        }
-      });
-
-  function sanitizeElementId(value) {
-    return String(value || '').replace(/[^a-zA-Z0-9_-]/g, '_');
-  }
-
-  function cssEscape(value) {
-    return String(value || '').replace(/\\/g, '\\\\').replace(/"/g, '\\"');
-  }
-
-  function getPageElement(elementId) {
-    if (!elementId) {
-      return null;
-    }
-
-    const target = document.getElementById(root.id + '__' + sanitizeElementId(elementId));
-    return target && root.contains(target) ? target : null;
-  }
-
-  function readValueFromElement(element) {
-    const input = element.matches('input, textarea, select') ? element : element.querySelector('input, textarea, select');
-    if (input) {
-      return input.value;
-    }
-
-    return element.textContent || '';
-  }
-
-  function writeValueToElement(element, value) {
-    const input = element.matches('input, textarea, select') ? element : element.querySelector('input, textarea, select');
-    const normalized = value === undefined || value === null ? '' : String(value);
-    if (input) {
-      input.value = normalized;
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-      return;
-    }
-
-    const button = element.querySelector('button');
-    if (button) {
-      button.textContent = normalized;
-      return;
-    }
-
-    element.textContent = normalized;
-  }
-
-  window.scadaBuilderTagValues = window.scadaBuilderTagValues || {};
-  const readBindingsByTag = {};
-
-  function registerReadBinding(element) {
-    const tagId = element.getAttribute('data-scada-read-tag');
-    if (!tagId) {
-      return;
-    }
-
-    if (!readBindingsByTag[tagId]) {
-      readBindingsByTag[tagId] = [];
-    }
-
-    readBindingsByTag[tagId].push(element);
-  }
-
-  function applyTagValue(tagId, value, meta) {
-    if (!tagId) {
-      return;
-    }
-
-    window.scadaBuilderTagValues[tagId] = value;
-    (readBindingsByTag[tagId] || []).forEach(function (element) {
-      writeValueToElement(element, value);
-      window.dispatchEvent(new CustomEvent('scada-builder-tag-value-applied', {
-        detail: {
-          tagId: tagId,
-          value: value,
-          elementId: element.getAttribute('data-scada-element-id'),
-          meta: meta || null
-        }
-      }));
-    });
-  }
-
-  window.scadaBuilderSetTagValue = function (tagId, value, meta) {
-    applyTagValue(tagId, value, meta);
-  };
-
-  root.querySelectorAll('[data-scada-read-tag]').forEach(function (element) {
-    registerReadBinding(element);
-    const tagId = element.getAttribute('data-scada-read-tag');
-    window.dispatchEvent(new CustomEvent('scada-builder-read-tag-request', {
-      detail: { tagId: tagId, elementId: element.getAttribute('data-scada-element-id') }
-    }));
-  });
-
-  window.addEventListener('scada-builder-tag-value', function (event) {
-    const detail = event.detail || {};
-    applyTagValue(detail.tagId, detail.value, detail);
-  });
-
-  root.querySelectorAll('[data-scada-write-tag]').forEach(function (element) {
-    const target = element.matches('input, textarea, select') ? element : element.querySelector('input, textarea, select');
-    const eventTarget = target || element;
-    eventTarget.addEventListener('change', function () {
-      const payload = {
-        tagId: element.getAttribute('data-scada-write-tag'),
-        value: readValueFromElement(element),
-        elementId: element.getAttribute('data-scada-element-id')
-      };
-      if (window.tf100webScadaBuilder && typeof window.tf100webScadaBuilder.writeTag === 'function') {
-        window.tf100webScadaBuilder.writeTag(payload.tagId, payload.value, payload);
-      }
-      window.dispatchEvent(new CustomEvent('scada-builder-write-value', { detail: payload }));
-    });
-  });
-
-  function getRuntimeTagValue(tagId) {
-    if (!tagId) {
-      return undefined;
-    }
-
-    if (window.tf100webScadaBuilder && typeof window.tf100webScadaBuilder.getTagValue === 'function') {
-      return window.tf100webScadaBuilder.getTagValue(tagId);
-    }
-
-    if (window.scadaBuilderTagValues && Object.prototype.hasOwnProperty.call(window.scadaBuilderTagValues, tagId)) {
-      return window.scadaBuilderTagValues[tagId];
-    }
-
-    return undefined;
-  }
-
-  function parseBoolean(value) {
-    if (typeof value === 'boolean') {
-      return value;
-    }
-
-    const normalized = String(value).trim().toLowerCase();
-    if (normalized === 'true' || normalized === '1' || normalized === 'on') {
-      return true;
-    }
-
-    if (normalized === 'false' || normalized === '0' || normalized === 'off') {
-      return false;
-    }
-
-    return undefined;
-  }
-
-  function evaluateCondition(condition) {
-    return evaluateConditionResult(condition) === true;
-  }
-
-  function evaluateConditionResult(condition) {
-    if (!condition || !condition.TagId || !condition.Operator) {
-      return true;
-    }
-
-    const actual = getRuntimeTagValue(condition.TagId);
-    if (actual === undefined || actual === null) {
-      return null;
-    }
-
-    const operator = String(condition.Operator).toLowerCase();
-    if (operator === 'true' || operator === 'false') {
-      const booleanValue = parseBoolean(actual);
-      if (booleanValue === undefined) {
-        return false;
-      }
-
-      return operator === 'true' ? booleanValue : !booleanValue;
-    }
-
-    const expected = condition.CompareValue;
-    const actualNumber = Number(actual);
-    const expectedNumber = Number(expected);
-    const useNumeric = Number.isFinite(actualNumber) && Number.isFinite(expectedNumber);
-    const left = useNumeric ? actualNumber : String(actual);
-    const right = useNumeric ? expectedNumber : String(expected);
-
-    if (operator === 'equals') {
-      return left === right;
-    }
-    if (operator === 'notequals') {
-      return left !== right;
-    }
-    if (!useNumeric) {
-      return false;
-    }
-    if (operator === 'greaterthan') {
-      return left > right;
-    }
-    if (operator === 'greaterthanorequal') {
-      return left >= right;
-    }
-    if (operator === 'lessthan') {
-      return left < right;
-    }
-    if (operator === 'lessthanorequal') {
-      return left <= right;
-    }
-
-    return false;
-  }
-
-  function evaluateConditionGroup(group) {
-    if (!group || !Array.isArray(group.Conditions) || group.Conditions.length === 0) {
-      return true;
-    }
-
-    const missingPolicy = String(group.MissingTagPolicy || 'blockAction').toLowerCase();
-    const results = group.Conditions.map(function (condition) {
-      return evaluateConditionResult(condition);
-    });
-    if (results.some(function (result) { return result === null; })) {
-      return missingPolicy === 'allowaction';
-    }
-
-    const mode = String(group.Mode || 'all').toLowerCase();
-    if (mode === 'any') {
-      return results.some(function (result) { return result === true; });
-    }
-
-    return results.every(function (result) { return result === true; });
-  }
-
-  function evaluateActionConditions(action) {
-    return evaluateCondition(action.Condition) && evaluateConditionGroup(action.ConditionGroup);
-  }
-
-  function applyAction(action) {
-    if (!action || !action.Kind) {
-      return false;
-    }
-
-    if (!evaluateActionConditions(action)) {
-      return false;
-    }
-
-    const kind = String(action.Kind).toLowerCase();
-    if (kind === 'navigate') {
-      navigate(action.TargetPageId);
-      return true;
-    }
-
-    if (kind === 'mountfragment') {
-      openPopup(action.TargetPageId, action.PopupOptions);
-      return true;
-    }
-
-    if (kind === 'closepopup') {
-      closePopup(action.TargetPageId);
-      return true;
-    }
-
-    if (kind === 'togglepopup') {
-      togglePopup(action.TargetPageId, action.PopupOptions);
-      return true;
-    }
-
-    if (kind === 'writetag') {
-      const payload = { tagId: action.TagId, value: action.Value };
-      if (window.tf100webScadaBuilder && typeof window.tf100webScadaBuilder.writeTag === 'function') {
-        window.tf100webScadaBuilder.writeTag(payload.tagId, payload.value, payload);
-      }
-      window.dispatchEvent(new CustomEvent('scada-builder-write-tag', { detail: payload }));
-      return true;
-    }
-
-    const target = getPageElement(action.TargetElementId);
-    if (!target) {
-      return false;
-    }
-
-    if (kind === 'show') {
-      target.hidden = false;
-    } else if (kind === 'hide') {
-      target.hidden = true;
-    } else if (kind === 'togglevisibility') {
-      target.hidden = !target.hidden;
-    } else if (kind === 'setclass' && action.ClassName) {
-      target.classList.add(action.ClassName);
-    } else if (kind === 'removeclass' && action.ClassName) {
-      target.classList.remove(action.ClassName);
-    } else if (kind === 'toggleclass' && action.ClassName) {
-      target.classList.toggle(action.ClassName);
-    } else {
-      return false;
-    }
-
-    return true;
-  }
-
-  root.querySelectorAll('.ft100-element[data-scada-button-kind="Toggle"]:not([data-scada-disabled="true"])').forEach(function (element) {
-    if (!element.hasAttribute('data-scada-toggle-state')) {
-      element.setAttribute('data-scada-toggle-state', 'off');
-    }
-
-    element.addEventListener('click', function () {
-      const nextState = element.getAttribute('data-scada-toggle-state') === 'on' ? 'off' : 'on';
-      element.setAttribute('data-scada-toggle-state', nextState);
-      dispatchRuntimeEvent('scada-builder-toggle-state-changed', {
-        elementId: element.getAttribute('data-scada-element-id'),
-        state: nextState
-      });
-    });
-  });
-
-  function getButtonActivationEventName(buttonKind) {
-    const normalized = String(buttonKind || 'Command').toLowerCase();
-    if (normalized === 'navigation') {
-      return 'scada-builder-navigation-button-activated';
-    }
-    if (normalized === 'alarmacknowledge') {
-      return 'scada-builder-alarm-acknowledge-requested';
-    }
-    if (normalized === 'emergencystop') {
-      return 'scada-builder-emergency-stop-requested';
-    }
-    if (normalized === 'toggle') {
-      return 'scada-builder-toggle-button-activated';
-    }
-
-    return 'scada-builder-command-button-activated';
-  }
-
-  root.querySelectorAll('.ft100-element[data-scada-button-kind]:not([data-scada-disabled="true"])').forEach(function (element) {
-    element.addEventListener('click', function () {
-      const buttonKind = element.getAttribute('data-scada-button-kind') || 'Command';
-      const detail = {
-        elementId: element.getAttribute('data-scada-element-id'),
-        buttonKind: buttonKind
-      };
-      dispatchRuntimeEvent('scada-builder-button-activated', detail);
-      dispatchRuntimeEvent(getButtonActivationEventName(buttonKind), detail);
-    });
-  });
-
-  root.querySelectorAll('[data-scada-events]').forEach(function (element) {
-    let bindings = [];
-    try {
-      bindings = JSON.parse(element.getAttribute('data-scada-events') || '[]');
-    } catch {
-      bindings = [];
-    }
-
-    bindings.forEach(function (binding) {
-      if (!binding || !binding.Trigger || !binding.ActionId) {
-        return;
-      }
-
-      element.addEventListener(binding.Trigger, function (event) {
-        if (element.getAttribute('data-scada-disabled') === 'true') {
-          event.preventDefault();
-          event.stopPropagation();
-          return;
-        }
-        if (binding.PreventDefault) {
-          event.preventDefault();
-        }
-        if (binding.StopPropagation) {
-          event.stopPropagation();
-        }
-        try {
-          if (applyAction(actions[binding.ActionId])) {
-            dispatchRuntimeEvent('scada-builder-action-executed', {
-              actionId: binding.ActionId,
-              trigger: binding.Trigger,
-              elementId: element.getAttribute('data-scada-element-id')
-            });
-          }
-        } catch (error) {
-          reportRuntimeError(error, {
-            actionId: binding.ActionId,
-            trigger: binding.Trigger,
-            elementId: element.getAttribute('data-scada-element-id')
-          });
-        }
-      });
-    });
-  });
-  dispatchRuntimeEvent('scada-builder-page-ready', {
-    actionCount: Object.keys(actions).length
-  });
-})();
 """;
     }
 
@@ -2333,9 +1863,18 @@ Apply any viewport scale to the composed page container, not independently to he
             return $"{RootSelector} {selector}";
         }
 
+        /// <summary>
+        /// Selects a legacy shape by its original numeric <c>data-id</c>, scoped to the
+        /// source/legacy overlay layers only. Custom (library .sep) components preserve the
+        /// same <c>data-id</c> on their own copies of converted legacy shapes (see ScopeSvgIds,
+        /// which only rewrites "id" attributes and url(#...) references, not "data-id"), so an
+        /// unscoped "[data-id=...]" selector would also match — and, for the suppression rule,
+        /// incorrectly hide — the shape's live copy inside .ft100-elementplus-layer.
+        /// </summary>
         public string SourceDataIdSelector(string sourceElementId)
         {
-            return $"{RootSelector} [data-id=\"{CssEscape(sourceElementId)}\"]";
+            var idSelector = $"[data-id=\"{CssEscape(sourceElementId)}\"]";
+            return $"{RootSelector} .ft100-source-layer {idSelector}, {RootSelector} .ft100-legacy-layer {idSelector}";
         }
 
         public string ElementDomId(string elementId)
@@ -2350,7 +1889,7 @@ Apply any viewport scale to the composed page container, not independently to he
 
         public string AnimationName(string name)
         {
-            return $"{RootDomId}-{CssIdentifier(name)}";
+            return $"{RootDomId}---{CssIdentifier(name)}";
         }
     }
 
@@ -2359,10 +1898,84 @@ Apply any viewport scale to the composed page container, not independently to he
         return string.Concat(value.Select(character => char.IsLetterOrDigit(character) || character is '-' or '_' ? character : '_'));
     }
 
+    /// <summary>
+    /// Rewrites <c>id="..."</c> attributes and <c>url(#...)</c> references inside SVG markup
+    /// so that each element instance gets unique DOM ids. Library .sep components share the
+    /// same internal part ids (e.g. <c>Element001</c>); without scoping, placing the same
+    /// component twice on a page produces duplicate DOM ids.
+    /// </summary>
+    private static string ScopeSvgIds(string svgMarkup, Ft100ExportScope scope, string elementId)
+    {
+        if (string.IsNullOrWhiteSpace(svgMarkup))
+            return svgMarkup;
+
+        // Elements share library-instance ids (e.g. "Element001"); the page root alone doesn't
+        // disambiguate two instances on the same page, so the element id must be part of the
+        // prefix too. Using scope.ElementDomId keeps the required "{rootDomId}__" prefix intact.
+        var prefix = $"{scope.ElementDomId(elementId)}__svg-";
+
+        // Rewrite id="X" → id="{rootDomId}__{elementId}__svg-X"
+        var scoped = SvgIdAttributeRegex().Replace(svgMarkup, match =>
+        {
+            var originalId = match.Groups["value"].Value;
+            if (originalId.Contains("__", StringComparison.Ordinal))
+                return match.Value;
+
+            return $"{match.Groups["prefix"].Value}{match.Groups["quote"].Value}{prefix}{originalId}{match.Groups["quote"].Value}";
+        });
+
+        // Rewrite url(#X) → url(#{rootDomId}__{elementId}__svg-X)
+        scoped = SvgUrlRefRegex().Replace(scoped, match =>
+        {
+            var refId = match.Groups["ref"].Value;
+            if (refId.Contains("__", StringComparison.Ordinal))
+                return match.Value;
+
+            return $"url(#{match.Groups["prefix"].Value}{prefix}{refId}{match.Groups["suffix"].Value}";
+        });
+
+        return scoped;
+    }
+
     private static string CssEscape(string value)
     {
         return value.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("\"", "\\\"", StringComparison.Ordinal);
     }
+
+    /// <summary>
+    /// Forces <c>preserveAspectRatio="none"</c> on every root-level &lt;svg&gt; tag in a Custom
+    /// (library .sep component) element's markup, mirroring the WebView preview's runtime
+    /// normalization (see MainWindow.WebViewScript.cs, Custom element handling) so an instance
+    /// resized on canvas stretches to fill its Bounds instead of being letterboxed/cropped by
+    /// the browser's default "xMidYMid meet" aspect-ratio preservation when the component's
+    /// native viewBox doesn't match the placed Bounds.
+    /// </summary>
+    private static string ForceCustomSvgAspectRatio(string svgMarkup)
+    {
+        if (string.IsNullOrWhiteSpace(svgMarkup))
+            return svgMarkup;
+
+        const string attribute = "preserveAspectRatio=\"none\"";
+        return SvgOpenTagRegex().Replace(svgMarkup, match =>
+        {
+            var tag = match.Value;
+            return PreserveAspectRatioAttributeRegex().IsMatch(tag)
+                ? PreserveAspectRatioAttributeRegex().Replace(tag, attribute)
+                : tag[..^1] + " " + attribute + ">";
+        });
+    }
+
+    [GeneratedRegex("""<svg\b[^>]*>""", RegexOptions.IgnoreCase)]
+    private static partial Regex SvgOpenTagRegex();
+
+    [GeneratedRegex("""preserveAspectRatio\s*=\s*["'][^"']*["']""", RegexOptions.IgnoreCase)]
+    private static partial Regex PreserveAspectRatioAttributeRegex();
+
+    [GeneratedRegex("""(?<prefix>(?<![\w:-])id\s*=\s*)(?<quote>["'])(?<value>[^"']+)\k<quote>""", RegexOptions.IgnoreCase)]
+    private static partial Regex SvgIdAttributeRegex();
+
+    [GeneratedRegex("""url\(\s*#(?<prefix>\s*)(?<ref>[^)\s]+?)(?<suffix>\s*)\)""", RegexOptions.IgnoreCase)]
+    private static partial Regex SvgUrlRefRegex();
 
     [GeneratedRegex("""<div\b[^>]*class=["'][^"']*\bpage\b[^"']*["'][^>]*>""", RegexOptions.IgnoreCase)]
     private static partial Regex PageDivRegex();

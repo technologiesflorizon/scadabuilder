@@ -36,7 +36,11 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
       },
       "Data": {
         "Text": "",
@@ -48,7 +52,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -63,7 +73,11 @@
         "RawMetadataJson": null
       },
       "Events": null,
-      "ButtonBehavior": null
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "legacy_11",
@@ -95,7 +109,11 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
       },
       "Data": {
         "Text": "Alarmes",
@@ -107,7 +125,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -122,7 +146,11 @@
         "RawMetadataJson": null
       },
       "Events": null,
-      "ButtonBehavior": null
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "elementplus_button_7",
@@ -154,7 +182,11 @@
         "BorderWidth": 1,
         "BorderStyle": "Solid",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
       },
       "Data": {
         "Text": "Button7",
@@ -166,12 +198,22 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": null,
       "Events": null,
-      "ButtonBehavior": null
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "elementplus_button_9",
@@ -203,7 +245,11 @@
         "BorderWidth": 1,
         "BorderStyle": "Solid",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
       },
       "Data": {
         "Text": "Button9",
@@ -215,12 +261,22 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": null,
       "Events": null,
-      "ButtonBehavior": null
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "elementplus_button_8",
@@ -252,7 +308,11 @@
         "BorderWidth": 1,
         "BorderStyle": "Solid",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
       },
       "Data": {
         "Text": "Button8",
@@ -264,12 +324,22 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": null,
       "Events": null,
-      "ButtonBehavior": null
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "elementplus_button_12",
@@ -301,7 +371,11 @@
         "BorderWidth": 1,
         "BorderStyle": "Solid",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
       },
       "Data": {
         "Text": "Button10",
@@ -313,12 +387,22 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": null,
       "Events": null,
-      "ButtonBehavior": null
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "group_001",
@@ -344,9 +428,30 @@
         "BorderWidth": 1,
         "BorderStyle": "Dashed",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
       },
-      "Data": null,
+      "Data": {
+        "Text": null,
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
+      },
       "Children": [
         {
           "Id": "elementplus_button_1",
@@ -378,7 +483,11 @@
             "BorderWidth": 1,
             "BorderStyle": "Solid",
             "ShadowPreset": "None",
-            "AdvancedCss": null
+            "AdvancedCss": null,
+            "Opacity": 1,
+            "Rotation": 0,
+            "FlipHorizontally": false,
+            "FlipVertically": false
           },
           "Data": {
             "Text": "Button1",
@@ -390,12 +499,22 @@
             "Unit": null,
             "DisplayFormat": null,
             "TagBinding": null,
-            "IsReadOnly": false
+            "IsReadOnly": false,
+            "ReadTagId": null,
+            "WriteTagId": null,
+            "ShapeStartX": null,
+            "ShapeStartY": null,
+            "ShapeEndX": null,
+            "ShapeEndY": null
           },
           "Children": null,
           "LegacyPayload": null,
           "Events": null,
-          "ButtonBehavior": null
+          "ButtonBehavior": null,
+          "ShapeKind": null,
+          "ButtonKind": null,
+          "StateConfig": null,
+          "CommandConfig": null
         },
         {
           "Id": "text_001",
@@ -421,7 +540,11 @@
             "BorderWidth": 0,
             "BorderStyle": "None",
             "ShadowPreset": "None",
-            "AdvancedCss": null
+            "AdvancedCss": null,
+            "Opacity": 1,
+            "Rotation": 0,
+            "FlipHorizontally": false,
+            "FlipVertically": false
           },
           "Data": {
             "Text": "Page d\u0027accueil",
@@ -433,12 +556,22 @@
             "Unit": null,
             "DisplayFormat": null,
             "TagBinding": null,
-            "IsReadOnly": false
+            "IsReadOnly": false,
+            "ReadTagId": null,
+            "WriteTagId": null,
+            "ShapeStartX": null,
+            "ShapeStartY": null,
+            "ShapeEndX": null,
+            "ShapeEndY": null
           },
           "Children": null,
           "LegacyPayload": null,
           "Events": null,
-          "ButtonBehavior": null
+          "ButtonBehavior": null,
+          "ShapeKind": null,
+          "ButtonKind": null,
+          "StateConfig": null,
+          "CommandConfig": null
         }
       ],
       "LegacyPayload": null,
@@ -450,7 +583,31 @@
           "PreventDefault": false
         }
       ],
-      "ButtonBehavior": null
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "df12fb838cc34b738b830762f662d125",
+            "Name": "GoHome",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "Navigate",
+            "Confirmation": null,
+            "WriteTagId": null,
+            "ReadTagId": null,
+            "WriteMode": null,
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": "win00004",
+            "Url": null,
+            "NewTab": false
+          }
+        ]
+      }
     },
     {
       "Id": "group_002",
@@ -476,7 +633,11 @@
         "BorderWidth": 1,
         "BorderStyle": "Dashed",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
       },
       "Data": {
         "Text": null,
@@ -488,7 +649,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": [
         {
@@ -521,7 +688,11 @@
             "BorderWidth": 1,
             "BorderStyle": "Solid",
             "ShadowPreset": "None",
-            "AdvancedCss": null
+            "AdvancedCss": null,
+            "Opacity": 1,
+            "Rotation": 0,
+            "FlipHorizontally": false,
+            "FlipVertically": false
           },
           "Data": {
             "Text": "Button2",
@@ -533,12 +704,22 @@
             "Unit": null,
             "DisplayFormat": null,
             "TagBinding": null,
-            "IsReadOnly": false
+            "IsReadOnly": false,
+            "ReadTagId": null,
+            "WriteTagId": null,
+            "ShapeStartX": null,
+            "ShapeStartY": null,
+            "ShapeEndX": null,
+            "ShapeEndY": null
           },
           "Children": null,
           "LegacyPayload": null,
           "Events": null,
-          "ButtonBehavior": null
+          "ButtonBehavior": null,
+          "ShapeKind": null,
+          "ButtonKind": null,
+          "StateConfig": null,
+          "CommandConfig": null
         },
         {
           "Id": "text_002",
@@ -564,7 +745,11 @@
             "BorderWidth": 0,
             "BorderStyle": "None",
             "ShadowPreset": "None",
-            "AdvancedCss": null
+            "AdvancedCss": null,
+            "Opacity": 1,
+            "Rotation": 0,
+            "FlipHorizontally": false,
+            "FlipVertically": false
           },
           "Data": {
             "Text": "Compresseur",
@@ -576,12 +761,22 @@
             "Unit": null,
             "DisplayFormat": null,
             "TagBinding": null,
-            "IsReadOnly": false
+            "IsReadOnly": false,
+            "ReadTagId": null,
+            "WriteTagId": null,
+            "ShapeStartX": null,
+            "ShapeStartY": null,
+            "ShapeEndX": null,
+            "ShapeEndY": null
           },
           "Children": null,
           "LegacyPayload": null,
           "Events": null,
-          "ButtonBehavior": null
+          "ButtonBehavior": null,
+          "ShapeKind": null,
+          "ButtonKind": null,
+          "StateConfig": null,
+          "CommandConfig": null
         }
       ],
       "LegacyPayload": null,
@@ -593,7 +788,31 @@
           "PreventDefault": false
         }
       ],
-      "ButtonBehavior": null
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "c10167c2046c446eb56b82d7ab5db4be",
+            "Name": "GoCompressor",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "Navigate",
+            "Confirmation": null,
+            "WriteTagId": null,
+            "ReadTagId": null,
+            "WriteMode": null,
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": "win00059",
+            "Url": null,
+            "NewTab": false
+          }
+        ]
+      }
     },
     {
       "Id": "group_003",
@@ -619,7 +838,11 @@
         "BorderWidth": 1,
         "BorderStyle": "Dashed",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
       },
       "Data": null,
       "Children": [
@@ -653,7 +876,11 @@
             "BorderWidth": 1,
             "BorderStyle": "Solid",
             "ShadowPreset": "None",
-            "AdvancedCss": null
+            "AdvancedCss": null,
+            "Opacity": 1,
+            "Rotation": 0,
+            "FlipHorizontally": false,
+            "FlipVertically": false
           },
           "Data": {
             "Text": "Button3",
@@ -665,12 +892,22 @@
             "Unit": null,
             "DisplayFormat": null,
             "TagBinding": null,
-            "IsReadOnly": false
+            "IsReadOnly": false,
+            "ReadTagId": null,
+            "WriteTagId": null,
+            "ShapeStartX": null,
+            "ShapeStartY": null,
+            "ShapeEndX": null,
+            "ShapeEndY": null
           },
           "Children": null,
           "LegacyPayload": null,
           "Events": null,
-          "ButtonBehavior": null
+          "ButtonBehavior": null,
+          "ShapeKind": null,
+          "ButtonKind": null,
+          "StateConfig": null,
+          "CommandConfig": null
         },
         {
           "Id": "text_003",
@@ -696,7 +933,11 @@
             "BorderWidth": 0,
             "BorderStyle": "None",
             "ShadowPreset": "None",
-            "AdvancedCss": null
+            "AdvancedCss": null,
+            "Opacity": 1,
+            "Rotation": 0,
+            "FlipHorizontally": false,
+            "FlipVertically": false
           },
           "Data": {
             "Text": "Recirculation",
@@ -708,12 +949,22 @@
             "Unit": null,
             "DisplayFormat": null,
             "TagBinding": null,
-            "IsReadOnly": false
+            "IsReadOnly": false,
+            "ReadTagId": null,
+            "WriteTagId": null,
+            "ShapeStartX": null,
+            "ShapeStartY": null,
+            "ShapeEndX": null,
+            "ShapeEndY": null
           },
           "Children": null,
           "LegacyPayload": null,
           "Events": null,
-          "ButtonBehavior": null
+          "ButtonBehavior": null,
+          "ShapeKind": null,
+          "ButtonKind": null,
+          "StateConfig": null,
+          "CommandConfig": null
         }
       ],
       "LegacyPayload": null,
@@ -725,7 +976,11 @@
           "PreventDefault": false
         }
       ],
-      "ButtonBehavior": null
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "group_004",
@@ -751,7 +1006,11 @@
         "BorderWidth": 1,
         "BorderStyle": "Dashed",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
       },
       "Data": null,
       "Children": [
@@ -785,7 +1044,11 @@
             "BorderWidth": 1,
             "BorderStyle": "Solid",
             "ShadowPreset": "None",
-            "AdvancedCss": null
+            "AdvancedCss": null,
+            "Opacity": 1,
+            "Rotation": 0,
+            "FlipHorizontally": false,
+            "FlipVertically": false
           },
           "Data": {
             "Text": "Button4",
@@ -797,12 +1060,22 @@
             "Unit": null,
             "DisplayFormat": null,
             "TagBinding": null,
-            "IsReadOnly": false
+            "IsReadOnly": false,
+            "ReadTagId": null,
+            "WriteTagId": null,
+            "ShapeStartX": null,
+            "ShapeStartY": null,
+            "ShapeEndX": null,
+            "ShapeEndY": null
           },
           "Children": null,
           "LegacyPayload": null,
           "Events": null,
-          "ButtonBehavior": null
+          "ButtonBehavior": null,
+          "ShapeKind": null,
+          "ButtonKind": null,
+          "StateConfig": null,
+          "CommandConfig": null
         },
         {
           "Id": "text_004",
@@ -828,7 +1101,11 @@
             "BorderWidth": 0,
             "BorderStyle": "None",
             "ShadowPreset": "None",
-            "AdvancedCss": null
+            "AdvancedCss": null,
+            "Opacity": 1,
+            "Rotation": 0,
+            "FlipHorizontally": false,
+            "FlipVertically": false
           },
           "Data": {
             "Text": "\u00C9vaporateurs",
@@ -840,12 +1117,22 @@
             "Unit": null,
             "DisplayFormat": null,
             "TagBinding": null,
-            "IsReadOnly": false
+            "IsReadOnly": false,
+            "ReadTagId": null,
+            "WriteTagId": null,
+            "ShapeStartX": null,
+            "ShapeStartY": null,
+            "ShapeEndX": null,
+            "ShapeEndY": null
           },
           "Children": null,
           "LegacyPayload": null,
           "Events": null,
-          "ButtonBehavior": null
+          "ButtonBehavior": null,
+          "ShapeKind": null,
+          "ButtonKind": null,
+          "StateConfig": null,
+          "CommandConfig": null
         }
       ],
       "LegacyPayload": null,
@@ -857,7 +1144,11 @@
           "PreventDefault": false
         }
       ],
-      "ButtonBehavior": null
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "group_007",
@@ -883,7 +1174,11 @@
         "BorderWidth": 1,
         "BorderStyle": "Dashed",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
       },
       "Data": null,
       "Children": [
@@ -917,7 +1212,11 @@
             "BorderWidth": 1,
             "BorderStyle": "Solid",
             "ShadowPreset": "None",
-            "AdvancedCss": null
+            "AdvancedCss": null,
+            "Opacity": 1,
+            "Rotation": 0,
+            "FlipHorizontally": false,
+            "FlipVertically": false
           },
           "Data": {
             "Text": "Button6",
@@ -929,12 +1228,22 @@
             "Unit": null,
             "DisplayFormat": null,
             "TagBinding": null,
-            "IsReadOnly": false
+            "IsReadOnly": false,
+            "ReadTagId": null,
+            "WriteTagId": null,
+            "ShapeStartX": null,
+            "ShapeStartY": null,
+            "ShapeEndX": null,
+            "ShapeEndY": null
           },
           "Children": null,
           "LegacyPayload": null,
           "Events": null,
-          "ButtonBehavior": null
+          "ButtonBehavior": null,
+          "ShapeKind": null,
+          "ButtonKind": null,
+          "StateConfig": null,
+          "CommandConfig": null
         },
         {
           "Id": "text_006",
@@ -960,7 +1269,11 @@
             "BorderWidth": 0,
             "BorderStyle": "None",
             "ShadowPreset": "None",
-            "AdvancedCss": null
+            "AdvancedCss": null,
+            "Opacity": 1,
+            "Rotation": 0,
+            "FlipHorizontally": false,
+            "FlipVertically": false
           },
           "Data": {
             "Text": "Chauffage",
@@ -972,17 +1285,31 @@
             "Unit": null,
             "DisplayFormat": null,
             "TagBinding": null,
-            "IsReadOnly": false
+            "IsReadOnly": false,
+            "ReadTagId": null,
+            "WriteTagId": null,
+            "ShapeStartX": null,
+            "ShapeStartY": null,
+            "ShapeEndX": null,
+            "ShapeEndY": null
           },
           "Children": null,
           "LegacyPayload": null,
           "Events": null,
-          "ButtonBehavior": null
+          "ButtonBehavior": null,
+          "ShapeKind": null,
+          "ButtonKind": null,
+          "StateConfig": null,
+          "CommandConfig": null
         }
       ],
       "LegacyPayload": null,
       "Events": null,
-      "ButtonBehavior": null
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     },
     {
       "Id": "group_008",
@@ -1008,7 +1335,11 @@
         "BorderWidth": 1,
         "BorderStyle": "Dashed",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
       },
       "Data": null,
       "Children": [
@@ -1042,7 +1373,11 @@
             "BorderWidth": 1,
             "BorderStyle": "Solid",
             "ShadowPreset": "None",
-            "AdvancedCss": null
+            "AdvancedCss": null,
+            "Opacity": 1,
+            "Rotation": 0,
+            "FlipHorizontally": false,
+            "FlipVertically": false
           },
           "Data": {
             "Text": "Button5",
@@ -1054,12 +1389,22 @@
             "Unit": null,
             "DisplayFormat": null,
             "TagBinding": null,
-            "IsReadOnly": false
+            "IsReadOnly": false,
+            "ReadTagId": null,
+            "WriteTagId": null,
+            "ShapeStartX": null,
+            "ShapeStartY": null,
+            "ShapeEndX": null,
+            "ShapeEndY": null
           },
           "Children": null,
           "LegacyPayload": null,
           "Events": null,
-          "ButtonBehavior": null
+          "ButtonBehavior": null,
+          "ShapeKind": null,
+          "ButtonKind": null,
+          "StateConfig": null,
+          "CommandConfig": null
         },
         {
           "Id": "text_005",
@@ -1085,7 +1430,11 @@
             "BorderWidth": 0,
             "BorderStyle": "None",
             "ShadowPreset": "None",
-            "AdvancedCss": null
+            "AdvancedCss": null,
+            "Opacity": 1,
+            "Rotation": 0,
+            "FlipHorizontally": false,
+            "FlipVertically": false
           },
           "Data": {
             "Text": "Condenseur",
@@ -1097,12 +1446,22 @@
             "Unit": null,
             "DisplayFormat": null,
             "TagBinding": null,
-            "IsReadOnly": false
+            "IsReadOnly": false,
+            "ReadTagId": null,
+            "WriteTagId": null,
+            "ShapeStartX": null,
+            "ShapeStartY": null,
+            "ShapeEndX": null,
+            "ShapeEndY": null
           },
           "Children": null,
           "LegacyPayload": null,
           "Events": null,
-          "ButtonBehavior": null
+          "ButtonBehavior": null,
+          "ShapeKind": null,
+          "ButtonKind": null,
+          "StateConfig": null,
+          "CommandConfig": null
         }
       ],
       "LegacyPayload": null,
@@ -1114,7 +1473,11 @@
           "PreventDefault": false
         }
       ],
-      "ButtonBehavior": null
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     }
   ],
   "BackgroundColor": "#A6A6A6",
@@ -1144,7 +1507,10 @@
       "TargetElementId": null,
       "ClassName": null,
       "TagId": null,
-      "Value": null
+      "Value": null,
+      "Condition": null,
+      "PopupOptions": null,
+      "ConditionGroup": null
     },
     {
       "Id": "action_changepage_click_group_002_win00059",
@@ -1153,7 +1519,10 @@
       "TargetElementId": null,
       "ClassName": null,
       "TagId": null,
-      "Value": null
+      "Value": null,
+      "Condition": null,
+      "PopupOptions": null,
+      "ConditionGroup": null
     },
     {
       "Id": "action_changepage_click_group_008_win00008",
@@ -1162,7 +1531,10 @@
       "TargetElementId": null,
       "ClassName": null,
       "TagId": null,
-      "Value": null
+      "Value": null,
+      "Condition": null,
+      "PopupOptions": null,
+      "ConditionGroup": null
     },
     {
       "Id": "action_changepage_click_group_004_win00007",
@@ -1171,7 +1543,10 @@
       "TargetElementId": null,
       "ClassName": null,
       "TagId": null,
-      "Value": null
+      "Value": null,
+      "Condition": null,
+      "PopupOptions": null,
+      "ConditionGroup": null
     },
     {
       "Id": "action_changepage_click_group_001_win00004",
@@ -1180,7 +1555,10 @@
       "TargetElementId": null,
       "ClassName": null,
       "TagId": null,
-      "Value": null
+      "Value": null,
+      "Condition": null,
+      "PopupOptions": null,
+      "ConditionGroup": null
     }
   ],
   "IncludeInBuild": true,
