@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using ScadaBuilderV2.Domain.Versioning;
 using ScadaBuilderV2.Domain.Scenes;
 using System.Text.Json.Serialization;
@@ -200,6 +201,7 @@ public static class ScadaProjectBuildValidator
         {
             ValidateSceneValueBindings(issues, scene, tagsById);
             ValidateSceneActions(issues, scene, tagsById, pagesById);
+            AuditOrphanedEventBindings(issues, scene);
         }
 
         return issues;
@@ -560,6 +562,38 @@ public static class ScadaProjectBuildValidator
             foreach (var child in FlattenElements(element.ChildElements))
             {
                 yield return child;
+            }
+        }
+    }
+
+    public static void AuditOrphanedEventBindings(
+        List<ScadaBuildValidationIssue> issues,
+        ScadaScene scene)
+    {
+        foreach (var element in FlattenElements(scene.Elements))
+        {
+            if (element.Events is not { Count: > 0 })
+                continue;
+
+            var hasCommandConfig = element is { EffectiveCommandConfig.Commands.Count: > 0 };
+            if (hasCommandConfig)
+                continue;
+
+            var navigateEvents = element.Events
+                .Where(e => e.ActionId?.Contains("changepage", StringComparison.OrdinalIgnoreCase) == true)
+                .ToList();
+
+            if (navigateEvents.Count > 0)
+            {
+                var eventIds = string.Join(", ", navigateEvents.Select(e => e.ActionId));
+                issues.Add(new ScadaBuildValidationIssue(
+                    ScadaBuildValidationSeverity.Warning,
+                    "DEC-ORPHAN-EVENTS",
+                    $"Scene '{scene.Id}': element '{element.Id}' ('{element.DisplayName}') has legacy " +
+                    $"navigate EventBinding(s) [{eventIds}] without a CommandConfig equivalent. " +
+                    $"These events will not function in the TF100Web #scada-host runtime. " +
+                    $"Remove the EventBindings or add a CommandConfig with a Navigate command.",
+                    scene.Id));
             }
         }
     }

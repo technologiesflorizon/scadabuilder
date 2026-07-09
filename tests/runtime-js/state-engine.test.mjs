@@ -188,3 +188,50 @@ test('initPage only resets pause/cache state for elements within its own contain
   assert.equal(applied.length, 0,
     'header_el1 was edit-locked (paused) and must stay paused after an unrelated container re-initializes');
 });
+
+test('initPage is idempotent — calling it twice on the same container does not corrupt state', () => {
+  const window = loadRuntime(['tag-bridge.js', 'expression-evaluator.js', 'effect-applier.js', 'state-engine.js']);
+
+  window.tf100webScadaBuilder = {
+    getTagValue(tagId) {
+      const mappingId = String(tagId).replace(/^tf100\.mapping\./, '');
+      return { '42': 95 }[mappingId] ?? null;
+    },
+  };
+
+  const stateConfig = {
+    defaultEffect: {},
+    states: [
+      {
+        id: 's1', name: 'Alarme', enabled: true,
+        expression: {
+          ast: {
+            type: 'binary', op: 'GreaterThan',
+            left: { type: 'tagRef', tagName: 'tf100.mapping.42' },
+            right: { type: 'literalNumber', value: 80 },
+          },
+        },
+        effect: { backgroundColor: '#E53935' },
+      },
+    ],
+  };
+
+  const applied = [];
+  window.ScadaRuntime.EffectApplier.apply = (element, effect) => applied.push({ id: element.id, effect });
+
+  const element = {
+    id: 'el_idem',
+    _attrs: { 'data-scada-state-config': JSON.stringify(stateConfig), 'data-scada-element-id': 'el_idem' },
+    getAttribute(name) { return Object.prototype.hasOwnProperty.call(this._attrs, name) ? this._attrs[name] : null; },
+    querySelector() { return null; },
+  };
+  const container = { querySelectorAll: (sel) => (sel === '[data-scada-state-config]' ? [element] : []) };
+
+  // Call initPage twice — second call must not throw, corrupt, or change behavior
+  window.ScadaRuntime.StateEngine.initPage(container, 'page1');
+  window.ScadaRuntime.StateEngine.initPage(container, 'page1');
+
+  window.ScadaRuntime.StateEngine.evaluate(element, { '42': 95 });
+  assert.equal(applied.length, 1, 'state engine evaluate still works after double initPage');
+  assert.equal(applied[0].effect.backgroundColor, '#E53935');
+});

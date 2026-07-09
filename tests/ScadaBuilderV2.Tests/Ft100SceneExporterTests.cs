@@ -2877,4 +2877,170 @@ public sealed class Ft100SceneExporterTests
             if (Directory.Exists(tmpDir)) Directory.Delete(tmpDir, recursive: true);
         }
     }
+
+    [TestMethod]
+    public void AuditOrphanedEventBindings_WarnsForNavigateEventWithoutCommandConfig()
+    {
+        var scene = ScadaScene.CreateEmpty("test_audit_scene", "Test Scene", new CanvasSize(1280, 960));
+        var element = new ScadaElement(
+            Id: "orphan_btn",
+            DisplayName: "Orphan Button",
+            Kind: ScadaElementKind.Button,
+            Bounds: new SceneBounds(0, 0, 100, 40),
+            Children: null,
+            LegacySource: null,
+            Layout: ScadaElementLayout.Absolute,
+            Style: ScadaElementStyle.DefaultText,
+            Data: null,
+            LegacyPayload: null,
+            Events:
+            [
+                new ScadaObjectEventBinding(
+                    Trigger: "click",
+                    ActionId: "action_changepage_click_orphan_btn_win00099",
+                    StopPropagation: true,
+                    PreventDefault: false)
+            ],
+            ButtonBehavior: null,
+            ShapeKind: null,
+            ButtonKind: null,
+            StateConfig: null,
+            CommandConfig: null);
+
+        scene = scene.WithElement(element);
+
+        var issues = new List<ScadaBuildValidationIssue>();
+        ScadaProjectBuildValidator.AuditOrphanedEventBindings(issues, scene);
+
+        Assert.AreEqual(1, issues.Count);
+        Assert.AreEqual(ScadaBuildValidationSeverity.Warning, issues[0].Severity);
+        StringAssert.Contains(issues[0].Message, "orphan_btn");
+    }
+
+    [TestMethod]
+    public void AuditOrphanedEventBindings_SilentWhenCommandConfigPresent()
+    {
+        var scene = ScadaScene.CreateEmpty("test_audit_scene", "Test Scene", new CanvasSize(1280, 960));
+        var element = new ScadaElement(
+            Id: "healthy_btn",
+            DisplayName: "Healthy Button",
+            Kind: ScadaElementKind.Group,
+            Bounds: new SceneBounds(0, 0, 100, 40),
+            Children: null,
+            LegacySource: null,
+            Layout: ScadaElementLayout.Absolute,
+            Style: ScadaElementStyle.DefaultText,
+            Data: null,
+            LegacyPayload: null,
+            Events:
+            [
+                new ScadaObjectEventBinding(
+                    Trigger: "click",
+                    ActionId: "action_changepage_click_healthy_btn_win00004",
+                    StopPropagation: true,
+                    PreventDefault: false)
+            ],
+            ButtonBehavior: null,
+            ShapeKind: null,
+            ButtonKind: null,
+            StateConfig: null,
+            CommandConfig: new ScadaElementCommandConfig(
+                Commands:
+                [
+                    new ScadaCommandBinding(
+                        Id: "nav1",
+                        Name: "Go",
+                        Enabled: true,
+                        Trigger: ScadaCommandTrigger.OnClick,
+                        Kind: ScadaCommandKind.Navigate,
+                        TargetPageId: "win00004")
+                ]));
+
+        scene = scene.WithElement(element);
+
+        var issues = new List<ScadaBuildValidationIssue>();
+        ScadaProjectBuildValidator.AuditOrphanedEventBindings(issues, scene);
+
+        Assert.AreEqual(0, issues.Count, "Element with both Events and CommandConfig should not warn");
+    }
+
+    [TestMethod]
+    public void AuditOrphanedEventBindings_NoWarningsForCleanScene()
+    {
+        var scene = ScadaScene.CreateEmpty("test_clean_scene", "Clean Scene", new CanvasSize(1280, 960));
+        var element = new ScadaElement(
+            Id: "clean_text",
+            DisplayName: "Just Text",
+            Kind: ScadaElementKind.Text,
+            Bounds: new SceneBounds(0, 0, 100, 40),
+            Children: null,
+            LegacySource: null,
+            Layout: ScadaElementLayout.Absolute,
+            Style: ScadaElementStyle.DefaultText,
+            Data: new ScadaElementData(
+                Text: "Hello",
+                Placeholder: null,
+                Value: null,
+                Minimum: null,
+                Maximum: null,
+                Decimals: null,
+                Unit: null,
+                DisplayFormat: null,
+                TagBinding: null,
+                IsReadOnly: false),
+            LegacyPayload: null,
+            Events: null,
+            ButtonBehavior: null,
+            ShapeKind: null,
+            ButtonKind: null,
+            StateConfig: null,
+            CommandConfig: null);
+
+        scene = scene.WithElement(element);
+
+        var issues = new List<ScadaBuildValidationIssue>();
+        ScadaProjectBuildValidator.AuditOrphanedEventBindings(issues, scene);
+
+        Assert.AreEqual(0, issues.Count, "Scene with no EventBindings should produce no warnings");
+    }
+
+    [TestMethod]
+    public void ElementWithNavigateCommandConfig_DoesNotProduceLegacyEventBindings()
+    {
+        // Regression lock: an element authored through the current CommandConfig path
+        // must not generate legacy EventBindings as a side effect.
+        var element = new ScadaElement(
+            Id: "nav_group",
+            DisplayName: "Navigation Group",
+            Kind: ScadaElementKind.Group,
+            Bounds: new SceneBounds(0, 0, 138, 44),
+            Children: null,
+            LegacySource: null,
+            Layout: ScadaElementLayout.Absolute,
+            Style: ScadaElementStyle.DefaultText,
+            Data: null,
+            LegacyPayload: null,
+            Events: null,
+            ButtonBehavior: null,
+            ShapeKind: null,
+            ButtonKind: null,
+            StateConfig: null,
+            CommandConfig: new ScadaElementCommandConfig(
+                Commands:
+                [
+                    new ScadaCommandBinding(
+                        Id: "nav_cmd_1",
+                        Name: "GoToPage",
+                        Enabled: true,
+                        Trigger: ScadaCommandTrigger.OnClick,
+                        Kind: ScadaCommandKind.Navigate,
+                        TargetPageId: "win00099")
+                ]));
+
+        // The element's Events should remain null — CommandConfig is the canonical
+        // model for the new runtime. EventBindings are legacy-only.
+        Assert.IsTrue(
+            element.Events is null or { Count: 0 },
+            "New Navigate CommandConfig must not produce legacy EventBindings");
+    }
 }

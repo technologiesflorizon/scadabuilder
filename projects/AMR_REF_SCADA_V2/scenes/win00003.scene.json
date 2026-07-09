@@ -968,14 +968,7 @@
         }
       ],
       "LegacyPayload": null,
-      "Events": [
-        {
-          "Trigger": "click",
-          "ActionId": "action_changepage_click_group_003_win00017",
-          "StopPropagation": true,
-          "PreventDefault": false
-        }
-      ],
+      "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
       "ButtonKind": null,
@@ -1136,14 +1129,7 @@
         }
       ],
       "LegacyPayload": null,
-      "Events": [
-        {
-          "Trigger": "click",
-          "ActionId": "action_changepage_click_group_004_win00007",
-          "StopPropagation": true,
-          "PreventDefault": false
-        }
-      ],
+      "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
       "ButtonKind": null,
@@ -1465,14 +1451,7 @@
         }
       ],
       "LegacyPayload": null,
-      "Events": [
-        {
-          "Trigger": "click",
-          "ActionId": "action_changepage_click_group_008_win00008",
-          "StopPropagation": true,
-          "PreventDefault": false
-        }
-      ],
+      "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
       "ButtonKind": null,
@@ -1501,45 +1480,9 @@
   "Background": null,
   "Actions": [
     {
-      "Id": "action_changepage_click_group_003_win00017",
-      "Kind": "Navigate",
-      "TargetPageId": "win00017",
-      "TargetElementId": null,
-      "ClassName": null,
-      "TagId": null,
-      "Value": null,
-      "Condition": null,
-      "PopupOptions": null,
-      "ConditionGroup": null
-    },
-    {
       "Id": "action_changepage_click_group_002_win00059",
       "Kind": "Navigate",
       "TargetPageId": "win00059",
-      "TargetElementId": null,
-      "ClassName": null,
-      "TagId": null,
-      "Value": null,
-      "Condition": null,
-      "PopupOptions": null,
-      "ConditionGroup": null
-    },
-    {
-      "Id": "action_changepage_click_group_008_win00008",
-      "Kind": "Navigate",
-      "TargetPageId": "win00008",
-      "TargetElementId": null,
-      "ClassName": null,
-      "TagId": null,
-      "Value": null,
-      "Condition": null,
-      "PopupOptions": null,
-      "ConditionGroup": null
-    },
-    {
-      "Id": "action_changepage_click_group_004_win00007",
-      "Kind": "Navigate",
-      "TargetPageId": "win00007",
       "TargetElementId": null,
       "ClassName": null,
       "TagId": null,
