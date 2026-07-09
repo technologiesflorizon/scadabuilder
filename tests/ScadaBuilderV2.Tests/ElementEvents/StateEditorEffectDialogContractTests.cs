@@ -27,8 +27,11 @@ public sealed class StateEditorEffectDialogContractTests
     public void EffectEditorDialog_AddModeInitializesDefaultValues()
     {
         var source = ReadAppFile("EffectEditorDialog.xaml.cs");
+        var selectionHandlerIndex = source.IndexOf("private void OnTypeSelectionChanged", StringComparison.Ordinal);
+        var defaultPopulateIndex = source.IndexOf("PopulateFields(ScadaEffectBlock.Empty)", selectionHandlerIndex, StringComparison.Ordinal);
 
-        StringAssert.Contains(source, "PopulateFields(ScadaEffectBlock.Empty)");
+        Assert.IsTrue(selectionHandlerIndex >= 0, "EffectEditorDialog must handle add-mode type changes.");
+        Assert.IsTrue(defaultPopulateIndex > selectionHandlerIndex, "Changing the add-mode type must initialize defaults for the selected effect kind.");
         StringAssert.Contains(source, "OpacitySlider.Value = effect.Opacity ?? 1.0");
         StringAssert.Contains(source, "FilterOpacitySlider.Value = effect.ColorFilterOpacity ?? 1.0");
         StringAssert.Contains(source, "FilterColorPicker.SetColor(effect.ColorFilterColor ?? \"#E53935\")");

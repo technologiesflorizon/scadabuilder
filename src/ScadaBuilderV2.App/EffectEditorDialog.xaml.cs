@@ -99,6 +99,7 @@ internal partial class EffectEditorDialog : Window
         {
             _selectedKind = item.Kind;
             ShowParameterPanel(_selectedKind);
+            PopulateFields(ScadaEffectBlock.Empty);
         }
     }
 

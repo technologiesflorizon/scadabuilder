@@ -2050,6 +2050,149 @@
         "Unit": ""
       },
       {
+        "Id": "tf100.mapping.192",
+        "DisplayName": "Noeud1_N15_00_Commande_MC_140",
+        "KeywordLabel": "Noeud1_N15_00_Commande_MC_140",
+        "KeywordType": "SIGNAL",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=Noeud1_N15_00_Commande_MC_140",
+        "Datatype": "Bool\u00E9en",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.193",
+        "DisplayName": "Noeud1_N15_01_Commande_MC_1A",
+        "KeywordLabel": "Noeud1_N15_01_Commande_MC_1A",
+        "KeywordType": "SIGNAL",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=Noeud1_N15_01_Commande_MC_1A",
+        "Datatype": "Bool\u00E9en",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.194",
+        "DisplayName": "Noeud1_N15_02_Commande_MC_1B",
+        "KeywordLabel": "Noeud1_N15_02_Commande_MC_1B",
+        "KeywordType": "SIGNAL",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=Noeud1_N15_02_Commande_MC_1B",
+        "Datatype": "Bool\u00E9en",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.195",
+        "DisplayName": "Noeud1_N15_03_Commande_MC_120A",
+        "KeywordLabel": "Noeud1_N15_03_Commande_MC_120A",
+        "KeywordType": "SIGNAL",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=Noeud1_N15_03_Commande_MC_120A",
+        "Datatype": "Bool\u00E9en",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.196",
+        "DisplayName": "Noeud1_N15_04_Commande_MC_120C",
+        "KeywordLabel": "Noeud1_N15_04_Commande_MC_120C",
+        "KeywordType": "SIGNAL",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=Noeud1_N15_04_Commande_MC_120C",
+        "Datatype": "Bool\u00E9en",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.197",
+        "DisplayName": "Noeud1_N15_05_Commande_MC_120B",
+        "KeywordLabel": "Noeud1_N15_05_Commande_MC_120B",
+        "KeywordType": "SIGNAL",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=Noeud1_N15_05_Commande_MC_120B",
+        "Datatype": "Bool\u00E9en",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.198",
+        "DisplayName": "Noeud1_N15_06_Commande_MC_110",
+        "KeywordLabel": "Noeud1_N15_06_Commande_MC_110",
+        "KeywordType": "SIGNAL",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=Noeud1_N15_06_Commande_MC_110",
+        "Datatype": "Bool\u00E9en",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.199",
+        "DisplayName": "Noeud1_N15_08_Commande_MC_51B",
+        "KeywordLabel": "Noeud1_N15_08_Commande_MC_51B",
+        "KeywordType": "SIGNAL",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=Noeud1_N15_08_Commande_MC_51B",
+        "Datatype": "Bool\u00E9en",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.200",
+        "DisplayName": "Noeud1_N15_09_Commande_MC_58A",
+        "KeywordLabel": "Noeud1_N15_09_Commande_MC_58A",
+        "KeywordType": "SIGNAL",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=Noeud1_N15_09_Commande_MC_58A",
+        "Datatype": "Bool\u00E9en",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.201",
+        "DisplayName": "Noeud1_N15_10_Commande_MC_58B",
+        "KeywordLabel": "Noeud1_N15_10_Commande_MC_58B",
+        "KeywordType": "SIGNAL",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=Noeud1_N15_10_Commande_MC_58B",
+        "Datatype": "Bool\u00E9en",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
+        "Id": "tf100.mapping.202",
+        "DisplayName": "Noeud1_N15_11_Commande_MC_135",
+        "KeywordLabel": "Noeud1_N15_11_Commande_MC_135",
+        "KeywordType": "SIGNAL",
+        "Device": "NX102 systeme refrig\u00E9ration",
+        "Protocol": "NX102 OPC UA",
+        "AddressUri": "opcua://ns=4;s=Noeud1_N15_11_Commande_MC_135",
+        "Datatype": "Bool\u00E9en",
+        "Writeable": false,
+        "Enabled": true,
+        "Unit": ""
+      },
+      {
         "Id": "tf100.mapping.164",
         "DisplayName": "PE_119",
         "KeywordLabel": "PE_119",
@@ -2466,7 +2609,7 @@
         "Unit": ""
       }
     ],
-    "SourceFileName": "20260617_210900_tf100web-scada-tags (1).json",
-    "ImportedAtUtc": "2026-06-17T21:09:00.9660535+00:00"
+    "SourceFileName": "20260709_143006_tf100web-scada-tags.json",
+    "ImportedAtUtc": "2026-07-09T14:30:06.0408223+00:00"
   }
 }

@@ -481,7 +481,7 @@
         "FontFamily": "Segoe UI",
         "FontSize": 14,
         "Foreground": "#0F2A30",
-        "Background": "#2CC83E",
+        "Background": "#BBBBBB",
         "BorderColor": "#2090A0",
         "BorderWidth": 2,
         "BorderStyle": "Solid",
@@ -516,7 +516,121 @@
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
       "ButtonKind": null,
-      "StateConfig": null,
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [
+          {
+            "Id": "39f6234ce589409991fff701db645ce2",
+            "Name": "EnMarche",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Noeud1_N15_02_Commande_MC_1B} == true",
+              "referencedTags": [
+                "Noeud1_N15_02_Commande_MC_1B"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Noeud1_N15_02_Commande_MC_1B"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": true
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": null,
+              "BorderColor": null,
+              "BorderWidth": null,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": "#12B729",
+              "ColorFilterOpacity": 0.8048780487804877,
+              "ColorFilterHalo": false,
+              "ColorFilterHaloColor": null
+            }
+          },
+          {
+            "Id": "c3ac256fc7e04152bd42f996c1d7aef9",
+            "Name": "Arret",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Noeud1_N15_05_Commande_MC_120B} == false",
+              "referencedTags": [
+                "Noeud1_N15_05_Commande_MC_120B"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Noeud1_N15_05_Commande_MC_120B"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": null,
+              "BorderColor": null,
+              "BorderWidth": null,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": "#E53935",
+              "ColorFilterOpacity": 0.8048780487804877,
+              "ColorFilterHalo": false,
+              "ColorFilterHaloColor": null
+            }
+          }
+        ],
+        "ReadVariable": null
+      },
       "CommandConfig": null
     },
     {
@@ -780,28 +894,28 @@
         "States": [
           {
             "Id": "6db67677037d40e099ce4a1c0a389454",
-            "Name": "test2",
+            "Name": "Cond1EnMarche",
             "Enabled": true,
             "Expression": {
-              "source": "{PE_16} == 100",
+              "source": "{Noeud1_N15_01_Commande_MC_1A} == true",
               "referencedTags": [
-                "PE_16"
+                "Noeud1_N15_01_Commande_MC_1A"
               ],
               "ast": {
                 "type": "binary",
                 "Op": "Equal",
                 "Left": {
                   "type": "tagRef",
-                  "TagName": "PE_16"
+                  "TagName": "Noeud1_N15_01_Commande_MC_1A"
                 },
                 "Right": {
-                  "type": "literalNumber",
-                  "Value": 100
+                  "type": "literalBool",
+                  "Value": true
                 }
               }
             },
             "Effect": {
-              "BackgroundColor": "#FF0000",
+              "BackgroundColor": null,
               "BorderColor": null,
               "BorderWidth": null,
               "TextColor": null,
@@ -811,9 +925,48 @@
               "Opacity": null,
               "Rotation": null,
               "Animation": null,
-              "ColorFilterColor": null,
-              "ColorFilterOpacity": null,
-              "ColorFilterHalo": null,
+              "ColorFilterColor": "#12B729",
+              "ColorFilterOpacity": 1,
+              "ColorFilterHalo": false,
+              "ColorFilterHaloColor": null
+            }
+          },
+          {
+            "Id": "f1e8cb47a7794ead96981105e7b93771",
+            "Name": "Cond1A_Arret",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Noeud1_N15_01_Commande_MC_1A} == false",
+              "referencedTags": [
+                "Noeud1_N15_01_Commande_MC_1A"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Noeud1_N15_01_Commande_MC_1A"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": null,
+              "BorderColor": null,
+              "BorderWidth": null,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": "#FF0300",
+              "ColorFilterOpacity": 0.8048780487804877,
+              "ColorFilterHalo": false,
               "ColorFilterHaloColor": null
             }
           }
@@ -966,7 +1119,86 @@
           "ColorFilterHalo": null,
           "ColorFilterHaloColor": null
         },
-        "States": [],
+        "States": [
+          {
+            "Id": "ce41152b22f7404398f491a1fdc00bad",
+            "Name": "Running",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Noeud1_N15_03_Commande_MC_120A} == true",
+              "referencedTags": [
+                "Noeud1_N15_03_Commande_MC_120A"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Noeud1_N15_03_Commande_MC_120A"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": true
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": null,
+              "BorderColor": null,
+              "BorderWidth": null,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": "#12B729",
+              "ColorFilterOpacity": 0.8021680216802167,
+              "ColorFilterHalo": false,
+              "ColorFilterHaloColor": null
+            }
+          },
+          {
+            "Id": "a44d8d269f2f445da2bff9544bd82a36",
+            "Name": "arret",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Noeud1_N15_03_Commande_MC_120A} == false",
+              "referencedTags": [
+                "Noeud1_N15_03_Commande_MC_120A"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Noeud1_N15_03_Commande_MC_120A"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": null,
+              "BorderColor": null,
+              "BorderWidth": null,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": "#E53935",
+              "ColorFilterOpacity": 0.7994579945799457,
+              "ColorFilterHalo": false,
+              "ColorFilterHaloColor": null
+            }
+          }
+        ],
         "ReadVariable": null
       },
       "CommandConfig": null
@@ -3304,7 +3536,7 @@
             "Trigger": "OnClick",
             "Kind": "WriteTag",
             "Confirmation": null,
-            "WriteTagId": "tf100.mapping.161",
+            "WriteTagId": "tf100.mapping.159",
             "ReadTagId": null,
             "WriteMode": null,
             "OnValue": null,
@@ -3478,7 +3710,45 @@
       "ButtonBehavior": null,
       "ShapeKind": null,
       "ButtonKind": null,
-      "StateConfig": null,
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [],
+        "ReadVariable": {
+          "TagId": "tf100.mapping.165",
+          "DisplayFormat": null
+        }
+      },
       "CommandConfig": null
     },
     {
@@ -3649,7 +3919,121 @@
       "ButtonBehavior": null,
       "ShapeKind": null,
       "ButtonKind": null,
-      "StateConfig": null,
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [
+          {
+            "Id": "cc8514d8b6be466ca29aa23f1e9a0d91",
+            "Name": "EnMarche",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Noeud1_N15_02_Commande_MC_1B} == false",
+              "referencedTags": [
+                "Noeud1_N15_02_Commande_MC_1B"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Noeud1_N15_02_Commande_MC_1B"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": null,
+              "BorderColor": null,
+              "BorderWidth": null,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": "#12B729",
+              "ColorFilterOpacity": 1,
+              "ColorFilterHalo": false,
+              "ColorFilterHaloColor": null
+            }
+          },
+          {
+            "Id": "fe8a6a8f53d54d659a627c752f139d10",
+            "Name": "Arret",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Noeud1_N15_02_Commande_MC_1B} == false",
+              "referencedTags": [
+                "Noeud1_N15_02_Commande_MC_1B"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Noeud1_N15_02_Commande_MC_1B"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": null,
+              "BorderColor": null,
+              "BorderWidth": null,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": "#E53935",
+              "ColorFilterOpacity": 1,
+              "ColorFilterHalo": false,
+              "ColorFilterHaloColor": null
+            }
+          }
+        ],
+        "ReadVariable": null
+      },
       "CommandConfig": null
     },
     {
@@ -4241,7 +4625,7 @@
         "FontFamily": "Segoe UI",
         "FontSize": 14,
         "Foreground": "#0F2A30",
-        "Background": "#2CC83E",
+        "Background": "#BBBBBB",
         "BorderColor": "#2090A0",
         "BorderWidth": 2,
         "BorderStyle": "Solid",
@@ -4276,7 +4660,82 @@
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
       "ButtonKind": null,
-      "StateConfig": null,
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [
+          {
+            "Id": "cf4c4214d8fc41c4be8d899173fe4229",
+            "Name": "Arret",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Noeud1_N15_04_Commande_MC_120C} == false",
+              "referencedTags": [
+                "Noeud1_N15_04_Commande_MC_120C"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Noeud1_N15_04_Commande_MC_120C"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": null,
+              "BorderColor": null,
+              "BorderWidth": null,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": "#E53935",
+              "ColorFilterOpacity": 0.7967479674796749,
+              "ColorFilterHalo": false,
+              "ColorFilterHaloColor": null
+            }
+          }
+        ],
+        "ReadVariable": null
+      },
       "CommandConfig": null
     },
     {
@@ -5310,7 +5769,7 @@
       "DisplayName": "Pipe_Elbow",
       "Kind": "Custom",
       "Bounds": {
-        "X": 984,
+        "X": 985,
         "Y": 386,
         "Width": 45,
         "Height": 56
