@@ -10,7 +10,7 @@ Référence: `docs/superpowers/specs/2026-07-07-element-plus-state-command-event
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-09 | `V2.1.3.0000` | `PENDING` | Création de la spec approuvée pour le dialogue de configuration d'effet, l'extraction des types UI partagés et le correctif de teinte du ColorPicker. |
+| 2026-07-09 | `V2.1.3.0000` | `c9f9b17` | Création de la spec approuvée pour le dialogue de configuration d'effet, l'extraction des types UI partagés et le correctif de teinte du ColorPicker. |
 
 ## 1. Problème
 

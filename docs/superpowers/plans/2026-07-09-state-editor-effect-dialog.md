@@ -8,8 +8,8 @@ Document version: `V2.1.3.0001`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-09 | `V2.1.3.0001` | `PENDING` | Correction des frontières de commits compilables, des valeurs par défaut du dialogue, des tests contractuels et des commandes PowerShell. |
-| 2026-07-09 | `V2.1.3.0000` | `PENDING` | Création du plan d'implémentation pour le dialogue de configuration d'effet, le stockage par dictionnaire et le correctif de teinte du ColorPicker. |
+| 2026-07-09 | `V2.1.3.0001` | `c9f9b17` | Correction des frontières de commits compilables, des valeurs par défaut du dialogue, des tests contractuels et des commandes PowerShell. |
+| 2026-07-09 | `V2.1.3.0000` | `c9f9b17` | Création du plan d'implémentation pour le dialogue de configuration d'effet, le stockage par dictionnaire et le correctif de teinte du ColorPicker. |
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
