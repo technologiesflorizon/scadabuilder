@@ -1,5 +1,16 @@
 # State Editor Effect Dialog & Hue Slider Fix — Implementation Plan
 
+Date: 2026-07-09
+Status: Draft implementation plan — pending execution approval
+Document version: `V2.1.3.0001`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-09 | `V2.1.3.0001` | `PENDING` | Correction des frontières de commits compilables, des valeurs par défaut du dialogue, des tests contractuels et des commandes PowerShell. |
+| 2026-07-09 | `V2.1.3.0000` | `PENDING` | Création du plan d'implémentation pour le dialogue de configuration d'effet, le stockage par dictionnaire et le correctif de teinte du ColorPicker. |
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Replace the inline effect editor in `ElementStateRuleDialog` with a modal `EffectEditorDialog`, fix the frozen hue slider in `ColorPickerDialog`, and extract shared UI types.
@@ -13,6 +24,8 @@
 - No changes to `ScadaEffectBlock`, `ScadaStateRule`, or `ScadaElementStateConfig` (domain model stable)
 - `BuildEffectFromUi()` must produce the same cumulative `ScadaEffectBlock` as before
 - Editor artifacts (dialog, preview) must not leak into `.sb2`/`.sep` export
+- PowerShell commands must be run from `F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2`
+- Do not commit an intentionally non-compiling intermediate state; each code commit must build
 - `dotnet test --filter "FullyQualifiedName~Ft100SceneExporterTests"` must stay green
 - APIs: XML docs on public surfaces
 - Spec: `docs/superpowers/specs/2026-07-09-state-editor-effect-dialog-design.md`
@@ -88,14 +101,16 @@ In `src/ScadaBuilderV2.App/ElementStateRuleDialog.xaml.cs`, delete lines 59-64 (
 
 - [ ] **Step 4: Build and verify**
 
-```bash
+```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
 dotnet build src/ScadaBuilderV2.App/ScadaBuilderV2.App.csproj
 ```
 Expected: Build succeeds with no errors.
 
 - [ ] **Step 5: Commit**
 
-```bash
+```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
 git add src/ScadaBuilderV2.App/EffectKind.cs src/ScadaBuilderV2.App/EffectTypeItem.cs src/ScadaBuilderV2.App/ElementStateRuleDialog.xaml.cs
 git commit -m "refactor: extract EffectKind and EffectTypeItem into shared internal types"
 ```
@@ -176,14 +191,16 @@ private void OnHueSliderChanged(object sender, RoutedPropertyChangedEventArgs<do
 
 - [ ] **Step 4: Build and verify compilation**
 
-```bash
+```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
 dotnet build src/ScadaBuilderV2.App/ScadaBuilderV2.App.csproj
 ```
 Expected: Build succeeds.
 
 - [ ] **Step 5: Commit**
 
-```bash
+```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
 git add src/ScadaBuilderV2.App/ColorPickerDialog.xaml.cs
 git commit -m "fix: prevent hue slider freeze on achromatic colors in ColorPickerDialog"
 ```
@@ -331,19 +348,15 @@ Create `src/ScadaBuilderV2.App/EffectEditorDialog.xaml`:
 </Window>
 ```
 
-- [ ] **Step 2: Build to verify XAML compiles**
+- [ ] **Step 2: Continue directly to Task 4 before building**
 
-```bash
-dotnet build src/ScadaBuilderV2.App/ScadaBuilderV2.App.csproj
-```
-Expected: Build fails with "missing OnTypeSelectionChanged, OnSaveClick, etc." — this is expected, code-behind coming next.
+Do not build or commit after creating only the XAML. The XAML references code-behind handlers
+(`OnTypeSelectionChanged`, `OnSaveClick`, slider handlers, halo handlers) that are created in
+Task 4, so this intermediate state is intentionally incomplete.
 
-- [ ] **Step 3: Commit**
+- [ ] **Step 3: Do not commit this task alone**
 
-```bash
-git add src/ScadaBuilderV2.App/EffectEditorDialog.xaml
-git commit -m "feat: add EffectEditorDialog XAML with dynamic effect parameter panels"
-```
+Task 3 and Task 4 share one commit after the app project builds successfully.
 
 ---
 
@@ -437,7 +450,15 @@ public partial class EffectEditorDialog : Window
                 .ToArray();
             TypeListBox.ItemsSource = availableItems;
             if (availableItems.Length > 0)
+            {
                 TypeListBox.SelectedIndex = 0;
+                if (TypeListBox.SelectedItem is EffectTypeItem selected)
+                {
+                    _selectedKind = selected.Kind;
+                    ShowParameterPanel(_selectedKind);
+                    PopulateFields(ScadaEffectBlock.Empty);
+                }
+            }
         }
     }
 
@@ -661,16 +682,18 @@ public partial class EffectEditorDialog : Window
 
 - [ ] **Step 2: Build and verify**
 
-```bash
+```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
 dotnet build src/ScadaBuilderV2.App/ScadaBuilderV2.App.csproj
 ```
 Expected: Build succeeds.
 
 - [ ] **Step 3: Commit**
 
-```bash
-git add src/ScadaBuilderV2.App/EffectEditorDialog.xaml.cs
-git commit -m "feat: add EffectEditorDialog code-behind with type selection and per-kind validation"
+```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
+git add src/ScadaBuilderV2.App/EffectEditorDialog.xaml src/ScadaBuilderV2.App/EffectEditorDialog.xaml.cs
+git commit -m "feat: add EffectEditorDialog with type selection and per-kind validation"
 ```
 
 ---
@@ -731,19 +754,15 @@ In `src/ScadaBuilderV2.App/ElementStateRuleDialog.xaml`, replace the entire `Scr
         </ScrollViewer>
 ```
 
-- [ ] **Step 2: Build to verify XAML compiles**
+- [ ] **Step 2: Continue directly to Task 6 before building**
 
-```bash
-dotnet build src/ScadaBuilderV2.App/ScadaBuilderV2.App.csproj
-```
-Expected: Build may fail due to code-behind references to removed controls. This will be resolved in Task 6.
+Do not build or commit after changing only the XAML. The existing code-behind still references
+controls removed in this task (`EffectTypeComboBox`, `EffectEditorPanel`, and per-effect editor
+controls). Task 6 removes those references.
 
-- [ ] **Step 3: Commit**
+- [ ] **Step 3: Do not commit this task alone**
 
-```bash
-git add src/ScadaBuilderV2.App/ElementStateRuleDialog.xaml
-git commit -m "refactor: remove inline effect editor from ElementStateRuleDialog XAML"
-```
+Task 5 and Task 6 share one commit after the app project builds successfully.
 
 ---
 
@@ -1056,15 +1075,17 @@ private void SelectEffectInList(EffectKind kind)
 
 - [ ] **Step 13: Build and verify**
 
-```bash
+```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
 dotnet build src/ScadaBuilderV2.App/ScadaBuilderV2.App.csproj
 ```
 Expected: Build succeeds with no errors.
 
 - [ ] **Step 14: Commit**
 
-```bash
-git add src/ScadaBuilderV2.App/ElementStateRuleDialog.xaml.cs
+```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
+git add src/ScadaBuilderV2.App/ElementStateRuleDialog.xaml src/ScadaBuilderV2.App/ElementStateRuleDialog.xaml.cs
 git commit -m "refactor: wire ElementStateRuleDialog to EffectEditorDialog, use dictionary storage"
 ```
 
@@ -1077,132 +1098,154 @@ git commit -m "refactor: wire ElementStateRuleDialog to EffectEditorDialog, use 
 
 - [ ] **Step 1: Run the full test suite**
 
-```bash
+```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
 dotnet test ScadaBuilderV2.sln
 ```
 Expected: All existing tests pass.
 
 - [ ] **Step 2: Run export-specific tests**
 
-```bash
+```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
 dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~Ft100SceneExporterTests"
 ```
 Expected: All export tests pass. This confirms the `.sb2` contract is unchanged.
 
 - [ ] **Step 3: Run ElementEvents tests**
 
-```bash
+```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
 dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~ScadaEffectBlockTests"
 ```
 Expected: All pass.
 
 - [ ] **Step 4: Run context menu / contract tests (reference ColorPickerField)**
 
-```bash
+```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
 dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~WebViewContextMenuScriptTests"
 ```
 Expected: All pass (these reference `ColorPickerField` and `ColorPickerDialog` element names — verify no breakage).
 
-- [ ] **Step 5: Commit if all green**
+- [ ] **Step 5: Record validation in the implementation closeout**
 
-```bash
-git commit --allow-empty -m "chore: verify all tests pass after effect editor refactor"
-```
-(Use `--allow-empty` since no code changes in this task.)
+Do not create an empty commit for test execution. Record the commands run and their results in the
+implementation closeout instead.
 
 ---
 
-### Task 8: Add targeted tests
+### Task 8: Add targeted contract tests
 
 **Files:**
-- Create: `tests/ScadaBuilderV2.Tests/ElementEvents/ColorPickerDialogTests.cs`
+- Create: `tests/ScadaBuilderV2.Tests/ElementEvents/StateEditorEffectDialogContractTests.cs`
 
 **Interfaces:**
-- Tests `ToHsv` with `fallbackHue` parameter
-- Tests `OnHueSliderChanged` color reconstruction for achromatic inputs
+- Tests the WPF implementation contract by reading source files, because `ScadaBuilderV2.Tests`
+  does not currently reference the WPF app project and the relevant color math/event handlers are
+  private UI code.
+- Verifies `ToHsv` has `fallbackHue`, `UpdateColorControls` passes `_hue`, `OnHueSliderChanged`
+  exits achromatic colors, `EffectEditorDialog` initializes default add-mode values, and
+  `ElementStateRuleDialog` no longer contains the removed inline editor controls.
 
-- [ ] **Step 1: Create color picker test file**
+- [ ] **Step 1: Create contract test file**
 
-Create `tests/ScadaBuilderV2.Tests/ElementEvents/ColorPickerDialogTests.cs`:
+Create `tests/ScadaBuilderV2.Tests/ElementEvents/StateEditorEffectDialogContractTests.cs`:
 
 ```csharp
-using System.Windows.Media;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 namespace ScadaBuilderV2.Tests.ElementEvents;
 
 [TestClass]
-public sealed class ColorPickerDialogTests
+public sealed class StateEditorEffectDialogContractTests
 {
     [TestMethod]
-    public void TryParseCssColor_HexString_ReturnsTrue()
+    public void ColorPickerDialog_PreservesHueFallbackForAchromaticColors()
     {
-        var result = ScadaBuilderV2.App.ColorPickerDialog.TryParseCssColor("#FF0000", out var color);
-        Assert.IsTrue(result);
-        Assert.AreEqual(255, color.R);
-        Assert.AreEqual(0, color.G);
-        Assert.AreEqual(0, color.B);
+        var source = ReadAppFile("ColorPickerDialog.xaml.cs");
+
+        StringAssert.Contains(source, "ToHsv(Color color, double fallbackHue = 0)");
+        StringAssert.Contains(source, "? fallbackHue");
+        StringAssert.Contains(source, "ToHsv(color, fallbackHue: _hue)");
     }
 
     [TestMethod]
-    public void TryParseCssColor_WhiteString_ReturnsTrue()
+    public void ColorPickerDialog_HueSliderEscapesGrayWhiteAndBlack()
     {
-        var result = ScadaBuilderV2.App.ColorPickerDialog.TryParseCssColor("#FFFFFF", out _);
-        Assert.IsTrue(result);
+        var source = ReadAppFile("ColorPickerDialog.xaml.cs");
+
+        StringAssert.Contains(source, "if (_saturation <= 0) _saturation = 1.0;");
+        StringAssert.Contains(source, "if (_value <= 0) _value = 1.0;");
+        StringAssert.Contains(source, "FromHsv(_hue, _saturation, _value)");
     }
 
     [TestMethod]
-    public void TryParseCssColor_BlackString_ReturnsTrue()
+    public void EffectEditorDialog_AddModeInitializesDefaultValues()
     {
-        var result = ScadaBuilderV2.App.ColorPickerDialog.TryParseCssColor("#000000", out _);
-        Assert.IsTrue(result);
+        var source = ReadAppFile("EffectEditorDialog.xaml.cs");
+
+        StringAssert.Contains(source, "PopulateFields(ScadaEffectBlock.Empty)");
+        StringAssert.Contains(source, "OpacitySlider.Value = effect.Opacity ?? 1.0");
+        StringAssert.Contains(source, "FilterOpacitySlider.Value = effect.ColorFilterOpacity ?? 1.0");
+        StringAssert.Contains(source, "FilterColorPicker.SetColor(effect.ColorFilterColor ?? \"#E53935\")");
     }
 
     [TestMethod]
-    public void TryParseCssColor_InvalidString_ReturnsFalse()
+    public void ElementStateRuleDialog_RemovesInlineEffectEditorControls()
     {
-        var result = ScadaBuilderV2.App.ColorPickerDialog.TryParseCssColor("not-a-color", out _);
-        Assert.IsFalse(result);
+        var xaml = ReadAppFile("ElementStateRuleDialog.xaml");
+        var code = ReadAppFile("ElementStateRuleDialog.xaml.cs");
+
+        Assert.IsFalse(xaml.Contains("EffectEditorPanel", StringComparison.Ordinal));
+        Assert.IsFalse(xaml.Contains("EffectTypeComboBox", StringComparison.Ordinal));
+        Assert.IsFalse(code.Contains("ShowEffectEditor", StringComparison.Ordinal));
+        StringAssert.Contains(code, "Dictionary<EffectKind, ScadaEffectBlock>");
+        StringAssert.Contains(code, "new EffectEditorDialog(");
     }
 
     [TestMethod]
-    public void TryParseCssColor_EmptyString_ReturnsFalse()
+    public void EffectEditorDialog_ExposesRequiredResultContract()
     {
-        var result = ScadaBuilderV2.App.ColorPickerDialog.TryParseCssColor("", out _);
-        Assert.IsFalse(result);
+        var source = ReadAppFile("EffectEditorDialog.xaml.cs");
+
+        StringAssert.Contains(source, "public EffectKind ResultKind");
+        StringAssert.Contains(source, "public ScadaEffectBlock ResultEffect");
+        StringAssert.Contains(source, "ColorPickerDialog.TryParseCssColor");
     }
 
-    [TestMethod]
-    public void TryParseCssColor_Null_ReturnsFalse()
+    private static string ReadAppFile(string fileName)
     {
-        var result = ScadaBuilderV2.App.ColorPickerDialog.TryParseCssColor(null, out _);
-        Assert.IsFalse(result);
-    }
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            var candidate = Path.Combine(directory.FullName, "src", "ScadaBuilderV2.App", fileName);
+            if (File.Exists(candidate))
+            {
+                return File.ReadAllText(candidate);
+            }
 
-    [TestMethod]
-    public void TryParseCssColor_RgbFunction_ReturnsTrue()
-    {
-        var result = ScadaBuilderV2.App.ColorPickerDialog.TryParseCssColor("rgb(255, 0, 0)", out var color);
-        Assert.IsTrue(result);
-        Assert.AreEqual(255, color.R);
-        Assert.AreEqual(0, color.G);
-        Assert.AreEqual(0, color.B);
+            directory = directory.Parent;
+        }
+
+        Assert.Fail($"Unable to locate src/ScadaBuilderV2.App/{fileName} from test output directory.");
+        return string.Empty;
     }
 }
 ```
 
-- [ ] **Step 2: Run the new tests**
+- [ ] **Step 2: Run the new contract tests**
 
-```bash
-dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~ColorPickerDialogTests"
+```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
+dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~StateEditorEffectDialogContractTests"
 ```
-Expected: All 7 tests pass.
+Expected: All 5 tests pass.
 
 - [ ] **Step 3: Commit**
 
-```bash
-git add tests/ScadaBuilderV2.Tests/ElementEvents/ColorPickerDialogTests.cs
-git commit -m "test: add ColorPickerDialog.TryParseCssColor unit tests"
+```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
+git add tests/ScadaBuilderV2.Tests/ElementEvents/StateEditorEffectDialogContractTests.cs
+git commit -m "test: add state editor effect dialog contract tests"
 ```
 
 ---
@@ -1213,7 +1256,8 @@ No code changes. Execute each item and confirm.
 
 - [ ] **Step 1: Launch the app and open the state editor**
 
-```bash
+```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
 dotnet run --project src/ScadaBuilderV2.App
 ```
 Open a project with Element+ objects, open Properties, navigate to the State tab, open a state rule.
@@ -1245,7 +1289,8 @@ Open a project with Element+ objects, open Properties, navigate to the State tab
 
 - [ ] **Step 7: Run full test suite one final time**
 
-```bash
+```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
 dotnet test ScadaBuilderV2.sln
 ```
 Expected: All green.
@@ -1258,13 +1303,10 @@ Expected: All green.
 
 In `docs/superpowers/specs/2026-07-09-state-editor-effect-dialog-design.md`, update the `PENDING` commit hash in the changelog table to the final commit.
 
-- [ ] **Step 2: Update VERSION if needed**
+- [ ] **Step 2: Final commit**
 
-Check `VERSION` file at repo root. If the project uses it, bump appropriately.
-
-- [ ] **Step 3: Final commit**
-
-```bash
+```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
 git add docs/superpowers/specs/2026-07-09-state-editor-effect-dialog-design.md
 git commit -m "docs: finalize state editor effect dialog spec with commit reference"
 ```
@@ -1282,6 +1324,6 @@ git commit -m "docs: finalize state editor effect dialog spec with commit refere
 | 5 | Simplify ElementStateRuleDialog XAML | `ElementStateRuleDialog.xaml` |
 | 6 | Wire ElementStateRuleDialog to dialog | `ElementStateRuleDialog.xaml.cs` |
 | 7 | Run existing tests | none |
-| 8 | Add targeted tests | `ColorPickerDialogTests.cs` (new) |
+| 8 | Add targeted contract tests | `StateEditorEffectDialogContractTests.cs` (new) |
 | 9 | Manual verification | none |
 | 10 | Finalize docs | spec changelog |
