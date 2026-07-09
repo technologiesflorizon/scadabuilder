@@ -202,6 +202,7 @@ public static class ScadaProjectBuildValidator
             ValidateSceneValueBindings(issues, scene, tagsById);
             ValidateSceneActions(issues, scene, tagsById, pagesById);
             AuditOrphanedEventBindings(issues, scene);
+            ValidateSceneCommandBindings(issues, scene, project.TagCatalog);
         }
 
         return issues;
@@ -595,6 +596,34 @@ public static class ScadaProjectBuildValidator
                     $"These events will not function in the TF100Web #scada-host runtime. " +
                     $"Remove the EventBindings or add a CommandConfig with a Navigate command.",
                     scene.Id));
+            }
+        }
+    }
+
+    private static void ValidateSceneCommandBindings(
+        List<ScadaBuildValidationIssue> issues,
+        ScadaScene scene,
+        ScadaTagCatalog? catalog)
+    {
+        if (catalog is null) return;
+
+        foreach (var element in FlattenElements(scene.Elements))
+        {
+            if (element.EffectiveCommandConfig.Commands.Count == 0)
+                continue;
+
+            foreach (var cmd in element.EffectiveCommandConfig.Commands)
+            {
+                var cmdIssues = ElementEvents.Command.ScadaCommandBindingValidator
+                    .ValidateCommandBinding(cmd, catalog);
+                foreach (var issue in cmdIssues)
+                {
+                    issues.Add(new ScadaBuildValidationIssue(
+                        ScadaBuildValidationSeverity.Warning,
+                        "DEC-CMD-TAGID",
+                        $"Scene '{scene.Id}', element '{element.Id}': {issue}",
+                        scene.Id));
+                }
             }
         }
     }
