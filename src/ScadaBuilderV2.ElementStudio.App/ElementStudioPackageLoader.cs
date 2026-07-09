@@ -65,6 +65,12 @@ public static class ElementStudioPackageLoader
             diagnostics.Add($"Acces refuse au package: {exception.Message}");
             return new ElementStudioLoadResult(CreateEmptyPackage(packagePath), diagnostics);
         }
+        catch (Exception exception)
+        {
+            diagnostics.Add($"Erreur inattendue au chargement du package: {exception.GetType().Name}: {exception.Message}");
+            diagnostics.Add("Le Studio reste ouvert pour permettre le diagnostic du probleme.");
+            return new ElementStudioLoadResult(CreateEmptyPackage(packagePath), diagnostics);
+        }
     }
 
     private static ElementStudioImportPackage Normalize(ElementStudioImportPackage package, string packagePath)
@@ -82,6 +88,7 @@ public static class ElementStudioPackageLoader
             .OrderBy(item => item.ZIndex)
             .ToArray();
 
+        var hasValidBounds = package.Bounds is not null && package.Bounds.HasPositiveSize;
         return package with
         {
             PackageId = DefaultText(package.PackageId, Path.GetFileNameWithoutExtension(packagePath)),
@@ -89,7 +96,7 @@ public static class ElementStudioPackageLoader
             SourceSceneId = DefaultText(package.SourceSceneId, "Scene inconnue"),
             SourcePagePath = DefaultText(package.SourcePagePath, packagePath),
             TargetLibraryPath = string.IsNullOrWhiteSpace(package.TargetLibraryPath) ? null : package.TargetLibraryPath,
-            Bounds = package.Bounds.HasPositiveSize ? package.Bounds : CalculateBounds(items),
+            Bounds = hasValidBounds ? package.Bounds! : CalculateBounds(items),
             Items = items
         };
     }
@@ -109,11 +116,14 @@ public static class ElementStudioPackageLoader
             Items: Array.Empty<ElementStudioLegacyItem>());
     }
 
-    private static SceneBounds NormalizeBounds(SceneBounds bounds, int index)
+    private static SceneBounds NormalizeBounds(SceneBounds? bounds, int index)
     {
-        return bounds.HasPositiveSize
-            ? bounds
-            : new SceneBounds(40 + index * 24, 40 + index * 24, 160, 72);
+        if (bounds is not null && bounds.HasPositiveSize)
+        {
+            return bounds;
+        }
+
+        return new SceneBounds(40 + index * 24, 40 + index * 24, 160, 72);
     }
 
     private static SceneBounds CalculateBounds(IReadOnlyList<ElementStudioLegacyItem> items)
