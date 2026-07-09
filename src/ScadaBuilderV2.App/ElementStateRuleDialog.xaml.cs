@@ -29,8 +29,6 @@ public partial class ElementStateRuleDialog : Window
         _tagCatalog = tagCatalog;
         _ruleId = existingRule?.Id ?? Guid.NewGuid().ToString("n");
 
-        AnimationComboBox.ItemsSource = Enum.GetValues<ScadaAnimation>();
-
         PopulateTagComboBox();
         OperatorComboBox.ItemsSource = _operatorItems;
         OperatorComboBox.SelectedIndex = 4; // "=" par defaut
@@ -44,13 +42,7 @@ public partial class ElementStateRuleDialog : Window
             LoadEffect(existingRule.Effect);
         }
 
-        RefreshEffectTypeComboBox();
         RefreshActiveEffectsList();
-        if (_activeKinds.Count > 0)
-        {
-            ShowEffectEditor(_activeKinds.First());
-            ActiveEffectsListBox.SelectedIndex = 0;
-        }
 
         if (ExpressionModeRadio.IsChecked == true)
             ValidateExpression();
@@ -71,19 +63,7 @@ private sealed record EffectListItem(EffectKind Kind, string Summary);
     ];
 
     private readonly HashSet<EffectKind> _activeKinds = new();
-
-    private void RefreshEffectTypeComboBox()
-    {
-        var available = _effectTypeLabels
-            .Where(x => !_activeKinds.Contains(x.Kind))
-            .Select(x => new EffectTypeItem(x.Kind, x.Label))
-            .ToArray();
-        EffectTypeComboBox.ItemsSource = available;
-        if (available.Length > 0)
-        {
-            EffectTypeComboBox.SelectedIndex = 0;
-        }
-    }
+    private readonly Dictionary<EffectKind, ScadaEffectBlock> _effectValues = new();
 
     private void RefreshActiveEffectsList()
     {
@@ -94,86 +74,100 @@ private sealed record EffectListItem(EffectKind Kind, string Summary);
         ActiveEffectsListBox.ItemsSource = items;
     }
 
-    private string BuildEffectSummary(EffectKind kind) => kind switch
+    private string BuildEffectSummary(EffectKind kind)
     {
-        EffectKind.BackgroundColor => $"Couleur de fond: {BackgroundColorPicker.Value}",
-        EffectKind.Border => $"Bordure: {BorderColorPicker.Value} ({BorderWidthTextBox.Text}px)",
-        EffectKind.Text => $"Texte: {(string.IsNullOrWhiteSpace(TextContentTextBox.Text) ? "(vide)" : TextContentTextBox.Text)}",
-        EffectKind.ElementVisible => $"Visibilite: {(ElementVisibleCheckBox.IsChecked == true ? "Visible" : "Masque")}",
-        EffectKind.Opacity => $"Opacite: {OpacitySlider.Value:0.00}",
-        EffectKind.Rotation => $"Rotation: {RotationTextBox.Text} deg",
-        EffectKind.Animation => $"Animation: {AnimationComboBox.SelectedItem}",
-        EffectKind.ColorFilter => $"Filtre de couleur: {ColorFilterColorPicker.Value} ({ColorFilterOpacitySlider.Value:0.00}){(ColorFilterHaloCheckBox.IsChecked == true ? ", halo" : "")}",
-        _ => kind.ToString()
-    };
+        if (!_effectValues.TryGetValue(kind, out var effect))
+            effect = ScadaEffectBlock.Empty;
 
-    private void ShowEffectEditor(EffectKind kind)
-    {
-        EffectEditorPanel.Visibility = Visibility.Visible;
-        BackgroundColorEditor.Visibility = kind == EffectKind.BackgroundColor ? Visibility.Visible : Visibility.Collapsed;
-        BorderEditor.Visibility = kind == EffectKind.Border ? Visibility.Visible : Visibility.Collapsed;
-        TextEditor.Visibility = kind == EffectKind.Text ? Visibility.Visible : Visibility.Collapsed;
-        ElementVisibleEditor.Visibility = kind == EffectKind.ElementVisible ? Visibility.Visible : Visibility.Collapsed;
-        OpacityEditor.Visibility = kind == EffectKind.Opacity ? Visibility.Visible : Visibility.Collapsed;
-        RotationEditor.Visibility = kind == EffectKind.Rotation ? Visibility.Visible : Visibility.Collapsed;
-        AnimationEditor.Visibility = kind == EffectKind.Animation ? Visibility.Visible : Visibility.Collapsed;
-        ColorFilterEditor.Visibility = kind == EffectKind.ColorFilter ? Visibility.Visible : Visibility.Collapsed;
+        return kind switch
+        {
+            EffectKind.BackgroundColor => $"Couleur de fond: {effect.BackgroundColor ?? "-"}",
+            EffectKind.Border => $"Bordure: {effect.BorderColor ?? "-"} ({effect.BorderWidth ?? 1}px)",
+            EffectKind.Text => $"Texte: {(string.IsNullOrWhiteSpace(effect.TextContent) ? "(vide)" : effect.TextContent)}",
+            EffectKind.ElementVisible => $"Visibilité: {(effect.ElementVisible != false ? "Visible" : "Masqué")}",
+            EffectKind.Opacity => $"Opacité: {(effect.Opacity ?? 1.0):F2}",
+            EffectKind.Rotation => $"Rotation: {effect.Rotation ?? 0} deg",
+            EffectKind.Animation => $"Animation: {effect.Animation?.ToString() ?? "None"}",
+            EffectKind.ColorFilter => $"Filtre: {effect.ColorFilterColor ?? "-"} ({effect.ColorFilterOpacity ?? 1.0:F2}){(effect.ColorFilterHalo == true ? ", halo" : "")}",
+            _ => kind.ToString()
+        };
     }
 
     private void OnAddActiveEffectClick(object sender, RoutedEventArgs e)
     {
-        if (EffectTypeComboBox.SelectedItem is not EffectTypeItem item)
+        var availableKinds = new HashSet<EffectKind>(
+            _effectTypeLabels.Select(x => x.Kind).Except(_activeKinds));
+
+        if (availableKinds.Count == 0)
         {
+            MessageBox.Show("Tous les types d'effet sont déjà ajoutés.", "Information",
+                MessageBoxButton.OK, MessageBoxImage.Information);
             return;
         }
 
-        _activeKinds.Add(item.Kind);
-        if (item.Kind == EffectKind.ColorFilter)
+        var dialog = new EffectEditorDialog(
+            existingEffect: null,
+            effectKind: null,
+            availableKinds)
         {
-            if (string.IsNullOrWhiteSpace(ColorFilterColorPicker.Value))
-            {
-                ColorFilterColorPicker.SetColor("#E53935");
-            }
-            if (string.IsNullOrWhiteSpace(ColorFilterHaloColorPicker.Value))
-            {
-                ColorFilterHaloColorPicker.SetColor(ColorFilterColorPicker.Value);
-            }
-        }
+            Owner = this
+        };
 
-        RefreshEffectTypeComboBox();
-        RefreshActiveEffectsList();
-        ShowEffectEditor(item.Kind);
-        UpdatePreview();
+        if (dialog.ShowDialog() == true)
+        {
+            _activeKinds.Add(dialog.ResultKind);
+            _effectValues[dialog.ResultKind] = dialog.ResultEffect;
+            RefreshActiveEffectsList();
+            SelectEffectInList(dialog.ResultKind);
+            UpdatePreview();
+        }
     }
 
     private void OnEditActiveEffectClick(object sender, RoutedEventArgs e)
     {
         if (ActiveEffectsListBox.SelectedItem is not EffectListItem item)
-        {
             return;
-        }
 
-        ShowEffectEditor(item.Kind);
+        var existingEffect = _effectValues.TryGetValue(item.Kind, out var eff)
+            ? eff : ScadaEffectBlock.Empty;
+
+        var dialog = new EffectEditorDialog(
+            existingEffect: existingEffect,
+            effectKind: item.Kind,
+            availableKinds: new HashSet<EffectKind>())
+        {
+            Owner = this
+        };
+
+        if (dialog.ShowDialog() == true)
+        {
+            _effectValues[dialog.ResultKind] = dialog.ResultEffect;
+            RefreshActiveEffectsList();
+            UpdatePreview();
+        }
     }
 
     private void OnRemoveActiveEffectClick(object sender, RoutedEventArgs e)
     {
         if (ActiveEffectsListBox.SelectedItem is not EffectListItem item)
-        {
             return;
-        }
 
         _activeKinds.Remove(item.Kind);
-        RefreshEffectTypeComboBox();
+        _effectValues.Remove(item.Kind);
         RefreshActiveEffectsList();
-        EffectEditorPanel.Visibility = Visibility.Collapsed;
         UpdatePreview();
     }
 
-    private void OnColorFilterHaloChanged(object sender, RoutedEventArgs e)
+    private void SelectEffectInList(EffectKind kind)
     {
-        ColorFilterHaloPanel.Visibility = ColorFilterHaloCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
-        RefreshActiveEffectsList();
+        for (int i = 0; i < ActiveEffectsListBox.Items.Count; i++)
+        {
+            if (ActiveEffectsListBox.Items[i] is EffectListItem item && item.Kind == kind)
+            {
+                ActiveEffectsListBox.SelectedIndex = i;
+                return;
+            }
+        }
     }
 
     private void RestoreExpression(string source)
@@ -285,56 +279,79 @@ private sealed record EffectListItem(EffectKind Kind, string Summary);
         if (effect.BackgroundColor is not null)
         {
             _activeKinds.Add(EffectKind.BackgroundColor);
-            BackgroundColorPicker.SetColor(effect.BackgroundColor);
+            _effectValues[EffectKind.BackgroundColor] = ScadaEffectBlock.Empty with
+            {
+                BackgroundColor = effect.BackgroundColor
+            };
         }
 
-        if (effect.BorderColor is not null)
+        if (effect.BorderColor is not null || effect.BorderWidth is not null)
         {
             _activeKinds.Add(EffectKind.Border);
-            BorderColorPicker.SetColor(effect.BorderColor);
-            BorderWidthTextBox.Text = (effect.BorderWidth ?? 1).ToString(CultureInfo.InvariantCulture);
+            _effectValues[EffectKind.Border] = ScadaEffectBlock.Empty with
+            {
+                BorderColor = effect.BorderColor,
+                BorderWidth = effect.BorderWidth
+            };
         }
 
         if (effect.TextContent is not null || effect.TextColor is not null || effect.TextVisible is not null)
         {
             _activeKinds.Add(EffectKind.Text);
-            TextContentTextBox.Text = effect.TextContent ?? string.Empty;
-            TextColorPicker.SetColor(effect.TextColor ?? "#000000");
-            TextVisibleCheckBox.IsChecked = effect.TextVisible ?? true;
+            _effectValues[EffectKind.Text] = ScadaEffectBlock.Empty with
+            {
+                TextContent = effect.TextContent,
+                TextColor = effect.TextColor,
+                TextVisible = effect.TextVisible
+            };
         }
 
         if (effect.ElementVisible is not null)
         {
             _activeKinds.Add(EffectKind.ElementVisible);
-            ElementVisibleCheckBox.IsChecked = effect.ElementVisible;
+            _effectValues[EffectKind.ElementVisible] = ScadaEffectBlock.Empty with
+            {
+                ElementVisible = effect.ElementVisible
+            };
         }
 
         if (effect.Opacity is not null)
         {
             _activeKinds.Add(EffectKind.Opacity);
-            OpacitySlider.Value = effect.Opacity.Value;
+            _effectValues[EffectKind.Opacity] = ScadaEffectBlock.Empty with
+            {
+                Opacity = effect.Opacity
+            };
         }
 
         if (effect.Rotation is not null)
         {
             _activeKinds.Add(EffectKind.Rotation);
-            RotationTextBox.Text = effect.Rotation.Value.ToString(CultureInfo.InvariantCulture);
+            _effectValues[EffectKind.Rotation] = ScadaEffectBlock.Empty with
+            {
+                Rotation = effect.Rotation
+            };
         }
 
         if (effect.Animation is not null)
         {
             _activeKinds.Add(EffectKind.Animation);
-            AnimationComboBox.SelectedItem = effect.Animation.Value;
+            _effectValues[EffectKind.Animation] = ScadaEffectBlock.Empty with
+            {
+                Animation = effect.Animation
+            };
         }
 
         if (effect.ColorFilterColor is not null)
         {
             _activeKinds.Add(EffectKind.ColorFilter);
-            ColorFilterColorPicker.SetColor(effect.ColorFilterColor);
-            ColorFilterOpacitySlider.Value = effect.ColorFilterOpacity ?? 1.0;
-            ColorFilterHaloCheckBox.IsChecked = effect.ColorFilterHalo ?? false;
-            ColorFilterHaloPanel.Visibility = ColorFilterHaloCheckBox.IsChecked == true ? Visibility.Visible : Visibility.Collapsed;
-            ColorFilterHaloColorPicker.SetColor(effect.ColorFilterHaloColor ?? effect.ColorFilterColor);
+            _effectValues[EffectKind.ColorFilter] = ScadaEffectBlock.Empty with
+            {
+                ColorFilterColor = effect.ColorFilterColor,
+                ColorFilterOpacity = effect.ColorFilterOpacity,
+                ColorFilterHalo = effect.ColorFilterHalo,
+                ColorFilterHaloColor = effect.ColorFilterHaloColor
+            };
         }
     }
 
@@ -421,21 +438,28 @@ private sealed record EffectListItem(EffectKind Kind, string Summary);
 
     private ScadaEffectBlock BuildEffectFromUi()
     {
-        return new ScadaEffectBlock(
-            BackgroundColor: _activeKinds.Contains(EffectKind.BackgroundColor) ? BackgroundColorPicker.Value : null,
-            BorderColor: _activeKinds.Contains(EffectKind.Border) ? BorderColorPicker.Value : null,
-            BorderWidth: _activeKinds.Contains(EffectKind.Border) && double.TryParse(BorderWidthTextBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out var width) ? width : null,
-            TextColor: _activeKinds.Contains(EffectKind.Text) ? TextColorPicker.Value : null,
-            TextContent: _activeKinds.Contains(EffectKind.Text) ? TextContentTextBox.Text : null,
-            TextVisible: _activeKinds.Contains(EffectKind.Text) ? TextVisibleCheckBox.IsChecked : null,
-            ElementVisible: _activeKinds.Contains(EffectKind.ElementVisible) ? ElementVisibleCheckBox.IsChecked : null,
-            Opacity: _activeKinds.Contains(EffectKind.Opacity) ? OpacitySlider.Value : null,
-            Rotation: _activeKinds.Contains(EffectKind.Rotation) && double.TryParse(RotationTextBox.Text, NumberStyles.Float, CultureInfo.InvariantCulture, out var rotation) ? rotation : null,
-            Animation: _activeKinds.Contains(EffectKind.Animation) ? (ScadaAnimation?)AnimationComboBox.SelectedItem : null,
-            ColorFilterColor: _activeKinds.Contains(EffectKind.ColorFilter) ? ColorFilterColorPicker.Value : null,
-            ColorFilterOpacity: _activeKinds.Contains(EffectKind.ColorFilter) ? ColorFilterOpacitySlider.Value : null,
-            ColorFilterHalo: _activeKinds.Contains(EffectKind.ColorFilter) ? ColorFilterHaloCheckBox.IsChecked : null,
-            ColorFilterHaloColor: _activeKinds.Contains(EffectKind.ColorFilter) && ColorFilterHaloCheckBox.IsChecked == true ? ColorFilterHaloColorPicker.Value : null);
+        var merged = ScadaEffectBlock.Empty;
+        foreach (var (_, block) in _effectValues)
+        {
+            merged = merged with
+            {
+                BackgroundColor = block.BackgroundColor ?? merged.BackgroundColor,
+                BorderColor = block.BorderColor ?? merged.BorderColor,
+                BorderWidth = block.BorderWidth ?? merged.BorderWidth,
+                TextColor = block.TextColor ?? merged.TextColor,
+                TextContent = block.TextContent ?? merged.TextContent,
+                TextVisible = block.TextVisible ?? merged.TextVisible,
+                ElementVisible = block.ElementVisible ?? merged.ElementVisible,
+                Opacity = block.Opacity ?? merged.Opacity,
+                Rotation = block.Rotation ?? merged.Rotation,
+                Animation = block.Animation ?? merged.Animation,
+                ColorFilterColor = block.ColorFilterColor ?? merged.ColorFilterColor,
+                ColorFilterOpacity = block.ColorFilterOpacity ?? merged.ColorFilterOpacity,
+                ColorFilterHalo = block.ColorFilterHalo ?? merged.ColorFilterHalo,
+                ColorFilterHaloColor = block.ColorFilterHaloColor ?? merged.ColorFilterHaloColor
+            };
+        }
+        return merged;
     }
 
     private static bool IsBooleanDatatype(string? datatype)

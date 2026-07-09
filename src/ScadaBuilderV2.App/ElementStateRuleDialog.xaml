@@ -76,76 +76,37 @@
 
         <ScrollViewer Grid.Row="1">
             <StackPanel>
-                <TextBlock Text="Modifications d'apparence" FontWeight="SemiBold" Foreground="{StaticResource InkBrush}" Margin="0,0,0,4"/>
-                <ListBox x:Name="ActiveEffectsListBox" Height="90" SelectionMode="Single" Margin="0,0,0,4"
+                <TextBlock Text="Modifications d'apparence"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource InkBrush}"
+                           Margin="0,0,0,4"/>
+                <ListBox x:Name="ActiveEffectsListBox"
+                         Height="150"
+                         SelectionMode="Single"
+                         Margin="0,0,0,4"
                          DisplayMemberPath="Summary"
                          MouseDoubleClick="OnEditActiveEffectClick"/>
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
-                    <ComboBox x:Name="EffectTypeComboBox" Width="160" Margin="0,0,6,0" DisplayMemberPath="Label"/>
-                    <Button Content="+ Ajouter" Click="OnAddActiveEffectClick" Margin="0,0,6,0"/>
-                    <Button Content="Editer" Click="OnEditActiveEffectClick" Margin="0,0,6,0"/>
-                    <Button Content="Supprimer" Click="OnRemoveActiveEffectClick"/>
+                <StackPanel Orientation="Horizontal" Margin="0,4,0,8">
+                    <Button Content="+ Ajouter"
+                            Click="OnAddActiveEffectClick"
+                            Margin="0,0,6,0"/>
+                    <Button Content="Éditer"
+                            Click="OnEditActiveEffectClick"
+                            Margin="0,0,6,0"/>
+                    <Button Content="Supprimer"
+                            Click="OnRemoveActiveEffectClick"/>
                 </StackPanel>
 
-                <Border BorderBrush="{StaticResource BorderBrushSoft}" BorderThickness="1" Padding="8" Margin="0,0,0,8">
-                    <StackPanel x:Name="EffectEditorPanel" Visibility="Collapsed">
-                        <StackPanel x:Name="BackgroundColorEditor" Visibility="Collapsed">
-                            <TextBlock Text="Couleur de fond" Foreground="{StaticResource MutedBrush}"/>
-                            <local:ColorPickerField x:Name="BackgroundColorPicker" Margin="0,2,0,0"/>
-                        </StackPanel>
-
-                        <StackPanel x:Name="BorderEditor" Visibility="Collapsed">
-                            <TextBlock Text="Bordure" Foreground="{StaticResource MutedBrush}"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
-                                <local:ColorPickerField x:Name="BorderColorPicker"/>
-                                <TextBox x:Name="BorderWidthTextBox" Width="60" Margin="8,0,0,0"/>
-                            </StackPanel>
-                        </StackPanel>
-
-                        <StackPanel x:Name="TextEditor" Visibility="Collapsed">
-                            <TextBlock Text="Texte" Foreground="{StaticResource MutedBrush}"/>
-                            <TextBox x:Name="TextContentTextBox" Margin="0,2,0,4"/>
-                            <local:ColorPickerField x:Name="TextColorPicker" Margin="0,0,0,4"/>
-                            <CheckBox x:Name="TextVisibleCheckBox" Content="Visible"/>
-                        </StackPanel>
-
-                        <StackPanel x:Name="ElementVisibleEditor" Visibility="Collapsed">
-                            <TextBlock Text="Visibilite de l'element" Foreground="{StaticResource MutedBrush}"/>
-                            <CheckBox x:Name="ElementVisibleCheckBox" Content="Visible" Margin="0,2,0,0"/>
-                        </StackPanel>
-
-                        <StackPanel x:Name="OpacityEditor" Visibility="Collapsed">
-                            <TextBlock Text="Opacite" Foreground="{StaticResource MutedBrush}"/>
-                            <Slider x:Name="OpacitySlider" Minimum="0" Maximum="1" Margin="0,2,0,0"/>
-                        </StackPanel>
-
-                        <StackPanel x:Name="RotationEditor" Visibility="Collapsed">
-                            <TextBlock Text="Rotation (deg)" Foreground="{StaticResource MutedBrush}"/>
-                            <TextBox x:Name="RotationTextBox" Width="80" Margin="0,2,0,0" HorizontalAlignment="Left"/>
-                        </StackPanel>
-
-                        <StackPanel x:Name="AnimationEditor" Visibility="Collapsed">
-                            <TextBlock Text="Animation" Foreground="{StaticResource MutedBrush}"/>
-                            <ComboBox x:Name="AnimationComboBox" Margin="0,2,0,0" HorizontalAlignment="Left" Width="160"/>
-                        </StackPanel>
-
-                        <StackPanel x:Name="ColorFilterEditor" Visibility="Collapsed">
-                            <TextBlock Text="Filtre de couleur" Foreground="{StaticResource MutedBrush}"/>
-                            <local:ColorPickerField x:Name="ColorFilterColorPicker" Margin="0,2,0,4"/>
-                            <TextBlock Text="Opacite du filtre" Foreground="{StaticResource MutedBrush}"/>
-                            <Slider x:Name="ColorFilterOpacitySlider" Minimum="0" Maximum="1" Margin="0,2,0,4"/>
-                            <CheckBox x:Name="ColorFilterHaloCheckBox" Content="Halo" Checked="OnColorFilterHaloChanged" Unchecked="OnColorFilterHaloChanged"/>
-                            <StackPanel x:Name="ColorFilterHaloPanel" Visibility="Collapsed" Margin="0,4,0,0">
-                                <TextBlock Text="Couleur du halo" Foreground="{StaticResource MutedBrush}"/>
-                                <local:ColorPickerField x:Name="ColorFilterHaloColorPicker" Margin="0,2,0,0"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-
-                <TextBlock Text="Apercu" Foreground="{StaticResource MutedBrush}" Margin="0,8,0,4"/>
-                <Border x:Name="PreviewBorder" Width="160" Height="90" BorderBrush="{StaticResource BorderBrushSoft}" BorderThickness="1">
-                    <TextBlock x:Name="PreviewText" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock Text="Aperçu"
+                           Foreground="{StaticResource MutedBrush}"
+                           Margin="0,8,0,4"/>
+                <Border x:Name="PreviewBorder"
+                        Width="160" Height="90"
+                        BorderBrush="{StaticResource BorderBrushSoft}"
+                        BorderThickness="1">
+                    <TextBlock x:Name="PreviewText"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
                 </Border>
             </StackPanel>
         </ScrollViewer>
