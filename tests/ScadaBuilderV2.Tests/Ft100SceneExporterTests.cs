@@ -2909,11 +2909,12 @@ public sealed class Ft100SceneExporterTests
 
         scene = scene.WithElement(element);
 
-        var warnings = Ft100SceneExporter.AuditOrphanedEventBindings(scene);
+        var issues = new List<ScadaBuildValidationIssue>();
+        ScadaProjectBuildValidator.AuditOrphanedEventBindings(issues, scene);
 
-        Assert.AreEqual(1, warnings.Count);
-        Assert.AreEqual(ScadaBuildValidationSeverity.Warning, warnings[0].Severity);
-        StringAssert.Contains(warnings[0].Message, "orphan_btn");
+        Assert.AreEqual(1, issues.Count);
+        Assert.AreEqual(ScadaBuildValidationSeverity.Warning, issues[0].Severity);
+        StringAssert.Contains(issues[0].Message, "orphan_btn");
     }
 
     [TestMethod]
@@ -2957,9 +2958,10 @@ public sealed class Ft100SceneExporterTests
 
         scene = scene.WithElement(element);
 
-        var warnings = Ft100SceneExporter.AuditOrphanedEventBindings(scene);
+        var issues = new List<ScadaBuildValidationIssue>();
+        ScadaProjectBuildValidator.AuditOrphanedEventBindings(issues, scene);
 
-        Assert.AreEqual(0, warnings.Count, "Element with both Events and CommandConfig should not warn");
+        Assert.AreEqual(0, issues.Count, "Element with both Events and CommandConfig should not warn");
     }
 
     [TestMethod]
@@ -2996,9 +2998,10 @@ public sealed class Ft100SceneExporterTests
 
         scene = scene.WithElement(element);
 
-        var warnings = Ft100SceneExporter.AuditOrphanedEventBindings(scene);
+        var issues = new List<ScadaBuildValidationIssue>();
+        ScadaProjectBuildValidator.AuditOrphanedEventBindings(issues, scene);
 
-        Assert.AreEqual(0, warnings.Count, "Scene with no EventBindings should produce no warnings");
+        Assert.AreEqual(0, issues.Count, "Scene with no EventBindings should produce no warnings");
     }
 
     [TestMethod]
