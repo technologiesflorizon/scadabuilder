@@ -127,12 +127,13 @@ public partial class ColorPickerDialog : Window
     private void OnHueSliderChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
     {
         if (_isUpdatingColorControls || !AreColorControlsReady())
-        {
             return;
-        }
 
         _hue = HueSlider.Value;
-        UpdateColorControls(FromHsv(_hue, _saturation, _value), updateText: true);
+        if (_saturation <= 0) _saturation = 1.0;  // sortir du gris/blanc
+        if (_value <= 0) _value = 1.0;            // sortir du noir
+        var color = FromHsv(_hue, _saturation, _value);
+        UpdateColorControls(color, updateText: true);
     }
 
     private void OnSaturationValuePickerMouseDown(object sender, MouseButtonEventArgs e)
@@ -231,7 +232,7 @@ public partial class ColorPickerDialog : Window
         try
         {
             ColorPreview.Background = new SolidColorBrush(color);
-            (var hue, var saturation, var value) = ToHsv(color);
+            (var hue, var saturation, var value) = ToHsv(color, fallbackHue: _hue);
             _hue = hue;
             _saturation = saturation;
             _value = value;
@@ -343,7 +344,7 @@ public partial class ColorPickerDialog : Window
             ToColorByte((b1 + m) * 255));
     }
 
-    private static (double Hue, double Saturation, double Value) ToHsv(Color color)
+    private static (double Hue, double Saturation, double Value) ToHsv(Color color, double fallbackHue = 0)
     {
         var red = color.R / 255d;
         var green = color.G / 255d;
@@ -353,7 +354,7 @@ public partial class ColorPickerDialog : Window
         var delta = max - min;
 
         var hue = delta == 0
-            ? 0
+            ? fallbackHue
             : max == red
                 ? 60 * (((green - blue) / delta) % 6)
                 : max == green
