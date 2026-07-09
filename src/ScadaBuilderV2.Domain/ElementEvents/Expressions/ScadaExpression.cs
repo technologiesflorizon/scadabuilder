@@ -29,12 +29,27 @@ public sealed record ScadaExpression(string Source, ScadaExprNode? Ast, IReadOnl
         return new ScadaExpression(source, parseResult.Root, tags);
     }
 
+    /// <summary>
+    /// Creates a <see cref="ScadaExpression"/> from a source text and AST,
+    /// collecting canonical tag references when <see cref="ScadaExprTagRef.TagId"/>
+    /// is available.
+    /// </summary>
+    public static ScadaExpression FromAst(string source, ScadaExprNode? ast)
+    {
+        if (ast is null)
+            return new ScadaExpression(source, null, Array.Empty<string>());
+
+        var tags = new List<string>();
+        CollectTagRefs(ast, tags);
+        return new ScadaExpression(source, ast, tags);
+    }
+
     private static void CollectTagRefs(ScadaExprNode node, List<string> tags)
     {
         switch (node)
         {
             case ScadaExprTagRef tagRef:
-                tags.Add(tagRef.TagName);
+                tags.Add(!string.IsNullOrWhiteSpace(tagRef.TagId) ? tagRef.TagId : tagRef.TagName);
                 break;
             case ScadaExprUnary unary:
                 CollectTagRefs(unary.Operand, tags);
