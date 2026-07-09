@@ -45,6 +45,16 @@
       return;
     }
 
+    // Idempotency guard — skip if already bound for this exact config.
+    // innerHTML replacement destroys old DOM nodes, so dataset is always
+    // fresh on first bind. This protects against double-init from retry/replay.
+    if (element.dataset && element.dataset.scadaCommandBoundConfig === configRaw) {
+      return;
+    }
+    if (element.dataset) {
+      element.dataset.scadaCommandBoundConfig = configRaw;
+    }
+
     var config;
     try {
       config = JSON.parse(configRaw);
