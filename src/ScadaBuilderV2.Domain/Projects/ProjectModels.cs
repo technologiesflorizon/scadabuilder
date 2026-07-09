@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ScadaBuilderV2.Domain.ElementEvents.State;
 using ScadaBuilderV2.Domain.Versioning;
 using ScadaBuilderV2.Domain.Scenes;
 using System.Text.Json.Serialization;
@@ -588,8 +589,7 @@ public static class ScadaProjectBuildValidator
             if (element.EventBindings.Count == 0)
                 continue;
 
-            var hasModernConfig = element.EffectiveCommandConfig.Commands.Count > 0
-                || element.EffectiveStateConfig.States.Count > 0;
+            var hasModernConfig = HasModernRuntimeConfig(element);
 
             var extra = hasModernConfig
                 ? " L'element possede aussi une configuration moderne (CommandConfig/StateConfig) qui sera exportee."
@@ -604,6 +604,21 @@ public static class ScadaProjectBuildValidator
                 $"Les EventBindings ne sont pas exportes comme runtime TF100Web.{extra}",
                 scene.Id));
         }
+    }
+
+    private static bool HasModernRuntimeConfig(ScadaElement element)
+    {
+        var stateConfig = element.EffectiveStateConfig;
+        var fallback = stateConfig.QualityFallback;
+        var defaultFallback = ScadaElementStateConfig.Default.QualityFallback;
+
+        return element.EffectiveCommandConfig.Commands.Count > 0
+            || stateConfig.States.Count > 0
+            || stateConfig.ReadVariable is not null
+            || fallback.Opacity != defaultFallback.Opacity
+            || fallback.BorderColor != defaultFallback.BorderColor
+            || fallback.BorderWidth != defaultFallback.BorderWidth
+            || stateConfig.DefaultEffect != ScadaEffectBlock.Empty;
     }
 
     private static void ValidateSceneCommandBindings(

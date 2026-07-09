@@ -1,6 +1,8 @@
 using ScadaBuilderV2.Application.Conversion;
 using ScadaBuilderV2.Application.Selection;
 using ScadaBuilderV2.Domain.Editor;
+using ScadaBuilderV2.Domain.ElementEvents.Command;
+using ScadaBuilderV2.Domain.ElementEvents.State;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
 using ScadaBuilderV2.Infrastructure.ModernProjects;
@@ -630,5 +632,99 @@ public sealed class ModernProjectStoreTests
         var issues = ScadaProjectBuildValidator.Validate(project);
 
         Assert.IsTrue(issues.Any(issue => issue.Code == "build.header-not-compiled"));
+    }
+
+    [TestMethod]
+    public void BuildValidationWarnsForLegacyEventBindings()
+    {
+        var scene = CreateLegacyEventValidationScene();
+        var issues = ScadaProjectBuildValidator.Validate(CreateEventValidationProject(), [scene]);
+
+        var warning = issues.Single(issue => issue.Code == "event-bindings-decommissioned");
+
+        Assert.AreEqual(ScadaBuildValidationSeverity.Warning, warning.Severity);
+        StringAssert.Contains(warning.Message, "win00008");
+        StringAssert.Contains(warning.Message, "btn_legacy");
+        StringAssert.Contains(warning.Message, "1 binding(s)");
+        StringAssert.Contains(warning.Message, "CommandConfig ou StateConfig");
+        StringAssert.Contains(warning.Message, "ne sont pas exportes comme runtime TF100Web");
+    }
+
+    [TestMethod]
+    public void BuildValidationWarnsForLegacyEventBindingsAlongsideCommandConfig()
+    {
+        var element = CreateLegacyEventElement() with
+        {
+            CommandConfig = new ScadaElementCommandConfig([
+                new ScadaCommandBinding(
+                    "cmd-modern",
+                    "Modern command",
+                    true,
+                    ScadaCommandTrigger.OnClick,
+                    ScadaCommandKind.Navigate,
+                    TargetPageId: "win00008")
+            ])
+        };
+        var scene = ScadaScene.CreateEmpty("win00008", "Validation", new(1280, 873))
+            .WithElement(element);
+        var issues = ScadaProjectBuildValidator.Validate(CreateEventValidationProject(), [scene]);
+
+        var warning = issues.Single(issue => issue.Code == "event-bindings-decommissioned");
+
+        StringAssert.Contains(warning.Message, "configuration moderne");
+        Assert.IsFalse(warning.Message.Contains("risque d'etre inactif"));
+    }
+
+    [TestMethod]
+    public void BuildValidationTreatsReadVariableAsModernConfigForLegacyEventWarning()
+    {
+        var element = CreateLegacyEventElement() with
+        {
+            StateConfig = ScadaElementStateConfig.Default with
+            {
+                ReadVariable = new ScadaReadVariableRule("tf100.mapping.42")
+            }
+        };
+        var scene = ScadaScene.CreateEmpty("win00008", "Validation", new(1280, 873))
+            .WithElement(element);
+        var issues = ScadaProjectBuildValidator.Validate(CreateEventValidationProject(), [scene]);
+
+        var warning = issues.Single(issue => issue.Code == "event-bindings-decommissioned");
+
+        StringAssert.Contains(warning.Message, "configuration moderne");
+        Assert.IsFalse(warning.Message.Contains("risque d'etre inactif"));
+    }
+
+    [TestMethod]
+    public void BuildValidationDoesNotWarnForCleanScene()
+    {
+        var scene = ScadaScene.CreateEmpty("win00008", "Validation", new(1280, 873))
+            .WithElement(ScadaElement.CreateText("clean", "Clean", 10, 10));
+        var issues = ScadaProjectBuildValidator.Validate(CreateEventValidationProject(), [scene]);
+
+        Assert.IsFalse(issues.Any(issue => issue.Code == "event-bindings-decommissioned"));
+    }
+
+    private static ScadaProject CreateEventValidationProject()
+    {
+        return ScadaProject.CreateDefault("event-validation") with
+        {
+            HomePageId = "win00008",
+            Scenes = [new ScadaSceneReference("win00008", "win00008", "scenes/win00008.scene.json")]
+        };
+    }
+
+    private static ScadaScene CreateLegacyEventValidationScene()
+    {
+        return ScadaScene.CreateEmpty("win00008", "Validation", new(1280, 873))
+            .WithElement(CreateLegacyEventElement());
+    }
+
+    private static ScadaElement CreateLegacyEventElement()
+    {
+        return ScadaElement.CreateText("btn_legacy", "Legacy", 10, 10) with
+        {
+            Events = [new ScadaObjectEventBinding("click", "legacy-action")]
+        };
     }
 }

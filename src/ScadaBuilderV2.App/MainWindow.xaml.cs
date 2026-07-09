@@ -1329,7 +1329,7 @@ public partial class MainWindow : Window
                     break;
                 case "openSceneObjectEvents":
                 case "openModernElementEvents":
-                    ShowModernElementEvents(message.Id);
+                    RejectDecommissionedElementEvents(message.Id);
                     break;
                 case "updateSceneObjectProperties":
                 case "updateModernElementProperties":
@@ -4197,6 +4197,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         return _activeScene.FindElementRecursive(elementId) ?? ScadaElement.CreateInputText(elementId, elementId, 0, 0);
     }
 
+    // DECOMMISSIONED: retained temporarily for legacy source compatibility; no active UI or bridge route may call it.
     private void ShowModernElementEvents(string? elementId)
     {
         var targetId = string.IsNullOrWhiteSpace(elementId)
@@ -4211,6 +4212,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         SelectModernElement(targetId);
         PropertiesAnchorable.IsActive = true;
         OpenElementEventDialog(targetId);
+    }
+
+    private void RejectDecommissionedElementEvents(string? elementId)
+    {
+        _ = elementId;
+        SetStatus("EventBindings decommissionnes. Utilisez StateConfig ou CommandConfig.");
     }
 
     private async void OnSaveSceneClick(object sender, RoutedEventArgs e)
@@ -6016,6 +6023,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         SetStatus($"{updated.UserLabel} mis a jour. Sauvegarde requise.");
     }
 
+    // DECOMMISSIONED: retained temporarily for legacy source compatibility; authoring uses StateConfig/CommandConfig.
     private void OpenElementEventDialog(string? elementId, Window? owner = null)
     {
         if (_activeScene is null || string.IsNullOrWhiteSpace(elementId))
@@ -6047,6 +6055,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         dialog.ShowDialog();
     }
 
+    // DECOMMISSIONED: retained temporarily for migration support; new authoring must not invoke this path.
     private string AddElementEventFromDialog(
         string elementId,
         ElementEventDialogResult result,
@@ -6151,6 +6160,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         return "Binding ajoute. Vous pouvez en ajouter un autre ou fermer la fenetre.";
     }
 
+    // DECOMMISSIONED: retained temporarily for migration support; new authoring must not invoke this path.
     private string DeleteElementEventFromDialog(
         string elementId,
         ElementEventDialogDeleteRequest request,

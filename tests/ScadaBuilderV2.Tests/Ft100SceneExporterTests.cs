@@ -3860,6 +3860,11 @@ public sealed class Ft100SceneExporterTests
             "executeCommand must not route 'object.events'.");
         Assert.IsFalse(webViewScript.Contains("case 'element-plus.events':"),
             "executeCommand must not route 'element-plus.events'.");
+
+        Assert.IsTrue(mainWindowCs.Contains("RejectDecommissionedElementEvents(message.Id)"),
+            "The WPF bridge must reject legacy event-dialog messages.");
+        Assert.IsFalse(mainWindowCs.Contains("ShowModernElementEvents(message.Id)"),
+            "The WPF bridge must not open the legacy event dialog from incoming messages.");
     }
 
     private static string FindRepoRoot()
