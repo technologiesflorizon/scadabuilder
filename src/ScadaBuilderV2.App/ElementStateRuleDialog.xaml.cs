@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using ScadaBuilderV2.Domain.ElementEvents.Expressions;
 using ScadaBuilderV2.Domain.ElementEvents.State;
@@ -233,7 +234,18 @@ private sealed record EffectListItem(EffectKind Kind, string Summary);
 
     private void SelectTagByName(string tagName)
     {
-        // Match by DisplayName (primary — what expressions use)
+        // Primary: match by Id (canonical)
+        for (int i = 0; i < TagComboBox.Items.Count; i++)
+        {
+            if (TagComboBox.Items[i] is TagItem item &&
+                string.Equals(item.TagId, tagName, StringComparison.Ordinal))
+            {
+                TagComboBox.SelectedIndex = i;
+                return;
+            }
+        }
+
+        // Fallback 1: match by DisplayName (backward compat)
         for (int i = 0; i < TagComboBox.Items.Count; i++)
         {
             if (TagComboBox.Items[i] is TagItem item)
@@ -247,16 +259,23 @@ private sealed record EffectListItem(EffectKind Kind, string Summary);
                 }
             }
         }
-        // Fallback: match by Id (backward compat with pre-existing expressions)
+
+        // Fallback 2: match by KeywordLabel
         for (int i = 0; i < TagComboBox.Items.Count; i++)
         {
-            if (TagComboBox.Items[i] is TagItem item &&
-                string.Equals(item.TagId, tagName, StringComparison.Ordinal))
+            if (TagComboBox.Items[i] is TagItem item)
             {
-                TagComboBox.SelectedIndex = i;
-                return;
+                var tag = (_tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
+                    .FirstOrDefault(t => t.Id == item.TagId);
+                if (tag?.KeywordLabel is not null &&
+                    string.Equals(tag.KeywordLabel, tagName, StringComparison.OrdinalIgnoreCase))
+                {
+                    TagComboBox.SelectedIndex = i;
+                    return;
+                }
             }
         }
+
         // Tag non trouve dans le catalogue : fallback Expression
         ExpressionModeRadio.IsChecked = true;
         ExpressionTextBox.Text = $"{{{tagName}}}";
@@ -518,14 +537,82 @@ private sealed record EffectListItem(EffectKind Kind, string Summary);
             return;
         }
 
+        var parsed = ScadaExpression.FromSource(source);
+        ScadaExprNode? ast = parsed.Ast;
+        if (ast is not null)
+            ast = ResolveTagIds(ast, _tagCatalog, SelectedTag?.Id, SelectedTag?.DisplayName);
+        var expression = ScadaExpression.FromAst(source, ast);
+
         Result = new ScadaStateRule(
             _ruleId,
             NameTextBox.Text.Trim(),
             Enabled: true,
-            Expression: ScadaExpression.FromSource(source),
+            Expression: expression,
             Effect: BuildEffectFromUi());
 
         DialogResult = true;
+    }
+
+    /// <summary>
+    /// Resolves <see cref="ScadaExprTagRef.TagId"/> for every tag reference in the AST.
+    /// When the expression was built from the dropdown (single tag selected),
+    /// <paramref name="selectedTagId"/> and <paramref name="selectedTagDisplayName"/>
+    /// provide the canonical Id and bypass catalog lookup (D2).
+    /// </summary>
+    private static ScadaExprNode ResolveTagIds(
+        ScadaExprNode node, ScadaTagCatalog? catalog,
+        string? selectedTagId, string? selectedTagDisplayName)
+    {
+        return node switch
+        {
+            ScadaExprTagRef tagRef => ResolveSingleTagRef(
+                tagRef, catalog, selectedTagId, selectedTagDisplayName),
+            ScadaExprUnary unary =>
+                new ScadaExprUnary(unary.Op, ResolveTagIds(
+                    unary.Operand, catalog, selectedTagId, selectedTagDisplayName)),
+            ScadaExprBinary binary =>
+                new ScadaExprBinary(binary.Op,
+                    ResolveTagIds(binary.Left, catalog, selectedTagId, selectedTagDisplayName),
+                    ResolveTagIds(binary.Right, catalog, selectedTagId, selectedTagDisplayName)),
+            ScadaExprFunc func =>
+                new ScadaExprFunc(func.Name,
+                    func.Args.Select(a => ResolveTagIds(
+                        a, catalog, selectedTagId, selectedTagDisplayName)).ToArray()),
+            _ => node
+        };
+    }
+
+    /// <summary>
+    /// Resolves a single TagRef:
+    /// 1. If TagId is already present (re-edition), keep it.
+    /// 2. If the selectedTagId matches this TagRef's TagName (dropdown-created expression),
+    ///    use selectedTagId directly — avoids ambiguity when DisplayName is duplicated (D2).
+    /// 3. Otherwise, try to resolve via the catalog.
+    /// </summary>
+    private static ScadaExprTagRef ResolveSingleTagRef(
+        ScadaExprTagRef tagRef, ScadaTagCatalog? catalog,
+        string? selectedTagId, string? selectedTagDisplayName)
+    {
+        if (!string.IsNullOrWhiteSpace(tagRef.TagId))
+            return tagRef; // déjà résolu (ré-édition)
+
+        // Priorité dropdown : le tag sélectionné explicitement par l'utilisateur
+        if (!string.IsNullOrWhiteSpace(selectedTagId) &&
+            string.Equals(tagRef.TagName, selectedTagDisplayName, StringComparison.OrdinalIgnoreCase))
+        {
+            return new ScadaExprTagRef(tagRef.TagName, selectedTagId);
+        }
+
+        // Fallback catalogue pour les expressions manuelles
+        if (catalog is not null)
+        {
+            var result = ScadaExpressionValidator.TryResolveTagReference(
+                tagRef.TagName, catalog);
+            if (result.Status == TagResolveStatus.Resolved && result.CanonicalId is not null)
+                return new ScadaExprTagRef(tagRef.TagName, result.CanonicalId);
+        }
+
+        return tagRef; // non résolu : garder TagName sans TagId
     }
 
     private static string TagLabel(ScadaTagDefinition tag)

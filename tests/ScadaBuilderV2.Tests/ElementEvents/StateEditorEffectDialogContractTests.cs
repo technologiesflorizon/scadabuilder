@@ -60,6 +60,42 @@ public sealed class StateEditorEffectDialogContractTests
         StringAssert.Contains(source, "ColorPickerDialog.TryParseCssColor");
     }
 
+    [TestMethod]
+    public void ElementStateRuleDialog_BuildExpression_KeepsDisplayNameInSource()
+    {
+        var source = ReadAppFile("ElementStateRuleDialog.xaml.cs");
+        var usesDisplayNameInSource = source.Contains("$\"{{{tag.DisplayName}}}");
+        Assert.IsTrue(usesDisplayNameInSource,
+            "BuildExpressionFromVariable must keep DisplayName in the expression source text.");
+    }
+
+    [TestMethod]
+    public void ElementStateRuleDialog_SelectTagByName_PrimaryById()
+    {
+        var source = ReadAppFile("ElementStateRuleDialog.xaml.cs");
+        var primaryById = source.IndexOf("string.Equals(item.TagId, tagName", StringComparison.Ordinal);
+        Assert.IsTrue(primaryById >= 0,
+            "SelectTagByName must match by tag Id first.");
+    }
+
+    [TestMethod]
+    public void ElementStateRuleDialog_OnSave_InjectsTagIdIntoAst()
+    {
+        var source = ReadAppFile("ElementStateRuleDialog.xaml.cs");
+        var usesFromAst = source.Contains("FromAst");
+        Assert.IsTrue(usesFromAst,
+            "OnSaveClick must use ScadaExpression.FromAst to inject TagId into the AST.");
+    }
+
+    [TestMethod]
+    public void ElementStateRuleDialog_ResolveTagIds_UsesTryResolvePerRef()
+    {
+        var source = ReadAppFile("ElementStateRuleDialog.xaml.cs");
+        var hasBlindInject = source.Contains("InjectTagIds(node, tag.Id)");
+        Assert.IsFalse(hasBlindInject,
+            "Must resolve each TagRef individually, not inject the same TagId everywhere.");
+    }
+
     private static string ReadAppFile(string fileName)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);
