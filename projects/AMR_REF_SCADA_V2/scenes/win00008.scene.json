@@ -1337,444 +1337,6 @@
       "CommandConfig": null
     },
     {
-      "Id": "legacy_601",
-      "DisplayName": "Text4",
-      "Kind": "LegacyStatic",
-      "Bounds": {
-        "X": 484,
-        "Y": 790,
-        "Width": 68,
-        "Height": 19
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00008",
-        "SourceElementId": "601",
-        "SourceElementName": "Text4",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00008_updated.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "Arial, Arial, sans-serif",
-        "FontSize": 13,
-        "Foreground": "rgb(0, 0, 0)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null,
-        "Opacity": 1,
-        "Rotation": 0,
-        "FlipHorizontally": false,
-        "FlipVertically": false
-      },
-      "Data": {
-        "Text": "Pompe du ",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false,
-        "ReadTagId": null,
-        "WriteTagId": null,
-        "ShapeStartX": null,
-        "ShapeStartY": null,
-        "ShapeEndX": null,
-        "ShapeEndY": null
-      },
-      "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Text",
-        "Text": "Pompe du ",
-        "IsTextLike": true,
-        "FontFamily": "Arial, Arial, sans-serif",
-        "FontSize": 13,
-        "Foreground": "rgb(0, 0, 0)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
-      "Events": null,
-      "ButtonBehavior": null,
-      "ShapeKind": null,
-      "ButtonKind": null,
-      "StateConfig": null,
-      "CommandConfig": null
-    },
-    {
-      "Id": "legacy_602",
-      "DisplayName": "Text5",
-      "Kind": "LegacyStatic",
-      "Bounds": {
-        "X": 484,
-        "Y": 806,
-        "Width": 165,
-        "Height": 19
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00008",
-        "SourceElementId": "602",
-        "SourceElementName": "Text5",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00008_updated.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "Arial, Arial, sans-serif",
-        "FontSize": 13,
-        "Foreground": "rgb(0, 0, 0)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null,
-        "Opacity": 1,
-        "Rotation": 0,
-        "FlipHorizontally": false,
-        "FlipVertically": false
-      },
-      "Data": {
-        "Text": "Condenseur \u00C3\u00A9vaporatif #2",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false,
-        "ReadTagId": null,
-        "WriteTagId": null,
-        "ShapeStartX": null,
-        "ShapeStartY": null,
-        "ShapeEndX": null,
-        "ShapeEndY": null
-      },
-      "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Text",
-        "Text": "Condenseur \u00C3\u00A9vaporatif #2",
-        "IsTextLike": true,
-        "FontFamily": "Arial, Arial, sans-serif",
-        "FontSize": 13,
-        "Foreground": "rgb(0, 0, 0)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
-      "Events": null,
-      "ButtonBehavior": null,
-      "ShapeKind": null,
-      "ButtonKind": null,
-      "StateConfig": null,
-      "CommandConfig": null
-    },
-    {
-      "Id": "legacy_603",
-      "DisplayName": "Text6",
-      "Kind": "LegacyStatic",
-      "Bounds": {
-        "X": 275,
-        "Y": 790,
-        "Width": 149,
-        "Height": 19
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00008",
-        "SourceElementId": "603",
-        "SourceElementName": "Text6",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00008_updated.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "Arial, Arial, sans-serif",
-        "FontSize": 13,
-        "Foreground": "rgb(0, 0, 0)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null,
-        "Opacity": 1,
-        "Rotation": 0,
-        "FlipHorizontally": false,
-        "FlipVertically": false
-      },
-      "Data": {
-        "Text": "Pompe de secours des ",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false,
-        "ReadTagId": null,
-        "WriteTagId": null,
-        "ShapeStartX": null,
-        "ShapeStartY": null,
-        "ShapeEndX": null,
-        "ShapeEndY": null
-      },
-      "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Text",
-        "Text": "Pompe de secours des ",
-        "IsTextLike": true,
-        "FontFamily": "Arial, Arial, sans-serif",
-        "FontSize": 13,
-        "Foreground": "rgb(0, 0, 0)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
-      "Events": null,
-      "ButtonBehavior": null,
-      "ShapeKind": null,
-      "ButtonKind": null,
-      "StateConfig": null,
-      "CommandConfig": null
-    },
-    {
-      "Id": "legacy_604",
-      "DisplayName": "Text7",
-      "Kind": "LegacyStatic",
-      "Bounds": {
-        "X": 275,
-        "Y": 806,
-        "Width": 159,
-        "Height": 19
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00008",
-        "SourceElementId": "604",
-        "SourceElementName": "Text7",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00008_updated.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "Arial, Arial, sans-serif",
-        "FontSize": 13,
-        "Foreground": "rgb(0, 0, 0)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null,
-        "Opacity": 1,
-        "Rotation": 0,
-        "FlipHorizontally": false,
-        "FlipVertically": false
-      },
-      "Data": {
-        "Text": "Condenseurs \u00C3\u00A9vaporatifs",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false,
-        "ReadTagId": null,
-        "WriteTagId": null,
-        "ShapeStartX": null,
-        "ShapeStartY": null,
-        "ShapeEndX": null,
-        "ShapeEndY": null
-      },
-      "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Text",
-        "Text": "Condenseurs \u00C3\u00A9vaporatifs",
-        "IsTextLike": true,
-        "FontFamily": "Arial, Arial, sans-serif",
-        "FontSize": 13,
-        "Foreground": "rgb(0, 0, 0)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
-      "Events": null,
-      "ButtonBehavior": null,
-      "ShapeKind": null,
-      "ButtonKind": null,
-      "StateConfig": null,
-      "CommandConfig": null
-    },
-    {
-      "Id": "legacy_605",
-      "DisplayName": "Text8",
-      "Kind": "LegacyStatic",
-      "Bounds": {
-        "X": 75,
-        "Y": 786,
-        "Width": 68,
-        "Height": 19
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00008",
-        "SourceElementId": "605",
-        "SourceElementName": "Text8",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00008_updated.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "Arial, Arial, sans-serif",
-        "FontSize": 13,
-        "Foreground": "rgb(0, 0, 0)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null,
-        "Opacity": 1,
-        "Rotation": 0,
-        "FlipHorizontally": false,
-        "FlipVertically": false
-      },
-      "Data": {
-        "Text": "Pompe du ",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false,
-        "ReadTagId": null,
-        "WriteTagId": null,
-        "ShapeStartX": null,
-        "ShapeStartY": null,
-        "ShapeEndX": null,
-        "ShapeEndY": null
-      },
-      "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Text",
-        "Text": "Pompe du ",
-        "IsTextLike": true,
-        "FontFamily": "Arial, Arial, sans-serif",
-        "FontSize": 13,
-        "Foreground": "rgb(0, 0, 0)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
-      "Events": null,
-      "ButtonBehavior": null,
-      "ShapeKind": null,
-      "ButtonKind": null,
-      "StateConfig": null,
-      "CommandConfig": null
-    },
-    {
-      "Id": "legacy_606",
-      "DisplayName": "Text9",
-      "Kind": "LegacyStatic",
-      "Bounds": {
-        "X": 75,
-        "Y": 805,
-        "Width": 165,
-        "Height": 19
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00008",
-        "SourceElementId": "606",
-        "SourceElementName": "Text9",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00008_updated.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "Arial, Arial, sans-serif",
-        "FontSize": 13,
-        "Foreground": "rgb(0, 0, 0)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null,
-        "Opacity": 1,
-        "Rotation": 0,
-        "FlipHorizontally": false,
-        "FlipVertically": false
-      },
-      "Data": {
-        "Text": "Condenseur \u00C3\u00A9vaporatif #1",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false,
-        "ReadTagId": null,
-        "WriteTagId": null,
-        "ShapeStartX": null,
-        "ShapeStartY": null,
-        "ShapeEndX": null,
-        "ShapeEndY": null
-      },
-      "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Text",
-        "Text": "Condenseur \u00C3\u00A9vaporatif #1",
-        "IsTextLike": true,
-        "FontFamily": "Arial, Arial, sans-serif",
-        "FontSize": 13,
-        "Foreground": "rgb(0, 0, 0)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
-      "Events": null,
-      "ButtonBehavior": null,
-      "ShapeKind": null,
-      "ButtonKind": null,
-      "StateConfig": null,
-      "CommandConfig": null
-    },
-    {
       "Id": "legacy_607",
       "DisplayName": "Text10",
       "Kind": "LegacyStatic",
@@ -3657,79 +3219,6 @@
       "LegacyPayload": {
         "LegacyType": "Text",
         "Text": "haut niveau",
-        "IsTextLike": true,
-        "FontFamily": "Arial, Arial, sans-serif",
-        "FontSize": 13,
-        "Foreground": "rgb(0, 0, 0)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
-      "Events": null,
-      "ButtonBehavior": null,
-      "ShapeKind": null,
-      "ButtonKind": null,
-      "StateConfig": null,
-      "CommandConfig": null
-    },
-    {
-      "Id": "legacy_1052",
-      "DisplayName": "Text40",
-      "Kind": "LegacyStatic",
-      "Bounds": {
-        "X": 175,
-        "Y": 833,
-        "Width": 379,
-        "Height": 19
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00008",
-        "SourceElementId": "1052",
-        "SourceElementName": "Text40",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00008_updated.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "Arial, Arial, sans-serif",
-        "FontSize": 13,
-        "Foreground": "rgb(0, 0, 0)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null,
-        "Opacity": 1,
-        "Rotation": 0,
-        "FlipHorizontally": false,
-        "FlipVertically": false
-      },
-      "Data": {
-        "Text": "Protection des Pompes Bassin des condenseurs \u00C3\u00A9vaporatifs",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false,
-        "ReadTagId": null,
-        "WriteTagId": null,
-        "ShapeStartX": null,
-        "ShapeStartY": null,
-        "ShapeEndX": null,
-        "ShapeEndY": null
-      },
-      "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Text",
-        "Text": "Protection des Pompes Bassin des condenseurs \u00C3\u00A9vaporatifs",
         "IsTextLike": true,
         "FontFamily": "Arial, Arial, sans-serif",
         "FontSize": 13,
@@ -6100,6 +5589,447 @@
       "ButtonKind": null,
       "StateConfig": null,
       "CommandConfig": null
+    },
+    {
+      "Id": "elementplus_text_605",
+      "DisplayName": "Element\u002B Text8",
+      "Kind": "Text",
+      "Bounds": {
+        "X": 75,
+        "Y": 786,
+        "Width": 90,
+        "Height": 19
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00008",
+        "SourceElementId": "605",
+        "SourceElementName": "Text8",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00008_updated.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 13,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "Transparent",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
+      },
+      "Data": {
+        "Text": "Pompe du",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
+      },
+      "Children": null,
+      "LegacyPayload": null,
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
+    },
+    {
+      "Id": "elementplus_text_606",
+      "DisplayName": "Element\u002B Text9",
+      "Kind": "Text",
+      "Bounds": {
+        "X": 75,
+        "Y": 805,
+        "Width": 188,
+        "Height": 19
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00008",
+        "SourceElementId": "606",
+        "SourceElementName": "Text9",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00008_updated.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 13,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "Transparent",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
+      },
+      "Data": {
+        "Text": "Condenseur \u00C9vaporatif #1",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
+      },
+      "Children": null,
+      "LegacyPayload": null,
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
+    },
+    {
+      "Id": "elementplus_text_603",
+      "DisplayName": "Element\u002B Text6",
+      "Kind": "Text",
+      "Bounds": {
+        "X": 275,
+        "Y": 790,
+        "Width": 149,
+        "Height": 19
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00008",
+        "SourceElementId": "603",
+        "SourceElementName": "Text6",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00008_updated.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 13,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "Transparent",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
+      },
+      "Data": {
+        "Text": "Pompe de secours des",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
+      },
+      "Children": null,
+      "LegacyPayload": null,
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
+    },
+    {
+      "Id": "elementplus_text_604",
+      "DisplayName": "Element\u002B Text7",
+      "Kind": "Text",
+      "Bounds": {
+        "X": 275,
+        "Y": 806,
+        "Width": 176,
+        "Height": 19
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00008",
+        "SourceElementId": "604",
+        "SourceElementName": "Text7",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00008_updated.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 13,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "Transparent",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
+      },
+      "Data": {
+        "Text": "Condenseurs \u00C9vaporatifs",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
+      },
+      "Children": null,
+      "LegacyPayload": null,
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
+    },
+    {
+      "Id": "elementplus_text_601",
+      "DisplayName": "Element\u002B Text4",
+      "Kind": "Text",
+      "Bounds": {
+        "X": 484,
+        "Y": 790,
+        "Width": 83,
+        "Height": 19
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00008",
+        "SourceElementId": "601",
+        "SourceElementName": "Text4",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00008_updated.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 13,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "Transparent",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
+      },
+      "Data": {
+        "Text": "Pompe du",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
+      },
+      "Children": null,
+      "LegacyPayload": null,
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
+    },
+    {
+      "Id": "elementplus_text_602",
+      "DisplayName": "Element\u002B Text5",
+      "Kind": "Text",
+      "Bounds": {
+        "X": 484,
+        "Y": 806,
+        "Width": 177,
+        "Height": 19
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00008",
+        "SourceElementId": "602",
+        "SourceElementName": "Text5",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00008_updated.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 13,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "Transparent",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
+      },
+      "Data": {
+        "Text": "Condenseur \u00C9vaporatif #2",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
+      },
+      "Children": null,
+      "LegacyPayload": null,
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
+    },
+    {
+      "Id": "elementplus_text_1052",
+      "DisplayName": "Element\u002B Text40",
+      "Kind": "Text",
+      "Bounds": {
+        "X": 179,
+        "Y": 838,
+        "Width": 379,
+        "Height": 19
+      },
+      "LegacySource": {
+        "SourceSystem": "Wonderware/ArchestrA",
+        "SourceDocumentId": "win00008",
+        "SourceElementId": "1052",
+        "SourceElementName": "Text40",
+        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00008_updated.html"
+      },
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Arial, Arial, sans-serif",
+        "FontSize": 13,
+        "Foreground": "rgb(0, 0, 0)",
+        "Background": "Transparent",
+        "BorderColor": "Transparent",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "ShadowPreset": "None",
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false
+      },
+      "Data": {
+        "Text": "Protection des Pompes Bassin des condenseurs \u00C9vaporatifs",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
+      },
+      "Children": null,
+      "LegacyPayload": null,
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null
     }
   ],
   "BackgroundColor": "#A8A8A8",
@@ -6121,22 +6051,6 @@
       "Text": "Bassin des condenseurs \u00C9vaporatifs"
     },
     {
-      "SourceElementId": "606",
-      "Text": "Condenseur \u00C9vaporatif #1"
-    },
-    {
-      "SourceElementId": "604",
-      "Text": "Condenseurs \u00C9vaporatifs"
-    },
-    {
-      "SourceElementId": "602",
-      "Text": "Condenseur \u00C9vaporatif #2"
-    },
-    {
-      "SourceElementId": "1052",
-      "Text": "Protection des Pompes Bassin des condenseurs \u00C9vaporatifs"
-    },
-    {
       "SourceElementId": "787",
       "Text": "\u00B0C"
     },
@@ -6147,6 +6061,7 @@
   ],
   "LegacyElementsMaterialized": true,
   "RemovedSourceElementIds": [
+    "1",
     "100",
     "101",
     "102",
