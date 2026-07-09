@@ -2,8 +2,15 @@
 
 Date: 2026-07-09
 Status: Approved design — prêt pour planification d'implémentation
+Document version: `V2.1.3.0000`
 Portée: SCADA Builder V2 — `ElementStateRuleDialog` + `ColorPickerDialog`
 Référence: `docs/superpowers/specs/2026-07-07-element-plus-state-command-events-design.md`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-09 | `V2.1.3.0000` | `PENDING` | Création de la spec approuvée pour le dialogue de configuration d'effet, l'extraction des types UI partagés et le correctif de teinte du ColorPicker. |
 
 ## 1. Problème
 
@@ -49,7 +56,7 @@ utilisé pour l'ajout ET la modification des effets. Corriger le bug de teinte d
 | Fichier | Action |
 |---|---|
 | `src/ScadaBuilderV2.App/EffectKind.cs` | **Nouveau** — `internal enum EffectKind` extrait de `ElementStateRuleDialog` |
-| `src/ScadaBuilderV2.App/EffectTypeItem.cs` | **Nouveau** — `internal sealed record EffectTypeItem(EffectKind, string)` extrait |
+| `src/ScadaBuilderV2.App/EffectTypeItem.cs` | **Nouveau** — `internal sealed record EffectTypeItem(EffectKind Kind, string Label)` extrait |
 | `src/ScadaBuilderV2.App/ColorPickerDialog.xaml` | Conserver (pas de changement XAML nécessaire) |
 | `src/ScadaBuilderV2.App/ColorPickerDialog.xaml.cs` | Modifier — `OnHueSliderChanged`, `ToHsv` (reste `static`, ajout paramètre `fallbackHue`) |
 | `src/ScadaBuilderV2.App/ElementStateRuleDialog.xaml` | Modifier — supprimer `EffectEditorPanel` inline, supprimer `EffectTypeComboBox` |
@@ -134,7 +141,7 @@ Inchangé : clic sur « Supprimer » retire le type de `_activeKinds` et du dict
 
 | Type | Champs |
 |---|---|
-| Couleur de fond | `ColorPickerField` (hex) |
+| Couleur de fond | `ColorPickerField` (couleur CSS) |
 | Bordure | `ColorPickerField` (couleur) + `TextBox` (largeur px) |
 | Texte | `TextBox` (contenu) + `ColorPickerField` (couleur) + `CheckBox` (visible) |
 | Visibilité élément | `CheckBox` (élément visible) |
@@ -215,11 +222,12 @@ Et dans `UpdateColorControls`, l'appel devient :
 (var hue, var saturation, var value) = ToHsv(color, fallbackHue: _hue);
 ```
 
-**Pourquoi `fallbackHue = 0` (défaut) :** préserve la compatibilité avec l'appel dans
-`UpdateSaturationValueFromPoint` qui n'a pas besoin de conserver la teinte (la
-saturation/valeur viennent du point cliqué, donc `delta` ne sera jamais 0 pour une
-couleur visible). Le défaut garantit que le comportement existant est inchangé pour
-les autres chemins d'appel.
+**Pourquoi `fallbackHue = 0` (défaut) :** garde la méthode utilisable sans état
+d'instance pour les futurs appels simples. Dans le chemin actuel, les changements de
+RGB, de texte, de swatch et de saturation/valeur passent par `UpdateColorControls`;
+cet appel doit fournir `fallbackHue: _hue` afin que les couleurs achromatiques ne
+réinitialisent pas la teinte sélectionnée. Le défaut garde un comportement prévisible
+pour tout autre appel qui ne veut pas conserver une teinte existante.
 
 ## 8. Modifications de `ElementStateRuleDialog`
 
@@ -322,4 +330,7 @@ d'export.
 - Artefacts d'éditeur (aperçu, dialogue) ne doivent pas fuiter dans l'export `.sb2`/`.sep`
 - APIs publiques : XML docs
 - Tests : couvrir le dialogue `EffectEditorDialog` (ouverture Ajout/Édition, validation,
-  retour des valeurs) et la correction de teinte (`ToHsv` avec delta=0)
+  retour des valeurs) et la correction de teinte (`ToHsv` avec delta=0). Si le projet de
+  tests actuel ne dispose pas d'un harness STA/WPF fiable, extraire la logique de
+  construction/validation d'effet dans des méthodes testables ou ajouter des tests
+  textuels ciblés sur le XAML/code-behind en complément des tests d'export.
