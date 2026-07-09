@@ -7,6 +7,46 @@ namespace ScadaBuilderV2.Tests.ElementEvents;
 public sealed class ScadaExprNodeTests
 {
     [TestMethod]
+    public void TagRef_WithTagId_RoundTripsThroughJson()
+    {
+        var tagRef = new ScadaExprTagRef("PE_16", "tf100.mapping.161");
+        var json = JsonSerializer.Serialize<ScadaExprNode>(tagRef);
+
+        // Default serialization uses PascalCase (no camelCase policy in tests)
+        StringAssert.Contains(json, "\"TagName\":\"PE_16\"");
+        StringAssert.Contains(json, "\"TagId\":\"tf100.mapping.161\"");
+
+        var deserialized = JsonSerializer.Deserialize<ScadaExprNode>(json);
+        Assert.IsInstanceOfType(deserialized, typeof(ScadaExprTagRef));
+        var roundTripped = (ScadaExprTagRef)deserialized;
+        Assert.AreEqual("PE_16", roundTripped.TagName);
+        Assert.AreEqual("tf100.mapping.161", roundTripped.TagId);
+    }
+
+    [TestMethod]
+    public void TagRef_WithoutTagId_OmitsTagIdFromJson()
+    {
+        var tagRef = new ScadaExprTagRef("PE_16");
+        var json = JsonSerializer.Serialize<ScadaExprNode>(tagRef);
+
+        StringAssert.Contains(json, "\"TagName\":\"PE_16\"");
+        Assert.IsFalse(json.Contains("\"TagId\""),
+            "Null TagId must not appear in serialized JSON.");
+    }
+
+    [TestMethod]
+    public void TagRef_LegacyJsonWithoutTagId_DeserializesWithNullTagId()
+    {
+        var legacyJson = "{\"type\":\"tagRef\",\"TagName\":\"PE_16\"}";
+        var deserialized = JsonSerializer.Deserialize<ScadaExprNode>(legacyJson);
+
+        Assert.IsInstanceOfType(deserialized, typeof(ScadaExprTagRef));
+        var tagRef = (ScadaExprTagRef)deserialized;
+        Assert.AreEqual("PE_16", tagRef.TagName);
+        Assert.IsNull(tagRef.TagId);
+    }
+
+    [TestMethod]
     public void BinaryNodeHoldsOperatorAndOperands()
     {
         ScadaExprNode left = new ScadaExprTagRef("Temp");

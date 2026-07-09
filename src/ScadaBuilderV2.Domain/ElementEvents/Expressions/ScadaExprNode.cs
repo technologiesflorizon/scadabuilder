@@ -45,8 +45,15 @@ public sealed record ScadaExprLiteralBool(bool Value) : ScadaExprNode;
 /// <summary>String literal expression node.</summary>
 public sealed record ScadaExprLiteralString(string Value) : ScadaExprNode;
 
-/// <summary>References one project tag by name, e.g. <c>{Temp}</c>.</summary>
-public sealed record ScadaExprTagRef(string TagName) : ScadaExprNode;
+/// <summary>
+/// References one project tag. <see cref="TagName"/> holds the human-readable label
+/// for UI display/re-editing; <see cref="TagId"/> holds the canonical runtime identifier
+/// (e.g. <c>tf100.mapping.196</c>) for validation, export, and runtime resolution.
+/// </summary>
+public sealed record ScadaExprTagRef(
+    string TagName,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    string? TagId = null) : ScadaExprNode;
 
 /// <summary>Unary operator expression node.</summary>
 public sealed record ScadaExprUnary(ScadaExprUnaryOp Op, ScadaExprNode Operand) : ScadaExprNode;
