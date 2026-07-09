@@ -1,641 +1,161 @@
-# Export : critère de wrapper DOM runtime pour les groupes — Plan d'implémentation
+# Export - wrapper DOM runtime pour les groupes - Plan d'implementation
 
 Date: 2026-07-09
-Status: Draft plan — en attente d'approbation
-Document version: `V2.1.5.0001`
+Status: Draft implementation plan - pending execution approval
+Document version: `V2.1.5.0002`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-09 | `V2.1.5.0002` | `PENDING` | Correction du plan pour refleter la spec: retrait global de `data-scada-events`, `StateConfig.ReadVariable` dans HTML/manifest, gate TF100Web separe, tests sans reference directe a `ScadaBuilderV2.App`. |
+| 2026-07-09 | `V2.1.5.0001` | `PENDING` | Plan initial du correctif de wrapper runtime des groupes. |
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Remplacer le critère `EventBindings.Count > 0` par `GroupRequiresRuntimeWrapper` qui vérifie uniquement les données runtime modernes (CommandConfig, StateConfig), retire `data-scada-events` de l'export, nettoie le manifest des EventBindings legacy, et ajoute un diagnostic pour les EventBindings restants.
+**Goal:** Corriger l'export des groupes Element+ afin que les groupes portant du runtime moderne (`CommandConfig`, `StateConfig`, `StateConfig.ReadVariable`, fallback d'etat non defaut) aient un wrapper DOM exporte, sans utiliser l'ancien chemin `EventBindings` / `data-scada-events`.
 
-**Architecture:** Helper privé dans `Ft100SceneExporter` qui ignore EventBindings et Data.ReadTagId/WriteTagId. Suppression de `BuildEventAttribute` dans le chemin d'export groupe. Le manifest ne sérialise plus `element.EventBindings` comme `Events`. Le validateur `ScadaProjectBuildValidator` existant émet déjà `AuditOrphanedEventBindings` — à étendre pour couvrir tous les EventBindings restants.
+**Architecture:** SCADA Builder V2 reste proprietaire du contrat de sortie `.sb2`: HTML, CSS, manifest et diagnostics d'export. TF100Web reste proprietaire du cycle de vie host apres injection de fragment. Le plan separe donc le correctif export SCADA Builder V2 du gate TF100Web qui rejoue les valeurs tags deja en cache pour rendre `StateConfig` immediatement observable.
 
-**Tech Stack:** C# 12, .NET 8-windows, MSTest
-
-**Spec:** `docs/superpowers/specs/2026-07-09-export-group-runtime-wrapper.md`
+**Tech Stack:** C# 12, .NET 8 WPF, MSTest, JavaScript TF100Web, Django tests.
 
 ## Global Constraints
 
-- Ne pas modifier le contrat TF100Web (format postMessage, attributs data-scada-*, manifest)
-- Ne pas modifier le modèle de données (`ScadaElement`, `ScadaScene`, `ScadaCommandBinding`, etc.)
-- Ne pas modifier le runtime JS
-- Ne pas supprimer physiquement `ElementEventDialog` ni les helpers `With*Event` (décommissionnés, retrait dans une tranche séparée)
-- Le helper doit être utilisé aux 4 endroits qui décident du rendu d'un groupe
-- `EventBindings` et `Data.ReadTagId`/`Data.WriteTagId` sont exclus du helper
-- `data-scada-events` ne doit plus apparaître dans l'export moderne
-- Les tests existants qui dépendent de `data-scada-events` doivent être mis à jour
-- PowerShell depuis `F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2`
-- Chaque commit doit compiler (`dotnet build ScadaBuilderV2.sln`)
+- Spec: `docs/superpowers/specs/2026-07-09-export-group-runtime-wrapper.md`.
+- Aucune suppression physique de `ElementEventDialog`, `OpenElementEventDialog`, `AddElementEventFromDialog`, `WithObjectEvent` ou helpers `With*Event`.
+- Ne pas convertir automatiquement `EventBindings` vers `CommandConfig` ou `StateConfig`.
+- Ne pas reintroduire `data-scada-events` comme fallback runtime.
+- `Data.ReadTagId` / `Data.WriteTagId` ne declenchent pas de wrapper groupe.
+- Les lectures modernes passent par `StateConfig.ReadVariable`.
+- Les ecritures modernes passent par `CommandConfig` avec `ScadaCommandKind.WriteTag`.
+- Le manifest ne doit plus remplir `Events` depuis `element.EventBindings`.
+- Les fonctions legacy restent presentes mais doivent etre traitees comme decommissionnees.
+- Les commits mentionnes ci-dessous sont des bornes de plan; ne pas les faire sans autorisation explicite d'execution.
 
 ---
 
-## État des lieux
+## Before You Start
 
-### Tests existants impactés
+- [ ] Confirmer l'autorisation d'implementation. Ce plan ne donne pas l'autorisation de modifier le code.
+- [ ] Dans SCADA Builder V2:
 
-Le test `ExportPreservesGroupClickNavigateEventAsRuntimeWrapper` (ligne 756) utilise `WithChangePageEvent` (EventBindings legacy) et vérifie la présence de `data-scada-events` dans le HTML et `Events` dans le manifest. Ce test doit être **supprimé** car il valide l'ancien contrat — les EventBindings ne sont plus exportés comme runtime actif.
-
-Un remplacement sera créé : `Export_GroupWithNavigateCommand_RendersWrapperWithCommandAttribute` — groupe avec CommandConfig.Navigate → wrapper + command-config, sans data-scada-events.
-
-### Helper cible
-
-```csharp
-private static bool GroupRequiresRuntimeWrapper(ScadaElement element)
-{
-    if (element.Kind != ScadaElementKind.Group)
-        return false;
-
-    var commandConfig = element.EffectiveCommandConfig;
-    var stateConfig = element.EffectiveStateConfig;
-
-    return commandConfig.Commands.Count > 0
-        || stateConfig.States.Count > 0
-        || stateConfig.ReadVariable is not null
-        || HasNonDefaultFallback(stateConfig);
-}
+```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
+git status --short --branch
 ```
 
+Expected: relever les changements existants. Ne pas ecraser de modifications utilisateur.
+
+- [ ] Lire les fichiers SCADA Builder V2 a modifier:
+
+```powershell
+Get-Content -Raw "src\ScadaBuilderV2.Rendering\Ft100SceneExporter.cs"
+Get-Content -Raw "src\ScadaBuilderV2.Domain\Projects\ProjectModels.cs"
+Get-Content -Raw "tests\ScadaBuilderV2.Tests\Ft100SceneExporterTests.cs"
+```
+
+- [ ] Si la phase TF100Web est executee, verifier le repo externe:
+
+```powershell
+Set-Location "F:\Projet\Git\TF100Web"
+git status --short --branch
+```
+
+Expected: relever les changements existants. Toute modification TF100Web demande une autorisation explicite separee.
+
 ---
 
-### Task 1: Ajouter les tests modernes et supprimer le test legacy
+## Phase 1 - SCADA Builder V2 Export
+
+### Task 1: Ajouter les tests de contrat export moderne
 
 **Files:**
 - Modify: `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
 
 **Interfaces:**
-- Consumes: `Ft100SceneExporter`, `ScadaElement`, `ScadaScene`, `ScadaElementCommandConfig`, `ScadaElementStateConfig`, `ScadaReadVariableRule` (existants)
-- Produces: 12 nouveaux tests + 1 suppression
-
-- [ ] **Step 1: Supprimer le test legacy `ExportPreservesGroupClickNavigateEventAsRuntimeWrapper`**
-
-Supprimer la méthode de test et ses 77 lignes (lignes 755-831 dans `Ft100SceneExporterTests.cs`). Ce test validait l'ancien contrat `data-scada-events` + `Events` dans le manifest, qui est maintenant décommissionné.
-
-- [ ] **Step 2: Ajouter les 12 nouveaux tests**
-
-Ajouter après les tests existants dans `Ft100SceneExporterTests.cs` :
-
-```csharp
-[TestMethod]
-public async Task Export_GroupWithOnlyCommandConfig_RendersWrapperWithCommandAttribute()
-{
-    var root = CreateTempExportDir();
-    var sourceHtmlPath = Path.Combine(root, "source", "grp_cmd.html");
-    await File.WriteAllTextAsync(sourceHtmlPath,
-        "<!doctype html><html><body><div class=\"page\"></div></body></html>");
-
-    var commandConfig = new ScadaElementCommandConfig(new[] {
-        new ScadaCommandBinding("nav1", "Go", true, ScadaCommandTrigger.OnClick,
-            ScadaCommandKind.Navigate, TargetPageId: "win00099")
-    });
-
-    var group = new ScadaElement(
-        "grp_nav", "Nav Group", ScadaElementKind.Group,
-        new SceneBounds(100, 200, 160, 70),
-        null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
-        Children: new[] {
-            new ScadaElement("btn1", "Btn", ScadaElementKind.Button,
-                new SceneBounds(5, 6, 80, 24), null,
-                new ScadaElementLayout(ElementPositionMode.Relative, "grp_nav"),
-                ScadaElementStyle.DefaultInput,
-                new ScadaElementData("Go", null, null, null, null, null, null, null, null, false))
-        },
-        CommandConfig: commandConfig);
-
-    var scene = ScadaScene.CreateEmpty("win00008", "Test", new(400, 400))
-        .WithElement(group);
-
-    try
-    {
-        var result = await new Ft100SceneExporter().ExportAsync(
-            scene, sourceHtmlPath, Path.Combine(root, "export"));
-        var html = await File.ReadAllTextAsync(result.HtmlPath);
-
-        StringAssert.Contains(html, "id=\"ft100-win00008__grp_nav\"",
-            "Group with CommandConfig must have a DOM wrapper.");
-        StringAssert.Contains(html, "data-scada-command-config=\"",
-            "Group wrapper must carry data-scada-command-config.");
-        Assert.IsFalse(html.Contains("data-scada-events="),
-            "Group must not emit data-scada-events.");
-        StringAssert.Contains(html, "id=\"ft100-win00008__btn1\"");
-    }
-    finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
-}
-
-[TestMethod]
-public async Task Export_GroupWithOnlyStateConfig_RendersWrapperWithStateAttribute()
-{
-    var root = CreateTempExportDir();
-    var sourceHtmlPath = Path.Combine(root, "source", "grp_state.html");
-    await File.WriteAllTextAsync(sourceHtmlPath,
-        "<!doctype html><html><body><div class=\"page\"></div></body></html>");
-
-    var stateConfig = new ScadaElementStateConfig(
-        ScadaEffectBlock.Empty with { Opacity = 0.4, BorderColor = "#000000", BorderWidth = 2 },
-        ScadaEffectBlock.Empty,
-        new[] {
-            new ScadaStateRule("s1", "Running", true,
-                new ScadaExpression("{Motor}>0",
-                    new ScadaExprBinary(ScadaExprBinaryOp.GreaterThan,
-                        new ScadaExprTagRef("Motor"), new ScadaExprLiteralNumber(0)),
-                    new[] { "Motor" }),
-                ScadaEffectBlock.Empty with { BackgroundColor = "#4CAF50" })
-        });
-
-    var group = new ScadaElement(
-        "grp_state", "State Group", ScadaElementKind.Group,
-        new SceneBounds(100, 200, 160, 70),
-        null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
-        Children: new[] {
-            new ScadaElement("shape1", "Shape", ScadaElementKind.Shape,
-                new SceneBounds(5, 6, 80, 24), null,
-                new ScadaElementLayout(ElementPositionMode.Relative, "grp_state"),
-                ScadaElementStyle.DefaultText,
-                new ScadaElementData(null, null, null, null, null, null, null, null, null, false),
-                ShapeKind: ScadaShapeKind.Rectangle)
-        },
-        StateConfig: stateConfig);
-
-    var scene = ScadaScene.CreateEmpty("win00008", "Test", new(400, 400))
-        .WithElement(group);
-
-    try
-    {
-        var result = await new Ft100SceneExporter().ExportAsync(
-            scene, sourceHtmlPath, Path.Combine(root, "export"));
-        var html = await File.ReadAllTextAsync(result.HtmlPath);
-
-        StringAssert.Contains(html, "id=\"ft100-win00008__grp_state\"",
-            "Group with StateConfig must have a DOM wrapper.");
-        StringAssert.Contains(html, "data-scada-state-config=\"",
-            "Group wrapper must carry data-scada-state-config.");
-        Assert.IsFalse(html.Contains("data-scada-events="));
-        StringAssert.Contains(html, "id=\"ft100-win00008__shape1\"");
-    }
-    finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
-}
-
-[TestMethod]
-public async Task Export_GroupWithOnlyStateReadVariable_RendersWrapperWithStateAttribute()
-{
-    var root = CreateTempExportDir();
-    var sourceHtmlPath = Path.Combine(root, "source", "grp_readvar.html");
-    await File.WriteAllTextAsync(sourceHtmlPath,
-        "<!doctype html><html><body><div class=\"page\"></div></body></html>");
-
-    var stateConfig = new ScadaElementStateConfig(
-        ScadaEffectBlock.Empty with { Opacity = 0.4, BorderColor = "#000000", BorderWidth = 2 },
-        ScadaEffectBlock.Empty,
-        Array.Empty<ScadaStateRule>(),
-        ReadVariable: new ScadaReadVariableRule("tf100.mapping.42", "Debit: {valeur} L/min"));
-
-    var group = new ScadaElement(
-        "grp_readvar", "ReadVar Group", ScadaElementKind.Group,
-        new SceneBounds(100, 200, 160, 70),
-        null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
-        Children: new[] {
-            new ScadaElement("txt1", "Text", ScadaElementKind.Text,
-                new SceneBounds(5, 6, 80, 24), null,
-                new ScadaElementLayout(ElementPositionMode.Relative, "grp_readvar"),
-                ScadaElementStyle.DefaultText,
-                new ScadaElementData("---", null, null, null, null, null, null, null, null, false))
-        },
-        StateConfig: stateConfig);
-
-    var scene = ScadaScene.CreateEmpty("win00008", "Test", new(400, 400))
-        .WithElement(group);
-
-    try
-    {
-        var result = await new Ft100SceneExporter().ExportAsync(
-            scene, sourceHtmlPath, Path.Combine(root, "export"));
-        var html = await File.ReadAllTextAsync(result.HtmlPath);
-
-        StringAssert.Contains(html, "id=\"ft100-win00008__grp_readvar\"",
-            "Group with StateConfig.ReadVariable must have a DOM wrapper.");
-        StringAssert.Contains(html, "data-scada-state-config=\"");
-        StringAssert.Contains(html, "\"readVariable\":");
-        StringAssert.Contains(html, "\"tagId\":\"tf100.mapping.42\"");
-        Assert.IsFalse(html.Contains("data-scada-events="));
-    }
-    finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
-}
-
-[TestMethod]
-public async Task Export_GroupWithWriteTagCommand_RendersWrapperWithCommandAttribute()
-{
-    var root = CreateTempExportDir();
-    var sourceHtmlPath = Path.Combine(root, "source", "grp_writetag.html");
-    await File.WriteAllTextAsync(sourceHtmlPath,
-        "<!doctype html><html><body><div class=\"page\"></div></body></html>");
-
-    var commandConfig = new ScadaElementCommandConfig(new[] {
-        new ScadaCommandBinding("wt1", "Set", true, ScadaCommandTrigger.OnClick,
-            ScadaCommandKind.WriteTag, WriteTagId: "tf100.mapping.42",
-            WriteMode: ScadaWriteMode.SetFixed, FixedValue: "1")
-    });
-
-    var group = new ScadaElement(
-        "grp_writetag", "WriteTag Group", ScadaElementKind.Group,
-        new SceneBounds(100, 200, 160, 70),
-        null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
-        CommandConfig: commandConfig);
-
-    var scene = ScadaScene.CreateEmpty("win00008", "Test", new(400, 400))
-        .WithElement(group);
-
-    try
-    {
-        var result = await new Ft100SceneExporter().ExportAsync(
-            scene, sourceHtmlPath, Path.Combine(root, "export"));
-        var html = await File.ReadAllTextAsync(result.HtmlPath);
-
-        StringAssert.Contains(html, "data-scada-command-config=\"");
-        StringAssert.Contains(html, "\"writeTagId\":\"tf100.mapping.42\"");
-        StringAssert.Contains(html, "\"kind\":\"writeTag\"");
-        Assert.IsFalse(html.Contains("data-scada-events="));
-    }
-    finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
-}
-
-[TestMethod]
-public async Task Export_GroupWithNavigateCommand_RendersWrapperWithCommandAttribute()
-{
-    var root = CreateTempExportDir();
-    var sourceHtmlPath = Path.Combine(root, "source", "grp_nav2.html");
-    await File.WriteAllTextAsync(sourceHtmlPath,
-        "<!doctype html><html><body><div class=\"page\"></div></body></html>");
-
-    var commandConfig = new ScadaElementCommandConfig(new[] {
-        new ScadaCommandBinding("nav2", "GoPage", true, ScadaCommandTrigger.OnClick,
-            ScadaCommandKind.Navigate, TargetPageId: "win00009")
-    });
-
-    var group = new ScadaElement(
-        "grp_nav2", "Navigate Group", ScadaElementKind.Group,
-        new SceneBounds(100, 200, 160, 70),
-        null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
-        CommandConfig: commandConfig);
-
-    var scene = ScadaScene.CreateEmpty("win00008", "Test", new(400, 400))
-        .WithElement(group);
-
-    try
-    {
-        var result = await new Ft100SceneExporter().ExportAsync(
-            scene, sourceHtmlPath, Path.Combine(root, "export"));
-        var html = await File.ReadAllTextAsync(result.HtmlPath);
-
-        StringAssert.Contains(html, "data-scada-command-config=\"");
-        StringAssert.Contains(html, "\"kind\":\"navigate\"");
-        StringAssert.Contains(html, "\"targetPageId\":\"win00009\"");
-        Assert.IsFalse(html.Contains("data-scada-events="));
-    }
-    finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
-}
-
-[TestMethod]
-public async Task Export_GroupWithNoRuntimeData_FlattensChildren()
-{
-    var root = CreateTempExportDir();
-    var sourceHtmlPath = Path.Combine(root, "source", "grp_empty.html");
-    await File.WriteAllTextAsync(sourceHtmlPath,
-        "<!doctype html><html><body><div class=\"page\"></div></body></html>");
-
-    var group = new ScadaElement(
-        "grp_empty", "Empty Group", ScadaElementKind.Group,
-        new SceneBounds(100, 200, 160, 70),
-        null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
-        Children: new[] {
-            new ScadaElement("shape1", "Shape", ScadaElementKind.Shape,
-                new SceneBounds(5, 6, 80, 24), null,
-                new ScadaElementLayout(ElementPositionMode.Relative, "grp_empty"),
-                ScadaElementStyle.DefaultText,
-                new ScadaElementData(null, null, null, null, null, null, null, null, null, false),
-                ShapeKind: ScadaShapeKind.Rectangle)
-        });
-
-    var scene = ScadaScene.CreateEmpty("win00008", "Test", new(400, 400))
-        .WithElement(group);
-
-    try
-    {
-        var result = await new Ft100SceneExporter().ExportAsync(
-            scene, sourceHtmlPath, Path.Combine(root, "export"));
-        var html = await File.ReadAllTextAsync(result.HtmlPath);
-
-        Assert.IsFalse(html.Contains("id=\"ft100-win00008__grp_empty\""),
-            "Group with no runtime data must be flattened.");
-        StringAssert.Contains(html, "id=\"ft100-win00008__shape1\"");
-    }
-    finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
-}
-
-[TestMethod]
-public async Task Export_GroupWithOnlyLegacyDataValueBindings_DoesNotRequireRuntimeWrapper()
-{
-    var root = CreateTempExportDir();
-    var sourceHtmlPath = Path.Combine(root, "source", "grp_legacy.html");
-    await File.WriteAllTextAsync(sourceHtmlPath,
-        "<!doctype html><html><body><div class=\"page\"></div></body></html>");
-
-    var group = new ScadaElement(
-        "grp_legacy", "Legacy Value Group", ScadaElementKind.Group,
-        new SceneBounds(100, 200, 160, 70),
-        null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
-        Data: new ScadaElementData(null, null, null, null, null, null, null, null, null, false,
-            ReadTagId: "tf100.mapping.42", WriteTagId: "tf100.mapping.99"),
-        Children: new[] {
-            new ScadaElement("input1", "Input", ScadaElementKind.InputText,
-                new SceneBounds(5, 6, 80, 24), null,
-                new ScadaElementLayout(ElementPositionMode.Relative, "grp_legacy"),
-                ScadaElementStyle.DefaultInput,
-                new ScadaElementData(null, "Texte", null, null, null, null, null, null, null, false))
-        });
-
-    var scene = ScadaScene.CreateEmpty("win00008", "Test", new(400, 400))
-        .WithElement(group);
-
-    try
-    {
-        var result = await new Ft100SceneExporter().ExportAsync(
-            scene, sourceHtmlPath, Path.Combine(root, "export"));
-        var html = await File.ReadAllTextAsync(result.HtmlPath);
-
-        Assert.IsFalse(html.Contains("id=\"ft100-win00008__grp_legacy\""),
-            "Group with only legacy Data.ReadTagId/WriteTagId must not get a runtime wrapper.");
-        StringAssert.Contains(html, "id=\"ft100-win00008__input1\"");
-    }
-    finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
-}
-
-[TestMethod]
-public async Task Export_GroupWithOnlyLegacyEventBindings_DoesNotExportRuntimeEvents()
-{
-    var root = CreateTempExportDir();
-    var sourceHtmlPath = Path.Combine(root, "source", "grp_legacy_evt.html");
-    await File.WriteAllTextAsync(sourceHtmlPath,
-        "<!doctype html><html><body><div class=\"page\"></div></body></html>");
-
-    var child = new ScadaElement(
-        "btn_legacy", "Legacy Button", ScadaElementKind.Button,
-        new SceneBounds(5, 6, 80, 24), null,
-        new ScadaElementLayout(ElementPositionMode.Relative, "grp_legacy_evt"),
-        ScadaElementStyle.DefaultInput,
-        new ScadaElementData("Click", null, null, null, null, null, null, null, null, false));
-    var group = new ScadaElement(
-        "grp_legacy_evt", "Legacy Event Group", ScadaElementKind.Group,
-        new SceneBounds(100, 200, 160, 70),
-        null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
-        Children: new[] { child });
-    var scene = ScadaScene
-        .CreateEmpty("win00008", "Legacy Events", new(400, 400))
-        .WithElement(group)
-        .WithChangePageEvent("grp_legacy_evt", ScadaEventRegistry.ClickKey, "win00009");
-
-    try
-    {
-        var result = await new Ft100SceneExporter().ExportAsync(
-            scene, sourceHtmlPath, Path.Combine(root, "export"));
-        var html = await File.ReadAllTextAsync(result.HtmlPath);
-
-        // Pas de data-scada-events
-        Assert.IsFalse(html.Contains("data-scada-events="),
-            "Legacy EventBindings must not produce data-scada-events in export.");
-        // Pas de wrapper groupe car EventBindings ne déclenche plus le wrapper
-        Assert.IsFalse(html.Contains("id=\"ft100-win00008__grp_legacy_evt\""),
-            "Group with only EventBindings must be flattened.");
-        // L'enfant est quand même rendu
-        StringAssert.Contains(html, "id=\"ft100-win00008__btn_legacy\"");
-    }
-    finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
-}
-
-[TestMethod]
-public async Task Export_GroupWithCommandConfigAndLegacyEventBindings_UsesCommandConfigOnly()
-{
-    var root = CreateTempExportDir();
-    var sourceHtmlPath = Path.Combine(root, "source", "grp_hybrid.html");
-    await File.WriteAllTextAsync(sourceHtmlPath,
-        "<!doctype html><html><body><div class=\"page\"></div></body></html>");
-
-    var commandConfig = new ScadaElementCommandConfig(new[] {
-        new ScadaCommandBinding("nav_hybrid", "GoHybrid", true,
-            ScadaCommandTrigger.OnClick, ScadaCommandKind.Navigate,
-            TargetPageId: "win00099")
-    });
-
-    var child = new ScadaElement(
-        "btn_hybrid", "Hybrid Button", ScadaElementKind.Button,
-        new SceneBounds(5, 6, 80, 24), null,
-        new ScadaElementLayout(ElementPositionMode.Relative, "grp_hybrid"),
-        ScadaElementStyle.DefaultInput,
-        new ScadaElementData("Click", null, null, null, null, null, null, null, null, false));
-    var group = new ScadaElement(
-        "grp_hybrid", "Hybrid Group", ScadaElementKind.Group,
-        new SceneBounds(100, 200, 160, 70),
-        null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
-        Children: new[] { child },
-        CommandConfig: commandConfig);
-    var scene = ScadaScene
-        .CreateEmpty("win00008", "Hybrid", new(400, 400))
-        .WithElement(group)
-        .WithChangePageEvent("grp_hybrid", ScadaEventRegistry.ClickKey, "win00009");
-
-    try
-    {
-        var result = await new Ft100SceneExporter().ExportAsync(
-            scene, sourceHtmlPath, Path.Combine(root, "export"));
-        var html = await File.ReadAllTextAsync(result.HtmlPath);
-
-        // Le wrapper existe (via CommandConfig)
-        StringAssert.Contains(html, "id=\"ft100-win00008__grp_hybrid\"");
-        // CommandConfig présent
-        StringAssert.Contains(html, "data-scada-command-config=\"");
-        StringAssert.Contains(html, "\"kind\":\"navigate\"");
-        // data-scada-events NE doit PAS être présent, malgré les EventBindings
-        Assert.IsFalse(html.Contains("data-scada-events="),
-            "Hybrid group must not emit data-scada-events even with legacy EventBindings.");
-    }
-    finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
-}
-
-[TestMethod]
-public async Task Export_Manifest_DoesNotSerializeLegacyEventBindingsAsActiveEvents()
-{
-    var root = CreateTempExportDir();
-    var sourceHtmlPath = Path.Combine(root, "source", "manifest_test.html");
-    await File.WriteAllTextAsync(sourceHtmlPath,
-        "<!doctype html><html><body><div class=\"page\"></div></body></html>");
-
-    var commandConfig = new ScadaElementCommandConfig(new[] {
-        new ScadaCommandBinding("nav_man", "GoMan", true,
-            ScadaCommandTrigger.OnClick, ScadaCommandKind.Navigate,
-            TargetPageId: "win00009")
-    });
-    var child = new ScadaElement(
-        "btn_man", "Man Button", ScadaElementKind.Button,
-        new SceneBounds(5, 6, 80, 24), null,
-        new ScadaElementLayout(ElementPositionMode.Relative, "grp_man"),
-        ScadaElementStyle.DefaultInput,
-        new ScadaElementData("Click", null, null, null, null, null, null, null, null, false));
-    var group = new ScadaElement(
-        "grp_man", "Man Group", ScadaElementKind.Group,
-        new SceneBounds(100, 200, 160, 70),
-        null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
-        Children: new[] { child },
-        CommandConfig: commandConfig);
-    var scene = ScadaScene
-        .CreateEmpty("win00008", "Manifest", new(400, 400))
-        .WithElement(group)
-        .WithChangePageEvent("grp_man", ScadaEventRegistry.ClickKey, "win00009");
-
-    try
-    {
-        var result = await new Ft100SceneExporter().ExportAsync(
-            scene, sourceHtmlPath, Path.Combine(root, "export"));
-        var manifestPath = Path.Combine(result.ExportDirectory, "manifest.json");
-        var manifest = await File.ReadAllTextAsync(manifestPath);
-
-        // Le manifest contient le groupe (via CommandConfig)
-        StringAssert.Contains(manifest, "\"Id\": \"grp_man\"");
-        // CommandConfig présent dans le manifest
-        StringAssert.Contains(manifest, "\"CommandConfig\":");
-        // Events NE doit PAS contenir les EventBindings legacy
-        // Le groupe a des EventBindings (via WithChangePageEvent) mais ils ne
-        // doivent pas apparaître comme events actifs dans le manifest
-        Assert.IsFalse(manifest.Contains("\"Trigger\": \"click\""),
-            "Manifest must not serialize legacy EventBindings as active events.");
-    }
-    finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
-}
-
-[TestMethod]
-public async Task Export_GroupRuntimeWrapper_DoesNotChangeChildGeometry()
-{
-    var root = CreateTempExportDir();
-    var sourceHtmlPath = Path.Combine(root, "source", "grp_geometry.html");
-    await File.WriteAllTextAsync(sourceHtmlPath,
-        "<!doctype html><html><body><div class=\"page\"></div></body></html>");
-
-    var commandConfig = new ScadaElementCommandConfig(new[] {
-        new ScadaCommandBinding("geo1", "GeoNav", true,
-            ScadaCommandTrigger.OnClick, ScadaCommandKind.Navigate,
-            TargetPageId: "win00009")
-    });
-    var group = new ScadaElement(
-        "grp_geo", "Geo Group", ScadaElementKind.Group,
-        new SceneBounds(100, 200, 160, 70),
-        null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
-        Children: new[] {
-            new ScadaElement("shape_geo", "GeoShape", ScadaElementKind.Shape,
-                new SceneBounds(5, 6, 80, 24), null,
-                new ScadaElementLayout(ElementPositionMode.Relative, "grp_geo"),
-                ScadaElementStyle.DefaultText,
-                new ScadaElementData(null, null, null, null, null, null, null, null, null, false),
-                ShapeKind: ScadaShapeKind.Rectangle)
-        },
-        CommandConfig: commandConfig);
-
-    var scene = ScadaScene.CreateEmpty("win00008", "Geometry", new(400, 400))
-        .WithElement(group);
-
-    try
-    {
-        var result = await new Ft100SceneExporter().ExportAsync(
-            scene, sourceHtmlPath, Path.Combine(root, "export"));
-        var html = await File.ReadAllTextAsync(result.HtmlPath);
-
-        // Vérifier la présence des wrappers
-        StringAssert.Contains(html, "id=\"ft100-win00008__grp_geo\"");
-        StringAssert.Contains(html, "id=\"ft100-win00008__shape_geo\"");
-
-        // Vérifier que l'enfant a des coordonnées relatives correctes
-        // (left:5px, top:6px — inchangé par rapport au modèle)
-        StringAssert.Contains(html, "left:5px");
-        StringAssert.Contains(html, "top:6px");
-        StringAssert.Contains(html, "width:80px");
-        StringAssert.Contains(html, "height:24px");
-    }
-    finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
-}
-
-[TestMethod]
-public void AuthoringWorkflow_DoesNotExposeLegacyElementEventDialog()
-{
-    // Vérification statique : les menus/ribbons/propriétés ne doivent pas
-    // référencer l'ancien ElementEventDialog comme chemin actif.
-    // Le constructeur de ElementEventDialog existe encore (décommissionné)
-    // mais aucun code actif ne doit l'appeler depuis le flux utilisateur.
-
-    var dialogType = typeof(ScadaBuilderV2.App.ElementEventDialog);
-    var assembly = typeof(ScadaBuilderV2.App.MainWindow).Assembly;
-
-    // Les références légitimes au type (dans ElementEventDialog lui-même,
-    // dans MainWindow.xaml.cs pour le handler décommissionné) sont tolérées.
-    // On vérifie que le constructeur n'est pas appelé dans un chemin
-    // déclenché par une action utilisateur directe (ribbon, clic droit, etc.).
-
-    // Note : ce test est structurel. Le code décommissionné reste présent
-    // mais ne doit pas être câblé dans les flux utilisateur actifs.
-    // La suppression physique sera faite dans une tranche séparée.
-    Assert.IsNotNull(dialogType, "ElementEventDialog type must exist (decommissioned, not deleted).");
-}
-```
-
-- [ ] **Step 3: Run tests to verify they fail**
+- Consumes: `Ft100SceneExporter`, `ScadaScene`, `ScadaElement`, `ScadaElementCommandConfig`, `ScadaElementStateConfig`, `ScadaReadVariableRule`.
+- Produces: couverture du contrat export groupe moderne et decommission `EventBindings`.
+
+- [ ] **Step 1: Remplacer le test legacy**
+
+Supprimer ou reecrire `ExportPreservesGroupClickNavigateEventAsRuntimeWrapper`. Il valide l'ancien contrat `data-scada-events`; il ne doit plus rester comme test positif.
+
+- [ ] **Step 2: Ajouter les tests export groupe**
+
+Ajouter des tests qui construisent des scenes minimales et verifient les sorties HTML/manifest/CSS:
+
+- `Export_GroupWithOnlyCommandConfig_RendersWrapperWithCommandAttribute`
+- `Export_GroupWithNavigateCommand_RendersWrapperWithCommandAttribute`
+- `Export_GroupWithWriteTagCommand_RendersWrapperWithCommandAttribute`
+- `Export_GroupWithOnlyStateConfig_RendersWrapperWithStateAttribute`
+- `Export_GroupWithOnlyStateReadVariable_RendersWrapperWithStateAttribute`
+- `Export_GroupWithNoRuntimeData_FlattensChildren`
+- `Export_GroupWithOnlyLegacyDataValueBindings_DoesNotRequireRuntimeWrapper`
+- `Export_GroupWithOnlyLegacyEventBindings_DoesNotExportRuntimeEvents`
+- `Export_NonGroupWithLegacyEventBindings_DoesNotExportRuntimeEvents`
+- `Export_GroupWithCommandConfigAndLegacyEventBindings_UsesCommandConfigOnly`
+- `Export_Manifest_DoesNotSerializeLegacyEventBindingsAsActiveEvents`
+- `Export_GroupRuntimeWrapper_DoesNotChangeChildGeometry`
+
+Required assertions:
+
+- HTML contains group wrapper id for `CommandConfig`, `StateConfig`, `StateConfig.ReadVariable`, and non-default fallback cases.
+- HTML contains `data-scada-command-config` for command groups.
+- HTML contains `data-scada-state-config` for state/readVariable groups.
+- Decoded HTML state config contains `"readVariable"` and the expected `tagId` for read variable.
+- HTML does not contain `data-scada-events`.
+- Exported CSS does not contain `data-scada-events`.
+- Manifest object `Events` is empty or absent for elements with legacy `EventBindings`.
+- Manifest includes `StateConfig` when `ReadVariable` exists, even when `States.Count == 0`.
+- A group with only `Data.ReadTagId` / `Data.WriteTagId` is flattened.
+- Child geometry remains relative under a runtime wrapper and absolute when the group is flattened.
+
+- [ ] **Step 3: Add authoring workflow static test without App reference**
+
+Do not reference `ScadaBuilderV2.App` types from the test project. Instead, add a static file test that reads:
+
+- `src/ScadaBuilderV2.App/MainWindow.xaml.cs`
+- `src/ScadaBuilderV2.App/MainWindow.WebViewScript.cs`
+- `src/ScadaBuilderV2.App/MainWindow.xaml`
+
+Expected assertions:
+
+- context menu descriptors do not expose an `events` command.
+- `executeCommand` switch does not route `object.events` or `element-plus.events`.
+- ribbon/XAML does not expose an active EventBindings authoring command.
+- legacy handlers may still exist, but are not connected to active menu/ribbon/property commands.
+
+- [ ] **Step 4: Run focused tests**
 
 ```powershell
-dotnet build ScadaBuilderV2.sln
-dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~Export_GroupWith"
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
+dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~Ft100SceneExporterTests"
 ```
 
-Expected: tous les nouveaux tests FAIL (ou erreur de compilation si le test legacy supprimé est encore référencé) — le helper n'existe pas encore, le critère `EventBindings.Count > 0` est toujours actif.
-
-- [ ] **Step 4: Commit**
-
-```bash
-git add tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs
-git commit -m "test: add modern group runtime wrapper tests, remove legacy event test
-
-Add 12 tests verifying that groups with modern runtime data
-(CommandConfig, StateConfig, ReadVariable) get DOM wrappers, while
-groups with only legacy EventBindings or Data.ReadTagId/WriteTagId
-do not. Remove ExportPreservesGroupClickNavigateEventAsRuntimeWrapper
-which validated the decommissioned data-scada-events contract.
-
-Co-Authored-By: Claude <noreply@anthropic.com>"
-```
+Expected before implementation: failures are acceptable only for the new contract tests.
 
 ---
 
-### Task 2: Ajouter le helper `GroupRequiresRuntimeWrapper`
+### Task 2: Implementer le helper et les points d'appel groupe
 
 **Files:**
 - Modify: `src/ScadaBuilderV2.Rendering/Ft100SceneExporter.cs`
 
 **Interfaces:**
-- Consumes: `ScadaElement`, `HasNonDefaultFallback` (existant)
-- Produces: `private static bool GroupRequiresRuntimeWrapper(ScadaElement element)`
+- Consumes: `ScadaElement.EffectiveCommandConfig`, `ScadaElement.EffectiveStateConfig`, `HasNonDefaultFallback`.
+- Produces: `GroupRequiresRuntimeWrapper`.
 
-- [ ] **Step 1: Ajouter le helper après `HasNonDefaultFallback` (ligne 1133)**
+- [ ] **Step 1: Ajouter `GroupRequiresRuntimeWrapper`**
+
+Add a private helper near `HasNonDefaultFallback`:
 
 ```csharp
-/// <summary>
-/// Determines whether a Group element requires a runtime DOM wrapper in the
-/// exported output. Only modern runtime data is considered; legacy
-/// <see cref="ScadaElement.EventBindings"/> and
-/// <see cref="ScadaElementData.ReadTagId"/>/<see cref="ScadaElementData.WriteTagId"/>
-/// are intentionally excluded (decommissioned paths).
-/// </summary>
-/// <remarks>
-/// Decisions: DEC-0040.
-/// Contracts: docs/superpowers/specs/2026-07-09-export-group-runtime-wrapper.md.
-/// Tests: tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
-/// </remarks>
 private static bool GroupRequiresRuntimeWrapper(ScadaElement element)
 {
     if (element.Kind != ScadaElementKind.Group)
+    {
         return false;
+    }
 
     var commandConfig = element.EffectiveCommandConfig;
     var stateConfig = element.EffectiveStateConfig;
@@ -647,332 +167,328 @@ private static bool GroupRequiresRuntimeWrapper(ScadaElement element)
 }
 ```
 
-- [ ] **Step 2: Build pour vérifier la compilation**
+Do not mention an unregistered decision id such as `DEC-0040`; cite the spec path instead if a remark is added.
 
-```powershell
-dotnet build ScadaBuilderV2.sln
-```
+- [ ] **Step 2: Remplacer les 4 decisions groupe**
 
-Expected: build OK (le helper n'est pas encore appelé).
+Replace `element.EventBindings.Count > 0` with `GroupRequiresRuntimeWrapper(element)` in:
 
-- [ ] **Step 3: Commit**
+- `BuildElementHtml`
+- `AppendElementCss`
+- `ShouldExportManifestObject`
+- `FlattenExportedElementBounds`
 
-```bash
-git add src/ScadaBuilderV2.Rendering/Ft100SceneExporter.cs
-git commit -m "feat: add GroupRequiresRuntimeWrapper helper
+Expected: only modern runtime data controls group materialization.
 
-Introduces a private helper that checks whether a Group element
-carries modern runtime data (CommandConfig, StateConfig states,
-ReadVariable, non-default quality fallback) and therefore needs
-a DOM wrapper in the export. Legacy EventBindings and
-Data.ReadTagId/WriteTagId are intentionally excluded.
+- [ ] **Step 3: Conserver la geometrie attendue**
 
-Co-Authored-By: Claude <noreply@anthropic.com>"
-```
+For wrapped groups, children must still be rendered with parent offsets reset to `0,0`. For flattened groups, children must still inherit the accumulated absolute offset. Do not refactor unrelated geometry code.
 
 ---
 
-### Task 3: Remplacer les 4 occurrences + retirer `BuildEventAttribute` des groupes
+### Task 3: Retirer `data-scada-events` de tout export moderne
 
 **Files:**
 - Modify: `src/ScadaBuilderV2.Rendering/Ft100SceneExporter.cs`
 
 **Interfaces:**
-- Consumes: `GroupRequiresRuntimeWrapper` (Task 2)
-- Produces: 4 remplacements + suppression de `BuildEventAttribute` dans le chemin groupe
+- Consumes: legacy `EventBindings`.
+- Produces: HTML/CSS/manifest without active legacy events.
 
-- [ ] **Step 1: Remplacer dans `BuildElementHtml` — wrapper groupe (ligne 1025)**
+- [ ] **Step 1: HTML**
 
-```csharp
-// Avant (ligne 1025) :
-if (element.EventBindings.Count > 0)
+Stop emitting `BuildEventAttribute(element)` for both groups and non-groups. Acceptable implementations:
 
-// Après :
-if (GroupRequiresRuntimeWrapper(element))
-```
+- remove the calls and template interpolation from `BuildElementHtml`; or
+- make `BuildEventAttribute` return an empty string and mark it decommissioned, while ensuring no exported HTML contains `data-scada-events`.
 
-- [ ] **Step 2: Retirer `BuildEventAttribute` du rendu groupe dans `BuildElementHtml`**
+Expected: no element or group emits `data-scada-events`.
 
-Supprimer la ligne 1032 :
-```csharp
-var groupEventAttribute = BuildEventAttribute(element);
-```
+- [ ] **Step 2: CSS**
 
-Et dans le template HTML (ligne 1038), retirer `{{groupEventAttribute}}` :
+Remove `[data-scada-events]` from exported cursor CSS selectors. Keep button cursor behavior through `.ft100-element--Button`.
 
-```csharp
-// Avant :
-<div id="{{groupId}}" class="ft100-element ft100-element--{{groupKind}}" data-scada-element-id="{{groupSceneElementId}}" data-name="{{groupName}}" style="{{groupInlineStyle}}"{{groupEventAttribute}}{{groupValueBindingAttributes}}{{groupStateCommandAttributes}}>
+Expected: exported CSS does not contain `data-scada-events`.
 
-// Après :
-<div id="{{groupId}}" class="ft100-element ft100-element--{{groupKind}}" data-scada-element-id="{{groupSceneElementId}}" data-name="{{groupName}}" style="{{groupInlineStyle}}"{{groupValueBindingAttributes}}{{groupStateCommandAttributes}}>
-```
+- [ ] **Step 3: Manifest**
 
-- [ ] **Step 3: Remplacer dans `AppendElementCss` (ligne 1659)**
+Replace `Events = element.EventBindings` with a legacy-safe empty value:
 
 ```csharp
-// Avant :
-if (element.EventBindings.Count > 0)
-
-// Après :
-if (GroupRequiresRuntimeWrapper(element))
-```
-
-- [ ] **Step 4: Remplacer dans `ShouldExportManifestObject` (ligne 1907)**
-
-```csharp
-// Avant :
-return element.Kind != ScadaElementKind.Group || element.EventBindings.Count > 0;
-
-// Après :
-return element.Kind != ScadaElementKind.Group || GroupRequiresRuntimeWrapper(element);
-```
-
-- [ ] **Step 5: Remplacer dans `FlattenExportedElementBounds` (ligne 1937)**
-
-```csharp
-// Avant :
-if (element.EventBindings.Count > 0)
-
-// Après :
-if (GroupRequiresRuntimeWrapper(element))
-```
-
-- [ ] **Step 6: Build et tests**
-
-```powershell
-dotnet build ScadaBuilderV2.sln
-dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~Ft100SceneExporterTests"
-```
-
-Expected: tous les nouveaux tests passent. Les tests existants non modifiés doivent aussi passer.
-
-- [ ] **Step 7: Commit**
-
-```bash
-git add src/ScadaBuilderV2.Rendering/Ft100SceneExporter.cs
-git commit -m "fix: use GroupRequiresRuntimeWrapper, stop emitting data-scada-events
-
-Replace EventBindings.Count > 0 with GroupRequiresRuntimeWrapper at all
-four group-rendering decision points. Remove BuildEventAttribute from
-the group HTML path — data-scada-events is decommissioned and must not
-appear in modern export. Groups with only EventBindings are now
-flattened; groups with CommandConfig/StateConfig always get a wrapper.
-
-Co-Authored-By: Claude <noreply@anthropic.com>"
-```
-
----
-
-### Task 4: Nettoyer le manifest — ne plus sérialiser `EventBindings` comme `Events` actifs
-
-**Files:**
-- Modify: `src/ScadaBuilderV2.Rendering/Ft100SceneExporter.cs`
-
-**Interfaces:**
-- Consumes: `GroupRequiresRuntimeWrapper` (Task 2)
-- Produces: manifest sans `Events` peuplés depuis `EventBindings`
-
-- [ ] **Step 1: Remplacer `Events = element.EventBindings` dans `BuildManifestPage`**
-
-Dans `BuildManifestPage`, ligne 1874, le champ `Events` est alimenté par `element.EventBindings` :
-
-```csharp
-// Avant (ligne 1874) :
-Events = element.EventBindings,
-
-// Après — tableau vide (compatibilité de forme, pas de contrat runtime) :
 Events = Array.Empty<ScadaObjectEventBinding>(),
 ```
 
-Ajouter le `using` si nécessaire (déjà présent via `using ScadaBuilderV2.Domain.Scenes;`).
+If a later schema task removes the field entirely, that must be a separate explicit decision. This plan preserves shape while removing active legacy data.
 
-- [ ] **Step 2: Build et tests**
+---
+
+### Task 4: Inclure `StateConfig.ReadVariable` dans la serialisation HTML et manifest
+
+**Files:**
+- Modify: `src/ScadaBuilderV2.Rendering/Ft100SceneExporter.cs`
+
+**Interfaces:**
+- Consumes: `ScadaElementStateConfig.ReadVariable`.
+- Produces: `data-scada-state-config` and manifest `StateConfig` when read variable is configured.
+
+- [ ] **Step 1: HTML state attribute**
+
+In `BuildStateCommandAttributes`, update the state predicate:
+
+```csharp
+var hasStateConfig = stateConfig.States.Count > 0
+    || stateConfig.ReadVariable is not null
+    || HasNonDefaultFallback(stateConfig);
+```
+
+Expected: a group or element with only `StateConfig.ReadVariable` receives `data-scada-state-config`.
+
+- [ ] **Step 2: Manifest state config**
+
+Use the same predicate when assigning manifest `StateConfig`.
+
+Expected: manifest includes `StateConfig` when `ReadVariable` exists, even if no state rules exist.
+
+- [ ] **Step 3: Validation**
 
 ```powershell
+Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
 dotnet build ScadaBuilderV2.sln
 dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~Ft100SceneExporterTests"
 ```
 
-Expected: `Export_Manifest_DoesNotSerializeLegacyEventBindingsAsActiveEvents` passe maintenant.
-
-- [ ] **Step 3: Commit**
-
-```bash
-git add src/ScadaBuilderV2.Rendering/Ft100SceneExporter.cs
-git commit -m "fix: stop serializing EventBindings as active Events in manifest
-
-Replace element.EventBindings with an empty array in the manifest
-Objects[].Events field. Legacy EventBindings are decommissioned and
-must not appear as active runtime contract in the manifest.
-
-Co-Authored-By: Claude <noreply@anthropic.com>"
-```
+Expected: all exporter contract tests pass.
 
 ---
 
-### Task 5: Ajouter le diagnostic pour les EventBindings legacy restants
+### Task 5: Ajouter le diagnostic legacy EventBindings
 
 **Files:**
 - Modify: `src/ScadaBuilderV2.Domain/Projects/ProjectModels.cs`
+- Modify: `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs` or a validator-focused test file if one exists.
 
 **Interfaces:**
-- Consumes: `ScadaProjectBuildValidator`, `ScadaBuildValidationIssue` (existants)
-- Produces: extension de `AuditOrphanedEventBindings` pour couvrir TOUS les EventBindings, pas seulement ceux sans CommandConfig
+- Consumes: `ScadaProjectBuildValidator.Validate`.
+- Produces: warning for every element still carrying `EventBindings`.
 
-- [ ] **Step 1: Lire la méthode `AuditOrphanedEventBindings` existante**
+- [ ] **Step 1: Preserve public API compatibility**
 
-Cette méthode existe déjà dans `ScadaProjectBuildValidator` (dans `ProjectModels.cs`). Elle émet un warning quand un élément a des `EventBindings` sans `CommandConfig`.
+Do not replace a public method with an inaccessible internal method. Recommended shape:
 
-- [ ] **Step 2: Remplacer `AuditOrphanedEventBindings` par un diagnostic plus large**
+- add `public static void AuditLegacyEventBindings(...)`; and
+- keep `public static void AuditOrphanedEventBindings(...)` as an obsolete wrapper if existing tests or callers use it, or update every direct caller intentionally.
 
-L'ancienne méthode vérifiait seulement les EventBindings « orphelins » (sans CommandConfig correspondant). La nouvelle spec demande un diagnostic pour TOUS les EventBindings, car ils sont tous décommissionnés.
+- [ ] **Step 2: Broaden diagnostics**
 
-```csharp
-// Remplacer la méthode AuditOrphanedEventBindings existante par :
+Emit warning `event-bindings-decommissioned` for every element where `element.EventBindings.Count > 0`.
 
-/// <summary>
-/// Emits a warning for every element that still carries legacy
-/// <see cref="ScadaElement.EventBindings"/>. EventBindings are
-/// decommissioned and are not exported as runtime-active data.
-/// Elements should be migrated to <see cref="ScadaElement.CommandConfig"/>
-/// or <see cref="ScadaElement.StateConfig"/>.
-/// </summary>
-/// <remarks>
-/// Decisions: DEC-0040, D9.
-/// Contracts: docs/superpowers/specs/2026-07-09-export-group-runtime-wrapper.md §6.
-/// Tests: tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
-/// </remarks>
-internal static void AuditLegacyEventBindings(
-    List<ScadaBuildValidationIssue> issues,
-    ScadaScene scene)
-{
-    foreach (var element in FlattenElements(scene.Elements))
-    {
-        if (element.EventBindings.Count == 0)
-            continue;
+Diagnostic text must state:
 
-        var hasModernEquivalent = element.EffectiveCommandConfig.Commands.Count > 0
-            || element.EffectiveStateConfig.States.Count > 0;
+- scene id;
+- element id;
+- count of bindings;
+- `EventBindings` are decommissioned;
+- expected authoring is `CommandConfig` or `StateConfig`;
+- `EventBindings` are not exported as TF100Web runtime.
 
-        var severity = hasModernEquivalent
-            ? ScadaBuildValidationSeverity.Warning
-            : ScadaBuildValidationSeverity.Warning;
+If the element has modern config, say the modern config is the exported source. If not, say the element may be inactive until migrated.
 
-        var extra = hasModernEquivalent
-            ? " L'element possede aussi une configuration moderne (CommandConfig/StateConfig) qui sera exportee."
-            : " Aucune configuration moderne (CommandConfig/StateConfig) ne remplace ces EventBindings. L'element risque d'etre inactif dans TF100Web.";
+- [ ] **Step 3: Integrate validation**
 
-        issues.Add(new ScadaBuildValidationIssue(
-            severity,
-            "event-bindings-decommissioned",
-            $"Scene '{scene.Id}', element '{element.Id}' ({element.DisplayName}): " +
-            $"EventBindings decommissionnes detectes ({element.EventBindings.Count} binding(s)). " +
-            $"Authoring attendu : CommandConfig ou StateConfig. " +
-            $"Les EventBindings ne sont pas exportes comme runtime TF100Web.{extra}",
-            scene.Id));
-    }
-}
+Update `ScadaProjectBuildValidator.Validate(...)` to call the broadened diagnostic for scenes included in build.
+
+- [ ] **Step 4: Tests**
+
+Add/update tests for:
+
+- EventBindings only => warning.
+- EventBindings plus CommandConfig => warning still emitted.
+- clean scene => no warning.
+- `Validate(project, scenes)` includes this warning.
+
+Run:
+
+```powershell
+dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~EventBindings"
+dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~ScadaProjectBuildValidator"
 ```
 
-- [ ] **Step 3: Mettre à jour les appels à `AuditOrphanedEventBindings` → `AuditLegacyEventBindings`**
+Expected: legacy EventBindings are diagnosed consistently.
 
-Dans la méthode `Validate` de `ScadaProjectBuildValidator`, remplacer l'appel :
+---
 
-```csharp
-// Avant :
-AuditOrphanedEventBindings(issues, scene);
+## Phase 2 - SCADA Builder V2 Validation
 
-// Après :
-AuditLegacyEventBindings(issues, scene);
+### Task 6: Validation complete SCADA Builder V2
+
+**Files:**
+- Inspect only unless failures require fixes.
+
+**Interfaces:**
+- Consumes: all SCADA Builder V2 changes from Phase 1.
+- Produces: validated export contract.
+
+- [ ] **Step 1: Search exported legacy contract references**
+
+```powershell
+rg -n "data-scada-events|Events = element.EventBindings|EventBindings.Count > 0" src\ScadaBuilderV2.Rendering tests\ScadaBuilderV2.Tests
 ```
 
-- [ ] **Step 4: Mettre à jour les tests existants qui référencent `AuditOrphanedEventBindings`**
+Expected:
 
-Vérifier si des tests appellent directement `AuditOrphanedEventBindings` :
+- no active exporter output path emits `data-scada-events`;
+- no manifest projection assigns `Events = element.EventBindings`;
+- remaining `EventBindings` references are diagnostics, domain legacy APIs, or tests explicitly covering decommission behavior.
+
+- [ ] **Step 2: Build and tests**
 
 ```powershell
 dotnet build ScadaBuilderV2.sln
-dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~AuditOrphaned"
-```
-
-Si des tests échouent à cause du renommage, les mettre à jour pour référencer `AuditLegacyEventBindings` et ajuster les assertions pour le nouveau message.
-
-- [ ] **Step 5: Build et tests**
-
-```powershell
-dotnet build ScadaBuilderV2.sln
+dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~Ft100SceneExporterTests"
+dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~ScadaProjectBuildValidator"
 dotnet test ScadaBuilderV2.sln
 ```
 
-Expected: tous les tests passent.
+Expected: same result as the fresh baseline captured in Before You Start; any new failure must be investigated before commit.
 
-- [ ] **Step 6: Commit**
+- [ ] **Step 3: Commit boundary**
+
+Commit only after tests pass and after user approval to commit:
 
 ```bash
+git add src/ScadaBuilderV2.Rendering/Ft100SceneExporter.cs
 git add src/ScadaBuilderV2.Domain/Projects/ProjectModels.cs
-git add tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs  # si modifié
-git commit -m "feat: broaden legacy EventBindings audit to all elements
-
-Replace AuditOrphanedEventBindings with AuditLegacyEventBindings
-which warns on every element carrying decommissioned EventBindings,
-not just those without modern CommandConfig. The diagnostic
-distinguishes elements that also have modern equivalents from
-those that risk being silently inactive in TF100Web.
-
-Co-Authored-By: Claude <noreply@anthropic.com>"
+git add tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs
+git commit -m "fix: export group runtime wrappers from modern state and command config"
 ```
 
 ---
 
-### Task 6: Vérification de régression complète
+## Phase 3 - TF100Web Host Lifecycle (Authorization Gate)
 
-- [ ] **Step 1: Build + tests complets**
+> **Authorization required before modifying `F:\Projet\Git\TF100Web`.**
 
-```powershell
-dotnet build ScadaBuilderV2.sln
-dotnet test ScadaBuilderV2.sln
+This phase is required to close the full spec behavior for immediate `StateConfig` execution. If this phase is not authorized, the SCADA Builder V2 implementation must report a remaining external dependency: TF100Web must replay cached tag values after slot initialization.
+
+### Task 7: Replay cached tag values after rendered slot initialization
+
+**Files:**
+- Modify: `F:\Projet\Git\TF100Web\static\asset\js\station\visualisation_import.js`
+- Modify: `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py` or another existing TF100Web test file with the same runtime contract coverage.
+
+**Interfaces:**
+- Consumes: `ScadaHost._initRenderedSlot`, `ScadaTagCache.values`, `window.ScadaRuntime.onTagValuesChanged`.
+- Produces: immediate evaluation of `[data-scada-state-config]` and `stateConfig.readVariable` after fragment render.
+
+- [ ] **Step 1: Add a host helper**
+
+Add a small helper near `ScadaHost`:
+
+```javascript
+_replayCachedTagValues() {
+  if (window.ScadaRuntime && typeof window.ScadaRuntime.onTagValuesChanged === 'function') {
+    window.ScadaRuntime.onTagValuesChanged(Object.assign({}, ScadaTagCache.values));
+  }
+}
 ```
 
-Tous les tests doivent passer.
+- [ ] **Step 2: Call it after `_initRenderedSlot`**
 
-- [ ] **Step 2: Vérifier les tests clés**
+In `_renderPart`, after:
 
-```powershell
-dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~Ft100SceneExporterTests"
-dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~ScadaProjectBuildValidator"
+```javascript
+await this._initRenderedSlot(slot, part.page_id);
 ```
 
-Expected: tout vert.
+call:
 
-- [ ] **Step 3: Commit final**
+```javascript
+this._replayCachedTagValues();
+```
+
+Equivalent placement is acceptable if the observable result is the same: a newly rendered slot with `data-scada-state-config` evaluates immediately from cached tag values.
+
+- [ ] **Step 3: Tests**
+
+Add TF100Web tests for:
+
+- `_renderPart` / `_initRenderedSlot` path contains a replay call after initialization.
+- `ScadaRuntime.onTagValuesChanged` receives a copy of `ScadaTagCache.values`.
+- a fragment with `data-scada-state-config` + `readVariable` can be rendered without depending on `data-scada-events`.
+- navigate and writeTag host paths still use `CommandConfig` / postMessage / mapping write endpoint.
+
+Run the relevant TF100Web tests from `F:\Projet\Git\TF100Web`:
+
+```powershell
+python manage.py test frontend.tests_scada_package frontend.tests_scada_deploy
+```
+
+Expected: TF100Web SCADA package/runtime tests pass.
+
+- [ ] **Step 4: Commit boundary**
+
+Commit only after tests pass and after user approval to commit:
+
+```bash
+git add static/asset/js/station/visualisation_import.js
+git add frontend/tests_scada_package.py
+git commit -m "fix: replay SCADA tag cache after rendered slot initialization"
+```
+
+---
+
+## Phase 4 - Documentation and Final Verification
+
+### Task 8: Documentation validation
+
+**Files:**
+- Modify: `docs/superpowers/plans/2026-07-09-export-group-runtime-wrapper.md`
+- Inspect: `docs/superpowers/specs/2026-07-09-export-group-runtime-wrapper.md`
+
+**Interfaces:**
+- Consumes: implemented behavior and tests.
+- Produces: plan/spec alignment.
+
+- [ ] **Step 1: Verify plan still matches spec**
+
+```powershell
+rg -n "data-scada-events|ReadVariable|StateConfig|CommandConfig|TF100Web|EventBindings" docs\superpowers\specs\2026-07-09-export-group-runtime-wrapper.md docs\superpowers\plans\2026-07-09-export-group-runtime-wrapper.md
+```
+
+Expected: no contradiction between spec and plan.
+
+- [ ] **Step 2: Documentation validation**
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\docs\verify-docs.ps1
+```
+
+Expected: any failures must be classified as pre-existing or fixed before commit. The touched plan must have H1, Date, Status, Document version, and `## Historique des changements`.
+
+- [ ] **Step 3: Final commit boundary**
+
+Commit docs only after user approval:
 
 ```bash
 git add docs/superpowers/plans/2026-07-09-export-group-runtime-wrapper.md
 git add docs/superpowers/specs/2026-07-09-export-group-runtime-wrapper.md
-git commit -m "docs: finalize export group runtime wrapper spec and plan"
+git commit -m "docs: align group runtime wrapper plan with TF100Web contract"
 ```
 
 ---
 
-### Vérification finale
+## Validation Checklist
 
-- [ ] **Build + tests complets**
-
-```powershell
-dotnet build ScadaBuilderV2.sln
-dotnet test ScadaBuilderV2.sln
-```
-
-Tous les tests doivent passer.
-
-### Checklist post-implémentation (spec §10)
-
-- [ ] Aucun export `.sb2` moderne ne contient `data-scada-events`
-- [ ] Un groupe avec `CommandConfig` sans `EventBindings` a un wrapper DOM
-- [ ] Un groupe avec `StateConfig` sans `EventBindings` expose `data-scada-state-config`
-- [ ] Un groupe avec `StateConfig.ReadVariable` expose `data-scada-state-config`
-- [ ] Un groupe avec seulement `Data.ReadTagId`/`Data.WriteTagId` ne devient pas wrapper
-- [ ] Un groupe sans runtime moderne reste aplati
-- [ ] Les artefacts `EventBindings` restants sont diagnostiqués
-- [ ] Le manifest ne sérialise pas `element.EventBindings` comme events actifs
+- [ ] SCADA Builder V2 export HTML contains no `data-scada-events`.
+- [ ] SCADA Builder V2 export CSS contains no `[data-scada-events]` selector.
+- [ ] Manifest does not serialize `element.EventBindings` as active events.
+- [ ] A group with `CommandConfig.Navigate` has a wrapper with `data-scada-command-config`.
+- [ ] A group with `CommandConfig.WriteTag` has a wrapper with `data-scada-command-config`.
+- [ ] A group with `StateConfig` has a wrapper with `data-scada-state-config`.
+- [ ] A group with only `StateConfig.ReadVariable` has a wrapper and serialized `readVariable`.
+- [ ] A group with only `Data.ReadTagId` / `Data.WriteTagId` remains flattened.
+- [ ] A group with only `EventBindings` remains flattened and emits a warning.
+- [ ] Non-group elements with legacy `EventBindings` do not emit `data-scada-events`.
+- [ ] Child geometry is unchanged by wrapper creation.
+- [ ] TF100Web replays cached tag values after slot initialization, or this remains a documented external dependency if Phase 3 is not authorized.
+- [ ] The old authoring flow remains present but unexposed by active human UI workflow.
