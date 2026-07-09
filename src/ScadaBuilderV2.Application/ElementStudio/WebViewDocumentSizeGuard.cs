@@ -15,9 +15,13 @@ public static class WebViewDocumentSizeGuard
 {
     /// <summary>
     /// Maximum document length (UTF-16 chars) considered safe for
-    /// <c>NavigateToString</c>. Set below the ~2,097,152 hard ceiling to leave headroom.
+    /// <c>NavigateToString</c>. Although Microsoft documents a ~2,097,152 ceiling,
+    /// <c>NavigateToString</c> was empirically observed to throw
+    /// <see cref="System.ArgumentException"/> at 1,921,198 characters
+    /// (Studio Element+ / win00059, 152 legacy items). This threshold sits well below
+    /// that observed failure point so oversized documents take the temp-file fallback.
     /// </summary>
-    public const int NavigateToStringMaxCharacters = 2_000_000;
+    public const int NavigateToStringMaxCharacters = 1_500_000;
 
     /// <summary>
     /// Returns <see langword="true"/> when <paramref name="document"/> is longer than
