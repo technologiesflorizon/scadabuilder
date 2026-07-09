@@ -11,7 +11,9 @@ public sealed class ElementStudioSourceRenderingTests
 
         StringAssert.Contains(xaml, "Microsoft.Web.WebView2.Wpf");
         StringAssert.Contains(xaml, "LegacySourceWebView");
-        StringAssert.Contains(code, "LegacySourceWebView.NavigateToString(BuildLegacySourceDocument(workspace));");
+        StringAssert.Contains(code, "NavigateLegacySource(BuildLegacySourceDocument(workspace));");
+        StringAssert.Contains(code, "WebViewDocumentSizeGuard.ExceedsNavigateToStringLimit(document)");
+        StringAssert.Contains(code, "LegacySourceWebView.CoreWebView2.Navigate(");
         StringAssert.Contains(code, "item.LegacyMarkup");
         StringAssert.Contains(code, "legacy-source-layer");
     }

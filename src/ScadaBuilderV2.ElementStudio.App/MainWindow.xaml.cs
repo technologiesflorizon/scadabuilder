@@ -69,7 +69,7 @@ public partial class MainWindow : Window
         }
 
         LegacySourceWebView.NavigationCompleted += OnLegacySourceNavigationCompleted;
-        LegacySourceWebView.NavigateToString(BuildLegacySourceDocument(workspace));
+        NavigateLegacySource(BuildLegacySourceDocument(workspace));
         SynchronizeElementListSelection(workspace.SelectedItems);
         UpdateSelectionGeometryFields();
         ApplyWorkzoneZoom();
@@ -694,8 +694,26 @@ public partial class MainWindow : Window
             return;
         }
 
-        LegacySourceWebView.NavigateToString(BuildLegacySourceDocument(workspace));
+        NavigateLegacySource(BuildLegacySourceDocument(workspace));
         await Task.CompletedTask;
+    }
+
+    private void NavigateLegacySource(string document)
+    {
+        if (WebViewDocumentSizeGuard.ExceedsNavigateToStringLimit(document)
+            && LegacySourceWebView.CoreWebView2 is not null)
+        {
+            var tempPath = Path.Combine(
+                Path.GetTempPath(),
+                $"studio-legacy-source-{Guid.NewGuid():N}.html");
+            File.WriteAllText(tempPath, document);
+            workspace.Diagnostics.Add(
+                $"Document source volumineux ({document.Length:N0} caracteres): charge via fichier temporaire pour contourner la limite de NavigateToString.");
+            LegacySourceWebView.CoreWebView2.Navigate(new Uri(tempPath).AbsoluteUri);
+            return;
+        }
+
+        LegacySourceWebView.NavigateToString(document);
     }
 
     private void ApplyWorkzoneZoom()
