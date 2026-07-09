@@ -1873,6 +1873,27 @@ public sealed class WebViewContextMenuScriptTests
             "Escape must not commit the pending typed value");
     }
 
+    [TestMethod]
+    public void LegacyStyleCaptureUsesRenderRelevantAllowlist()
+    {
+        var source = ReadMainWindowSource();
+
+        // The allowlist itself and a few load-bearing entries must be present.
+        StringAssert.Contains(source, "const legacyStyleAllowlist = new Set([");
+        StringAssert.Contains(source, "'fill'");
+        StringAssert.Contains(source, "'stroke'");
+        StringAssert.Contains(source, "'stroke-width'");
+        StringAssert.Contains(source, "'filter'");
+        StringAssert.Contains(source, "'font-family'");
+        StringAssert.Contains(source, "'color'");
+        StringAssert.Contains(source, ".filter(name => legacyStyleAllowlist.has(name))");
+
+        // The old exclusion-based capture (serializing every computed property) is gone.
+        Assert.IsFalse(
+            source.Contains(".filter(name => !['outline', 'outline-color'", StringComparison.Ordinal),
+            "Legacy capture must not serialize the full getComputedStyle() dump via an exclusion filter.");
+    }
+
     private static string ReadMainWindowSource()
     {
         // MainWindow code-behind is split into behavior-preserving partial-class files

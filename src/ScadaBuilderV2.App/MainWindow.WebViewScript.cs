@@ -549,8 +549,18 @@ public partial class MainWindow
     if (includeLegacyMarkup) {
       const clone = el.cloneNode(true);
       clone.removeAttribute('data-scada-selected');
+      const legacyStyleAllowlist = new Set([
+        'fill', 'fill-opacity', 'fill-rule',
+        'stroke', 'stroke-width', 'stroke-dasharray', 'stroke-linecap', 'stroke-linejoin', 'stroke-opacity',
+        'opacity', 'visibility', 'display',
+        'font-family', 'font-size', 'font-weight', 'font-style', 'color',
+        'text-align', 'text-decoration', 'text-transform', 'letter-spacing',
+        'background-color', 'background-image',
+        'border-color', 'border-width', 'border-style', 'border-radius',
+        'filter'
+      ]);
       computedStyleText = Array.from(computed)
-        .filter(name => !['outline', 'outline-color', 'outline-style', 'outline-width', 'outline-offset', 'box-shadow', 'cursor'].includes(name))
+        .filter(name => legacyStyleAllowlist.has(name))
         .map(name => `${name}: ${computed.getPropertyValue(name)};`)
         .join(' ');
       clone.removeAttribute('class');
