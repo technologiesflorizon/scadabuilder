@@ -153,4 +153,66 @@ public sealed class ScadaExpressionValidatorTests
 
         Assert.IsTrue(result.IsValid);
     }
+
+    [TestMethod]
+    public void Validate_CanonicalId_Passes()
+    {
+        var catalog = new ScadaTagCatalog("v1", new[]
+        {
+            new ScadaTagDefinition("tf100.mapping.196", "MC_120C", Datatype: "bool"),
+        });
+        var result = ScadaExpressionValidator.Validate("{tf100.mapping.196} == false", catalog);
+        Assert.IsTrue(result.IsValid);
+    }
+
+    [TestMethod]
+    public void Validate_DisplayName_StillPassesForBackwardCompat()
+    {
+        var catalog = new ScadaTagCatalog("v1", new[]
+        {
+            new ScadaTagDefinition("tf100.mapping.196", "MC_120C", Datatype: "bool"),
+        });
+        var result = ScadaExpressionValidator.Validate("{MC_120C} == false", catalog);
+        Assert.IsTrue(result.IsValid);
+    }
+
+    [TestMethod]
+    public void Validate_KeywordLabel_StillPassesForBackwardCompat()
+    {
+        var catalog = new ScadaTagCatalog("v1", new[]
+        {
+            new ScadaTagDefinition("tf100.mapping.196", "LongDisplayName",
+                KeywordLabel: "MC_120C", Datatype: "bool"),
+        });
+        var result = ScadaExpressionValidator.Validate("{MC_120C} == false", catalog);
+        Assert.IsTrue(result.IsValid);
+    }
+
+    [TestMethod]
+    public void Validate_AmbiguousTag_Fails()
+    {
+        var catalog = new ScadaTagCatalog("v1", new[]
+        {
+            new ScadaTagDefinition("tf100.mapping.200", "DuplicateLabel", Datatype: "float"),
+            new ScadaTagDefinition("tf100.mapping.201", "DuplicateLabel", Datatype: "bool"),
+        });
+        var result = ScadaExpressionValidator.Validate("{DuplicateLabel} == true", catalog);
+        Assert.IsFalse(result.IsValid,
+            "Ambiguous tag reference must fail validation.");
+        Assert.IsTrue(result.Errors.Any(e =>
+            e.Contains("DuplicateLabel") && e.Contains("ambigu", StringComparison.OrdinalIgnoreCase)));
+    }
+
+    [TestMethod]
+    public void Validate_AmbiguousById_StillPasses()
+    {
+        var catalog = new ScadaTagCatalog("v1", new[]
+        {
+            new ScadaTagDefinition("tf100.mapping.200", "DuplicateLabel", Datatype: "float"),
+            new ScadaTagDefinition("tf100.mapping.201", "DuplicateLabel", Datatype: "bool"),
+        });
+        var result = ScadaExpressionValidator.Validate("{tf100.mapping.200} == true", catalog);
+        Assert.IsTrue(result.IsValid,
+            "Direct Id reference must pass even when DisplayName is duplicated.");
+    }
 }

@@ -116,11 +116,8 @@ public static class ScadaExpressionValidator
 
         var errors = new List<string>();
         var referencedTags = new List<string>();
-        var knownTagNames = tagCatalog?.Tags
-            .Select(tag => tag.DisplayName)
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-        Walk(parseResult.Root, errors, referencedTags, knownTagNames);
+        WalkAndValidate(parseResult.Root, errors, referencedTags, tagCatalog);
 
         if (!IsBooleanNode(parseResult.Root))
         {
@@ -130,31 +127,41 @@ public static class ScadaExpressionValidator
         return new ScadaExprValidationResult(errors.Count == 0, errors, referencedTags);
     }
 
-    private static void Walk(ScadaExprNode node, List<string> errors, List<string> referencedTags, HashSet<string>? knownTagNames)
+    private static void WalkAndValidate(
+        ScadaExprNode node, List<string> errors, List<string> referencedTags,
+        ScadaTagCatalog? catalog)
     {
         switch (node)
         {
             case ScadaExprTagRef tagRef:
                 referencedTags.Add(tagRef.TagName);
-                if (knownTagNames is not null && !knownTagNames.Contains(tagRef.TagName))
+                if (catalog is not null)
                 {
-                    errors.Add($"Le tag '{tagRef.TagName}' n'existe pas dans le catalogue du projet.");
+                    var resolveResult = TryResolveTagReference(tagRef.TagName, catalog);
+                    switch (resolveResult.Status)
+                    {
+                        case TagResolveStatus.Unresolved:
+                            errors.Add($"Le tag '{tagRef.TagName}' n'existe pas dans le catalogue du projet.");
+                            break;
+                        case TagResolveStatus.Ambiguous:
+                            errors.Add($"Le tag '{tagRef.TagName}' est ambigu : plusieurs tags correspondent " +
+                                       $"({string.Join(", ", resolveResult.Matches)}). Utilisez l'Id canonique.");
+                            break;
+                    }
                 }
-
                 break;
 
             case ScadaExprUnary unary:
-                Walk(unary.Operand, errors, referencedTags, knownTagNames);
+                WalkAndValidate(unary.Operand, errors, referencedTags, catalog);
                 break;
 
             case ScadaExprBinary binary:
-                Walk(binary.Left, errors, referencedTags, knownTagNames);
-                Walk(binary.Right, errors, referencedTags, knownTagNames);
+                WalkAndValidate(binary.Left, errors, referencedTags, catalog);
+                WalkAndValidate(binary.Right, errors, referencedTags, catalog);
                 if (binary.Op == ScadaExprBinaryOp.Divide && IsLiteralZero(binary.Right))
                 {
                     errors.Add("Division par zero litterale detectee.");
                 }
-
                 break;
 
             case ScadaExprFunc func:
@@ -166,12 +173,10 @@ public static class ScadaExpressionValidator
                 {
                     errors.Add($"La fonction '{func.Name}' attend {expectedArity} argument(s), {func.Args.Count} fourni(s).");
                 }
-
                 foreach (var arg in func.Args)
                 {
-                    Walk(arg, errors, referencedTags, knownTagNames);
+                    WalkAndValidate(arg, errors, referencedTags, catalog);
                 }
-
                 break;
         }
     }
