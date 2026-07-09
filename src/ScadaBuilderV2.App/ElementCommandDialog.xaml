@@ -44,7 +44,7 @@
 
             <StackPanel x:Name="PagePanel" Visibility="Collapsed">
                 <TextBlock Text="Page cible" Foreground="{StaticResource MutedBrush}"/>
-                <ComboBox x:Name="TargetPageComboBox" Margin="0,2,0,8"/>
+                <ComboBox x:Name="TargetPageComboBox" Margin="0,2,0,8" DisplayMemberPath="Id"/>
             </StackPanel>
 
             <StackPanel x:Name="UrlPanel" Visibility="Collapsed">
