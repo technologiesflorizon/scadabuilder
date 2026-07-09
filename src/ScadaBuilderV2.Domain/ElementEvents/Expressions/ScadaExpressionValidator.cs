@@ -1,3 +1,4 @@
+using System.Linq;
 using ScadaBuilderV2.Domain.Projects;
 
 namespace ScadaBuilderV2.Domain.ElementEvents.Expressions;
@@ -9,6 +10,33 @@ public sealed record ScadaExprValidationResult(
     bool IsValid,
     IReadOnlyList<string> Errors,
     IReadOnlyList<string> ReferencedTagNames);
+
+/// <summary>Outcome of resolving a tag reference against the project catalog.</summary>
+public enum TagResolveStatus
+{
+    /// <summary>Exactly one match found; <see cref="TagResolveResult.CanonicalId"/> is set.</summary>
+    Resolved,
+    /// <summary>No match found in the catalog.</summary>
+    Unresolved,
+    /// <summary>Multiple tags match the same label; resolution is ambiguous.</summary>
+    Ambiguous
+}
+
+/// <summary>Result of <see cref="ScadaExpressionValidator.TryResolveTagReference"/>.</summary>
+public sealed record TagResolveResult(
+    TagResolveStatus Status,
+    string? CanonicalId,
+    IReadOnlyList<string> Matches)
+{
+    public static TagResolveResult ForResolved(string canonicalId) =>
+        new(TagResolveStatus.Resolved, canonicalId, new[] { canonicalId });
+
+    public static TagResolveResult ForUnresolved() =>
+        new(TagResolveStatus.Unresolved, null, Array.Empty<string>());
+
+    public static TagResolveResult ForAmbiguous(IReadOnlyList<string> matches) =>
+        new(TagResolveStatus.Ambiguous, null, matches);
+}
 
 /// <summary>
 /// Validates Element+ state condition expressions: syntax, tag existence, function arity,
@@ -28,6 +56,54 @@ public static class ScadaExpressionValidator
         ["MAX"] = 2,
         ["BIT"] = 2
     };
+
+    /// <summary>
+    /// Resolves a tag reference value (from <c>{...}</c> in an expression) against the
+    /// project tag catalog. Resolution order: exact <see cref="ScadaTagDefinition.Id"/>,
+    /// then <see cref="ScadaTagDefinition.DisplayName"/>, then
+    /// <see cref="ScadaTagDefinition.KeywordLabel"/>.
+    /// </summary>
+    /// <param name="value">The tag reference text (content between { and }).</param>
+    /// <param name="catalog">The project tag catalog, or null to skip resolution.</param>
+    public static TagResolveResult TryResolveTagReference(string value, ScadaTagCatalog? catalog)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return TagResolveResult.ForUnresolved();
+
+        if (catalog?.Tags is null || catalog.Tags.Count == 0)
+            return TagResolveResult.ForUnresolved();
+
+        var tags = catalog.Tags;
+
+        // 1. Exact match by Id (canonical — highest priority)
+        var byId = tags.FirstOrDefault(t =>
+            string.Equals(t.Id, value, StringComparison.Ordinal));
+        if (byId is not null)
+            return TagResolveResult.ForResolved(byId.Id);
+
+        // 2. Match by DisplayName
+        var byDisplayName = tags
+            .Where(t => string.Equals(t.DisplayName, value, StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+        if (byDisplayName.Length == 1)
+            return TagResolveResult.ForResolved(byDisplayName[0].Id);
+        if (byDisplayName.Length > 1)
+            return TagResolveResult.ForAmbiguous(
+                byDisplayName.Select(t => t.Id).ToArray());
+
+        // 3. Match by KeywordLabel
+        var byKeyword = tags
+            .Where(t => t.KeywordLabel is not null &&
+                        string.Equals(t.KeywordLabel, value, StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+        if (byKeyword.Length == 1)
+            return TagResolveResult.ForResolved(byKeyword[0].Id);
+        if (byKeyword.Length > 1)
+            return TagResolveResult.ForAmbiguous(
+                byKeyword.Select(t => t.Id).ToArray());
+
+        return TagResolveResult.ForUnresolved();
+    }
 
     /// <summary>Validates <paramref name="source"/> and reports every problem found.</summary>
     public static ScadaExprValidationResult Validate(string source, ScadaTagCatalog? tagCatalog)
