@@ -197,12 +197,20 @@ public sealed partial class Ft100SceneExporter
             pageResults.Add(await ExportAsync(input.Scene, input.SourceHtmlPath, packageDirectory, project, cancellationToken, runtimeHash));
         }
 
+        var manifestWarnings = pageResults
+            .SelectMany(page => page.Warnings)
+            .Distinct(StringComparer.Ordinal)
+            .ToList();
         var manifestPath = Path.Combine(packageDirectory, "manifest.json");
         await File.WriteAllTextAsync(
             manifestPath,
-            BuildProjectManifest(project, pageInputsById.Values.Select(input => input.Scene).ToArray(), new List<string>()),
+            BuildProjectManifest(project, pageInputsById.Values.Select(input => input.Scene).ToArray(), manifestWarnings),
             Encoding.UTF8,
             cancellationToken);
+
+        var projectWarnings = manifestWarnings
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
 
         await File.WriteAllTextAsync(
             Path.Combine(packageDirectory, "README.txt"),
@@ -214,7 +222,8 @@ public sealed partial class Ft100SceneExporter
             packageDirectory,
             manifestPath,
             pageResults,
-            pageResults.Sum(result => result.CopiedImageCount));
+            pageResults.Sum(result => result.CopiedImageCount),
+            projectWarnings);
     }
 
     /// <summary>
@@ -908,7 +917,8 @@ public sealed partial class Ft100SceneExporter
             case ScadaExprTagRef tagRef:
                 if (!tagRef.TagName.StartsWith("tf100.mapping.", StringComparison.OrdinalIgnoreCase))
                 {
-                    warnings.Add(
+                    AddWarningOnce(
+                        warnings,
                         $"Expression \"{expressionSource}\" : la reference '{{{tagRef.TagName}}}' " +
                         "n'a pas pu etre resolue en Id canonique. Le runtime appliquera qualityFallback.");
                 }
@@ -924,6 +934,14 @@ public sealed partial class Ft100SceneExporter
                 foreach (var arg in func.Args)
                     EmitUnresolvedWarnings(arg, expressionSource, warnings);
                 break;
+        }
+    }
+
+    private static void AddWarningOnce(List<string> warnings, string warning)
+    {
+        if (!warnings.Contains(warning, StringComparer.Ordinal))
+        {
+            warnings.Add(warning);
         }
     }
 

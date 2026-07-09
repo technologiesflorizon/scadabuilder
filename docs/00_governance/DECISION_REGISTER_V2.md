@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Decision Register
 
-Date: 2026-06-17
+Date: 2026-07-09
 Status: Active authoritative decision register
-Document version: `V2.1.3.0001`
+Document version: `V2.1.4.0002`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-09 | `V2.1.4.0002` | `PENDING` | Ajout de DEC-0036 pour les references de tags d'expressions d'etat : libelle humain conserve, Id canonique obligatoire a l'export TF100Web. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de DEC-0032 pour la galerie Formes 32x32 sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout de DEC-0032 pour la galerie Formes du ruban Inserer et le placement ligne/fleche en deux points. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Mise a jour de DEC-0031 apres extraction de la palette laterale d'outils vers le catalogue semantique. |
@@ -1022,3 +1023,49 @@ Editing a re-opened component does not automatically overwrite the exact origina
 Regression coverage:
 
 `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`, `tests/ScadaBuilderV2.Tests/ElementStudioComponentToImportPackageMapperTests.cs`, `tests/ScadaBuilderV2.Tests/ElementStudioComponentNamingTests.cs`
+
+### DEC-0036 - Canonical Tag Ids In State Expression Runtime ASTs
+
+Status: Active
+Created: 2026-07-09 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/specs/2026-07-09-expression-tag-id-reference.md`
+
+Context:
+
+Element+ state expressions were authored with human display labels such as
+`PE_16` or legacy TF100Web names. The TF100Web runtime bridge resolves values
+through canonical mapping identifiers in the `tf100.mapping.<id>` format.
+Exporting display labels as runtime `tagName` values caused valid state rules
+to degrade to `qualityFallback` even when the project tag catalog contained the
+correct mapping.
+
+Decision:
+
+`ScadaExprTagRef` separates `TagName` for UI display/re-editing from optional
+`TagId` for canonical identity. State-expression export must normalize resolved
+references so the runtime AST contains `tagName = tf100.mapping.<id>` in both
+HTML state config attributes and FT100 manifests. Unresolved references remain
+unchanged and emit export warnings so TF100Web degrades deterministically.
+Ambiguous references block export.
+
+Consequences:
+
+The editor can keep showing human labels while exported runtime payloads target
+stable TF100Web mappings. Existing scenes without `TagId` are normalized at
+export when the project catalog resolves the label uniquely. Export warnings
+are surfaced on scene and project export results and deduplicated across HTML
+and manifest generation.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/ElementEvents/ScadaExprNodeTests.cs`,
+`tests/ScadaBuilderV2.Tests/ElementEvents/ScadaExpressionTests.cs`,
+`tests/ScadaBuilderV2.Tests/ElementEvents/ScadaExpressionValidatorTests.cs`,
+`tests/ScadaBuilderV2.Tests/ElementEvents/ScadaElementCommandConfigTests.cs`,
+`tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`,
+`tests/runtime-js/expression-evaluator.test.mjs`,
+`tests/runtime-js/state-engine.test.mjs`

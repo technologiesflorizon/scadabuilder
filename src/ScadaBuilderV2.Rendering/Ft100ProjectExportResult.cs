@@ -2,15 +2,39 @@ using ScadaBuilderV2.Domain.Scenes;
 
 namespace ScadaBuilderV2.Rendering;
 
+/// <summary>
+/// Input page compiled into a project-level FT100 export.
+/// </summary>
 public sealed record Ft100ProjectPageExportInput(
     ScadaScene Scene,
     string SourceHtmlPath);
 
+/// <summary>
+/// Describes a generated FT100 project package directory.
+/// </summary>
 public sealed record Ft100ProjectExportResult(
     string ExportDirectory,
     string ManifestPath,
     IReadOnlyList<Ft100SceneExportResult> PageResults,
-    int CopiedImageCount);
+    int CopiedImageCount,
+    IReadOnlyList<string> Warnings)
+{
+    /// <summary>
+    /// Backward-compatible constructor for callers that don't provide project warnings.
+    /// </summary>
+    public Ft100ProjectExportResult(
+        string exportDirectory,
+        string manifestPath,
+        IReadOnlyList<Ft100SceneExportResult> pageResults,
+        int copiedImageCount)
+        : this(
+            exportDirectory,
+            manifestPath,
+            pageResults,
+            copiedImageCount,
+            pageResults.SelectMany(page => page.Warnings).Distinct(StringComparer.Ordinal).ToArray())
+    { }
+}
 
 /// <summary>
 /// Describes a SCADA Builder V2 FT100 package exported as a FT100-compatible .sb2 archive.

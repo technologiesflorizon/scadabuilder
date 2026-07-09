@@ -1726,8 +1726,8 @@
         "BlendMode": "normal"
       },
       "IncludeInBuild": true,
-      "HeaderPageId": null,
-      "FooterPageId": null,
+      "HeaderPageId": "win00002",
+      "FooterPageId": "win00003",
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873

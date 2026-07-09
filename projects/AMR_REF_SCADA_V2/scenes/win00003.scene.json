@@ -7,79 +7,6 @@
   },
   "Elements": [
     {
-      "Id": "legacy_21",
-      "DisplayName": "Rectangle6",
-      "Kind": "LegacyStatic",
-      "Bounds": {
-        "X": 150,
-        "Y": 5,
-        "Width": 133,
-        "Height": 22
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00003",
-        "SourceElementId": "21",
-        "SourceElementName": "Rectangle6",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\03_web_legacy\\html_pages\\win00003_914fdd0dccf0.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
-        "FontSize": 16,
-        "Foreground": "rgb(232, 237, 245)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null,
-        "Opacity": 1,
-        "Rotation": 0,
-        "FlipHorizontally": false,
-        "FlipVertically": false
-      },
-      "Data": {
-        "Text": "",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false,
-        "ReadTagId": null,
-        "WriteTagId": null,
-        "ShapeStartX": null,
-        "ShapeStartY": null,
-        "ShapeEndX": null,
-        "ShapeEndY": null
-      },
-      "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "rect",
-        "Text": "",
-        "IsTextLike": false,
-        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
-        "FontSize": 16,
-        "Foreground": "rgb(232, 237, 245)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
-      "Events": null,
-      "ButtonBehavior": null,
-      "ShapeKind": null,
-      "ButtonKind": null,
-      "StateConfig": null,
-      "CommandConfig": null
-    },
-    {
       "Id": "legacy_11",
       "DisplayName": "Text1",
       "Kind": "LegacyStatic",
@@ -216,115 +143,6 @@
       "CommandConfig": null
     },
     {
-      "Id": "elementplus_button_9",
-      "DisplayName": "Element\u002B Button9",
-      "Kind": "Button",
-      "Bounds": {
-        "X": 995,
-        "Y": 32,
-        "Width": 134,
-        "Height": 44
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00003",
-        "SourceElementId": "9",
-        "SourceElementName": "Button9",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "BorderColor": "#8AA0A6",
-        "BorderWidth": 1,
-        "BorderStyle": "Solid",
-        "ShadowPreset": "None",
-        "AdvancedCss": null,
-        "Opacity": 1,
-        "Rotation": 0,
-        "FlipHorizontally": false,
-        "FlipVertically": false
-      },
-      "Data": {
-        "Text": "Button9",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false,
-        "ReadTagId": null,
-        "WriteTagId": null,
-        "ShapeStartX": null,
-        "ShapeStartY": null,
-        "ShapeEndX": null,
-        "ShapeEndY": null
-      },
-      "Children": null,
-      "LegacyPayload": null,
-      "Events": null,
-      "ButtonBehavior": {
-        "IsDisabled": false,
-        "Hover": {
-          "Enabled": true,
-          "Background": "#EAF5F7",
-          "Foreground": "#0F2A30",
-          "BorderColor": "#2090A0"
-        },
-        "Pressed": {
-          "Enabled": true,
-          "Background": "#0F7280",
-          "Foreground": "#FFFFFF",
-          "BorderColor": "#0F2A30"
-        },
-        "EffectiveHover": {
-          "Enabled": true,
-          "Background": "#EAF5F7",
-          "Foreground": "#0F2A30",
-          "BorderColor": "#2090A0"
-        },
-        "EffectivePressed": {
-          "Enabled": true,
-          "Background": "#0F7280",
-          "Foreground": "#FFFFFF",
-          "BorderColor": "#0F2A30"
-        }
-      },
-      "ShapeKind": null,
-      "ButtonKind": null,
-      "StateConfig": null,
-      "CommandConfig": {
-        "Commands": [
-          {
-            "Id": "b06a1ff519084946b8e3045328014bbd",
-            "Name": "GoConsigne",
-            "Enabled": true,
-            "Trigger": "OnClick",
-            "Kind": "Navigate",
-            "Confirmation": null,
-            "WriteTagId": null,
-            "ReadTagId": null,
-            "WriteMode": null,
-            "OnValue": null,
-            "OffValue": null,
-            "FixedValue": null,
-            "TargetPageId": "win00087",
-            "Url": null,
-            "NewTab": false
-          }
-        ]
-      }
-    },
-    {
       "Id": "elementplus_button_8",
       "DisplayName": "Element\u002B Button8",
       "Kind": "Button",
@@ -362,69 +180,6 @@
       },
       "Data": {
         "Text": "Button8",
-        "Placeholder": null,
-        "Value": null,
-        "Minimum": null,
-        "Maximum": null,
-        "Decimals": null,
-        "Unit": null,
-        "DisplayFormat": null,
-        "TagBinding": null,
-        "IsReadOnly": false,
-        "ReadTagId": null,
-        "WriteTagId": null,
-        "ShapeStartX": null,
-        "ShapeStartY": null,
-        "ShapeEndX": null,
-        "ShapeEndY": null
-      },
-      "Children": null,
-      "LegacyPayload": null,
-      "Events": null,
-      "ButtonBehavior": null,
-      "ShapeKind": null,
-      "ButtonKind": null,
-      "StateConfig": null,
-      "CommandConfig": null
-    },
-    {
-      "Id": "elementplus_button_12",
-      "DisplayName": "Element\u002B Button10",
-      "Kind": "Button",
-      "Bounds": {
-        "X": 2,
-        "Y": 2,
-        "Width": 53,
-        "Height": 28
-      },
-      "LegacySource": {
-        "SourceSystem": "Wonderware/ArchestrA",
-        "SourceDocumentId": "win00003",
-        "SourceElementId": "12",
-        "SourceElementName": "Button10",
-        "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
-      },
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
-        "FontSize": 10,
-        "Foreground": "rgb(211, 211, 211)",
-        "Background": "rgb(211, 211, 211)",
-        "BorderColor": "#8AA0A6",
-        "BorderWidth": 1,
-        "BorderStyle": "Solid",
-        "ShadowPreset": "None",
-        "AdvancedCss": null,
-        "Opacity": 1,
-        "Rotation": 0,
-        "FlipHorizontally": false,
-        "FlipVertically": false
-      },
-      "Data": {
-        "Text": "Button10",
         "Placeholder": null,
         "Value": null,
         "Minimum": null,
@@ -1653,14 +1408,14 @@
       }
     },
     {
-      "Id": "text_008",
-      "DisplayName": "Text008",
-      "Kind": "Text",
+      "Id": "group_007_2",
+      "DisplayName": "Group007",
+      "Kind": "Group",
       "Bounds": {
-        "X": 1019,
-        "Y": 39,
-        "Width": 87,
-        "Height": 28
+        "X": 995,
+        "Y": 32,
+        "Width": 134,
+        "Height": 44
       },
       "LegacySource": null,
       "Layout": {
@@ -1672,9 +1427,9 @@
         "FontSize": 16,
         "Foreground": "#0F2A30",
         "Background": "Transparent",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
+        "BorderColor": "#2090A0",
+        "BorderWidth": 1,
+        "BorderStyle": "Dashed",
         "ShadowPreset": "None",
         "AdvancedCss": null,
         "Opacity": 1,
@@ -1683,7 +1438,7 @@
         "FlipVertically": false
       },
       "Data": {
-        "Text": "Consigne",
+        "Text": null,
         "Placeholder": null,
         "Value": null,
         "Minimum": null,
@@ -1700,14 +1455,201 @@
         "ShapeEndX": null,
         "ShapeEndY": null
       },
-      "Children": null,
+      "Children": [
+        {
+          "Id": "elementplus_button_9",
+          "DisplayName": "Element\u002B Button9",
+          "Kind": "Button",
+          "Bounds": {
+            "X": 0,
+            "Y": 0,
+            "Width": 134,
+            "Height": 44
+          },
+          "LegacySource": {
+            "SourceSystem": "Wonderware/ArchestrA",
+            "SourceDocumentId": "win00003",
+            "SourceElementId": "9",
+            "SourceElementName": "Button9",
+            "SourcePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
+          },
+          "Layout": {
+            "PositionMode": "Relative",
+            "RelativeToElementId": "group_007_2"
+          },
+          "Style": {
+            "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+            "FontSize": 10,
+            "Foreground": "rgb(211, 211, 211)",
+            "Background": "rgb(211, 211, 211)",
+            "BorderColor": "#8AA0A6",
+            "BorderWidth": 1,
+            "BorderStyle": "Solid",
+            "ShadowPreset": "None",
+            "AdvancedCss": null,
+            "Opacity": 1,
+            "Rotation": 0,
+            "FlipHorizontally": false,
+            "FlipVertically": false
+          },
+          "Data": {
+            "Text": "Button9",
+            "Placeholder": null,
+            "Value": null,
+            "Minimum": null,
+            "Maximum": null,
+            "Decimals": null,
+            "Unit": null,
+            "DisplayFormat": null,
+            "TagBinding": null,
+            "IsReadOnly": false,
+            "ReadTagId": null,
+            "WriteTagId": null,
+            "ShapeStartX": null,
+            "ShapeStartY": null,
+            "ShapeEndX": null,
+            "ShapeEndY": null
+          },
+          "Children": null,
+          "LegacyPayload": null,
+          "Events": null,
+          "ButtonBehavior": {
+            "IsDisabled": false,
+            "Hover": {
+              "Enabled": true,
+              "Background": "#EAF5F7",
+              "Foreground": "#0F2A30",
+              "BorderColor": "#2090A0"
+            },
+            "Pressed": {
+              "Enabled": true,
+              "Background": "#0F7280",
+              "Foreground": "#FFFFFF",
+              "BorderColor": "#0F2A30"
+            },
+            "EffectiveHover": {
+              "Enabled": true,
+              "Background": "#EAF5F7",
+              "Foreground": "#0F2A30",
+              "BorderColor": "#2090A0"
+            },
+            "EffectivePressed": {
+              "Enabled": true,
+              "Background": "#0F7280",
+              "Foreground": "#FFFFFF",
+              "BorderColor": "#0F2A30"
+            }
+          },
+          "ShapeKind": null,
+          "ButtonKind": null,
+          "StateConfig": null,
+          "CommandConfig": {
+            "Commands": [
+              {
+                "Id": "b06a1ff519084946b8e3045328014bbd",
+                "Name": "GoConsigne",
+                "Enabled": true,
+                "Trigger": "OnClick",
+                "Kind": "Navigate",
+                "Confirmation": null,
+                "WriteTagId": null,
+                "ReadTagId": null,
+                "WriteMode": null,
+                "OnValue": null,
+                "OffValue": null,
+                "FixedValue": null,
+                "TargetPageId": "win00087",
+                "Url": null,
+                "NewTab": false
+              }
+            ]
+          }
+        },
+        {
+          "Id": "text_008",
+          "DisplayName": "Text008",
+          "Kind": "Text",
+          "Bounds": {
+            "X": 24,
+            "Y": 7,
+            "Width": 87,
+            "Height": 28
+          },
+          "LegacySource": null,
+          "Layout": {
+            "PositionMode": "Relative",
+            "RelativeToElementId": "group_007_2"
+          },
+          "Style": {
+            "FontFamily": "Segoe UI",
+            "FontSize": 16,
+            "Foreground": "#0F2A30",
+            "Background": "Transparent",
+            "BorderColor": "Transparent",
+            "BorderWidth": 0,
+            "BorderStyle": "None",
+            "ShadowPreset": "None",
+            "AdvancedCss": null,
+            "Opacity": 1,
+            "Rotation": 0,
+            "FlipHorizontally": false,
+            "FlipVertically": false
+          },
+          "Data": {
+            "Text": "Consigne",
+            "Placeholder": null,
+            "Value": null,
+            "Minimum": null,
+            "Maximum": null,
+            "Decimals": null,
+            "Unit": null,
+            "DisplayFormat": null,
+            "TagBinding": null,
+            "IsReadOnly": false,
+            "ReadTagId": null,
+            "WriteTagId": null,
+            "ShapeStartX": null,
+            "ShapeStartY": null,
+            "ShapeEndX": null,
+            "ShapeEndY": null
+          },
+          "Children": null,
+          "LegacyPayload": null,
+          "Events": null,
+          "ButtonBehavior": null,
+          "ShapeKind": null,
+          "ButtonKind": null,
+          "StateConfig": null,
+          "CommandConfig": null
+        }
+      ],
       "LegacyPayload": null,
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "1922864e77544eb69a7a945d6afceda6",
+            "Name": "GoConsigne",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "Navigate",
+            "Confirmation": null,
+            "WriteTagId": null,
+            "ReadTagId": null,
+            "WriteMode": null,
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": "win00087",
+            "Url": null,
+            "NewTab": false
+          }
+        ]
+      }
     }
   ],
   "BackgroundColor": "#A6A6A6",
@@ -1715,6 +1657,7 @@
   "LegacyElementsMaterialized": true,
   "RemovedSourceElementIds": [
     "10",
+    "12",
     "13",
     "14",
     "15",
@@ -1723,6 +1666,7 @@
     "18",
     "19",
     "20",
+    "21",
     "22",
     "23",
     "24"

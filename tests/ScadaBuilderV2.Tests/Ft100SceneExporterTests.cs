@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using System.Text;
 using System.Text.Json;
 using ScadaBuilderV2.Domain.ElementEvents.Command;
 using ScadaBuilderV2.Domain.ElementEvents.Expressions;
@@ -3173,6 +3174,180 @@ public sealed class Ft100SceneExporterTests
                 "Export must warn about unresolved tag references.");
             Assert.IsTrue(result.Warnings.Any(w => w.Contains("TagInconnu")),
                 "Warning must mention the unresolved tag name.");
+            Assert.AreEqual(1, result.Warnings.Count(w => w.Contains("TagInconnu")),
+                "HTML and manifest normalization must not duplicate the same unresolved warning.");
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
+    public async Task ExportProjectAsync_UnresolvedTagRef_AggregatesProjectWarningsOnce()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceDir = Path.Combine(root, "source");
+        Directory.CreateDirectory(sourceDir);
+        var sourceHtmlPath = Path.Combine(sourceDir, "project_unresolved_test.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var expr = new ScadaExpression(
+            "{TagInconnu} == true",
+            new ScadaExprBinary(ScadaExprBinaryOp.Equal,
+                new ScadaExprTagRef("TagInconnu"),
+                new ScadaExprLiteralBool(true)),
+            new[] { "TagInconnu" });
+
+        var element = new ScadaElement(
+            "el_project_unresolved", "Project unresolved", ScadaElementKind.Text,
+            new SceneBounds(10, 20, 100, 30), null, ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultText,
+            new ScadaElementData("test", null, null, null, null, null, null, null, null, false),
+            StateConfig: new ScadaElementStateConfig(
+                ScadaEffectBlock.Empty with { Opacity = 0.4, BorderColor = "#000000", BorderWidth = 2 },
+                ScadaEffectBlock.Empty,
+                new[] { new ScadaStateRule("s1", "Unk", true, expr,
+                    new ScadaEffectBlock(ColorFilterColor: "#E53935")) }));
+
+        var scene = ScadaScene.CreateEmpty("win00008", "Project unresolved", new(1280, 873)).WithElement(element);
+        var project = ScadaProject.CreateDefault("ProjectUnresolved") with
+        {
+            HomePageId = "win00008",
+            Scenes = [new ScadaSceneReference("win00008", "Project unresolved", "scenes/win00008.scene.json")]
+        };
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportProjectAsync(
+                project,
+                [new Ft100ProjectPageExportInput(scene, sourceHtmlPath)],
+                Path.Combine(root, "export"));
+
+            Assert.AreEqual(1, result.Warnings.Count(w => w.Contains("TagInconnu")),
+                "Project export must expose deduplicated unresolved tag warnings.");
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
+    public async Task ExportProjectArchiveAsync_Sb2Package_CoherentStateConfigInZipManifestAndHtml()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceDir = Path.Combine(root, "source");
+        Directory.CreateDirectory(sourceDir);
+        var sourceHtmlPath = Path.Combine(sourceDir, "sb2_canonical_test.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var catalog = new ScadaTagCatalog("v1", new[]
+        {
+            new ScadaTagDefinition("tf100.mapping.195", "Noeud1_N15_03_Commande_MC_120A", Datatype: "bool"),
+            new ScadaTagDefinition("tf100.mapping.196", "Noeud1_N15_04_Commande_MC_120C", Datatype: "bool"),
+        });
+        var greenExpr = new ScadaExpression(
+            "{Noeud1_N15_03_Commande_MC_120A} == true",
+            new ScadaExprBinary(ScadaExprBinaryOp.Equal,
+                new ScadaExprTagRef("Noeud1_N15_03_Commande_MC_120A"),
+                new ScadaExprLiteralBool(true)),
+            new[] { "Noeud1_N15_03_Commande_MC_120A" });
+        var redExpr = new ScadaExpression(
+            "{Noeud1_N15_04_Commande_MC_120C} == false",
+            new ScadaExprBinary(ScadaExprBinaryOp.Equal,
+                new ScadaExprTagRef("Noeud1_N15_04_Commande_MC_120C"),
+                new ScadaExprLiteralBool(false)),
+            new[] { "Noeud1_N15_04_Commande_MC_120C" });
+
+        var element = new ScadaElement(
+            "el_sb2_canonical", "SB2 canonical", ScadaElementKind.Text,
+            new SceneBounds(10, 20, 100, 30), null, ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultText,
+            new ScadaElementData("test", null, null, null, null, null, null, null, null, false),
+            StateConfig: new ScadaElementStateConfig(
+                ScadaEffectBlock.Empty with { Opacity = 0.4, BorderColor = "#000000", BorderWidth = 2 },
+                ScadaEffectBlock.Empty,
+                new[]
+                {
+                    new ScadaStateRule("green", "Green", true, greenExpr,
+                        new ScadaEffectBlock(ColorFilterColor: "#12B729")),
+                    new ScadaStateRule("red", "Red", true, redExpr,
+                        new ScadaEffectBlock(ColorFilterColor: "#E53935"))
+                }));
+
+        var scene = ScadaScene.CreateEmpty("win00008", "SB2 canonical", new(1280, 873)).WithElement(element);
+        var project = ScadaProject.CreateDefault("SB2Canonical") with
+        {
+            HomePageId = "win00008",
+            Scenes = [new ScadaSceneReference("win00008", "SB2 canonical", "scenes/win00008.scene.json")],
+            TagCatalog = catalog
+        };
+        var archivePath = Path.Combine(root, "export.sb2");
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportProjectArchiveAsync(
+                project,
+                [new Ft100ProjectPageExportInput(scene, sourceHtmlPath)],
+                archivePath);
+
+            Assert.IsTrue(result.Validation.IsValid, "Package must pass validation.");
+            using var zip = ZipFile.OpenRead(result.ArchivePath);
+            var manifestEntry = zip.GetEntry("scada-builder-v2-ft100-package/manifest.json");
+            var htmlEntry = zip.GetEntry("scada-builder-v2-ft100-package/win00008/win00008.html");
+            Assert.IsNotNull(manifestEntry, "Root manifest must exist in the .sb2 package.");
+            Assert.IsNotNull(htmlEntry, "Page HTML must exist in the .sb2 package.");
+
+            using var manifestReader = new StreamReader(manifestEntry!.Open(), Encoding.UTF8);
+            var manifest = await manifestReader.ReadToEndAsync();
+            using var htmlReader = new StreamReader(htmlEntry!.Open(), Encoding.UTF8);
+            var html = (await htmlReader.ReadToEndAsync()).Replace("&quot;", "\"");
+
+            StringAssert.Contains(manifest, "tf100.mapping.195");
+            StringAssert.Contains(manifest, "tf100.mapping.196");
+            StringAssert.Contains(html, "\"tagName\":\"tf100.mapping.195\"");
+            StringAssert.Contains(html, "\"tagName\":\"tf100.mapping.196\"");
+            Assert.IsFalse(manifest.Contains("\"TagName\": \"Noeud1_N15_03_Commande_MC_120A\"", StringComparison.Ordinal));
+            Assert.IsFalse(html.Contains("\"tagName\":\"Noeud1_N15_03_Commande_MC_120A\"", StringComparison.Ordinal));
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
+    public async Task ExportAsync_ExportedAst_UsesLowercaseOpValues()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceDir = Path.Combine(root, "source");
+        Directory.CreateDirectory(sourceDir);
+        var sourceHtmlPath = Path.Combine(sourceDir, "casing_test.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var expr = new ScadaExpression(
+            "{tf100.mapping.196} == true",
+            new ScadaExprBinary(ScadaExprBinaryOp.Equal,
+                new ScadaExprTagRef("tf100.mapping.196", "tf100.mapping.196"),
+                new ScadaExprLiteralBool(true)),
+            new[] { "tf100.mapping.196" });
+        var element = new ScadaElement(
+            "el_casing", "Casing", ScadaElementKind.Text,
+            new SceneBounds(10, 20, 100, 30), null, ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultText,
+            new ScadaElementData("test", null, null, null, null, null, null, null, null, false),
+            StateConfig: new ScadaElementStateConfig(
+                ScadaEffectBlock.Empty with { Opacity = 0.4, BorderColor = "#000000", BorderWidth = 2 },
+                ScadaEffectBlock.Empty,
+                new[] { new ScadaStateRule("s1", "R", true, expr, ScadaEffectBlock.Empty) }));
+        var scene = ScadaScene.CreateEmpty("win00008", "Casing", new(1280, 873)).WithElement(element);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, Path.Combine(root, "export"));
+            var html = (await File.ReadAllTextAsync(result.HtmlPath)).Replace("&quot;", "\"");
+            var manifest = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "manifest.json"));
+
+            StringAssert.Contains(html, "\"op\":\"equal\"");
+            StringAssert.Contains(manifest, "\"Op\": \"equal\"");
+            Assert.IsFalse(html.Contains("\"op\":\"Equal\"", StringComparison.Ordinal));
+            Assert.IsFalse(manifest.Contains("\"Op\": \"Equal\"", StringComparison.Ordinal));
         }
         finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
     }
