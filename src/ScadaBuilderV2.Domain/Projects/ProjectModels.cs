@@ -551,7 +551,8 @@ public static class ScadaProjectBuildValidator
     {
         return !string.IsNullOrWhiteSpace(datatype) &&
             (string.Equals(datatype, "bool", StringComparison.OrdinalIgnoreCase) ||
-             string.Equals(datatype, "boolean", StringComparison.OrdinalIgnoreCase));
+             string.Equals(datatype, "boolean", StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(datatype, "booléen", StringComparison.OrdinalIgnoreCase));
     }
 
     private static IEnumerable<ScadaElement> FlattenElements(IEnumerable<ScadaElement> elements)

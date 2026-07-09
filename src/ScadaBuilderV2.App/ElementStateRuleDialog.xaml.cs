@@ -450,6 +450,7 @@ public partial class ElementStateRuleDialog : Window
         return !string.IsNullOrWhiteSpace(datatype) &&
             (string.Equals(datatype, "bool", StringComparison.OrdinalIgnoreCase) ||
              string.Equals(datatype, "boolean", StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(datatype, "booléen", StringComparison.OrdinalIgnoreCase) ||
              string.Equals(datatype, "digital", StringComparison.OrdinalIgnoreCase));
     }
 
