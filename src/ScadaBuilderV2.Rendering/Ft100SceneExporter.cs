@@ -1022,20 +1022,19 @@ public sealed partial class Ft100SceneExporter
         var absoluteY = parentY + element.Bounds.Y;
         if (element.Kind == ScadaElementKind.Group)
         {
-            if (element.EventBindings.Count > 0)
+            if (GroupRequiresRuntimeWrapper(element))
             {
                 var groupId = HtmlEncoder.Default.Encode(scope.ElementDomId(element.Id));
                 var groupSceneElementId = HtmlEncoder.Default.Encode(element.Id);
                 var groupName = HtmlEncoder.Default.Encode(element.DisplayName);
                 var groupKind = HtmlEncoder.Default.Encode(element.Kind.ToString());
                 var groupInlineStyle = HtmlEncoder.Default.Encode(BuildRuntimeGroupInlineStyle(element, absoluteX, absoluteY));
-                var groupEventAttribute = BuildEventAttribute(element);
                 var groupValueBindingAttributes = BuildValueBindingAttributes(element);
                 var groupStateCommandAttributes = BuildStateCommandAttributes(element, tagCatalog, warnings);
                 var children = string.Concat(element.ChildElements.Select(child => BuildElementHtml(child, 0, 0, scope, tagCatalog, warnings)));
 
                 return $$"""
-<div id="{{groupId}}" class="ft100-element ft100-element--{{groupKind}}" data-scada-element-id="{{groupSceneElementId}}" data-name="{{groupName}}" style="{{groupInlineStyle}}"{{groupEventAttribute}}{{groupValueBindingAttributes}}{{groupStateCommandAttributes}}>
+<div id="{{groupId}}" class="ft100-element ft100-element--{{groupKind}}" data-scada-element-id="{{groupSceneElementId}}" data-name="{{groupName}}" style="{{groupInlineStyle}}"{{groupValueBindingAttributes}}{{groupStateCommandAttributes}}>
 {{Indent(children, 2)}}
 </div>
 """;
@@ -1050,23 +1049,30 @@ public sealed partial class Ft100SceneExporter
         var kind = HtmlEncoder.Default.Encode(element.Kind.ToString());
         var inlineStyle = HtmlEncoder.Default.Encode(BuildElementInlineStyle(element, absoluteX, absoluteY));
         var content = BuildElementContent(element, scope);
-        var eventAttribute = BuildEventAttribute(element);
         var valueBindingAttributes = BuildValueBindingAttributes(element);
         var buttonRuntimeAttributes = BuildButtonRuntimeAttributes(element);
         var stateCommandAttributes = BuildStateCommandAttributes(element, tagCatalog, warnings);
 
         return $$"""
-<div id="{{id}}" class="ft100-element ft100-element--{{kind}}" data-scada-element-id="{{sceneElementId}}" data-name="{{name}}" style="{{inlineStyle}}"{{eventAttribute}}{{valueBindingAttributes}}{{buttonRuntimeAttributes}}{{stateCommandAttributes}}>
+<div id="{{id}}" class="ft100-element ft100-element--{{kind}}" data-scada-element-id="{{sceneElementId}}" data-name="{{name}}" style="{{inlineStyle}}"{{valueBindingAttributes}}{{buttonRuntimeAttributes}}{{stateCommandAttributes}}>
   {{content}}
 </div>
 """;
     }
 
+    /// <summary>
+    /// Decommissioned: <c>data-scada-events</c> is no longer emitted as an active
+    /// runtime contract. This method returns an empty string unconditionally.
+    /// The legacy implementation is preserved for reference until physical
+    /// removal of the decommissioned EventBindings code.
+    /// </summary>
+    /// <remarks>
+    /// Contracts: docs/superpowers/specs/2026-07-09-export-group-runtime-wrapper.md §4.2.
+    /// </remarks>
     private static string BuildEventAttribute(ScadaElement element)
     {
-        return element.EventBindings.Count == 0
-            ? ""
-            : $" data-scada-events=\"{HtmlEncoder.Default.Encode(JsonSerializer.Serialize(element.EventBindings, ManifestJsonOptions))}\"";
+        _ = element;
+        return "";
     }
 
     private static string BuildButtonRuntimeAttributes(ScadaElement element)
@@ -1093,7 +1099,9 @@ public sealed partial class Ft100SceneExporter
     {
         var stateConfig = element.EffectiveStateConfig;
         var commandConfig = element.EffectiveCommandConfig;
-        var hasStateConfig = stateConfig.States.Count > 0 || HasNonDefaultFallback(stateConfig);
+        var hasStateConfig = stateConfig.States.Count > 0
+            || stateConfig.ReadVariable is not null
+            || HasNonDefaultFallback(stateConfig);
         var hasCommandConfig = commandConfig.Commands.Count > 0;
 
         if (!hasStateConfig && !hasCommandConfig)
@@ -1130,6 +1138,31 @@ public sealed partial class Ft100SceneExporter
             || fallback.BorderColor != defaultFallback.BorderColor
             || fallback.BorderWidth != defaultFallback.BorderWidth
             || config.DefaultEffect != ScadaEffectBlock.Empty;
+    }
+
+    /// <summary>
+    /// Determines whether a Group element requires a runtime DOM wrapper in the
+    /// exported output. Only modern runtime data is considered; legacy
+    /// <see cref="ScadaElement.EventBindings"/> and
+    /// <see cref="ScadaElementData.ReadTagId"/>/<see cref="ScadaElementData.WriteTagId"/>
+    /// are intentionally excluded (decommissioned paths).
+    /// </summary>
+    /// <remarks>
+    /// Contracts: docs/superpowers/specs/2026-07-09-export-group-runtime-wrapper.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
+    /// </remarks>
+    private static bool GroupRequiresRuntimeWrapper(ScadaElement element)
+    {
+        if (element.Kind != ScadaElementKind.Group)
+            return false;
+
+        var commandConfig = element.EffectiveCommandConfig;
+        var stateConfig = element.EffectiveStateConfig;
+
+        return commandConfig.Commands.Count > 0
+            || stateConfig.States.Count > 0
+            || stateConfig.ReadVariable is not null
+            || HasNonDefaultFallback(stateConfig);
     }
 
     private static string BuildValueBindingAttributes(ScadaElement element)
@@ -1611,9 +1644,9 @@ public sealed partial class Ft100SceneExporter
         css.AppendLine($"{scope.Descendant(".ft100-source-layer .shape-layer")}, {scope.Descendant(".ft100-legacy-layer .shape-layer")} {{ position: absolute; left: 0; top: 0; pointer-events: none; }}");
         css.AppendLine($"{scope.Descendant(".ft100-source-layer .layer")}, {scope.Descendant(".ft100-legacy-layer .layer")} {{ position: absolute; margin: 0; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element")} {{ position: absolute; box-sizing: border-box; overflow: visible; pointer-events: auto; }}");
-        css.AppendLine($"{scope.Descendant(".ft100-element--Button")}, {scope.Descendant("[data-scada-events]")} {{ cursor: pointer; }}");
-        css.AppendLine($"{scope.Descendant(".ft100-element--Button *")}, {scope.Descendant("[data-scada-events] *")} {{ cursor: pointer; }}");
-        css.AppendLine($"{scope.Descendant(".ft100-element--Button:active")}, {scope.Descendant("[data-scada-events]:active")} {{ cursor: pointer; }}");
+        css.AppendLine($"{scope.Descendant(".ft100-element--Button")}, {scope.Descendant("[data-scada-command-config]")} {{ cursor: pointer; }}");
+        css.AppendLine($"{scope.Descendant(".ft100-element--Button *")}, {scope.Descendant("[data-scada-command-config] *")} {{ cursor: pointer; }}");
+        css.AppendLine($"{scope.Descendant(".ft100-element--Button:active")}, {scope.Descendant("[data-scada-command-config]:active")} {{ cursor: pointer; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element--Button[data-scada-disabled=\"true\"]")}, {scope.Descendant(".ft100-element--Button[data-scada-disabled=\"true\"] *")} {{ cursor: not-allowed; opacity: 0.62; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element svg")} {{ display: block; width: 100%; height: 100%; overflow: visible; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element input")} {{ width: 100%; height: 100%; box-sizing: border-box; }}");
@@ -1656,7 +1689,7 @@ public sealed partial class Ft100SceneExporter
         var absoluteY = parentY + element.Bounds.Y;
         if (element.Kind == ScadaElementKind.Group)
         {
-            if (element.EventBindings.Count > 0)
+            if (GroupRequiresRuntimeWrapper(element))
             {
                 css.AppendLine();
                 css.AppendLine($"{scope.ElementSelector(element.Id)} {{");
@@ -1871,13 +1904,15 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
                     ButtonKind = element.Kind == ScadaElementKind.Button ? element.EffectiveButtonKind.ToString() : null,
                     ButtonBehavior = element.Kind == ScadaElementKind.Button ? element.EffectiveButtonBehavior : null,
                     Data = BuildManifestElementData(element),
-                    Events = element.EventBindings,
+                    Events = Array.Empty<ScadaObjectEventBinding>(),
                     ValueBindings = new
                     {
                         ReadTagId = element.Data?.ReadTagId,
                         WriteTagId = element.Data?.WriteTagId
                     },
-                    StateConfig = element.EffectiveStateConfig.States.Count > 0 || HasNonDefaultFallback(element.EffectiveStateConfig)
+                    StateConfig = element.EffectiveStateConfig.States.Count > 0
+                        || element.EffectiveStateConfig.ReadVariable is not null
+                        || HasNonDefaultFallback(element.EffectiveStateConfig)
                         ? NormalizeStateConfigForExport(element.EffectiveStateConfig, tagCatalog, warnings) : null,
                     CommandConfig = element.EffectiveCommandConfig.Commands.Count > 0
                         ? element.EffectiveCommandConfig : null
@@ -1904,7 +1939,7 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
 
     private static bool ShouldExportManifestObject(ScadaElement element)
     {
-        return element.Kind != ScadaElementKind.Group || element.EventBindings.Count > 0;
+        return element.Kind != ScadaElementKind.Group || GroupRequiresRuntimeWrapper(element);
     }
 
     private static CanvasSize CalculateRequiredDisplaySize(ScadaScene scene)
@@ -1934,7 +1969,7 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
             var absoluteY = parentY + element.Bounds.Y;
             if (element.Kind == ScadaElementKind.Group)
             {
-                if (element.EventBindings.Count > 0)
+                if (GroupRequiresRuntimeWrapper(element))
                 {
                     yield return new SceneBounds(absoluteX, absoluteY, element.Bounds.Width, element.Bounds.Height);
                 }

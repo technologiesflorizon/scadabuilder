@@ -600,17 +600,19 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__btn_next:hover {");
             StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__btn_next:active,");
             StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__btn_next[data-scada-toggle-state=\"on\"] {");
-            StringAssert.Contains(css, "#ft100-win00008 .ft100-element--Button, #ft100-win00008 [data-scada-events] { cursor: pointer; }");
-            StringAssert.Contains(css, "#ft100-win00008 .ft100-element--Button *, #ft100-win00008 [data-scada-events] * { cursor: pointer; }");
-            StringAssert.Contains(css, "#ft100-win00008 .ft100-element--Button:active, #ft100-win00008 [data-scada-events]:active { cursor: pointer; }");
+            StringAssert.Contains(css, "#ft100-win00008 .ft100-element--Button, #ft100-win00008 [data-scada-command-config] { cursor: pointer; }");
+            StringAssert.Contains(css, "#ft100-win00008 .ft100-element--Button *, #ft100-win00008 [data-scada-command-config] * { cursor: pointer; }");
+            StringAssert.Contains(css, "#ft100-win00008 .ft100-element--Button:active, #ft100-win00008 [data-scada-command-config]:active { cursor: pointer; }");
             StringAssert.Contains(css, "background: #EAF5F7;");
             StringAssert.Contains(css, "color: #0F2A30;");
             StringAssert.Contains(css, "border-color: #2090A0;");
             AssertExportCssHasNoGlobalRuntimeSelectors(css);
 
             var html = await File.ReadAllTextAsync(result.HtmlPath);
-            StringAssert.Contains(html, "data-scada-events=");
-            StringAssert.Contains(html, "action_nav_win00009");
+            Assert.IsFalse(html.Contains("data-scada-events="),
+                "data-scada-events is decommissioned and must not appear in export.");
+            Assert.IsFalse(html.Contains("action_nav_win00009"),
+                "Legacy action IDs from EventBindings must not appear in HTML.");
             StringAssert.Contains(html, "<button type=\"button\"");
             StringAssert.Contains(html, "data-scada-button-kind=\"Navigation\"");
             StringAssert.Contains(html, "Suivant");
@@ -636,7 +638,10 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(manifest, "\"BorderColor\": \"#2090A0\"");
             StringAssert.Contains(manifest, "\"Pressed\"");
             StringAssert.Contains(manifest, "\"Background\": \"#0F7280\"");
-            StringAssert.Contains(manifest, "\"Trigger\": \"click\"");
+            Assert.IsFalse(manifest.Contains("\"Trigger\": \"click\""),
+                "Manifest objects must not serialize legacy EventBindings Trigger.");
+            Assert.IsFalse(manifest.Contains("\"ActionId\": \"action_"),
+                "Manifest objects must not serialize legacy EventBindings ActionId.");
             StringAssert.Contains(manifest, "\"Kind\": \"navigate\"");
             StringAssert.Contains(manifest, "\"TargetPageId\": \"win00009\"");
             Assert.IsFalse(manifest.Contains("\"PageEvents\"", StringComparison.Ordinal));
@@ -742,84 +747,6 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(manifest, "\"ButtonKind\": \"Navigation\"");
             StringAssert.Contains(manifest, "\"ButtonKind\": \"AlarmAcknowledge\"");
             StringAssert.Contains(manifest, "\"ButtonKind\": \"EmergencyStop\"");
-        }
-        finally
-        {
-            if (Directory.Exists(root))
-            {
-                Directory.Delete(root, recursive: true);
-            }
-        }
-    }
-
-    [TestMethod]
-    public async Task ExportPreservesGroupClickNavigateEventAsRuntimeWrapper()
-    {
-        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
-        var sourceRoot = Path.Combine(root, "source");
-        var exportRoot = Path.Combine(root, "export");
-        Directory.CreateDirectory(sourceRoot);
-        var sourceHtmlPath = Path.Combine(sourceRoot, "group_navigation.html");
-        await File.WriteAllTextAsync(sourceHtmlPath, "<!doctype html><html><body><div class=\"page\"></div></body></html>");
-
-        var child = new ScadaElement(
-            "btn_child",
-            "Bouton enfant",
-            ScadaElementKind.Button,
-            new SceneBounds(5, 6, 80, 24),
-            null,
-            new ScadaElementLayout(ElementPositionMode.Relative, "group_nav"),
-            ScadaElementStyle.DefaultInput,
-            new ScadaElementData("Ouvrir", null, null, null, null, null, null, null, null, false));
-        var group = new ScadaElement(
-            "group_nav",
-            "Groupe navigation",
-            ScadaElementKind.Group,
-            new SceneBounds(100, 200, 160, 70),
-            null,
-            ScadaElementLayout.Absolute,
-            ScadaElementStyle.DefaultText,
-            Children: [child]);
-        var scene = ScadaScene
-            .CreateEmpty("win00008", "Navigation groupe", new(120, 120))
-            .WithElement(group)
-            .WithChangePageEvent("group_nav", ScadaEventRegistry.ClickKey, "win00009");
-
-        try
-        {
-            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
-            var html = await File.ReadAllTextAsync(result.HtmlPath);
-            var css = await File.ReadAllTextAsync(result.CssPath);
-            var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
-
-            StringAssert.Contains(html, "id=\"ft100-win00008__group_nav\"");
-            StringAssert.Contains(html, "class=\"ft100-element ft100-element--Group\"");
-            StringAssert.Contains(html, "data-scada-events=");
-            StringAssert.Contains(html, "action_changepage_click_group_nav_win00009");
-            StringAssert.Contains(html, "id=\"ft100-win00008__btn_child\"");
-            StringAssert.Contains(html, "left:5px;");
-            StringAssert.Contains(html, "top:6px;");
-            StringAssert.Contains(html, "background:transparent;");
-            StringAssert.Contains(html, "border:0;");
-
-            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__group_nav {");
-            StringAssert.Contains(css, "#ft100-win00008 .ft100-element--Button, #ft100-win00008 [data-scada-events] { cursor: pointer; }");
-            StringAssert.Contains(css, "left: 100px;");
-            StringAssert.Contains(css, "top: 200px;");
-            StringAssert.Contains(css, "width: 160px;");
-            StringAssert.Contains(css, "height: 70px;");
-            StringAssert.Contains(css, "#ft100-win00008 #ft100-win00008__btn_child {");
-            StringAssert.Contains(css, "left: 5px;");
-            StringAssert.Contains(css, "top: 6px;");
-
-            StringAssert.Contains(manifest, "\"Id\": \"group_nav\"");
-            StringAssert.Contains(manifest, "\"Kind\": \"Group\"");
-            StringAssert.Contains(manifest, "\"Trigger\": \"click\"");
-            StringAssert.Contains(manifest, "\"ActionId\": \"action_changepage_click_group_nav_win00009\"");
-            StringAssert.Contains(manifest, "\"Kind\": \"navigate\"");
-            StringAssert.Contains(manifest, "\"TargetPageId\": \"win00009\"");
-            StringAssert.Contains(manifest, "\"RequiredDisplayWidth\": 260");
-            StringAssert.Contains(manifest, "\"RequiredDisplayHeight\": 270");
         }
         finally
         {
@@ -972,7 +899,8 @@ public sealed class Ft100SceneExporterTests
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
 
-            StringAssert.Contains(html, "data-scada-events=");
+            Assert.IsFalse(html.Contains("data-scada-events="),
+                "data-scada-events is decommissioned and must not appear in export.");
             AssertHtmlReferencesSharedRuntime(html, exportRoot);
             StringAssert.Contains(manifest, "\"Kind\": \"show\"");
             StringAssert.Contains(manifest, "\"TargetElementId\": \"pump_status\"");
@@ -1108,7 +1036,8 @@ public sealed class Ft100SceneExporterTests
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
 
-            StringAssert.Contains(html, "data-scada-events=");
+            Assert.IsFalse(html.Contains("data-scada-events="),
+                "data-scada-events is decommissioned and must not appear in export.");
             AssertHtmlReferencesSharedRuntime(html, exportRoot);
             StringAssert.Contains(manifest, "\"Kind\": \"mountFragment\"");
             StringAssert.Contains(manifest, "\"TargetPageId\": \"popup_pump\"");
@@ -2962,7 +2891,9 @@ public sealed class Ft100SceneExporterTests
         var issues = new List<ScadaBuildValidationIssue>();
         ScadaProjectBuildValidator.AuditOrphanedEventBindings(issues, scene);
 
-        Assert.AreEqual(0, issues.Count, "Element with both Events and CommandConfig should not warn");
+        Assert.AreEqual(1, issues.Count, "Element with legacy EventBindings must warn even with CommandConfig.");
+        StringAssert.Contains(issues[0].Message, "EventBindings decommissionnes");
+        StringAssert.Contains(issues[0].Message, "configuration moderne");
     }
 
     [TestMethod]
@@ -3397,5 +3328,547 @@ public sealed class Ft100SceneExporterTests
                 "Ambiguous tag reference must block export (D8).");
         }
         finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    private static string CreateTempExportDir()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        Directory.CreateDirectory(Path.Combine(root, "source"));
+        return root;
+    }
+
+    [TestMethod]
+    public async Task Export_GroupWithOnlyCommandConfig_RendersWrapperWithCommandAttribute()
+    {
+        var root = CreateTempExportDir();
+        var sourceHtmlPath = Path.Combine(root, "source", "grp_cmd.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var commandConfig = new ScadaElementCommandConfig(new[] {
+            new ScadaCommandBinding("nav1", "Go", true, ScadaCommandTrigger.OnClick,
+                ScadaCommandKind.Navigate, TargetPageId: "win00099")
+        });
+        var group = new ScadaElement(
+            "grp_nav", "Nav Group", ScadaElementKind.Group,
+            new SceneBounds(100, 200, 160, 70),
+            null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
+            Children: new[] {
+                new ScadaElement("btn1", "Btn", ScadaElementKind.Button,
+                    new SceneBounds(5, 6, 80, 24), null,
+                    new ScadaElementLayout(ElementPositionMode.Relative, "grp_nav"),
+                    ScadaElementStyle.DefaultInput,
+                    new ScadaElementData("Go", null, null, null, null, null, null, null, null, false))
+            },
+            CommandConfig: commandConfig);
+        var scene = ScadaScene.CreateEmpty("win00008", "Test", new(400, 400))
+            .WithElement(group);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, Path.Combine(root, "export"));
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+
+            StringAssert.Contains(html, "id=\"ft100-win00008__grp_nav\"",
+                "Group with CommandConfig must have a DOM wrapper.");
+            StringAssert.Contains(html, "data-scada-command-config=\"",
+                "Group wrapper must carry data-scada-command-config.");
+            Assert.IsFalse(html.Contains("data-scada-events="),
+                "Group must not emit data-scada-events.");
+            StringAssert.Contains(html, "id=\"ft100-win00008__btn1\"");
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
+    public async Task Export_GroupWithNavigateCommand_RendersWrapperWithCommandAttribute()
+    {
+        var root = CreateTempExportDir();
+        var sourceHtmlPath = Path.Combine(root, "source", "grp_nav2.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var commandConfig = new ScadaElementCommandConfig(new[] {
+            new ScadaCommandBinding("nav2", "GoPage", true, ScadaCommandTrigger.OnClick,
+                ScadaCommandKind.Navigate, TargetPageId: "win00009")
+        });
+        var group = new ScadaElement(
+            "grp_nav2", "Navigate Group", ScadaElementKind.Group,
+            new SceneBounds(100, 200, 160, 70),
+            null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
+            CommandConfig: commandConfig);
+        var scene = ScadaScene.CreateEmpty("win00008", "Test", new(400, 400))
+            .WithElement(group);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, Path.Combine(root, "export"));
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            var decoded = html.Replace("&quot;", "\"");
+
+            StringAssert.Contains(html, "data-scada-command-config=\"");
+            StringAssert.Contains(decoded, "\"kind\":\"navigate\"");
+            StringAssert.Contains(decoded, "\"targetPageId\":\"win00009\"");
+            Assert.IsFalse(html.Contains("data-scada-events="));
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
+    public async Task Export_GroupWithWriteTagCommand_RendersWrapperWithCommandAttribute()
+    {
+        var root = CreateTempExportDir();
+        var sourceHtmlPath = Path.Combine(root, "source", "grp_writetag.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var commandConfig = new ScadaElementCommandConfig(new[] {
+            new ScadaCommandBinding("wt1", "Set", true, ScadaCommandTrigger.OnClick,
+                ScadaCommandKind.WriteTag, WriteTagId: "tf100.mapping.42",
+                WriteMode: ScadaWriteMode.SetFixed, FixedValue: "1")
+        });
+        var group = new ScadaElement(
+            "grp_writetag", "WriteTag Group", ScadaElementKind.Group,
+            new SceneBounds(100, 200, 160, 70),
+            null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
+            CommandConfig: commandConfig);
+        var scene = ScadaScene.CreateEmpty("win00008", "Test", new(400, 400))
+            .WithElement(group);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, Path.Combine(root, "export"));
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            var decoded = html.Replace("&quot;", "\"");
+
+            StringAssert.Contains(html, "data-scada-command-config=\"");
+            StringAssert.Contains(decoded, "\"writeTagId\":\"tf100.mapping.42\"");
+            StringAssert.Contains(decoded, "\"kind\":\"writeTag\"");
+            Assert.IsFalse(html.Contains("data-scada-events="));
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
+    public async Task Export_GroupWithOnlyStateConfig_RendersWrapperWithStateAttribute()
+    {
+        var root = CreateTempExportDir();
+        var sourceHtmlPath = Path.Combine(root, "source", "grp_state.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var stateConfig = new ScadaElementStateConfig(
+            ScadaEffectBlock.Empty with { Opacity = 0.4, BorderColor = "#000000", BorderWidth = 2 },
+            ScadaEffectBlock.Empty,
+            new[] {
+                new ScadaStateRule("s1", "Running", true,
+                    new ScadaExpression("{Motor}>0",
+                        new ScadaExprBinary(ScadaExprBinaryOp.GreaterThan,
+                            new ScadaExprTagRef("Motor"), new ScadaExprLiteralNumber(0)),
+                        new[] { "Motor" }),
+                    ScadaEffectBlock.Empty with { BackgroundColor = "#4CAF50" })
+            });
+        var group = new ScadaElement(
+            "grp_state", "State Group", ScadaElementKind.Group,
+            new SceneBounds(100, 200, 160, 70),
+            null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
+            Children: new[] {
+                new ScadaElement("shape1", "Shape", ScadaElementKind.Shape,
+                    new SceneBounds(5, 6, 80, 24), null,
+                    new ScadaElementLayout(ElementPositionMode.Relative, "grp_state"),
+                    ScadaElementStyle.DefaultText,
+                    new ScadaElementData(null, null, null, null, null, null, null, null, null, false),
+                    ShapeKind: ScadaShapeKind.Rectangle)
+            },
+            StateConfig: stateConfig);
+        var scene = ScadaScene.CreateEmpty("win00008", "Test", new(400, 400))
+            .WithElement(group);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, Path.Combine(root, "export"));
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+
+            StringAssert.Contains(html, "id=\"ft100-win00008__grp_state\"",
+                "Group with StateConfig must have a DOM wrapper.");
+            StringAssert.Contains(html, "data-scada-state-config=\"",
+                "Group wrapper must carry data-scada-state-config.");
+            Assert.IsFalse(html.Contains("data-scada-events="));
+            StringAssert.Contains(html, "id=\"ft100-win00008__shape1\"");
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
+    public async Task Export_GroupWithOnlyStateReadVariable_RendersWrapperWithStateAttribute()
+    {
+        var root = CreateTempExportDir();
+        var sourceHtmlPath = Path.Combine(root, "source", "grp_readvar.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var stateConfig = new ScadaElementStateConfig(
+            ScadaEffectBlock.Empty with { Opacity = 0.4, BorderColor = "#000000", BorderWidth = 2 },
+            ScadaEffectBlock.Empty,
+            Array.Empty<ScadaStateRule>(),
+            ReadVariable: new ScadaReadVariableRule("tf100.mapping.42", "Debit: {valeur} L/min"));
+        var group = new ScadaElement(
+            "grp_readvar", "ReadVar Group", ScadaElementKind.Group,
+            new SceneBounds(100, 200, 160, 70),
+            null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
+            Children: new[] {
+                new ScadaElement("txt1", "Text", ScadaElementKind.Text,
+                    new SceneBounds(5, 6, 80, 24), null,
+                    new ScadaElementLayout(ElementPositionMode.Relative, "grp_readvar"),
+                    ScadaElementStyle.DefaultText,
+                    new ScadaElementData("---", null, null, null, null, null, null, null, null, false))
+            },
+            StateConfig: stateConfig);
+        var scene = ScadaScene.CreateEmpty("win00008", "Test", new(400, 400))
+            .WithElement(group);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, Path.Combine(root, "export"));
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+
+            StringAssert.Contains(html, "id=\"ft100-win00008__grp_readvar\"",
+                "Group with StateConfig.ReadVariable must have a DOM wrapper.");
+            StringAssert.Contains(html, "data-scada-state-config=\"");
+            var decoded = html.Replace("&quot;", "\"");
+            StringAssert.Contains(decoded, "\"readVariable\":");
+            StringAssert.Contains(decoded, "\"tagId\":\"tf100.mapping.42\"");
+            Assert.IsFalse(html.Contains("data-scada-events="));
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
+    public async Task Export_GroupWithNoRuntimeData_FlattensChildren()
+    {
+        var root = CreateTempExportDir();
+        var sourceHtmlPath = Path.Combine(root, "source", "grp_empty.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var group = new ScadaElement(
+            "grp_empty", "Empty Group", ScadaElementKind.Group,
+            new SceneBounds(100, 200, 160, 70),
+            null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
+            Children: new[] {
+                new ScadaElement("shape1", "Shape", ScadaElementKind.Shape,
+                    new SceneBounds(5, 6, 80, 24), null,
+                    new ScadaElementLayout(ElementPositionMode.Relative, "grp_empty"),
+                    ScadaElementStyle.DefaultText,
+                    new ScadaElementData(null, null, null, null, null, null, null, null, null, false),
+                    ShapeKind: ScadaShapeKind.Rectangle)
+            });
+        var scene = ScadaScene.CreateEmpty("win00008", "Test", new(400, 400))
+            .WithElement(group);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, Path.Combine(root, "export"));
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+
+            Assert.IsFalse(html.Contains("id=\"ft100-win00008__grp_empty\""),
+                "Group with no runtime data must be flattened.");
+            StringAssert.Contains(html, "id=\"ft100-win00008__shape1\"");
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
+    public async Task Export_GroupWithOnlyLegacyDataValueBindings_DoesNotRequireRuntimeWrapper()
+    {
+        var root = CreateTempExportDir();
+        var sourceHtmlPath = Path.Combine(root, "source", "grp_legacy_val.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var group = new ScadaElement(
+            "grp_legacy_val", "Legacy Value Group", ScadaElementKind.Group,
+            new SceneBounds(100, 200, 160, 70),
+            null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
+            Data: new ScadaElementData(null, null, null, null, null, null, null, null, null, false,
+                ReadTagId: "tf100.mapping.42", WriteTagId: "tf100.mapping.99"),
+            Children: new[] {
+                new ScadaElement("input1", "Input", ScadaElementKind.InputText,
+                    new SceneBounds(5, 6, 80, 24), null,
+                    new ScadaElementLayout(ElementPositionMode.Relative, "grp_legacy_val"),
+                    ScadaElementStyle.DefaultInput,
+                    new ScadaElementData(null, "Texte", null, null, null, null, null, null, null, false))
+            });
+        var scene = ScadaScene.CreateEmpty("win00008", "Test", new(400, 400))
+            .WithElement(group);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, Path.Combine(root, "export"));
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+
+            Assert.IsFalse(html.Contains("id=\"ft100-win00008__grp_legacy_val\""),
+                "Group with only legacy Data.ReadTagId/WriteTagId must not get a runtime wrapper.");
+            StringAssert.Contains(html, "id=\"ft100-win00008__input1\"");
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
+    public async Task Export_GroupWithOnlyLegacyEventBindings_DoesNotExportRuntimeEvents()
+    {
+        var root = CreateTempExportDir();
+        var sourceHtmlPath = Path.Combine(root, "source", "grp_legacy_evt.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var child = new ScadaElement(
+            "btn_legacy", "Legacy Button", ScadaElementKind.Button,
+            new SceneBounds(5, 6, 80, 24), null,
+            new ScadaElementLayout(ElementPositionMode.Relative, "grp_legacy_evt"),
+            ScadaElementStyle.DefaultInput,
+            new ScadaElementData("Click", null, null, null, null, null, null, null, null, false));
+        var group = new ScadaElement(
+            "grp_legacy_evt", "Legacy Event Group", ScadaElementKind.Group,
+            new SceneBounds(100, 200, 160, 70),
+            null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
+            Children: new[] { child });
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Legacy Events", new(400, 400))
+            .WithElement(group)
+            .WithChangePageEvent("grp_legacy_evt", ScadaEventRegistry.ClickKey, "win00009");
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, Path.Combine(root, "export"));
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+
+            Assert.IsFalse(html.Contains("data-scada-events="),
+                "Legacy EventBindings must not produce data-scada-events in export.");
+            Assert.IsFalse(html.Contains("id=\"ft100-win00008__grp_legacy_evt\""),
+                "Group with only EventBindings must be flattened.");
+            StringAssert.Contains(html, "id=\"ft100-win00008__btn_legacy\"");
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
+    public async Task Export_NonGroupWithLegacyEventBindings_DoesNotExportRuntimeEvents()
+    {
+        var root = CreateTempExportDir();
+        var sourceHtmlPath = Path.Combine(root, "source", "nongrp_legacy.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var button = new ScadaElement(
+            "btn_legacy2", "Legacy Button 2", ScadaElementKind.Button,
+            new SceneBounds(10, 20, 100, 40),
+            null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultInput,
+            new ScadaElementData("Click Me", null, null, null, null, null, null, null, null, false));
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "NonGroup Legacy", new(400, 400))
+            .WithElement(button)
+            .WithChangePageEvent("btn_legacy2", ScadaEventRegistry.ClickKey, "win00009");
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, Path.Combine(root, "export"));
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+
+            Assert.IsFalse(html.Contains("data-scada-events="),
+                "Non-group element must not emit data-scada-events.");
+            var css = await File.ReadAllTextAsync(result.CssPath);
+            Assert.IsFalse(css.Contains("data-scada-events"),
+                "Exported CSS must not contain data-scada-events selector.");
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
+    public async Task Export_GroupWithCommandConfigAndLegacyEventBindings_UsesCommandConfigOnly()
+    {
+        var root = CreateTempExportDir();
+        var sourceHtmlPath = Path.Combine(root, "source", "grp_hybrid.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var commandConfig = new ScadaElementCommandConfig(new[] {
+            new ScadaCommandBinding("nav_hybrid", "GoHybrid", true,
+                ScadaCommandTrigger.OnClick, ScadaCommandKind.Navigate,
+                TargetPageId: "win00099")
+        });
+        var child = new ScadaElement(
+            "btn_hybrid", "Hybrid Button", ScadaElementKind.Button,
+            new SceneBounds(5, 6, 80, 24), null,
+            new ScadaElementLayout(ElementPositionMode.Relative, "grp_hybrid"),
+            ScadaElementStyle.DefaultInput,
+            new ScadaElementData("Click", null, null, null, null, null, null, null, null, false));
+        var group = new ScadaElement(
+            "grp_hybrid", "Hybrid Group", ScadaElementKind.Group,
+            new SceneBounds(100, 200, 160, 70),
+            null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
+            Children: new[] { child },
+            CommandConfig: commandConfig);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Hybrid", new(400, 400))
+            .WithElement(group)
+            .WithChangePageEvent("grp_hybrid", ScadaEventRegistry.ClickKey, "win00009");
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, Path.Combine(root, "export"));
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            var decoded = html.Replace("&quot;", "\"");
+
+            StringAssert.Contains(html, "id=\"ft100-win00008__grp_hybrid\"");
+            StringAssert.Contains(html, "data-scada-command-config=\"");
+            StringAssert.Contains(decoded, "\"kind\":\"navigate\"");
+            Assert.IsFalse(html.Contains("data-scada-events="),
+                "Hybrid group must not emit data-scada-events even with legacy EventBindings.");
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
+    public async Task Export_Manifest_DoesNotSerializeLegacyEventBindingsAsActiveEvents()
+    {
+        var root = CreateTempExportDir();
+        var sourceHtmlPath = Path.Combine(root, "source", "manifest_test.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var commandConfig = new ScadaElementCommandConfig(new[] {
+            new ScadaCommandBinding("nav_man", "GoMan", true,
+                ScadaCommandTrigger.OnClick, ScadaCommandKind.Navigate,
+                TargetPageId: "win00009")
+        });
+        var child = new ScadaElement(
+            "btn_man", "Man Button", ScadaElementKind.Button,
+            new SceneBounds(5, 6, 80, 24), null,
+            new ScadaElementLayout(ElementPositionMode.Relative, "grp_man"),
+            ScadaElementStyle.DefaultInput,
+            new ScadaElementData("Click", null, null, null, null, null, null, null, null, false));
+        var group = new ScadaElement(
+            "grp_man", "Man Group", ScadaElementKind.Group,
+            new SceneBounds(100, 200, 160, 70),
+            null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
+            Children: new[] { child },
+            CommandConfig: commandConfig);
+        var scene = ScadaScene
+            .CreateEmpty("win00008", "Manifest", new(400, 400))
+            .WithElement(group)
+            .WithChangePageEvent("grp_man", ScadaEventRegistry.ClickKey, "win00009");
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, Path.Combine(root, "export"));
+            var manifestPath = Path.Combine(result.ExportDirectory, "manifest.json");
+            var manifest = await File.ReadAllTextAsync(manifestPath);
+
+            StringAssert.Contains(manifest, "\"Id\": \"grp_man\"");
+            StringAssert.Contains(manifest, "\"CommandConfig\":");
+            Assert.IsFalse(manifest.Contains("\"Trigger\": \"click\""),
+                "Manifest must not serialize legacy EventBindings as active events.");
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
+    public async Task Export_GroupRuntimeWrapper_DoesNotChangeChildGeometry()
+    {
+        var root = CreateTempExportDir();
+        var sourceHtmlPath = Path.Combine(root, "source", "grp_geometry.html");
+        await File.WriteAllTextAsync(sourceHtmlPath,
+            "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+
+        var commandConfig = new ScadaElementCommandConfig(new[] {
+            new ScadaCommandBinding("geo1", "GeoNav", true,
+                ScadaCommandTrigger.OnClick, ScadaCommandKind.Navigate,
+                TargetPageId: "win00009")
+        });
+        var group = new ScadaElement(
+            "grp_geo", "Geo Group", ScadaElementKind.Group,
+            new SceneBounds(100, 200, 160, 70),
+            null, ScadaElementLayout.Absolute, ScadaElementStyle.DefaultText,
+            Children: new[] {
+                new ScadaElement("shape_geo", "GeoShape", ScadaElementKind.Shape,
+                    new SceneBounds(5, 6, 80, 24), null,
+                    new ScadaElementLayout(ElementPositionMode.Relative, "grp_geo"),
+                    ScadaElementStyle.DefaultText,
+                    new ScadaElementData(null, null, null, null, null, null, null, null, null, false),
+                    ShapeKind: ScadaShapeKind.Rectangle)
+            },
+            CommandConfig: commandConfig);
+        var scene = ScadaScene.CreateEmpty("win00008", "Geometry", new(400, 400))
+            .WithElement(group);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, Path.Combine(root, "export"));
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+
+            StringAssert.Contains(html, "id=\"ft100-win00008__grp_geo\"");
+            StringAssert.Contains(html, "id=\"ft100-win00008__shape_geo\"");
+            StringAssert.Contains(html, "left:5px");
+            StringAssert.Contains(html, "top:6px");
+            StringAssert.Contains(html, "width:80px");
+            StringAssert.Contains(html, "height:24px");
+        }
+        finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
+    }
+
+    [TestMethod]
+    public void AuthoringWorkflow_StaticCheck_DoesNotExposeLegacyEventDialog()
+    {
+        // Static file content check: verify that active UI commands do not
+        // route to the decommissioned EventBindings authoring path.
+        var mainWindowCs = File.ReadAllText(
+            Path.Combine(FindRepoRoot(), "src", "ScadaBuilderV2.App", "MainWindow.xaml.cs"));
+        var webViewScript = File.ReadAllText(
+            Path.Combine(FindRepoRoot(), "src", "ScadaBuilderV2.App", "MainWindow.WebViewScript.cs"));
+        var mainWindowXaml = File.ReadAllText(
+            Path.Combine(FindRepoRoot(), "src", "ScadaBuilderV2.App", "MainWindow.xaml"));
+
+        // Context menu must not expose an "events" or "element-plus.events" command.
+        Assert.IsFalse(webViewScript.Contains("\"object.events\""),
+            "Context menu descriptors must not expose 'object.events' command.");
+        Assert.IsFalse(webViewScript.Contains("\"element-plus.events\""),
+            "Context menu descriptors must not expose 'element-plus.events' command.");
+
+        // Ribbon/XAML must not expose a button or command related to legacy EventBindings authoring.
+        // The term 'Events' alone can appear in unrelated contexts, but we check for the decommissioned
+        // dialog reference and menu item header.
+        Assert.IsFalse(
+            mainWindowXaml.Contains("ElementEventDialog") && mainWindowXaml.Contains("Header=\"Ev"),
+            "Ribbon/XAML must not expose an EventBindings authoring command.");
+
+        // The executeCommand switch in the JS must not route to legacy event paths.
+        Assert.IsFalse(webViewScript.Contains("case 'object.events':"),
+            "executeCommand must not route 'object.events'.");
+        Assert.IsFalse(webViewScript.Contains("case 'element-plus.events':"),
+            "executeCommand must not route 'element-plus.events'.");
+    }
+
+    private static string FindRepoRoot()
+    {
+        var dir = Path.GetDirectoryName(typeof(Ft100SceneExporterTests).Assembly.Location)!;
+        while (dir is not null && !File.Exists(Path.Combine(dir, "ScadaBuilderV2.sln")))
+        {
+            dir = Path.GetDirectoryName(dir);
+        }
+        return dir ?? throw new InvalidOperationException("Cannot find repo root.");
     }
 }

@@ -568,35 +568,41 @@ public static class ScadaProjectBuildValidator
         }
     }
 
+    /// <summary>
+    /// Emits a warning for every element that still carries legacy
+    /// <see cref="ScadaElement.EventBindings"/>. EventBindings are
+    /// decommissioned and are not exported as runtime-active data.
+    /// Elements should be migrated to <see cref="ScadaElement.CommandConfig"/>
+    /// or <see cref="ScadaElement.StateConfig"/>.
+    /// </summary>
+    /// <remarks>
+    /// Contracts: docs/superpowers/specs/2026-07-09-export-group-runtime-wrapper.md §6.
+    /// Tests: tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
+    /// </remarks>
     public static void AuditOrphanedEventBindings(
         List<ScadaBuildValidationIssue> issues,
         ScadaScene scene)
     {
         foreach (var element in FlattenElements(scene.Elements))
         {
-            if (element.Events is not { Count: > 0 })
+            if (element.EventBindings.Count == 0)
                 continue;
 
-            var hasCommandConfig = element is { EffectiveCommandConfig.Commands.Count: > 0 };
-            if (hasCommandConfig)
-                continue;
+            var hasModernConfig = element.EffectiveCommandConfig.Commands.Count > 0
+                || element.EffectiveStateConfig.States.Count > 0;
 
-            var navigateEvents = element.Events
-                .Where(e => e.ActionId?.Contains("changepage", StringComparison.OrdinalIgnoreCase) == true)
-                .ToList();
+            var extra = hasModernConfig
+                ? " L'element possede aussi une configuration moderne (CommandConfig/StateConfig) qui sera exportee."
+                : " Aucune configuration moderne (CommandConfig/StateConfig) ne remplace ces EventBindings. L'element risque d'etre inactif dans TF100Web.";
 
-            if (navigateEvents.Count > 0)
-            {
-                var eventIds = string.Join(", ", navigateEvents.Select(e => e.ActionId));
-                issues.Add(new ScadaBuildValidationIssue(
-                    ScadaBuildValidationSeverity.Warning,
-                    "DEC-ORPHAN-EVENTS",
-                    $"Scene '{scene.Id}': element '{element.Id}' ('{element.DisplayName}') has legacy " +
-                    $"navigate EventBinding(s) [{eventIds}] without a CommandConfig equivalent. " +
-                    $"These events will not function in the TF100Web #scada-host runtime. " +
-                    $"Remove the EventBindings or add a CommandConfig with a Navigate command.",
-                    scene.Id));
-            }
+            issues.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Warning,
+                "event-bindings-decommissioned",
+                $"Scene '{scene.Id}', element '{element.Id}' ({element.DisplayName}): " +
+                $"EventBindings decommissionnes detectes ({element.EventBindings.Count} binding(s)). " +
+                $"Authoring attendu : CommandConfig ou StateConfig. " +
+                $"Les EventBindings ne sont pas exportes comme runtime TF100Web.{extra}",
+                scene.Id));
         }
     }
 
