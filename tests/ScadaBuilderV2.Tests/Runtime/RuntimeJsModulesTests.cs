@@ -176,6 +176,47 @@ public sealed class RuntimeJsModulesTests
     }
 
     /// <summary>
+    /// The exporter serializes <c>ScadaCommandKind</c> / <c>ScadaWriteMode</c> as
+    /// camelCase enum values (JsonStringEnumConverter(CamelCase); locked by
+    /// Ft100SceneExporterTests asserting <c>"Kind": "navigate"</c>). command-dispatcher.js
+    /// dispatches on <c>cmd.kind</c> / <c>cmd.writeMode</c>, so its switch case labels MUST
+    /// use those exact camelCase values — otherwise no command (navigate, WriteTag, popups)
+    /// ever executes at runtime.
+    /// </summary>
+    [TestMethod]
+    public void CommandDispatcher_DispatchesCamelCaseKindsMatchingExporterSerialization()
+    {
+        var source = ReadEmbeddedResource("command-dispatcher.js");
+
+        foreach (var kind in new[] { "writeTag", "navigate", "openPopup", "closePopup", "togglePopup", "openUrl", "back" })
+        {
+            StringAssert.Contains(source, $"case '{kind}':");
+        }
+
+        foreach (var mode in new[] { "momentary", "toggle", "setFixed", "setFromInput" })
+        {
+            StringAssert.Contains(source, $"case '{mode}':");
+        }
+
+        foreach (var stale in new[] { "case 'Navigate':", "case 'WriteTag':", "case 'OpenPopup':", "case 'Momentary':", "case 'SetFixed':" })
+        {
+            Assert.IsFalse(
+                source.Contains(stale, StringComparison.Ordinal),
+                $"PascalCase case label never matches the camelCase runtime payload: {stale}");
+        }
+
+        // TRIGGER_MAP keys are looked up by cmd.trigger, also serialized camelCase.
+        // PascalCase keys make non-click triggers silently fall back to 'click'.
+        foreach (var trigger in new[] { "onClick:", "onRelease:", "onHover:", "onHoverEnter:", "onHoverExit:" })
+        {
+            StringAssert.Contains(source, trigger);
+        }
+        Assert.IsFalse(
+            source.Contains("OnClick:", StringComparison.Ordinal),
+            "TRIGGER_MAP must key on camelCase trigger values matching the exporter serialization.");
+    }
+
+    /// <summary>
     /// The tag-bridge.js module must be embedded and expose
     /// getTagValue, writeTag, and reference window.tf100webScadaBuilder.
     /// </summary>

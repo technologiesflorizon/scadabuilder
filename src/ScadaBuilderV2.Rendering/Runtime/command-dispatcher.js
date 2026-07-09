@@ -15,12 +15,14 @@
    *   OnHoverExit  -> mouseleave
    */
 
+  // Keys are cmd.trigger values, serialized by the exporter as camelCase enum
+  // values (JsonStringEnumConverter(CamelCase)); they must match that casing.
   var TRIGGER_MAP = {
-    OnClick: 'click',
-    OnRelease: 'mouseup',
-    OnHover: 'mouseenter',
-    OnHoverEnter: 'mouseenter',
-    OnHoverExit: 'mouseleave'
+    onClick: 'click',
+    onRelease: 'mouseup',
+    onHover: 'mouseenter',
+    onHoverEnter: 'mouseenter',
+    onHoverExit: 'mouseleave'
   };
 
   // ── bind ────────────────────────────────────────────────────────────────
@@ -60,7 +62,7 @@
         continue;
       }
 
-      var trigger = cmd.trigger || 'OnClick';
+      var trigger = cmd.trigger || 'onClick';
       var domEvent = TRIGGER_MAP[trigger] || 'click';
 
       // Capture cmd and domEvent in a per-iteration closure.
@@ -118,39 +120,41 @@
       return;
     }
 
+    // cmd.kind is serialized by the exporter as a camelCase enum value
+    // (JsonStringEnumConverter(CamelCase)); case labels must match that casing.
     switch (cmd.kind) {
       // ── WriteTag variants ──────────────────────────────────────────────
-      case 'WriteTag':
+      case 'writeTag':
         _writeTagCommand(cmd, element);
         break;
 
       // ── Navigation ─────────────────────────────────────────────────────
-      case 'Navigate':
+      case 'navigate':
         _navigateCommand(cmd);
         break;
 
       // ── Popup commands ─────────────────────────────────────────────────
-      case 'OpenPopup':
+      case 'openPopup':
         _postMessage('openPopup', cmd.targetPageId, cmd.popupOptions);
         break;
 
-      case 'ClosePopup':
+      case 'closePopup':
         _postMessage('closePopup', cmd.targetPageId);
         break;
 
-      case 'TogglePopup':
+      case 'togglePopup':
         _postMessage('togglePopup', cmd.targetPageId, cmd.popupOptions);
         break;
 
       // ── OpenUrl ────────────────────────────────────────────────────────
-      case 'OpenUrl':
+      case 'openUrl':
         if (cmd.url) {
           window.open(cmd.url, cmd.newTab ? '_blank' : '_self');
         }
         break;
 
       // ── Back ───────────────────────────────────────────────────────────
-      case 'Back':
+      case 'back':
         window.history.back();
         break;
 
@@ -177,24 +181,26 @@
       return;
     }
 
+    // cmd.writeMode is serialized by the exporter as a camelCase enum value
+    // (JsonStringEnumConverter(CamelCase)); case labels must match that casing.
     switch (cmd.writeMode) {
-      case 'Momentary':
+      case 'momentary':
         // Momentary is handled as two commands: press (onValue) and release (offValue).
         // For a single click/dispatch, default to press cycle.
         bridge.writeTag(cmd.writeTagId, cmd.onValue, { phase: 'press' });
         break;
 
-      case 'Toggle':
+      case 'toggle':
         var current = bridge.getTagValue(cmd.readTagId || cmd.writeTagId);
         var boolVal = !!(current && current !== '0' && current !== 'false');
         bridge.writeTag(cmd.writeTagId, boolVal ? '0' : '1', { mode: 'Toggle' });
         break;
 
-      case 'SetFixed':
+      case 'setFixed':
         bridge.writeTag(cmd.writeTagId, cmd.fixedValue, { mode: 'SetFixed' });
         break;
 
-      case 'SetFromInput':
+      case 'setFromInput':
         var input = element ? element.querySelector('input, textarea') : null;
         if (input) {
           bridge.writeTag(cmd.writeTagId, input.value, { mode: 'SetFromInput' });
