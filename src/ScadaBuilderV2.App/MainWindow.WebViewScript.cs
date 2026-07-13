@@ -1899,8 +1899,12 @@ public partial class MainWindow
       }
       wrapper.style.color = cssText(style.Foreground, '#0f2a30');
       wrapper.style.background = cssText(style.Background, '#ffffff');
-      wrapper.style.borderStyle = cssText(style.BorderStyle, 'solid').toLowerCase();
-      wrapper.style.borderWidth = `${cssText(style.BorderWidth, 1)}px`;
+      const borderStyle = cssText(style.BorderStyle, 'solid').toLowerCase();
+      const borderWidth = Number(style.BorderWidth ?? 0) > 0 || borderStyle === 'none'
+        ? Math.max(0, Number(style.BorderWidth ?? 0))
+        : 1;
+      wrapper.style.borderStyle = borderStyle;
+      wrapper.style.borderWidth = `${borderWidth}px`;
       wrapper.style.borderColor = cssText(style.BorderColor, '#8aa0a6');
       wrapper.style.boxShadow = shadowCss(style.ShadowPreset);
       wrapper.style.opacity = `${Math.max(0, Math.min(1, Number(style.Opacity ?? 1)))}`;
@@ -1927,7 +1931,9 @@ public partial class MainWindow
         });
       } else if (element.Kind === 'Shape') {
         wrapper.style.background = 'transparent';
-        wrapper.style.border = '0';
+        if (borderStyle === 'none') {
+          wrapper.style.border = '0';
+        }
         wrapper.style.padding = '0';
         wrapper.appendChild(renderShapeElement(element, style));
       } else if (element.Kind === 'Text') {

@@ -6264,7 +6264,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 Background = GetColorPickerValue(ElementBackgroundColorPicker, style.Background),
                 BorderColor = GetColorPickerValue(ElementBorderColorPicker, style.BorderColor),
                 BorderStyle = GetComboBoxText(ElementBorderStyleComboBox, style.BorderStyle),
-                BorderWidth = Math.Max(0, ParseDoubleOrDefault(ElementBorderWidthTextBox.Text, style.BorderWidth)),
+                BorderWidth = GetEffectiveBorderWidth(
+                    GetComboBoxText(ElementBorderStyleComboBox, style.BorderStyle),
+                    ParseDoubleOrDefault(ElementBorderWidthTextBox.Text, style.BorderWidth)),
                 ShadowPreset = GetSelectedShadowPreset(),
                 Opacity = Math.Clamp(ParseDoubleOrDefault(ElementOpacityTextBox.Text, style.Opacity), 0, 1),
                 Rotation = ParseDoubleOrDefault(ElementRotationTextBox.Text, style.Rotation),
@@ -6567,11 +6569,41 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         ElementStylePreviewText.Foreground = ToPreviewBrush(style.Foreground);
         ElementStylePreviewBorder.Background = ToPreviewBrush(style.Background);
         ElementStylePreviewBorder.BorderBrush = ToPreviewBrush(style.BorderColor);
-        ElementStylePreviewBorder.BorderThickness = new Thickness(Math.Max(0, style.BorderWidth));
+        var borderStyle = style.BorderStyle?.Trim().ToLowerInvariant() ?? "none";
+        var borderWidth = GetEffectiveBorderWidth(borderStyle, style.BorderWidth);
+        ElementStylePreviewBorder.BorderThickness = new Thickness(borderWidth);
         var radius = style.BorderRadius?.Normalized().TopLeft ?? 0;
         ElementStylePreviewBorder.CornerRadius = new CornerRadius(radius);
+        ElementStylePreviewBorder.Effect = borderStyle switch
+        {
+            "inset" => new System.Windows.Media.Effects.DropShadowEffect
+            {
+                Color = Colors.Black,
+                Direction = 315,
+                ShadowDepth = 0,
+                BlurRadius = 4,
+                Opacity = 0.35
+            },
+            "outset" => new System.Windows.Media.Effects.DropShadowEffect
+            {
+                Color = Colors.White,
+                Direction = 135,
+                ShadowDepth = 1,
+                BlurRadius = 3,
+                Opacity = 0.75
+            },
+            _ => null
+        };
         ElementStylePreviewBorder.Opacity = Math.Clamp(style.Opacity, 0, 1);
         ElementStylePreviewBorder.RenderTransform = new RotateTransform(style.Rotation);
+    }
+
+    private static double GetEffectiveBorderWidth(string? borderStyle, double width)
+    {
+        var normalizedStyle = borderStyle?.Trim() ?? "None";
+        return !string.Equals(normalizedStyle, "None", StringComparison.OrdinalIgnoreCase) && width <= 0
+            ? 1
+            : Math.Max(0, width);
     }
 
     private static string ApplyPreviewTextTransform(string text, string? transform)

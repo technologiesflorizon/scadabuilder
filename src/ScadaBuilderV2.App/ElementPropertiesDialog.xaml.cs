@@ -351,11 +351,41 @@ public partial class ElementPropertiesDialog : Window
         StylePreviewBorder.BorderBrush = ToBrush(BorderTransparentCheckBox.IsChecked == true
             ? "Transparent"
             : GetColorPickerValue(BorderColorPicker, "#8AA0A6"));
-        StylePreviewBorder.BorderThickness = new Thickness(Math.Max(0, ParseDoubleOrDefault(BorderWidthTextBox.Text, 0)));
+        var borderStyle = GetComboBoxText(BorderStyleComboBox, "None");
+        var borderWidth = GetEffectiveBorderWidth(borderStyle, ParseDoubleOrDefault(BorderWidthTextBox.Text, 0));
+        StylePreviewBorder.BorderThickness = new Thickness(borderWidth);
         var radius = Math.Max(0, ParseDoubleOrDefault(BorderRadiusTextBox.Text, 0));
         StylePreviewBorder.CornerRadius = new CornerRadius(radius);
         StylePreviewBorder.Opacity = Math.Clamp(ParseDoubleOrDefault(OpacityTextBox.Text, 1), 0, 1);
         StylePreviewBorder.RenderTransform = new RotateTransform(ParseDoubleOrDefault(RotationTextBox.Text, 0));
+        StylePreviewBorder.Effect = borderStyle.Trim().ToLowerInvariant() switch
+        {
+            "inset" => new System.Windows.Media.Effects.DropShadowEffect
+            {
+                Color = Colors.Black,
+                Direction = 315,
+                ShadowDepth = 0,
+                BlurRadius = 4,
+                Opacity = 0.35
+            },
+            "outset" => new System.Windows.Media.Effects.DropShadowEffect
+            {
+                Color = Colors.White,
+                Direction = 135,
+                ShadowDepth = 1,
+                BlurRadius = 3,
+                Opacity = 0.75
+            },
+            _ => null
+        };
+    }
+
+    private static double GetEffectiveBorderWidth(string? borderStyle, double width)
+    {
+        var normalizedStyle = borderStyle?.Trim() ?? "None";
+        return !string.Equals(normalizedStyle, "None", StringComparison.OrdinalIgnoreCase) && width <= 0
+            ? 1
+            : Math.Max(0, width);
     }
 
     private static string ApplyPreviewTextTransform(string text, string? transform)
@@ -433,7 +463,9 @@ public partial class ElementPropertiesDialog : Window
                 ? "Transparent"
                 : GetColorPickerValue(BorderColorPicker, "#8AA0A6"),
             BorderStyle: GetComboBoxText(BorderStyleComboBox, "Solid"),
-            BorderWidth: Math.Max(0, borderWidth),
+            BorderWidth: GetEffectiveBorderWidth(
+                GetComboBoxText(BorderStyleComboBox, "Solid"),
+                borderWidth),
             ShadowPreset: GetSelectedShadowPreset(),
             Opacity: Math.Clamp(opacity, 0, 1),
             Rotation: rotation,
