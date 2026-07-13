@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active UI specification pointer
-Document version: `V2.1.3.0002`
+Document version: `V2.1.4.0003`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-13 | `V2.1.4.0003` | `PENDING` | Direction haut de gamme de l’inspecteur Style : sections, contrôles à état, icônes sémantiques et aperçu vivant. |
 | 2026-06-19 | `V2.1.3.0002` | `PENDING` | Ajout du standard de polish produit concurrentiel face a ScadaPlant. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes: icones 32x32 et boutons sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Normalisation de la galerie Formes du ruban Inserer avec icones 64x64 et etat actif. |
@@ -66,3 +67,7 @@ Current shell rules:
 12. The left tool palette uses the same command metadata adapter as the ribbon for labels, disabled tooltips, and semantic `Icon.Tool.*` lookup.
 13. The Insert `Formes` group is an icon gallery capped at four columns. Shape buttons use 32x32 semantic icons, do not show redundant visible shape-name labels, expose labels through tooltips, wrap to a second row as needed, and show selected state while placement is active.
 14. Line and arrow insertion uses a two-point canvas workflow with editor-only preview feedback between clicks.
+
+## 6. Element+ Style Inspector
+
+The Style tab uses task-oriented sections (`Typographie`, `Couleurs`, `Bordure`, `Ombre et effets`, and `CSS avancé`). Formatting controls use active-state toggles or radio buttons, advanced fields expose tooltips and validation, and the modal and docked surfaces use the same property names and defaults. A local WPF preview reflects uncommitted values before application; it is a temporary projection and is never exported.

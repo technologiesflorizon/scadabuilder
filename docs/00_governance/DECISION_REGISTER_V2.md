@@ -2,12 +2,13 @@
 
 Date: 2026-07-09
 Status: Active authoritative decision register
-Document version: `V2.1.4.0002`
+Document version: `V2.1.4.0003`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-13 | `V2.1.4.0003` | `PENDING` | Ajout de DEC-0037 pour le contrat de style avancé Element+ model-backed et la conservation HTML/CSS TF100Web. |
 | 2026-07-09 | `V2.1.4.0002` | `PENDING` | Ajout de DEC-0036 pour les references de tags d'expressions d'etat : libelle humain conserve, Id canonique obligatoire a l'export TF100Web. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de DEC-0032 pour la galerie Formes 32x32 sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout de DEC-0032 pour la galerie Formes du ruban Inserer et le placement ligne/fleche en deux points. |
@@ -1069,3 +1070,28 @@ Regression coverage:
 `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`,
 `tests/runtime-js/expression-evaluator.test.mjs`,
 `tests/runtime-js/state-engine.test.mjs`
+### DEC-0037 - Model-Backed Element+ Advanced Style Contract
+
+Status: Active
+Created: 2026-07-13 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md`
+
+Context:
+
+The Element+ Style tab could not author common typography, complete CSS border styles, foreground text color, or border radius without raw `AdvancedCss`. The modal and docked property surfaces also lacked a shared structured contract, creating preview/export drift risk.
+
+Decision:
+
+Element+ styles persist model-backed typography fields, `Foreground`, the nine CSS border styles, and a four-corner pixel `BorderRadius` record with backward-compatible defaults. Both WPF property surfaces use the same controls and mutation path. WebView preview and FT100 export emit the same structured CSS mapping, with `AdvancedCss` applied afterward except for export invariants. The current TF100Web composition path treats the resulting HTML/CSS as opaque and requires no semantic style parser.
+
+Consequences:
+
+Older projects remain readable without migration. The WPF inspector provides a local temporary preview and semantic `Icon.Property.*` resources. Integration coverage must verify that TF100Web deployment/composition preserves the generated HTML/CSS; changes to TF100Web runtime parsing require a separate contract decision.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/ScadaSceneModelsTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`, `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`, and `F:\Projet\Git\TF100Web\frontend\tests_scada_deploy.py`.

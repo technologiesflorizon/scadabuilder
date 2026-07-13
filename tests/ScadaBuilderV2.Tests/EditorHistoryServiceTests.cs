@@ -106,6 +106,36 @@ public sealed class EditorHistoryServiceTests
     }
 
     [TestMethod]
+    public async Task ModernElementChangeActionUndoRedoRestoresAdvancedStyle()
+    {
+        var element = ScadaElement.CreateText("text-style-001", "Text001", 10, 20);
+        var updated = element with
+        {
+            Style = element.Style with
+            {
+                FontWeight = "Bold",
+                FontStyle = "Italic",
+                BorderStyle = "Inset",
+                BorderRadius = new ScadaBorderRadius(8, 8, 8, 8)
+            }
+        };
+        var scene = ScadaScene.CreateEmpty("win00008", "win00008", new(1280, 873)).WithElement(updated);
+        var history = new EditorHistoryService();
+        var context = CreateContext(scene, replacement => scene = replacement);
+
+        history.Push(new ModernElementChangedAction(scene.Id, element, updated, "proprietes Element+"));
+
+        Assert.IsTrue(await history.UndoAsync(context));
+        Assert.AreEqual("Normal", scene.FindElementRecursive(element.Id)?.Style.FontWeight);
+        Assert.IsNull(scene.FindElementRecursive(element.Id)?.Style.BorderRadius);
+
+        Assert.IsTrue(await history.RedoAsync(context));
+        Assert.AreEqual("Bold", scene.FindElementRecursive(element.Id)?.Style.FontWeight);
+        Assert.AreEqual("Inset", scene.FindElementRecursive(element.Id)?.Style.BorderStyle);
+        Assert.AreEqual(8, scene.FindElementRecursive(element.Id)?.Style.BorderRadius?.TopLeft);
+    }
+
+    [TestMethod]
     public async Task ConsecutiveModernElementChangesMergeForSingleUndoStep()
     {
         var initial = ScadaElement.CreateText("text-001", "Text001", 10, 20);

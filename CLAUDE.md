@@ -82,6 +82,21 @@ Key runtime concepts:
 - The current export artifact is **`.sb2`** — a ZIP whose top-level entry is `scada-builder-v2-ft100-package/`, containing root `manifest.json` + `<page-id>/<page-id>.html`. `index.html` is deprecated.
 - Exported CSS, DOM ids, and runtime action targets are **page-namespaced** to avoid collisions in TF100Web composition.
 
+## Protected TF100Web package contract
+
+The verified TF100Web intake is the modern `frontend.views.scada_package_page` path in the local TF100Web repository at `F:\Projet\Git\TF100Web`. Preserve these rules when changing the `.sb2` exporter:
+
+- `.sb2` is a ZIP with top-level directory `scada-builder-v2-ft100-package/`, a root `manifest.json`, and page files under `<page-id>/<page-id>.html`.
+- `deploy_scada_builder` copies the root manifest to `STATIC_ROOT/scada/manifest.json`, pages to `STATIC_ROOT/scada/pages/<page-id>/<page-id>.html`, page CSS/assets alongside the deployed page, and shared images to `STATIC_ROOT/scada/images/`.
+- `load_composed_page` resolves manifest fields `Pages`, `Id`, `IncludeInBuild`, `PageType`/`Type`, `HeaderPageId`, `FooterPageId`, extracts `id="ft100-<page-id>"`, and reads CSS hashes/dimensions from the page HTML.
+- The modern composition path treats Element+ HTML and CSS as opaque static content. It does not parse `ScadaElementStyle`, `data-scada-state-config`, or arbitrary CSS declarations.
+- `scada_package_page` may inject runtime binding attributes from manifest objects through `_inject_scada_element_attrs`; this must not replace or reinterpret Element+ style CSS.
+- Manifest/project JSON uses the existing .NET field naming contract (PascalCase). Runtime JSON embedded in HTML attributes uses the Builder runtime camelCase contract. Do not collapse these into one casing rule.
+- New style fields (`FontWeight`, `FontStyle`, `TextDecoration`, `Foreground`, `BorderStyle`, `BorderRadius`, etc.) must be emitted correctly by SCADA Builder and must survive TF100Web deployment/composition without requiring TF100Web semantic parsing.
+- Exporter-emitted scripts are not assumed to execute in the current fragment intake. Keep exporter behavior separate from TF100Web-executed behavior and update the event parity matrix when runtime behavior changes.
+
+Any change that alters this contract requires inspection of the corresponding TF100Web functions/tests and an explicit update to `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` before implementation.
+
 Projects authored by the app live under `projects/<NAME>/` (`scenes/`, `library/elements/*.sep`, `imports/`, `exports/`, `.studio/`). `AMR_REF_SCADA_V2` is the working reference project.
 
 ## Non-negotiable guardrails

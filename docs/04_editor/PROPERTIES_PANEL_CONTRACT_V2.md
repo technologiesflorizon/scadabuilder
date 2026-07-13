@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active properties panel contract
-Document version: `V2.1.3.0002`
+Document version: `V2.1.4.0003`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-13 | `V2.1.4.0003` | `PENDING` | Ajout des propriétés typographiques Element+, Foreground authorable, styles de bordure avancés, BorderRadius et aperçu vivant. |
 | 2026-06-19 | `V2.1.3.0002` | `PENDING` | Remplacement des couleurs arriere-plan/bordure Style et Bouton par le color picker modal aligne sur `CSS fond`. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Clarification de la parite metadata preview/export pour les wrappers de boutons Element+. |
 | 2026-06-19 | `V2.1.2.0034` | `61eef34` | Ajout du style bouton appui/actif model-backed dans l'onglet Bouton. |
@@ -18,6 +19,22 @@ Document version: `V2.1.3.0002`
 | 2026-06-16 | `V2.1.2.0004` | `PENDING` | Ajout de l'entree Evenement pour l'edition des bindings runtime Element+. |
 | 2026-06-16 | `V2.1.2.0000` | `PENDING` | Clarification du contrat Propriete pour les objets Element+ et du blocage explicite pour les sources non converties. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat actif du panneau proprietes. |
+
+## 5. Advanced Element+ Style Contract
+
+The Style tab exposes the following model-backed values on both `ElementPropertiesDialog` and the docked `MainWindow` surface:
+
+1. `FontWeight`: `Normal`, `Bold`, `Bolder`, `Lighter`, or numeric CSS weights 100–900 by increments of 100.
+2. `FontStyle`: `Normal`, `Italic`, or `Oblique`.
+3. `TextDecoration`: combinable `Underline`, `LineThrough`, and `Overline` values.
+4. `TextAlign`: `Left`, `Center`, `Right`, or `Justify`.
+5. `TextTransform`: `None`, `Uppercase`, `Lowercase`, or `Capitalize`.
+6. `LetterSpacing` and `LineHeight`: pixel values; `LineHeight = 0` means CSS `normal`.
+7. `Foreground`: editable through the existing `ColorPickerField`.
+8. `BorderStyle`: `None`, `Solid`, `Dashed`, `Dotted`, `Double`, `Groove`, `Ridge`, `Inset`, or `Outset`.
+9. `BorderRadius`: four non-negative pixel corners; the UI may expose a uniform convenience mode.
+
+Structured values are applied before `AdvancedCss`, which remains the final user override except for export geometry, namespace, and security invariants. All style mutations use the existing scene mutation and history path, preserve old-project defaults, and are consumed by both WebView preview and FT100 export.
 
 ## 1. Contract
 

@@ -922,6 +922,31 @@
                                                 <TextBox x:Name="ElementFontSizeTextBox"
                                                          Margin="0,3,0,8"
                                                          TextChanged="OnElementPropertyChanged"/>
+                                                <TextBlock Text="Couleur du texte"/>
+                                                <local:ColorPickerField x:Name="ElementForegroundColorPicker"
+                                                                        ColorChanged="OnElementPropertyChanged"/>
+                                                <UniformGrid Columns="4" Margin="0,3,0,6">
+                                                    <ToggleButton x:Name="ElementBoldToggle" Content="B" FontWeight="Bold" Checked="OnElementPropertyChanged" Unchecked="OnElementPropertyChanged"/>
+                                                    <ToggleButton x:Name="ElementItalicToggle" Content="I" FontStyle="Italic" Checked="OnElementPropertyChanged" Unchecked="OnElementPropertyChanged"/>
+                                                    <ToggleButton x:Name="ElementUnderlineToggle" Content="U" Checked="OnElementPropertyChanged" Unchecked="OnElementPropertyChanged"/>
+                                                    <ToggleButton x:Name="ElementStrikethroughToggle" Content="S" Checked="OnElementPropertyChanged" Unchecked="OnElementPropertyChanged"/>
+                                                </UniformGrid>
+                                                <UniformGrid Columns="4" Margin="0,0,0,6">
+                                                    <RadioButton x:Name="ElementAlignLeftRadio" Content="Gauche" GroupName="ElementTextAlign" Checked="OnElementPropertyChanged"/>
+                                                    <RadioButton x:Name="ElementAlignCenterRadio" Content="Centre" GroupName="ElementTextAlign" Checked="OnElementPropertyChanged"/>
+                                                    <RadioButton x:Name="ElementAlignRightRadio" Content="Droite" GroupName="ElementTextAlign" Checked="OnElementPropertyChanged"/>
+                                                    <RadioButton x:Name="ElementAlignJustifyRadio" Content="Justifié" GroupName="ElementTextAlign" Checked="OnElementPropertyChanged"/>
+                                                </UniformGrid>
+                                                <ComboBox x:Name="ElementTextTransformComboBox" SelectionChanged="OnElementPropertyChanged">
+                                                    <ComboBoxItem Content="Aucune" Tag="None"/>
+                                                    <ComboBoxItem Content="Majuscules" Tag="Uppercase"/>
+                                                    <ComboBoxItem Content="Minuscules" Tag="Lowercase"/>
+                                                    <ComboBoxItem Content="Capitaliser" Tag="Capitalize"/>
+                                                </ComboBox>
+                                                <UniformGrid Columns="2" Margin="0,3,0,8">
+                                                    <TextBox x:Name="ElementLetterSpacingTextBox" TextChanged="OnElementPropertyChanged" ToolTip="Espacement des lettres (px)"/>
+                                                    <TextBox x:Name="ElementLineHeightTextBox" TextChanged="OnElementPropertyChanged" ToolTip="Interligne (px)"/>
+                                                </UniformGrid>
                                                 <TextBlock Text="Couleur arriere-plan"/>
                                                 <local:ColorPickerField x:Name="ElementBackgroundColorPicker"
                                                                         ColorChanged="OnElementPropertyChanged"/>
@@ -935,11 +960,20 @@
                                                     <ComboBoxItem Content="Solid"/>
                                                     <ComboBoxItem Content="Dashed"/>
                                                     <ComboBoxItem Content="Dotted"/>
+                                                    <ComboBoxItem Content="Double"/>
+                                                    <ComboBoxItem Content="Groove"/>
+                                                    <ComboBoxItem Content="Ridge"/>
+                                                    <ComboBoxItem Content="Inset"/>
+                                                    <ComboBoxItem Content="Outset"/>
                                                     <ComboBoxItem Content="None"/>
                                                 </ComboBox>
                                                 <TextBlock Text="Largeur bordure (px)"/>
-                                                <TextBox x:Name="ElementBorderWidthTextBox"
+                                                        <TextBox x:Name="ElementBorderWidthTextBox"
+                                                                 Margin="0,3,0,8"
+                                                                 TextChanged="OnElementPropertyChanged"/>
+                                                <TextBox x:Name="ElementBorderRadiusTextBox"
                                                          Margin="0,3,0,8"
+                                                         ToolTip="Rayon de bordure uniforme (px)"
                                                          TextChanged="OnElementPropertyChanged"/>
                                                 <TextBlock Text="Shadow"/>
                                                 <UniformGrid Columns="4" Margin="0,3,0,8">
@@ -960,6 +994,10 @@
                                                                  TextChanged="OnElementPropertyChanged"/>
                                                     </StackPanel>
                                                 </UniformGrid>
+                                                <TextBlock Text="Aperçu vivant" FontWeight="SemiBold" Margin="0,4,0,2"/>
+                                                <Border x:Name="ElementStylePreviewBorder" BorderThickness="1" Padding="8" MinHeight="36">
+                                                    <TextBlock x:Name="ElementStylePreviewText" Text="Aperçu Element+" TextWrapping="Wrap"/>
+                                                </Border>
                                                 <TextBlock Text="CSS avance"/>
                                                 <TextBox x:Name="ElementAdvancedCssTextBox"
                                                          AcceptsReturn="True"

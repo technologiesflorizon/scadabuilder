@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active runtime package contract
-Document version: `V2.1.2.0038`
+Document version: `V2.1.4.0003`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-13 | `V2.1.4.0003` | `PENDING` | Confirmation du contrat réel TF100Web pour les styles Element+ : HTML/CSS opaque, manifest PascalCase, runtime HTML camelCase et preuve de conservation après déploiement. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Clarification de la parite metadata wrapper preview/export pour boutons Element+. |
 | 2026-06-19 | `V2.1.2.0037` | `2a540d6` | Ajout des evenements runtime de boutons HMI standards. |
 | 2026-06-19 | `V2.1.2.0036` | `8cc4d33` | Ajout du contrat runtime disabled reel pour boutons Element+. |
@@ -138,7 +139,21 @@ The active TF100Web intake contract is:
 22. TF100Web derives those mapping attributes from SCADA Builder V2 `ValueBindings.ReadTagId` / `ValueBindings.WriteTagId`, legacy `Binding`, `RuntimeBinding`, `Bindings`, `RuntimeBindings`, `TagBinding`, manual page bindings, or `scada-runtime-overrides.json`.
 23. TF100Web exports tags to SCADA Builder V2 through the `tf100web-scada-tags-v1` JSON schema from `frontend/scada_tags.py`.
 
-## 4. Event Runtime Parity Matrix
+## 4. Element+ Style Transport Contract
+
+The current TF100Web intake was verified against the local repository `F:\Projet\Git\TF100Web`, including `frontend.views.scada_package_page`, `frontend.scada_builder_composition.load_composed_page`, `frontend.views._inject_scada_element_attrs`, and `core.management.commands.deploy_scada_builder`.
+
+1. `deploy_scada_builder` copies the root `.sb2` manifest to `STATIC_ROOT/scada/manifest.json`, pages to `STATIC_ROOT/scada/pages/<page-id>/<page-id>.html`, page CSS/assets beside the deployed page, and shared images to `STATIC_ROOT/scada/images/`.
+2. `load_composed_page` resolves manifest fields `Pages`, `Id`, `IncludeInBuild`, `PageType`/`Type`, `HeaderPageId`, `FooterPageId`, extracts only `id="ft100-<page-id>"`, and reads CSS hashes/dimensions from page HTML.
+3. The modern composition path treats Element+ HTML and CSS as opaque static content. It does not parse or reinterpret `ScadaElementStyle`, `data-scada-state-config`, or arbitrary CSS declarations.
+4. `_inject_scada_element_attrs` may add runtime binding attributes derived from manifest objects, but it must not replace or reinterpret Element+ style declarations.
+5. Project persistence and manifest JSON retain the existing .NET/PascalCase naming contract. Runtime JSON embedded in HTML attributes uses the Builder camelCase naming contract. These are separate contracts and must not be collapsed.
+6. New style fields such as `FontWeight`, `FontStyle`, `TextDecoration`, `Foreground`, `BorderStyle`, and `BorderRadius` require no TF100Web semantic parser. Builder must emit valid HTML/CSS; TF100Web must preserve it through deployment and fragment composition.
+7. Any change that makes TF100Web parse, normalize, or mutate these style fields is a contract change requiring a new decision, implementation, and integration coverage.
+
+The required proof is an integration test in `F:\Projet\Git\TF100Web\frontend\tests_scada_deploy.py` that deploys a package containing the new style declarations, calls `scada_package_page`, and verifies that the returned page fragment preserves the HTML/CSS without server-side style interpretation.
+
+## 5. Event Runtime Parity Matrix
 
 SCADA Builder V2 and TF100Web do not currently have identical event coverage. The distinction is:
 
@@ -160,7 +175,7 @@ SCADA Builder V2 and TF100Web do not currently have identical event coverage. Th
 | Action conditions and condition groups | Exported by SCADA Builder page script | Not active in current TF100Web fragment intake for host-handled actions | Conditions rely on tag cache and exporter runtime evaluation | Add host-side condition evaluation before dispatching actions. |
 | Custom/page scripts | Roadmap or exporter-controlled depending on source | Not active in current TF100Web fragment intake | No safe host execution contract is active | Decide between controlled script execution and explicit host-side handlers. |
 
-## 5. Next TF100Web Event Tranche Plan
+## 6. Next TF100Web Event Tranche Plan
 
 The next implementation tranche should be prepared in this order:
 
@@ -189,7 +204,7 @@ The next implementation tranche should be prepared in this order:
    - Browser-runtime unit tests for dispatcher decisions when feasible.
    - A manual production checklist when local TF100Web runtime testing is unavailable.
 
-## 6. Integration Gap
+## 7. Integration Gap
 
 SCADA Builder V2 currently exports more runtime behavior than TF100Web executes through its active fragment intake.
 
@@ -208,7 +223,7 @@ Until that integration is implemented, SCADA Builder V2 documentation must disti
 2. TF100Web intake contract: what `F:\Projet\Git\TF100Web` commit `3c795c2` validates, extracts, serves, and executes.
 3. Parity gaps: exported runtime behavior not executed by the current TF100Web host.
 
-## 7. Package Flow
+## 8. Package Flow
 
 ```mermaid
 flowchart TD
@@ -227,7 +242,7 @@ flowchart TD
   PageHtml -. script outside extracted root not executed by current TF100Web intake .-> Gap[TF100Web runtime parity gap]
 ```
 
-## 8. Related Decisions
+## 9. Related Decisions
 
 1. `DEC-0003` - Current FT100/TF100Web Package Contract.
 2. `DEC-0007` - Page-Scoped Runtime Namespace.
@@ -250,7 +265,7 @@ flowchart TD
 19. `DEC-0029` - TF100Web Host Intake For SCADA Builder Binding Events.
 20. `DEC-0030` - Element+ Data Tab Active Numeric Display Contract.
 
-## 9. Related Tests
+## 10. Related Tests
 
 1. `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
 2. `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py`

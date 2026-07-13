@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using ScadaBuilderV2.Domain.ElementEvents.Command;
 using ScadaBuilderV2.Domain.ElementEvents.Expressions;
 using ScadaBuilderV2.Domain.ElementEvents.State;
@@ -254,7 +255,19 @@ public partial class ElementPropertiesDialog : Window
 
         SelectComboBoxText(FontFamilyComboBox, style.FontFamily);
         FontSizeTextBox.Text = style.FontSize.ToString("0.##");
+        ForegroundColorPicker.SetColor(style.Foreground);
         BackgroundColorPicker.SetColor(style.Background);
+        BoldToggle.IsChecked = string.Equals(style.FontWeight, "Bold", StringComparison.OrdinalIgnoreCase);
+        ItalicToggle.IsChecked = !string.Equals(style.FontStyle, "Normal", StringComparison.OrdinalIgnoreCase);
+        UnderlineToggle.IsChecked = style.TextDecoration?.Any(value => string.Equals(value, "Underline", StringComparison.OrdinalIgnoreCase)) == true;
+        StrikethroughToggle.IsChecked = style.TextDecoration?.Any(value => string.Equals(value, "LineThrough", StringComparison.OrdinalIgnoreCase)) == true;
+        SelectComboBoxTag(TextTransformComboBox, style.TextTransform);
+        AlignLeftRadio.IsChecked = string.Equals(style.TextAlign, "Left", StringComparison.OrdinalIgnoreCase);
+        AlignCenterRadio.IsChecked = string.Equals(style.TextAlign, "Center", StringComparison.OrdinalIgnoreCase);
+        AlignRightRadio.IsChecked = string.Equals(style.TextAlign, "Right", StringComparison.OrdinalIgnoreCase);
+        AlignJustifyRadio.IsChecked = string.Equals(style.TextAlign, "Justify", StringComparison.OrdinalIgnoreCase);
+        LetterSpacingTextBox.Text = style.LetterSpacing.ToString("0.##");
+        LineHeightTextBox.Text = style.LineHeight.ToString("0.##");
         var isBorderTransparent = string.Equals(style.BorderColor, "Transparent", StringComparison.OrdinalIgnoreCase);
         BorderTransparentCheckBox.IsChecked = isBorderTransparent;
         BorderColorPicker.IsEnabled = !isBorderTransparent;
@@ -264,6 +277,7 @@ public partial class ElementPropertiesDialog : Window
         }
         SelectComboBoxText(BorderStyleComboBox, style.BorderStyle);
         BorderWidthTextBox.Text = style.BorderWidth.ToString("0.##");
+        BorderRadiusTextBox.Text = style.BorderRadius?.Normalized().TopLeft.ToString("0.##") ?? "0";
         ShadowNoneRadio.IsChecked = style.ShadowPreset == "None";
         ShadowSoftRadio.IsChecked = style.ShadowPreset == "Soft";
         ShadowRaisedRadio.IsChecked = style.ShadowPreset == "Raised";
@@ -271,6 +285,7 @@ public partial class ElementPropertiesDialog : Window
         OpacityTextBox.Text = style.Opacity.ToString("0.##");
         RotationTextBox.Text = style.Rotation.ToString("0.##");
         AdvancedCssTextBox.Text = style.AdvancedCss ?? "";
+        UpdateStylePreview();
 
         ButtonTab.Visibility = current.Kind == ScadaElementKind.Button ? Visibility.Visible : Visibility.Collapsed;
         ButtonDisabledCheckBox.IsChecked = buttonBehavior.IsDisabled;
@@ -298,6 +313,55 @@ public partial class ElementPropertiesDialog : Window
     private void OnBorderTransparentChanged(object sender, RoutedEventArgs e)
     {
         BorderColorPicker.IsEnabled = BorderTransparentCheckBox.IsChecked != true;
+    }
+
+    private void OnStylePreviewChanged(object sender, RoutedEventArgs e)
+    {
+        UpdateStylePreview();
+    }
+
+    private void UpdateStylePreview()
+    {
+        if (StylePreviewText is null || StylePreviewBorder is null)
+        {
+            return;
+        }
+
+        StylePreviewText.FontFamily = new FontFamily(GetComboBoxText(FontFamilyComboBox, "Segoe UI"));
+        StylePreviewText.FontSize = Math.Max(6, ParseDoubleOrDefault(FontSizeTextBox.Text, 16));
+        StylePreviewText.FontWeight = BoldToggle.IsChecked == true ? FontWeights.Bold : FontWeights.Normal;
+        StylePreviewText.FontStyle = ItalicToggle.IsChecked == true ? FontStyles.Italic : FontStyles.Normal;
+        StylePreviewText.TextDecorations = UnderlineToggle.IsChecked == true || StrikethroughToggle.IsChecked == true
+            ? new TextDecorationCollection(new[]
+            {
+                UnderlineToggle.IsChecked == true ? TextDecorations.Underline[0] : null,
+                StrikethroughToggle.IsChecked == true ? TextDecorations.Strikethrough[0] : null
+            }.Where(value => value is not null).Cast<TextDecoration>())
+            : null;
+        StylePreviewText.TextAlignment = AlignCenterRadio.IsChecked == true ? TextAlignment.Center
+            : AlignRightRadio.IsChecked == true ? TextAlignment.Right
+            : AlignJustifyRadio.IsChecked == true ? TextAlignment.Justify
+            : TextAlignment.Left;
+        StylePreviewText.Foreground = ToBrush(GetColorPickerValue(ForegroundColorPicker, "#0F2A30"));
+        StylePreviewBorder.Background = ToBrush(GetColorPickerValue(BackgroundColorPicker, "Transparent"));
+        StylePreviewBorder.BorderBrush = ToBrush(BorderTransparentCheckBox.IsChecked == true
+            ? "Transparent"
+            : GetColorPickerValue(BorderColorPicker, "#8AA0A6"));
+        StylePreviewBorder.BorderThickness = new Thickness(Math.Max(0, ParseDoubleOrDefault(BorderWidthTextBox.Text, 0)));
+        var radius = Math.Max(0, ParseDoubleOrDefault(BorderRadiusTextBox.Text, 0));
+        StylePreviewBorder.CornerRadius = new CornerRadius(radius);
+    }
+
+    private static Brush ToBrush(string value)
+    {
+        try
+        {
+            return new SolidColorBrush((Color)ColorConverter.ConvertFromString(value));
+        }
+        catch
+        {
+            return Brushes.Transparent;
+        }
     }
 
     private void OnReadOnlyChanged(object sender, RoutedEventArgs e)
@@ -345,6 +409,7 @@ public partial class ElementPropertiesDialog : Window
             PositionMode: PositionModeComboBox.SelectedIndex == 1 ? ElementPositionMode.Relative : ElementPositionMode.Absolute,
             FontFamily: GetComboBoxText(FontFamilyComboBox, "Segoe UI"),
             FontSize: Math.Max(6, fontSize),
+            Foreground: GetColorPickerValue(ForegroundColorPicker, "#0F2A30"),
             Background: GetColorPickerValue(BackgroundColorPicker, "#FFFFFF"),
             BorderColor: BorderTransparentCheckBox.IsChecked == true
                 ? "Transparent"
@@ -375,7 +440,15 @@ public partial class ElementPropertiesDialog : Window
             Unit: string.IsNullOrWhiteSpace(UnitTextBox.Text) ? null : UnitTextBox.Text,
             DisplayFormat: string.IsNullOrWhiteSpace(DisplayFormatTextBox.Text) ? null : DisplayFormatTextBox.Text,
             TagBinding: string.IsNullOrWhiteSpace(TagBindingTextBox.Text) ? null : TagBindingTextBox.Text,
-            IsReadOnly: ReadOnlyCheckBox.IsChecked == true);
+            IsReadOnly: ReadOnlyCheckBox.IsChecked == true,
+            FontWeight: BoldToggle.IsChecked == true ? "Bold" : "Normal",
+            FontStyle: ItalicToggle.IsChecked == true ? "Italic" : "Normal",
+            TextDecoration: GetTextDecoration(),
+            TextAlign: GetSelectedTextAlign(),
+            TextTransform: (TextTransformComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "None",
+            LetterSpacing: Math.Clamp(ParseDoubleOrDefault(LetterSpacingTextBox.Text, 0), -10, 50),
+            LineHeight: Math.Max(0, ParseDoubleOrDefault(LineHeightTextBox.Text, 0)),
+            BorderRadius: GetBorderRadius());
 
         DialogResult = true;
     }
@@ -425,6 +498,45 @@ public partial class ElementPropertiesDialog : Window
         }
 
         comboBox.Text = value;
+    }
+
+    private static void SelectComboBoxTag(ComboBox comboBox, string value)
+    {
+        foreach (var item in comboBox.Items.OfType<ComboBoxItem>())
+        {
+            if (string.Equals(item.Tag?.ToString(), value, StringComparison.OrdinalIgnoreCase))
+            {
+                comboBox.SelectedItem = item;
+                return;
+            }
+        }
+    }
+
+    private static double ParseDoubleOrDefault(string value, double fallback)
+    {
+        return double.TryParse(value, out var parsed) ? parsed : fallback;
+    }
+
+    private IReadOnlyList<string>? GetTextDecoration()
+    {
+        var values = new List<string>();
+        if (UnderlineToggle.IsChecked == true) values.Add("Underline");
+        if (StrikethroughToggle.IsChecked == true) values.Add("LineThrough");
+        return values.Count == 0 ? null : values;
+    }
+
+    private string GetSelectedTextAlign()
+    {
+        if (AlignCenterRadio.IsChecked == true) return "Center";
+        if (AlignRightRadio.IsChecked == true) return "Right";
+        if (AlignJustifyRadio.IsChecked == true) return "Justify";
+        return "Left";
+    }
+
+    private ScadaBorderRadius? GetBorderRadius()
+    {
+        var radius = Math.Max(0, ParseDoubleOrDefault(BorderRadiusTextBox.Text, 0));
+        return radius <= 0 ? null : new ScadaBorderRadius(radius, radius, radius, radius);
     }
 
     private string GetSelectedShadowPreset()
@@ -480,4 +592,13 @@ public sealed record ElementPropertiesDialogResult(
     string? Unit,
     string? DisplayFormat,
     string? TagBinding,
-    bool IsReadOnly);
+    bool IsReadOnly,
+    string Foreground = "#0F2A30",
+    string FontWeight = "Normal",
+    string FontStyle = "Normal",
+    IReadOnlyList<string>? TextDecoration = null,
+    string TextAlign = "Left",
+    string TextTransform = "None",
+    double LetterSpacing = 0,
+    double LineHeight = 0,
+    ScadaBorderRadius? BorderRadius = null);

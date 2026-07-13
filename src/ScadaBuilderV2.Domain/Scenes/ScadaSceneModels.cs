@@ -208,7 +208,15 @@ public sealed record ScadaElementStyle(
     double Opacity = 1,
     double Rotation = 0,
     bool FlipHorizontally = false,
-    bool FlipVertically = false)
+    bool FlipVertically = false,
+    string FontWeight = "Normal",
+    string FontStyle = "Normal",
+    IReadOnlyList<string>? TextDecoration = null,
+    string TextAlign = "Left",
+    string TextTransform = "None",
+    double LetterSpacing = 0,
+    double LineHeight = 0,
+    ScadaBorderRadius? BorderRadius = null)
 {
     public static ScadaElementStyle DefaultText { get; } = new(
         "Segoe UI",
@@ -231,6 +239,35 @@ public sealed record ScadaElementStyle(
         "Solid",
         "None",
         null);
+}
+
+/// <summary>
+/// CSS border radius values for the four corners of an Element+ object, in pixels.
+/// </summary>
+/// <remarks>
+/// Decisions: D13.
+/// Contracts: docs/superpowers/specs/2026-07-13-element-plus-style-capability-design.md.
+/// Tests: tests/ScadaBuilderV2.Tests/ScadaSceneModelsTests.cs.
+/// </remarks>
+public sealed record ScadaBorderRadius(
+    double TopLeft = 0,
+    double TopRight = 0,
+    double BottomRight = 0,
+    double BottomLeft = 0)
+{
+    [JsonIgnore]
+    public bool IsUniform =>
+        Math.Abs(TopLeft - TopRight) < 0.01 &&
+        Math.Abs(TopRight - BottomRight) < 0.01 &&
+        Math.Abs(BottomRight - BottomLeft) < 0.01;
+
+    public ScadaBorderRadius Normalized() => new(
+        Math.Max(0, TopLeft),
+        Math.Max(0, TopRight),
+        Math.Max(0, BottomRight),
+        Math.Max(0, BottomLeft));
+
+    public static ScadaBorderRadius None { get; } = new();
 }
 
 public sealed record ScadaElementData(

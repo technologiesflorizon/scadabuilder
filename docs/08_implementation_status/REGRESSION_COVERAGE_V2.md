@@ -8,6 +8,7 @@ Document version: `V2.1.3.0002`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-13 | `V2.1.4.0003` | `PENDING` | Couverture des nouveaux champs de style, export CSS, preview WebView, icônes sémantiques et preuve d’intake TF100Web. |
 | 2026-07-06 | `V2.1.3.0002` | `4dfe7fe` | Ajout de la couverture de la poignée de rotation Element+ et des presets/angle personnalisé du menu contextuel (7 tests WebViewContextMenuScriptTests). |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajout de la couverture icon-only 32x32 pour la galerie Formes. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout de la couverture galerie Formes, formes standard completes, et placement Ligne/Fleche en deux points. |

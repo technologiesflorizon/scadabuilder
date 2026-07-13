@@ -3867,6 +3867,57 @@ public sealed class Ft100SceneExporterTests
             "The WPF bridge must not open the legacy event dialog from incoming messages.");
     }
 
+    [TestMethod]
+    public async Task ExportAsync_EmitsAdvancedElementStyleInInlineAndCssPaths()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+        var sourceHtmlPath = Path.Combine(sourceRoot, "style_test.html");
+        await File.WriteAllTextAsync(sourceHtmlPath, "<html><body><div class=\"page\"></div></body></html>");
+        var style = ScadaElementStyle.DefaultText with
+        {
+            FontWeight = "Bold",
+            FontStyle = "Italic",
+            TextDecoration = ["Underline", "LineThrough"],
+            TextAlign = "Center",
+            TextTransform = "Uppercase",
+            LetterSpacing = 1.5,
+            LineHeight = 24,
+            BorderStyle = "Inset",
+            BorderRadius = new ScadaBorderRadius(4, 8, 12, 16),
+            Opacity = 0.5,
+            Rotation = 45
+        };
+        var element = new ScadaElement("style-1", "Style", ScadaElementKind.Text,
+            new SceneBounds(10, 10, 200, 40), null, ScadaElementLayout.Absolute, style,
+            new ScadaElementData("Style", null, null, null, null, null, null, null, null, false));
+        var scene = ScadaScene.CreateEmpty("style-test", "Style Test", new(800, 600)).WithElement(element);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            var css = await File.ReadAllTextAsync(result.CssPath);
+
+            foreach (var content in new[] { html, css })
+            {
+                StringAssert.Contains(content, "font-weight:bold");
+                StringAssert.Contains(content, "font-style:italic");
+                StringAssert.Contains(content, "text-decoration:underline line-through");
+                StringAssert.Contains(content, "border-radius:4px 8px 12px 16px");
+            }
+            StringAssert.Contains(css, "border: 0px inset");
+            StringAssert.Contains(css, "opacity:0.5");
+            StringAssert.Contains(css, "rotate(45deg)");
+        }
+        finally
+        {
+            if (Directory.Exists(root)) Directory.Delete(root, recursive: true);
+        }
+    }
+
     private static string FindRepoRoot()
     {
         var dir = Path.GetDirectoryName(typeof(Ft100SceneExporterTests).Assembly.Location)!;

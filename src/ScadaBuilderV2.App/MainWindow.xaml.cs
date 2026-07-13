@@ -5623,10 +5623,23 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ElementHeightTextBox.Text = element.Bounds.Height.ToString("0.##");
             SelectComboBoxText(ElementFontFamilyComboBox, style.FontFamily);
             ElementFontSizeTextBox.Text = style.FontSize.ToString("0.##");
+            ElementForegroundColorPicker.SetColor(style.Foreground);
+            ElementBoldToggle.IsChecked = string.Equals(style.FontWeight, "Bold", StringComparison.OrdinalIgnoreCase);
+            ElementItalicToggle.IsChecked = !string.Equals(style.FontStyle, "Normal", StringComparison.OrdinalIgnoreCase);
+            ElementUnderlineToggle.IsChecked = style.TextDecoration?.Any(value => string.Equals(value, "Underline", StringComparison.OrdinalIgnoreCase)) == true;
+            ElementStrikethroughToggle.IsChecked = style.TextDecoration?.Any(value => string.Equals(value, "LineThrough", StringComparison.OrdinalIgnoreCase)) == true;
+            SelectComboBoxTag(ElementTextTransformComboBox, style.TextTransform);
+            ElementAlignLeftRadio.IsChecked = string.Equals(style.TextAlign, "Left", StringComparison.OrdinalIgnoreCase);
+            ElementAlignCenterRadio.IsChecked = string.Equals(style.TextAlign, "Center", StringComparison.OrdinalIgnoreCase);
+            ElementAlignRightRadio.IsChecked = string.Equals(style.TextAlign, "Right", StringComparison.OrdinalIgnoreCase);
+            ElementAlignJustifyRadio.IsChecked = string.Equals(style.TextAlign, "Justify", StringComparison.OrdinalIgnoreCase);
+            ElementLetterSpacingTextBox.Text = style.LetterSpacing.ToString("0.##");
+            ElementLineHeightTextBox.Text = style.LineHeight.ToString("0.##");
             ElementBackgroundColorPicker.SetColor(style.Background);
             ElementBorderColorPicker.SetColor(style.BorderColor);
             SelectComboBoxText(ElementBorderStyleComboBox, style.BorderStyle);
             ElementBorderWidthTextBox.Text = style.BorderWidth.ToString("0.##");
+            ElementBorderRadiusTextBox.Text = style.BorderRadius?.Normalized().TopLeft.ToString("0.##") ?? "0";
             ShadowNoneRadio.IsChecked = style.ShadowPreset == "None";
             ShadowSoftRadio.IsChecked = style.ShadowPreset == "Soft";
             ShadowRaisedRadio.IsChecked = style.ShadowPreset == "Raised";
@@ -5634,6 +5647,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ElementOpacityTextBox.Text = style.Opacity.ToString("0.##");
             ElementRotationTextBox.Text = style.Rotation.ToString("0.##");
             ElementAdvancedCssTextBox.Text = style.AdvancedCss ?? "";
+            UpdateElementStylePreview(style);
             var buttonBehavior = element.EffectiveButtonBehavior;
             var hoverStyle = buttonBehavior.EffectiveHover;
             var pressedStyle = buttonBehavior.EffectivePressed;
@@ -5960,6 +5974,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             {
                 FontFamily = result.FontFamily,
                 FontSize = result.FontSize,
+                Foreground = result.Foreground,
                 Background = result.Background,
                 BorderColor = result.BorderColor,
                 BorderStyle = result.BorderStyle,
@@ -5967,7 +5982,15 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 ShadowPreset = result.ShadowPreset,
                 Opacity = result.Opacity,
                 Rotation = result.Rotation,
-                AdvancedCss = result.AdvancedCss
+                AdvancedCss = result.AdvancedCss,
+                FontWeight = result.FontWeight,
+                FontStyle = result.FontStyle,
+                TextDecoration = result.TextDecoration,
+                TextAlign = result.TextAlign,
+                TextTransform = result.TextTransform,
+                LetterSpacing = result.LetterSpacing,
+                LineHeight = result.LineHeight,
+                BorderRadius = result.BorderRadius
             },
             ButtonBehavior = current.Kind == ScadaElementKind.Button
                 ? new ScadaButtonBehavior(
@@ -6237,6 +6260,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             {
                 FontFamily = GetComboBoxText(ElementFontFamilyComboBox, style.FontFamily),
                 FontSize = Math.Max(6, ParseDoubleOrDefault(ElementFontSizeTextBox.Text, style.FontSize)),
+                Foreground = GetColorPickerValue(ElementForegroundColorPicker, style.Foreground),
                 Background = GetColorPickerValue(ElementBackgroundColorPicker, style.Background),
                 BorderColor = GetColorPickerValue(ElementBorderColorPicker, style.BorderColor),
                 BorderStyle = GetComboBoxText(ElementBorderStyleComboBox, style.BorderStyle),
@@ -6244,7 +6268,15 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 ShadowPreset = GetSelectedShadowPreset(),
                 Opacity = Math.Clamp(ParseDoubleOrDefault(ElementOpacityTextBox.Text, style.Opacity), 0, 1),
                 Rotation = ParseDoubleOrDefault(ElementRotationTextBox.Text, style.Rotation),
-                AdvancedCss = string.IsNullOrWhiteSpace(ElementAdvancedCssTextBox.Text) ? null : ElementAdvancedCssTextBox.Text
+                AdvancedCss = string.IsNullOrWhiteSpace(ElementAdvancedCssTextBox.Text) ? null : ElementAdvancedCssTextBox.Text,
+                FontWeight = ElementBoldToggle.IsChecked == true ? "Bold" : "Normal",
+                FontStyle = ElementItalicToggle.IsChecked == true ? "Italic" : "Normal",
+                TextDecoration = GetTextDecorationDock(),
+                TextAlign = GetSelectedTextAlignDock(),
+                TextTransform = (ElementTextTransformComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "None",
+                LetterSpacing = Math.Clamp(ParseDoubleOrDefault(ElementLetterSpacingTextBox.Text, 0), -10, 50),
+                LineHeight = Math.Max(0, ParseDoubleOrDefault(ElementLineHeightTextBox.Text, 0)),
+                BorderRadius = GetBorderRadiusDock()
             },
             ButtonBehavior = current.Kind == ScadaElementKind.Button
                 ? new ScadaButtonBehavior(
@@ -6280,6 +6312,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
+        UpdateElementStylePreview(updated.Style ?? style);
         CommitModernElementProperties(current, updated);
     }
 
@@ -6500,6 +6533,47 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
     }
 
+    private void UpdateElementStylePreview(ScadaElementStyle style)
+    {
+        if (ElementStylePreviewText is null || ElementStylePreviewBorder is null)
+        {
+            return;
+        }
+
+        ElementStylePreviewText.FontFamily = new FontFamily(style.FontFamily);
+        ElementStylePreviewText.FontSize = Math.Max(6, style.FontSize);
+        ElementStylePreviewText.FontWeight = string.Equals(style.FontWeight, "Bold", StringComparison.OrdinalIgnoreCase) ? FontWeights.Bold : FontWeights.Normal;
+        ElementStylePreviewText.FontStyle = string.Equals(style.FontStyle, "Normal", StringComparison.OrdinalIgnoreCase) ? FontStyles.Normal : FontStyles.Italic;
+        ElementStylePreviewText.TextAlignment = style.TextAlign switch
+        {
+            "Center" => TextAlignment.Center,
+            "Right" => TextAlignment.Right,
+            "Justify" => TextAlignment.Justify,
+            _ => TextAlignment.Left
+        };
+        ElementStylePreviewText.TextDecorations = style.TextDecoration?.Contains("Underline") == true
+            ? TextDecorations.Underline
+            : null;
+        ElementStylePreviewText.Foreground = ToPreviewBrush(style.Foreground);
+        ElementStylePreviewBorder.Background = ToPreviewBrush(style.Background);
+        ElementStylePreviewBorder.BorderBrush = ToPreviewBrush(style.BorderColor);
+        ElementStylePreviewBorder.BorderThickness = new Thickness(Math.Max(0, style.BorderWidth));
+        var radius = style.BorderRadius?.Normalized().TopLeft ?? 0;
+        ElementStylePreviewBorder.CornerRadius = new CornerRadius(radius);
+    }
+
+    private static Brush ToPreviewBrush(string value)
+    {
+        try
+        {
+            return new SolidColorBrush((Color)ColorConverter.ConvertFromString(value));
+        }
+        catch
+        {
+            return Brushes.Transparent;
+        }
+    }
+
     private static double ParseDoubleOrDefault(string value, double fallback)
     {
         return double.TryParse(value, out var parsed) ? parsed : fallback;
@@ -6539,6 +6613,40 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
 
         comboBox.SelectedIndex = comboBox.Items.Count > 0 ? 0 : -1;
+    }
+
+    private static void SelectComboBoxTag(ComboBox comboBox, string value)
+    {
+        foreach (var item in comboBox.Items.OfType<ComboBoxItem>())
+        {
+            if (string.Equals(item.Tag?.ToString(), value, StringComparison.OrdinalIgnoreCase))
+            {
+                comboBox.SelectedItem = item;
+                return;
+            }
+        }
+    }
+
+    private IReadOnlyList<string>? GetTextDecorationDock()
+    {
+        var values = new List<string>();
+        if (ElementUnderlineToggle.IsChecked == true) values.Add("Underline");
+        if (ElementStrikethroughToggle.IsChecked == true) values.Add("LineThrough");
+        return values.Count == 0 ? null : values;
+    }
+
+    private string GetSelectedTextAlignDock()
+    {
+        if (ElementAlignCenterRadio.IsChecked == true) return "Center";
+        if (ElementAlignRightRadio.IsChecked == true) return "Right";
+        if (ElementAlignJustifyRadio.IsChecked == true) return "Justify";
+        return "Left";
+    }
+
+    private ScadaBorderRadius? GetBorderRadiusDock()
+    {
+        var radius = Math.Max(0, ParseDoubleOrDefault(ElementBorderRadiusTextBox.Text, 0));
+        return radius <= 0 ? null : new ScadaBorderRadius(radius, radius, radius, radius);
     }
 
     private string GetSelectedShadowPreset()

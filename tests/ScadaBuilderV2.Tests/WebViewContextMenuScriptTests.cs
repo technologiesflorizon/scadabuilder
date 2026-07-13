@@ -2006,6 +2006,21 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "package.ComponentName");
     }
 
+    [TestMethod]
+    public void ModernRenderAppliesStructuredStyleProperties()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "wrapper.style.fontWeight");
+        StringAssert.Contains(source, "wrapper.style.fontStyle");
+        StringAssert.Contains(source, "wrapper.style.textDecoration");
+        StringAssert.Contains(source, "wrapper.style.textAlign");
+        StringAssert.Contains(source, "wrapper.style.textTransform");
+        StringAssert.Contains(source, "wrapper.style.letterSpacing");
+        StringAssert.Contains(source, "wrapper.style.lineHeight");
+        StringAssert.Contains(source, "wrapper.style.borderRadius");
+    }
+
     private static string ReadElementStudioAppSource(string fileName)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

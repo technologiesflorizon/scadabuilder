@@ -1599,6 +1599,7 @@ public sealed partial class Ft100SceneExporter
         css.Append($"background:{(element.Kind == ScadaElementKind.Shape ? "transparent" : style.Background)};");
         css.Append($"font-family:{style.FontFamily};");
         css.Append($"font-size:{Format(style.FontSize)}px;");
+        AppendStructuredStyle(css, style, string.Empty, inline: true);
         css.Append(element.Kind == ScadaElementKind.Shape
             ? "border:0 none transparent;"
             : $"border:{Format(style.BorderWidth)}px {NormalizeBorderStyle(style.BorderStyle)} {style.BorderColor};");
@@ -1742,6 +1743,7 @@ public sealed partial class Ft100SceneExporter
         css.AppendLine($"  background: {(element.Kind == ScadaElementKind.Shape ? "transparent" : style.Background)};");
         css.AppendLine($"  font-family: {style.FontFamily};");
         css.AppendLine($"  font-size: {Format(style.FontSize)}px;");
+        AppendStructuredStyle(css, style, "  ", inline: false);
         css.AppendLine(element.Kind == ScadaElementKind.Shape
             ? "  border: 0 none transparent;"
             : $"  border: {Format(style.BorderWidth)}px {NormalizeBorderStyle(style.BorderStyle)} {style.BorderColor};");
@@ -2063,6 +2065,56 @@ Apply any viewport scale to the composed page container, not independently to he
         return string.Equals(value, "None", StringComparison.OrdinalIgnoreCase)
             ? "none"
             : value.ToLowerInvariant();
+    }
+
+    private static void AppendStructuredStyle(StringBuilder css, ScadaElementStyle style, string indent, bool inline)
+    {
+        var separator = inline ? string.Empty : Environment.NewLine;
+        void Append(string declaration) => css.Append(inline ? declaration : $"{indent}{declaration}{separator}");
+
+        Append($"font-weight:{NormalizeCssToken(style.FontWeight, "normal")};");
+        Append($"font-style:{NormalizeCssToken(style.FontStyle, "normal")};");
+        if (style.TextDecoration is { Count: > 0 })
+        {
+            var decorations = string.Join(' ', style.TextDecoration
+                .Select(value => NormalizeCssToken(value, string.Empty))
+                .Where(value => value.Length > 0));
+            if (decorations.Length > 0)
+            {
+                Append($"text-decoration:{decorations};");
+            }
+        }
+        Append($"text-align:{NormalizeCssToken(style.TextAlign, "left")};");
+        Append($"text-transform:{NormalizeCssToken(style.TextTransform, "none")};");
+        Append($"letter-spacing:{Format(style.LetterSpacing)}px;");
+        Append($"line-height:{(style.LineHeight > 0 ? $"{Format(style.LineHeight)}px" : "normal")};");
+        var radius = (style.BorderRadius ?? ScadaBorderRadius.None).Normalized();
+        if (!radius.IsUniform || radius.TopLeft > 0)
+        {
+            Append($"border-radius:{Format(radius.TopLeft)}px {Format(radius.TopRight)}px {Format(radius.BottomRight)}px {Format(radius.BottomLeft)}px;");
+        }
+        if (!inline)
+        {
+            Append($"opacity:{Format(Math.Clamp(style.Opacity, 0, 1))};");
+            Append("transform-origin:center center;");
+            var scaleX = style.FlipHorizontally ? -1 : 1;
+            var scaleY = style.FlipVertically ? -1 : 1;
+            Append($"transform:rotate({Format(style.Rotation)}deg) scaleX({scaleX}) scaleY({scaleY});");
+        }
+    }
+
+    private static string NormalizeCssToken(string? value, string fallback)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return fallback;
+        }
+
+        return value.Trim() switch
+        {
+            "LineThrough" => "line-through",
+            _ => value.Trim().ToLowerInvariant()
+        };
     }
 
     private static string ShapeDashArray(string value)

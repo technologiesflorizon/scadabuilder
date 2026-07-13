@@ -1,5 +1,16 @@
 # Element+ — Capacités de style avancé — Plan d'implémentation
 
+Date: 2026-07-13
+Status: In progress — implementation underway; TF100Web integration test awaiting database-enabled validation
+Document version: `V2.1.3.0010`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-13 | `V2.1.4.0003` | `PENDING` | Exécution approuvée : modèle, export, preview WebView/WPF, surfaces Style, icônes et tests ciblés implémentés ; preuve TF100Web bloquée par MySQL indisponible. |
+| 2026-07-13 | `V2.1.3.0010` | `PENDING` | Correction du plan : aperçu vivant obligatoire, preuve d’intake TF100Web ajoutée et gate inter-dépôts explicite. |
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Ajouter 8 propriétés de style model-backed (FontWeight, FontStyle, TextDecoration, TextAlign, TextTransform, LetterSpacing, LineHeight, BorderRadius), rendre Foreground authorable, étendre les styles de bordure à 9 valeurs, et refondre l'onglet Style en sections avec icônes sémantiques — avec parité sur les 4 surfaces (dialogue modal, panneau docké, preview WebView, export FT100).
@@ -8,7 +19,7 @@
 
 **Tech Stack:** C# 12 / .NET 8, WPF, WebView2, MSTest, System.Text.Json
 
-**Spec source:** `docs/superpowers/specs/2026-07-13-element-plus-style-capability-design.md`
+**Spec source:** `docs/superpowers/specs/2026-07-13-element-plus-style-capability-design.md` (D1–D20, §5.7, §6.1, §12)
 
 ## Global Constraints
 
@@ -17,11 +28,11 @@
 - Icônes : `docs/06_ui_ux/ICON_STRATEGY_V2.md` — famille `Icon.Property.*` à créer
 - Les deux surfaces UI doivent rester synchronisées (mêmes contrôles, mêmes validations)
 - Les overlays et aperçus éditeur ne doivent jamais être exportés
-- Aucun changement TF100Web/Django
+- Aucun changement du runtime TF100Web/Django n’est prévu ; le test d’intake requis est une modification de test uniquement dans le dépôt TF100Web et doit franchir le gate inter-dépôts ci-dessous.
 - `AdvancedCss` reste le dernier override utilisateur (D14)
 - Anciens projets sans nouveaux champs → rendu identique (D2)
 - Undo/redo, sauvegarde/recharge, preview et export pour chaque mutation (D18)
-- Q1 (aperçu vivant) : traité en phase séparée (Option B) — livrer d'abord le modèle + UI structurée + rendu, puis ajouter l'aperçu WPF local
+- Q1 : l’aperçu vivant WPF est obligatoire dans cette itération et doit être implémenté avant la validation finale (D17, §12).
 
 ## Pré-vérifications
 
@@ -31,6 +42,15 @@ Avant toute modification, capturer l'état de référence :
 dotnet build ScadaBuilderV2.sln
 dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~ScadaSceneModelsTests|FullyQualifiedName~WebViewContextMenuScriptTests|FullyQualifiedName~Ft100SceneExporterTests|FullyQualifiedName~EditorHistoryServiceTests|FullyQualifiedName~ModernProjectStoreTests"
 ```
+
+Avant toute modification du dépôt externe, capturer également :
+
+```powershell
+Set-Location "F:\Projet\Git\TF100Web"
+git status --short --branch
+```
+
+Le dépôt TF100Web doit rester sur sa branche de travail courante et ses changements préexistants doivent être préservés.
 
 ---
 
@@ -1164,7 +1184,15 @@ Remplacer les lignes 98-156 (`<TabItem Header="Style">...</TabItem>`) par :
 </TabItem>
 ```
 
-- [ ] **Step 2: Mettre à jour le code-behind — `LoadElement` (chargement du style)**
+- [ ] **Step 2: Ajouter l’aperçu vivant local du dialogue**
+
+Ajouter dans le même `TabItem` un aperçu WPF temporaire (`Border`/`TextBlock`) couvrant typographie, couleurs, bordure, rayon, ombre, opacité et rotation. Chaque modification des contrôles doit mettre à jour cette projection sans modifier la scène, `HtmlCode` ou `CssCode`. Le rendu doit être visible avant `OnApplyClick` et respecter les décisions D17 et §12 de la spécification.
+
+- [ ] **Step 3: Vérifier l’aperçu avant application**
+
+Attendu : les changements sont visibles immédiatement, le reset de section met aussi l’aperçu à jour, et l’annulation du dialogue ne laisse aucune mutation dans le projet.
+
+- [ ] **Step 4: Mettre à jour le code-behind — `LoadElement` (chargement du style)**
 
 Remplacer le bloc de chargement Style (lignes 255-273) par :
 
@@ -1207,7 +1235,7 @@ RotationTextBox.Text = style.Rotation.ToString("0.##");
 AdvancedCssTextBox.Text = style.AdvancedCss ?? "";
 ```
 
-- [ ] **Step 3: Ajouter les méthodes helper dans le code-behind**
+- [ ] **Step 5: Ajouter les méthodes helper dans le code-behind**
 
 ```csharp
 private static bool IsFontWeightBold(string fontWeight)
@@ -1323,7 +1351,7 @@ private string GetTextTransform()
 }
 ```
 
-- [ ] **Step 4: Mettre à jour `OnApplyClick` pour collecter les nouvelles propriétés**
+- [ ] **Step 6: Mettre à jour `OnApplyClick` pour collecter les nouvelles propriétés**
 
 Étendre le `ElementPropertiesDialogResult` (remplacer lignes 451-483) :
 
@@ -1386,7 +1414,7 @@ LineHeight: Math.Max(0, ParseDoubleOrDefault(LineHeightTextBox.Text, 0)),
 BorderRadius: GetBorderRadius(),
 ```
 
-- [ ] **Step 5: Ajouter les handlers de reset par section**
+- [ ] **Step 7: Ajouter les handlers de reset par section**
 
 ```csharp
 private void OnResetTypographyClick(object sender, RoutedEventArgs e)
@@ -1427,7 +1455,7 @@ private void OnResetShadowClick(object sender, RoutedEventArgs e)
 }
 ```
 
-- [ ] **Step 6: Ajouter `SelectComboBoxByTag` helper**
+- [ ] **Step 8: Ajouter `SelectComboBoxByTag` helper**
 
 ```csharp
 private static void SelectComboBoxByTag(ComboBox comboBox, string tag)
@@ -1443,7 +1471,7 @@ private static void SelectComboBoxByTag(ComboBox comboBox, string tag)
 }
 ```
 
-- [ ] **Step 7: Build et vérification**
+- [ ] **Step 9: Build et vérification**
 
 ```powershell
 dotnet build ScadaBuilderV2.sln
@@ -1451,13 +1479,13 @@ dotnet build ScadaBuilderV2.sln
 
 Corriger les erreurs de compilation éventuelles (noms de contrôles, références manquantes).
 
-- [ ] **Step 8: Vérifier les tests**
+- [ ] **Step 10: Vérifier les tests**
 
 ```powershell
 dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~WebViewContextMenuScriptTests"
 ```
 
-- [ ] **Step 9: Commit**
+- [ ] **Step 11: Commit**
 
 ```bash
 git add src/ScadaBuilderV2.App/ElementPropertiesDialog.xaml src/ScadaBuilderV2.App/ElementPropertiesDialog.xaml.cs
@@ -1534,7 +1562,11 @@ Note : `ElementFontFamilyComboBox`, `ElementFontSizeTextBox`, `ElementBackground
 
 Ajouter les handlers d'événement `OnElementPropertyChanged` sur chaque contrôle interactif (TextBox, ComboBox, ToggleButton, RadioButton, ColorPickerField).
 
-- [ ] **Step 2: Mettre à jour `RefreshPropertiesUi` (chargement docké)**
+- [ ] **Step 2: Ajouter l’aperçu vivant local du panneau docké**
+
+Ajouter la même projection WPF temporaire que dans le dialogue modal, avec les mêmes valeurs, validations et mises à jour immédiates. L’aperçu ne doit pas écrire dans la scène avant l’application de la mutation prévue par le panneau et ne doit jamais être exporté.
+
+- [ ] **Step 3: Mettre à jour `RefreshPropertiesUi` (chargement docké)**
 
 Dans la méthode qui peuple le panneau docké (rechercher `ElementFontFamilyComboBox` dans `MainWindow.xaml.cs`), ajouter le même chargement que Task 5 Step 2, avec les noms préfixés `Element` :
 
@@ -1556,7 +1588,7 @@ ElementForegroundColorPicker.SetColor(style.Foreground);
 PopulateBorderRadiusDock(style.BorderRadius);
 ```
 
-- [ ] **Step 3: Mettre à jour `OnElementPropertyChanged` pour les nouveaux champs**
+- [ ] **Step 4: Mettre à jour `OnElementPropertyChanged` pour les nouveaux champs**
 
 Étendre le bloc `Style = style with { ... }` (lignes 6236-6248) :
 
@@ -1587,7 +1619,7 @@ Style = style with
 },
 ```
 
-- [ ] **Step 4: Ajouter les méthodes helper dans MainWindow.xaml.cs**
+- [ ] **Step 5: Ajouter les méthodes helper dans MainWindow.xaml.cs**
 
 Reprendre les helpers de Task 5 Step 3 avec les noms suffixés `Dock` et les noms de contrôles préfixés `Element`. Exemple :
 
@@ -1658,19 +1690,19 @@ private void PopulateBorderRadiusDock(ScadaBorderRadius? radius)
 
 Ajouter les handlers de reset par section pour le panneau docké (`OnResetTypographyDock`, `OnResetColorsDock`, `OnResetBorderDock`, `OnResetShadowDock`) et `OnBorderRadiusPerCornerChangedDock`.
 
-- [ ] **Step 5: Build et vérification**
+- [ ] **Step 6: Build et vérification**
 
 ```powershell
 dotnet build ScadaBuilderV2.sln
 ```
 
-- [ ] **Step 6: Vérifier les tests de contrat UI**
+- [ ] **Step 7: Vérifier les tests de contrat UI**
 
 ```powershell
 dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~WebViewContextMenuScriptTests"
 ```
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 8: Commit**
 
 ```bash
 git add src/ScadaBuilderV2.App/MainWindow.xaml src/ScadaBuilderV2.App/MainWindow.xaml.cs
@@ -1694,6 +1726,9 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 **Files:**
 - Modify: `docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md`
+- Modify: `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md`
+- Modify: `CLAUDE.md`
+- Modify: `codex.md`
 
 - [ ] **Step 1: Ajouter les règles de contrat pour les nouvelles propriétés**
 
@@ -1709,7 +1744,11 @@ Après la règle 19, ajouter :
 26. Per-section reset buttons restore factory defaults for that section only, without affecting other sections or other tabs.
 ```
 
-- [ ] **Step 2: Mettre à jour la table des tests liés**
+- [ ] **Step 2: Synchroniser le contrat TF100Web et les guidances protégées**
+
+Documenter dans le contrat actif, `CLAUDE.md` et `codex.md` que le chemin moderne TF100Web traite l’HTML/CSS Element+ comme opaque, conserve le manifest PascalCase et les attributs JSON runtime camelCase, et n’interprète pas les nouvelles propriétés de style. Ne modifier aucun runtime TF100Web dans cette tâche.
+
+- [ ] **Step 3: Mettre à jour la table des tests liés**
 
 Ajouter à la section 3 "Related Tests" :
 
@@ -1718,16 +1757,16 @@ Ajouter à la section 3 "Related Tests" :
 6. `tests/ScadaBuilderV2.Tests/EditorHistoryServiceTests.cs` — tests undo/redo des nouvelles proprietes
 ```
 
-- [ ] **Step 3: Mettre à jour l'historique des changements**
+- [ ] **Step 4: Mettre à jour l'historique des changements**
 
 ```markdown
-| 2026-07-13 | `V2.1.3.0008` | `PENDING` | Ajout des regles 20-26 pour les proprietes de style avancees (typographie, bordure etendue, Foreground, BorderRadius, reset par section). |
+| 2026-07-13 | `V2.1.3.0010` | `PENDING` | Ajout des règles 20-26 et synchronisation du contrat TF100Web pour les propriétés de style avancées. |
 ```
 
-- [ ] **Step 4: Commit**
+- [ ] **Step 5: Commit**
 
 ```bash
-git add docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md
+git add docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md CLAUDE.md codex.md
 git commit -m "docs: add contract rules 20-26 for advanced Element+ style properties
 
 Document typography fields, 9 border styles, BorderRadius record,
@@ -1739,7 +1778,49 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 ---
 
-### Task 8: Tests undo/redo et validation finale
+### Task 8: Preuve d’intake TF100Web (Authorization Gate)
+
+> **Authorization required before modifying `F:\Projet\Git\TF100Web`.** This task may modify only the named test file; no TF100Web runtime or Django production code may be changed.
+
+**Files:**
+- Inspect: `F:\Projet\Git\TF100Web\frontend\views.py`
+- Inspect: `F:\Projet\Git\TF100Web\frontend\scada_builder_composition.py`
+- Inspect: `F:\Projet\Git\TF100Web\core\management\commands\deploy_scada_builder.py`
+- Modify: `F:\Projet\Git\TF100Web\frontend\tests_scada_deploy.py`
+
+**Interfaces:**
+- Consumes: a Builder `.sb2` fixture containing `font-weight`, `font-style`, `text-decoration`, `border-style: inset`, and `border-radius`.
+- Produces: proof that deployment and `frontend.views.scada_package_page` preserve Element+ HTML/CSS as opaque content.
+
+- [ ] **Step 1: Vérifier l’état et le contrat du dépôt externe**
+
+```powershell
+Set-Location "F:\Projet\Git\TF100Web"
+git status --short --branch
+```
+
+Confirm that pre-existing changes are preserved and that the test targets `scada_package_page` → `load_composed_page`.
+
+- [ ] **Step 2: Ajouter le test d’intake sans modifier le runtime**
+
+Construire ou utiliser un fixture `.sb2` minimal avec manifest PascalCase et HTML/CSS contenant les nouvelles propriétés. Déployer avec `deploy_scada_builder`, appeler `scada_package_page`, puis vérifier que le fragment retourné conserve les déclarations CSS et les attributs attendus. Vérifier séparément que les attributs JSON runtime restent camelCase. Le test ne doit pas exiger que TF100Web comprenne sémantiquement `ScadaElementStyle`.
+
+- [ ] **Step 3: Exécuter la preuve d’intégration**
+
+```powershell
+Set-Location "F:\Projet\Git\TF100Web"
+python manage.py test frontend.tests_scada_deploy -v 2
+```
+
+Attendu : le test de conservation passe ; toute limitation d’environnement est documentée et aucun code runtime TF100Web n’est modifié.
+
+- [ ] **Step 4: Commit du test externe**
+
+Créer un commit séparé dans TF100Web contenant uniquement le test d’intake, après validation du dépôt et sans embarquer les changements de SCADA Builder V2.
+
+---
+
+### Task 9: Tests undo/redo et validation finale
 
 **Files:**
 - Test: `tests/ScadaBuilderV2.Tests/EditorHistoryServiceTests.cs`
@@ -1867,7 +1948,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 ---
 
-### Task 9: Vérification manuelle et documentation de statut
+### Task 10: Vérification manuelle et documentation de statut
 
 **Files:**
 - Modify: `docs/08_implementation_status/IMPLEMENTED_FEATURES_V2.md` (si applicable)
@@ -1896,7 +1977,7 @@ Exécuter les scénarios suivants avec l'application :
 Ajouter une entrée :
 
 ```markdown
-| 2026-07-13 | `V2.1.3.0008` | `PENDING` | Style Element+ avance : typographie (FontWeight, FontStyle, TextDecoration, TextAlign, TextTransform, LetterSpacing, LineHeight), 9 styles de bordure, BorderRadius, Foreground authorable, refonte UI en sections avec icones `Icon.Property.*` |
+| 2026-07-13 | `V2.1.3.0010` | `PENDING` | Style Element+ avancé : typographie, 9 styles de bordure, BorderRadius, Foreground authorable, aperçu vivant et refonte UI en sections avec icônes `Icon.Property.*`. |
 ```
 
 - [ ] **Step 3: Mettre à jour REGRESSION_COVERAGE_V2.md**
@@ -1904,7 +1985,7 @@ Ajouter une entrée :
 Ajouter la couverture des nouveaux tests :
 
 ```markdown
-| Style Element+ avance | `ScadaSceneModelsTests`, `Ft100SceneExporterTests`, `WebViewContextMenuScriptTests`, `EditorHistoryServiceTests` | Defauts, bornes, serialisation, rendu preview/export, undo/redo, contrat UI |
+| Style Element+ avancé | `ScadaSceneModelsTests`, `Ft100SceneExporterTests`, `WebViewContextMenuScriptTests`, `EditorHistoryServiceTests`, `TF100Web/frontend/tests_scada_deploy.py` | Défauts, bornes, sérialisation, aperçu/export, undo/redo, contrat UI et conservation après intake TF100Web |
 ```
 
 - [ ] **Step 4: Mettre à jour ICON_STRATEGY_V2.md**
@@ -1929,7 +2010,7 @@ Attendu : pas d'erreurs.
 git add docs/08_implementation_status/IMPLEMENTED_FEATURES_V2.md docs/08_implementation_status/REGRESSION_COVERAGE_V2.md docs/06_ui_ux/ICON_STRATEGY_V2.md docs/06_ui_ux/UI_SPECIFICATION_V2.md
 git commit -m "docs: update status, coverage, and icon strategy for advanced Element+ style
 
-Declare V2.1.3.0008 feature, add regression coverage entries, register
+Declare V2.1.3.0010 feature, add regression coverage entries, register
 Icon.Property.* family in icon strategy.
 
 Co-Authored-By: Claude <noreply@anthropic.com>"
@@ -1942,7 +2023,8 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 - [ ] `dotnet build ScadaBuilderV2.sln`
 - [ ] `dotnet test ScadaBuilderV2.sln --no-restore`
 - [ ] Tests ciblés modèle, export, WebView, historique
-- [ ] Vérification manuelle des 11 scénarios (Task 9 Step 1)
+- [ ] `python manage.py test frontend.tests_scada_deploy -v 2` dans `F:\Projet\Git\TF100Web`
+- [ ] Vérification manuelle des 11 scénarios (Task 10 Step 1)
 - [ ] Compatibilité projet ancien (AMR_REF_SCADA_V2)
 - [ ] `powershell -ExecutionPolicy Bypass -File tools/docs/verify-docs.ps1`
 - [ ] `git status --short --branch` clean

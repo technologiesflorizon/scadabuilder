@@ -2,12 +2,13 @@
 
 Date: 2026-06-16
 Status: Active icon strategy pointer
-Document version: `V2.1.3.0001`
+Document version: `V2.1.4.0003`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-13 | `V2.1.4.0003` | `PENDING` | Création de la famille vectorielle sémantique `Icon.Property.*` pour l’inspecteur Style Element+. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes vers des icones 32x32 sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout des icones semantiques Cercle, Triangle et Etoile et de la taille 64x64 pour la galerie Formes. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Extension du catalogue semantique a la palette laterale d'outils. |
@@ -58,3 +59,7 @@ Temporary text glyphs are not valid command icons in the top ribbon. Examples su
 The Insert `Formes` gallery scales its command icons to 32x32 and relies on the icon silhouette plus tooltip labels instead of visible shape-name text inside each button. Other ribbon command families continue using compact command icon sizing unless their contract explicitly defines a gallery treatment.
 
 The current implementation uses internal original WPF vector primitives and does not introduce a third-party icon dependency. If the baseline later moves to Lucide or Fluent UI System Icons, the project must record the selected upstream version, license, converted files, and required third-party notices before distribution.
+
+## 5. Element+ Property Icon Family
+
+The Style inspector uses internal vector resources under the semantic `Icon.Property.*` namespace. The initial family includes `Typography`, `FontFamily`, `FontWeight`, `FontStyle`, `TextDecoration`, `TextAlign`, `Colors`, `Border`, `BorderRadius`, `Shadow`, `Transform`, `AdvancedCss`, and `Reset`. Each key resolves through `Resources/Icons.xaml`, uses `Icon.OutlinePen`, and remains independent of a third-party icon library.

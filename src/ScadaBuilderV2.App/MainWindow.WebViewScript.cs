@@ -1883,6 +1883,20 @@ public partial class MainWindow
       wrapper.style.zIndex = `${Number(element.RenderIndex ?? element.renderIndex ?? 0)}`;
       wrapper.style.fontFamily = cssText(style.FontFamily, 'Segoe UI');
       wrapper.style.fontSize = `${cssText(style.FontSize, 14)}px`;
+      wrapper.style.fontWeight = cssText(style.FontWeight, 'normal');
+      wrapper.style.fontStyle = cssText(style.FontStyle, 'normal');
+      if (Array.isArray(style.TextDecoration) && style.TextDecoration.length > 0) {
+        wrapper.style.textDecoration = style.TextDecoration.map(value => String(value) === 'LineThrough' ? 'line-through' : String(value).toLowerCase()).join(' ');
+      }
+      wrapper.style.textAlign = cssText(style.TextAlign, 'left');
+      wrapper.style.textTransform = cssText(style.TextTransform, 'none');
+      wrapper.style.letterSpacing = `${Number(style.LetterSpacing ?? 0)}px`;
+      wrapper.style.lineHeight = Number(style.LineHeight ?? 0) > 0 ? `${Number(style.LineHeight)}px` : 'normal';
+      const radius = style.BorderRadius || {};
+      const radiusValues = [radius.TopLeft, radius.TopRight, radius.BottomRight, radius.BottomLeft].map(value => Number(value ?? 0));
+      if (radiusValues.some(value => value > 0)) {
+        wrapper.style.borderRadius = radiusValues.map(value => `${Math.max(0, value)}px`).join(' ');
+      }
       wrapper.style.color = cssText(style.Foreground, '#0f2a30');
       wrapper.style.background = cssText(style.Background, '#ffffff');
       wrapper.style.borderStyle = cssText(style.BorderStyle, 'solid').toLowerCase();
