@@ -8,7 +8,7 @@ Document version: `V2.1.4.0000`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-13 | `V2.1.4.0003` | `PENDING` | Tranche Element+ Style : champs typographiques, Foreground, 9 styles de bordure, BorderRadius, export FT100, preview WebView, surface WPF et icônes `Icon.Property.*`. La preuve d’intake TF100Web reste bloquée par l’absence de MySQL local. |
+| 2026-07-13 | `V2.1.4.0003` | `b954d46` | Tranche Element+ Style : champs typographiques, Foreground, 9 styles de bordure, BorderRadius, export FT100, preview WebView, surface WPF et icônes `Icon.Property.*`. La preuve d’intake TF100Web reste bloquée par l’absence de MySQL local. |
 | 2026-07-05 | `V2.1.4.0000` | `PENDING` | Implementation du docking AvalonDock pour les panneaux lateraux avec persistance de disposition. |
 | 2026-06-19 | `V2.1.3.0002` | `PENDING` | Implementation du color picker modal aligne sur `CSS fond` pour les couleurs arriere-plan/bordure Style et Bouton Element+. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes a des icones 32x32 sans libelles visibles. |

@@ -8,7 +8,7 @@ Document version: `V2.1.4.0003`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-13 | `V2.1.4.0003` | `PENDING` | Ajout des propriétés typographiques Element+, Foreground authorable, styles de bordure avancés, BorderRadius et aperçu vivant. |
+| 2026-07-13 | `V2.1.4.0003` | `b954d46` | Ajout des propriétés typographiques Element+, Foreground authorable, styles de bordure avancés, BorderRadius et aperçu vivant. |
 | 2026-06-19 | `V2.1.3.0002` | `PENDING` | Remplacement des couleurs arriere-plan/bordure Style et Bouton par le color picker modal aligne sur `CSS fond`. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Clarification de la parite metadata preview/export pour les wrappers de boutons Element+. |
 | 2026-06-19 | `V2.1.2.0034` | `61eef34` | Ajout du style bouton appui/actif model-backed dans l'onglet Bouton. |

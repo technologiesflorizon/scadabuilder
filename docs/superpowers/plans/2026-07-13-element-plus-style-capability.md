@@ -8,7 +8,7 @@ Document version: `V2.1.3.0010`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-13 | `V2.1.4.0003` | `PENDING` | Exécution approuvée : modèle, export, preview WebView/WPF, surfaces Style, icônes et tests ciblés implémentés ; preuve TF100Web bloquée par MySQL indisponible. |
+| 2026-07-13 | `V2.1.4.0003` | `b954d46` | Exécution approuvée : modèle, export, preview WebView/WPF, surfaces Style, icônes et tests ciblés implémentés ; preuve TF100Web bloquée par MySQL indisponible. |
 | 2026-07-13 | `V2.1.3.0010` | `PENDING` | Correction du plan : aperçu vivant obligatoire, preuve d’intake TF100Web ajoutée et gate inter-dépôts explicite. |
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.

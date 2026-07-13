@@ -8,7 +8,7 @@ Document version: `V2.1.4.0003`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-13 | `V2.1.4.0003` | `PENDING` | Ajout de DEC-0037 pour le contrat de style avancé Element+ model-backed et la conservation HTML/CSS TF100Web. |
+| 2026-07-13 | `V2.1.4.0003` | `b954d46` | Ajout de DEC-0037 pour le contrat de style avancé Element+ model-backed et la conservation HTML/CSS TF100Web. |
 | 2026-07-09 | `V2.1.4.0002` | `PENDING` | Ajout de DEC-0036 pour les references de tags d'expressions d'etat : libelle humain conserve, Id canonique obligatoire a l'export TF100Web. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de DEC-0032 pour la galerie Formes 32x32 sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout de DEC-0032 pour la galerie Formes du ruban Inserer et le placement ligne/fleche en deux points. |
@@ -1074,7 +1074,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-07-13 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `b954d46`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A

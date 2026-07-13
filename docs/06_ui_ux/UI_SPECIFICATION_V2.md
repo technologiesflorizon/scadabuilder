@@ -8,7 +8,7 @@ Document version: `V2.1.4.0003`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-13 | `V2.1.4.0003` | `PENDING` | Direction haut de gamme de l’inspecteur Style : sections, contrôles à état, icônes sémantiques et aperçu vivant. |
+| 2026-07-13 | `V2.1.4.0003` | `b954d46` | Direction haut de gamme de l’inspecteur Style : sections, contrôles à état, icônes sémantiques et aperçu vivant. |
 | 2026-06-19 | `V2.1.3.0002` | `PENDING` | Ajout du standard de polish produit concurrentiel face a ScadaPlant. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes: icones 32x32 et boutons sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Normalisation de la galerie Formes du ruban Inserer avec icones 64x64 et etat actif. |
