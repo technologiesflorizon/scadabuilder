@@ -331,6 +331,10 @@ public partial class ElementPropertiesDialog : Window
         StylePreviewText.FontSize = Math.Max(6, ParseDoubleOrDefault(FontSizeTextBox.Text, 16));
         StylePreviewText.FontWeight = BoldToggle.IsChecked == true ? FontWeights.Bold : FontWeights.Normal;
         StylePreviewText.FontStyle = ItalicToggle.IsChecked == true ? FontStyles.Italic : FontStyles.Normal;
+        StylePreviewText.Text = ApplyPreviewTextTransform("Aperçu Element+", (TextTransformComboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "None");
+        var lineHeight = Math.Max(0, ParseDoubleOrDefault(LineHeightTextBox.Text, 0));
+        StylePreviewText.LineStackingStrategy = LineStackingStrategy.BlockLineHeight;
+        StylePreviewText.LineHeight = lineHeight > 0 ? lineHeight : double.NaN;
         StylePreviewText.TextDecorations = UnderlineToggle.IsChecked == true || StrikethroughToggle.IsChecked == true
             ? new TextDecorationCollection(new[]
             {
@@ -350,6 +354,20 @@ public partial class ElementPropertiesDialog : Window
         StylePreviewBorder.BorderThickness = new Thickness(Math.Max(0, ParseDoubleOrDefault(BorderWidthTextBox.Text, 0)));
         var radius = Math.Max(0, ParseDoubleOrDefault(BorderRadiusTextBox.Text, 0));
         StylePreviewBorder.CornerRadius = new CornerRadius(radius);
+        StylePreviewBorder.Opacity = Math.Clamp(ParseDoubleOrDefault(OpacityTextBox.Text, 1), 0, 1);
+        StylePreviewBorder.RenderTransform = new RotateTransform(ParseDoubleOrDefault(RotationTextBox.Text, 0));
+    }
+
+    private static string ApplyPreviewTextTransform(string text, string? transform)
+    {
+        return transform?.ToLowerInvariant() switch
+        {
+            "uppercase" => text.ToUpperInvariant(),
+            "lowercase" => text.ToLowerInvariant(),
+            "capitalize" => string.Join(' ', text.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Select(word => word.Length == 0 ? word : char.ToUpperInvariant(word[0]) + word[1..].ToLowerInvariant())),
+            _ => text
+        };
     }
 
     private static Brush ToBrush(string value)

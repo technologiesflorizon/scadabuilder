@@ -6544,6 +6544,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         ElementStylePreviewText.FontSize = Math.Max(6, style.FontSize);
         ElementStylePreviewText.FontWeight = string.Equals(style.FontWeight, "Bold", StringComparison.OrdinalIgnoreCase) ? FontWeights.Bold : FontWeights.Normal;
         ElementStylePreviewText.FontStyle = string.Equals(style.FontStyle, "Normal", StringComparison.OrdinalIgnoreCase) ? FontStyles.Normal : FontStyles.Italic;
+        ElementStylePreviewText.Text = ApplyPreviewTextTransform("Aperçu Element+", style.TextTransform);
+        ElementStylePreviewText.LineStackingStrategy = LineStackingStrategy.BlockLineHeight;
+        ElementStylePreviewText.LineHeight = style.LineHeight > 0 ? style.LineHeight : double.NaN;
         ElementStylePreviewText.TextAlignment = style.TextAlign switch
         {
             "Center" => TextAlignment.Center,
@@ -6551,15 +6554,36 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             "Justify" => TextAlignment.Justify,
             _ => TextAlignment.Left
         };
-        ElementStylePreviewText.TextDecorations = style.TextDecoration?.Contains("Underline") == true
-            ? TextDecorations.Underline
-            : null;
+        var decorations = new TextDecorationCollection();
+        if (style.TextDecoration?.Any(value => string.Equals(value, "Underline", StringComparison.OrdinalIgnoreCase)) == true)
+        {
+            decorations.Add(TextDecorations.Underline[0]);
+        }
+        if (style.TextDecoration?.Any(value => string.Equals(value, "LineThrough", StringComparison.OrdinalIgnoreCase)) == true)
+        {
+            decorations.Add(TextDecorations.Strikethrough[0]);
+        }
+        ElementStylePreviewText.TextDecorations = decorations.Count == 0 ? null : decorations;
         ElementStylePreviewText.Foreground = ToPreviewBrush(style.Foreground);
         ElementStylePreviewBorder.Background = ToPreviewBrush(style.Background);
         ElementStylePreviewBorder.BorderBrush = ToPreviewBrush(style.BorderColor);
         ElementStylePreviewBorder.BorderThickness = new Thickness(Math.Max(0, style.BorderWidth));
         var radius = style.BorderRadius?.Normalized().TopLeft ?? 0;
         ElementStylePreviewBorder.CornerRadius = new CornerRadius(radius);
+        ElementStylePreviewBorder.Opacity = Math.Clamp(style.Opacity, 0, 1);
+        ElementStylePreviewBorder.RenderTransform = new RotateTransform(style.Rotation);
+    }
+
+    private static string ApplyPreviewTextTransform(string text, string? transform)
+    {
+        return transform?.ToLowerInvariant() switch
+        {
+            "uppercase" => text.ToUpperInvariant(),
+            "lowercase" => text.ToLowerInvariant(),
+            "capitalize" => string.Join(' ', text.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Select(word => word.Length == 0 ? word : char.ToUpperInvariant(word[0]) + word[1..].ToLowerInvariant())),
+            _ => text
+        };
     }
 
     private static Brush ToPreviewBrush(string value)

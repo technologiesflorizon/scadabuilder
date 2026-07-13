@@ -1909,6 +1909,18 @@ public partial class MainWindow
       if (style.AdvancedCss) {
         wrapper.style.cssText += ';' + style.AdvancedCss;
       }
+      const inheritElementTextStyle = target => {
+        target.style.fontFamily = 'inherit';
+        target.style.fontSize = 'inherit';
+        target.style.fontWeight = 'inherit';
+        target.style.fontStyle = 'inherit';
+        target.style.color = 'inherit';
+        target.style.textAlign = 'inherit';
+        target.style.textDecoration = 'inherit';
+        target.style.textTransform = 'inherit';
+        target.style.letterSpacing = 'inherit';
+        target.style.lineHeight = 'inherit';
+      };
       if (isGroup) {
         (element.Children || element.children || []).forEach(child => {
           wrapper.appendChild(renderElement(child, wrapper));
@@ -1925,6 +1937,7 @@ public partial class MainWindow
         text.style.overflow = 'hidden';
         text.style.textOverflow = 'ellipsis';
         text.style.whiteSpace = 'nowrap';
+        inheritElementTextStyle(text);
         wrapper.appendChild(text);
       } else if (element.Kind === 'Button') {
         const button = document.createElement('button');
@@ -1943,6 +1956,7 @@ public partial class MainWindow
         button.style.textOverflow = 'ellipsis';
         button.style.whiteSpace = 'nowrap';
         button.style.pointerEvents = 'none';
+        inheritElementTextStyle(button);
         wrapper.appendChild(button);
       } else if (element.Kind === 'InputNumeric' && data.IsReadOnly === true) {
         const value = document.createElement('span');
@@ -1951,6 +1965,7 @@ public partial class MainWindow
         value.style.overflow = 'hidden';
         value.style.textOverflow = 'ellipsis';
         value.style.whiteSpace = 'nowrap';
+        inheritElementTextStyle(value);
         wrapper.appendChild(value);
       } else if (element.Kind === 'Custom') {
         wrapper.style.padding = '0';
@@ -1979,6 +1994,8 @@ public partial class MainWindow
         input.value = element.Kind === 'InputNumeric'
           ? (data.Value ?? '')
           : (data.Text ?? '');
+        inheritElementTextStyle(input);
+        input.style.boxSizing = 'border-box';
         wrapper.appendChild(input);
       }
 
