@@ -99,40 +99,52 @@
                 <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="0,8,8,0">
                         <StackPanel Orientation="Horizontal" Margin="0,0,0,4"><Image Source="{DynamicResource Icon.Property.Typography}" Width="16" Height="16" Margin="0,0,6,0"/><TextBlock Text="Typographie" FontWeight="SemiBold"/></StackPanel>
-                        <ComboBox x:Name="FontFamilyComboBox" SelectionChanged="OnStylePreviewChanged">
+                        <TextBlock Text="Famille de police" Margin="0,0,0,2"/>
+                        <ComboBox x:Name="FontFamilyComboBox" SelectionChanged="OnStylePreviewChanged" ToolTip="Choisir la famille de police">
                             <ComboBoxItem Content="Segoe UI"/>
                             <ComboBoxItem Content="Arial"/>
                             <ComboBoxItem Content="Calibri"/>
                             <ComboBoxItem Content="Consolas"/>
                         </ComboBox>
+                        <TextBlock Text="Taille de police (px)" Margin="0,6,0,2"/>
                         <TextBox x:Name="FontSizeTextBox" TextChanged="OnStylePreviewChanged" ToolTip="Taille de police en pixels"/>
-                        <UniformGrid Columns="4" Margin="0,4,0,4">
-                            <ToggleButton x:Name="BoldToggle" Content="B" FontWeight="Bold" Checked="OnStylePreviewChanged" Unchecked="OnStylePreviewChanged" ToolTip="Gras"/>
-                            <ToggleButton x:Name="ItalicToggle" Content="I" FontStyle="Italic" Checked="OnStylePreviewChanged" Unchecked="OnStylePreviewChanged" ToolTip="Italique"/>
-                            <ToggleButton x:Name="UnderlineToggle" Checked="OnStylePreviewChanged" Unchecked="OnStylePreviewChanged" ToolTip="Souligné"><TextBlock Text="U" TextDecorations="Underline"/></ToggleButton>
-                            <ToggleButton x:Name="StrikethroughToggle" Checked="OnStylePreviewChanged" Unchecked="OnStylePreviewChanged" ToolTip="Barré"><TextBlock Text="S" TextDecorations="Strikethrough"/></ToggleButton>
-                        </UniformGrid>
+                        <TextBlock Text="Formatage" Margin="0,6,0,2"/>
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                            <ToggleButton x:Name="BoldToggle" Content="B" FontWeight="Bold" Width="32" Height="32" Margin="0,0,6,0" Checked="OnStylePreviewChanged" Unchecked="OnStylePreviewChanged" ToolTip="Gras"/>
+                            <ToggleButton x:Name="ItalicToggle" Content="I" FontStyle="Italic" Width="32" Height="32" Margin="0,0,6,0" Checked="OnStylePreviewChanged" Unchecked="OnStylePreviewChanged" ToolTip="Italique"/>
+                            <ToggleButton x:Name="UnderlineToggle" Width="32" Height="32" Margin="0,0,6,0" Checked="OnStylePreviewChanged" Unchecked="OnStylePreviewChanged" ToolTip="Souligné"><TextBlock Text="U" TextDecorations="Underline"/></ToggleButton>
+                            <ToggleButton x:Name="StrikethroughToggle" Width="32" Height="32" Checked="OnStylePreviewChanged" Unchecked="OnStylePreviewChanged" ToolTip="Barré"><TextBlock Text="S" TextDecorations="Strikethrough"/></ToggleButton>
+                        </StackPanel>
+                        <TextBlock Text="Alignement" Margin="0,2,0,2"/>
                         <UniformGrid Columns="4" Margin="0,0,0,4">
                             <RadioButton x:Name="AlignLeftRadio" Content="Gauche" GroupName="TextAlign" Checked="OnStylePreviewChanged"/>
                             <RadioButton x:Name="AlignCenterRadio" Content="Centre" GroupName="TextAlign" Checked="OnStylePreviewChanged"/>
                             <RadioButton x:Name="AlignRightRadio" Content="Droite" GroupName="TextAlign" Checked="OnStylePreviewChanged"/>
                             <RadioButton x:Name="AlignJustifyRadio" Content="Justifié" GroupName="TextAlign" Checked="OnStylePreviewChanged"/>
                         </UniformGrid>
+                        <TextBlock Text="Transformation du texte" Margin="0,4,0,2"/>
                         <ComboBox x:Name="TextTransformComboBox" SelectionChanged="OnStylePreviewChanged">
                             <ComboBoxItem Content="Aucune" Tag="None"/>
                             <ComboBoxItem Content="Majuscules" Tag="Uppercase"/>
                             <ComboBoxItem Content="Minuscules" Tag="Lowercase"/>
                             <ComboBoxItem Content="Capitaliser" Tag="Capitalize"/>
                         </ComboBox>
-                        <UniformGrid Columns="2" Margin="0,4,0,8">
+                        <TextBlock Text="Espacement et interligne" Margin="0,4,0,2"/>
+                        <UniformGrid Columns="2" Margin="0,0,0,8">
+                            <TextBlock Text="Espacement (px)" Margin="0,0,4,0"/>
+                            <TextBlock Text="Interligne (px)" Margin="4,0,0,0"/>
+                        </UniformGrid>
+                        <UniformGrid Columns="2" Margin="0,-6,0,8">
                             <TextBox x:Name="LetterSpacingTextBox" TextChanged="OnStylePreviewChanged" ToolTip="Espacement des lettres (px)"/>
                             <TextBox x:Name="LineHeightTextBox" TextChanged="OnStylePreviewChanged" ToolTip="Interligne (px, 0 = normal)"/>
                         </UniformGrid>
                         <StackPanel Orientation="Horizontal" Margin="0,4,0,4"><Image Source="{DynamicResource Icon.Property.Colors}" Width="16" Height="16" Margin="0,0,6,0"/><TextBlock Text="Couleurs" FontWeight="SemiBold"/></StackPanel>
+                        <TextBlock Text="Couleur du texte" Margin="0,0,0,2"/>
                         <local:ColorPickerField x:Name="ForegroundColorPicker" ColorChanged="OnStylePreviewChanged" ToolTip="Couleur du texte"/>
+                        <TextBlock Text="Couleur d'arrière-plan" Margin="0,6,0,2"/>
                         <local:ColorPickerField x:Name="BackgroundColorPicker" ColorChanged="OnStylePreviewChanged" ToolTip="Couleur d'arrière-plan"/>
                         <DockPanel Margin="0,0,0,2">
-                            <TextBlock Text="Couleur bordure" VerticalAlignment="Center"/>
+                            <TextBlock Text="Couleur de bordure" VerticalAlignment="Center"/>
                             <CheckBox x:Name="BorderTransparentCheckBox"
                                       Content="Transparent"
                                       DockPanel.Dock="Right"
@@ -143,6 +155,7 @@
                         </DockPanel>
                         <local:ColorPickerField x:Name="BorderColorPicker" ColorChanged="OnStylePreviewChanged"/>
                         <StackPanel Orientation="Horizontal" Margin="0,4,0,4"><Image Source="{DynamicResource Icon.Property.Border}" Width="16" Height="16" Margin="0,0,6,0"/><TextBlock Text="Bordure" FontWeight="SemiBold"/></StackPanel>
+                        <TextBlock Text="Style de bordure" Margin="0,0,0,2"/>
                         <ComboBox x:Name="BorderStyleComboBox" SelectionChanged="OnStylePreviewChanged">
                             <ComboBoxItem Content="Solid"/>
                             <ComboBoxItem Content="Dashed"/>
@@ -154,9 +167,11 @@
                             <ComboBoxItem Content="Outset"/>
                             <ComboBoxItem Content="None"/>
                         </ComboBox>
+                        <TextBlock Text="Largeur de bordure (px)" Margin="0,6,0,2"/>
                         <TextBox x:Name="BorderWidthTextBox" TextChanged="OnStylePreviewChanged" ToolTip="Largeur de bordure (px)"/>
+                        <TextBlock Text="Rayon de bordure uniforme (px)" Margin="0,6,0,2"/>
                         <TextBox x:Name="BorderRadiusTextBox" TextChanged="OnStylePreviewChanged" ToolTip="Rayon uniforme (px)"/>
-                        <TextBlock Text="Shadow" FontWeight="SemiBold" Margin="0,4,0,2"/>
+                        <TextBlock Text="Ombre et effets" FontWeight="SemiBold" Margin="0,4,0,2"/>
                         <UniformGrid Columns="4" Margin="0,3,0,8">
                             <RadioButton x:Name="ShadowNoneRadio" Content="Aucun" GroupName="ShadowPreset"/>
                             <RadioButton x:Name="ShadowSoftRadio" Content="Soft" GroupName="ShadowPreset"/>
