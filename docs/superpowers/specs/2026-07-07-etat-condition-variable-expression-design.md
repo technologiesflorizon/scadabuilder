@@ -1,6 +1,6 @@
 # État — Condition variable/expression (Tag Picker)
 
-**Date:** 2026-07-07
+**Date:** 2026-07-13
 **Status:** Draft design
 **Scope:** `ElementStateRuleDialog` — choix Variable/Expression et assistant de construction d'expression pour les conditions d'état.
 
