@@ -1,15 +1,16 @@
 # État — Assistant de création d'expressions — Spécification de conception
 
 Date: 2026-07-13
-Status: Design validé — prêt pour planification d'implémentation
+Status: Draft design
 Portée: SCADA Builder V2 — App WPF uniquement (nouveau dialogue + modification d'un dialogue existant)
 Dépendances: `docs/superpowers/specs/2026-07-07-etat-condition-variable-expression-design.md`, `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
-Version du document: `V2.1.4.0000`
+Version du document: `V2.1.4.0003`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-13 | `V2.1.4.0003` | `PENDING` | Corrections de décision : caret nul ou position zéro au début, assistant avec copie locale et bouton Appliquer, vocabulaire d'actions harmonisé, suite de tests dédiée et version alignée. |
 | 2026-07-13 | `V2.1.4.0000` | `PENDING` | Standardisation : hypothèses vérifiées contre le code, contrat AST/parser/validateur documenté, décisions de format d'insertion explicitées, parenthèses ajoutées aux opérateurs, flux de résolution TagId documenté. |
 | 2026-07-13 | `V2.1.3.0000` | `PENDING` | Première ébauche : assistant de composition guidée pour le mode Expression. |
 
@@ -67,11 +68,11 @@ ElementStateRuleDialog
 | D2 | Le bouton **Outil** ouvre `ExpressionCreationDialog` en tant que boîte de dialogue modale. |
 | D3 | `ExpressionCreationDialog` possède un bouton **Variable** qui ouvre un sélecteur de tags (`TagSelectionDialog`). |
 | D4 | Le sélecteur affiche tous les tags activés (`tag.Enabled == true`) du `ScadaTagCatalog`, triés par `DisplayName`. |
-| D5 | Le tag sélectionné est inséré au format `{DisplayName}` à la position du caret. Si aucune position n'est disponible, l'insertion se fait à la fin du texte. |
+| D5 | Le tag sélectionné est inséré au format `{DisplayName}` dans la copie locale de l'assistant. Si la position de caret transmise est `null` ou égale à `0`, l'insertion se fait au début; sinon elle se fait à la position du caret, bornée à la longueur du texte. |
 | D6 | Le format `{DisplayName}` est cohérent avec le mode Variable existant (`BuildExpressionFromVariable`, `ElementStateRuleDialog.xaml.cs:507`) qui utilise déjà `tag.DisplayName`. La résolution canonique vers `TagId` est effectuée par `OnSaveClick` (`ResolveTagIds`, ligne 562) et ne concerne pas l'assistant. |
 | D7 | Les opérateurs sont proposés sous forme de boutons avec tooltips explicites en français. |
 | D8 | Les opérateurs sont insérés avec un espace de chaque côté pour la lisibilité (` == `, ` && `). Les parenthèses sont insérées sans espace supplémentaire. |
-| D9 | L'assistant ne sauvegarde pas la règle. Il retourne le texte composé à `ElementStateRuleDialog`, qui conserve la validation finale (`ScadaExpressionValidator.Validate`), la construction AST (`ScadaExpression.FromSource`) et la sauvegarde. |
+| D9 | L'assistant travaille sur une copie locale de l'expression reçue à l'ouverture. Le bouton **Appliquer** retourne le texte composé à `ElementStateRuleDialog`; l'assistant ne sauvegarde jamais la règle. Le dialogue hôte conserve la validation finale (`ScadaExpressionValidator.Validate`), la construction AST (`ScadaExpression.FromSource`) et la sauvegarde. |
 | D10 | Un tag peut être inséré plusieurs fois afin de composer des comparaisons multi-tags comme `{TagA} == {TagB}`. |
 | D11 | Aucun opérateur `->` ni mécanisme d'affectation n'est introduit : une condition d'état produit une valeur booléenne et ne modifie pas un tag. |
 | D12 | Les fonctions (`ABS`, `MIN`, `MAX`, `BIT`) ne sont pas exposées dans cette première itération. Elles restent utilisables en édition libre. Leur ajout à l'assistant est réservé pour une évolution future. |
@@ -90,10 +91,10 @@ ElementStateRuleDialog (propriétaire)
   ├── Bouton Outil → ouvre ExpressionCreationDialog
   │
   └── ExpressionCreationDialog (assistant, sans modèle persistant)
-        ├── Zone d'expression éditable
+        ├── Copie locale de l'expression éditable
         ├── Bouton Variable → ouvre TagSelectionDialog
         ├── Boutons d'opérateurs
-        └── Retourne le texte modifié à ElementStateRuleDialog
+        └── Bouton Appliquer → retourne le texte modifié à ElementStateRuleDialog
               │
               └── TagSelectionDialog (sélecteur)
                     └── Retourne le tag sélectionné (Id + DisplayName)
@@ -118,7 +119,7 @@ Aucun nouveau champ dans le modèle Domain. Aucun changement au parser, au valid
 
 Le dialogue est une fenêtre WPF modale légère avec :
 
-- **Zone d'expression** : un `TextBox` multiligne (`AcceptsReturn="True"`, `TextWrapping="Wrap"`, min-height 80px) affichant l'expression en cours de composition.
+- **Zone d'expression** : une copie locale dans un `TextBox` multiligne (`AcceptsReturn="True"`, `TextWrapping="Wrap"`, min-height 80px) affichant l'expression reçue à l'ouverture.
 - **Barre d'outils** : une rangée de boutons organisés en groupes logiques.
 - **Validation inline** : un `TextBlock` sous la zone d'expression affiche le résultat de `ScadaExpressionValidator.Validate` (vert si valide, rouge avec les erreurs sinon), mis à jour à chaque modification.
 
@@ -154,9 +155,9 @@ Les opérateurs binaires (`==`, `!=`, `<`, `<=`, `>`, `>=`, `&&`, `||`) sont ins
 | Action | Bouton | Comportement |
 |---|---|---|
 | **Variable** | Bouton "Variable" | Ouvre `TagSelectionDialog`. Au retour, insère `{DisplayName}` au caret. |
-| **Insérer** | Bouton "Insérer" | Équivalent à double-clic dans le sélecteur — ferme le sélecteur et insère. |
 | **Effacer** | Bouton "Effacer" | Vide le contenu de la zone d'expression. |
-| **Fermer** | Bouton "Appliquer" | Retourne le texte courant à `ElementStateRuleDialog` et ferme. |
+| **Appliquer** | Bouton "Appliquer" | Retourne la copie locale à `ElementStateRuleDialog` et ferme l'assistant. |
+| **Annuler** | Bouton "Annuler" | Ferme l'assistant sans modifier l'expression du dialogue hôte. |
 
 La sélection d'un tag ne doit pas écraser l'expression existante — elle insère au caret.
 
@@ -176,17 +177,17 @@ Une liste (`ListBox`) affichant les tags activés du catalogue, avec les colonne
 ### 6.1 Ouverture de l'assistant
 
 1. L'utilisateur clique sur **Outil** dans `ElementStateRuleDialog`.
-2. `ExpressionCreationDialog` s'ouvre avec le contenu actuel de `ExpressionTextBox.Text` pré-rempli dans sa zone d'expression.
+2. `ExpressionCreationDialog` s'ouvre avec une copie du contenu actuel de `ExpressionTextBox.Text` et la position actuelle du caret.
 3. La validation est exécutée immédiatement sur le texte existant.
 
 ### 6.2 Insertion d'un tag
 
-1. L'utilisateur positionne le caret dans la zone d'expression.
+1. L'utilisateur positionne le caret dans la copie locale de l'expression.
 2. L'utilisateur clique sur **Variable**.
 3. `TagSelectionDialog` s'ouvre, affichant tous les tags activés.
 4. L'utilisateur sélectionne un tag (double-clic ou bouton **Sélectionner**).
 5. Le dialogue ferme et retourne le `DisplayName` du tag.
-6. `ExpressionCreationDialog` insère `{DisplayName}` à la position du caret.
+6. `ExpressionCreationDialog` insère `{DisplayName}` au début si le caret reçu est `null` ou `0`; sinon à la position du caret local.
 7. La validation est réexécutée.
 
 ### 6.3 Insertion d'un opérateur
@@ -212,14 +213,16 @@ Une liste (`ListBox`) affichant les tags activés du catalogue, avec les colonne
 
 | Test | Fichier |
 |---|---|
-| Insertion d'un tag dans un champ vide | `WebViewContextMenuScriptTests.cs` (extension) |
-| Insertion d'un tag au début, au milieu et en fin d'expression | `WebViewContextMenuScriptTests.cs` |
-| Insertion d'un tag via double-clic et via bouton **Sélectionner** | `WebViewContextMenuScriptTests.cs` |
-| Composition `{TagA} == {TagB}` | `WebViewContextMenuScriptTests.cs` |
-| Vérification du tooltip de chaque opérateur | `WebViewContextMenuScriptTests.cs` |
-| Le bouton **Effacer** vide l'expression | `WebViewContextMenuScriptTests.cs` |
-| Insertion de parenthèses positionne le caret entre `()` | `WebViewContextMenuScriptTests.cs` |
-| L'assistant ne sauvegarde pas — `ElementStateRuleDialog.Result` reste null si on ferme sans Appliquer | `WebViewContextMenuScriptTests.cs` |
+| Insertion d'un tag dans un champ vide | `tests/ScadaBuilderV2.Tests/ElementEvents/ExpressionCreationDialogContractTests.cs` |
+| Insertion d'un tag au début, au milieu et en fin d'expression | `tests/ScadaBuilderV2.Tests/ElementEvents/ExpressionCreationDialogContractTests.cs` |
+| Caret `null` ou `0` : insertion au début | `tests/ScadaBuilderV2.Tests/ElementEvents/ExpressionCreationDialogContractTests.cs` |
+| Insertion d'un tag via double-clic et via bouton **Sélectionner** | `tests/ScadaBuilderV2.Tests/ElementEvents/ExpressionCreationDialogContractTests.cs` |
+| Composition `{TagA} == {TagB}` | `tests/ScadaBuilderV2.Tests/ElementEvents/ExpressionCreationDialogContractTests.cs` |
+| Vérification du tooltip de chaque opérateur | `tests/ScadaBuilderV2.Tests/ElementEvents/ExpressionCreationDialogContractTests.cs` |
+| Le bouton **Effacer** vide la copie locale | `tests/ScadaBuilderV2.Tests/ElementEvents/ExpressionCreationDialogContractTests.cs` |
+| Insertion de parenthèses positionne le caret entre `()` | `tests/ScadaBuilderV2.Tests/ElementEvents/ExpressionCreationDialogContractTests.cs` |
+| Le bouton **Annuler** ne retourne pas la copie locale | `tests/ScadaBuilderV2.Tests/ElementEvents/ExpressionCreationDialogContractTests.cs` |
+| Le bouton **Appliquer** retourne la copie locale sans sauvegarder la règle | `tests/ScadaBuilderV2.Tests/ElementEvents/ExpressionCreationDialogContractTests.cs` |
 
 ### 7.2 Tests de non-régression
 
@@ -228,7 +231,7 @@ Une liste (`ListBox`) affichant les tags activés du catalogue, avec les colonne
 | Expression invalide reste refusée à la sauvegarde | `ScadaExpressionValidatorTests.cs` |
 | Le JSON/AST produit reste compatible avec le runtime existant | `ScadaExpressionTests.cs`, `ScadaExprNodeTests.cs` |
 | La résolution `TagId` canonique fonctionne après insertion par l'assistant | `ScadaExpressionTests.cs` |
-| Le mode Variable n'est pas affecté par l'assistant | `WebViewContextMenuScriptTests.cs` |
+| Le mode Variable n'est pas affecté par l'assistant | `tests/ScadaBuilderV2.Tests/ElementEvents/ExpressionCreationDialogContractTests.cs` |
 
 ---
 
@@ -242,7 +245,7 @@ Une liste (`ListBox`) affichant les tags activés du catalogue, avec les colonne
 | **Assistant code** | `src/ScadaBuilderV2.App/ExpressionCreationDialog.xaml.cs` | **Nouveau** — logique d'insertion, opérateurs, validation inline |
 | **Sélecteur XAML** | `src/ScadaBuilderV2.App/TagSelectionDialog.xaml` | **Nouveau** — liste des tags activés |
 | **Sélecteur code** | `src/ScadaBuilderV2.App/TagSelectionDialog.xaml.cs` | **Nouveau** — filtrage, tri, sélection |
-| **Tests UI** | `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs` | Tests de contrat UI (extension) |
+| **Tests assistant** | `tests/ScadaBuilderV2.Tests/ElementEvents/ExpressionCreationDialogContractTests.cs` | Tests de contrat WPF dédiés à l'assistant |
 
 ---
 
@@ -269,7 +272,7 @@ Une liste (`ListBox`) affichant les tags activés du catalogue, avec les colonne
 7. L'insertion de parenthèses positionne le caret entre `(` et `)`.
 8. Le bouton **Effacer** vide la zone d'expression.
 9. La validation inline affiche les erreurs en temps réel (vert si valide, rouge sinon).
-10. Le bouton **Appliquer** retourne le texte à `ElementStateRuleDialog` sans sauvegarder.
+10. Le bouton **Appliquer** retourne la copie locale à `ElementStateRuleDialog` sans sauvegarder; **Annuler** ne la retourne pas.
 11. `ElementStateRuleDialog.OnSaveClick` continue de valider, parser et résoudre les `TagId` canoniques comme avant.
 12. Le mode Variable n'est pas modifié par l'ajout de l'assistant.
 13. Les tests existants (parser, validateur, AST, export) passent sans modification.
