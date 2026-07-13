@@ -1,0 +1,2006 @@
+{
+  "Metadata": {
+    "Schema": "scada-builder-v2.element-studio.import",
+    "SchemaVersion": 1,
+    "Format": "json.ft1",
+    "CreatedByVersion": "V2.1.3.0003"
+  },
+  "PackageId": "studio_win00009_20260710_065539",
+  "SourceProjectId": "AMR_REF_SCADA_V2",
+  "SourceSceneId": "win00009",
+  "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+  "TargetLibraryPath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER_V2\\projects\\AMR_REF_SCADA_V2\\library\\elements",
+  "Bounds": {
+    "X": 877,
+    "Y": 269,
+    "Width": 71,
+    "Height": 101
+  },
+  "Items": [
+    {
+      "SourceElementId": "39",
+      "SourceName": "Polygon1",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 915,
+        "Y": 352,
+        "Width": 8,
+        "Height": 15
+      },
+      "BoundsRelativeToPackage": {
+        "X": 38,
+        "Y": 83,
+        "Width": 8,
+        "Height": 15
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022915.0,351.0 915.0,364.0 914.0,364.0 914.0,366.0 922.0,366.0 922.0,364.0 920.0,364.0 920.0,351.0 915.0,351.0\u0022 fill=\u0022rgba(76,76,76,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon1\u0022 data-id=\u002239\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 38,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(76, 76, 76)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "40",
+      "SourceName": "Polygon2",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 890,
+        "Y": 352,
+        "Width": 8,
+        "Height": 15
+      },
+      "BoundsRelativeToPackage": {
+        "X": 13,
+        "Y": 83,
+        "Width": 8,
+        "Height": 15
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022890.0,351.0 890.0,364.0 889.0,364.0 889.0,366.0 897.0,366.0 897.0,364.0 895.0,364.0 895.0,351.0 890.0,351.0\u0022 fill=\u0022rgba(76,76,76,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon2\u0022 data-id=\u002240\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 39,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(76, 76, 76)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "42",
+      "SourceName": "PolyLine1",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 880,
+        "Y": 369,
+        "Width": 9,
+        "Height": 1
+      },
+      "BoundsRelativeToPackage": {
+        "X": 3,
+        "Y": 100,
+        "Width": 9,
+        "Height": 1
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022888.0,368.0 879.0,368.0 880.0,368.0 882.0,368.0 883.0,368.0 884.0,368.0 885.0,368.0 888.0,368.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine1\u0022 data-id=\u002242\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 40,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "44",
+      "SourceName": "PolyLine2",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 924,
+        "Y": 369,
+        "Width": 9,
+        "Height": 1
+      },
+      "BoundsRelativeToPackage": {
+        "X": 47,
+        "Y": 100,
+        "Width": 9,
+        "Height": 1
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022932.0,368.0 923.0,368.0 924.0,368.0 926.0,368.0 927.0,368.0 928.0,368.0 929.0,368.0 931.0,368.0 932.0,368.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine2\u0022 data-id=\u002244\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 41,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "45",
+      "SourceName": "PolyLine3",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 915,
+        "Y": 352,
+        "Width": 8,
+        "Height": 15
+      },
+      "BoundsRelativeToPackage": {
+        "X": 38,
+        "Y": 83,
+        "Width": 8,
+        "Height": 15
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022915.0,351.0 915.0,364.0 914.0,364.0 914.0,366.0 922.0,366.0 922.0,364.0 920.0,364.0 920.0,351.0 915.0,351.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine3\u0022 data-id=\u002245\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 42,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "46",
+      "SourceName": "PolyLine4",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 890,
+        "Y": 352,
+        "Width": 8,
+        "Height": 15
+      },
+      "BoundsRelativeToPackage": {
+        "X": 13,
+        "Y": 83,
+        "Width": 8,
+        "Height": 15
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022890.0,351.0 890.0,364.0 889.0,364.0 889.0,366.0 897.0,366.0 897.0,364.0 895.0,364.0 895.0,351.0 890.0,351.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine4\u0022 data-id=\u002246\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 43,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "47",
+      "SourceName": "PolyLine5",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 880,
+        "Y": 369,
+        "Width": 9,
+        "Height": 1
+      },
+      "BoundsRelativeToPackage": {
+        "X": 3,
+        "Y": 100,
+        "Width": 9,
+        "Height": 1
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022888.0,368.0 879.0,368.0 880.0,368.0 882.0,368.0 883.0,368.0 884.0,368.0 885.0,368.0 888.0,368.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine5\u0022 data-id=\u002247\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 44,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "48",
+      "SourceName": "PolyLine6",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 924,
+        "Y": 369,
+        "Width": 9,
+        "Height": 1
+      },
+      "BoundsRelativeToPackage": {
+        "X": 47,
+        "Y": 100,
+        "Width": 9,
+        "Height": 1
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022932.0,368.0 923.0,368.0 924.0,368.0 926.0,368.0 927.0,368.0 928.0,368.0 929.0,368.0 931.0,368.0 932.0,368.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine6\u0022 data-id=\u002248\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 45,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "49",
+      "SourceName": "Polygon3",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 930,
+        "Y": 270,
+        "Width": 5,
+        "Height": 83
+      },
+      "BoundsRelativeToPackage": {
+        "X": 53,
+        "Y": 1,
+        "Width": 5,
+        "Height": 83
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022929.0,352.0 930.0,346.0 930.0,272.0 929.0,269.0 930.0,269.0 934.0,272.0 934.0,346.0 930.0,352.0 929.0,352.0\u0022 fill=\u0022rgba(76,76,76,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon3\u0022 data-id=\u002249\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 46,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(76, 76, 76)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "50",
+      "SourceName": "Polygon4",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 877,
+        "Y": 270,
+        "Width": 5,
+        "Height": 83
+      },
+      "BoundsRelativeToPackage": {
+        "X": 0,
+        "Y": 1,
+        "Width": 5,
+        "Height": 83
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022881.0,352.0 880.0,346.0 880.0,272.0 881.0,269.0 880.0,269.0 876.0,272.0 876.0,346.0 880.0,352.0 881.0,352.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon4\u0022 data-id=\u002250\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 47,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(127, 127, 127)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "51",
+      "SourceName": "Polygon5",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 920,
+        "Y": 270,
+        "Width": 6,
+        "Height": 83
+      },
+      "BoundsRelativeToPackage": {
+        "X": 43,
+        "Y": 1,
+        "Width": 6,
+        "Height": 83
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022919.0,352.0 922.0,346.0 922.0,272.0 919.0,269.0 924.0,269.0 925.0,272.0 925.0,346.0 924.0,352.0 919.0,352.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon5\u0022 data-id=\u002251\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 48,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(127, 127, 127)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "52",
+      "SourceName": "Polygon6",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 925,
+        "Y": 270,
+        "Width": 6,
+        "Height": 83
+      },
+      "BoundsRelativeToPackage": {
+        "X": 48,
+        "Y": 1,
+        "Width": 6,
+        "Height": 83
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022924.0,352.0 925.0,346.0 925.0,272.0 924.0,269.0 929.0,269.0 930.0,272.0 930.0,346.0 929.0,352.0 924.0,352.0\u0022 fill=\u0022rgba(102,102,102,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon6\u0022 data-id=\u002252\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(102, 102, 102); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 49,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(102, 102, 102); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(102, 102, 102)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "53",
+      "SourceName": "Polygon7",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 881,
+        "Y": 270,
+        "Width": 6,
+        "Height": 83
+      },
+      "BoundsRelativeToPackage": {
+        "X": 4,
+        "Y": 1,
+        "Width": 6,
+        "Height": 83
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022886.0,352.0 885.0,346.0 885.0,272.0 886.0,269.0 881.0,269.0 880.0,272.0 880.0,346.0 881.0,352.0 886.0,352.0\u0022 fill=\u0022rgba(153,153,153,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon7\u0022 data-id=\u002253\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(153, 153, 153); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 50,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(153, 153, 153); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(153, 153, 153)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "54",
+      "SourceName": "Polygon8",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 916,
+        "Y": 270,
+        "Width": 6,
+        "Height": 83
+      },
+      "BoundsRelativeToPackage": {
+        "X": 39,
+        "Y": 1,
+        "Width": 6,
+        "Height": 83
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022915.0,352.0 916.0,346.0 916.0,272.0 915.0,269.0 919.0,269.0 921.0,272.0 921.0,346.0 919.0,352.0 915.0,352.0\u0022 fill=\u0022rgba(153,153,153,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon8\u0022 data-id=\u002254\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(153, 153, 153); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 51,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(153, 153, 153); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(153, 153, 153)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "55",
+      "SourceName": "Polygon9",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 886,
+        "Y": 270,
+        "Width": 5,
+        "Height": 83
+      },
+      "BoundsRelativeToPackage": {
+        "X": 9,
+        "Y": 1,
+        "Width": 5,
+        "Height": 83
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022890.0,352.0 889.0,346.0 889.0,272.0 890.0,269.0 886.0,269.0 885.0,272.0 885.0,346.0 886.0,352.0 890.0,352.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon9\u0022 data-id=\u002255\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 52,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(178, 178, 178)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "56",
+      "SourceName": "Polygon10",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 912,
+        "Y": 270,
+        "Width": 5,
+        "Height": 83
+      },
+      "BoundsRelativeToPackage": {
+        "X": 35,
+        "Y": 1,
+        "Width": 5,
+        "Height": 83
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022911.0,352.0 912.0,346.0 912.0,272.0 911.0,269.0 915.0,269.0 916.0,272.0 916.0,346.0 915.0,352.0 911.0,352.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon10\u0022 data-id=\u002256\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 53,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(178, 178, 178)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "57",
+      "SourceName": "Polygon11",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 890,
+        "Y": 270,
+        "Width": 6,
+        "Height": 83
+      },
+      "BoundsRelativeToPackage": {
+        "X": 13,
+        "Y": 1,
+        "Width": 6,
+        "Height": 83
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022895.0,352.0 894.0,346.0 894.0,272.0 895.0,269.0 890.0,269.0 889.0,272.0 889.0,346.0 890.0,352.0 895.0,352.0\u0022 fill=\u0022rgba(204,204,204,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon11\u0022 data-id=\u002257\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 54,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(204, 204, 204)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "58",
+      "SourceName": "Polygon12",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 907,
+        "Y": 270,
+        "Width": 6,
+        "Height": 83
+      },
+      "BoundsRelativeToPackage": {
+        "X": 30,
+        "Y": 1,
+        "Width": 6,
+        "Height": 83
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022906.0,352.0 907.0,346.0 907.0,272.0 906.0,269.0 911.0,269.0 912.0,272.0 912.0,346.0 911.0,352.0 906.0,352.0\u0022 fill=\u0022rgba(204,204,204,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon12\u0022 data-id=\u002258\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 55,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(204, 204, 204)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "59",
+      "SourceName": "Polygon13",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 895,
+        "Y": 270,
+        "Width": 5,
+        "Height": 83
+      },
+      "BoundsRelativeToPackage": {
+        "X": 18,
+        "Y": 1,
+        "Width": 5,
+        "Height": 83
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022899.0,352.0 898.0,346.0 898.0,272.0 899.0,269.0 895.0,269.0 894.0,272.0 894.0,346.0 895.0,352.0 899.0,352.0\u0022 fill=\u0022rgba(229,229,229,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon13\u0022 data-id=\u002259\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 56,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(229, 229, 229)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "60",
+      "SourceName": "Polygon14",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 904,
+        "Y": 270,
+        "Width": 5,
+        "Height": 83
+      },
+      "BoundsRelativeToPackage": {
+        "X": 27,
+        "Y": 1,
+        "Width": 5,
+        "Height": 83
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022904.0,352.0 903.0,346.0 903.0,272.0 904.0,269.0 907.0,269.0 908.0,272.0 908.0,346.0 907.0,352.0 904.0,352.0\u0022 fill=\u0022rgba(229,229,229,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon14\u0022 data-id=\u002260\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 57,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(229, 229, 229)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "61",
+      "SourceName": "Polygon15",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 899,
+        "Y": 270,
+        "Width": 6,
+        "Height": 83
+      },
+      "BoundsRelativeToPackage": {
+        "X": 22,
+        "Y": 1,
+        "Width": 6,
+        "Height": 83
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022904.0,352.0 903.0,346.0 903.0,272.0 904.0,269.0 899.0,269.0 898.0,272.0 898.0,346.0 899.0,352.0 904.0,352.0\u0022 fill=\u0022rgba(255,255,255,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon15\u0022 data-id=\u002261\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(255, 255, 255); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 58,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(255, 255, 255); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "62",
+      "SourceName": "Polygon16",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 906,
+        "Y": 269,
+        "Width": 25,
+        "Height": 1
+      },
+      "BoundsRelativeToPackage": {
+        "X": 29,
+        "Y": 0,
+        "Width": 25,
+        "Height": 1
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022920.0,269.0 905.0,268.0 930.0,269.0 920.0,269.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon16\u0022 data-id=\u002262\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 59,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(127, 127, 127)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "63",
+      "SourceName": "Polygon17",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 906,
+        "Y": 269,
+        "Width": 15,
+        "Height": 1
+      },
+      "BoundsRelativeToPackage": {
+        "X": 29,
+        "Y": 0,
+        "Width": 15,
+        "Height": 1
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022905.0,268.0 909.0,269.0 920.0,269.0 905.0,268.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon17\u0022 data-id=\u002263\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 60,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(178, 178, 178)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "64",
+      "SourceName": "Polygon18",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 900,
+        "Y": 269,
+        "Width": 10,
+        "Height": 1
+      },
+      "BoundsRelativeToPackage": {
+        "X": 23,
+        "Y": 0,
+        "Width": 10,
+        "Height": 1
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022905.0,268.0 899.0,269.0 909.0,269.0 905.0,268.0\u0022 fill=\u0022rgba(229,229,229,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon18\u0022 data-id=\u002264\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 61,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(229, 229, 229)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "65",
+      "SourceName": "Polygon19",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 891,
+        "Y": 269,
+        "Width": 15,
+        "Height": 1
+      },
+      "BoundsRelativeToPackage": {
+        "X": 14,
+        "Y": 0,
+        "Width": 15,
+        "Height": 1
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022899.0,269.0 905.0,268.0 890.0,269.0 899.0,269.0\u0022 fill=\u0022rgba(204,204,204,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon19\u0022 data-id=\u002265\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 62,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(204, 204, 204)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "66",
+      "SourceName": "Polygon20",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 881,
+        "Y": 269,
+        "Width": 25,
+        "Height": 1
+      },
+      "BoundsRelativeToPackage": {
+        "X": 4,
+        "Y": 0,
+        "Width": 25,
+        "Height": 1
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022905.0,268.0 890.0,269.0 880.0,269.0 905.0,268.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon20\u0022 data-id=\u002266\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 63,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(178, 178, 178)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "67",
+      "SourceName": "PolyLine7",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 881,
+        "Y": 269,
+        "Width": 50,
+        "Height": 1
+      },
+      "BoundsRelativeToPackage": {
+        "X": 4,
+        "Y": 0,
+        "Width": 50,
+        "Height": 1
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022880.0,269.0 930.0,269.0 905.0,268.0 880.0,269.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine7\u0022 data-id=\u002267\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 64,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "68",
+      "SourceName": "PolyLine8",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 877,
+        "Y": 270,
+        "Width": 58,
+        "Height": 83
+      },
+      "BoundsRelativeToPackage": {
+        "X": 0,
+        "Y": 1,
+        "Width": 58,
+        "Height": 83
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022876.0,346.0 880.0,352.0 930.0,352.0 934.0,346.0 934.0,272.0 930.0,269.0 880.0,269.0 876.0,272.0 876.0,346.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine8\u0022 data-id=\u002268\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 65,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "69",
+      "SourceName": "PolyLine9",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 879,
+        "Y": 348,
+        "Width": 56,
+        "Height": 3
+      },
+      "BoundsRelativeToPackage": {
+        "X": 2,
+        "Y": 79,
+        "Width": 56,
+        "Height": 3
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022934.0,347.0 933.0,348.0 932.0,348.0 929.0,348.0 926.0,348.0 922.0,348.0 917.0,350.0 912.0,350.0 906.0,350.0 901.0,350.0 894.0,350.0 889.0,348.0 886.0,348.0 882.0,348.0 879.0,348.0 878.0,348.0 878.0,347.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(178,178,178,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine9\u0022 data-id=\u002269\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(178, 178, 178); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 66,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(178, 178, 178); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(178, 178, 178)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "70",
+      "SourceName": "PolyLine10",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 879,
+        "Y": 272,
+        "Width": 56,
+        "Height": 3
+      },
+      "BoundsRelativeToPackage": {
+        "X": 2,
+        "Y": 3,
+        "Width": 56,
+        "Height": 3
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022934.0,274.0 933.0,274.0 932.0,272.0 929.0,272.0 926.0,272.0 922.0,272.0 917.0,272.0 912.0,271.0 906.0,271.0 901.0,271.0 894.0,272.0 889.0,272.0 886.0,272.0 882.0,272.0 879.0,272.0 878.0,274.0 878.0,274.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(178,178,178,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine10\u0022 data-id=\u002270\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(178, 178, 178); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 67,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(178, 178, 178); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(178, 178, 178)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "71",
+      "SourceName": "Polygon21",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 930,
+        "Y": 350,
+        "Width": 3,
+        "Height": 17
+      },
+      "BoundsRelativeToPackage": {
+        "X": 53,
+        "Y": 81,
+        "Width": 3,
+        "Height": 17
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022932.0,366.0 929.0,366.0 929.0,349.0 932.0,349.0 932.0,366.0\u0022 fill=\u0022rgba(76,76,76,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon21\u0022 data-id=\u002271\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 68,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(76, 76, 76)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "72",
+      "SourceName": "Polygon22",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 886,
+        "Y": 352,
+        "Width": 1,
+        "Height": 16
+      },
+      "BoundsRelativeToPackage": {
+        "X": 9,
+        "Y": 83,
+        "Width": 1,
+        "Height": 16
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022886.0,367.0 885.0,367.0 885.0,351.0 886.0,351.0 886.0,367.0\u0022 fill=\u0022rgba(76,76,76,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon22\u0022 data-id=\u002272\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 69,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(76, 76, 76)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "73",
+      "SourceName": "PolyLine11",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 930,
+        "Y": 350,
+        "Width": 3,
+        "Height": 17
+      },
+      "BoundsRelativeToPackage": {
+        "X": 53,
+        "Y": 81,
+        "Width": 3,
+        "Height": 17
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022932.0,366.0 929.0,366.0 929.0,349.0 932.0,349.0 932.0,366.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine11\u0022 data-id=\u002273\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 70,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "74",
+      "SourceName": "PolyLine12",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 886,
+        "Y": 352,
+        "Width": 1,
+        "Height": 16
+      },
+      "BoundsRelativeToPackage": {
+        "X": 9,
+        "Y": 83,
+        "Width": 1,
+        "Height": 16
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022886.0,367.0 885.0,367.0 885.0,351.0 886.0,351.0 886.0,367.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine12\u0022 data-id=\u002274\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 71,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "75",
+      "SourceName": "Polygon23",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 929,
+        "Y": 350,
+        "Width": 1,
+        "Height": 17
+      },
+      "BoundsRelativeToPackage": {
+        "X": 52,
+        "Y": 81,
+        "Width": 1,
+        "Height": 17
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022929.0,366.0 928.0,366.0 928.0,350.0 929.0,349.0 929.0,366.0\u0022 fill=\u0022rgba(102,102,102,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon23\u0022 data-id=\u002275\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(102, 102, 102); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 72,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(102, 102, 102); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(102, 102, 102)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "76",
+      "SourceName": "Polygon24",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 884,
+        "Y": 352,
+        "Width": 3,
+        "Height": 16
+      },
+      "BoundsRelativeToPackage": {
+        "X": 7,
+        "Y": 83,
+        "Width": 3,
+        "Height": 16
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022886.0,367.0 883.0,367.0 883.0,351.0 886.0,351.0 886.0,367.0\u0022 fill=\u0022rgba(102,102,102,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon24\u0022 data-id=\u002276\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(102, 102, 102); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 73,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(102, 102, 102); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(102, 102, 102)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "77",
+      "SourceName": "PolyLine13",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 929,
+        "Y": 350,
+        "Width": 1,
+        "Height": 17
+      },
+      "BoundsRelativeToPackage": {
+        "X": 52,
+        "Y": 81,
+        "Width": 1,
+        "Height": 17
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022929.0,366.0 928.0,366.0 928.0,350.0 929.0,349.0 929.0,366.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine13\u0022 data-id=\u002277\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 74,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "78",
+      "SourceName": "PolyLine14",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 884,
+        "Y": 352,
+        "Width": 3,
+        "Height": 16
+      },
+      "BoundsRelativeToPackage": {
+        "X": 7,
+        "Y": 83,
+        "Width": 3,
+        "Height": 16
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022886.0,367.0 883.0,367.0 883.0,351.0 886.0,351.0 886.0,367.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine14\u0022 data-id=\u002278\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 75,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "79",
+      "SourceName": "Polygon25",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 926,
+        "Y": 352,
+        "Width": 3,
+        "Height": 16
+      },
+      "BoundsRelativeToPackage": {
+        "X": 49,
+        "Y": 83,
+        "Width": 3,
+        "Height": 16
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022928.0,367.0 925.0,367.0 925.0,351.0 928.0,351.0 928.0,367.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon25\u0022 data-id=\u002279\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 76,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(127, 127, 127)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "80",
+      "SourceName": "Polygon26",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 882,
+        "Y": 350,
+        "Width": 1,
+        "Height": 17
+      },
+      "BoundsRelativeToPackage": {
+        "X": 5,
+        "Y": 81,
+        "Width": 1,
+        "Height": 17
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022882.0,366.0 881.0,366.0 881.0,349.0 882.0,350.0 882.0,366.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon26\u0022 data-id=\u002280\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 77,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(127, 127, 127)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "81",
+      "SourceName": "PolyLine15",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 926,
+        "Y": 352,
+        "Width": 3,
+        "Height": 16
+      },
+      "BoundsRelativeToPackage": {
+        "X": 49,
+        "Y": 83,
+        "Width": 3,
+        "Height": 16
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022928.0,367.0 925.0,367.0 925.0,351.0 928.0,351.0 928.0,367.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine15\u0022 data-id=\u002281\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 78,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "82",
+      "SourceName": "PolyLine16",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 882,
+        "Y": 350,
+        "Width": 1,
+        "Height": 17
+      },
+      "BoundsRelativeToPackage": {
+        "X": 5,
+        "Y": 81,
+        "Width": 1,
+        "Height": 17
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022882.0,366.0 881.0,366.0 881.0,349.0 882.0,350.0 882.0,366.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine16\u0022 data-id=\u002282\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 79,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "83",
+      "SourceName": "Polygon27",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 924,
+        "Y": 352,
+        "Width": 9,
+        "Height": 17
+      },
+      "BoundsRelativeToPackage": {
+        "X": 47,
+        "Y": 83,
+        "Width": 9,
+        "Height": 17
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022926.0,367.0 932.0,367.0 932.0,368.0 923.0,368.0 923.0,367.0 924.0,367.0 924.0,351.0 926.0,351.0 926.0,367.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon27\u0022 data-id=\u002283\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 80,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(178, 178, 178)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "84",
+      "SourceName": "Polygon28",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 880,
+        "Y": 350,
+        "Width": 9,
+        "Height": 19
+      },
+      "BoundsRelativeToPackage": {
+        "X": 3,
+        "Y": 81,
+        "Width": 9,
+        "Height": 19
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022882.0,366.0 888.0,366.0 888.0,368.0 879.0,368.0 879.0,366.0 879.0,349.0 882.0,349.0 882.0,366.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon28\u0022 data-id=\u002284\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 81,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(178, 178, 178)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "85",
+      "SourceName": "PolyLine17",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 924,
+        "Y": 352,
+        "Width": 9,
+        "Height": 17
+      },
+      "BoundsRelativeToPackage": {
+        "X": 47,
+        "Y": 83,
+        "Width": 9,
+        "Height": 17
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022926.0,367.0 932.0,367.0 932.0,368.0 923.0,368.0 923.0,367.0 924.0,367.0 924.0,351.0 926.0,351.0 926.0,367.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine17\u0022 data-id=\u002285\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 82,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "86",
+      "SourceName": "PolyLine18",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 880,
+        "Y": 350,
+        "Width": 9,
+        "Height": 19
+      },
+      "BoundsRelativeToPackage": {
+        "X": 3,
+        "Y": 81,
+        "Width": 9,
+        "Height": 19
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022882.0,366.0 888.0,366.0 888.0,368.0 879.0,368.0 879.0,366.0 879.0,349.0 882.0,349.0 882.0,366.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine18\u0022 data-id=\u002286\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 83,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "249",
+      "SourceName": "Polygon125",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 935,
+        "Y": 280,
+        "Width": 13,
+        "Height": 13
+      },
+      "BoundsRelativeToPackage": {
+        "X": 58,
+        "Y": 11,
+        "Width": 13,
+        "Height": 13
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022939.0,279.0 934.0,279.0 934.0,287.0 939.0,287.0 940.0,287.0 940.0,287.0 940.0,292.0 947.0,292.0 947.0,287.0 947.0,287.0 947.0,284.0 945.0,283.0 945.0,282.0 944.0,282.0 944.0,280.0 943.0,280.0 942.0,279.0 940.0,279.0 939.0,279.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon125\u0022 data-id=\u0022249\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 230,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(127, 127, 127)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "250",
+      "SourceName": "Polygon126",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 935,
+        "Y": 280,
+        "Width": 13,
+        "Height": 13
+      },
+      "BoundsRelativeToPackage": {
+        "X": 58,
+        "Y": 11,
+        "Width": 13,
+        "Height": 13
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022947.0,287.0 947.0,287.0 947.0,284.0 945.0,284.0 945.0,283.0 945.0,282.0 944.0,282.0 944.0,280.0 943.0,280.0 942.0,280.0 942.0,279.0 940.0,279.0 939.0,279.0 934.0,279.0 934.0,287.0 939.0,287.0 940.0,287.0 940.0,287.0 940.0,292.0 947.0,292.0 947.0,287.0\u0022 fill=\u0022rgba(153,153,153,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon126\u0022 data-id=\u0022250\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(153, 153, 153); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 231,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(153, 153, 153); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(153, 153, 153)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "251",
+      "SourceName": "Polygon127",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 935,
+        "Y": 280,
+        "Width": 11,
+        "Height": 12
+      },
+      "BoundsRelativeToPackage": {
+        "X": 58,
+        "Y": 11,
+        "Width": 11,
+        "Height": 12
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022945.0,287.0 945.0,291.0 942.0,291.0 942.0,287.0 942.0,284.0 940.0,284.0 940.0,283.0 939.0,283.0 934.0,283.0 934.0,279.0 939.0,279.0 940.0,279.0 942.0,279.0 943.0,279.0 943.0,280.0 944.0,280.0 944.0,282.0 945.0,282.0 945.0,283.0 945.0,284.0 945.0,287.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon127\u0022 data-id=\u0022251\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 232,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(178, 178, 178)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "252",
+      "SourceName": "Polygon128",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 935,
+        "Y": 280,
+        "Width": 11,
+        "Height": 12
+      },
+      "BoundsRelativeToPackage": {
+        "X": 58,
+        "Y": 11,
+        "Width": 11,
+        "Height": 12
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022945.0,287.0 945.0,284.0 945.0,283.0 944.0,283.0 944.0,282.0 943.0,282.0 943.0,280.0 942.0,280.0 942.0,279.0 940.0,279.0 939.0,279.0 934.0,279.0 934.0,283.0 939.0,283.0 940.0,283.0 942.0,283.0 942.0,284.0 942.0,287.0 942.0,291.0 945.0,291.0 945.0,287.0\u0022 fill=\u0022rgba(204,204,204,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon128\u0022 data-id=\u0022252\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 233,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(204, 204, 204)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "253",
+      "SourceName": "Polygon129",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 935,
+        "Y": 281,
+        "Width": 10,
+        "Height": 11
+      },
+      "BoundsRelativeToPackage": {
+        "X": 58,
+        "Y": 12,
+        "Width": 10,
+        "Height": 11
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022944.0,285.0 944.0,291.0 943.0,291.0 943.0,285.0 943.0,284.0 942.0,283.0 940.0,281.0 939.0,281.0 934.0,281.0 934.0,280.0 939.0,280.0 940.0,280.0 942.0,280.0 943.0,281.0 944.0,283.0 944.0,284.0 944.0,285.0\u0022 fill=\u0022rgba(229,229,229,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon129\u0022 data-id=\u0022253\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 234,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(229, 229, 229)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "254",
+      "SourceName": "Polygon130",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 935,
+        "Y": 281,
+        "Width": 10,
+        "Height": 11
+      },
+      "BoundsRelativeToPackage": {
+        "X": 58,
+        "Y": 12,
+        "Width": 10,
+        "Height": 11
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022944.0,285.0 944.0,284.0 944.0,283.0 943.0,283.0 943.0,281.0 942.0,281.0 942.0,280.0 940.0,280.0 939.0,280.0 934.0,280.0 934.0,281.0 939.0,281.0 940.0,281.0 942.0,281.0 942.0,283.0 943.0,283.0 943.0,284.0 943.0,285.0 943.0,291.0 944.0,291.0 944.0,285.0\u0022 fill=\u0022rgba(255,255,255,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon130\u0022 data-id=\u0022254\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(255, 255, 255); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 235,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(255, 255, 255); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022stroke\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "255",
+      "SourceName": "PolyLine67",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 935,
+        "Y": 280,
+        "Width": 13,
+        "Height": 13
+      },
+      "BoundsRelativeToPackage": {
+        "X": 58,
+        "Y": 11,
+        "Width": 13,
+        "Height": 13
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022947.0,292.0 947.0,287.0 947.0,287.0 947.0,284.0 945.0,283.0 945.0,282.0 944.0,282.0 944.0,280.0 943.0,280.0 942.0,279.0 940.0,279.0 939.0,279.0 934.0,279.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine67\u0022 data-id=\u0022255\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 236,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "256",
+      "SourceName": "PolyLine68",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 935,
+        "Y": 285,
+        "Width": 6,
+        "Height": 8
+      },
+      "BoundsRelativeToPackage": {
+        "X": 58,
+        "Y": 16,
+        "Width": 6,
+        "Height": 8
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022934.0,284.0 939.0,284.0 940.0,284.0 940.0,285.0 940.0,292.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine68\u0022 data-id=\u0022256\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 237,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "257",
+      "SourceName": "Polygon131",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 941,
+        "Y": 285,
+        "Width": 6,
+        "Height": 55
+      },
+      "BoundsRelativeToPackage": {
+        "X": 64,
+        "Y": 16,
+        "Width": 6,
+        "Height": 55
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022946.0,284.0 946.0,339.0 940.0,339.0 940.0,284.0 946.0,284.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon131\u0022 data-id=\u0022257\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 238,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(127, 127, 127)\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "258",
+      "SourceName": "Polygon132",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 941,
+        "Y": 285,
+        "Width": 6,
+        "Height": 55
+      },
+      "BoundsRelativeToPackage": {
+        "X": 64,
+        "Y": 16,
+        "Width": 6,
+        "Height": 55
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022946.0,284.0 946.0,339.0 940.0,339.0 940.0,284.0 946.0,284.0\u0022 fill=\u0022rgba(153,153,153,1.000)\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon132\u0022 data-id=\u0022258\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(153, 153, 153); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 239,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(153, 153, 153); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(153, 153, 153)\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "259",
+      "SourceName": "Polygon133",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 942,
+        "Y": 285,
+        "Width": 4,
+        "Height": 55
+      },
+      "BoundsRelativeToPackage": {
+        "X": 65,
+        "Y": 16,
+        "Width": 4,
+        "Height": 55
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022945.0,284.0 945.0,339.0 941.0,339.0 941.0,284.0 945.0,284.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon133\u0022 data-id=\u0022259\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 240,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(178, 178, 178)\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "260",
+      "SourceName": "Polygon134",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 942,
+        "Y": 285,
+        "Width": 4,
+        "Height": 55
+      },
+      "BoundsRelativeToPackage": {
+        "X": 65,
+        "Y": 16,
+        "Width": 4,
+        "Height": 55
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022945.0,284.0 945.0,339.0 941.0,339.0 941.0,284.0 945.0,284.0\u0022 fill=\u0022rgba(204,204,204,1.000)\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon134\u0022 data-id=\u0022260\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 241,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(204, 204, 204)\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "261",
+      "SourceName": "Polygon135",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 944,
+        "Y": 285,
+        "Width": 1,
+        "Height": 55
+      },
+      "BoundsRelativeToPackage": {
+        "X": 67,
+        "Y": 16,
+        "Width": 1,
+        "Height": 55
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022944.0,284.0 944.0,339.0 943.0,339.0 943.0,284.0 944.0,284.0\u0022 fill=\u0022rgba(229,229,229,1.000)\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon135\u0022 data-id=\u0022261\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 242,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(229, 229, 229)\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "262",
+      "SourceName": "Polygon136",
+      "LegacyType": "polygon",
+      "BoundsAbsolute": {
+        "X": 944,
+        "Y": 285,
+        "Width": 1,
+        "Height": 55
+      },
+      "BoundsRelativeToPackage": {
+        "X": 67,
+        "Y": 16,
+        "Width": 1,
+        "Height": 55
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolygon points=\u0022944.0,284.0 944.0,339.0 943.0,339.0 943.0,284.0 944.0,284.0\u0022 fill=\u0022rgba(255,255,255,1.000)\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon136\u0022 data-id=\u0022262\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(255, 255, 255); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 243,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polygon\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(255, 255, 255); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022rgb(255, 255, 255)\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00220px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "263",
+      "SourceName": "PolyLine69",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 941,
+        "Y": 285,
+        "Width": 1,
+        "Height": 55
+      },
+      "BoundsRelativeToPackage": {
+        "X": 64,
+        "Y": 16,
+        "Width": 1,
+        "Height": 55
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022940.0,284.0 940.0,339.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine69\u0022 data-id=\u0022263\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 244,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    },
+    {
+      "SourceElementId": "264",
+      "SourceName": "PolyLine70",
+      "LegacyType": "polyline",
+      "BoundsAbsolute": {
+        "X": 947,
+        "Y": 285,
+        "Width": 1,
+        "Height": 55
+      },
+      "BoundsRelativeToPackage": {
+        "X": 70,
+        "Y": 16,
+        "Width": 1,
+        "Height": 55
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cpolyline points=\u0022946.0,339.0 946.0,284.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine70\u0022 data-id=\u0022264\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 245,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022polyline\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Segoe UI\\\u0022, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022matrix(1, 0, 0, 1, 0, 0)\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022inline\u0022,\u0022position\u0022:\u0022static\u0022,\u0022left\u0022:\u0022auto\u0022,\u0022top\u0022:\u0022auto\u0022,\u0022fill\u0022:\u0022none\u0022,\u0022stroke\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    }
+  ],
+  "ComponentName": null
+}

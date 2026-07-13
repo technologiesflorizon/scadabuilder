@@ -1070,14 +1070,15 @@
             "Expression": {
               "source": "{Noeud1_N15_01_Commande_MC_1A} == true",
               "referencedTags": [
-                "Noeud1_N15_01_Commande_MC_1A"
+                "tf100.mapping.193"
               ],
               "ast": {
                 "type": "binary",
                 "Op": "Equal",
                 "Left": {
                   "type": "tagRef",
-                  "TagName": "Noeud1_N15_01_Commande_MC_1A"
+                  "TagName": "Noeud1_N15_01_Commande_MC_1A",
+                  "TagId": "tf100.mapping.193"
                 },
                 "Right": {
                   "type": "literalBool",
@@ -1097,7 +1098,7 @@
               "Rotation": null,
               "Animation": null,
               "ColorFilterColor": "#12B729",
-              "ColorFilterOpacity": 1,
+              "ColorFilterOpacity": 0.7018970189701896,
               "ColorFilterHalo": false,
               "ColorFilterHaloColor": null
             }
@@ -1109,14 +1110,15 @@
             "Expression": {
               "source": "{Noeud1_N15_01_Commande_MC_1A} == false",
               "referencedTags": [
-                "Noeud1_N15_01_Commande_MC_1A"
+                "tf100.mapping.193"
               ],
               "ast": {
                 "type": "binary",
                 "Op": "Equal",
                 "Left": {
                   "type": "tagRef",
-                  "TagName": "Noeud1_N15_01_Commande_MC_1A"
+                  "TagName": "Noeud1_N15_01_Commande_MC_1A",
+                  "TagId": "tf100.mapping.193"
                 },
                 "Right": {
                   "type": "literalBool",
@@ -1136,7 +1138,7 @@
               "Rotation": null,
               "Animation": null,
               "ColorFilterColor": "#FF0300",
-              "ColorFilterOpacity": 0.8048780487804877,
+              "ColorFilterOpacity": 0.7018970189701896,
               "ColorFilterHalo": false,
               "ColorFilterHaloColor": null
             }
@@ -3537,7 +3539,7 @@
             "Kind": "WriteTag",
             "Confirmation": null,
             "WriteTagId": "tf100.mapping.159",
-            "ReadTagId": null,
+            "ReadTagId": "tf100.mapping.159",
             "WriteMode": null,
             "OnValue": null,
             "OffValue": null,
@@ -3555,7 +3557,7 @@
       "Kind": "InputNumeric",
       "Bounds": {
         "X": 56,
-        "Y": 235,
+        "Y": 234,
         "Width": 59,
         "Height": 25
       },
@@ -3958,20 +3960,21 @@
             "Name": "EnMarche",
             "Enabled": true,
             "Expression": {
-              "source": "{Noeud1_N15_02_Commande_MC_1B} == false",
+              "source": "{Noeud1_N15_02_Commande_MC_1B} == true",
               "referencedTags": [
-                "Noeud1_N15_02_Commande_MC_1B"
+                "tf100.mapping.194"
               ],
               "ast": {
                 "type": "binary",
                 "Op": "Equal",
                 "Left": {
                   "type": "tagRef",
-                  "TagName": "Noeud1_N15_02_Commande_MC_1B"
+                  "TagName": "Noeud1_N15_02_Commande_MC_1B",
+                  "TagId": "tf100.mapping.194"
                 },
                 "Right": {
                   "type": "literalBool",
-                  "Value": false
+                  "Value": true
                 }
               }
             },
@@ -3987,7 +3990,7 @@
               "Rotation": null,
               "Animation": null,
               "ColorFilterColor": "#12B729",
-              "ColorFilterOpacity": 1,
+              "ColorFilterOpacity": 0.7046070460704607,
               "ColorFilterHalo": false,
               "ColorFilterHaloColor": null
             }
@@ -3999,14 +4002,15 @@
             "Expression": {
               "source": "{Noeud1_N15_02_Commande_MC_1B} == false",
               "referencedTags": [
-                "Noeud1_N15_02_Commande_MC_1B"
+                "tf100.mapping.194"
               ],
               "ast": {
                 "type": "binary",
                 "Op": "Equal",
                 "Left": {
                   "type": "tagRef",
-                  "TagName": "Noeud1_N15_02_Commande_MC_1B"
+                  "TagName": "Noeud1_N15_02_Commande_MC_1B",
+                  "TagId": "tf100.mapping.194"
                 },
                 "Right": {
                   "type": "literalBool",
@@ -4026,7 +4030,7 @@
               "Rotation": null,
               "Animation": null,
               "ColorFilterColor": "#E53935",
-              "ColorFilterOpacity": 1,
+              "ColorFilterOpacity": 0.6991869918699186,
               "ColorFilterHalo": false,
               "ColorFilterHaloColor": null
             }

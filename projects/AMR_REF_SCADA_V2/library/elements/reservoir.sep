@@ -1,0 +1,2338 @@
+{
+  "Metadata": {
+    "Schema": "scada-builder-v2.element-studio.component",
+    "SchemaVersion": 1,
+    "Format": "json.sep",
+    "CreatedByVersion": "V2.1.3.0003"
+  },
+  "Component": {
+    "ComponentId": "Polygon1",
+    "Name": "Polygon1",
+    "Bounds": {
+      "X": 0,
+      "Y": 0,
+      "Width": 71,
+      "Height": 101
+    },
+    "Visual": {
+      "Kind": "Svg",
+      "SvgMarkup": "\u003Csvg xmlns=\u0022http://www.w3.org/2000/svg\u0022 width=\u002271\u0022 height=\u0022100\u0022 viewBox=\u0022876 268 71 100\u0022\u003E\r\n  \u003Cg id=\u0022Element001\u0022 data-source-id=\u002239\u0022 data-source-name=\u0022Polygon1\u0022\u003E\r\n    \u003Cpolygon points=\u0022915.0,351.0 915.0,364.0 914.0,364.0 914.0,366.0 922.0,366.0 922.0,364.0 920.0,364.0 920.0,351.0 915.0,351.0\u0022 fill=\u0022rgba(76,76,76,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon1\u0022 data-id=\u002239\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element002\u0022 data-source-id=\u002240\u0022 data-source-name=\u0022Polygon2\u0022\u003E\r\n    \u003Cpolygon points=\u0022890.0,351.0 890.0,364.0 889.0,364.0 889.0,366.0 897.0,366.0 897.0,364.0 895.0,364.0 895.0,351.0 890.0,351.0\u0022 fill=\u0022rgba(76,76,76,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon2\u0022 data-id=\u002240\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element003\u0022 data-source-id=\u002242\u0022 data-source-name=\u0022PolyLine1\u0022\u003E\r\n    \u003Cpolyline points=\u0022888.0,368.0 879.0,368.0 880.0,368.0 882.0,368.0 883.0,368.0 884.0,368.0 885.0,368.0 888.0,368.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine1\u0022 data-id=\u002242\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element004\u0022 data-source-id=\u002244\u0022 data-source-name=\u0022PolyLine2\u0022\u003E\r\n    \u003Cpolyline points=\u0022932.0,368.0 923.0,368.0 924.0,368.0 926.0,368.0 927.0,368.0 928.0,368.0 929.0,368.0 931.0,368.0 932.0,368.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine2\u0022 data-id=\u002244\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element005\u0022 data-source-id=\u002245\u0022 data-source-name=\u0022PolyLine3\u0022\u003E\r\n    \u003Cpolyline points=\u0022915.0,351.0 915.0,364.0 914.0,364.0 914.0,366.0 922.0,366.0 922.0,364.0 920.0,364.0 920.0,351.0 915.0,351.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine3\u0022 data-id=\u002245\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element006\u0022 data-source-id=\u002246\u0022 data-source-name=\u0022PolyLine4\u0022\u003E\r\n    \u003Cpolyline points=\u0022890.0,351.0 890.0,364.0 889.0,364.0 889.0,366.0 897.0,366.0 897.0,364.0 895.0,364.0 895.0,351.0 890.0,351.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine4\u0022 data-id=\u002246\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element007\u0022 data-source-id=\u002247\u0022 data-source-name=\u0022PolyLine5\u0022\u003E\r\n    \u003Cpolyline points=\u0022888.0,368.0 879.0,368.0 880.0,368.0 882.0,368.0 883.0,368.0 884.0,368.0 885.0,368.0 888.0,368.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine5\u0022 data-id=\u002247\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element008\u0022 data-source-id=\u002248\u0022 data-source-name=\u0022PolyLine6\u0022\u003E\r\n    \u003Cpolyline points=\u0022932.0,368.0 923.0,368.0 924.0,368.0 926.0,368.0 927.0,368.0 928.0,368.0 929.0,368.0 931.0,368.0 932.0,368.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine6\u0022 data-id=\u002248\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element009\u0022 data-source-id=\u002249\u0022 data-source-name=\u0022Polygon3\u0022\u003E\r\n    \u003Cpolygon points=\u0022929.0,352.0 930.0,346.0 930.0,272.0 929.0,269.0 930.0,269.0 934.0,272.0 934.0,346.0 930.0,352.0 929.0,352.0\u0022 fill=\u0022rgba(76,76,76,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon3\u0022 data-id=\u002249\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element010\u0022 data-source-id=\u002250\u0022 data-source-name=\u0022Polygon4\u0022\u003E\r\n    \u003Cpolygon points=\u0022881.0,352.0 880.0,346.0 880.0,272.0 881.0,269.0 880.0,269.0 876.0,272.0 876.0,346.0 880.0,352.0 881.0,352.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon4\u0022 data-id=\u002250\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element011\u0022 data-source-id=\u002251\u0022 data-source-name=\u0022Polygon5\u0022\u003E\r\n    \u003Cpolygon points=\u0022919.0,352.0 922.0,346.0 922.0,272.0 919.0,269.0 924.0,269.0 925.0,272.0 925.0,346.0 924.0,352.0 919.0,352.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon5\u0022 data-id=\u002251\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element012\u0022 data-source-id=\u002252\u0022 data-source-name=\u0022Polygon6\u0022\u003E\r\n    \u003Cpolygon points=\u0022924.0,352.0 925.0,346.0 925.0,272.0 924.0,269.0 929.0,269.0 930.0,272.0 930.0,346.0 929.0,352.0 924.0,352.0\u0022 fill=\u0022rgba(102,102,102,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon6\u0022 data-id=\u002252\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(102, 102, 102); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element013\u0022 data-source-id=\u002253\u0022 data-source-name=\u0022Polygon7\u0022\u003E\r\n    \u003Cpolygon points=\u0022886.0,352.0 885.0,346.0 885.0,272.0 886.0,269.0 881.0,269.0 880.0,272.0 880.0,346.0 881.0,352.0 886.0,352.0\u0022 fill=\u0022rgba(153,153,153,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon7\u0022 data-id=\u002253\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(153, 153, 153); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element014\u0022 data-source-id=\u002254\u0022 data-source-name=\u0022Polygon8\u0022\u003E\r\n    \u003Cpolygon points=\u0022915.0,352.0 916.0,346.0 916.0,272.0 915.0,269.0 919.0,269.0 921.0,272.0 921.0,346.0 919.0,352.0 915.0,352.0\u0022 fill=\u0022rgba(153,153,153,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon8\u0022 data-id=\u002254\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(153, 153, 153); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element015\u0022 data-source-id=\u002255\u0022 data-source-name=\u0022Polygon9\u0022\u003E\r\n    \u003Cpolygon points=\u0022890.0,352.0 889.0,346.0 889.0,272.0 890.0,269.0 886.0,269.0 885.0,272.0 885.0,346.0 886.0,352.0 890.0,352.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon9\u0022 data-id=\u002255\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element016\u0022 data-source-id=\u002256\u0022 data-source-name=\u0022Polygon10\u0022\u003E\r\n    \u003Cpolygon points=\u0022911.0,352.0 912.0,346.0 912.0,272.0 911.0,269.0 915.0,269.0 916.0,272.0 916.0,346.0 915.0,352.0 911.0,352.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon10\u0022 data-id=\u002256\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element017\u0022 data-source-id=\u002257\u0022 data-source-name=\u0022Polygon11\u0022\u003E\r\n    \u003Cpolygon points=\u0022895.0,352.0 894.0,346.0 894.0,272.0 895.0,269.0 890.0,269.0 889.0,272.0 889.0,346.0 890.0,352.0 895.0,352.0\u0022 fill=\u0022rgba(204,204,204,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon11\u0022 data-id=\u002257\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element018\u0022 data-source-id=\u002258\u0022 data-source-name=\u0022Polygon12\u0022\u003E\r\n    \u003Cpolygon points=\u0022906.0,352.0 907.0,346.0 907.0,272.0 906.0,269.0 911.0,269.0 912.0,272.0 912.0,346.0 911.0,352.0 906.0,352.0\u0022 fill=\u0022rgba(204,204,204,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon12\u0022 data-id=\u002258\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element019\u0022 data-source-id=\u002259\u0022 data-source-name=\u0022Polygon13\u0022\u003E\r\n    \u003Cpolygon points=\u0022899.0,352.0 898.0,346.0 898.0,272.0 899.0,269.0 895.0,269.0 894.0,272.0 894.0,346.0 895.0,352.0 899.0,352.0\u0022 fill=\u0022rgba(229,229,229,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon13\u0022 data-id=\u002259\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element020\u0022 data-source-id=\u002260\u0022 data-source-name=\u0022Polygon14\u0022\u003E\r\n    \u003Cpolygon points=\u0022904.0,352.0 903.0,346.0 903.0,272.0 904.0,269.0 907.0,269.0 908.0,272.0 908.0,346.0 907.0,352.0 904.0,352.0\u0022 fill=\u0022rgba(229,229,229,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon14\u0022 data-id=\u002260\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element021\u0022 data-source-id=\u002261\u0022 data-source-name=\u0022Polygon15\u0022\u003E\r\n    \u003Cpolygon points=\u0022904.0,352.0 903.0,346.0 903.0,272.0 904.0,269.0 899.0,269.0 898.0,272.0 898.0,346.0 899.0,352.0 904.0,352.0\u0022 fill=\u0022rgba(255,255,255,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon15\u0022 data-id=\u002261\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(255, 255, 255); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element022\u0022 data-source-id=\u002262\u0022 data-source-name=\u0022Polygon16\u0022\u003E\r\n    \u003Cpolygon points=\u0022920.0,269.0 905.0,268.0 930.0,269.0 920.0,269.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon16\u0022 data-id=\u002262\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element023\u0022 data-source-id=\u002263\u0022 data-source-name=\u0022Polygon17\u0022\u003E\r\n    \u003Cpolygon points=\u0022905.0,268.0 909.0,269.0 920.0,269.0 905.0,268.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon17\u0022 data-id=\u002263\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element024\u0022 data-source-id=\u002264\u0022 data-source-name=\u0022Polygon18\u0022\u003E\r\n    \u003Cpolygon points=\u0022905.0,268.0 899.0,269.0 909.0,269.0 905.0,268.0\u0022 fill=\u0022rgba(229,229,229,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon18\u0022 data-id=\u002264\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element025\u0022 data-source-id=\u002265\u0022 data-source-name=\u0022Polygon19\u0022\u003E\r\n    \u003Cpolygon points=\u0022899.0,269.0 905.0,268.0 890.0,269.0 899.0,269.0\u0022 fill=\u0022rgba(204,204,204,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon19\u0022 data-id=\u002265\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element026\u0022 data-source-id=\u002266\u0022 data-source-name=\u0022Polygon20\u0022\u003E\r\n    \u003Cpolygon points=\u0022905.0,268.0 890.0,269.0 880.0,269.0 905.0,268.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon20\u0022 data-id=\u002266\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element027\u0022 data-source-id=\u002267\u0022 data-source-name=\u0022PolyLine7\u0022\u003E\r\n    \u003Cpolyline points=\u0022880.0,269.0 930.0,269.0 905.0,268.0 880.0,269.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine7\u0022 data-id=\u002267\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element028\u0022 data-source-id=\u002268\u0022 data-source-name=\u0022PolyLine8\u0022\u003E\r\n    \u003Cpolyline points=\u0022876.0,346.0 880.0,352.0 930.0,352.0 934.0,346.0 934.0,272.0 930.0,269.0 880.0,269.0 876.0,272.0 876.0,346.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine8\u0022 data-id=\u002268\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element029\u0022 data-source-id=\u002269\u0022 data-source-name=\u0022PolyLine9\u0022\u003E\r\n    \u003Cpolyline points=\u0022934.0,347.0 933.0,348.0 932.0,348.0 929.0,348.0 926.0,348.0 922.0,348.0 917.0,350.0 912.0,350.0 906.0,350.0 901.0,350.0 894.0,350.0 889.0,348.0 886.0,348.0 882.0,348.0 879.0,348.0 878.0,348.0 878.0,347.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(178,178,178,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine9\u0022 data-id=\u002269\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(178, 178, 178); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element030\u0022 data-source-id=\u002270\u0022 data-source-name=\u0022PolyLine10\u0022\u003E\r\n    \u003Cpolyline points=\u0022934.0,274.0 933.0,274.0 932.0,272.0 929.0,272.0 926.0,272.0 922.0,272.0 917.0,272.0 912.0,271.0 906.0,271.0 901.0,271.0 894.0,272.0 889.0,272.0 886.0,272.0 882.0,272.0 879.0,272.0 878.0,274.0 878.0,274.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(178,178,178,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine10\u0022 data-id=\u002270\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(178, 178, 178); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element031\u0022 data-source-id=\u002271\u0022 data-source-name=\u0022Polygon21\u0022\u003E\r\n    \u003Cpolygon points=\u0022932.0,366.0 929.0,366.0 929.0,349.0 932.0,349.0 932.0,366.0\u0022 fill=\u0022rgba(76,76,76,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon21\u0022 data-id=\u002271\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element032\u0022 data-source-id=\u002272\u0022 data-source-name=\u0022Polygon22\u0022\u003E\r\n    \u003Cpolygon points=\u0022886.0,367.0 885.0,367.0 885.0,351.0 886.0,351.0 886.0,367.0\u0022 fill=\u0022rgba(76,76,76,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon22\u0022 data-id=\u002272\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element033\u0022 data-source-id=\u002273\u0022 data-source-name=\u0022PolyLine11\u0022\u003E\r\n    \u003Cpolyline points=\u0022932.0,366.0 929.0,366.0 929.0,349.0 932.0,349.0 932.0,366.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine11\u0022 data-id=\u002273\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element034\u0022 data-source-id=\u002274\u0022 data-source-name=\u0022PolyLine12\u0022\u003E\r\n    \u003Cpolyline points=\u0022886.0,367.0 885.0,367.0 885.0,351.0 886.0,351.0 886.0,367.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine12\u0022 data-id=\u002274\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element035\u0022 data-source-id=\u002275\u0022 data-source-name=\u0022Polygon23\u0022\u003E\r\n    \u003Cpolygon points=\u0022929.0,366.0 928.0,366.0 928.0,350.0 929.0,349.0 929.0,366.0\u0022 fill=\u0022rgba(102,102,102,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon23\u0022 data-id=\u002275\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(102, 102, 102); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element036\u0022 data-source-id=\u002276\u0022 data-source-name=\u0022Polygon24\u0022\u003E\r\n    \u003Cpolygon points=\u0022886.0,367.0 883.0,367.0 883.0,351.0 886.0,351.0 886.0,367.0\u0022 fill=\u0022rgba(102,102,102,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon24\u0022 data-id=\u002276\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(102, 102, 102); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element037\u0022 data-source-id=\u002277\u0022 data-source-name=\u0022PolyLine13\u0022\u003E\r\n    \u003Cpolyline points=\u0022929.0,366.0 928.0,366.0 928.0,350.0 929.0,349.0 929.0,366.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine13\u0022 data-id=\u002277\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element038\u0022 data-source-id=\u002278\u0022 data-source-name=\u0022PolyLine14\u0022\u003E\r\n    \u003Cpolyline points=\u0022886.0,367.0 883.0,367.0 883.0,351.0 886.0,351.0 886.0,367.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine14\u0022 data-id=\u002278\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element039\u0022 data-source-id=\u002279\u0022 data-source-name=\u0022Polygon25\u0022\u003E\r\n    \u003Cpolygon points=\u0022928.0,367.0 925.0,367.0 925.0,351.0 928.0,351.0 928.0,367.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon25\u0022 data-id=\u002279\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element040\u0022 data-source-id=\u002280\u0022 data-source-name=\u0022Polygon26\u0022\u003E\r\n    \u003Cpolygon points=\u0022882.0,366.0 881.0,366.0 881.0,349.0 882.0,350.0 882.0,366.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon26\u0022 data-id=\u002280\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element041\u0022 data-source-id=\u002281\u0022 data-source-name=\u0022PolyLine15\u0022\u003E\r\n    \u003Cpolyline points=\u0022928.0,367.0 925.0,367.0 925.0,351.0 928.0,351.0 928.0,367.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine15\u0022 data-id=\u002281\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element042\u0022 data-source-id=\u002282\u0022 data-source-name=\u0022PolyLine16\u0022\u003E\r\n    \u003Cpolyline points=\u0022882.0,366.0 881.0,366.0 881.0,349.0 882.0,350.0 882.0,366.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine16\u0022 data-id=\u002282\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element043\u0022 data-source-id=\u002283\u0022 data-source-name=\u0022Polygon27\u0022\u003E\r\n    \u003Cpolygon points=\u0022926.0,367.0 932.0,367.0 932.0,368.0 923.0,368.0 923.0,367.0 924.0,367.0 924.0,351.0 926.0,351.0 926.0,367.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon27\u0022 data-id=\u002283\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element044\u0022 data-source-id=\u002284\u0022 data-source-name=\u0022Polygon28\u0022\u003E\r\n    \u003Cpolygon points=\u0022882.0,366.0 888.0,366.0 888.0,368.0 879.0,368.0 879.0,366.0 879.0,349.0 882.0,349.0 882.0,366.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon28\u0022 data-id=\u002284\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element045\u0022 data-source-id=\u002285\u0022 data-source-name=\u0022PolyLine17\u0022\u003E\r\n    \u003Cpolyline points=\u0022926.0,367.0 932.0,367.0 932.0,368.0 923.0,368.0 923.0,367.0 924.0,367.0 924.0,351.0 926.0,351.0 926.0,367.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine17\u0022 data-id=\u002285\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element046\u0022 data-source-id=\u002286\u0022 data-source-name=\u0022PolyLine18\u0022\u003E\r\n    \u003Cpolyline points=\u0022882.0,366.0 888.0,366.0 888.0,368.0 879.0,368.0 879.0,366.0 879.0,349.0 882.0,349.0 882.0,366.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine18\u0022 data-id=\u002286\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element047\u0022 data-source-id=\u0022249\u0022 data-source-name=\u0022Polygon125\u0022\u003E\r\n    \u003Cpolygon points=\u0022939.0,279.0 934.0,279.0 934.0,287.0 939.0,287.0 940.0,287.0 940.0,287.0 940.0,292.0 947.0,292.0 947.0,287.0 947.0,287.0 947.0,284.0 945.0,283.0 945.0,282.0 944.0,282.0 944.0,280.0 943.0,280.0 942.0,279.0 940.0,279.0 939.0,279.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon125\u0022 data-id=\u0022249\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element048\u0022 data-source-id=\u0022250\u0022 data-source-name=\u0022Polygon126\u0022\u003E\r\n    \u003Cpolygon points=\u0022947.0,287.0 947.0,287.0 947.0,284.0 945.0,284.0 945.0,283.0 945.0,282.0 944.0,282.0 944.0,280.0 943.0,280.0 942.0,280.0 942.0,279.0 940.0,279.0 939.0,279.0 934.0,279.0 934.0,287.0 939.0,287.0 940.0,287.0 940.0,287.0 940.0,292.0 947.0,292.0 947.0,287.0\u0022 fill=\u0022rgba(153,153,153,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon126\u0022 data-id=\u0022250\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(153, 153, 153); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element049\u0022 data-source-id=\u0022251\u0022 data-source-name=\u0022Polygon127\u0022\u003E\r\n    \u003Cpolygon points=\u0022945.0,287.0 945.0,291.0 942.0,291.0 942.0,287.0 942.0,284.0 940.0,284.0 940.0,283.0 939.0,283.0 934.0,283.0 934.0,279.0 939.0,279.0 940.0,279.0 942.0,279.0 943.0,279.0 943.0,280.0 944.0,280.0 944.0,282.0 945.0,282.0 945.0,283.0 945.0,284.0 945.0,287.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon127\u0022 data-id=\u0022251\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element050\u0022 data-source-id=\u0022252\u0022 data-source-name=\u0022Polygon128\u0022\u003E\r\n    \u003Cpolygon points=\u0022945.0,287.0 945.0,284.0 945.0,283.0 944.0,283.0 944.0,282.0 943.0,282.0 943.0,280.0 942.0,280.0 942.0,279.0 940.0,279.0 939.0,279.0 934.0,279.0 934.0,283.0 939.0,283.0 940.0,283.0 942.0,283.0 942.0,284.0 942.0,287.0 942.0,291.0 945.0,291.0 945.0,287.0\u0022 fill=\u0022rgba(204,204,204,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon128\u0022 data-id=\u0022252\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element051\u0022 data-source-id=\u0022253\u0022 data-source-name=\u0022Polygon129\u0022\u003E\r\n    \u003Cpolygon points=\u0022944.0,285.0 944.0,291.0 943.0,291.0 943.0,285.0 943.0,284.0 942.0,283.0 940.0,281.0 939.0,281.0 934.0,281.0 934.0,280.0 939.0,280.0 940.0,280.0 942.0,280.0 943.0,281.0 944.0,283.0 944.0,284.0 944.0,285.0\u0022 fill=\u0022rgba(229,229,229,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon129\u0022 data-id=\u0022253\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element052\u0022 data-source-id=\u0022254\u0022 data-source-name=\u0022Polygon130\u0022\u003E\r\n    \u003Cpolygon points=\u0022944.0,285.0 944.0,284.0 944.0,283.0 943.0,283.0 943.0,281.0 942.0,281.0 942.0,280.0 940.0,280.0 939.0,280.0 934.0,280.0 934.0,281.0 939.0,281.0 940.0,281.0 942.0,281.0 942.0,283.0 943.0,283.0 943.0,284.0 943.0,285.0 943.0,291.0 944.0,291.0 944.0,285.0\u0022 fill=\u0022rgba(255,255,255,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon130\u0022 data-id=\u0022254\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(255, 255, 255); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element053\u0022 data-source-id=\u0022255\u0022 data-source-name=\u0022PolyLine67\u0022\u003E\r\n    \u003Cpolyline points=\u0022947.0,292.0 947.0,287.0 947.0,287.0 947.0,284.0 945.0,283.0 945.0,282.0 944.0,282.0 944.0,280.0 943.0,280.0 942.0,279.0 940.0,279.0 939.0,279.0 934.0,279.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine67\u0022 data-id=\u0022255\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element054\u0022 data-source-id=\u0022256\u0022 data-source-name=\u0022PolyLine68\u0022\u003E\r\n    \u003Cpolyline points=\u0022934.0,284.0 939.0,284.0 940.0,284.0 940.0,285.0 940.0,292.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine68\u0022 data-id=\u0022256\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element055\u0022 data-source-id=\u0022257\u0022 data-source-name=\u0022Polygon131\u0022\u003E\r\n    \u003Cpolygon points=\u0022946.0,284.0 946.0,339.0 940.0,339.0 940.0,284.0 946.0,284.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon131\u0022 data-id=\u0022257\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element056\u0022 data-source-id=\u0022258\u0022 data-source-name=\u0022Polygon132\u0022\u003E\r\n    \u003Cpolygon points=\u0022946.0,284.0 946.0,339.0 940.0,339.0 940.0,284.0 946.0,284.0\u0022 fill=\u0022rgba(153,153,153,1.000)\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon132\u0022 data-id=\u0022258\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(153, 153, 153); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element057\u0022 data-source-id=\u0022259\u0022 data-source-name=\u0022Polygon133\u0022\u003E\r\n    \u003Cpolygon points=\u0022945.0,284.0 945.0,339.0 941.0,339.0 941.0,284.0 945.0,284.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon133\u0022 data-id=\u0022259\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element058\u0022 data-source-id=\u0022260\u0022 data-source-name=\u0022Polygon134\u0022\u003E\r\n    \u003Cpolygon points=\u0022945.0,284.0 945.0,339.0 941.0,339.0 941.0,284.0 945.0,284.0\u0022 fill=\u0022rgba(204,204,204,1.000)\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon134\u0022 data-id=\u0022260\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element059\u0022 data-source-id=\u0022261\u0022 data-source-name=\u0022Polygon135\u0022\u003E\r\n    \u003Cpolygon points=\u0022944.0,284.0 944.0,339.0 943.0,339.0 943.0,284.0 944.0,284.0\u0022 fill=\u0022rgba(229,229,229,1.000)\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon135\u0022 data-id=\u0022261\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element060\u0022 data-source-id=\u0022262\u0022 data-source-name=\u0022Polygon136\u0022\u003E\r\n    \u003Cpolygon points=\u0022944.0,284.0 944.0,339.0 943.0,339.0 943.0,284.0 944.0,284.0\u0022 fill=\u0022rgba(255,255,255,1.000)\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon136\u0022 data-id=\u0022262\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(255, 255, 255); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element061\u0022 data-source-id=\u0022263\u0022 data-source-name=\u0022PolyLine69\u0022\u003E\r\n    \u003Cpolyline points=\u0022940.0,284.0 940.0,339.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine69\u0022 data-id=\u0022263\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E  \u003Cg id=\u0022Element062\u0022 data-source-id=\u0022264\u0022 data-source-name=\u0022PolyLine70\u0022\u003E\r\n    \u003Cpolyline points=\u0022946.0,339.0 946.0,284.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine70\u0022 data-id=\u0022264\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E\r\n  \u003C/g\u003E\r\n\u003C/svg\u003E",
+      "ImageAssetId": null,
+      "HtmlMarkup": null,
+      "CssCode": null,
+      "JsCode": null,
+      "TypedElementKind": null
+    },
+    "Parts": [
+      {
+        "PartId": "Element001",
+        "Name": "Element001",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 38,
+          "Y": 83,
+          "Width": 8,
+          "Height": 15
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022915.0,351.0 915.0,364.0 914.0,364.0 914.0,366.0 922.0,366.0 922.0,364.0 920.0,364.0 920.0,351.0 915.0,351.0\u0022 fill=\u0022rgba(76,76,76,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon1\u0022 data-id=\u002239\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "39"
+          ],
+          "Notes": "Polygon1"
+        }
+      },
+      {
+        "PartId": "Element002",
+        "Name": "Element002",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 13,
+          "Y": 83,
+          "Width": 8,
+          "Height": 15
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022890.0,351.0 890.0,364.0 889.0,364.0 889.0,366.0 897.0,366.0 897.0,364.0 895.0,364.0 895.0,351.0 890.0,351.0\u0022 fill=\u0022rgba(76,76,76,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon2\u0022 data-id=\u002240\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "40"
+          ],
+          "Notes": "Polygon2"
+        }
+      },
+      {
+        "PartId": "Element003",
+        "Name": "Element003",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 3,
+          "Y": 100,
+          "Width": 9,
+          "Height": 1
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022888.0,368.0 879.0,368.0 880.0,368.0 882.0,368.0 883.0,368.0 884.0,368.0 885.0,368.0 888.0,368.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine1\u0022 data-id=\u002242\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "42"
+          ],
+          "Notes": "PolyLine1"
+        }
+      },
+      {
+        "PartId": "Element004",
+        "Name": "Element004",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 47,
+          "Y": 100,
+          "Width": 9,
+          "Height": 1
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022932.0,368.0 923.0,368.0 924.0,368.0 926.0,368.0 927.0,368.0 928.0,368.0 929.0,368.0 931.0,368.0 932.0,368.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine2\u0022 data-id=\u002244\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "44"
+          ],
+          "Notes": "PolyLine2"
+        }
+      },
+      {
+        "PartId": "Element005",
+        "Name": "Element005",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 38,
+          "Y": 83,
+          "Width": 8,
+          "Height": 15
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022915.0,351.0 915.0,364.0 914.0,364.0 914.0,366.0 922.0,366.0 922.0,364.0 920.0,364.0 920.0,351.0 915.0,351.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine3\u0022 data-id=\u002245\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "45"
+          ],
+          "Notes": "PolyLine3"
+        }
+      },
+      {
+        "PartId": "Element006",
+        "Name": "Element006",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 13,
+          "Y": 83,
+          "Width": 8,
+          "Height": 15
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022890.0,351.0 890.0,364.0 889.0,364.0 889.0,366.0 897.0,366.0 897.0,364.0 895.0,364.0 895.0,351.0 890.0,351.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine4\u0022 data-id=\u002246\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "46"
+          ],
+          "Notes": "PolyLine4"
+        }
+      },
+      {
+        "PartId": "Element007",
+        "Name": "Element007",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 3,
+          "Y": 100,
+          "Width": 9,
+          "Height": 1
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022888.0,368.0 879.0,368.0 880.0,368.0 882.0,368.0 883.0,368.0 884.0,368.0 885.0,368.0 888.0,368.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine5\u0022 data-id=\u002247\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "47"
+          ],
+          "Notes": "PolyLine5"
+        }
+      },
+      {
+        "PartId": "Element008",
+        "Name": "Element008",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 47,
+          "Y": 100,
+          "Width": 9,
+          "Height": 1
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022932.0,368.0 923.0,368.0 924.0,368.0 926.0,368.0 927.0,368.0 928.0,368.0 929.0,368.0 931.0,368.0 932.0,368.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine6\u0022 data-id=\u002248\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "48"
+          ],
+          "Notes": "PolyLine6"
+        }
+      },
+      {
+        "PartId": "Element009",
+        "Name": "Element009",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 53,
+          "Y": 1,
+          "Width": 5,
+          "Height": 83
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022929.0,352.0 930.0,346.0 930.0,272.0 929.0,269.0 930.0,269.0 934.0,272.0 934.0,346.0 930.0,352.0 929.0,352.0\u0022 fill=\u0022rgba(76,76,76,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon3\u0022 data-id=\u002249\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "49"
+          ],
+          "Notes": "Polygon3"
+        }
+      },
+      {
+        "PartId": "Element010",
+        "Name": "Element010",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 0,
+          "Y": 1,
+          "Width": 5,
+          "Height": 83
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022881.0,352.0 880.0,346.0 880.0,272.0 881.0,269.0 880.0,269.0 876.0,272.0 876.0,346.0 880.0,352.0 881.0,352.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon4\u0022 data-id=\u002250\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "50"
+          ],
+          "Notes": "Polygon4"
+        }
+      },
+      {
+        "PartId": "Element011",
+        "Name": "Element011",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 43,
+          "Y": 1,
+          "Width": 6,
+          "Height": 83
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022919.0,352.0 922.0,346.0 922.0,272.0 919.0,269.0 924.0,269.0 925.0,272.0 925.0,346.0 924.0,352.0 919.0,352.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon5\u0022 data-id=\u002251\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "51"
+          ],
+          "Notes": "Polygon5"
+        }
+      },
+      {
+        "PartId": "Element012",
+        "Name": "Element012",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 48,
+          "Y": 1,
+          "Width": 6,
+          "Height": 83
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022924.0,352.0 925.0,346.0 925.0,272.0 924.0,269.0 929.0,269.0 930.0,272.0 930.0,346.0 929.0,352.0 924.0,352.0\u0022 fill=\u0022rgba(102,102,102,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon6\u0022 data-id=\u002252\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(102, 102, 102); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "52"
+          ],
+          "Notes": "Polygon6"
+        }
+      },
+      {
+        "PartId": "Element013",
+        "Name": "Element013",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 4,
+          "Y": 1,
+          "Width": 6,
+          "Height": 83
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022886.0,352.0 885.0,346.0 885.0,272.0 886.0,269.0 881.0,269.0 880.0,272.0 880.0,346.0 881.0,352.0 886.0,352.0\u0022 fill=\u0022rgba(153,153,153,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon7\u0022 data-id=\u002253\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(153, 153, 153); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "53"
+          ],
+          "Notes": "Polygon7"
+        }
+      },
+      {
+        "PartId": "Element014",
+        "Name": "Element014",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 39,
+          "Y": 1,
+          "Width": 6,
+          "Height": 83
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022915.0,352.0 916.0,346.0 916.0,272.0 915.0,269.0 919.0,269.0 921.0,272.0 921.0,346.0 919.0,352.0 915.0,352.0\u0022 fill=\u0022rgba(153,153,153,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon8\u0022 data-id=\u002254\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(153, 153, 153); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "54"
+          ],
+          "Notes": "Polygon8"
+        }
+      },
+      {
+        "PartId": "Element015",
+        "Name": "Element015",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 9,
+          "Y": 1,
+          "Width": 5,
+          "Height": 83
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022890.0,352.0 889.0,346.0 889.0,272.0 890.0,269.0 886.0,269.0 885.0,272.0 885.0,346.0 886.0,352.0 890.0,352.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon9\u0022 data-id=\u002255\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "55"
+          ],
+          "Notes": "Polygon9"
+        }
+      },
+      {
+        "PartId": "Element016",
+        "Name": "Element016",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 35,
+          "Y": 1,
+          "Width": 5,
+          "Height": 83
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022911.0,352.0 912.0,346.0 912.0,272.0 911.0,269.0 915.0,269.0 916.0,272.0 916.0,346.0 915.0,352.0 911.0,352.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon10\u0022 data-id=\u002256\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "56"
+          ],
+          "Notes": "Polygon10"
+        }
+      },
+      {
+        "PartId": "Element017",
+        "Name": "Element017",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 13,
+          "Y": 1,
+          "Width": 6,
+          "Height": 83
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022895.0,352.0 894.0,346.0 894.0,272.0 895.0,269.0 890.0,269.0 889.0,272.0 889.0,346.0 890.0,352.0 895.0,352.0\u0022 fill=\u0022rgba(204,204,204,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon11\u0022 data-id=\u002257\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "57"
+          ],
+          "Notes": "Polygon11"
+        }
+      },
+      {
+        "PartId": "Element018",
+        "Name": "Element018",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 30,
+          "Y": 1,
+          "Width": 6,
+          "Height": 83
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022906.0,352.0 907.0,346.0 907.0,272.0 906.0,269.0 911.0,269.0 912.0,272.0 912.0,346.0 911.0,352.0 906.0,352.0\u0022 fill=\u0022rgba(204,204,204,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon12\u0022 data-id=\u002258\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "58"
+          ],
+          "Notes": "Polygon12"
+        }
+      },
+      {
+        "PartId": "Element019",
+        "Name": "Element019",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 18,
+          "Y": 1,
+          "Width": 5,
+          "Height": 83
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022899.0,352.0 898.0,346.0 898.0,272.0 899.0,269.0 895.0,269.0 894.0,272.0 894.0,346.0 895.0,352.0 899.0,352.0\u0022 fill=\u0022rgba(229,229,229,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon13\u0022 data-id=\u002259\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "59"
+          ],
+          "Notes": "Polygon13"
+        }
+      },
+      {
+        "PartId": "Element020",
+        "Name": "Element020",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 27,
+          "Y": 1,
+          "Width": 5,
+          "Height": 83
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022904.0,352.0 903.0,346.0 903.0,272.0 904.0,269.0 907.0,269.0 908.0,272.0 908.0,346.0 907.0,352.0 904.0,352.0\u0022 fill=\u0022rgba(229,229,229,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon14\u0022 data-id=\u002260\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "60"
+          ],
+          "Notes": "Polygon14"
+        }
+      },
+      {
+        "PartId": "Element021",
+        "Name": "Element021",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 22,
+          "Y": 1,
+          "Width": 6,
+          "Height": 83
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022904.0,352.0 903.0,346.0 903.0,272.0 904.0,269.0 899.0,269.0 898.0,272.0 898.0,346.0 899.0,352.0 904.0,352.0\u0022 fill=\u0022rgba(255,255,255,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon15\u0022 data-id=\u002261\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(255, 255, 255); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "61"
+          ],
+          "Notes": "Polygon15"
+        }
+      },
+      {
+        "PartId": "Element022",
+        "Name": "Element022",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 29,
+          "Y": 0,
+          "Width": 25,
+          "Height": 1
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022920.0,269.0 905.0,268.0 930.0,269.0 920.0,269.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon16\u0022 data-id=\u002262\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "62"
+          ],
+          "Notes": "Polygon16"
+        }
+      },
+      {
+        "PartId": "Element023",
+        "Name": "Element023",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 29,
+          "Y": 0,
+          "Width": 15,
+          "Height": 1
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022905.0,268.0 909.0,269.0 920.0,269.0 905.0,268.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon17\u0022 data-id=\u002263\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "63"
+          ],
+          "Notes": "Polygon17"
+        }
+      },
+      {
+        "PartId": "Element024",
+        "Name": "Element024",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 23,
+          "Y": 0,
+          "Width": 10,
+          "Height": 1
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022905.0,268.0 899.0,269.0 909.0,269.0 905.0,268.0\u0022 fill=\u0022rgba(229,229,229,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon18\u0022 data-id=\u002264\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "64"
+          ],
+          "Notes": "Polygon18"
+        }
+      },
+      {
+        "PartId": "Element025",
+        "Name": "Element025",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 14,
+          "Y": 0,
+          "Width": 15,
+          "Height": 1
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022899.0,269.0 905.0,268.0 890.0,269.0 899.0,269.0\u0022 fill=\u0022rgba(204,204,204,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon19\u0022 data-id=\u002265\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "65"
+          ],
+          "Notes": "Polygon19"
+        }
+      },
+      {
+        "PartId": "Element026",
+        "Name": "Element026",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 4,
+          "Y": 0,
+          "Width": 25,
+          "Height": 1
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022905.0,268.0 890.0,269.0 880.0,269.0 905.0,268.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon20\u0022 data-id=\u002266\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "66"
+          ],
+          "Notes": "Polygon20"
+        }
+      },
+      {
+        "PartId": "Element027",
+        "Name": "Element027",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 4,
+          "Y": 0,
+          "Width": 50,
+          "Height": 1
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022880.0,269.0 930.0,269.0 905.0,268.0 880.0,269.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine7\u0022 data-id=\u002267\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "67"
+          ],
+          "Notes": "PolyLine7"
+        }
+      },
+      {
+        "PartId": "Element028",
+        "Name": "Element028",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 0,
+          "Y": 1,
+          "Width": 58,
+          "Height": 83
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022876.0,346.0 880.0,352.0 930.0,352.0 934.0,346.0 934.0,272.0 930.0,269.0 880.0,269.0 876.0,272.0 876.0,346.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine8\u0022 data-id=\u002268\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "68"
+          ],
+          "Notes": "PolyLine8"
+        }
+      },
+      {
+        "PartId": "Element029",
+        "Name": "Element029",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 2,
+          "Y": 79,
+          "Width": 56,
+          "Height": 3
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022934.0,347.0 933.0,348.0 932.0,348.0 929.0,348.0 926.0,348.0 922.0,348.0 917.0,350.0 912.0,350.0 906.0,350.0 901.0,350.0 894.0,350.0 889.0,348.0 886.0,348.0 882.0,348.0 879.0,348.0 878.0,348.0 878.0,347.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(178,178,178,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine9\u0022 data-id=\u002269\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(178, 178, 178); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "69"
+          ],
+          "Notes": "PolyLine9"
+        }
+      },
+      {
+        "PartId": "Element030",
+        "Name": "Element030",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 2,
+          "Y": 3,
+          "Width": 56,
+          "Height": 3
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022934.0,274.0 933.0,274.0 932.0,272.0 929.0,272.0 926.0,272.0 922.0,272.0 917.0,272.0 912.0,271.0 906.0,271.0 901.0,271.0 894.0,272.0 889.0,272.0 886.0,272.0 882.0,272.0 879.0,272.0 878.0,274.0 878.0,274.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(178,178,178,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine10\u0022 data-id=\u002270\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(178, 178, 178); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "70"
+          ],
+          "Notes": "PolyLine10"
+        }
+      },
+      {
+        "PartId": "Element031",
+        "Name": "Element031",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 53,
+          "Y": 81,
+          "Width": 3,
+          "Height": 17
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022932.0,366.0 929.0,366.0 929.0,349.0 932.0,349.0 932.0,366.0\u0022 fill=\u0022rgba(76,76,76,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon21\u0022 data-id=\u002271\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "71"
+          ],
+          "Notes": "Polygon21"
+        }
+      },
+      {
+        "PartId": "Element032",
+        "Name": "Element032",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 9,
+          "Y": 83,
+          "Width": 1,
+          "Height": 16
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022886.0,367.0 885.0,367.0 885.0,351.0 886.0,351.0 886.0,367.0\u0022 fill=\u0022rgba(76,76,76,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon22\u0022 data-id=\u002272\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(76, 76, 76); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "72"
+          ],
+          "Notes": "Polygon22"
+        }
+      },
+      {
+        "PartId": "Element033",
+        "Name": "Element033",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 53,
+          "Y": 81,
+          "Width": 3,
+          "Height": 17
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022932.0,366.0 929.0,366.0 929.0,349.0 932.0,349.0 932.0,366.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine11\u0022 data-id=\u002273\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "73"
+          ],
+          "Notes": "PolyLine11"
+        }
+      },
+      {
+        "PartId": "Element034",
+        "Name": "Element034",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 9,
+          "Y": 83,
+          "Width": 1,
+          "Height": 16
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022886.0,367.0 885.0,367.0 885.0,351.0 886.0,351.0 886.0,367.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine12\u0022 data-id=\u002274\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "74"
+          ],
+          "Notes": "PolyLine12"
+        }
+      },
+      {
+        "PartId": "Element035",
+        "Name": "Element035",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 52,
+          "Y": 81,
+          "Width": 1,
+          "Height": 17
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022929.0,366.0 928.0,366.0 928.0,350.0 929.0,349.0 929.0,366.0\u0022 fill=\u0022rgba(102,102,102,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon23\u0022 data-id=\u002275\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(102, 102, 102); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "75"
+          ],
+          "Notes": "Polygon23"
+        }
+      },
+      {
+        "PartId": "Element036",
+        "Name": "Element036",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 7,
+          "Y": 83,
+          "Width": 3,
+          "Height": 16
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022886.0,367.0 883.0,367.0 883.0,351.0 886.0,351.0 886.0,367.0\u0022 fill=\u0022rgba(102,102,102,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon24\u0022 data-id=\u002276\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(102, 102, 102); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "76"
+          ],
+          "Notes": "Polygon24"
+        }
+      },
+      {
+        "PartId": "Element037",
+        "Name": "Element037",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 52,
+          "Y": 81,
+          "Width": 1,
+          "Height": 17
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022929.0,366.0 928.0,366.0 928.0,350.0 929.0,349.0 929.0,366.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine13\u0022 data-id=\u002277\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "77"
+          ],
+          "Notes": "PolyLine13"
+        }
+      },
+      {
+        "PartId": "Element038",
+        "Name": "Element038",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 7,
+          "Y": 83,
+          "Width": 3,
+          "Height": 16
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022886.0,367.0 883.0,367.0 883.0,351.0 886.0,351.0 886.0,367.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine14\u0022 data-id=\u002278\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "78"
+          ],
+          "Notes": "PolyLine14"
+        }
+      },
+      {
+        "PartId": "Element039",
+        "Name": "Element039",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 49,
+          "Y": 83,
+          "Width": 3,
+          "Height": 16
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022928.0,367.0 925.0,367.0 925.0,351.0 928.0,351.0 928.0,367.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon25\u0022 data-id=\u002279\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "79"
+          ],
+          "Notes": "Polygon25"
+        }
+      },
+      {
+        "PartId": "Element040",
+        "Name": "Element040",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 5,
+          "Y": 81,
+          "Width": 1,
+          "Height": 17
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022882.0,366.0 881.0,366.0 881.0,349.0 882.0,350.0 882.0,366.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon26\u0022 data-id=\u002280\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "80"
+          ],
+          "Notes": "Polygon26"
+        }
+      },
+      {
+        "PartId": "Element041",
+        "Name": "Element041",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 49,
+          "Y": 83,
+          "Width": 3,
+          "Height": 16
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022928.0,367.0 925.0,367.0 925.0,351.0 928.0,351.0 928.0,367.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine15\u0022 data-id=\u002281\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "81"
+          ],
+          "Notes": "PolyLine15"
+        }
+      },
+      {
+        "PartId": "Element042",
+        "Name": "Element042",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 5,
+          "Y": 81,
+          "Width": 1,
+          "Height": 17
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022882.0,366.0 881.0,366.0 881.0,349.0 882.0,350.0 882.0,366.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine16\u0022 data-id=\u002282\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "82"
+          ],
+          "Notes": "PolyLine16"
+        }
+      },
+      {
+        "PartId": "Element043",
+        "Name": "Element043",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 47,
+          "Y": 83,
+          "Width": 9,
+          "Height": 17
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022926.0,367.0 932.0,367.0 932.0,368.0 923.0,368.0 923.0,367.0 924.0,367.0 924.0,351.0 926.0,351.0 926.0,367.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon27\u0022 data-id=\u002283\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "83"
+          ],
+          "Notes": "Polygon27"
+        }
+      },
+      {
+        "PartId": "Element044",
+        "Name": "Element044",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 3,
+          "Y": 81,
+          "Width": 9,
+          "Height": 19
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022882.0,366.0 888.0,366.0 888.0,368.0 879.0,368.0 879.0,366.0 879.0,349.0 882.0,349.0 882.0,366.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon28\u0022 data-id=\u002284\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "84"
+          ],
+          "Notes": "Polygon28"
+        }
+      },
+      {
+        "PartId": "Element045",
+        "Name": "Element045",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 47,
+          "Y": 83,
+          "Width": 9,
+          "Height": 17
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022926.0,367.0 932.0,367.0 932.0,368.0 923.0,368.0 923.0,367.0 924.0,367.0 924.0,351.0 926.0,351.0 926.0,367.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine17\u0022 data-id=\u002285\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "85"
+          ],
+          "Notes": "PolyLine17"
+        }
+      },
+      {
+        "PartId": "Element046",
+        "Name": "Element046",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 3,
+          "Y": 81,
+          "Width": 9,
+          "Height": 19
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022882.0,366.0 888.0,366.0 888.0,368.0 879.0,368.0 879.0,366.0 879.0,349.0 882.0,349.0 882.0,366.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine18\u0022 data-id=\u002286\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "86"
+          ],
+          "Notes": "PolyLine18"
+        }
+      },
+      {
+        "PartId": "Element047",
+        "Name": "Element047",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 58,
+          "Y": 11,
+          "Width": 13,
+          "Height": 13
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022939.0,279.0 934.0,279.0 934.0,287.0 939.0,287.0 940.0,287.0 940.0,287.0 940.0,292.0 947.0,292.0 947.0,287.0 947.0,287.0 947.0,284.0 945.0,283.0 945.0,282.0 944.0,282.0 944.0,280.0 943.0,280.0 942.0,279.0 940.0,279.0 939.0,279.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon125\u0022 data-id=\u0022249\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "249"
+          ],
+          "Notes": "Polygon125"
+        }
+      },
+      {
+        "PartId": "Element048",
+        "Name": "Element048",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 58,
+          "Y": 11,
+          "Width": 13,
+          "Height": 13
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022947.0,287.0 947.0,287.0 947.0,284.0 945.0,284.0 945.0,283.0 945.0,282.0 944.0,282.0 944.0,280.0 943.0,280.0 942.0,280.0 942.0,279.0 940.0,279.0 939.0,279.0 934.0,279.0 934.0,287.0 939.0,287.0 940.0,287.0 940.0,287.0 940.0,292.0 947.0,292.0 947.0,287.0\u0022 fill=\u0022rgba(153,153,153,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon126\u0022 data-id=\u0022250\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(153, 153, 153); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "250"
+          ],
+          "Notes": "Polygon126"
+        }
+      },
+      {
+        "PartId": "Element049",
+        "Name": "Element049",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 58,
+          "Y": 11,
+          "Width": 11,
+          "Height": 12
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022945.0,287.0 945.0,291.0 942.0,291.0 942.0,287.0 942.0,284.0 940.0,284.0 940.0,283.0 939.0,283.0 934.0,283.0 934.0,279.0 939.0,279.0 940.0,279.0 942.0,279.0 943.0,279.0 943.0,280.0 944.0,280.0 944.0,282.0 945.0,282.0 945.0,283.0 945.0,284.0 945.0,287.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon127\u0022 data-id=\u0022251\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "251"
+          ],
+          "Notes": "Polygon127"
+        }
+      },
+      {
+        "PartId": "Element050",
+        "Name": "Element050",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 58,
+          "Y": 11,
+          "Width": 11,
+          "Height": 12
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022945.0,287.0 945.0,284.0 945.0,283.0 944.0,283.0 944.0,282.0 943.0,282.0 943.0,280.0 942.0,280.0 942.0,279.0 940.0,279.0 939.0,279.0 934.0,279.0 934.0,283.0 939.0,283.0 940.0,283.0 942.0,283.0 942.0,284.0 942.0,287.0 942.0,291.0 945.0,291.0 945.0,287.0\u0022 fill=\u0022rgba(204,204,204,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon128\u0022 data-id=\u0022252\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "252"
+          ],
+          "Notes": "Polygon128"
+        }
+      },
+      {
+        "PartId": "Element051",
+        "Name": "Element051",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 58,
+          "Y": 12,
+          "Width": 10,
+          "Height": 11
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022944.0,285.0 944.0,291.0 943.0,291.0 943.0,285.0 943.0,284.0 942.0,283.0 940.0,281.0 939.0,281.0 934.0,281.0 934.0,280.0 939.0,280.0 940.0,280.0 942.0,280.0 943.0,281.0 944.0,283.0 944.0,284.0 944.0,285.0\u0022 fill=\u0022rgba(229,229,229,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon129\u0022 data-id=\u0022253\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "253"
+          ],
+          "Notes": "Polygon129"
+        }
+      },
+      {
+        "PartId": "Element052",
+        "Name": "Element052",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 58,
+          "Y": 12,
+          "Width": 10,
+          "Height": 11
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022944.0,285.0 944.0,284.0 944.0,283.0 943.0,283.0 943.0,281.0 942.0,281.0 942.0,280.0 940.0,280.0 939.0,280.0 934.0,280.0 934.0,281.0 939.0,281.0 940.0,281.0 942.0,281.0 942.0,283.0 943.0,283.0 943.0,284.0 943.0,285.0 943.0,291.0 944.0,291.0 944.0,285.0\u0022 fill=\u0022rgba(255,255,255,1.000)\u0022 stroke=\u0022rgba(255,255,255,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon130\u0022 data-id=\u0022254\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(255, 255, 255); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(255, 255, 255); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "254"
+          ],
+          "Notes": "Polygon130"
+        }
+      },
+      {
+        "PartId": "Element053",
+        "Name": "Element053",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 58,
+          "Y": 11,
+          "Width": 13,
+          "Height": 13
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022947.0,292.0 947.0,287.0 947.0,287.0 947.0,284.0 945.0,283.0 945.0,282.0 944.0,282.0 944.0,280.0 943.0,280.0 942.0,279.0 940.0,279.0 939.0,279.0 934.0,279.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine67\u0022 data-id=\u0022255\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "255"
+          ],
+          "Notes": "PolyLine67"
+        }
+      },
+      {
+        "PartId": "Element054",
+        "Name": "Element054",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 58,
+          "Y": 16,
+          "Width": 6,
+          "Height": 8
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022934.0,284.0 939.0,284.0 940.0,284.0 940.0,285.0 940.0,292.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine68\u0022 data-id=\u0022256\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "256"
+          ],
+          "Notes": "PolyLine68"
+        }
+      },
+      {
+        "PartId": "Element055",
+        "Name": "Element055",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 64,
+          "Y": 16,
+          "Width": 6,
+          "Height": 55
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022946.0,284.0 946.0,339.0 940.0,339.0 940.0,284.0 946.0,284.0\u0022 fill=\u0022rgba(127,127,127,1.000)\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon131\u0022 data-id=\u0022257\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(127, 127, 127); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "257"
+          ],
+          "Notes": "Polygon131"
+        }
+      },
+      {
+        "PartId": "Element056",
+        "Name": "Element056",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 64,
+          "Y": 16,
+          "Width": 6,
+          "Height": 55
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022946.0,284.0 946.0,339.0 940.0,339.0 940.0,284.0 946.0,284.0\u0022 fill=\u0022rgba(153,153,153,1.000)\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon132\u0022 data-id=\u0022258\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(153, 153, 153); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "258"
+          ],
+          "Notes": "Polygon132"
+        }
+      },
+      {
+        "PartId": "Element057",
+        "Name": "Element057",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 65,
+          "Y": 16,
+          "Width": 4,
+          "Height": 55
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022945.0,284.0 945.0,339.0 941.0,339.0 941.0,284.0 945.0,284.0\u0022 fill=\u0022rgba(178,178,178,1.000)\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon133\u0022 data-id=\u0022259\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(178, 178, 178); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "259"
+          ],
+          "Notes": "Polygon133"
+        }
+      },
+      {
+        "PartId": "Element058",
+        "Name": "Element058",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 65,
+          "Y": 16,
+          "Width": 4,
+          "Height": 55
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022945.0,284.0 945.0,339.0 941.0,339.0 941.0,284.0 945.0,284.0\u0022 fill=\u0022rgba(204,204,204,1.000)\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon134\u0022 data-id=\u0022260\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(204, 204, 204); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "260"
+          ],
+          "Notes": "Polygon134"
+        }
+      },
+      {
+        "PartId": "Element059",
+        "Name": "Element059",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 67,
+          "Y": 16,
+          "Width": 1,
+          "Height": 55
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022944.0,284.0 944.0,339.0 943.0,339.0 943.0,284.0 944.0,284.0\u0022 fill=\u0022rgba(229,229,229,1.000)\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon135\u0022 data-id=\u0022261\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(229, 229, 229); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "261"
+          ],
+          "Notes": "Polygon135"
+        }
+      },
+      {
+        "PartId": "Element060",
+        "Name": "Element060",
+        "Kind": "Polygon",
+        "Bounds": {
+          "X": 67,
+          "Y": 16,
+          "Width": 1,
+          "Height": 55
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolygon points=\u0022944.0,284.0 944.0,339.0 943.0,339.0 943.0,284.0 944.0,284.0\u0022 fill=\u0022rgba(255,255,255,1.000)\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00220.0\u0022 data-name=\u0022Polygon136\u0022 data-id=\u0022262\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: rgb(255, 255, 255); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 0px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polygon\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "262"
+          ],
+          "Notes": "Polygon136"
+        }
+      },
+      {
+        "PartId": "Element061",
+        "Name": "Element061",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 64,
+          "Y": 16,
+          "Width": 1,
+          "Height": 55
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022940.0,284.0 940.0,339.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine69\u0022 data-id=\u0022263\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "263"
+          ],
+          "Notes": "PolyLine69"
+        }
+      },
+      {
+        "PartId": "Element062",
+        "Name": "Element062",
+        "Kind": "Polyline",
+        "Bounds": {
+          "X": 70,
+          "Y": 16,
+          "Width": 1,
+          "Height": 55
+        },
+        "Style": {
+          "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+          "FontSize": 16,
+          "Foreground": "rgb(232, 237, 245)",
+          "Background": "rgba(0, 0, 0, 0)",
+          "BorderColor": "rgb(232, 237, 245)",
+          "BorderWidth": 0,
+          "BorderStyle": "None",
+          "Opacity": 1
+        },
+        "Geometry": null,
+        "Text": "",
+        "ImageAssetId": null,
+        "HtmlMarkup": "\u003Cpolyline points=\u0022946.0,339.0 946.0,284.0\u0022 fill=\u0022none\u0022 stroke=\u0022rgba(0,0,0,1.000)\u0022 stroke-width=\u00221.0\u0022 data-name=\u0022PolyLine70\u0022 data-id=\u0022264\u0022 transform=\u0022translate(0 0)\u0022 style=\u0022background-color: rgba(0, 0, 0, 0); background-image: none; color: rgb(232, 237, 245); display: inline; fill: none; fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Segoe UI\u0026quot;, Arial, sans-serif; font-size: 16px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: rgb(0, 0, 0); stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: start; text-decoration: none; text-transform: none; visibility: visible;\u0022\u003E\u003C/polyline\u003E",
+        "CssCode": null,
+        "Children": null,
+        "SourceTrace": {
+          "SourceProjectId": "AMR_REF_SCADA_V2",
+          "SourceSceneId": "win00009",
+          "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+          "SourceElementIds": [
+            "264"
+          ],
+          "Notes": "PolyLine70"
+        }
+      }
+    ],
+    "Assets": [],
+    "Bindings": [],
+    "Events": [],
+    "SourceTrace": {
+      "SourceProjectId": "AMR_REF_SCADA_V2",
+      "SourceSceneId": "win00009",
+      "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00009.json",
+      "SourceElementIds": [
+        "39",
+        "40",
+        "42",
+        "44",
+        "45",
+        "46",
+        "47",
+        "48",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "57",
+        "58",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63",
+        "64",
+        "65",
+        "66",
+        "67",
+        "68",
+        "69",
+        "70",
+        "71",
+        "72",
+        "73",
+        "74",
+        "75",
+        "76",
+        "77",
+        "78",
+        "79",
+        "80",
+        "81",
+        "82",
+        "83",
+        "84",
+        "85",
+        "86",
+        "249",
+        "250",
+        "251",
+        "252",
+        "253",
+        "254",
+        "255",
+        "256",
+        "257",
+        "258",
+        "259",
+        "260",
+        "261",
+        "262",
+        "263",
+        "264"
+      ],
+      "Notes": "Created from Studio Element\u002B import package."
+    },
+    "Category": "General",
+    "Description": null,
+    "Tags": [],
+    "Provenance": null
+  }
+}
