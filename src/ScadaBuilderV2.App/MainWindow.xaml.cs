@@ -13,6 +13,7 @@ using System.Windows.Threading;
 using Microsoft.Web.WebView2.Core;
 using ScadaBuilderV2.Application.Clipboard;
 using ScadaBuilderV2.Application.Commands;
+using ScadaBuilderV2.Application.Commands.Pages;
 using ScadaBuilderV2.Application.Conversion;
 using ScadaBuilderV2.Application.ElementStudio;
 using ScadaBuilderV2.Application.History;
@@ -26,6 +27,7 @@ using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
 using ScadaBuilderV2.Infrastructure.ElementStudio;
 using ScadaBuilderV2.Application.Libraries;
+using ScadaBuilderV2.Application.Pages;
 using ScadaBuilderV2.Infrastructure.Libraries;
 using ScadaBuilderV2.Infrastructure.ModernProjects;
 using ScadaBuilderV2.Infrastructure.ReferenceProjects;
@@ -50,6 +52,10 @@ public partial class MainWindow : Window, IPageWorkspaceHost
     private readonly PageSourceProjectionResolver _pageSourceProjectionResolver = new();
     private readonly PageWorkspaceController _pageWorkspaceController;
     private readonly PageExportInputBuilder _pageExportInputBuilder;
+    private readonly CommandRegistry _applicationCommandRegistry = new();
+    private readonly PageCommandCoordinator _pageCommandCoordinator = new();
+    private readonly PagesPanelViewModel _pagesPanel = new();
+    private readonly PageCommandController _pageCommandController;
     private readonly Tf100WebTagCatalogImporter _tagCatalogImporter = new();
     private readonly IElementStudioImportPackageWriter _elementStudioPackageWriter = new ElementStudioImportPackageWriter();
     private readonly ElementStudioComponentPackageStore _elementStudioComponentPackageStore = new();
@@ -125,12 +131,16 @@ public partial class MainWindow : Window, IPageWorkspaceHost
 
     public ObservableCollection<RibbonCommandViewModel> ToolPaletteCommands { get; } = [];
 
+    public PagesPanelViewModel PagesPanel => _pagesPanel;
+
     public bool IsSelectionLocked { get; set; } = false;
 
     public MainWindow()
     {
         _pageWorkspaceController = new PageWorkspaceController(_modernProjectStore, this);
         _pageExportInputBuilder = new PageExportInputBuilder(_modernProjectStore, _pageSourceProjectionResolver);
+        RegisterPageApplicationCommands();
+        _pageCommandController = new PageCommandController(this, _applicationCommandRegistry, _pageWorkspaceController, OnPageCommandCompleted);
         InitializeComponent();
         CaptureDefaultLayout();
         InitializeRibbonCommandRegistry();
@@ -147,8 +157,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
         StatusTextBlock.Text = $"Etat / Warning - {LoadVersionText()}";
         SetBackgroundColorControls("#000000");
 
-        var registry = new CommandRegistry();
-        registry.Register(new ToggleSelectionLockCommand());
+        _applicationCommandRegistry.Register(new ToggleSelectionLockCommand());
 
         PreviewWebView.NavigationCompleted += OnPreviewNavigationCompleted;
         Closing += OnMainWindowClosing;
@@ -205,7 +214,8 @@ public partial class MainWindow : Window, IPageWorkspaceHost
 
         ProjectNameText.Text = $"{_referenceProject.Name} ({_referenceProject.Pages.Count} pages)";
         RefreshProjectTagSummary();
-        PagesListBox.ItemsSource = _modernProject.Scenes;
+        _pagesPanel.Load(_modernProject);
+        PagesListBox.ItemsSource = _pagesPanel.View;
 
         var preferredPage = _modernProject.Scenes.FirstOrDefault(page => page.PageKey == _modernProject.EffectiveHomePageKey)
             ?? _modernProject.Scenes.FirstOrDefault(page => page.EffectivePageCode == "win00008")
@@ -215,7 +225,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
             _isUpdatingPageSelection = true;
             try
             {
-                PagesListBox.SelectedItem = preferredPage;
+                PagesListBox.SelectedItem = _pagesPanel.Items.FirstOrDefault(item => item.PageKey == preferredPage.PageKey);
             }
             finally
             {
@@ -228,27 +238,22 @@ public partial class MainWindow : Window, IPageWorkspaceHost
         SetStatus($"Source legacy chargee en lecture seule: {_referenceProject.Name}");
     }
 
-    private async void OnPageSelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void OnPageSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (_isUpdatingPageSelection)
         {
             return;
         }
 
-        if (PagesListBox.SelectedItem is not ScadaSceneReference page)
+        if (PagesListBox.SelectedItem is not PageListItemViewModel item)
         {
+            _pagesPanel.SelectedPage = null;
+            RefreshActiveRibbonCommandStates();
             return;
         }
 
-        try
-        {
-            await _pageWorkspaceController.OpenAsync(page.PageKey);
-            PageAnchorable.IsActive = true;
-        }
-        catch (Exception ex)
-        {
-            SetStatus($"Erreur preview {page.Id}: {ex.Message}");
-        }
+        _pagesPanel.SelectedPage = item;
+        RefreshActiveRibbonCommandStates();
     }
 
     public async Task ActivatePageAsync(SceneWorkspaceTab tab)
@@ -273,7 +278,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
         _isUpdatingPageSelection = true;
         try
         {
-            PagesListBox.SelectedItem = _modernProject?.Scenes.FirstOrDefault(page => page.PageKey == tab.PageKey);
+            PagesListBox.SelectedItem = _pagesPanel.Items.FirstOrDefault(page => page.PageKey == tab.PageKey);
         }
         finally
         {
@@ -6750,6 +6755,142 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
     }
 
+    private void RegisterPageApplicationCommands()
+    {
+        _applicationCommandRegistry.Register(new NewPageCommand(_pageCommandCoordinator));
+        _applicationCommandRegistry.Register(new RenamePageCommand(_pageCommandCoordinator));
+        _applicationCommandRegistry.Register(new DuplicatePageCommand(_pageCommandCoordinator));
+        _applicationCommandRegistry.Register(new DeletePageCommand(_pageCommandCoordinator));
+        _applicationCommandRegistry.Register(new ChangePageCodeCommand(_pageCommandCoordinator));
+        _applicationCommandRegistry.Register(new OpenPageCommand(_pageCommandCoordinator));
+        _applicationCommandRegistry.Register(new ShowPagePropertiesCommand(_pageCommandCoordinator));
+        _applicationCommandRegistry.Register(new SetPageBuildInclusionCommand(_pageCommandCoordinator));
+        _applicationCommandRegistry.Register(new SetHomePageCommand(_pageCommandCoordinator));
+        _applicationCommandRegistry.Register(new SetPageTypeCommand(_pageCommandCoordinator));
+        _applicationCommandRegistry.Register(new SetPageCompositionCommand(_pageCommandCoordinator));
+        _applicationCommandRegistry.Register(new ValidatePagesCommand(_pageCommandCoordinator));
+    }
+
+    private void OnPageCommandCompleted(ScadaProject project, CommandResult result)
+    {
+        _modernProject = project;
+        _pageWorkspaceController.ReplaceProject(project, result.WorkspaceDirty);
+        var selectedKey = result.PageToSelectKey ?? _pagesPanel.SelectedPage?.PageKey;
+        _pagesPanel.Load(project, result.Diagnostics);
+        _pagesPanel.SelectedPage = _pagesPanel.Items.FirstOrDefault(item => item.PageKey == selectedKey);
+        _isUpdatingPageSelection = true;
+        try
+        {
+            PagesListBox.SelectedItem = _pagesPanel.SelectedPage;
+        }
+        finally
+        {
+            _isUpdatingPageSelection = false;
+        }
+
+        RefreshActiveRibbonCommandStates();
+
+        if (result.Message.Length > 0) SetStatus(result.Message);
+        if (result.PageToOpenKey is not null) PageAnchorable.IsActive = true;
+    }
+
+    private ScadaSceneReference? GetSelectedModernPage()
+    {
+        var key = (PagesListBox.SelectedItem as PageListItemViewModel)?.PageKey ?? _pagesPanel.SelectedPage?.PageKey;
+        return key is { } pageKey ? _modernProject?.Scenes.FirstOrDefault(page => page.PageKey == pageKey) : null;
+    }
+
+    private async void OnPageCommandClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { Tag: string commandId } source) return;
+        if (source.DataContext is PageListItemViewModel item)
+        {
+            _pagesPanel.SelectedPage = item;
+            PagesListBox.SelectedItem = item;
+        }
+        await ExecutePageSurfaceCommandAsync(commandId);
+        e.Handled = true;
+    }
+
+    private async Task ExecutePageSurfaceCommandAsync(string commandId)
+    {
+        var page = GetSelectedModernPage();
+        CommandResult result;
+        if (commandId == "page.set-home" && page is not null)
+        {
+            result = await _pageCommandController.ExecuteAsync(commandId, new SetHomePageRequest(page.PageKey), page.PageKey);
+        }
+        else if (commandId == "page.set-build-inclusion" && page is not null)
+        {
+            result = await _pageCommandController.ExecuteAsync(commandId, new SetPageBuildInclusionRequest(page.PageKey, !page.IncludeInBuild), page.PageKey);
+        }
+        else
+        {
+            result = await _pageCommandController.ExecuteInteractiveAsync(commandId, page);
+        }
+
+        if (result.Status == CommandResultStatus.Succeeded && commandId == "page.properties")
+        {
+            PageAnchorable.Show();
+            PageAnchorable.IsActive = true;
+        }
+
+        if (result.Status is CommandResultStatus.Blocked or CommandResultStatus.Failed)
+        {
+            MessageBox.Show(this, result.Message, "Commande de page", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
+    }
+
+    private async void OnPagesListMouseDoubleClick(object sender, MouseButtonEventArgs e) =>
+        await ExecutePageSurfaceCommandAsync("page.open");
+
+    private void OnPagesSearchTextChanged(object sender, TextChangedEventArgs e) =>
+        _pagesPanel.SearchText = PagesSearchTextBox.Text;
+
+    private void OnPagesFilterChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (PagesTypeFilterComboBox.SelectedItem is string type) _pagesPanel.TypeFilter = type;
+        if (PagesBuildFilterComboBox.SelectedItem is string build) _pagesPanel.BuildFilter = build;
+    }
+
+    private async void OnPagesListPreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        var commandId = e.Key switch
+        {
+            Key.Enter => "page.open",
+            Key.F2 => "page.rename",
+            Key.Delete => "page.delete",
+            Key.D when Keyboard.Modifiers == ModifierKeys.Control => "page.duplicate",
+            _ => null
+        };
+        if (commandId is null) return;
+        e.Handled = true;
+        await ExecutePageSurfaceCommandAsync(commandId);
+    }
+
+    private void OnPagesListPreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+    {
+        var source = e.OriginalSource as DependencyObject;
+        while (source is not null && source is not ListBoxItem)
+        {
+            source = VisualTreeHelper.GetParent(source);
+        }
+        if (source is ListBoxItem item)
+        {
+            _isUpdatingPageSelection = true;
+            try
+            {
+                item.IsSelected = true;
+                item.Focus();
+            }
+            finally
+            {
+                _isUpdatingPageSelection = false;
+            }
+            _pagesPanel.SelectedPage = item.DataContext as PageListItemViewModel;
+        }
+    }
+
     private void InitializeToolPaletteCommands()
     {
         ToolPaletteCommands.Clear();
@@ -6767,17 +6908,32 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private RibbonCommandViewModel CreateRibbonCommandViewModel(RibbonCommandDefinition definition)
     {
-        var command = definition.IsEnabled
+        var requiresPageSelection = definition.Id is
+            "page.rename" or
+            "page.duplicate" or
+            "page.delete" or
+            "page.properties";
+        var hasPageSelection = GetSelectedModernPage() is not null;
+        var isEnabled = definition.IsEnabled && (!requiresPageSelection || hasPageSelection);
+        var disabledReason = !definition.IsEnabled
+            ? definition.DisabledReason
+            : requiresPageSelection && !hasPageSelection
+                ? "Selectionnez une page dans le panneau Projet > Pages."
+                : null;
+        var toolTip = disabledReason is null
+            ? definition.ToolTip
+            : $"{definition.ToolTip} — Indisponible: {disabledReason}";
+        var command = isEnabled
             ? new RibbonRelayCommand(() => ExecuteRibbonCommand(definition.Id), () => true)
-            : new RibbonRelayCommand(() => SetStatus($"{definition.Label}: {definition.DisabledReason}"), () => false);
+            : new RibbonRelayCommand(() => SetStatus($"{definition.Label}: {disabledReason}"), () => false);
 
         return new RibbonCommandViewModel(
             definition.Id,
             definition.Label,
-            definition.ToolTip,
+            toolTip,
             definition.IconKey,
             ResolveRibbonIcon(definition.IconKey),
-            definition.IsEnabled,
+            isEnabled,
             string.Equals(definition.Id, _activeInsertCommandId, StringComparison.Ordinal),
             command);
     }
@@ -6811,6 +6967,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         SetRibbonMenuButtonStyle(FileMenuButton, ribbonKey == "File");
         SetRibbonMenuButtonStyle(EditMenuButton, ribbonKey == "Edit");
+        SetRibbonMenuButtonStyle(PagesMenuButton, ribbonKey == "Pages");
         SetRibbonMenuButtonStyle(InsertMenuButton, ribbonKey == "Insert");
         SetRibbonMenuButtonStyle(ScreenMenuButton, ribbonKey == "Screen");
         SetRibbonMenuButtonStyle(SelectionMenuButton, ribbonKey == "Selection");
@@ -6831,6 +6988,14 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     {
         switch (commandId)
         {
+            case "page.new":
+            case "page.rename":
+            case "page.duplicate":
+            case "page.delete":
+            case "page.properties":
+            case "page.validate":
+                await ExecutePageSurfaceCommandAsync(commandId);
+                break;
             case "project.save":
                 OnSaveSceneClick(this, new RoutedEventArgs());
                 break;

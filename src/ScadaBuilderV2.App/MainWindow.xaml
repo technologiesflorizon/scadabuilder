@@ -265,6 +265,11 @@
                                 Style="{StaticResource MenuButtonStyle}"
                                 Click="OnMenuButtonClick"
                                 Tag="Edit"/>
+                        <Button x:Name="PagesMenuButton"
+                                Content="Pages"
+                                Style="{StaticResource MenuButtonStyle}"
+                                Click="OnMenuButtonClick"
+                                Tag="Pages"/>
                         <Button x:Name="InsertMenuButton"
                                 Content="Inserer"
                                 Style="{StaticResource MenuButtonStyle}"
@@ -386,10 +391,12 @@
                         <Grid Margin="12">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0">
-                                <TextBlock Text="Source legacy"
+                                <TextBlock Text="Projet moderne"
                                            FontWeight="Bold"
                                            Foreground="{StaticResource InkBrush}"/>
                                 <TextBlock x:Name="ProjectNameText"
@@ -403,15 +410,84 @@
                                            Margin="0,4,0,12"
                                            Foreground="{StaticResource MutedBrush}"
                                            TextWrapping="Wrap"/>
-                                <TextBlock Text="Pages"
-                                           FontWeight="SemiBold"/>
+                            </StackPanel>
+                            <Grid Grid.Row="1" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <TextBlock Text="Pages" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                <Button Grid.Column="1" Width="30" Height="28" Content="+" FontWeight="Bold"
+                                        Tag="page.new" ToolTip="Nouvelle page" Click="OnPageCommandClick"/>
+                            </Grid>
+                            <StackPanel Grid.Row="2" Margin="0,0,0,6">
+                                <TextBox x:Name="PagesSearchTextBox" MinHeight="28" Margin="0,0,0,6"
+                                         ToolTip="Rechercher par code, titre ou type"
+                                         TextChanged="OnPagesSearchTextChanged"/>
+                                <Grid>
+                                    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                    <ComboBox x:Name="PagesTypeFilterComboBox" Margin="0,0,4,0"
+                                              ItemsSource="{Binding PagesPanel.TypeFilters}" SelectedIndex="0"
+                                              SelectionChanged="OnPagesFilterChanged"/>
+                                    <ComboBox x:Name="PagesBuildFilterComboBox" Grid.Column="1" Margin="4,0,0,0"
+                                              ItemsSource="{Binding PagesPanel.BuildFilters}" SelectedIndex="0"
+                                              SelectionChanged="OnPagesFilterChanged"/>
+                                </Grid>
                             </StackPanel>
                             <ListBox x:Name="PagesListBox"
-                                     Grid.Row="1"
+                                     Grid.Row="3"
                                      Margin="0,6,0,0"
-                                     DisplayMemberPath="Title"
                                      SelectionChanged="OnPageSelectionChanged"
-                                     ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                                     MouseDoubleClick="OnPagesListMouseDoubleClick"
+                                     PreviewMouseRightButtonDown="OnPagesListPreviewMouseRightButtonDown"
+                                     PreviewKeyDown="OnPagesListPreviewKeyDown"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Padding="7" Margin="0,1" CornerRadius="4" BorderBrush="{StaticResource BorderBrushSoft}" BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                            <StackPanel>
+                                                <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Foreground="{StaticResource MutedBrush}" FontSize="11">
+                                                    <Run Text="{Binding PageCode}"/><Run Text=" · "/><Run Text="{Binding TypeLabel}"/>
+                                                </TextBlock>
+                                            </StackPanel>
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                <Button Width="25" Height="25" Padding="4" Margin="2,0" Tag="page.rename" ToolTip="Renommer" Click="OnPageCommandClick">
+                                                    <Image Source="{StaticResource Icon.Page.Rename}" Stretch="Uniform"/>
+                                                </Button>
+                                                <Button Width="25" Height="25" Padding="4" Margin="2,0" Tag="page.duplicate" ToolTip="Dupliquer" Click="OnPageCommandClick">
+                                                    <Image Source="{StaticResource Icon.Page.Duplicate}" Stretch="Uniform"/>
+                                                </Button>
+                                                <Button Width="25" Height="25" Padding="4" Margin="2,0" Tag="page.delete" ToolTip="Supprimer" Click="OnPageCommandClick">
+                                                    <Image Source="{StaticResource Icon.Page.Delete}" Stretch="Uniform"/>
+                                                </Button>
+                                            </StackPanel>
+                                            <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,4,0,0">
+                                                <TextBlock Text="{Binding BuildLabel}" FontSize="10" Margin="0,0,8,0"/>
+                                                <TextBlock Text="Accueil" FontSize="10" FontWeight="Bold" Margin="0,0,8,0">
+                                                    <TextBlock.Style><Style TargetType="TextBlock"><Setter Property="Visibility" Value="Collapsed"/><Style.Triggers><DataTrigger Binding="{Binding IsHome}" Value="True"><Setter Property="Visibility" Value="Visible"/></DataTrigger></Style.Triggers></Style></TextBlock.Style>
+                                                </TextBlock>
+                                                <TextBlock Text="{Binding DiagnosticLabel}" FontSize="10" Foreground="{StaticResource MutedBrush}"/>
+                                            </StackPanel>
+                                        </Grid>
+                                        <Border.ContextMenu>
+                                            <ContextMenu>
+                                                <MenuItem Header="Ouvrir" Tag="page.open" Click="OnPageCommandClick"/>
+                                                <MenuItem Header="Renommer" Tag="page.rename" Click="OnPageCommandClick"/>
+                                                <MenuItem Header="Dupliquer" Tag="page.duplicate" Click="OnPageCommandClick"/>
+                                                <Separator/>
+                                                <MenuItem Header="Définir comme accueil" Tag="page.set-home" Click="OnPageCommandClick"/>
+                                                <MenuItem Header="Inclure/exclure du build" Tag="page.set-build-inclusion" Click="OnPageCommandClick"/>
+                                                <MenuItem Header="Propriétés" Tag="page.properties" Click="OnPageCommandClick"/>
+                                                <MenuItem Header="Valider" Tag="page.validate" Click="OnPageCommandClick"/>
+                                                <Separator/>
+                                                <MenuItem Header="Supprimer" Tag="page.delete" Click="OnPageCommandClick"/>
+                                            </ContextMenu>
+                                        </Border.ContextMenu>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                            </ListBox>
                         </Grid>
                         </avalonDock:LayoutAnchorable>
                         <avalonDock:LayoutAnchorable x:Name="TagCatalogAnchorable" Title="Catalogue Tags" ContentId="TagCatalog" CanClose="True">

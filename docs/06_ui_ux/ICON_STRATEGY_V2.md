@@ -2,12 +2,13 @@
 
 Date: 2026-06-16
 Status: Active icon strategy pointer
-Document version: `V2.1.4.0003`
+Document version: `V2.1.4.0004`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0004` | `PENDING` | Ajout de la famille vectorielle sémantique `Icon.Page.*` pour les commandes partagées de gestion des pages. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Création de la famille vectorielle sémantique `Icon.Property.*` pour l’inspecteur Style Element+. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes vers des icones 32x32 sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout des icones semantiques Cercle, Triangle et Etoile et de la taille 64x64 pour la galerie Formes. |
@@ -49,6 +50,7 @@ Current icon families:
 5. `Icon.Selection.*`, `Icon.Object.*`, and `Icon.Layer.*` for scene selection and ordering.
 6. `Icon.Tool.*` for general editor tools.
 7. `Icon.Field.*`, `Icon.Shape.*`, `Icon.Hmi.*`, and `Icon.Button.*` for insert-ribbon authoring commands. The standard shape family includes `Icon.Shape.Rectangle`, `Icon.Shape.Ellipse`, `Icon.Shape.Circle`, `Icon.Shape.Triangle`, `Icon.Shape.Star`, `Icon.Shape.Line`, and `Icon.Shape.Arrow`.
+8. `Icon.Page.*` for page creation, rename, duplication, deletion, properties, and validation commands shared by the ribbon and project panel.
 
 ## 4. Standardization Rule
 

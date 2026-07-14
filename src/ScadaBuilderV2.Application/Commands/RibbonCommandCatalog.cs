@@ -54,6 +54,17 @@ public static class RibbonCommandCatalog
                 Group("Interface",
                     Disabled("panel.restore", "Panneaux", "Icon.Panel.Restore", "Commande a venir"))
             ],
+            ["Pages"] =
+            [
+                Group("Gestion",
+                    Enabled("page.new", "Nouveau", "Icon.Page.New", "Créer une nouvelle page native"),
+                    Enabled("page.rename", "Renommer", "Icon.Page.Rename", "Modifier le titre de la page sélectionnée"),
+                    Enabled("page.duplicate", "Dupliquer", "Icon.Page.Duplicate", "Dupliquer complètement la page sélectionnée"),
+                    Enabled("page.delete", "Supprimer", "Icon.Page.Delete", "Supprimer la page après vérification de ses dépendances")),
+                Group("Inspection",
+                    Enabled("page.properties", "Propriétés", "Icon.Page.Properties", "Afficher les propriétés de la page sélectionnée"),
+                    Enabled("page.validate", "Valider", "Icon.Page.Validate", "Valider les pages et leurs dépendances"))
+            ],
             ["Screen"] =
             [
                 Group("Apercu",
