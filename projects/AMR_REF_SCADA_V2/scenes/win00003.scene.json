@@ -40,7 +40,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "Alarmes",
@@ -84,8 +92,8 @@
       "DisplayName": "Element\u002B Button7",
       "Kind": "Button",
       "Bounds": {
-        "X": 854,
-        "Y": 32,
+        "X": 855,
+        "Y": 33,
         "Width": 138,
         "Height": 44
       },
@@ -113,7 +121,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "Button7",
@@ -147,8 +163,8 @@
       "DisplayName": "Element\u002B Button8",
       "Kind": "Button",
       "Bounds": {
-        "X": 1133,
-        "Y": 3,
+        "X": 1135,
+        "Y": 5,
         "Width": 138,
         "Height": 72
       },
@@ -176,7 +192,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "Button8",
@@ -210,8 +234,8 @@
       "DisplayName": "Group001",
       "Kind": "Group",
       "Bounds": {
-        "X": 0,
-        "Y": 31,
+        "X": 1,
+        "Y": 33,
         "Width": 138,
         "Height": 43
       },
@@ -233,7 +257,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": null,
@@ -288,7 +320,15 @@
             "Opacity": 1,
             "Rotation": 0,
             "FlipHorizontally": false,
-            "FlipVertically": false
+            "FlipVertically": false,
+            "FontWeight": "Normal",
+            "FontStyle": "Normal",
+            "TextDecoration": null,
+            "TextAlign": "Left",
+            "TextTransform": "None",
+            "LetterSpacing": 0,
+            "LineHeight": 0,
+            "BorderRadius": null
           },
           "Data": {
             "Text": "Button1",
@@ -345,7 +385,15 @@
             "Opacity": 1,
             "Rotation": 0,
             "FlipHorizontally": false,
-            "FlipVertically": false
+            "FlipVertically": false,
+            "FontWeight": "Normal",
+            "FontStyle": "Normal",
+            "TextDecoration": null,
+            "TextAlign": "Left",
+            "TextTransform": "None",
+            "LetterSpacing": 0,
+            "LineHeight": 0,
+            "BorderRadius": null
           },
           "Data": {
             "Text": "Page d\u0027accueil",
@@ -438,7 +486,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": null,
@@ -493,7 +549,15 @@
             "Opacity": 1,
             "Rotation": 0,
             "FlipHorizontally": false,
-            "FlipVertically": false
+            "FlipVertically": false,
+            "FontWeight": "Normal",
+            "FontStyle": "Normal",
+            "TextDecoration": null,
+            "TextAlign": "Left",
+            "TextTransform": "None",
+            "LetterSpacing": 0,
+            "LineHeight": 0,
+            "BorderRadius": null
           },
           "Data": {
             "Text": "Button2",
@@ -550,7 +614,15 @@
             "Opacity": 1,
             "Rotation": 0,
             "FlipHorizontally": false,
-            "FlipVertically": false
+            "FlipVertically": false,
+            "FontWeight": "Normal",
+            "FontStyle": "Normal",
+            "TextDecoration": null,
+            "TextAlign": "Left",
+            "TextTransform": "None",
+            "LetterSpacing": 0,
+            "LineHeight": 0,
+            "BorderRadius": null
           },
           "Data": {
             "Text": "Compresseur",
@@ -643,7 +715,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": null,
@@ -698,7 +778,15 @@
             "Opacity": 1,
             "Rotation": 0,
             "FlipHorizontally": false,
-            "FlipVertically": false
+            "FlipVertically": false,
+            "FontWeight": "Normal",
+            "FontStyle": "Normal",
+            "TextDecoration": null,
+            "TextAlign": "Left",
+            "TextTransform": "None",
+            "LetterSpacing": 0,
+            "LineHeight": 0,
+            "BorderRadius": null
           },
           "Data": {
             "Text": "Button3",
@@ -755,7 +843,15 @@
             "Opacity": 1,
             "Rotation": 0,
             "FlipHorizontally": false,
-            "FlipVertically": false
+            "FlipVertically": false,
+            "FontWeight": "Normal",
+            "FontStyle": "Normal",
+            "TextDecoration": null,
+            "TextAlign": "Left",
+            "TextTransform": "None",
+            "LetterSpacing": 0,
+            "LineHeight": 0,
+            "BorderRadius": null
           },
           "Data": {
             "Text": "Recirculation",
@@ -841,7 +937,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": null,
@@ -896,7 +1000,15 @@
             "Opacity": 1,
             "Rotation": 0,
             "FlipHorizontally": false,
-            "FlipVertically": false
+            "FlipVertically": false,
+            "FontWeight": "Normal",
+            "FontStyle": "Normal",
+            "TextDecoration": null,
+            "TextAlign": "Left",
+            "TextTransform": "None",
+            "LetterSpacing": 0,
+            "LineHeight": 0,
+            "BorderRadius": null
           },
           "Data": {
             "Text": "Button4",
@@ -953,7 +1065,15 @@
             "Opacity": 1,
             "Rotation": 0,
             "FlipHorizontally": false,
-            "FlipVertically": false
+            "FlipVertically": false,
+            "FontWeight": "Normal",
+            "FontStyle": "Normal",
+            "TextDecoration": null,
+            "TextAlign": "Left",
+            "TextTransform": "None",
+            "LetterSpacing": 0,
+            "LineHeight": 0,
+            "BorderRadius": null
           },
           "Data": {
             "Text": "\u00C9vaporateurs",
@@ -1016,7 +1136,7 @@
       "DisplayName": "Group007",
       "Kind": "Group",
       "Bounds": {
-        "X": 711,
+        "X": 712,
         "Y": 32,
         "Width": 138,
         "Height": 44
@@ -1039,7 +1159,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": null,
@@ -1094,7 +1222,15 @@
             "Opacity": 1,
             "Rotation": 0,
             "FlipHorizontally": false,
-            "FlipVertically": false
+            "FlipVertically": false,
+            "FontWeight": "Normal",
+            "FontStyle": "Normal",
+            "TextDecoration": null,
+            "TextAlign": "Left",
+            "TextTransform": "None",
+            "LetterSpacing": 0,
+            "LineHeight": 0,
+            "BorderRadius": null
           },
           "Data": {
             "Text": "Button6",
@@ -1151,7 +1287,15 @@
             "Opacity": 1,
             "Rotation": 0,
             "FlipHorizontally": false,
-            "FlipVertically": false
+            "FlipVertically": false,
+            "FontWeight": "Normal",
+            "FontStyle": "Normal",
+            "TextDecoration": null,
+            "TextAlign": "Left",
+            "TextTransform": "None",
+            "LetterSpacing": 0,
+            "LineHeight": 0,
+            "BorderRadius": null
           },
           "Data": {
             "Text": "Chauffage",
@@ -1237,7 +1381,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": null,
@@ -1292,7 +1444,15 @@
             "Opacity": 1,
             "Rotation": 0,
             "FlipHorizontally": false,
-            "FlipVertically": false
+            "FlipVertically": false,
+            "FontWeight": "Normal",
+            "FontStyle": "Normal",
+            "TextDecoration": null,
+            "TextAlign": "Left",
+            "TextTransform": "None",
+            "LetterSpacing": 0,
+            "LineHeight": 0,
+            "BorderRadius": null
           },
           "Data": {
             "Text": "Button5",
@@ -1349,7 +1509,15 @@
             "Opacity": 1,
             "Rotation": 0,
             "FlipHorizontally": false,
-            "FlipVertically": false
+            "FlipVertically": false,
+            "FontWeight": "Normal",
+            "FontStyle": "Normal",
+            "TextDecoration": null,
+            "TextAlign": "Left",
+            "TextTransform": "None",
+            "LetterSpacing": 0,
+            "LineHeight": 0,
+            "BorderRadius": null
           },
           "Data": {
             "Text": "Condenseur",
@@ -1412,7 +1580,7 @@
       "DisplayName": "Group007",
       "Kind": "Group",
       "Bounds": {
-        "X": 995,
+        "X": 996,
         "Y": 32,
         "Width": 134,
         "Height": 44
@@ -1435,7 +1603,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": null,
@@ -1490,7 +1666,15 @@
             "Opacity": 1,
             "Rotation": 0,
             "FlipHorizontally": false,
-            "FlipVertically": false
+            "FlipVertically": false,
+            "FontWeight": "Normal",
+            "FontStyle": "Normal",
+            "TextDecoration": null,
+            "TextAlign": "Left",
+            "TextTransform": "None",
+            "LetterSpacing": 0,
+            "LineHeight": 0,
+            "BorderRadius": null
           },
           "Data": {
             "Text": "Button9",
@@ -1593,7 +1777,15 @@
             "Opacity": 1,
             "Rotation": 0,
             "FlipHorizontally": false,
-            "FlipVertically": false
+            "FlipVertically": false,
+            "FontWeight": "Normal",
+            "FontStyle": "Normal",
+            "TextDecoration": null,
+            "TextAlign": "Left",
+            "TextTransform": "None",
+            "LetterSpacing": 0,
+            "LineHeight": 0,
+            "BorderRadius": null
           },
           "Data": {
             "Text": "Consigne",
@@ -1644,7 +1836,7 @@
             "OnValue": null,
             "OffValue": null,
             "FixedValue": null,
-            "TargetPageId": "win00087",
+            "TargetPageId": "win00012",
             "Url": null,
             "NewTab": false
           }
