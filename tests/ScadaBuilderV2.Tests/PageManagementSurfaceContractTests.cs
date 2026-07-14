@@ -35,6 +35,8 @@ public sealed class PageManagementSurfaceContractTests
         StringAssert.Contains(xaml, "PreviewMouseRightButtonDown=\"OnPagesListPreviewMouseRightButtonDown\"");
         StringAssert.Contains(xaml, "PreviewKeyDown=\"OnPagesListPreviewKeyDown\"");
         StringAssert.Contains(code, "ExecutePageSurfaceCommandAsync");
+        StringAssert.Contains(code, "ContentOperations.GetParent(content)");
+        StringAssert.Contains(code, "FrameworkContentElement");
         StringAssert.Contains(code, "_applicationCommandRegistry.Register(new NewPageCommand");
         StringAssert.Contains(dialog, "Code de page");
         StringAssert.Contains(dialog, "Modèle");
@@ -66,6 +68,16 @@ public sealed class PageManagementSurfaceContractTests
         Assert.IsFalse(xaml.Contains("{Binding TypeLabel}", StringComparison.Ordinal));
         StringAssert.Contains(panel, "ICollectionView View");
         StringAssert.Contains(panel, "project.Scenes");
+    }
+
+    [TestMethod]
+    public void PageContextTraversalSupportsInlineRunContentWithoutVisualTreeCrash()
+    {
+        var code = Read("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");
+
+        StringAssert.Contains(code, "FrameworkContentElement content => ContentOperations.GetParent(content)");
+        StringAssert.Contains(code, "Visual visual => VisualTreeHelper.GetParent(visual)");
+        StringAssert.Contains(code, "if (source is ListBoxItem item)");
     }
 
     private static string Read(params string[] parts)

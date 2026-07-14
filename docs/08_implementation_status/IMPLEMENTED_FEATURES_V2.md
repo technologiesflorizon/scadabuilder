@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active implementation status
-Document version: `V2.1.4.0008`
+Document version: `V2.1.4.0009`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0009` | `PENDING` | Correction du crash au clic droit sur une page : la remontée du parent accepte maintenant les contenus WPF `Run` et le menu contextuel peut s'afficher. |
 | 2026-07-14 | `V2.1.4.0008` | `PENDING` | Correction du rognage de l'icone Nouvelle page dans le panneau Projet. |
 | 2026-07-14 | `V2.1.4.0007` | `PENDING` | Finition visuelle du panneau Pages : libelle Recherche, filtres Default/Tous et icone Nouvelle page alignee sur le ruban. |
 | 2026-07-14 | `V2.1.4.0006` | `PENDING` | Correction du crash au demarrage cause par des liaisons WPF `Run.Text` TwoWay implicites vers des proprietes Diagnostics et Pages en lecture seule. |
@@ -131,6 +132,7 @@ As of 2026-07-14, `dotnet test ScadaBuilderV2.sln --no-restore` reports 555 pass
 57. The WPF shell, page list and blocking diagnostics dialog now force `OneWay` mode for read-only `Run.Text` bindings. This prevents the startup `InvalidOperationException` that previously terminated the application before the main window became usable.
 58. The `Projet > Pages` panel labels its search field, starts with `Default` and `Tous` for the type/build filters, and reuses the ribbon's semantic `Icon.Page.New` resource for its quick-create action.
 59. The page quick-create icon is constrained to 16x16 with explicit button padding so the shared vector remains fully visible inside the compact panel action.
+60. Page context-menu hit testing now traverses `FrameworkContentElement` parents through `ContentOperations.GetParent` and reserves `VisualTreeHelper` for actual visuals, preventing the `Run`-specific WPF crash on right-click.
 
 ## 3. Source Of Truth
 

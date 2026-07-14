@@ -6808,7 +6808,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         var source = e.OriginalSource as DependencyObject;
         while (source is not null && source is not ListBoxItem)
         {
-            source = VisualTreeHelper.GetParent(source);
+            source = source switch
+            {
+                FrameworkContentElement content => ContentOperations.GetParent(content),
+                Visual visual => VisualTreeHelper.GetParent(visual),
+                _ => LogicalTreeHelper.GetParent(source)
+            };
         }
         if (source is ListBoxItem item)
         {
