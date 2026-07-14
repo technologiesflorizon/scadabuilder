@@ -51,6 +51,20 @@ public sealed class SetPageCompositionCommand(PageCommandCoordinator coordinator
     public override string DisplayName => "Modifier la composition de page";
 }
 
+/// <summary>Changes the authored canvas dimensions of one page.</summary>
+public sealed class SetPageCanvasCommand(PageCommandCoordinator coordinator) : PageApplicationCommandBase<SetPageCanvasRequest>(coordinator)
+{
+    public override string Id => "page.set-canvas";
+    public override string DisplayName => "Modifier les dimensions de page";
+}
+
+/// <summary>Changes the authored background style of one page.</summary>
+public sealed class SetPageBackgroundCommand(PageCommandCoordinator coordinator) : PageApplicationCommandBase<SetPageBackgroundRequest>(coordinator)
+{
+    public override string Id => "page.set-background";
+    public override string DisplayName => "Modifier l'arrière-plan de page";
+}
+
 /// <summary>Runs coherent page-workspace validation without changing the project.</summary>
 public sealed class ValidatePagesCommand(PageCommandCoordinator coordinator) : PageApplicationCommandBase<ValidatePagesRequest>(coordinator)
 {

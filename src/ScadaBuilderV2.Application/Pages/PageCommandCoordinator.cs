@@ -39,6 +39,8 @@ public sealed class PageCommandCoordinator(PageDependencyAnalyzer? dependencyAna
             SetHomePageRequest value => SetHome(snapshot, ui, value),
             SetPageTypeRequest value => SetType(snapshot, ui, value),
             SetPageCompositionRequest value => SetComposition(snapshot, ui, value),
+            SetPageCanvasRequest value => SetCanvas(snapshot, ui, value),
+            SetPageBackgroundRequest value => SetBackground(snapshot, ui, value),
             ValidatePagesRequest => Validate(snapshot, ui),
             _ => NoChange(snapshot, ui, CommandResult.Blocked("Requête de page non prise en charge."), "page")
         };
@@ -239,7 +241,15 @@ public sealed class PageCommandCoordinator(PageDependencyAnalyzer? dependencyAna
 
     private static PageWorkspaceMutation SetHome(PageWorkspaceSnapshot snapshot, ProjectWorkspaceUiSnapshot ui, SetHomePageRequest request)
     {
-        if (!TryFind(snapshot, request.PageKey, out var page, out _, out var blocked)) return NoChange(snapshot, ui, blocked!, "définir accueil");
+        if (request.PageKey is null)
+        {
+            if (snapshot.Project.EffectiveHomePageKey is not { } previousKey)
+                return NoChange(snapshot, ui, CommandResult.NoChange("Aucune page d'accueil n'est définie."), "retirer accueil");
+            var cleared = NextSnapshot(snapshot, snapshot.Project with { HomePageKey = null, HomePageId = null }, snapshot.Scenes);
+            return Changed(snapshot, cleared, ui, ui, previousKey, "Page d'accueil retirée.", "retirer accueil");
+        }
+
+        if (!TryFind(snapshot, request.PageKey.Value, out var page, out _, out var blocked)) return NoChange(snapshot, ui, blocked!, "définir accueil");
         if (page.Type != ScadaPageType.Default || !page.IncludeInBuild)
             return Block(snapshot, ui, page, "La page d'accueil doit être une page Default incluse dans le build.", "Project.HomePageKey", "Changer le type et inclure la page dans le build.");
         if (snapshot.Project.HomePageKey == page.PageKey) return NoChange(snapshot, ui, CommandResult.NoChange("Cette page est déjà la page d'accueil."), "définir accueil");
@@ -297,6 +307,38 @@ public sealed class PageCommandCoordinator(PageDependencyAnalyzer? dependencyAna
             FooterPageId = footer?.EffectivePageCode
         };
         return ReplacePageAndScene(snapshot, ui, updatedPage, updatedScene, "Composition de page modifiée.", "modifier composition");
+    }
+
+    private static PageWorkspaceMutation SetCanvas(PageWorkspaceSnapshot snapshot, ProjectWorkspaceUiSnapshot ui, SetPageCanvasRequest request)
+    {
+        if (!TryFind(snapshot, request.PageKey, out var page, out var scene, out var blocked))
+            return NoChange(snapshot, ui, blocked!, "modifier dimensions page");
+        if (request.CanvasSize.Width < 160 || request.CanvasSize.Height < 120)
+            return Block(snapshot, ui, page, "Les dimensions de page doivent être au moins 160 x 120.", "Page.CanvasSize", "Saisir une largeur et une hauteur valides.");
+        if (page.EffectiveCanvasSize == request.CanvasSize && scene.CanvasSize == request.CanvasSize)
+            return NoChange(snapshot, ui, CommandResult.NoChange("Les dimensions sont inchangées."), "modifier dimensions page");
+        return ReplacePageAndScene(
+            snapshot,
+            ui,
+            page with { CanvasSize = request.CanvasSize },
+            scene.WithCanvasSize(request.CanvasSize),
+            "Dimensions de page modifiées.",
+            "modifier dimensions page");
+    }
+
+    private static PageWorkspaceMutation SetBackground(PageWorkspaceSnapshot snapshot, ProjectWorkspaceUiSnapshot ui, SetPageBackgroundRequest request)
+    {
+        if (!TryFind(snapshot, request.PageKey, out var page, out var scene, out var blocked))
+            return NoChange(snapshot, ui, blocked!, "modifier arrière-plan page");
+        if (page.EffectiveBackground == request.Background && scene.EffectiveBackground == request.Background)
+            return NoChange(snapshot, ui, CommandResult.NoChange("L'arrière-plan est inchangé."), "modifier arrière-plan page");
+        return ReplacePageAndScene(
+            snapshot,
+            ui,
+            page with { Background = request.Background },
+            scene.WithBackground(request.Background),
+            "Arrière-plan de page modifié.",
+            "modifier arrière-plan page");
     }
 
     private PageWorkspaceMutation Validate(PageWorkspaceSnapshot snapshot, ProjectWorkspaceUiSnapshot ui)

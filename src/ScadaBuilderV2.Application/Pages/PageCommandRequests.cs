@@ -30,13 +30,19 @@ public sealed record ShowPagePropertiesRequest(Guid PageKey) : PageCommandReques
 public sealed record SetPageBuildInclusionRequest(Guid PageKey, bool IncludeInBuild) : PageCommandRequest;
 
 /// <summary>Requests assignment of the compiled Default home page.</summary>
-public sealed record SetHomePageRequest(Guid PageKey) : PageCommandRequest;
+public sealed record SetHomePageRequest(Guid? PageKey) : PageCommandRequest;
 
 /// <summary>Requests a page-type change.</summary>
 public sealed record SetPageTypeRequest(Guid PageKey, ScadaPageType PageType) : PageCommandRequest;
 
 /// <summary>Requests stable header and footer composition targets.</summary>
 public sealed record SetPageCompositionRequest(Guid PageKey, Guid? HeaderPageKey, Guid? FooterPageKey) : PageCommandRequest;
+
+/// <summary>Requests a page canvas-size change.</summary>
+public sealed record SetPageCanvasRequest(Guid PageKey, CanvasSize CanvasSize) : PageCommandRequest;
+
+/// <summary>Requests a page background-style change.</summary>
+public sealed record SetPageBackgroundRequest(Guid PageKey, SceneBackgroundStyle Background) : PageCommandRequest;
 
 /// <summary>Requests read-only validation of the complete page workspace.</summary>
 public sealed record ValidatePagesRequest : PageCommandRequest;

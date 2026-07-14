@@ -20,14 +20,16 @@ public sealed class PageApplicationCommandTests
             new DeletePageCommand(coordinator), new ChangePageCodeCommand(coordinator), new OpenPageCommand(coordinator),
             new ShowPagePropertiesCommand(coordinator), new SetPageBuildInclusionCommand(coordinator),
             new SetHomePageCommand(coordinator), new SetPageTypeCommand(coordinator),
-            new SetPageCompositionCommand(coordinator), new ValidatePagesCommand(coordinator)
+            new SetPageCompositionCommand(coordinator), new SetPageCanvasCommand(coordinator),
+            new SetPageBackgroundCommand(coordinator), new ValidatePagesCommand(coordinator)
         ];
         var registry = new CommandRegistry();
         foreach (var command in commands) registry.Register(command);
 
         CollectionAssert.AreEquivalent(
             new[] { "page.new", "page.rename", "page.duplicate", "page.delete", "page.change-code", "page.open",
-                "page.properties", "page.set-build-inclusion", "page.set-home", "page.set-type", "page.set-composition", "page.validate" },
+                "page.properties", "page.set-build-inclusion", "page.set-home", "page.set-type", "page.set-composition",
+                "page.set-canvas", "page.set-background", "page.validate" },
             registry.Commands.Select(command => command.Id).ToArray());
 
         var context = Context();
@@ -92,6 +94,31 @@ public sealed class PageApplicationCommandTests
         Assert.AreEqual(page.PageKey, result.PageToOpenKey);
         Assert.IsFalse(context.IsPageWorkspaceDirty);
         Assert.AreEqual(0, context.WorkspaceHistory!.UndoCount);
+    }
+
+    [TestMethod]
+    public async Task PagePropertyCommandsUpdateReferenceAndSceneThroughOneCoordinator()
+    {
+        var context = Context();
+        var page = context.PageWorkspace!.Project.Scenes.Single();
+        var coordinator = new PageCommandCoordinator();
+        var registry = new CommandRegistry();
+        registry.Register(new SetPageCanvasCommand(coordinator));
+        registry.Register(new SetPageBackgroundCommand(coordinator));
+        context.ApplyPageWorkspaceMutation = _ => { };
+
+        context.PageCommandRequest = new SetPageCanvasRequest(page.PageKey, new CanvasSize(1440, 900));
+        var canvasResult = await registry.ExecuteAsync("page.set-canvas", context);
+        context.PageCommandRequest = new SetPageBackgroundRequest(page.PageKey, new SceneBackgroundStyle("#123456", Size: "contain"));
+        var backgroundResult = await registry.ExecuteAsync("page.set-background", context);
+
+        Assert.AreEqual(CommandResultStatus.Succeeded, canvasResult.Status);
+        Assert.AreEqual(CommandResultStatus.Succeeded, backgroundResult.Status);
+        Assert.AreEqual(new CanvasSize(1440, 900), context.PageWorkspace.Project.Scenes.Single().EffectiveCanvasSize);
+        Assert.AreEqual(new CanvasSize(1440, 900), context.PageWorkspace.Scenes[page.PageKey].CanvasSize);
+        Assert.AreEqual("#123456", context.PageWorkspace.Project.Scenes.Single().EffectiveBackground.Color);
+        Assert.AreEqual("contain", context.PageWorkspace.Scenes[page.PageKey].EffectiveBackground.Size);
+        Assert.AreEqual(2, context.WorkspaceHistory!.UndoCount);
     }
 
     private static ApplicationContext Context()

@@ -1,5 +1,6 @@
 using ScadaBuilderV2.Application.Conversion;
 using ScadaBuilderV2.Application.Selection;
+using ScadaBuilderV2.Application.Pages;
 using ScadaBuilderV2.Domain.Editor;
 using ScadaBuilderV2.Domain.ElementEvents.Command;
 using ScadaBuilderV2.Domain.ElementEvents.State;
@@ -479,6 +480,22 @@ public sealed class ModernProjectStoreTests
             Assert.AreEqual(0.42, loadedShape.Style?.Opacity);
             Assert.AreEqual(17, loadedShape.Style?.Rotation);
 
+            var snapshot = await store.ReadWorkspaceSnapshotAsync(root);
+            var pageBefore = snapshot.Project.Scenes.Single(item => item.EffectivePageCode == "win00008");
+            var sceneSnapshot = snapshot.Scenes[pageBefore.PageKey];
+            var pageAfter = pageBefore with
+            {
+                Type = sceneSnapshot.PageType,
+                CanvasSize = sceneSnapshot.CanvasSize,
+                Background = sceneSnapshot.EffectiveBackground
+            };
+            var references = snapshot.Project.Scenes.Select(item => item.PageKey == pageAfter.PageKey ? pageAfter : item).ToArray();
+            await store.SaveWorkspaceSnapshotAsync(root, snapshot with
+            {
+                Version = snapshot.Version + 1,
+                Project = snapshot.Project with { Scenes = references }
+            });
+
             var projectJson = await File.ReadAllTextAsync(Path.Combine(
                 root,
                 "SCADA_BUILDER_V2",
@@ -501,7 +518,7 @@ public sealed class ModernProjectStoreTests
     }
 
     [TestMethod]
-    public async Task SaveAndReloadPreservesPageCompositionAndHomePage()
+    public async Task AtomicWorkspaceSavePreservesPageCompositionAndHomePageWithoutSceneUpsert()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
         var store = new ModernProjectStore();
@@ -517,11 +534,44 @@ public sealed class ModernProjectStoreTests
                 [
                     new ScadaSceneReference("header_main", "Header", "scenes/header_main.scene.json", ScadaPageType.Header),
                     new ScadaSceneReference("footer_main", "Footer", "scenes/footer_main.scene.json", ScadaPageType.Footer),
-                    new ScadaSceneReference("win00008", "win00008", "scenes/win00008.scene.json")
+                    new ScadaSceneReference("win00008", "win00008", "scenes/win00008.scene.json", IncludeInBuild: false)
                 ]);
             await store.SaveProjectAsync(root, project with { HomePageId = "win00008" });
 
             await store.SaveSceneAsync(root, scene);
+
+            var projectAfterSceneSave = await store.LoadProjectAsync(root);
+            Assert.IsNotNull(projectAfterSceneSave);
+            Assert.IsFalse(projectAfterSceneSave.Scenes.Single(item => item.EffectivePageCode == "win00008").IncludeInBuild);
+
+            var snapshot = await store.ReadWorkspaceSnapshotAsync(root);
+            var header = snapshot.Project.Scenes.Single(item => item.EffectivePageCode == "header_main");
+            var footer = snapshot.Project.Scenes.Single(item => item.EffectivePageCode == "footer_main");
+            var pageBefore = snapshot.Project.Scenes.Single(item => item.EffectivePageCode == "win00008");
+            var pageAfter = pageBefore with
+            {
+                IncludeInBuild = true,
+                HeaderPageId = header.EffectivePageCode,
+                FooterPageId = footer.EffectivePageCode,
+                HeaderPageKey = header.PageKey,
+                FooterPageKey = footer.PageKey
+            };
+            var sceneAfter = snapshot.Scenes[pageBefore.PageKey] with
+            {
+                IncludeInBuild = true,
+                HeaderPageId = header.EffectivePageCode,
+                FooterPageId = footer.EffectivePageCode,
+                HeaderPageKey = header.PageKey,
+                FooterPageKey = footer.PageKey
+            };
+            var references = snapshot.Project.Scenes.Select(item => item.PageKey == pageAfter.PageKey ? pageAfter : item).ToArray();
+            var scenes = snapshot.Scenes.ToDictionary(pair => pair.Key, pair => pair.Value);
+            scenes[pageAfter.PageKey] = sceneAfter;
+            await store.SaveWorkspaceSnapshotAsync(root, new PageWorkspaceSnapshot(
+                snapshot.Version + 1,
+                snapshot.Project with { Scenes = references, HomePageKey = pageAfter.PageKey, HomePageId = pageAfter.EffectivePageCode },
+                scenes,
+                []));
 
             var loadedProject = await store.LoadProjectAsync(root);
             Assert.IsNotNull(loadedProject);

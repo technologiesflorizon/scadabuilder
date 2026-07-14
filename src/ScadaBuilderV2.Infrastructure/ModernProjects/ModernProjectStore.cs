@@ -124,6 +124,7 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         };
     }
 
+    /// <summary>Saves one scene file without mutating the authoritative project page inventory.</summary>
     public async Task SaveSceneAsync(string repositoryRoot, ScadaScene scene)
     {
         var project = await LoadProjectAsync(repositoryRoot);
@@ -137,7 +138,6 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
             : ResolveContainedScenePath(projectRoot, existingReference.RelativePath);
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         await SaveJsonAsync(path, normalized);
-        await UpsertSceneReferenceAsync(repositoryRoot, normalized);
     }
 
     public async Task<ScadaProject?> LoadProjectAsync(string repositoryRoot)
@@ -671,74 +671,6 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
     {
         await using var read = File.OpenRead(projectPath);
         return await JsonSerializer.DeserializeAsync<ScadaProject>(read, JsonOptions);
-    }
-
-    private static async Task UpsertSceneReferenceAsync(string repositoryRoot, ScadaScene scene)
-    {
-        var projectRoot = GetReferenceModernProjectRoot(repositoryRoot);
-        var projectPath = Path.Combine(projectRoot, "project.json");
-        if (!File.Exists(projectPath))
-        {
-            return;
-        }
-
-        var project = await LoadProjectFileAsync(projectPath);
-        if (project is null)
-        {
-            return;
-        }
-
-        var existingReference = project.Scenes.FirstOrDefault(existing =>
-            (scene.PageKey != Guid.Empty && existing.PageKey == scene.PageKey) ||
-            string.Equals(existing.EffectivePageCode, scene.EffectivePageCode, StringComparison.OrdinalIgnoreCase));
-        var reference = new ScadaSceneReference(
-            scene.EffectivePageCode,
-            scene.Title,
-            existingReference?.RelativePath ?? $"scenes/{scene.Id}.scene.json",
-            scene.PageType,
-            scene.CanvasSize,
-            scene.EffectiveBackground,
-            scene.IncludeInBuild,
-            scene.HeaderPageId,
-            scene.FooterPageId,
-            scene.PageKey,
-            scene.EffectivePageCode,
-            scene.EffectiveOrigin,
-            scene.ImportProvenance,
-            scene.HeaderPageKey,
-            scene.FooterPageKey);
-
-        var replaced = false;
-        var scenes = project.Scenes.Select(existing =>
-        {
-            if ((scene.PageKey != Guid.Empty && existing.PageKey == scene.PageKey) ||
-                string.Equals(existing.EffectivePageCode, scene.EffectivePageCode, StringComparison.OrdinalIgnoreCase))
-            {
-                replaced = true;
-                return reference;
-            }
-
-            return existing;
-        }).ToList();
-        if (!replaced)
-        {
-            scenes.Add(reference);
-        }
-
-        var homePageId = project.HomePageId;
-        if (!string.IsNullOrWhiteSpace(homePageId) &&
-            string.Equals(homePageId, scene.Id, StringComparison.Ordinal) &&
-            (scene.PageType != ScadaPageType.Default || !scene.IncludeInBuild))
-        {
-            homePageId = null;
-        }
-
-        await SaveJsonAsync(projectPath, ModernProjectMigration.MigrateProject(project with
-        {
-            Scenes = scenes,
-            ManifestVersion = "2.0",
-            HomePageId = homePageId
-        }));
     }
 
     private static IReadOnlyList<ScadaSceneReference> MergeSceneReferences(

@@ -56,6 +56,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
     private readonly CommandRegistry _applicationCommandRegistry = new();
     private readonly PageCommandCoordinator _pageCommandCoordinator = new();
     private readonly PagesPanelViewModel _pagesPanel = new();
+    private readonly PagePropertiesViewModel _pageProperties = new();
     private readonly DiagnosticsPanelViewModel _diagnosticsPanel = new();
     private readonly PageCommandController _pageCommandController;
     private readonly Tf100WebTagCatalogImporter _tagCatalogImporter = new();
@@ -125,7 +126,6 @@ public partial class MainWindow : Window, IPageWorkspaceHost
     private readonly DispatcherTimer _pageDimensionApplyTimer = new() { Interval = TimeSpan.FromMilliseconds(500) };
     private Point _elementLibraryDragStartPoint;
     private string? _sceneBackgroundDocumentScriptId;
-    private ScadaScene? _pageDimensionEditBeforeScene;
 
     public string StatusText { get; private set; } = "Etat / Warning";
 
@@ -134,6 +134,8 @@ public partial class MainWindow : Window, IPageWorkspaceHost
     public ObservableCollection<RibbonCommandViewModel> ToolPaletteCommands { get; } = [];
 
     public PagesPanelViewModel PagesPanel => _pagesPanel;
+
+    public PagePropertiesViewModel PageProperties => _pageProperties;
 
     public DiagnosticsPanelViewModel DiagnosticsPanel => _diagnosticsPanel;
 
@@ -270,7 +272,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
 
     public async Task ActivatePageAsync(SceneWorkspaceTab tab)
     {
-        SaveActiveTabTransientState();
+        if (!ReferenceEquals(_activeSceneTab, tab)) SaveActiveTabTransientState();
 
         _activeSceneTab = tab;
         _activeScene = tab.Scene;
@@ -1637,27 +1639,25 @@ public partial class MainWindow : Window, IPageWorkspaceHost
 
         color = ToCssHex(parsedColor);
         SetBackgroundColorControls(color);
-        if (_activeScene is not null)
+        if (_activeScene is null || _activeSceneTab is null)
         {
-            var previousColor = _activeScene.BackgroundColor;
-            if (string.Equals(previousColor, color, StringComparison.OrdinalIgnoreCase))
-            {
-                SetStatus($"Couleur de fond V2 deja appliquee: {color}.");
-                return;
-            }
-
-            _activeScene = _activeScene.WithBackgroundColor(color);
-            _activeSceneTab?.History.Push(new SceneBackgroundChangedAction(_activeScene.Id, previousColor, color));
-            MarkActiveSceneDirty();
+            SetStatus("Aucune page active.");
+            return;
         }
 
-        await ApplySceneBackgroundColorAsync(color);
-        LoadPageProperties(_activeScene);
+        var background = _activeScene.EffectiveBackground with { Color = color };
+        var result = await ExecutePagePropertyCommandAsync(
+            "page.set-background",
+            new SetPageBackgroundRequest(_activeSceneTab.PageKey, background));
+        if (result.Status == CommandResultStatus.Succeeded)
+        {
+            await ApplySceneBackgroundColorAsync(color);
+        }
     }
 
     private async void OnApplyPagePropertiesClick(object sender, RoutedEventArgs e)
     {
-        if (_activeScene is null)
+        if (_activeScene is null || _activeSceneTab is null)
         {
             SetStatus("Aucune page active.");
             return;
@@ -1676,7 +1676,6 @@ public partial class MainWindow : Window, IPageWorkspaceHost
             return;
         }
 
-        var before = _activeScene;
         var background = new SceneBackgroundStyle(
             ToCssHex(parsedColor),
             string.IsNullOrWhiteSpace(BackgroundImageTextBox.Text) ? null : BackgroundImageTextBox.Text.Trim(),
@@ -1687,38 +1686,31 @@ public partial class MainWindow : Window, IPageWorkspaceHost
             GetComboBoxText(BackgroundOriginComboBox, "padding-box"),
             GetComboBoxText(BackgroundClipComboBox, "border-box"),
             GetComboBoxText(BackgroundBlendModeComboBox, "normal"));
-
-        var updated = _activeScene
-            .WithPageType(GetSelectedPageType())
-            .WithIncludeInBuild(IncludeInBuildCheckBox.IsChecked == true)
-            .WithPageComposition(GetSelectedCompositionPageId(HeaderPageComboBox), GetSelectedCompositionPageId(FooterPageComboBox))
-            .WithCanvasSize(new CanvasSize(width, height))
-            .WithBackground(background);
-        if (updated.PageType is ScadaPageType.Header or ScadaPageType.Footer)
+        var pageKey = _activeSceneTab.PageKey;
+        var pageType = GetSelectedPageType();
+        var headerKey = pageType == ScadaPageType.Default ? GetSelectedCompositionPageKey(HeaderPageComboBox) : null;
+        var footerKey = pageType == ScadaPageType.Default ? GetSelectedCompositionPageKey(FooterPageComboBox) : null;
+        var requests = new (string Id, PageCommandRequest Request)[]
         {
-            updated = updated.WithPageComposition(null, null);
+            ("page.change-code", new ChangePageCodeRequest(pageKey, PageNameTextBox.Text.Trim())),
+            ("page.rename", new RenamePageRequest(pageKey, PageTitleTextBox.Text.Trim())),
+            ("page.set-type", new SetPageTypeRequest(pageKey, pageType)),
+            ("page.set-build-inclusion", new SetPageBuildInclusionRequest(pageKey, IncludeInBuildCheckBox.IsChecked == true)),
+            ("page.set-composition", new SetPageCompositionRequest(pageKey, headerKey, footerKey)),
+            ("page.set-canvas", new SetPageCanvasRequest(pageKey, new CanvasSize(width, height))),
+            ("page.set-background", new SetPageBackgroundRequest(pageKey, background))
+        };
+
+        foreach (var (commandId, request) in requests)
+        {
+            if (commandId == "page.set-composition" && pageType != ScadaPageType.Default) continue;
+            var result = await ExecutePagePropertyCommandAsync(commandId, request);
+            if (result.Status is CommandResultStatus.Blocked or CommandResultStatus.Failed) return;
         }
 
-        if (Equals(before, updated))
-        {
-            SetStatus("Proprietes page deja appliquees.");
-            return;
-        }
-
-        _activeScene = updated;
-        UpdateModernProjectFromActiveScene();
-        EnsureHomePageStillValid();
-        _activeSceneTab?.History.Push(new SceneSnapshotChangedAction(
-            updated.Id,
-            before,
-            updated,
-            "proprietes page"));
-        MarkActiveSceneDirty();
-        LoadPageProperties(_activeScene);
-        await ApplySceneBackgroundColorAsync(_activeScene.BackgroundColor, updateStatus: false);
-        await ApplySceneCanvasSizeAsync(_activeScene.CanvasSize);
-        await RenderModernSceneAsync();
-        SetStatus($"Proprietes page appliquees: {width}x{height}, {GetPageTypeLabel(_activeScene.PageType)}. Sauvegarde requise.");
+        await ApplySceneBackgroundColorAsync(background.Color, updateStatus: false);
+        await ApplySceneCanvasSizeAsync(new CanvasSize(width, height));
+        SetStatus($"Proprietes page appliquees: {width}x{height}. Sauvegarde requise.");
     }
 
     private async Task ResizeActiveSceneCanvasFromPreviewAsync(LegacyViewerMessage message)
@@ -1732,8 +1724,6 @@ public partial class MainWindow : Window, IPageWorkspaceHost
         await ApplyActiveSceneCanvasSizeAsync(
             Math.Max(160, (int)Math.Round(message.Width)),
             Math.Max(120, (int)Math.Round(message.Height)),
-            "redimensionnement workzone",
-            _activeScene,
             "Workzone redimensionnee");
     }
 
@@ -1757,7 +1747,6 @@ public partial class MainWindow : Window, IPageWorkspaceHost
             return;
         }
 
-        _pageDimensionEditBeforeScene ??= _activeScene;
         _pageDimensionApplyTimer.Stop();
         _pageDimensionApplyTimer.Start();
     }
@@ -1767,7 +1756,6 @@ public partial class MainWindow : Window, IPageWorkspaceHost
         _pageDimensionApplyTimer.Stop();
         if (_activeScene is null)
         {
-            _pageDimensionEditBeforeScene = null;
             return;
         }
 
@@ -1777,162 +1765,111 @@ public partial class MainWindow : Window, IPageWorkspaceHost
             return;
         }
 
-        var before = _pageDimensionEditBeforeScene ?? _activeScene;
-        _pageDimensionEditBeforeScene = null;
-        await ApplyActiveSceneCanvasSizeAsync(width, height, "dimensions page", before, "Dimensions page appliquees");
+        await ApplyActiveSceneCanvasSizeAsync(width, height, "Dimensions page appliquees");
     }
 
     private async Task ApplyActiveSceneCanvasSizeAsync(
         int width,
         int height,
-        string historyLabel,
-        ScadaScene before,
         string statusPrefix)
     {
-        if (_activeScene is null)
+        if (_activeScene is null || _activeSceneTab is null)
         {
             return;
         }
 
-        var updated = _activeScene.WithCanvasSize(new CanvasSize(width, height));
-        if (Equals(before, updated))
+        var size = new CanvasSize(width, height);
+        var result = await ExecutePagePropertyCommandAsync(
+            "page.set-canvas",
+            new SetPageCanvasRequest(_activeSceneTab.PageKey, size));
+        if (result.Status == CommandResultStatus.Succeeded)
         {
-            return;
+            await ApplySceneCanvasSizeAsync(size);
+            SetStatus($"{statusPrefix}: {width}x{height}. Sauvegarde requise.");
         }
-
-        _activeScene = updated;
-        _activeSceneTab?.History.Push(new SceneSnapshotChangedAction(
-            updated.Id,
-            before,
-            updated,
-            historyLabel));
-        MarkActiveSceneDirty();
-        LoadPageProperties(_activeScene);
-        await ApplySceneCanvasSizeAsync(_activeScene.CanvasSize);
-        await RenderModernSceneAsync();
-        SetStatus($"{statusPrefix}: {width}x{height}. Sauvegarde requise.");
     }
 
-    private void OnPageTypeSelectionChanged(object sender, SelectionChangedEventArgs e)
+    private async void OnPageTypeSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (_isUpdatingPagePropertyControls || !ArePagePropertyControlsReady() || _activeScene is null)
+        if (_isUpdatingPagePropertyControls || !ArePagePropertyControlsReady() || _activeSceneTab is null)
         {
             return;
         }
 
-        ApplyActiveScenePageType(GetSelectedPageType());
+        await ExecutePagePropertyCommandAsync(
+            "page.set-type",
+            new SetPageTypeRequest(_activeSceneTab.PageKey, GetSelectedPageType()));
     }
 
-    private void ApplyActiveScenePageType(ScadaPageType pageType)
+    private async void OnPageBuildInclusionClick(object sender, RoutedEventArgs e)
     {
-        if (_activeScene is null || _activeScene.PageType == pageType)
+        if (_isUpdatingPagePropertyControls || _activeSceneTab is null)
         {
             return;
         }
 
-        var before = _activeScene;
-        var updated = _activeScene.WithPageType(pageType);
-        if (updated.PageType is ScadaPageType.Header or ScadaPageType.Footer)
-        {
-            updated = updated.WithPageComposition(null, null);
-        }
-
-        _activeScene = updated;
-        UpdateModernProjectFromActiveScene();
-        EnsureHomePageStillValid();
-        _activeSceneTab?.History.Push(new SceneSnapshotChangedAction(
-            updated.Id,
-            before,
-            updated,
-            "type page"));
-        MarkActiveSceneDirty();
-        LoadPageProperties(_activeScene);
-        RefreshModernSceneUi();
-        SetStatus($"Type de page applique: {GetPageTypeLabel(pageType)}. Sauvegarde requise.");
+        await ExecutePagePropertyCommandAsync(
+            "page.set-build-inclusion",
+            new SetPageBuildInclusionRequest(_activeSceneTab.PageKey, IncludeInBuildCheckBox.IsChecked == true));
     }
 
-    private void OnIncludeInBuildClick(object sender, RoutedEventArgs e)
+    private async void OnHomePageClick(object sender, RoutedEventArgs e)
     {
-        if (_isUpdatingPagePropertyControls || _activeScene is null)
+        if (_isUpdatingPagePropertyControls || _activeSceneTab is null)
         {
             return;
         }
 
-        var before = _activeScene;
-        var updated = _activeScene.WithIncludeInBuild(IncludeInBuildCheckBox.IsChecked == true);
-        if (Equals(before, updated))
-        {
-            return;
-        }
-
-        _activeScene = updated;
-        UpdateModernProjectFromActiveScene();
-        EnsureHomePageStillValid();
-        _activeSceneTab?.History.Push(new SceneSnapshotChangedAction(updated.Id, before, updated, "compilation page"));
-        MarkActiveSceneDirty();
-        LoadPageProperties(_activeScene);
-        SetStatus($"Compilation page {(updated.IncludeInBuild ? "activee" : "desactivee")}: {updated.Id}. Sauvegarde requise.");
+        await ExecutePagePropertyCommandAsync(
+            "page.set-home",
+            new SetHomePageRequest(HomePageCheckBox.IsChecked == true ? _activeSceneTab.PageKey : null));
     }
 
-    private void OnHomePageClick(object sender, RoutedEventArgs e)
+    private async void OnPageCompositionSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (_isUpdatingPagePropertyControls || _activeScene is null)
+        if (_isUpdatingPagePropertyControls || _activeSceneTab is null)
         {
             return;
         }
 
-        if (HomePageCheckBox.IsChecked == true)
-        {
-            if (_activeScene.PageType != ScadaPageType.Default || !_activeScene.IncludeInBuild)
-            {
-                SetStatus("La page d'accueil doit etre une page Defaut compilee.");
-                LoadPageProperties(_activeScene);
-                return;
-            }
+        await ExecutePagePropertyCommandAsync(
+            "page.set-composition",
+            new SetPageCompositionRequest(
+                _activeSceneTab.PageKey,
+                GetSelectedCompositionPageKey(HeaderPageComboBox),
+                GetSelectedCompositionPageKey(FooterPageComboBox)));
+    }
 
-            SetHomePageId(_activeScene.Id);
-            MarkActiveSceneDirty();
+    private async void OnPageCodeLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+    {
+        if (_isUpdatingPagePropertyControls || _activeSceneTab is null) return;
+        await ExecutePagePropertyCommandAsync(
+            "page.change-code",
+            new ChangePageCodeRequest(_activeSceneTab.PageKey, PageNameTextBox.Text.Trim()));
+    }
+
+    private async void OnPageTitleLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+    {
+        if (_isUpdatingPagePropertyControls || _activeSceneTab is null) return;
+        await ExecutePagePropertyCommandAsync(
+            "page.rename",
+            new RenamePageRequest(_activeSceneTab.PageKey, PageTitleTextBox.Text.Trim()));
+    }
+
+    private async Task<CommandResult> ExecutePagePropertyCommandAsync(string commandId, PageCommandRequest request)
+    {
+        var pageKey = _activeSceneTab?.PageKey ?? _pageProperties.PageRouteKey;
+        var result = await _pageCommandController.ExecuteAsync(commandId, request, pageKey);
+        if (result.Diagnostics.Count > 0)
+        {
+            _diagnosticsPanel.Load(result.Diagnostics, _modernProject, $"Commande {commandId}");
+        }
+        if (result.Status is CommandResultStatus.Blocked or CommandResultStatus.Failed)
+        {
+            _pageCommandController.PresentFailure(result);
             LoadPageProperties(_activeScene);
-            SetStatus($"Page d'accueil definie: {_activeScene.Id}. Sauvegarde requise.");
-            return;
         }
-
-        if (_modernProject is not null && string.Equals(_modernProject.HomePageId, _activeScene.Id, StringComparison.Ordinal))
-        {
-            SetHomePageId(null);
-            MarkActiveSceneDirty();
-            LoadPageProperties(_activeScene);
-            SetStatus("Page d'accueil retiree. Fallback: premiere page Defaut compilee.");
-        }
-    }
-
-    private void OnPageCompositionSelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        if (_isUpdatingPagePropertyControls || _activeScene is null)
-        {
-            return;
-        }
-
-        var before = _activeScene;
-        var updated = _activeScene.WithPageComposition(
-            GetSelectedCompositionPageId(HeaderPageComboBox),
-            GetSelectedCompositionPageId(FooterPageComboBox));
-        if (updated.PageType is ScadaPageType.Header or ScadaPageType.Footer)
-        {
-            updated = updated.WithPageComposition(null, null);
-        }
-
-        if (Equals(before, updated))
-        {
-            return;
-        }
-
-        _activeScene = updated;
-        UpdateModernProjectFromActiveScene();
-        _activeSceneTab?.History.Push(new SceneSnapshotChangedAction(updated.Id, before, updated, "composition page"));
-        MarkActiveSceneDirty();
-        LoadPageProperties(_activeScene);
-        SetStatus($"Composition page appliquee: {updated.Id}. Sauvegarde requise.");
+        return result;
     }
 
     private void OnBackgroundColorTextChanged(object sender, TextChangedEventArgs e)
@@ -3385,17 +3322,21 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
+        var page = _modernProject?.Scenes.FirstOrDefault(candidate => candidate.PageKey == scene.PageKey)
+            ?? _modernProject?.Scenes.FirstOrDefault(candidate => string.Equals(candidate.EffectivePageCode, scene.EffectivePageCode, StringComparison.OrdinalIgnoreCase));
+        if (page is null) return;
+
         _isUpdatingPagePropertyControls = true;
         try
         {
-            PageNameTextBox.Text = scene.Id;
-            SelectPageType(scene.PageType);
-            IncludeInBuildCheckBox.IsChecked = scene.IncludeInBuild;
-            HomePageCheckBox.IsChecked = string.Equals(_modernProject?.HomePageId, scene.Id, StringComparison.Ordinal);
-            HomePageCheckBox.IsEnabled = scene.PageType == ScadaPageType.Default && scene.IncludeInBuild;
-            RefreshCompositionComboBox(HeaderPageComboBox, ScadaPageType.Header, scene.HeaderPageId);
-            RefreshCompositionComboBox(FooterPageComboBox, ScadaPageType.Footer, scene.FooterPageId);
-            var canCompose = scene.PageType is not (ScadaPageType.Header or ScadaPageType.Footer);
+            _pageProperties.Load(page, scene, _modernProject?.EffectiveHomePageKey);
+            SelectPageType(page.Type);
+            IncludeInBuildCheckBox.IsChecked = page.IncludeInBuild;
+            HomePageCheckBox.IsChecked = _modernProject?.EffectiveHomePageKey == page.PageKey;
+            HomePageCheckBox.IsEnabled = page.Type == ScadaPageType.Default && page.IncludeInBuild;
+            RefreshCompositionComboBox(HeaderPageComboBox, ScadaPageType.Header, page.HeaderPageKey);
+            RefreshCompositionComboBox(FooterPageComboBox, ScadaPageType.Footer, page.FooterPageKey);
+            var canCompose = page.Type is not (ScadaPageType.Header or ScadaPageType.Footer);
             HeaderPageComboBox.IsEnabled = canCompose;
             FooterPageComboBox.IsEnabled = canCompose;
             PageWidthTextBox.Text = scene.CanvasSize.Width.ToString();
@@ -3450,6 +3391,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     private bool ArePagePropertyControlsReady()
     {
         return PageNameTextBox is not null &&
+            PageTitleTextBox is not null &&
             PageTypeComboBox is not null &&
             IncludeInBuildCheckBox is not null &&
             HomePageCheckBox is not null &&
@@ -3467,26 +3409,26 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             BackgroundBlendModeComboBox is not null;
     }
 
-    private void RefreshCompositionComboBox(ComboBox comboBox, ScadaPageType pageType, string? selectedPageId)
+    private void RefreshCompositionComboBox(ComboBox comboBox, ScadaPageType pageType, Guid? selectedPageKey)
     {
         comboBox.Items.Clear();
         comboBox.Items.Add(new ComboBoxItem { Content = "Aucun", Tag = "" });
 
-        foreach (var page in GetCurrentSceneReferences()
+        foreach (var page in (_modernProject?.Scenes ?? [])
             .Where(page => page.Type == pageType)
             .OrderBy(page => page.Id, StringComparer.Ordinal))
         {
             comboBox.Items.Add(new ComboBoxItem
             {
-                Content = $"{page.Id} - {page.Title}",
-                Tag = page.Id
+                Content = $"{page.EffectivePageCode} - {page.Title}",
+                Tag = page.PageKey
             });
         }
 
         comboBox.SelectedIndex = 0;
         foreach (var item in comboBox.Items.OfType<ComboBoxItem>())
         {
-            if (string.Equals(item.Tag?.ToString(), selectedPageId, StringComparison.Ordinal))
+            if (item.Tag is Guid pageKey && pageKey == selectedPageKey)
             {
                 comboBox.SelectedItem = item;
                 return;
@@ -3494,30 +3436,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
     }
 
-    private static string? GetSelectedCompositionPageId(ComboBox comboBox)
+    private static Guid? GetSelectedCompositionPageKey(ComboBox comboBox)
     {
-        var value = (comboBox.SelectedItem as ComboBoxItem)?.Tag?.ToString();
-        return string.IsNullOrWhiteSpace(value) ? null : value;
-    }
-
-    private IReadOnlyList<ScadaSceneReference> GetCurrentSceneReferences()
-    {
-        if (_modernProject is null) return Array.Empty<ScadaSceneReference>();
-        _pageWorkspaceController.ReplaceProject(_modernProject);
-        _modernProject = _pageWorkspaceController.ReconcileProjectFromOpenScenes(_activeScene);
-        return _modernProject.Scenes;
-    }
-
-    private void UpdateModernProjectFromActiveScene()
-    {
-        if (_modernProject is null || _activeScene is null)
-        {
-            return;
-        }
-
-        _pageWorkspaceController.ReplaceProject(_modernProject);
-        _pageWorkspaceController.UpdateActiveScene(_activeScene, _activeSceneDirty);
-        _modernProject = _pageWorkspaceController.ReconcileProjectFromOpenScenes(_activeScene);
+        return (comboBox.SelectedItem as ComboBoxItem)?.Tag is Guid pageKey ? pageKey : null;
     }
 
     private void RefreshProjectTagSummary()
@@ -3695,32 +3616,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     private void OnCreateProjectTagClick(object sender, RoutedEventArgs e)
     {
         SetStatus("Creation de tags disponible dans une prochaine revision apres import des protocoles projet.");
-    }
-
-    private void SetHomePageId(string? pageId)
-    {
-        if (_modernProject is null)
-        {
-            return;
-        }
-
-        var pageKey = string.IsNullOrWhiteSpace(pageId)
-            ? null
-            : _modernProject.Scenes.FirstOrDefault(page =>
-                string.Equals(page.EffectivePageCode, pageId, StringComparison.OrdinalIgnoreCase))?.PageKey;
-        _modernProject = PageWorkspaceController.SetHomePage(_modernProject, pageKey);
-        _pageWorkspaceController.ReplaceProject(_modernProject, markDirty: true);
-    }
-
-    private void EnsureHomePageStillValid()
-    {
-        if (_modernProject is null)
-        {
-            return;
-        }
-
-        _pageWorkspaceController.ReplaceProject(_modernProject);
-        _modernProject = _pageWorkspaceController.ReconcileProjectFromOpenScenes(_activeScene);
     }
 
     private ScadaPageType GetSelectedPageType()
@@ -4113,7 +4008,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
-        var dialog = new ElementPropertiesDialog(current, GetCurrentSceneReferences(), _modernProject?.TagCatalog)
+        var dialog = new ElementPropertiesDialog(current, _modernProject?.Scenes ?? [], _modernProject?.TagCatalog)
         {
             Owner = this
         };
@@ -4267,17 +4162,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             }
 
             var exporter = new Ft100SceneExporter();
-            UpdateModernProjectFromActiveScene();
-            EnsureHomePageStillValid();
-            if (_modernProject is null)
-            {
-                SetStatus("Export FT100 impossible: projet V2 introuvable.");
-                return;
-            }
-
-            _modernProject = _modernProject with { Scenes = GetCurrentSceneReferences() };
-            var validationIssues = ScadaProjectBuildValidator.Validate(_modernProject).ToArray();
-            _diagnosticsPanel.Load(validationIssues, _modernProject, "Validation export FT100");
+            var workspaceSnapshot = await _pageWorkspaceController.CaptureSnapshotAsync();
+            var projectSnapshot = workspaceSnapshot.Project;
+            _modernProject = projectSnapshot;
+            var validationIssues = ScadaProjectBuildValidator.Validate(projectSnapshot, workspaceSnapshot.Scenes.Values.ToArray()).ToArray();
+            _diagnosticsPanel.Load(validationIssues, projectSnapshot, "Validation export FT100");
             var errors = validationIssues
                 .Where(issue => issue.Severity == ScadaBuildValidationSeverity.Error)
                 .ToArray();
@@ -4288,8 +4177,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 return;
             }
 
-            var inputs = await BuildFt100ProjectExportInputsAsync(_modernProject);
-            var result = await exporter.ExportProjectAsync(_modernProject, inputs, dialog.FolderName);
+            var inputs = await BuildFt100ProjectExportInputsAsync(projectSnapshot);
+            var result = await exporter.ExportProjectAsync(projectSnapshot, inputs, dialog.FolderName);
             SetStatus($"Export FT100 paquet cree: {result.ExportDirectory} ({result.PageResults.Count} page(s), {result.CopiedImageCount} image(s)).");
         }
         catch (Exception ex) when (ex is IOException or InvalidOperationException or UnauthorizedAccessException or ArgumentException)
@@ -4344,17 +4233,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             await Dispatcher.Yield(DispatcherPriority.Background);
 
             var exporter = new Ft100SceneExporter();
-            UpdateModernProjectFromActiveScene();
-            EnsureHomePageStillValid();
-            if (_modernProject is null)
-            {
-                SetStatus("Export FT100 .sb2 impossible: projet V2 introuvable.");
-                return;
-            }
-
-            _modernProject = _modernProject with { Scenes = GetCurrentSceneReferences() };
-            var validationIssues = ScadaProjectBuildValidator.Validate(_modernProject).ToArray();
-            _diagnosticsPanel.Load(validationIssues, _modernProject, "Validation export FT100 .sb2");
+            var workspaceSnapshot = await _pageWorkspaceController.CaptureSnapshotAsync();
+            var projectSnapshot = workspaceSnapshot.Project;
+            _modernProject = projectSnapshot;
+            var validationIssues = ScadaProjectBuildValidator.Validate(projectSnapshot, workspaceSnapshot.Scenes.Values.ToArray()).ToArray();
+            _diagnosticsPanel.Load(validationIssues, projectSnapshot, "Validation export FT100 .sb2");
             var errors = validationIssues
                 .Where(issue => issue.Severity == ScadaBuildValidationSeverity.Error)
                 .ToArray();
@@ -4366,8 +4249,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             }
 
             SetStatus("Export FT100 .sb2 en cours: resolution des sources...");
-            var inputs = await BuildFt100ProjectExportInputsAsync(_modernProject);
-            var projectSnapshot = _modernProject;
+            var inputs = await BuildFt100ProjectExportInputsAsync(projectSnapshot);
             var archivePath = dialog.FileName;
             SetStatus("Export FT100 .sb2 en cours: generation et compression...");
             var result = await Task.Run(() => exporter.ExportProjectArchiveAsync(projectSnapshot, inputs, archivePath));
@@ -5808,7 +5690,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
 
         var usedKinds = element.EffectiveCommandConfig.Commands.Select(c => c.Kind).ToArray();
-        var dialog = new ElementCommandDialog(null, GetCurrentSceneReferences(), _modernProject?.TagCatalog, usedKinds) { Owner = this };
+        var dialog = new ElementCommandDialog(null, _modernProject?.Scenes ?? [], _modernProject?.TagCatalog, usedKinds) { Owner = this };
         if (dialog.ShowDialog() != true || dialog.Result is null)
         {
             return;
@@ -5849,7 +5731,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             .Where(c => c.Id != selected.Id)
             .Select(c => c.Kind)
             .ToArray();
-        var dialog = new ElementCommandDialog(selected, GetCurrentSceneReferences(), _modernProject?.TagCatalog, usedKinds) { Owner = this };
+        var dialog = new ElementCommandDialog(selected, _modernProject?.Scenes ?? [], _modernProject?.TagCatalog, usedKinds) { Owner = this };
         if (dialog.ShowDialog() != true || dialog.Result is null)
         {
             return;
@@ -5992,7 +5874,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             current,
             _activeScene.ActionDefinitions,
             _activeScene.Elements,
-            GetCurrentSceneReferences(),
+            _modernProject?.Scenes ?? [],
             _modernProject?.TagCatalog)
         {
             Owner = owner ?? this
@@ -6402,6 +6284,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         return new EditorHistoryContext
         {
             ActiveSceneId = sceneId,
+            ActivePageKey = _activeSceneTab?.PageKey,
             GetActiveScene = () => _activeScene,
             ReplaceActiveScene = scene =>
             {
@@ -6425,8 +6308,33 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                     _selectedSceneObjectIds.Add(id);
                 }
             },
+            GetSceneByPageKey = _pageWorkspaceController.GetScene,
+            ReplaceSceneByPageKey = _pageWorkspaceController.ReplaceScene,
+            RemoveSceneByPageKey = _pageWorkspaceController.RemoveScene,
+            GetWorkspaceSceneKeys = _pageWorkspaceController.GetWorkspaceSceneKeys,
+            GetProject = () => _modernProject,
+            ReplaceProject = project =>
+            {
+                _modernProject = project;
+                _pageWorkspaceController.ReplaceProject(project);
+                _pagesPanel.Load(project);
+                PagesListBox.ItemsSource = _pagesPanel.View;
+            },
+            RestoreWorkspaceUi = _pageWorkspaceController.RestoreUi,
+            SetPendingDeletedPageKeys = _pageWorkspaceController.SetPendingDeletedPageKeys,
+            SetWorkspaceDirty = _pageWorkspaceController.SetWorkspaceDirty,
             MarkDirty = MarkActiveSceneDirty,
             RefreshPreviewAsync = RefreshPreviewAfterHistoryAsync,
+            RefreshTargetAsync = async target =>
+            {
+                await _pageWorkspaceController.RefreshHistoryTargetAsync(target);
+                if (target.Scope == EditorHistoryScope.Project)
+                {
+                    var selectedKey = _pageWorkspaceController.HistorySelectedPageKey;
+                    _pagesPanel.SelectedPage = _pagesPanel.Items.FirstOrDefault(item => item.PageKey == selectedKey);
+                    PagesListBox.SelectedItem = _pagesPanel.SelectedPage;
+                }
+            },
             SetStatus = SetStatus
         };
     }
@@ -6788,6 +6696,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         _applicationCommandRegistry.Register(new SetHomePageCommand(_pageCommandCoordinator));
         _applicationCommandRegistry.Register(new SetPageTypeCommand(_pageCommandCoordinator));
         _applicationCommandRegistry.Register(new SetPageCompositionCommand(_pageCommandCoordinator));
+        _applicationCommandRegistry.Register(new SetPageCanvasCommand(_pageCommandCoordinator));
+        _applicationCommandRegistry.Register(new SetPageBackgroundCommand(_pageCommandCoordinator));
         _applicationCommandRegistry.Register(new ValidatePagesCommand(_pageCommandCoordinator));
     }
 
@@ -7163,13 +7073,19 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private async Task UndoLastSceneOperationAsync()
     {
+        var context = CreateEditorHistoryContext();
+        if (_pageWorkspaceController.History.UndoCount > 0 && await _pageWorkspaceController.History.UndoAsync(context))
+        {
+            return;
+        }
+
         if (_activeSceneTab is null || _activeScene is null)
         {
             SetStatus("Undo ignore: aucune scene active.");
             return;
         }
 
-        if (!await _activeSceneTab.History.UndoAsync(CreateEditorHistoryContext()))
+        if (!await _activeSceneTab.History.UndoAsync(context))
         {
             SetStatus("Aucune operation a annuler dans cette scene.");
         }
@@ -7188,13 +7104,19 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private async Task RedoLastSceneOperationAsync()
     {
+        var context = CreateEditorHistoryContext();
+        if (_pageWorkspaceController.History.RedoCount > 0 && await _pageWorkspaceController.History.RedoAsync(context))
+        {
+            return;
+        }
+
         if (_activeSceneTab is null || _activeScene is null)
         {
             SetStatus("Redo ignore: aucune scene active.");
             return;
         }
 
-        if (!await _activeSceneTab.History.RedoAsync(CreateEditorHistoryContext()))
+        if (!await _activeSceneTab.History.RedoAsync(context))
         {
             SetStatus("Aucune operation a retablir dans cette scene.");
         }

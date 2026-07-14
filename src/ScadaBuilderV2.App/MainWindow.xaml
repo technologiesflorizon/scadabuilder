@@ -630,11 +630,17 @@
                                 <Separator Margin="0,12,0,12"/>
                                 <TextBlock Text="Proprietes page"
                                            FontWeight="SemiBold"/>
-                                <TextBlock Text="Nom de l'element"
+                                <TextBlock Text="Code de page"
                                            Margin="0,6,0,0"/>
                                 <TextBox x:Name="PageNameTextBox"
                                          Margin="0,3,0,8"
-                                         IsReadOnly="True"/>
+                                         Text="{Binding PageProperties.PageCode, UpdateSourceTrigger=PropertyChanged}"
+                                         LostKeyboardFocus="OnPageCodeLostKeyboardFocus"/>
+                                <TextBlock Text="Titre"/>
+                                <TextBox x:Name="PageTitleTextBox"
+                                         Margin="0,3,0,8"
+                                         Text="{Binding PageProperties.Title, UpdateSourceTrigger=PropertyChanged}"
+                                         LostKeyboardFocus="OnPageTitleLostKeyboardFocus"/>
                                 <TextBlock Text="Type"/>
                                 <ComboBox x:Name="PageTypeComboBox"
                                           Margin="0,3,0,8"
@@ -647,7 +653,7 @@
                                 <CheckBox x:Name="IncludeInBuildCheckBox"
                                           Content="Compiler cette page"
                                           Margin="0,0,0,6"
-                                          Click="OnIncludeInBuildClick"/>
+                                          Click="OnPageBuildInclusionClick"/>
                                 <CheckBox x:Name="HomePageCheckBox"
                                           Content="Page d'accueil"
                                           Margin="0,0,0,8"
