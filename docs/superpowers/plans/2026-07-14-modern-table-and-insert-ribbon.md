@@ -1,13 +1,14 @@
 # Tableau moderne et ruban Inserer hierarchique - Plan d'implementation
 
 Date: 2026-07-14
-Status: Draft implementation plan - pending execution approval
-Document version: `V2.1.4.0015`
+Status: Implemented - automated validation complete; isolated interactive smoke pending
+Document version: `V2.1.4.0016`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0016` | `PENDING` | Tranche implementee et couverte automatiquement; cinq echecs historiques restent hors scope et la verification interactive sur projet isole reste a faire. |
 | 2026-07-14 | `V2.1.4.0015` | `95a57ac` | Creation du plan executable derive de la specification approuvee et de `DEC-0039`. |
 
 > **Pour les agents d'execution :** utiliser un workflow d'execution de plan tache par tache. Ne pas deleguer a des sous-agents sans autorisation explicite de l'utilisateur. Les cases `- [ ]` constituent le suivi d'execution.
@@ -17,6 +18,15 @@ Document version: `V2.1.4.0015`
 **Architecture:** Domain porte le contrat persistant, les invariants, les operations de grille et la resolution de styles. Application porte les requetes typees, commandes, diagnostics, presse-papiers et catalogues d'insertion. Rendering produit le HTML/CSS page-scope. App porte des controles, view models, dialogues, un coordinateur et un script WebView dedies. `MainWindow` ne fait que fournir le workspace actif, heberger les controles et deleguer les messages.
 
 **Tech Stack:** C# 12, .NET 8, WPF/AvalonDock/WebView2, JavaScript embarque, `System.Text.Json`, MSTest, PowerShell, HTML/CSS et archive `.sb2`
+
+## Implementation evidence
+
+- Domain: modele retrocompatible, limite 64 x 64, scenario 16 x 10, invariants, fusions, pistes et precedence de style.
+- Application: requetes typees, coordinateur, clipboard interne/TSV, menu contextuel et catalogue de huit familles.
+- App: creation 6 x 8 configurable, selection souris/clavier, edition texte/input, resize global et pistes, dialogues, panneau droit et dispatch generique hors `MainWindow.xaml.cs`.
+- Rendering/persistance: round-trip scene, HTML/CSS page-scope et archive `.sb2` via le contrat actuel, sans `ValueBindings` cellule ni artefact editeur.
+- Tests cibles: 37 tests Tableau/ruban valides. Suite complete: 582/587 reussis; les cinq echecs historiques reproduits avant implementation restent hors scope.
+- Reste: smoke test interactif isole des parcours WPF/WebView; aucun fichier sous `projects/AMR_REF_SCADA_V2` n'a ete modifie par cette implementation.
 
 ## Global Constraints
 

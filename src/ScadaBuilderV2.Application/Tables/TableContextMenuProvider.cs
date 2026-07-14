@@ -6,6 +6,8 @@ namespace ScadaBuilderV2.Application.Tables;
 /// <summary>Builds the spreadsheet-style context menu for a selected table range.</summary>
 public static class TableContextMenuProvider
 {
+    /// <summary>Creates the commands and enablement state for one rectangular table selection.</summary>
+    /// <remarks>Decisions: DEC-0039. Contracts: docs/04_editor/COMMANDS_CONTRACT_V2.md. Tests: tests/ScadaBuilderV2.Tests/TableUiArchitectureTests.cs.</remarks>
     public static IReadOnlyList<EditorCommandDescriptor> Build(
         ScadaTableDefinition table,
         ScadaTableRange range,

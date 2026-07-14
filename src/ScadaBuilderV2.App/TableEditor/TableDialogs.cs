@@ -83,14 +83,17 @@ internal sealed class CellFormatDialog : Window
         {
             MessageBox.Show(this, "L'epaisseur de grille doit etre un nombre positif.", Title, MessageBoxButton.OK, MessageBoxImage.Warning); return;
         }
-        Result = new(background.Text.Trim(), foreground.Text.Trim(), gridColor.Text.Trim(), width,
+        Result = new(NullWhenBlank(background.Text), NullWhenBlank(foreground.Text), NullWhenBlank(gridColor.Text), width,
             HorizontalAlignment: horizontal.SelectedItem is ScadaTableHorizontalAlignment alignment ? alignment : ScadaTableHorizontalAlignment.Left);
         DialogResult = true;
     }
+
+    private static string? NullWhenBlank(string value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }
 
 internal sealed class TablePropertiesDialog : Window
 {
+    private readonly ScadaTableStyle currentStyle;
     private readonly TextBox baseBackground = new();
     private readonly TextBox headerBackground = new();
     private readonly TextBox alternateBackground = new();
@@ -99,6 +102,7 @@ internal sealed class TablePropertiesDialog : Window
 
     public TablePropertiesDialog(ScadaTableDefinition table)
     {
+        currentStyle = table.EffectiveStyle;
         Title = "Proprietes du tableau"; Width = 430; Height = 390; WindowStartupLocation = WindowStartupLocation.CenterOwner; ResizeMode = ResizeMode.NoResize;
         dimensions.Text = $"{table.EffectiveRows.Count} rangees x {table.EffectiveColumns.Count} colonnes — {table.Width:0.##} x {table.Height:0.##} px";
         baseBackground.Text = table.EffectiveStyle.Base?.Background ?? "";
@@ -110,11 +114,14 @@ internal sealed class TablePropertiesDialog : Window
 
     private void Save()
     {
-        Result = new(new ScadaTableFormat(Background: baseBackground.Text.Trim()),
-            new ScadaTableFormat(Background: headerBackground.Text.Trim(), FontWeight: "Bold"),
-            new ScadaTableFormat(Background: alternateBackground.Text.Trim()));
+        Result = new(
+            (currentStyle.Base ?? new ScadaTableFormat()) with { Background = NullWhenBlank(baseBackground.Text) },
+            (currentStyle.Header ?? new ScadaTableFormat()) with { Background = NullWhenBlank(headerBackground.Text) },
+            (currentStyle.AlternatingRows ?? new ScadaTableFormat()) with { Background = NullWhenBlank(alternateBackground.Text) });
         DialogResult = true;
     }
+
+    private static string? NullWhenBlank(string value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
 }
 
 internal static class DialogLayout

@@ -54,19 +54,46 @@ internal static class TableWebViewScript
       node.style.gridColumn = `${Number(cell.Column)+1} / span ${Math.max(1, Number(cell.ColumnSpan || 1))}`;
       const format = effective(table, Number(cell.Row), Number(cell.Column), cell);
       node.style.background = format.Background || '#fff'; node.style.color = format.Foreground || '#0f2a30';
-      node.style.border = `${Number(format.GridWidth ?? 1)}px ${String(format.GridStyle || 'solid').toLowerCase()} ${format.GridColor || '#8aa0a6'}`;
-      node.style.padding = `${Number(format.Padding ?? 4)}px`; node.style.alignItems = String(format.VerticalAlignment || 'middle').toLowerCase() === 'top' ? 'flex-start' : (String(format.VerticalAlignment || '').toLowerCase() === 'bottom' ? 'flex-end' : 'center');
-      node.style.textAlign = String(format.HorizontalAlignment || 'left').toLowerCase(); node.style.fontFamily = format.FontFamily || 'Segoe UI'; node.style.fontSize = `${Number(format.FontSize || 14)}px`; node.style.fontWeight = format.FontWeight || 'normal';
-      const content = cell.Content || {}; const kind = String(content.Kind || 'Text');
+      const gridStyles = ['none','solid','dashed','dotted','double'];
+      const gridStyle = typeof format.GridStyle === 'number' ? gridStyles[format.GridStyle] : String(format.GridStyle || 'solid').toLowerCase();
+      node.style.border = `${Number(format.GridWidth ?? 1)}px ${gridStyle} ${format.GridColor || '#8aa0a6'}`;
+      node.style.padding = `${Number(format.Padding ?? 4)}px`; const vertical = typeof format.VerticalAlignment === 'number' ? ['top','middle','bottom'][format.VerticalAlignment] : String(format.VerticalAlignment || 'middle').toLowerCase(); node.style.alignItems = vertical === 'top' ? 'flex-start' : (vertical === 'bottom' ? 'flex-end' : 'center');
+      const horizontalValues = ['left','center','right','justify'];
+      node.style.textAlign = typeof format.HorizontalAlignment === 'number' ? horizontalValues[format.HorizontalAlignment] : String(format.HorizontalAlignment || 'left').toLowerCase(); node.style.fontFamily = format.FontFamily || 'Segoe UI'; node.style.fontSize = `${Number(format.FontSize || 14)}px`; node.style.fontWeight = format.FontWeight || 'normal';
+      const content = cell.Content || {}; const kind = typeof content.Kind === 'number' ? ['Text','InputText','InputNumeric'][content.Kind] : String(content.Kind || 'Text');
       if (kind === 'InputText' || kind === 'InputNumeric') {
         const input = document.createElement('input'); input.type = kind === 'InputNumeric' ? 'number' : 'text'; input.value = kind === 'InputNumeric' ? (content.NumericValue ?? content.Text ?? '') : (content.Text || ''); input.placeholder = content.Placeholder || ''; input.readOnly = content.IsReadOnly === true;
         ['Minimum','Maximum','Step'].forEach((name, index) => { if (content[name] != null) input[['min','max','step'][index]] = content[name]; });
         input.addEventListener('change', () => window.chrome?.webview?.postMessage({ type:'tableCellEdit', id:element.Id, row:Number(cell.Row), column:Number(cell.Column), contentKind:kind, text:input.value }));
         node.appendChild(input);
-      } else { const span = document.createElement('span'); span.textContent = content.Text || ''; node.appendChild(span); }
+      } else {
+        const span = document.createElement('span'); span.textContent = content.Text || ''; node.appendChild(span);
+        node.addEventListener('dblclick', event => {
+          event.preventDefault(); event.stopPropagation();
+          const input = document.createElement('input'); input.type = 'text'; input.value = span.textContent || ''; node.replaceChild(input, span); input.focus(); input.select();
+          const commit = () => window.chrome?.webview?.postMessage({ type:'tableCellEdit', id:element.Id, row:Number(cell.Row), column:Number(cell.Column), contentKind:'Text', text:input.value });
+          input.addEventListener('blur', commit, { once:true }); input.addEventListener('keydown', keyEvent => { if (keyEvent.key === 'Enter') { keyEvent.preventDefault(); input.blur(); } if (keyEvent.key === 'Escape') { keyEvent.preventDefault(); input.value = span.textContent || ''; input.blur(); } });
+        });
+      }
+      node.tabIndex = 0;
+      node.addEventListener('keydown', event => {
+        if ((event.ctrlKey || event.metaKey) && (event.key.toLowerCase() === 'c' || event.key.toLowerCase() === 'v')) {
+          window.chrome?.webview?.postMessage({ type:'executeCommand', commandId:event.key.toLowerCase() === 'c' ? 'table.copy' : 'table.paste', id:element.Id }); event.preventDefault(); return;
+        }
+        const delta = { ArrowLeft:[0,-1], ArrowRight:[0,1], ArrowUp:[-1,0], ArrowDown:[1,0] }[event.key];
+        if (!delta) return;
+        const target = grid.querySelector(`.scada-editor-table-cell[data-row="${Number(cell.Row)+delta[0]}"][data-column="${Number(cell.Column)+delta[1]}"]`);
+        if (target) { target.focus(); target.dispatchEvent(new PointerEvent('pointerdown', { bubbles:true, shiftKey:event.shiftKey })); event.preventDefault(); }
+      });
       node.addEventListener('pointerdown', event => {
         event.stopPropagation();
         if (!event.shiftKey || !anchor) anchor = { row:Number(cell.Row), column:Number(cell.Column) };
+        const end = { row:Number(cell.Row), column:Number(cell.Column) };
+        grid.querySelectorAll('.scada-editor-table-cell').forEach(item => { const r=Number(item.dataset.row), c=Number(item.dataset.column); item.dataset.selected = r>=Math.min(anchor.row,end.row)&&r<=Math.max(anchor.row,end.row)&&c>=Math.min(anchor.column,end.column) ? 'true':'false'; });
+        window.chrome?.webview?.postMessage({ type:'tableSelection', id:element.Id, row:anchor.row, column:anchor.column, endRow:end.row, endColumn:end.column });
+      });
+      node.addEventListener('pointerenter', event => {
+        if (event.buttons !== 1 || !anchor) return;
         const end = { row:Number(cell.Row), column:Number(cell.Column) };
         grid.querySelectorAll('.scada-editor-table-cell').forEach(item => { const r=Number(item.dataset.row), c=Number(item.dataset.column); item.dataset.selected = r>=Math.min(anchor.row,end.row)&&r<=Math.max(anchor.row,end.row)&&c>=Math.min(anchor.column,end.column) ? 'true':'false'; });
         window.chrome?.webview?.postMessage({ type:'tableSelection', id:element.Id, row:anchor.row, column:anchor.column, endRow:end.row, endColumn:end.column });

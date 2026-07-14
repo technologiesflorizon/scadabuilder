@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active project model contract
-Document version: `V2.1.4.0012`
+Document version: `V2.1.4.0016`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0016` | `PENDING` | Ajout du contrat persistant `ScadaElementKind.Table`, pistes, cellules, fusions, contenus input et styles heritables. |
 | 2026-07-14 | `V2.1.4.0012` | `PENDING` | Contrat `PageKey`/`PageCode`, provenance Wonderware, pages natives et sauvegarde atomique désormais implémenté. |
 | 2026-07-14 | `V2.1.4.0011` | `4def659` | Ajout de la cible approuvée `PageKey`/`PageCode`, provenance importée et migration compatible, avant implémentation. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Clarification du role actif de `DisplayFormat` et de la deprecation authoring de `TagBinding`, `Decimals` et `Unit`. |
@@ -30,6 +31,12 @@ Legacy source paths and source ids are trace metadata unless explicitly converte
 4. Elements own identity, kind, bounds, data, event bindings, and optional read/write tag bindings.
 5. Actions may own one optional tag condition when the runtime function supports deterministic conditional execution.
 6. Runtime manifests are generated outputs, not editable source models.
+
+### 2.1 Element+ Tableau
+
+Un tableau est un seul `ScadaElement` de kind `Table` dont `Table` contient les colonnes, rangees, ancres de cellules, spans, contenus et styles. Les pistes sont limitees a 1..64 par axe; les dimensions minimales sont 24 px par colonne et 20 px par rangee. Les anciennes scenes sans champ `Table` restent lisibles.
+
+Une cellule contient du texte statique, un `InputText` ou un `InputNumeric`. Ces inputs sont des valeurs locales simples : aucun `ValueBinding` cellule par cellule n'est cree. Les styles nullable signifient `Heriter`; la resolution se fait propriete par propriete selon `cellule > rangee explicite > bande > colonne > tableau > defaut`.
 
 Element numeric data keeps compatibility fields for older projects, but active authoring uses:
 

@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active authoritative decision register
-Document version: `V2.1.4.0015`
+Document version: `V2.1.4.0016`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0016` | `PENDING` | `DEC-0039` implementee avec modele Tableau, edition type tableur, export `.sb2`, tests et ruban Inserer hierarchique; smoke interactif isole restant. |
 | 2026-07-14 | `V2.1.4.0015` | `95a57ac` | Ajout de `DEC-0039` pour l'Element+ Tableau moderne, l'edition type tableur, le ruban Inserer hierarchique et l'extraction des responsabilites hors `MainWindow`. |
 | 2026-07-14 | `V2.1.4.0011` | `PENDING` | DEC-0038 passée de décision approuvée à tranche implémentée et couverte; la vérification UI manuelle et la migration du projet réel restent séparées. |
 | 2026-07-14 | `V2.1.4.0010` | `c5d6f0e` | Ajout de DEC-0038 pour l’identité moderne des pages, les commandes partagées, l’historique projet, la persistance atomique et la compatibilité `.sb2`. |
@@ -1157,4 +1158,4 @@ Existing projects remain readable with `Table = null` and are not converted auto
 
 Regression coverage:
 
-Planned in `tests/ScadaBuilderV2.Tests/ScadaTableModelTests.cs`, `ScadaTableOperationsTests.cs`, `TableEditCoordinatorTests.cs`, `TableClipboardTests.cs`, `RibbonCommandCatalogTests.cs`, `TableWebViewScriptTests.cs`, `TableEditorSurfaceContractTests.cs`, `ModernProjectStoreTests.cs`, `EditorHistoryServiceTests.cs`, `NativePageDocumentTests.cs`, and `Ft100SceneExporterTests.cs`.
+Implemented in `tests/ScadaBuilderV2.Tests/ScadaTableModelTests.cs`, `ScadaTableOperationsTests.cs`, `TableEditCoordinatorTests.cs`, `TableClipboardTests.cs`, `RibbonCommandCatalogTests.cs`, `TableUiArchitectureTests.cs`, `ModernProjectStoreTests.cs`, `WebViewContextMenuScriptTests.cs`, and `Ft100SceneExporterTests.cs`.

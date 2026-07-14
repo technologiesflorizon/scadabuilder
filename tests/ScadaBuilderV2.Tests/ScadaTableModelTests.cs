@@ -28,6 +28,17 @@ public sealed class ScadaTableModelTests
     }
 
     [TestMethod]
+    public void CreateDefaultCoversWin00012ScaleScenario()
+    {
+        var table = ScadaTableDefinition.CreateDefault(16, 10);
+
+        Assert.AreEqual(160, table.EffectiveCells.Count);
+        Assert.AreEqual(960d, table.Width);
+        Assert.AreEqual(512d, table.Height);
+        ScadaTableOperations.ValidateDefinition(table);
+    }
+
+    [TestMethod]
     public void CreateDefaultRejectsInvalidCapacity()
     {
         Assert.ThrowsException<ArgumentOutOfRangeException>(() => ScadaTableDefinition.CreateDefault(0, 8));
