@@ -634,15 +634,16 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
-    public void MainEditorUsesSceneScopedCommonHistory()
+    public void MainEditorUsesPolymorphicSceneAndProjectHistory()
     {
         var xaml = ReadMainWindowFile("MainWindow.xaml");
         var source = ReadMainWindowSource();
 
-        StringAssert.Contains(source, "public EditorHistoryService History { get; } = new();");
         StringAssert.Contains(source, "_activeSceneTab.History.UndoAsync");
         StringAssert.Contains(source, "_activeSceneTab.History.RedoAsync");
-        StringAssert.Contains(source, "SceneBackgroundChangedAction");
+        StringAssert.Contains(source, "_pageWorkspaceController.History.UndoAsync");
+        StringAssert.Contains(source, "_pageWorkspaceController.History.RedoAsync");
+        StringAssert.Contains(source, "GetWorkspaceSceneKeys = _pageWorkspaceController.GetWorkspaceSceneKeys");
         StringAssert.Contains(xaml, "UndoSceneCommand");
         StringAssert.Contains(xaml, "RedoSceneCommand");
         StringAssert.Contains(source, "case \"edit.undo\":");
@@ -833,10 +834,9 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(messageHandler, "PreviewActiveSceneCanvasResize(message);");
         StringAssert.Contains(messageHandler, "_ = ResizeActiveSceneCanvasFromPreviewAsync(message);");
         StringAssert.Contains(resizeMethod, "await ApplyActiveSceneCanvasSizeAsync(");
-        StringAssert.Contains(applyCanvasMethod, ".WithCanvasSize(new CanvasSize(width, height))");
-        StringAssert.Contains(applyCanvasMethod, "new SceneSnapshotChangedAction(");
-        StringAssert.Contains(applyCanvasMethod, "MarkActiveSceneDirty();");
-        StringAssert.Contains(applyCanvasMethod, "await ApplySceneCanvasSizeAsync(_activeScene.CanvasSize);");
+        StringAssert.Contains(applyCanvasMethod, "new SetPageCanvasRequest(_activeSceneTab.PageKey, size)");
+        StringAssert.Contains(applyCanvasMethod, "ExecutePagePropertyCommandAsync(");
+        StringAssert.Contains(applyCanvasMethod, "await ApplySceneCanvasSizeAsync(size);");
     }
 
     [TestMethod]
@@ -853,25 +853,22 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "_pageDimensionApplyTimer.Tick += OnPageDimensionApplyTimerTick;");
         StringAssert.Contains(source, "private void OnPageDimensionTextChanged(object sender, TextChangedEventArgs e)");
         StringAssert.Contains(source, "private async void OnPageDimensionApplyTimerTick(object? sender, EventArgs e)");
-        StringAssert.Contains(source, "await ApplyActiveSceneCanvasSizeAsync(width, height, \"dimensions page\"");
+        StringAssert.Contains(source, "await ApplyActiveSceneCanvasSizeAsync(width, height, \"Dimensions page appliquees\"");
         StringAssert.Contains(source, "SetPageDimensionFields(width, height);");
     }
 
     [TestMethod]
-    public void PageTypeSelectionAppliesSceneTypeAndMarksDirty()
+    public void PageTypeSelectionRoutesThroughSharedPageCommand()
     {
         var xaml = ReadMainWindowFile("MainWindow.xaml");
         var source = ReadMainWindowSource();
-        var handler = ExtractMethod(source, "private void OnPageTypeSelectionChanged(object sender, SelectionChangedEventArgs e)");
-        var applyMethod = ExtractMethod(source, "private void ApplyActiveScenePageType(ScadaPageType pageType)");
+        var handler = ExtractMethod(source, "private async void OnPageTypeSelectionChanged(object sender, SelectionChangedEventArgs e)");
 
         StringAssert.Contains(xaml, "x:Name=\"PageTypeComboBox\"");
         StringAssert.Contains(xaml, "SelectionChanged=\"OnPageTypeSelectionChanged\"");
-        StringAssert.Contains(handler, "ApplyActiveScenePageType(GetSelectedPageType());");
-        StringAssert.Contains(applyMethod, "_activeScene.WithPageType(pageType)");
-        StringAssert.Contains(applyMethod, "new SceneSnapshotChangedAction(");
-        StringAssert.Contains(applyMethod, "MarkActiveSceneDirty();");
-        StringAssert.Contains(applyMethod, "LoadPageProperties(_activeScene);");
+        StringAssert.Contains(handler, "ExecutePagePropertyCommandAsync(");
+        StringAssert.Contains(handler, "new SetPageTypeRequest(_activeSceneTab.PageKey, GetSelectedPageType())");
+        Assert.IsFalse(source.Contains("ApplyActiveScenePageType", StringComparison.Ordinal));
     }
 
     [TestMethod]
