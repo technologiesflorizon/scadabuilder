@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0014`
+Document version: `V2.1.4.0015`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0015` | `PENDING` | Specification Tableau approuvee, `DEC-0039` enregistree et plan d'implementation executable ajoute. |
 | 2026-07-14 | `V2.1.4.0014` | `a95addd` | Specification Tableau precisee avec surfaces de proprietes dediees, menu contextuel type tableur, dimensions manuelles, limite validee contre `win00012` et garde-fou strict hors `MainWindow`; une precedence de style detaillee reste a confirmer. |
 | 2026-07-14 | `V2.1.4.0013` | `766f8e2` | Specification Tableau precisee : cellules texte ou inputs natifs, sans `ValueBindings` cellule par cellule. |
 | 2026-07-14 | `V2.1.4.0012` | `da244d9` | Ajout du routage vers la specification draft du tableau moderne et du ruban Inserer hierarchique. |
@@ -166,7 +167,8 @@ Active specifications and implementation plans:
 
 1. `superpowers/specs/2026-07-14-page-commands-design.md` - implemented architecture and product decisions for modern page management.
 2. `superpowers/plans/2026-07-14-page-management-commands.md` - implementation record for page identity, commands, persistence, diagnostics, WPF surfaces, and `.sb2` compatibility; manual isolated-copy UI verification and real-project migration remain gated.
-3. `superpowers/specs/2026-07-14-modern-table-and-insert-ribbon-design.md` - draft design for a model-backed modern table, spreadsheet-style editing, dedicated property surfaces, contextual row/column/cell commands, hierarchical Insert ribbon, and strict `MainWindow` responsibility split; only the detailed style precedence remains open before decision registration and planning.
+3. `superpowers/specs/2026-07-14-modern-table-and-insert-ribbon-design.md` - approved `DEC-0039` design for a model-backed modern table, spreadsheet-style editing, dedicated property surfaces, contextual row/column/cell commands, hierarchical Insert ribbon, and strict `MainWindow` responsibility split.
+4. `superpowers/plans/2026-07-14-modern-table-and-insert-ribbon.md` - executable implementation plan for the approved modern table and hierarchical Insert ribbon; execution is gated on isolating the existing user-owned reference-project changes.
 
 Generated documentation:
 

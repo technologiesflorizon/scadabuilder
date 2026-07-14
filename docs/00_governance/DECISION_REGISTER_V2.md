@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active authoritative decision register
-Document version: `V2.1.4.0011`
+Document version: `V2.1.4.0015`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0015` | `PENDING` | Ajout de `DEC-0039` pour l'Element+ Tableau moderne, l'edition type tableur, le ruban Inserer hierarchique et l'extraction des responsabilites hors `MainWindow`. |
 | 2026-07-14 | `V2.1.4.0011` | `PENDING` | DEC-0038 passée de décision approuvée à tranche implémentée et couverte; la vérification UI manuelle et la migration du projet réel restent séparées. |
 | 2026-07-14 | `V2.1.4.0010` | `c5d6f0e` | Ajout de DEC-0038 pour l’identité moderne des pages, les commandes partagées, l’historique projet, la persistance atomique et la compatibilité `.sb2`. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Ajout de DEC-0037 pour le contrat de style avancé Element+ model-backed et la conservation HTML/CSS TF100Web. |
@@ -1127,3 +1128,33 @@ Implemented in commits `40c77a3` through `3493055`. Automated lifecycle and `.sb
 Regression coverage:
 
 `tests/ScadaBuilderV2.Tests/PageIdentityTests.cs`, `tests/ScadaBuilderV2.Tests/PageCommandCoordinatorTests.cs`, `tests/ScadaBuilderV2.Tests/ProjectWorkspaceHistoryTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectAtomicSnapshotTests.cs`, `tests/ScadaBuilderV2.Tests/NativePageDocumentTests.cs`, `tests/ScadaBuilderV2.Tests/PageManagementSurfaceContractTests.cs`, `tests/ScadaBuilderV2.Tests/DiagnosticsSurfaceContractTests.cs`, `tests/ScadaBuilderV2.Tests/PageLifecycleIntegrationTests.cs`, and `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`.
+
+### DEC-0039 - Modern Table Element And Hierarchical Insert Ribbon
+
+Status: Active
+Created: 2026-07-14 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/specs/2026-07-14-modern-table-and-insert-ribbon-design.md`
+
+Context:
+
+The `win00012` reference scene reconstructs tabular information with hundreds of independent legacy text, rectangle, line, and button objects. The current Insert ribbon is flat, grows for every tool, and routes many insertion ids through `MainWindow`. SCADA Builder V2 has no model-backed table capable of track resizing, merged cells, contextual row/column commands, coherent style inheritance, persistence, or direct `.sb2` export.
+
+Decision:
+
+SCADA Builder V2 introduces one Element+ `Table` object backed by a nullable, backward-compatible domain definition. It supports 1 to 64 rows and columns, manual and proportional track resize, rectangular selection, merge/unmerge, native text and numeric inputs without per-cell `ValueBindings`, table/column/row/cell formatting, internal and TSV clipboard exchange, and contextual insert/delete/clear/format/size commands. Effective formatting is resolved property by property in the order `Cell > explicit Row > automatic Row Band > Column > Table > system default`, where `null` means inherit.
+
+The right `Propriete` panel, a dedicated `TablePropertiesDialog`, `CellFormatDialog`, dimension dialog, WebView table editor, and contextual menu route typed requests through shared Application commands and Domain operations. Editor gutters, selections, handles, and previews are never exported. The live WebView canvas and FT100 renderer consume the same table model; `.sb2` keeps its existing page-root, folder, namespace, and manifest contract.
+
+The Insert ribbon becomes hierarchical: level 1 selects a semantic family and level 2 exposes its tools. Implemented tools keep stable ids; future modern SCADA tools may remain visible only with explicit disabled reasons. Catalog, generic insertion descriptors, table behavior, validation, clipboard rules, and detailed coordination are extracted from `MainWindow`; only high-level shell/workspace adaptation may remain there.
+
+Consequences:
+
+Existing projects remain readable with `Table = null` and are not converted automatically. `win00012` remains evidence and a visual/capacity reference, not an automatic migration target. Table inputs are standard HTML controls whose runtime values are local and not persisted after page reload. Implementation must add Domain, Application, Rendering, WebView, WPF, persistence, history, architecture, and `.sb2` regression coverage before the feature is documented as implemented.
+
+Regression coverage:
+
+Planned in `tests/ScadaBuilderV2.Tests/ScadaTableModelTests.cs`, `ScadaTableOperationsTests.cs`, `TableEditCoordinatorTests.cs`, `TableClipboardTests.cs`, `RibbonCommandCatalogTests.cs`, `TableWebViewScriptTests.cs`, `TableEditorSurfaceContractTests.cs`, `ModernProjectStoreTests.cs`, `EditorHistoryServiceTests.cs`, `NativePageDocumentTests.cs`, and `Ft100SceneExporterTests.cs`.

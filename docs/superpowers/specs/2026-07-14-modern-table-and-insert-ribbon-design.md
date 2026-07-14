@@ -1,13 +1,14 @@
 # Tableau moderne et ruban Inserer hierarchique - Specification de conception
 
 Date: 2026-07-14
-Status: Draft design - validation utilisateur requise avant planification
-Document version: `V2.1.4.0014`
+Status: Approved design - ready for implementation
+Document version: `V2.1.4.0015`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0015` | `PENDING` | Approbation utilisateur de la precedence de style propriete par propriete; specification entierement validee, rattachee a `DEC-0039` et prete pour execution du plan. |
 | 2026-07-14 | `V2.1.4.0014` | `a95addd` | Precision du modele nullable et de ses valeurs effectives, des surfaces de proprietes Tableau, du menu contextuel type tableur, du presse-papiers, des dimensions de pistes et de la limite validee contre `win00012`; la precedence de style reste a confirmer. |
 | 2026-07-14 | `V2.1.4.0013` | `766f8e2` | Validation des cellules texte et inputs natifs sans `ValueBindings` cellule par cellule, avec export direct dans le HTML `.sb2` actuel. |
 | 2026-07-14 | `V2.1.4.0012` | `da244d9` | Premiere specification du nouvel Element+ Tableau, de son edition type tableur, du ruban Inserer a deux niveaux et du refactor hors `MainWindow`. |
@@ -322,7 +323,7 @@ Le style peut etre applique a :
 
 Le color picker existant est reutilise.
 
-### 6.3 Precedence proposee
+### 6.3 Precedence validee
 
 ```text
 Cellule > Rangee explicite > Bande de rangee > Colonne > Tableau > Defaut systeme
@@ -343,7 +344,7 @@ Cellule[r,c].Style[p]
 
 Exemple : le tableau definit un fond blanc et un texte noir; la colonne 2 definit un texte bleu; les rangees alternees definissent un fond gris; la rangee 3 definit un fond orange; la cellule R3C2 definit le gras. R3C2 obtient alors un fond orange, un texte bleu et une typographie grasse. La couleur bleue de colonne n'est pas perdue parce que la rangee n'a surcharge que le fond.
 
-Cette proposition garde les en-tetes et bandes horizontales previsibles tout en permettant a une colonne de fournir les proprietes que la rangee ne definit pas. Elle reste le seul choix produit a confirmer avant `DEC-0039`.
+Cette decision garde les en-tetes et bandes horizontales previsibles tout en permettant a une colonne de fournir les proprietes que la rangee ne definit pas.
 
 ## 7. Rendu preview et export
 
@@ -593,7 +594,7 @@ flowchart TD
 13. Ajuster manuellement les separateurs et saisir une hauteur de ligne ou une largeur de colonne precise depuis le menu contextuel.
 14. Verifier que `MainWindow` ne contient que le branchement de haut niveau des surfaces Tableau.
 
-## 15. Decisions validees et point a valider avant le plan d'implementation
+## 15. Decisions validees pour `DEC-0039`
 
 Decisions validees :
 
@@ -604,9 +605,6 @@ Decisions validees :
 5. La limite initiale est 64 rangees x 64 colonnes, avec preset 6 x 8; elle couvre la grille de reference `win00012`.
 6. Le menu contextuel Tableau couvre copier/coller, insertion/suppression de pistes, effacement de contenu, format de cellule, hauteur de ligne, largeur de colonne et fusion/defusion.
 7. Les regles metier et la coordination detaillee du Tableau sont interdites dans `MainWindow`; seuls les branchements de haut niveau y sont permis.
+8. La precedence est `Cellule > Rangee explicite > Bande de rangee > Colonne > Tableau > Defaut systeme`, evaluee propriete par propriete avec `null = Heriter`.
 
-Point restant a valider :
-
-1. Confirmer la precedence detaillee de la section 6.3 : `Cellule > Rangee explicite > Bande de rangee > Colonne > Tableau > Defaut systeme`, evaluee propriete par propriete.
-
-La decision `DEC-0039` et le plan d'implementation ne doivent etre crees qu'apres validation de ce point.
+Aucune decision produit ne reste ouverte. `DEC-0039` enregistre cette architecture et le plan `docs/superpowers/plans/2026-07-14-modern-table-and-insert-ribbon.md` en organise l'execution.
