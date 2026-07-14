@@ -1,4 +1,6 @@
 using ScadaBuilderV2.Domain.Projects;
+using ScadaBuilderV2.Application.History;
+using ScadaBuilderV2.Application.Pages;
 
 namespace ScadaBuilderV2.Application.Commands;
 
@@ -25,6 +27,24 @@ public sealed class ApplicationContext
 
     /// <summary>Gets or sets the logical home page key in the current workspace.</summary>
     public Guid? HomePageKey { get; set; }
+
+    /// <summary>Gets or sets the coherent in-memory page workspace consumed by page commands.</summary>
+    public PageWorkspaceSnapshot? PageWorkspace { get; set; }
+
+    /// <summary>Gets or sets the typed request prepared by the invoking page-command surface.</summary>
+    public PageCommandRequest? PageCommandRequest { get; set; }
+
+    /// <summary>Gets or sets the restorable UI state associated with the page workspace.</summary>
+    public ProjectWorkspaceUiSnapshot? PageWorkspaceUi { get; set; }
+
+    /// <summary>Gets or sets the shared polymorphic workspace history.</summary>
+    public EditorHistoryService? WorkspaceHistory { get; set; }
+
+    /// <summary>Gets or sets the callback that atomically applies a successful in-memory page mutation.</summary>
+    public Action<PageWorkspaceMutation>? ApplyPageWorkspaceMutation { get; set; }
+
+    /// <summary>Gets or sets whether project-level page metadata or inventory has unsaved changes.</summary>
+    public bool IsPageWorkspaceDirty { get; set; }
 
     /// <summary>Gets the authorization policy applied by the command registry.</summary>
     public ICommandAuthorizationPolicy AuthorizationPolicy { get; }

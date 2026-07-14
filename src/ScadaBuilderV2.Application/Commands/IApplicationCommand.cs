@@ -118,16 +118,26 @@ public sealed record CommandResult
     /// <summary>Creates a successful result that made no state change.</summary>
     public static CommandResult NoChange(
         string message,
-        IReadOnlyList<ScadaBuildValidationIssue>? diagnostics = null) =>
-        new(CommandResultStatus.Succeeded, changed: false, message, diagnostics: diagnostics);
+        IReadOnlyList<ScadaBuildValidationIssue>? diagnostics = null,
+        Guid? pageToSelectKey = null,
+        Guid? pageToOpenKey = null) =>
+        new(
+            CommandResultStatus.Succeeded,
+            changed: false,
+            message,
+            pageToSelectKey: pageToSelectKey,
+            pageToOpenKey: pageToOpenKey,
+            diagnostics: diagnostics);
 
     /// <summary>Creates a normal cancellation result.</summary>
     public static CommandResult Cancelled(string message = "Command cancelled.") =>
         new(CommandResultStatus.Cancelled, changed: false, message);
 
     /// <summary>Creates a result for a command that was not allowed to execute.</summary>
-    public static CommandResult Blocked(string message) =>
-        new(CommandResultStatus.Blocked, changed: false, message);
+    public static CommandResult Blocked(
+        string message,
+        IReadOnlyList<ScadaBuildValidationIssue>? diagnostics = null) =>
+        new(CommandResultStatus.Blocked, changed: false, message, diagnostics: diagnostics);
 
     /// <summary>Creates a controlled failure result.</summary>
     public static CommandResult Failed(string message, Exception? exception = null) =>
