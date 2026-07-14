@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0012`
+Document version: `V2.1.4.0013`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0013` | `PENDING` | Specification Tableau precisee : cellules texte ou inputs natifs, sans `ValueBindings` cellule par cellule. |
 | 2026-07-14 | `V2.1.4.0012` | `PENDING` | Ajout du routage vers la specification draft du tableau moderne et du ruban Inserer hierarchique. |
 | 2026-07-14 | `V2.1.4.0011` | `PENDING` | Gestion moderne des pages implémentée; contrats, état, surfaces, diagnostics, couverture et limites synchronisés. |
 | 2026-07-14 | `V2.1.4.0010` | `c5d6f0e` | Ajout du routage vers la spécification approuvée et le plan d’implémentation de la gestion moderne des pages. |

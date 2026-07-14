@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Draft design - validation utilisateur requise avant planification
-Document version: `V2.1.4.0012`
+Document version: `V2.1.4.0013`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0013` | `PENDING` | Validation des cellules texte et inputs natifs sans `ValueBindings` cellule par cellule, avec export direct dans le HTML `.sb2` actuel. |
 | 2026-07-14 | `V2.1.4.0012` | `PENDING` | Premiere specification du nouvel Element+ Tableau, de son edition type tableur, du ruban Inserer a deux niveaux et du refactor hors `MainWindow`. |
 
 ## 1. Probleme
@@ -52,7 +53,7 @@ Cette comparaison sert a organiser les familles et le backlog. Elle ne signifie 
 2. Permettre la creation initiale avec un nombre configurable de rangees et de colonnes.
 3. Permettre le redimensionnement externe du tableau et l'ajustement interne des largeurs de colonnes et hauteurs de rangees.
 4. Permettre la selection rectangulaire de cellules, la fusion et la defusion.
-5. Permettre l'edition de texte et l'application de couleurs au tableau, aux rangees, aux colonnes et aux cellules.
+5. Permettre l'edition de texte, l'insertion d'inputs natifs et l'application de couleurs au tableau, aux rangees, aux colonnes et aux cellules.
 6. Garantir undo/redo, sauvegarde/recharge et parite preview/export.
 7. Remplacer le ruban Inserer plat par un niveau 1 de familles et un niveau 2 d'outils.
 8. Sortir le catalogue, le dispatch et les regles de mutation de `MainWindow`.
@@ -96,8 +97,25 @@ public sealed record ScadaTableCell(
     int Column,
     int RowSpan = 1,
     int ColumnSpan = 1,
-    string Text = "",
+    ScadaTableCellContent? Content = null,
     ScadaTableCellStyle? Style = null);
+
+public enum ScadaTableCellContentKind
+{
+    Text,
+    InputText,
+    InputNumeric
+}
+
+public sealed record ScadaTableCellContent(
+    ScadaTableCellContentKind Kind,
+    string Text = "",
+    string Placeholder = "",
+    double? NumericValue = null,
+    double? Minimum = null,
+    double? Maximum = null,
+    double? Step = null,
+    bool IsReadOnly = false);
 ```
 
 Le code ci-dessus fixe la forme du contrat; les noms exacts pourront etre ajustes pendant la revue sans changer les invariants.
@@ -113,6 +131,8 @@ Le code ci-dessus fixe la forme du contrat; les noms exacts pourront etre ajuste
 7. Une fusion exige une plage rectangulaire continue.
 8. Les operations retournent une nouvelle definition; elles ne mutent pas les collections d'entree.
 9. Les anciens projets sans propriete `Table` restent lisibles sans migration destructive.
+10. Le contenu d'une cellule appartient au tableau; un input de cellule n'est pas un second `ScadaElement` positionne par-dessus la grille.
+11. Aucun `ReadTagId`, `WriteTagId` ou `ValueBindings` cellule par cellule n'est cree dans cette tranche.
 
 ### 4.3 Creation initiale proposee
 
@@ -139,14 +159,21 @@ Le code ci-dessus fixe la forme du contrat; les noms exacts pourront etre ajuste
 4. Ctrl+clic : ajout/retrait facultatif de cellules discontinues, uniquement pour appliquer un style; fusion interdite si la selection n'est pas rectangulaire.
 5. Les modificateurs internes ne s'appliquent que lorsque le mode cellule est actif.
 
-### 5.3 Edition de texte
+### 5.3 Contenu texte et inputs
 
-1. Double-clic ou F2 edite le texte d'une cellule.
-2. Enter valide et descend d'une cellule.
-3. Tab valide et avance.
-4. Shift+Tab recule.
-5. Escape annule l'edition courante sans annuler la selection.
-6. Une cellule fusionnee edite uniquement le contenu de sa cellule d'ancrage.
+1. Chaque cellule utilise un contenu `Text`, `InputText` ou `InputNumeric`.
+2. `Text` reste le contenu par defaut.
+3. Le ruban contextuel permet de transformer les cellules selectionnees en texte, entree texte ou entree numerique.
+4. Un input remplit l'espace utile de la cellule et suit automatiquement son redimensionnement.
+5. Un input texte conserve un texte initial et un placeholder.
+6. Un input numerique peut conserver une valeur initiale, un minimum, un maximum et un pas.
+7. Ces inputs sont des controles HTML natifs sans `ValueBindings`; leur valeur runtime reste locale a la page et n'est pas synchronisee avec un tag.
+8. Double-clic ou F2 edite le texte ou la valeur initiale de la cellule.
+9. Enter valide et descend d'une cellule.
+10. Tab valide et avance.
+11. Shift+Tab recule.
+12. Escape annule l'edition courante sans annuler la selection.
+13. Une cellule fusionnee edite uniquement le contenu de sa cellule d'ancrage.
 
 ### 5.4 Dimensions
 
@@ -162,8 +189,8 @@ Le code ci-dessus fixe la forme du contrat; les noms exacts pourront etre ajuste
 
 1. `Fusionner` exige une selection rectangulaire continue.
 2. Une plage qui intersecte partiellement une fusion existante est refusee avec diagnostic.
-3. Le texte de la cellule superieure gauche est conserve.
-4. Les autres textes sont conserves dans l'action d'historique pour permettre un undo exact.
+3. Le contenu de la cellule superieure gauche est conserve, incluant son type texte ou input.
+4. Les autres contenus sont conserves dans l'action d'historique pour permettre un undo exact.
 5. `Defusionner` recree des cellules unitaires.
 6. Apres recharge d'un projet, une defusion conserve le texte d'ancrage et cree des cellules vides pour les autres positions; les contenus couverts ne sont pas persistes en double.
 
@@ -212,9 +239,12 @@ Preview et export rendent la meme definition en :
 3. `<tr>` pour les hauteurs;
 4. `<th>` pour les rangees d'en-tete;
 5. `<td>` pour les cellules normales;
-6. `rowspan` et `colspan` pour les fusions.
+6. `<input type="text">` ou `<input type="number">` pour les cellules input;
+7. `rowspan` et `colspan` pour les fusions.
 
 Le tableau utilise `table-layout: fixed`, des dimensions explicites et du CSS page-scope.
+
+Les inputs sont exportes directement dans le fragment HTML de page. Le contrat `.sb2` actuel n'est pas modifie : aucune collection `ValueBindings` cellule par cellule n'est ajoutee et aucun nouveau script de page n'est requis. TF100Web recoit donc le tableau et ses inputs comme du HTML/CSS standard sous la racine page-scopee. Une valeur saisie au runtime n'est pas persistee apres rechargement de la page.
 
 ### 7.2 Namespace
 
@@ -347,7 +377,7 @@ flowchart TD
 3. Une conversion assistee de ses 592 objets legacy est hors scope de cette tranche.
 4. Les projets anciens deserialisent `Table = null` et conservent leur rendu.
 5. Le nouveau HTML ne modifie pas le contrat de racine `.sb2`, les ids de page, les chemins ou la composition header/body/footer.
-6. La sauvegarde/recharge doit conserver pistes, cellules, spans, textes et styles.
+6. La sauvegarde/recharge doit conserver pistes, cellules, spans, contenus texte/input, valeurs initiales et styles.
 7. Le manifest peut inclure la definition structurelle a des fins de diagnostic, sans creer un second modele runtime.
 
 ## 12. Tests et validation
@@ -382,9 +412,10 @@ flowchart TD
 1. dimensions identiques;
 2. textes et couleurs identiques;
 3. `rowspan`/`colspan` valides;
-4. ids page-scopes;
-5. absence d'artefacts editeur;
-6. archive `.sb2` valide.
+4. inputs texte et numeriques exportes sans `ValueBindings`;
+5. ids page-scopes;
+6. absence d'artefacts editeur;
+7. archive `.sb2` valide.
 
 ### 12.5 UI et architecture
 
@@ -401,11 +432,12 @@ flowchart TD
 2. tri, filtre et remplissage automatique;
 3. import/export CSV ou Excel;
 4. binding de tag par cellule;
-5. edition runtime de valeurs dans les cellules;
-6. conversion automatique de `win00012`;
-7. tableaux virtualises de plusieurs milliers de lignes;
-8. execution des outils planifies affiches dans les nouvelles familles;
-9. changement de l'intake TF100Web des scripts de page.
+5. persistance des valeurs saisies au runtime apres rechargement de page;
+6. validation metier ou soumission runtime des inputs sans contrat de commande explicite;
+7. conversion automatique de `win00012`;
+8. tableaux virtualises de plusieurs milliers de lignes;
+9. execution des outils planifies affiches dans les nouvelles familles;
+10. changement de l'intake TF100Web des scripts de page.
 
 ## 14. Criteres d'acceptation proposes
 
@@ -413,19 +445,23 @@ flowchart TD
 2. Redimensionner le tableau complet.
 3. Ajuster une colonne et une rangee par glissement.
 4. Fusionner une plage rectangulaire, modifier son texte, puis la defusionner.
-5. Appliquer des couleurs distinctes a un en-tete, une rangee, une colonne et une cellule.
-6. Annuler et retablir chacune de ces operations.
-7. Sauvegarder, fermer, recharger et retrouver la structure intacte.
-8. Obtenir le meme tableau en preview et dans `.sb2`, sans poignees ni selection editeur.
-9. Naviguer dans le ruban Inserer par famille, puis par outil, sans defilement horizontal excessif.
+5. Transformer des cellules en inputs texte et numeriques sans configurer de `ValueBindings`.
+6. Appliquer des couleurs distinctes a un en-tete, une rangee, une colonne et une cellule.
+7. Annuler et retablir chacune de ces operations.
+8. Sauvegarder, fermer, recharger et retrouver la structure intacte.
+9. Obtenir le meme tableau et les memes inputs en preview et dans `.sb2`, sans poignees ni selection editeur.
+10. Naviguer dans le ruban Inserer par famille, puis par outil, sans defilement horizontal excessif.
 
-## 15. Points a valider avant le plan d'implementation
+## 15. Decision validee et points a valider avant le plan d'implementation
 
-1. Confirmer que la premiere tranche limite les cellules a du texte statique; les tags par cellule viendront ensuite.
-2. Confirmer le mode d'edition directement dans le canvas plutot qu'un dialogue modal principal.
-3. Confirmer la politique de redimensionnement externe proportionnel.
-4. Confirmer la precedence `Cellule > Rangee > Colonne > Tableau`.
-5. Confirmer que les outils modernes non implementes peuvent etre visibles mais clairement desactives.
-6. Confirmer les limites 64 x 64 et le preset 6 x 8.
+Decision validee : les cellules peuvent contenir des inputs texte ou numeriques natifs. Aucun `ValueBindings` cellule par cellule n'est requis dans cette tranche; les inputs sont exportes directement dans le HTML `.sb2` actuel.
+
+Points restant a valider :
+
+1. Confirmer le mode d'edition directement dans le canvas plutot qu'un dialogue modal principal.
+2. Confirmer la politique de redimensionnement externe proportionnel.
+3. Confirmer la precedence `Cellule > Rangee > Colonne > Tableau`.
+4. Confirmer que les outils modernes non implementes peuvent etre visibles mais clairement desactives.
+5. Confirmer les limites 64 x 64 et le preset 6 x 8.
 
 La decision `DEC-0039` et le plan d'implementation ne doivent etre crees qu'apres validation de ces points.
