@@ -45,4 +45,7 @@ public sealed record PageDependencyAnalysis(
 /// <summary>Workspace state that can override durable scenes and contribute editor-only page dependencies.</summary>
 public sealed record PageWorkspaceReadContext(
     IReadOnlyDictionary<Guid, ScadaBuilderV2.Domain.Scenes.ScadaScene>? OpenOrDirtyScenes = null,
-    IReadOnlyCollection<Guid>? OpenPageKeys = null);
+    IReadOnlyCollection<Guid>? OpenPageKeys = null,
+    ScadaProject? ProjectOverride = null,
+    IReadOnlyList<PendingPageDeletion>? PendingDeletions = null,
+    long Version = 1);

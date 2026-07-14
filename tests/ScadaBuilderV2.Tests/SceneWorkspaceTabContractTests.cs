@@ -7,21 +7,25 @@ public sealed class SceneWorkspaceTabContractTests
     public void MainWorkspaceSupportsMultipleClosableSceneTabsWithDirtyPrompt()
     {
         var xaml = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml");
-        var code = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");
+        var shell = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");
+        var controller = ReadProjectFile("src", "ScadaBuilderV2.App", "Pages", "PageWorkspaceController.cs");
+        var tab = ReadProjectFile("src", "ScadaBuilderV2.App", "Workspace", "SceneWorkspaceTab.cs");
 
         StringAssert.Contains(xaml, "x:Name=\"SceneTabs\"");
         StringAssert.Contains(xaml, "SelectionChanged=\"OnSceneTabSelectionChanged\"");
         StringAssert.Contains(xaml, "Click=\"OnCloseSceneTabClick\"");
         StringAssert.Contains(xaml, "ToolTip=\"Fermer la scene\"");
 
-        StringAssert.Contains(code, "ObservableCollection<SceneWorkspaceTab>");
-        StringAssert.Contains(code, "OpenSceneTabAsync");
-        StringAssert.Contains(code, "ActivateSceneTabAsync");
-        StringAssert.Contains(code, "CloseSceneTabAsync");
-        StringAssert.Contains(code, "ConfirmSaveDirtyTabAsync");
-        StringAssert.Contains(code, "MessageBoxButton.YesNoCancel");
-        StringAssert.Contains(code, "SaveSceneTabAsync");
-        StringAssert.Contains(code, "Closing += OnMainWindowClosing;");
+        StringAssert.Contains(controller, "ObservableCollection<SceneWorkspaceTab> OpenTabs");
+        StringAssert.Contains(controller, "OpenAsync(Guid pageKey");
+        StringAssert.Contains(controller, "ActivateAsync(SceneWorkspaceTab tab)");
+        StringAssert.Contains(controller, "CloseAsync(SceneWorkspaceTab tab)");
+        StringAssert.Contains(controller, "host.ConfirmCloseDirtyPageAsync(tab)");
+        StringAssert.Contains(shell, "MessageBoxButton.YesNoCancel");
+        StringAssert.Contains(shell, "SaveSceneTabAsync");
+        StringAssert.Contains(shell, "Closing += OnMainWindowClosing;");
+        StringAssert.Contains(tab, "PageWorkspaceEntry");
+        Assert.IsFalse(tab.Contains("ReferenceScadaPage", StringComparison.Ordinal));
     }
 
     private static string ReadProjectFile(params string[] parts)

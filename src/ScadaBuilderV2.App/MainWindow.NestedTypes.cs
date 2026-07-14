@@ -7,8 +7,8 @@ using ScadaBuilderV2.Domain.Scenes;
 namespace ScadaBuilderV2.App;
 
 // Nested view-model / message / payload types used by MainWindow, isolated from
-// MainWindow.xaml.cs as a behavior-preserving split. SceneWorkspaceTab remains in
-// the main file (pinned by SceneWorkspaceTabContractTests).
+// MainWindow.xaml.cs as a behavior-preserving split. Page workspace and tab models
+// live in dedicated App/Pages and App/Workspace types.
 public partial class MainWindow
 {
     /// <summary>

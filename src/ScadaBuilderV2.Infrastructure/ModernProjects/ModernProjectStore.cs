@@ -158,8 +158,9 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(repositoryRoot);
-        var project = await LoadProjectAsync(repositoryRoot)
+        var project = context?.ProjectOverride ?? await LoadProjectAsync(repositoryRoot)
             ?? throw new InvalidOperationException("No modern SCADA project exists at the requested repository root.");
+        project = ModernProjectMigration.MigrateProject(project);
         var overrides = context?.OpenOrDirtyScenes ?? new Dictionary<Guid, ScadaScene>();
         var scenes = new Dictionary<Guid, ScadaScene>();
 
@@ -172,7 +173,11 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
             scenes[page.PageKey] = ModernProjectMigration.MigrateScene(scene, project);
         }
 
-        return new PageWorkspaceSnapshot(1, project, scenes, Array.Empty<PendingPageDeletion>());
+        return new PageWorkspaceSnapshot(
+            Math.Max(1, context?.Version ?? 1),
+            project,
+            scenes,
+            context?.PendingDeletions ?? Array.Empty<PendingPageDeletion>());
     }
 
     public async Task SaveProjectAsync(string repositoryRoot, ScadaProject project)
