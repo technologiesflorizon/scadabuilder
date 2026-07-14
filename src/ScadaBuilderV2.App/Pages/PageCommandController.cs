@@ -1,4 +1,5 @@
 using System.Windows;
+using ScadaBuilderV2.App.Diagnostics;
 using ScadaBuilderV2.Application.Commands;
 using ScadaBuilderV2.Application.Pages;
 using ScadaBuilderV2.Domain.Projects;
@@ -10,7 +11,8 @@ public sealed class PageCommandController(
     Window owner,
     CommandRegistry registry,
     PageWorkspaceController workspace,
-    Action<ScadaProject, CommandResult> completed)
+    Action<ScadaProject, CommandResult> completed,
+    Action showDiagnostics)
 {
     public async Task<CommandResult> ExecuteAsync(string commandId, PageCommandRequest request, Guid? selectedPageKey)
     {
@@ -76,5 +78,22 @@ public sealed class PageCommandController(
             "page.validate" => await ExecuteAsync(commandId, new ValidatePagesRequest(), page.PageKey),
             _ => CommandResult.Blocked($"Commande de page inconnue: {commandId}")
         };
+    }
+
+    /// <summary>Shows a structured command failure and optionally opens detailed diagnostics.</summary>
+    public void PresentFailure(CommandResult result)
+    {
+        if (result.Status == CommandResultStatus.Cancelled) return;
+        var dialog = new CommandErrorDialog(result) { Owner = owner };
+        dialog.ShowDialog();
+        if (dialog.ShowDiagnosticsRequested) showDiagnostics();
+    }
+
+    /// <summary>Shows a structured validation failure and optionally opens detailed diagnostics.</summary>
+    public void PresentFailure(string summary, IReadOnlyList<ScadaBuildValidationIssue> issues)
+    {
+        var dialog = new CommandErrorDialog(summary, issues) { Owner = owner };
+        dialog.ShowDialog();
+        if (dialog.ShowDiagnosticsRequested) showDiagnostics();
     }
 }

@@ -371,7 +371,8 @@
 
         <avalonDock:DockingManager x:Name="MainDockingManager">
             <avalonDock:LayoutRoot>
-                <avalonDock:LayoutPanel Orientation="Horizontal">
+                <avalonDock:LayoutPanel Orientation="Vertical">
+                    <avalonDock:LayoutPanel Orientation="Horizontal">
                     <avalonDock:LayoutAnchorablePane DockWidth="220">
                         <avalonDock:LayoutAnchorable x:Name="ToolAnchorable" Title="Outil" ContentId="Tool" CanClose="True">
                         <ScrollViewer>
@@ -1319,6 +1320,71 @@
                                     </ListBox.ItemTemplate>
                                 </ListBox>
                             </DockPanel>
+                        </avalonDock:LayoutAnchorable>
+                    </avalonDock:LayoutAnchorablePane>
+                    </avalonDock:LayoutPanel>
+                    <avalonDock:LayoutAnchorablePane DockHeight="190">
+                        <avalonDock:LayoutAnchorable x:Name="DiagnosticsAnchorable"
+                                                     Title="Diagnostics"
+                                                     ContentId="Diagnostics"
+                                                     CanClose="True">
+                            <Grid Margin="10">
+                                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                                <Grid>
+                                    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                    <TextBlock Foreground="{StaticResource MutedBrush}">
+                                        <Run Text="Source: "/><Run Text="{Binding DiagnosticsPanel.Source}"/>
+                                    </TextBlock>
+                                    <TextBlock Grid.Column="1" Foreground="{StaticResource MutedBrush}">
+                                        <Run Text="Erreurs "/><Run Text="{Binding DiagnosticsPanel.ErrorCount}"/>
+                                        <Run Text="  ·  Avertissements "/><Run Text="{Binding DiagnosticsPanel.WarningCount}"/>
+                                    </TextBlock>
+                                </Grid>
+                                <TabControl x:Name="DiagnosticsTabControl" Grid.Row="1" Margin="0,8,0,0">
+                                    <TabItem Header="Erreurs">
+                                        <DataGrid x:Name="DiagnosticsErrorsGrid"
+                                                  ItemsSource="{Binding DiagnosticsPanel.Errors}"
+                                                  AutoGenerateColumns="False" IsReadOnly="True"
+                                                  CanUserAddRows="False" HeadersVisibility="Column"
+                                                  MouseDoubleClick="OnDiagnosticIssueMouseDoubleClick">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Code" Binding="{Binding Code}" Width="90"/>
+                                                <DataGridTextColumn Header="Message" Binding="{Binding Message}" Width="2*"/>
+                                                <DataGridTextColumn Header="Page" Binding="{Binding PageLabel}" Width="110"/>
+                                                <DataGridTextColumn Header="Objet / commande" Binding="{Binding ElementOrCommand}" Width="140"/>
+                                                <DataGridTextColumn Header="Correction possible" Binding="{Binding SuggestedFix}" Width="1.5*"/>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </TabItem>
+                                    <TabItem Header="Avertissements">
+                                        <DataGrid ItemsSource="{Binding DiagnosticsPanel.Warnings}"
+                                                  AutoGenerateColumns="False" IsReadOnly="True"
+                                                  CanUserAddRows="False" HeadersVisibility="Column"
+                                                  MouseDoubleClick="OnDiagnosticIssueMouseDoubleClick">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Code" Binding="{Binding Code}" Width="90"/>
+                                                <DataGridTextColumn Header="Message" Binding="{Binding Message}" Width="2*"/>
+                                                <DataGridTextColumn Header="Page" Binding="{Binding PageLabel}" Width="110"/>
+                                                <DataGridTextColumn Header="Objet / commande" Binding="{Binding ElementOrCommand}" Width="140"/>
+                                                <DataGridTextColumn Header="Correction possible" Binding="{Binding SuggestedFix}" Width="1.5*"/>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </TabItem>
+                                    <TabItem Header="Informations">
+                                        <DataGrid ItemsSource="{Binding DiagnosticsPanel.Information}"
+                                                  AutoGenerateColumns="False" IsReadOnly="True"
+                                                  CanUserAddRows="False" HeadersVisibility="Column">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="Code" Binding="{Binding Code}" Width="90"/>
+                                                <DataGridTextColumn Header="Message" Binding="{Binding Message}" Width="2*"/>
+                                                <DataGridTextColumn Header="Page" Binding="{Binding PageLabel}" Width="110"/>
+                                                <DataGridTextColumn Header="Objet / commande" Binding="{Binding ElementOrCommand}" Width="140"/>
+                                                <DataGridTextColumn Header="Correction possible" Binding="{Binding SuggestedFix}" Width="1.5*"/>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </TabItem>
+                                </TabControl>
+                            </Grid>
                         </avalonDock:LayoutAnchorable>
                     </avalonDock:LayoutAnchorablePane>
                 </avalonDock:LayoutPanel>

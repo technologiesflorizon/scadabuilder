@@ -33,6 +33,7 @@ using ScadaBuilderV2.Infrastructure.ModernProjects;
 using ScadaBuilderV2.Infrastructure.ReferenceProjects;
 using ScadaBuilderV2.Rendering;
 using ScadaBuilderV2.App.Pages;
+using ScadaBuilderV2.App.Diagnostics;
 using ScadaBuilderV2.App.Workspace;
 
 namespace ScadaBuilderV2.App;
@@ -55,6 +56,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
     private readonly CommandRegistry _applicationCommandRegistry = new();
     private readonly PageCommandCoordinator _pageCommandCoordinator = new();
     private readonly PagesPanelViewModel _pagesPanel = new();
+    private readonly DiagnosticsPanelViewModel _diagnosticsPanel = new();
     private readonly PageCommandController _pageCommandController;
     private readonly Tf100WebTagCatalogImporter _tagCatalogImporter = new();
     private readonly IElementStudioImportPackageWriter _elementStudioPackageWriter = new ElementStudioImportPackageWriter();
@@ -133,6 +135,8 @@ public partial class MainWindow : Window, IPageWorkspaceHost
 
     public PagesPanelViewModel PagesPanel => _pagesPanel;
 
+    public DiagnosticsPanelViewModel DiagnosticsPanel => _diagnosticsPanel;
+
     public bool IsSelectionLocked { get; set; } = false;
 
     public MainWindow()
@@ -140,7 +144,12 @@ public partial class MainWindow : Window, IPageWorkspaceHost
         _pageWorkspaceController = new PageWorkspaceController(_modernProjectStore, this);
         _pageExportInputBuilder = new PageExportInputBuilder(_modernProjectStore, _pageSourceProjectionResolver);
         RegisterPageApplicationCommands();
-        _pageCommandController = new PageCommandController(this, _applicationCommandRegistry, _pageWorkspaceController, OnPageCommandCompleted);
+        _pageCommandController = new PageCommandController(
+            this,
+            _applicationCommandRegistry,
+            _pageWorkspaceController,
+            OnPageCommandCompleted,
+            () => ShowDiagnosticsPanel());
         InitializeComponent();
         CaptureDefaultLayout();
         InitializeRibbonCommandRegistry();
@@ -169,6 +178,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
         ElementAnchorable.Closing += OnAnchorableClosing;
         PropertiesAnchorable.Closing += OnAnchorableClosing;
         LibraryAnchorable.Closing += OnAnchorableClosing;
+        DiagnosticsAnchorable.Closing += OnAnchorableClosing;
         Closed += (_, _) =>
         {
             foreach (var tab in _pageWorkspaceController.OpenTabs)
@@ -185,6 +195,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
         try
         {
             await LoadReferenceProjectAsync();
+            if (!_diagnosticsPanel.HasIssues) DiagnosticsAnchorable.Hide();
         }
         catch (Exception ex)
         {
@@ -194,6 +205,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
 
     private async Task LoadReferenceProjectAsync()
     {
+        _diagnosticsPanel.Clear();
         _repositoryRoot = ResolveRepositoryRoot();
         _referenceProject = await _referenceReader.LoadAmrReferenceAsync(_repositoryRoot);
         var importedPages = new List<ImportedPageDescriptor>();
@@ -1094,31 +1106,33 @@ public partial class MainWindow : Window, IPageWorkspaceHost
 
     private void OnStatusDiagnosticsClick(object sender, RoutedEventArgs e)
     {
-        var diagnostics = new List<string>
-        {
-            $"Status courant: {StatusTextBlock.Text}",
-            $"Version: {LoadVersionText()}"
-        };
+        ShowDiagnosticsPanel();
+    }
 
-        var studioLaunchLogPath = ResolveElementStudioLaunchLogPath();
-        if (studioLaunchLogPath is not null && File.Exists(studioLaunchLogPath))
+    private void ShowDiagnosticsPanel(bool selectErrors = true)
+    {
+        DiagnosticsAnchorable.Show();
+        DiagnosticsAnchorable.IsActive = true;
+        if (selectErrors) DiagnosticsTabControl.SelectedIndex = 0;
+    }
+
+    private async void OnDiagnosticIssueMouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is not DataGrid { SelectedItem: DiagnosticIssueViewModel issue } || issue.PageRouteKey is not { } pageKey)
         {
-            diagnostics.Add("");
-            diagnostics.Add($"Log Studio Element+: {studioLaunchLogPath}");
-            diagnostics.Add("");
-            diagnostics.AddRange(ReadLastLines(studioLaunchLogPath, 12));
-        }
-        else
-        {
-            diagnostics.Add("");
-            diagnostics.Add("Aucun log Studio Element+ trouve pour le projet actif.");
+            return;
         }
 
-        MessageBox.Show(
-            string.Join(Environment.NewLine, diagnostics),
-            "Diagnostics SCADA Builder V2",
-            MessageBoxButton.OK,
-            MessageBoxImage.Information);
+        await _pageWorkspaceController.OpenAsync(pageKey);
+        if (!string.IsNullOrWhiteSpace(issue.ElementId))
+        {
+            SelectModernElement(issue.ElementId);
+        }
+        if (!string.IsNullOrWhiteSpace(issue.PropertyPath))
+        {
+            PageAnchorable.Show();
+            PageAnchorable.IsActive = true;
+        }
     }
 
     private string? ResolveElementStudioLaunchLogPath()
@@ -4262,12 +4276,15 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             }
 
             _modernProject = _modernProject with { Scenes = GetCurrentSceneReferences() };
-            var errors = ScadaProjectBuildValidator.Validate(_modernProject)
+            var validationIssues = ScadaProjectBuildValidator.Validate(_modernProject).ToArray();
+            _diagnosticsPanel.Load(validationIssues, _modernProject, "Validation export FT100");
+            var errors = validationIssues
                 .Where(issue => issue.Severity == ScadaBuildValidationSeverity.Error)
                 .ToArray();
             if (errors.Length > 0)
             {
                 SetStatus($"Export FT100 bloque: {errors[0].Message}");
+                _pageCommandController.PresentFailure("L'export FT100 est bloqué par des erreurs de validation.", validationIssues);
                 return;
             }
 
@@ -4336,12 +4353,15 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             }
 
             _modernProject = _modernProject with { Scenes = GetCurrentSceneReferences() };
-            var errors = ScadaProjectBuildValidator.Validate(_modernProject)
+            var validationIssues = ScadaProjectBuildValidator.Validate(_modernProject).ToArray();
+            _diagnosticsPanel.Load(validationIssues, _modernProject, "Validation export FT100 .sb2");
+            var errors = validationIssues
                 .Where(issue => issue.Severity == ScadaBuildValidationSeverity.Error)
                 .ToArray();
             if (errors.Length > 0)
             {
                 SetStatus($"Export FT100 .sb2 bloque: {errors[0].Message}");
+                _pageCommandController.PresentFailure("L'export .sb2 est bloqué par des erreurs de validation.", validationIssues);
                 return;
             }
 
@@ -6835,9 +6855,14 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             PageAnchorable.IsActive = true;
         }
 
+        if (commandId == "page.validate" || result.Diagnostics.Count > 0)
+        {
+            _diagnosticsPanel.Load(result.Diagnostics, _modernProject, $"Commande {commandId}");
+        }
+
         if (result.Status is CommandResultStatus.Blocked or CommandResultStatus.Failed)
         {
-            MessageBox.Show(this, result.Message, "Commande de page", MessageBoxButton.OK, MessageBoxImage.Warning);
+            _pageCommandController.PresentFailure(result);
         }
     }
 
