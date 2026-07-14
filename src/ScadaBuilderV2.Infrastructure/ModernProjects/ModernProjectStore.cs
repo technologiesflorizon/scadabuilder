@@ -7,7 +7,7 @@ using ScadaBuilderV2.Domain.Versioning;
 
 namespace ScadaBuilderV2.Infrastructure.ModernProjects;
 
-public sealed class ModernProjectStore : IPageWorkspaceStore
+public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceReader
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -149,6 +149,30 @@ public sealed class ModernProjectStore : IPageWorkspaceStore
             ? await LoadProjectFileAsync(projectPath)
             : null;
         return project is null ? null : ModernProjectMigration.MigrateProject(project);
+    }
+
+    /// <inheritdoc />
+    public async Task<PageWorkspaceSnapshot> ReadWorkspaceSnapshotAsync(
+        string repositoryRoot,
+        PageWorkspaceReadContext? context = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositoryRoot);
+        var project = await LoadProjectAsync(repositoryRoot)
+            ?? throw new InvalidOperationException("No modern SCADA project exists at the requested repository root.");
+        var overrides = context?.OpenOrDirtyScenes ?? new Dictionary<Guid, ScadaScene>();
+        var scenes = new Dictionary<Guid, ScadaScene>();
+
+        foreach (var page in project.Scenes)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var scene = overrides.TryGetValue(page.PageKey, out var openOrDirtyScene)
+                ? openOrDirtyScene
+                : await LoadOrCreateSceneAsync(repositoryRoot, page, cancellationToken);
+            scenes[page.PageKey] = ModernProjectMigration.MigrateScene(scene, project);
+        }
+
+        return new PageWorkspaceSnapshot(1, project, scenes, Array.Empty<PendingPageDeletion>());
     }
 
     public async Task SaveProjectAsync(string repositoryRoot, ScadaProject project)

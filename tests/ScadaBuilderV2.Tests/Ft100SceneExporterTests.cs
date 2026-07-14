@@ -4124,6 +4124,51 @@ public sealed class Ft100SceneExporterTests
         }
     }
 
+    [TestMethod]
+    public async Task ValidatePackageDirectoryRejectsMissingAndWrongTypeRuntimePageTargets()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var packageRoot = Path.Combine(root, Ft100SceneExporter.ProjectPackageDirectoryName);
+        Directory.CreateDirectory(packageRoot);
+        try
+        {
+            await File.WriteAllTextAsync(Path.Combine(packageRoot, "manifest.json"),
+                """
+                {
+                  "HomePageId": "home",
+                  "Pages": [
+                    {
+                      "Id": "home", "Type": "Default", "RelativePath": "home/home.html",
+                      "Objects": [{
+                        "Id": "button",
+                        "CommandConfig": { "Commands": [
+                          { "Id": "open-home", "Kind": "OpenPopup", "TargetPageId": "home" }
+                        ]}
+                      }]
+                    }
+                  ],
+                  "Actions": [
+                    { "Id": "go-missing", "Kind": "Navigate", "TargetPageId": "missing" }
+                  ]
+                }
+                """);
+            var pageRoot = Path.Combine(packageRoot, "home");
+            Directory.CreateDirectory(Path.Combine(pageRoot, "css"));
+            await File.WriteAllTextAsync(Path.Combine(pageRoot, "home.html"), "<div id=\"ft100-home\"></div>");
+            await File.WriteAllTextAsync(Path.Combine(pageRoot, "css", "home.css"), "#ft100-home { display:block; }");
+            await File.WriteAllTextAsync(Path.Combine(packageRoot, "scada-runtime.test.js"), "");
+
+            var result = Ft100PackageValidator.ValidatePackageDirectory(packageRoot);
+
+            Assert.IsTrue(result.Errors.Any(issue => issue.Code == "action-target-page-missing"));
+            Assert.IsTrue(result.Errors.Any(issue => issue.Code == "command-target-page-wrong-type" && issue.PageId == "home"));
+        }
+        finally
+        {
+            if (Directory.Exists(root)) Directory.Delete(root, recursive: true);
+        }
+    }
+
     private static string FindRepoRoot()
     {
         var dir = Path.GetDirectoryName(typeof(Ft100SceneExporterTests).Assembly.Location)!;

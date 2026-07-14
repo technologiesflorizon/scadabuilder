@@ -127,6 +127,7 @@ public static partial class Ft100PackageValidator
                 .ToDictionary(group => group.Key, group => group.First(), PageIdComparer);
 
             ValidateHomePage(manifest.RootElement, pagesById, issues);
+            ValidateRuntimePageTargets(manifest.RootElement, pagesById, issues);
             foreach (var page in pages)
             {
                 ValidatePage(fullPackageDirectory, page, pagesById, issues);
@@ -241,6 +242,99 @@ public static partial class Ft100PackageValidator
         if (!pagesById.Values.Any(page => string.Equals(page.Type, "default", StringComparison.OrdinalIgnoreCase)))
         {
             issues.Add(Warning("no-default-page", "No compiled default page was found."));
+        }
+    }
+
+    private static void ValidateRuntimePageTargets(
+        JsonElement root,
+        Dictionary<string, ValidatedPage> pagesById,
+        List<Ft100PackageValidationIssue> issues)
+    {
+        if (TryGetProperty(root, "Actions", out var actions) && actions.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var action in actions.EnumerateArray())
+            {
+                ValidateRuntimeTarget(
+                    action,
+                    ReadString(action, "Id"),
+                    null,
+                    "action",
+                    pagesById,
+                    issues);
+            }
+        }
+
+        if (!TryGetProperty(root, "Pages", out var pages) || pages.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        foreach (var page in pages.EnumerateArray())
+        {
+            var pageId = ReadString(page, "Id");
+            if (!TryGetProperty(page, "Objects", out var objects) || objects.ValueKind != JsonValueKind.Array)
+            {
+                continue;
+            }
+
+            foreach (var element in objects.EnumerateArray())
+            {
+                if (!TryGetProperty(element, "CommandConfig", out var config) || config.ValueKind != JsonValueKind.Object ||
+                    !TryGetProperty(config, "Commands", out var commands) || commands.ValueKind != JsonValueKind.Array)
+                {
+                    continue;
+                }
+
+                foreach (var command in commands.EnumerateArray())
+                {
+                    ValidateRuntimeTarget(
+                        command,
+                        ReadString(command, "Id"),
+                        pageId,
+                        "command",
+                        pagesById,
+                        issues);
+                }
+            }
+        }
+    }
+
+    private static void ValidateRuntimeTarget(
+        JsonElement definition,
+        string definitionId,
+        string? sourcePageId,
+        string definitionRole,
+        Dictionary<string, ValidatedPage> pagesById,
+        List<Ft100PackageValidationIssue> issues)
+    {
+        var kind = ReadString(definition, "Kind");
+        var expectedType = kind.ToLowerInvariant() switch
+        {
+            "navigate" => "default",
+            "mountfragment" or "openpopup" or "togglepopup" or "closepopup" => "fragment",
+            _ => null
+        };
+        if (expectedType is null)
+        {
+            return;
+        }
+
+        var targetPageId = ReadString(definition, "TargetPageId");
+        if (string.IsNullOrWhiteSpace(targetPageId) || !pagesById.TryGetValue(targetPageId, out var targetPage))
+        {
+            issues.Add(Error(
+                $"{definitionRole}-target-page-missing",
+                $"Runtime {definitionRole} '{definitionId}' references missing page '{targetPageId}'.",
+                sourcePageId));
+            return;
+        }
+
+        if (!string.Equals(targetPage.Type, expectedType, StringComparison.OrdinalIgnoreCase))
+        {
+            issues.Add(Error(
+                $"{definitionRole}-target-page-wrong-type",
+                $"Runtime {definitionRole} '{definitionId}' targets page '{targetPageId}' of type '{targetPage.Type}', expected '{expectedType}'.",
+                sourcePageId));
         }
     }
 

@@ -212,14 +212,20 @@ public sealed record ScadaBuildValidationIssue(
     ScadaBuildValidationSeverity Severity,
     string Code,
     string Message,
-    string? PageId = null);
+    string? PageId = null,
+    Guid? PageKey = null,
+    string? ElementId = null,
+    string? CommandId = null,
+    string? PropertyPath = null,
+    Guid? TargetKey = null,
+    string? SuggestedFix = null);
 
 public static class ScadaProjectBuildValidator
 {
     public static IReadOnlyList<ScadaBuildValidationIssue> Validate(ScadaProject project)
     {
         ArgumentNullException.ThrowIfNull(project);
-        return Validate(project.Scenes, project.HomePageId);
+        return Validate(project.Scenes, project.HomePageId, project.HomePageKey);
     }
 
     public static IReadOnlyList<ScadaBuildValidationIssue> Validate(
@@ -229,22 +235,35 @@ public static class ScadaProjectBuildValidator
         ArgumentNullException.ThrowIfNull(project);
         ArgumentNullException.ThrowIfNull(scenes);
 
-        var issues = Validate(project.Scenes, project.HomePageId).ToList();
+        var issues = Validate(project.Scenes, project.HomePageId, project.HomePageKey).ToList();
         var tagsById = (project.TagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
             .Where(tag => !string.IsNullOrWhiteSpace(tag.Id))
             .ToDictionary(tag => tag.Id, StringComparer.Ordinal);
-        var sceneIdsToBuild = project.Scenes
+        var sceneKeysToBuild = project.Scenes
             .Where(reference => reference.IncludeInBuild)
-            .Select(reference => reference.Id)
-            .ToHashSet(StringComparer.Ordinal);
-        var pagesById = project.Scenes.ToDictionary(reference => reference.Id, StringComparer.Ordinal);
+            .Select(reference => reference.PageKey)
+            .Where(key => key != Guid.Empty)
+            .ToHashSet();
+        var sceneCodesToBuild = project.Scenes
+            .Where(reference => reference.IncludeInBuild)
+            .Select(reference => reference.EffectivePageCode)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var pagesById = project.Scenes
+            .GroupBy(reference => reference.EffectivePageCode, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(group => group.Key, group => group.First(), StringComparer.OrdinalIgnoreCase);
+        var pagesByKey = project.Scenes
+            .Where(reference => reference.PageKey != Guid.Empty)
+            .GroupBy(reference => reference.PageKey)
+            .ToDictionary(group => group.Key, group => group.First());
 
-        foreach (var scene in scenes.Where(scene => sceneIdsToBuild.Contains(scene.Id)))
+        foreach (var scene in scenes.Where(scene =>
+                     (scene.PageKey != Guid.Empty && sceneKeysToBuild.Contains(scene.PageKey)) ||
+                     sceneCodesToBuild.Contains(scene.EffectivePageCode)))
         {
             ValidateSceneValueBindings(issues, scene, tagsById);
-            ValidateSceneActions(issues, scene, tagsById, pagesById);
+            ValidateSceneActions(issues, scene, tagsById, pagesById, pagesByKey);
             AuditOrphanedEventBindings(issues, scene);
-            ValidateSceneCommandBindings(issues, scene, project.TagCatalog);
+            ValidateSceneCommandBindings(issues, scene, project.TagCatalog, pagesById, pagesByKey);
         }
 
         return issues;
@@ -254,8 +273,22 @@ public static class ScadaProjectBuildValidator
         IReadOnlyList<ScadaSceneReference> pages,
         string? homePageId)
     {
+        return Validate(pages, homePageId, null);
+    }
+
+    private static IReadOnlyList<ScadaBuildValidationIssue> Validate(
+        IReadOnlyList<ScadaSceneReference> pages,
+        string? homePageId,
+        Guid? homePageKey)
+    {
         var issues = new List<ScadaBuildValidationIssue>();
-        var pagesById = pages.ToDictionary(page => page.Id, StringComparer.Ordinal);
+        var pagesById = pages
+            .GroupBy(page => page.EffectivePageCode, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(group => group.Key, group => group.First(), StringComparer.OrdinalIgnoreCase);
+        var pagesByKey = pages
+            .Where(page => page.PageKey != Guid.Empty)
+            .GroupBy(page => page.PageKey)
+            .ToDictionary(group => group.Key, group => group.First());
         var compiledPages = pages.Where(page => page.IncludeInBuild).ToArray();
         if (!compiledPages.Any(page => page.Type == ScadaPageType.Default))
         {
@@ -265,15 +298,19 @@ public static class ScadaProjectBuildValidator
                 "At least one compiled Default page is required."));
         }
 
-        if (!string.IsNullOrWhiteSpace(homePageId))
+        if ((homePageKey is { } configuredHomeKey && configuredHomeKey != Guid.Empty) || !string.IsNullOrWhiteSpace(homePageId))
         {
-            if (!pagesById.TryGetValue(homePageId, out var homePage))
+            var homePage = ResolvePage(homePageKey, homePageId, pagesByKey, pagesById);
+            if (homePage is null)
             {
                 issues.Add(new ScadaBuildValidationIssue(
                     ScadaBuildValidationSeverity.Error,
                     "build.home-missing",
-                    $"Home page '{homePageId}' does not exist.",
-                    homePageId));
+                    $"Home page '{homePageId ?? homePageKey?.ToString()}' does not exist.",
+                    homePageId,
+                    PropertyPath: "Project.HomePageKey",
+                    TargetKey: homePageKey,
+                    SuggestedFix: "Select an existing compiled Default page as the home page."));
             }
             else
             {
@@ -283,7 +320,11 @@ public static class ScadaProjectBuildValidator
                         ScadaBuildValidationSeverity.Error,
                         "build.home-not-default",
                         $"Home page '{homePage.Id}' must be a Default page.",
-                        homePage.Id));
+                        homePage.EffectivePageCode,
+                        homePage.PageKey,
+                        PropertyPath: "Project.HomePageKey",
+                        TargetKey: homePage.PageKey,
+                        SuggestedFix: "Choose a Default page as the home page."));
                 }
 
                 if (!homePage.IncludeInBuild)
@@ -292,7 +333,11 @@ public static class ScadaProjectBuildValidator
                         ScadaBuildValidationSeverity.Error,
                         "build.home-not-compiled",
                         $"Home page '{homePage.Id}' must be included in build.",
-                        homePage.Id));
+                        homePage.EffectivePageCode,
+                        homePage.PageKey,
+                        PropertyPath: "Project.HomePageKey",
+                        TargetKey: homePage.PageKey,
+                        SuggestedFix: "Include the home page in the build."));
                 }
             }
         }
@@ -302,26 +347,34 @@ public static class ScadaProjectBuildValidator
             ValidateCompositionReference(
                 issues,
                 pagesById,
+                pagesByKey,
                 page,
+                page.HeaderPageKey,
                 page.HeaderPageId,
                 ScadaPageType.Header,
                 "header");
             ValidateCompositionReference(
                 issues,
                 pagesById,
+                pagesByKey,
                 page,
+                page.FooterPageKey,
                 page.FooterPageId,
                 ScadaPageType.Footer,
                 "footer");
 
             if ((page.Type == ScadaPageType.Header || page.Type == ScadaPageType.Footer) &&
-                (!string.IsNullOrWhiteSpace(page.HeaderPageId) || !string.IsNullOrWhiteSpace(page.FooterPageId)))
+                (page.HeaderPageKey is not null || page.FooterPageKey is not null ||
+                 !string.IsNullOrWhiteSpace(page.HeaderPageId) || !string.IsNullOrWhiteSpace(page.FooterPageId)))
             {
                 issues.Add(new ScadaBuildValidationIssue(
                     ScadaBuildValidationSeverity.Error,
                     "build.layout-page-composes-layout",
                     $"Page '{page.Id}' is a {page.Type} page and cannot reference a header or footer.",
-                    page.Id));
+                    page.EffectivePageCode,
+                    page.PageKey,
+                    PropertyPath: "Page.Type",
+                    SuggestedFix: "Remove header and footer composition from layout pages."));
             }
         }
 
@@ -331,23 +384,30 @@ public static class ScadaProjectBuildValidator
     private static void ValidateCompositionReference(
         List<ScadaBuildValidationIssue> issues,
         IReadOnlyDictionary<string, ScadaSceneReference> pagesById,
+        IReadOnlyDictionary<Guid, ScadaSceneReference> pagesByKey,
         ScadaSceneReference page,
+        Guid? referencedPageKey,
         string? referencedPageId,
         ScadaPageType expectedType,
         string role)
     {
-        if (string.IsNullOrWhiteSpace(referencedPageId))
+        if ((referencedPageKey is null || referencedPageKey == Guid.Empty) && string.IsNullOrWhiteSpace(referencedPageId))
         {
             return;
         }
 
-        if (!pagesById.TryGetValue(referencedPageId, out var referencedPage))
+        var referencedPage = ResolvePage(referencedPageKey, referencedPageId, pagesByKey, pagesById);
+        if (referencedPage is null)
         {
             issues.Add(new ScadaBuildValidationIssue(
                 ScadaBuildValidationSeverity.Error,
                 $"build.{role}-missing",
-                $"Page '{page.Id}' references missing {role} page '{referencedPageId}'.",
-                page.Id));
+                $"Page '{page.EffectivePageCode}' references missing {role} page '{referencedPageId ?? referencedPageKey?.ToString()}'.",
+                page.EffectivePageCode,
+                page.PageKey,
+                PropertyPath: $"Page.{char.ToUpperInvariant(role[0])}{role[1..]}PageKey",
+                TargetKey: referencedPageKey,
+                SuggestedFix: $"Select an existing compiled {expectedType} page or clear the {role}."));
             return;
         }
 
@@ -357,7 +417,11 @@ public static class ScadaProjectBuildValidator
                 ScadaBuildValidationSeverity.Error,
                 $"build.{role}-wrong-type",
                 $"Page '{page.Id}' references '{referencedPage.Id}' as {role}, but its type is {referencedPage.Type}.",
-                page.Id));
+                page.EffectivePageCode,
+                page.PageKey,
+                PropertyPath: $"Page.{char.ToUpperInvariant(role[0])}{role[1..]}PageKey",
+                TargetKey: referencedPage.PageKey,
+                SuggestedFix: $"Select a page whose type is {expectedType}."));
         }
 
         if (!referencedPage.IncludeInBuild)
@@ -366,7 +430,11 @@ public static class ScadaProjectBuildValidator
                 ScadaBuildValidationSeverity.Error,
                 $"build.{role}-not-compiled",
                 $"Page '{page.Id}' references {role} page '{referencedPage.Id}', but that page is not included in build.",
-                page.Id));
+                page.EffectivePageCode,
+                page.PageKey,
+                PropertyPath: $"Page.{char.ToUpperInvariant(role[0])}{role[1..]}PageKey",
+                TargetKey: referencedPage.PageKey,
+                SuggestedFix: $"Include the {role} page in the build."));
         }
     }
 
@@ -427,7 +495,8 @@ public static class ScadaProjectBuildValidator
         List<ScadaBuildValidationIssue> issues,
         ScadaScene scene,
         IReadOnlyDictionary<string, ScadaTagDefinition> tagsById,
-        IReadOnlyDictionary<string, ScadaSceneReference> pagesById)
+        IReadOnlyDictionary<string, ScadaSceneReference> pagesById,
+        IReadOnlyDictionary<Guid, ScadaSceneReference> pagesByKey)
     {
         var elementIds = FlattenElements(scene.Elements)
             .Select(element => element.Id)
@@ -442,13 +511,23 @@ public static class ScadaProjectBuildValidator
                         ScadaBuildValidationSeverity.Error,
                         "action.target-missing",
                         $"Action '{action.Id}' references missing target Element+ '{action.TargetElementId}'.",
-                        scene.Id));
+                        scene.EffectivePageCode,
+                        scene.PageKey,
+                        ElementId: action.TargetElementId,
+                        CommandId: action.Id,
+                        PropertyPath: $"Scene.Actions[{action.Id}].TargetElementId",
+                        SuggestedFix: "Select an existing Element+ target or remove the action."));
                 }
+            }
+
+            if (action.Kind == ScadaActionKind.Navigate)
+            {
+                ValidateActionPageTarget(issues, scene, action, ScadaPageType.Default, "navigation", pagesById, pagesByKey);
             }
 
             if (action.Kind is ScadaActionKind.MountFragment or ScadaActionKind.ClosePopup or ScadaActionKind.TogglePopup)
             {
-                ValidatePopupFragmentTarget(issues, scene, action, pagesById);
+                ValidateActionPageTarget(issues, scene, action, ScadaPageType.Fragment, "popup", pagesById, pagesByKey);
                 ValidatePopupOptions(issues, scene, action, elementIds);
             }
 
@@ -478,40 +557,58 @@ public static class ScadaProjectBuildValidator
         }
     }
 
-    // Enforces that popup actions can only mount compiled fragment pages.
-    private static void ValidatePopupFragmentTarget(
+    private static void ValidateActionPageTarget(
         List<ScadaBuildValidationIssue> issues,
         ScadaScene scene,
         ScadaActionDefinition action,
-        IReadOnlyDictionary<string, ScadaSceneReference> pagesById)
+        ScadaPageType expectedType,
+        string role,
+        IReadOnlyDictionary<string, ScadaSceneReference> pagesById,
+        IReadOnlyDictionary<Guid, ScadaSceneReference> pagesByKey)
     {
-        if (string.IsNullOrWhiteSpace(action.TargetPageId) ||
-            !pagesById.TryGetValue(action.TargetPageId, out var targetPage))
+        var targetPage = ResolvePage(action.TargetPageKey, action.TargetPageId, pagesByKey, pagesById);
+        var isPopup = expectedType == ScadaPageType.Fragment;
+        if (targetPage is null)
         {
             issues.Add(new ScadaBuildValidationIssue(
                 ScadaBuildValidationSeverity.Error,
-                "popup.fragment-missing",
-                $"Action '{action.Id}' references missing popup fragment '{action.TargetPageId}'.",
-                scene.Id));
+                isPopup ? "popup.fragment-missing" : "navigate.page-missing",
+                $"Action '{action.Id}' references missing {role} page '{action.TargetPageId ?? action.TargetPageKey?.ToString()}'.",
+                scene.EffectivePageCode,
+                scene.PageKey,
+                CommandId: action.Id,
+                PropertyPath: $"Scene.Actions[{action.Id}].TargetPageKey",
+                TargetKey: action.TargetPageKey,
+                SuggestedFix: $"Select an existing compiled {expectedType} page."));
             return;
         }
 
-        if (targetPage.Type != ScadaPageType.Fragment)
+        if (targetPage.Type != expectedType)
         {
             issues.Add(new ScadaBuildValidationIssue(
                 ScadaBuildValidationSeverity.Error,
-                "popup.target-not-fragment",
-                $"Action '{action.Id}' references page '{targetPage.Id}' as popup, but its type is {targetPage.Type}.",
-                scene.Id));
+                isPopup ? "popup.target-not-fragment" : "navigate.target-not-default",
+                $"Action '{action.Id}' references page '{targetPage.EffectivePageCode}' as {role}, but its type is {targetPage.Type}.",
+                scene.EffectivePageCode,
+                scene.PageKey,
+                CommandId: action.Id,
+                PropertyPath: $"Scene.Actions[{action.Id}].TargetPageKey",
+                TargetKey: targetPage.PageKey,
+                SuggestedFix: $"Select a page whose type is {expectedType}."));
         }
 
         if (!targetPage.IncludeInBuild)
         {
             issues.Add(new ScadaBuildValidationIssue(
                 ScadaBuildValidationSeverity.Error,
-                "popup.fragment-not-compiled",
-                $"Action '{action.Id}' references popup fragment '{targetPage.Id}', but that page is not included in build.",
-                scene.Id));
+                isPopup ? "popup.fragment-not-compiled" : "navigate.page-not-compiled",
+                $"Action '{action.Id}' references {role} page '{targetPage.EffectivePageCode}', but that page is not included in build.",
+                scene.EffectivePageCode,
+                scene.PageKey,
+                CommandId: action.Id,
+                PropertyPath: $"Scene.Actions[{action.Id}].TargetPageKey",
+                TargetKey: targetPage.PageKey,
+                SuggestedFix: "Include the target page in the build or select another page."));
         }
     }
 
@@ -665,10 +762,10 @@ public static class ScadaProjectBuildValidator
     private static void ValidateSceneCommandBindings(
         List<ScadaBuildValidationIssue> issues,
         ScadaScene scene,
-        ScadaTagCatalog? catalog)
+        ScadaTagCatalog? catalog,
+        IReadOnlyDictionary<string, ScadaSceneReference> pagesById,
+        IReadOnlyDictionary<Guid, ScadaSceneReference> pagesByKey)
     {
-        if (catalog is null) return;
-
         foreach (var element in FlattenElements(scene.Elements))
         {
             if (element.EffectiveCommandConfig.Commands.Count == 0)
@@ -676,18 +773,113 @@ public static class ScadaProjectBuildValidator
 
             foreach (var cmd in element.EffectiveCommandConfig.Commands)
             {
-                var cmdIssues = ElementEvents.Command.ScadaCommandBindingValidator
-                    .ValidateCommandBinding(cmd, catalog);
-                foreach (var issue in cmdIssues)
+                if (cmd.Kind == ElementEvents.Command.ScadaCommandKind.Navigate)
                 {
-                    issues.Add(new ScadaBuildValidationIssue(
-                        ScadaBuildValidationSeverity.Warning,
-                        "DEC-CMD-TAGID",
-                        $"Scene '{scene.Id}', element '{element.Id}': {issue}",
-                        scene.Id));
+                    ValidateCommandPageTarget(issues, scene, element, cmd, ScadaPageType.Default, "navigation", pagesById, pagesByKey);
+                }
+                else if (cmd.Kind is ElementEvents.Command.ScadaCommandKind.OpenPopup or
+                         ElementEvents.Command.ScadaCommandKind.TogglePopup or
+                         ElementEvents.Command.ScadaCommandKind.ClosePopup)
+                {
+                    ValidateCommandPageTarget(issues, scene, element, cmd, ScadaPageType.Fragment, "popup", pagesById, pagesByKey);
+                }
+
+                if (catalog is not null)
+                {
+                    var cmdIssues = ElementEvents.Command.ScadaCommandBindingValidator
+                        .ValidateCommandBinding(cmd, catalog);
+                    foreach (var issue in cmdIssues)
+                    {
+                        issues.Add(new ScadaBuildValidationIssue(
+                            ScadaBuildValidationSeverity.Warning,
+                            "DEC-CMD-TAGID",
+                            $"Scene '{scene.Id}', element '{element.Id}': {issue}",
+                            scene.EffectivePageCode,
+                            scene.PageKey,
+                            element.Id,
+                            cmd.Id,
+                            $"Scene.Elements[{element.Id}].CommandConfig.Commands[{cmd.Id}]",
+                            SuggestedFix: "Select a valid tag for this command."));
+                    }
                 }
             }
         }
+    }
+
+    private static void ValidateCommandPageTarget(
+        List<ScadaBuildValidationIssue> issues,
+        ScadaScene scene,
+        ScadaElement element,
+        ElementEvents.Command.ScadaCommandBinding command,
+        ScadaPageType expectedType,
+        string role,
+        IReadOnlyDictionary<string, ScadaSceneReference> pagesById,
+        IReadOnlyDictionary<Guid, ScadaSceneReference> pagesByKey)
+    {
+        var targetPage = ResolvePage(command.TargetPageKey, command.TargetPageId, pagesByKey, pagesById);
+        var propertyPath = $"Scene.Elements[{element.Id}].CommandConfig.Commands[{command.Id}].TargetPageKey";
+        var codePrefix = expectedType == ScadaPageType.Fragment ? "command.popup" : "command.navigate";
+        if (targetPage is null)
+        {
+            issues.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                $"{codePrefix}-missing",
+                $"Command '{command.Id}' references missing {role} page '{command.TargetPageId ?? command.TargetPageKey?.ToString()}'.",
+                scene.EffectivePageCode,
+                scene.PageKey,
+                element.Id,
+                command.Id,
+                propertyPath,
+                command.TargetPageKey,
+                $"Select an existing compiled {expectedType} page."));
+            return;
+        }
+
+        if (targetPage.Type != expectedType)
+        {
+            issues.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                $"{codePrefix}-wrong-type",
+                $"Command '{command.Id}' references page '{targetPage.EffectivePageCode}' as {role}, but its type is {targetPage.Type}.",
+                scene.EffectivePageCode,
+                scene.PageKey,
+                element.Id,
+                command.Id,
+                propertyPath,
+                targetPage.PageKey,
+                $"Select a page whose type is {expectedType}."));
+        }
+
+        if (!targetPage.IncludeInBuild)
+        {
+            issues.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                $"{codePrefix}-not-compiled",
+                $"Command '{command.Id}' references {role} page '{targetPage.EffectivePageCode}', but that page is not included in build.",
+                scene.EffectivePageCode,
+                scene.PageKey,
+                element.Id,
+                command.Id,
+                propertyPath,
+                targetPage.PageKey,
+                "Include the target page in the build or select another page."));
+        }
+    }
+
+    private static ScadaSceneReference? ResolvePage(
+        Guid? targetKey,
+        string? targetCode,
+        IReadOnlyDictionary<Guid, ScadaSceneReference> pagesByKey,
+        IReadOnlyDictionary<string, ScadaSceneReference> pagesByCode)
+    {
+        if (targetKey is { } key && key != Guid.Empty)
+        {
+            return pagesByKey.GetValueOrDefault(key);
+        }
+
+        return !string.IsNullOrWhiteSpace(targetCode) && pagesByCode.TryGetValue(targetCode, out var page)
+            ? page
+            : null;
     }
 }
 
