@@ -52,6 +52,10 @@ public sealed class PageManagementSurfaceContractTests
         StringAssert.Contains(xaml, "x:Name=\"PagesTypeFilterComboBox\"");
         StringAssert.Contains(xaml, "x:Name=\"PagesBuildFilterComboBox\"");
         StringAssert.Contains(xaml, "DiagnosticLabel");
+        StringAssert.Contains(xaml, "{Binding PageCode, Mode=OneWay}");
+        StringAssert.Contains(xaml, "{Binding TypeLabel, Mode=OneWay}");
+        Assert.IsFalse(xaml.Contains("{Binding PageCode}", StringComparison.Ordinal));
+        Assert.IsFalse(xaml.Contains("{Binding TypeLabel}", StringComparison.Ordinal));
         StringAssert.Contains(panel, "ICollectionView View");
         StringAssert.Contains(panel, "project.Scenes");
     }

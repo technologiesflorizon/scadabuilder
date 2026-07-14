@@ -449,7 +449,7 @@
                                             <StackPanel>
                                                 <TextBlock Text="{Binding Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
                                                 <TextBlock Foreground="{StaticResource MutedBrush}" FontSize="11">
-                                                    <Run Text="{Binding PageCode}"/><Run Text=" · "/><Run Text="{Binding TypeLabel}"/>
+                                                    <Run Text="{Binding PageCode, Mode=OneWay}"/><Run Text=" · "/><Run Text="{Binding TypeLabel, Mode=OneWay}"/>
                                                 </TextBlock>
                                             </StackPanel>
                                             <StackPanel Grid.Column="1" Orientation="Horizontal">
@@ -1339,11 +1339,11 @@
                                 <Grid>
                                     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
                                     <TextBlock Foreground="{StaticResource MutedBrush}">
-                                        <Run Text="Source: "/><Run Text="{Binding DiagnosticsPanel.Source}"/>
+                                        <Run Text="Source: "/><Run Text="{Binding DiagnosticsPanel.Source, Mode=OneWay}"/>
                                     </TextBlock>
                                     <TextBlock Grid.Column="1" Foreground="{StaticResource MutedBrush}">
-                                        <Run Text="Erreurs "/><Run Text="{Binding DiagnosticsPanel.ErrorCount}"/>
-                                        <Run Text="  ·  Avertissements "/><Run Text="{Binding DiagnosticsPanel.WarningCount}"/>
+                                        <Run Text="Erreurs "/><Run Text="{Binding DiagnosticsPanel.ErrorCount, Mode=OneWay}"/>
+                                        <Run Text="  ·  Avertissements "/><Run Text="{Binding DiagnosticsPanel.WarningCount, Mode=OneWay}"/>
                                     </TextBlock>
                                 </Grid>
                                 <TabControl x:Name="DiagnosticsTabControl" Grid.Row="1" Margin="0,8,0,0">

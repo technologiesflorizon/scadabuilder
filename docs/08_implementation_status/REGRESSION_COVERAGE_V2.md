@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active regression coverage map
-Document version: `V2.1.4.0004`
+Document version: `V2.1.4.0005`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0005` | `PENDING` | Ajout de la regression interdisant les liaisons `Run.Text` TwoWay implicites vers les proprietes Pages et Diagnostics en lecture seule. |
 | 2026-07-14 | `V2.1.4.0004` | `PENDING` | Ajout de la couverture identité, commandes, historique, sauvegarde atomique, pages natives, surfaces Pages/Diagnostics et cycle `.sb2` complet. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Couverture des nouveaux champs de style, export CSS, preview WebView, icônes sémantiques et preuve d’intake TF100Web. |
 | 2026-07-06 | `V2.1.3.0002` | `4dfe7fe` | Ajout de la couverture de la poignée de rotation Element+ et des presets/angle personnalisé du menu contextuel (7 tests WebViewContextMenuScriptTests). |
@@ -60,7 +61,7 @@ Document version: `V2.1.4.0004`
 
 ```text
 dotnet test ScadaBuilderV2.sln --no-restore
-251 passed, 0 failed, 0 skipped
+555 passed, 4 failed, 0 skipped
 ```
 
 ## 2. Coverage Map
@@ -79,7 +80,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Atomic project/scenes/deletions persistence | `ModernProjectAtomicSnapshotTests.cs`, `ModernProjectStoreTests.cs` |
 | Native page preview/export and `.sb2` identity projection | `NativePageDocumentTests.cs`, `Ft100SceneExporterTests.cs`, `PageLifecycleIntegrationTests.cs` |
 | Pages ribbon/project/context surfaces | `RibbonCommandCatalogTests.cs`, `PageManagementSurfaceContractTests.cs` |
-| Shared error dialog and Diagnostics panel | `DiagnosticsSurfaceContractTests.cs` |
+| Shared error dialog and Diagnostics panel | `DiagnosticsSurfaceContractTests.cs`, including explicit `OneWay` bindings for read-only WPF `Run.Text` targets |
 | Scene/domain rules | `OfficialSceneDomainTests.cs`, `ScadaSceneGroupTests.cs` |
 | Undo/redo/history | `EditorHistoryServiceTests.cs` |
 | WebView bridge/context menu | `WebViewContextMenuScriptTests.cs` |

@@ -22,6 +22,24 @@ public sealed class DiagnosticsSurfaceContractTests
     }
 
     [TestMethod]
+    public void DiagnosticsHeaderUsesOneWayBindingsForReadOnlyViewModelProperties()
+    {
+        var xaml = Read("src", "ScadaBuilderV2.App", "MainWindow.xaml");
+
+        StringAssert.Contains(xaml, "{Binding DiagnosticsPanel.Source, Mode=OneWay}");
+        StringAssert.Contains(xaml, "{Binding DiagnosticsPanel.ErrorCount, Mode=OneWay}");
+        StringAssert.Contains(xaml, "{Binding DiagnosticsPanel.WarningCount, Mode=OneWay}");
+        var dialog = Read("src", "ScadaBuilderV2.App", "Diagnostics", "CommandErrorDialog.xaml");
+        StringAssert.Contains(dialog, "{Binding ErrorCount, Mode=OneWay}");
+        StringAssert.Contains(dialog, "{Binding WarningCount, Mode=OneWay}");
+        Assert.IsFalse(xaml.Contains("{Binding DiagnosticsPanel.Source}", StringComparison.Ordinal));
+        Assert.IsFalse(xaml.Contains("{Binding DiagnosticsPanel.ErrorCount}", StringComparison.Ordinal));
+        Assert.IsFalse(xaml.Contains("{Binding DiagnosticsPanel.WarningCount}", StringComparison.Ordinal));
+        Assert.IsFalse(dialog.Contains("{Binding ErrorCount}", StringComparison.Ordinal));
+        Assert.IsFalse(dialog.Contains("{Binding WarningCount}", StringComparison.Ordinal));
+    }
+
+    [TestMethod]
     public void ModernErrorDialogCanOpenTheSharedDiagnosticsPanel()
     {
         var dialog = Read("src", "ScadaBuilderV2.App", "Diagnostics", "CommandErrorDialog.xaml");

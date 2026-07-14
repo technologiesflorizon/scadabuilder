@@ -25,10 +25,10 @@
         </Grid>
         <WrapPanel Grid.Row="1" Margin="56,16,0,12">
             <Border Background="#FEE4E2" CornerRadius="4" Padding="9,4" Margin="0,0,8,0">
-                <TextBlock Foreground="#B42318"><Run Text="{Binding ErrorCount}"/><Run Text=" erreur(s)"/></TextBlock>
+                <TextBlock Foreground="#B42318"><Run Text="{Binding ErrorCount, Mode=OneWay}"/><Run Text=" erreur(s)"/></TextBlock>
             </Border>
             <Border Background="#FEF0C7" CornerRadius="4" Padding="9,4">
-                <TextBlock Foreground="#93370D"><Run Text="{Binding WarningCount}"/><Run Text=" avertissement(s)"/></TextBlock>
+                <TextBlock Foreground="#93370D"><Run Text="{Binding WarningCount, Mode=OneWay}"/><Run Text=" avertissement(s)"/></TextBlock>
             </Border>
         </WrapPanel>
         <Border Grid.Row="2" Background="White" BorderBrush="#D0D5DD" BorderThickness="1" CornerRadius="6" Padding="12">

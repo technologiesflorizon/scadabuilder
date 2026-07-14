@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active implementation status
-Document version: `V2.1.4.0005`
+Document version: `V2.1.4.0006`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0006` | `PENDING` | Correction du crash au demarrage cause par des liaisons WPF `Run.Text` TwoWay implicites vers des proprietes Diagnostics et Pages en lecture seule. |
 | 2026-07-14 | `V2.1.4.0005` | `PENDING` | Gestion moderne des pages : identité stable, commandes partagées, historique projet, sauvegarde atomique, pages natives, surfaces Pages et Diagnostics, propriétés centralisées et compatibilité `.sb2`. |
 | 2026-07-14 | `V2.1.4.0004` | `PENDING` | Assistant de creation d'expressions pour les conditions d'etat : selection des tags actifs, insertion au caret, operateurs guides et application controlee dans le dialogue parent. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Tranche Element+ Style : champs typographiques, Foreground, 9 styles de bordure, BorderRadius, export FT100, preview WebView, surface WPF et icônes `Icon.Property.*`. La preuve d’intake TF100Web reste bloquée par l’absence de MySQL local. |
@@ -65,7 +66,7 @@ Document version: `V2.1.4.0005`
 
 ## 1. Current Verified Baseline
 
-As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 253 tests.
+As of 2026-07-14, `dotnet test ScadaBuilderV2.sln --no-restore` reports 555 passed and 4 pre-existing unrelated failures tracked in `KNOWN_GAPS_V2.md`.
 
 ## 2. Implemented Areas
 
@@ -125,6 +126,7 @@ As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 253 
 54. Modern pages use immutable internal `PageKey` values, mutable human `PageCode` values and optional import provenance. Migration is deterministic/idempotent, native `Blank` pages render without legacy HTML, imported Wonderware duplication preserves its projection, and `.sb2` export projects keys back to human ids without GUID leakage.
 55. The `Pages` ribbon, `Projet > Pages` list, quick actions, keyboard shortcuts and context menu route through the same asynchronous `page.*` commands. Search/type/build filters, disabled reasons and a shared modern page dialog are available without exposing internal keys.
 56. Page lifecycle and properties are coordinated outside `MainWindow`; project-scoped undo/redo retains page operations across tab closure, atomic workspace saves own project/scenes/deletions, and the shared Diagnostics panel plus blocking dialog display structured validation results.
+57. The WPF shell, page list and blocking diagnostics dialog now force `OneWay` mode for read-only `Run.Text` bindings. This prevents the startup `InvalidOperationException` that previously terminated the application before the main window became usable.
 
 ## 3. Source Of Truth
 
