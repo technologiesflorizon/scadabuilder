@@ -515,7 +515,8 @@ public sealed record ScadaActionDefinition(
     string? Value = null,
     ScadaActionCondition? Condition = null,
     ScadaPopupOptions? PopupOptions = null,
-    ScadaActionConditionGroup? ConditionGroup = null);
+    ScadaActionConditionGroup? ConditionGroup = null,
+    Guid? TargetPageKey = null);
 
 public sealed record LegacyElementPayload(
     string LegacyType,
@@ -827,8 +828,22 @@ public sealed record ScadaScene(
     IReadOnlyList<ScadaActionDefinition>? Actions = null,
     bool IncludeInBuild = true,
     string? HeaderPageId = null,
-    string? FooterPageId = null)
+    string? FooterPageId = null,
+    Guid PageKey = default,
+    string? PageCode = null,
+    PageOrigin? Origin = null,
+    ImportProvenance? ImportProvenance = null,
+    Guid? HeaderPageKey = null,
+    Guid? FooterPageKey = null)
 {
+    /// <summary>Gets the human-visible page code, including compatibility fallback for pre-migration scenes.</summary>
+    [JsonIgnore]
+    public string EffectivePageCode => string.IsNullOrWhiteSpace(PageCode) ? Id : PageCode;
+
+    /// <summary>Gets whether the page is native or projected from an imported source.</summary>
+    [JsonIgnore]
+    public PageOrigin EffectiveOrigin => Origin ?? (ImportProvenance is null ? PageOrigin.Native : PageOrigin.Imported);
+
     [JsonIgnore]
     public SceneBackgroundStyle EffectiveBackground => Background ?? SceneBackgroundStyle.FromColor(BackgroundColor);
 
@@ -1246,7 +1261,19 @@ public sealed record ScadaScene(
         return this with
         {
             HeaderPageId = string.IsNullOrWhiteSpace(headerPageId) ? null : headerPageId,
-            FooterPageId = string.IsNullOrWhiteSpace(footerPageId) ? null : footerPageId
+            FooterPageId = string.IsNullOrWhiteSpace(footerPageId) ? null : footerPageId,
+            HeaderPageKey = null,
+            FooterPageKey = null
+        };
+    }
+
+    /// <summary>Returns a scene whose header and footer references use stable logical page keys.</summary>
+    public ScadaScene WithPageCompositionKeys(Guid? headerPageKey, Guid? footerPageKey)
+    {
+        return this with
+        {
+            HeaderPageKey = headerPageKey is { } header && header != Guid.Empty ? header : null,
+            FooterPageKey = footerPageKey is { } footer && footer != Guid.Empty ? footer : null
         };
     }
 

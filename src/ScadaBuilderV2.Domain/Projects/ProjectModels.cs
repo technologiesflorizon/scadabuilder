@@ -55,8 +55,22 @@ public sealed record ScadaSceneReference(
     SceneBackgroundStyle? Background = null,
     bool IncludeInBuild = true,
     string? HeaderPageId = null,
-    string? FooterPageId = null)
+    string? FooterPageId = null,
+    Guid PageKey = default,
+    string? PageCode = null,
+    PageOrigin? Origin = null,
+    ImportProvenance? ImportProvenance = null,
+    Guid? HeaderPageKey = null,
+    Guid? FooterPageKey = null)
 {
+    /// <summary>Gets the human-visible page code, including compatibility fallback for pre-migration projects.</summary>
+    [JsonIgnore]
+    public string EffectivePageCode => string.IsNullOrWhiteSpace(PageCode) ? Id : PageCode;
+
+    /// <summary>Gets whether the page is native or projected from an imported source.</summary>
+    [JsonIgnore]
+    public PageOrigin EffectiveOrigin => Origin ?? (ImportProvenance is null ? PageOrigin.Native : PageOrigin.Imported);
+
     public CanvasSize EffectiveCanvasSize => CanvasSize ?? global::ScadaBuilderV2.Domain.Projects.CanvasSize.DefaultDesktop;
 
     public SceneBackgroundStyle EffectiveBackground => Background ?? SceneBackgroundStyle.Default;
@@ -72,13 +86,18 @@ public sealed record ScadaProject(
     IReadOnlyList<ScadaSceneReference> Scenes,
     string ManifestVersion = "2.0",
     string? HomePageId = null,
-    ScadaTagCatalog? TagCatalog = null)
+    ScadaTagCatalog? TagCatalog = null,
+    Guid? HomePageKey = null)
 {
     [JsonIgnore]
     public IReadOnlyList<ScadaSceneReference> Pages => Scenes;
 
     [JsonIgnore]
     public string? EffectiveHomePageId => ResolveHomePageId(Scenes, HomePageId);
+
+    /// <summary>Gets the stable logical key of the effective compiled home page.</summary>
+    [JsonIgnore]
+    public Guid? EffectiveHomePageKey => ResolveHomePageKey(Scenes, HomePageKey, HomePageId);
 
     public static ScadaProject CreateDefault(string name)
     {
@@ -97,16 +116,38 @@ public sealed record ScadaProject(
         if (!string.IsNullOrWhiteSpace(configuredHomePageId))
         {
             var configured = scenes.FirstOrDefault(scene =>
-                string.Equals(scene.Id, configuredHomePageId, StringComparison.Ordinal));
+                string.Equals(scene.EffectivePageCode, configuredHomePageId, StringComparison.Ordinal));
             if (configured is { Type: ScadaPageType.Default, IncludeInBuild: true })
             {
-                return configured.Id;
+                return configured.EffectivePageCode;
             }
         }
 
         return scenes.FirstOrDefault(scene =>
             scene.Type == ScadaPageType.Default &&
-            scene.IncludeInBuild)?.Id;
+            scene.IncludeInBuild)?.EffectivePageCode;
+    }
+
+    /// <summary>Resolves the stable logical key of the configured or fallback home page.</summary>
+    public static Guid? ResolveHomePageKey(
+        IReadOnlyList<ScadaSceneReference> scenes,
+        Guid? configuredHomePageKey,
+        string? configuredHomePageId)
+    {
+        if (configuredHomePageKey is { } key && key != Guid.Empty)
+        {
+            var configured = scenes.FirstOrDefault(scene => scene.PageKey == key);
+            if (configured is { Type: ScadaPageType.Default, IncludeInBuild: true })
+            {
+                return configured.PageKey;
+            }
+        }
+
+        var effectiveId = ResolveHomePageId(scenes, configuredHomePageId);
+        return scenes.FirstOrDefault(scene =>
+            string.Equals(scene.EffectivePageCode, effectiveId, StringComparison.Ordinal))?.PageKey is { } resolved && resolved != Guid.Empty
+            ? resolved
+            : null;
     }
 }
 

@@ -13,6 +13,35 @@ namespace ScadaBuilderV2.Tests;
 public sealed class ModernProjectStoreTests
 {
     [TestMethod]
+    public async Task EnsureReferenceProjectPersistsStableWonderwarePageIdentity()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var store = new ModernProjectStore();
+        try
+        {
+            var source = new ScadaSceneReference("win00012", "win00012", "scenes/win00012.scene.json");
+            var first = await store.EnsureReferenceModernProjectAsync(root, [source]);
+            var second = await store.EnsureReferenceModernProjectAsync(root, [source]);
+            var loaded = await store.LoadProjectAsync(root);
+
+            Assert.IsNotNull(loaded);
+            Assert.AreNotEqual(Guid.Empty, first.Scenes.Single().PageKey);
+            Assert.AreEqual(first.Scenes.Single().PageKey, second.Scenes.Single().PageKey);
+            Assert.AreEqual(first.Scenes.Single().PageKey, loaded.Scenes.Single().PageKey);
+            Assert.AreEqual("win00012", loaded.Scenes.Single().PageCode);
+            Assert.AreEqual(PageOrigin.Imported, loaded.Scenes.Single().Origin);
+            Assert.AreEqual("Wonderware", loaded.Scenes.Single().ImportProvenance?.SourceSystem);
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task SaveAndLoadScenePreservesModernInputs()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

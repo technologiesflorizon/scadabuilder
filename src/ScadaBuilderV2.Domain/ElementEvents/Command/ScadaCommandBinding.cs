@@ -38,7 +38,8 @@ public sealed record ScadaCommandBinding(
     string? FixedValue = null,
     string? TargetPageId = null,
     string? Url = null,
-    bool NewTab = false)
+    bool NewTab = false,
+    Guid? TargetPageKey = null)
 {
     /// <summary>
     /// Gets the tag id read for <see cref="ScadaWriteMode.Toggle"/>: <see cref="ReadTagId"/>

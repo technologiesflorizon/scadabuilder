@@ -28,29 +28,33 @@ public sealed class ModernProjectStore
         Directory.CreateDirectory(Path.Combine(projectRoot, "exports"));
 
         var projectPath = Path.Combine(projectRoot, "project.json");
-        var project = new ScadaProject(
+        var project = ModernProjectMigration.MigrateProject(new ScadaProject(
             "AMR_REF_SCADA_V2",
             ScadaVersion.Initial,
             CanvasSize.DefaultDesktop,
             ResponsiveMode.Fixed,
             AuthoringMode.DesktopFirst,
             DefaultDevicePresets.All,
-            scenes);
+            scenes), scenes);
+        var originalJson = string.Empty;
 
         if (File.Exists(projectPath))
         {
             var existing = await LoadProjectFileAsync(projectPath);
             if (existing is not null)
             {
-                project = existing with
+                originalJson = JsonSerializer.Serialize(existing, JsonOptions);
+                var migratedExisting = ModernProjectMigration.MigrateProject(existing, scenes);
+                project = ModernProjectMigration.MigrateProject(migratedExisting with
                 {
                     ManifestVersion = string.IsNullOrWhiteSpace(existing.ManifestVersion) ? "2.0" : existing.ManifestVersion,
-                    Scenes = MergeSceneReferences(existing.Scenes, scenes)
-                };
+                    Scenes = MergeSceneReferences(migratedExisting.Scenes, project.Scenes)
+                }, scenes);
             }
         }
 
-        if (!File.Exists(projectPath) || !ScenesEquivalent(project.Scenes, scenes))
+        var migratedJson = JsonSerializer.Serialize(project, JsonOptions);
+        if (!File.Exists(projectPath) || !string.Equals(originalJson, migratedJson, StringComparison.Ordinal))
         {
             await SaveJsonAsync(projectPath, project);
         }
@@ -67,7 +71,9 @@ public sealed class ModernProjectStore
             var scene = await JsonSerializer.DeserializeAsync<ScadaScene>(read, JsonOptions);
             if (scene is not null)
             {
-                return scene.WithoutConvertedLegacyTextOverrides();
+                var normalized = scene.WithoutConvertedLegacyTextOverrides();
+                var project = await LoadProjectAsync(repositoryRoot);
+                return project is null ? normalized : ModernProjectMigration.MigrateScene(normalized, project);
             }
         }
 
@@ -76,25 +82,28 @@ public sealed class ModernProjectStore
 
     public async Task SaveSceneAsync(string repositoryRoot, ScadaScene scene)
     {
-        var path = GetScenePath(repositoryRoot, scene.Id);
+        var project = await LoadProjectAsync(repositoryRoot);
+        var normalized = project is null ? scene : ModernProjectMigration.MigrateScene(scene, project);
+        var path = GetScenePath(repositoryRoot, normalized.Id);
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        await SaveJsonAsync(path, scene);
-        await UpsertSceneReferenceAsync(repositoryRoot, scene);
+        await SaveJsonAsync(path, normalized);
+        await UpsertSceneReferenceAsync(repositoryRoot, normalized);
     }
 
     public async Task<ScadaProject?> LoadProjectAsync(string repositoryRoot)
     {
         var projectPath = Path.Combine(GetReferenceModernProjectRoot(repositoryRoot), "project.json");
-        return File.Exists(projectPath)
+        var project = File.Exists(projectPath)
             ? await LoadProjectFileAsync(projectPath)
             : null;
+        return project is null ? null : ModernProjectMigration.MigrateProject(project);
     }
 
     public async Task SaveProjectAsync(string repositoryRoot, ScadaProject project)
     {
         var projectPath = Path.Combine(GetReferenceModernProjectRoot(repositoryRoot), "project.json");
         Directory.CreateDirectory(Path.GetDirectoryName(projectPath)!);
-        await SaveJsonAsync(projectPath, project);
+        await SaveJsonAsync(projectPath, ModernProjectMigration.MigrateProject(project));
     }
 
     public static string GetReferenceModernProjectRoot(string repositoryRoot)
@@ -142,22 +151,42 @@ public sealed class ModernProjectStore
             return;
         }
 
+        var existingReference = project.Scenes.FirstOrDefault(existing =>
+            (scene.PageKey != Guid.Empty && existing.PageKey == scene.PageKey) ||
+            string.Equals(existing.EffectivePageCode, scene.EffectivePageCode, StringComparison.OrdinalIgnoreCase));
         var reference = new ScadaSceneReference(
-            scene.Id,
+            scene.EffectivePageCode,
             scene.Title,
-            $"scenes/{scene.Id}.scene.json",
+            existingReference?.RelativePath ?? $"scenes/{scene.Id}.scene.json",
             scene.PageType,
             scene.CanvasSize,
             scene.EffectiveBackground,
             scene.IncludeInBuild,
             scene.HeaderPageId,
-            scene.FooterPageId);
+            scene.FooterPageId,
+            scene.PageKey,
+            scene.EffectivePageCode,
+            scene.EffectiveOrigin,
+            scene.ImportProvenance,
+            scene.HeaderPageKey,
+            scene.FooterPageKey);
 
-        var scenes = project.Scenes
-            .Where(existing => !string.Equals(existing.Id, scene.Id, StringComparison.Ordinal))
-            .Append(reference)
-            .OrderBy(existing => existing.Id, StringComparer.Ordinal)
-            .ToArray();
+        var replaced = false;
+        var scenes = project.Scenes.Select(existing =>
+        {
+            if ((scene.PageKey != Guid.Empty && existing.PageKey == scene.PageKey) ||
+                string.Equals(existing.EffectivePageCode, scene.EffectivePageCode, StringComparison.OrdinalIgnoreCase))
+            {
+                replaced = true;
+                return reference;
+            }
+
+            return existing;
+        }).ToList();
+        if (!replaced)
+        {
+            scenes.Add(reference);
+        }
 
         var homePageId = project.HomePageId;
         if (!string.IsNullOrWhiteSpace(homePageId) &&
@@ -167,37 +196,21 @@ public sealed class ModernProjectStore
             homePageId = null;
         }
 
-        await SaveJsonAsync(projectPath, project with { Scenes = scenes, ManifestVersion = "2.0", HomePageId = homePageId });
+        await SaveJsonAsync(projectPath, ModernProjectMigration.MigrateProject(project with
+        {
+            Scenes = scenes,
+            ManifestVersion = "2.0",
+            HomePageId = homePageId
+        }));
     }
 
     private static IReadOnlyList<ScadaSceneReference> MergeSceneReferences(
         IReadOnlyList<ScadaSceneReference> existing,
         IReadOnlyList<ScadaSceneReference> incoming)
     {
-        var incomingById = incoming.ToDictionary(scene => scene.Id, StringComparer.Ordinal);
-        var merged = existing
-            .Select(scene => incomingById.TryGetValue(scene.Id, out var incomingScene)
-                ? incomingScene with
-                {
-                    Type = scene.Type,
-                    CanvasSize = scene.CanvasSize,
-                    Background = scene.Background,
-                    IncludeInBuild = scene.IncludeInBuild,
-                    HeaderPageId = scene.HeaderPageId,
-                    FooterPageId = scene.FooterPageId
-                }
-                : scene)
-            .ToList();
-
-        var existingIds = existing.Select(scene => scene.Id).ToHashSet(StringComparer.Ordinal);
-        merged.AddRange(incoming.Where(scene => !existingIds.Contains(scene.Id)));
+        var merged = existing.ToList();
+        var existingCodes = existing.Select(scene => scene.EffectivePageCode).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        merged.AddRange(incoming.Where(scene => !existingCodes.Contains(scene.EffectivePageCode)));
         return merged;
-    }
-
-    private static bool ScenesEquivalent(IReadOnlyList<ScadaSceneReference> current, IReadOnlyList<ScadaSceneReference> incoming)
-    {
-        var currentIds = current.Select(scene => scene.Id).ToHashSet(StringComparer.Ordinal);
-        var incomingIds = incoming.Select(scene => scene.Id).ToHashSet(StringComparer.Ordinal);
-        return currentIds.SetEquals(incomingIds);
     }
 }
