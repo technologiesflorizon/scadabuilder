@@ -30,6 +30,7 @@ using ScadaBuilderV2.Infrastructure.Libraries;
 using ScadaBuilderV2.Infrastructure.ModernProjects;
 using ScadaBuilderV2.Infrastructure.ReferenceProjects;
 using ScadaBuilderV2.Rendering;
+using ScadaBuilderV2.App.Pages;
 
 namespace ScadaBuilderV2.App;
 
@@ -45,6 +46,7 @@ public partial class MainWindow : Window
     private const string TagCatalogAllStatesFilter = "Tous les etats";
     private readonly IReferenceScadaProjectReader _referenceReader = new ReferenceScadaProjectReader();
     private readonly ModernProjectStore _modernProjectStore = new();
+    private readonly PageSourceProjectionResolver _pageSourceProjectionResolver = new();
     private readonly Tf100WebTagCatalogImporter _tagCatalogImporter = new();
     private readonly IElementStudioImportPackageWriter _elementStudioPackageWriter = new ElementStudioImportPackageWriter();
     private readonly ElementStudioComponentPackageStore _elementStudioComponentPackageStore = new();
@@ -182,9 +184,28 @@ public partial class MainWindow : Window
     {
         _repositoryRoot = ResolveRepositoryRoot();
         _referenceProject = await _referenceReader.LoadAmrReferenceAsync(_repositoryRoot);
-        var sceneReferences = _referenceProject.Pages
-            .Select(page => new ScadaSceneReference(page.Id, page.Title, $"scenes/{page.Id}.scene.json"))
-            .ToArray();
+        var sceneReferences = new List<ScadaSceneReference>();
+        foreach (var page in _referenceProject.Pages)
+        {
+            var source = await ResolveLegacyViewerSourceAsync(page);
+            var sourcePath = source is null
+                ? null
+                : Path.GetRelativePath(
+                    _repositoryRoot,
+                    Path.Combine(source.RootPath, source.RelativeHtmlSource));
+            sceneReferences.Add(new ScadaSceneReference(
+                page.Id,
+                page.Title,
+                $"scenes/{page.Id}.scene.json",
+                PageKey: PageKeyFactory.CreateDeterministic("AMR_REF_SCADA_V2", page.Id),
+                PageCode: page.Id,
+                Origin: PageOrigin.Imported,
+                ImportProvenance: new ImportProvenance(
+                    "Wonderware",
+                    _referenceProject.Name,
+                    page.Id,
+                    sourcePath)));
+        }
         _modernProject = await _modernProjectStore.EnsureReferenceModernProjectAsync(_repositoryRoot, sceneReferences);
         await RefreshLibrarySelectorAsync();
 
@@ -261,7 +282,10 @@ public partial class MainWindow : Window
             page.Id,
             page.Title,
             CanvasSize.DefaultDesktop);
-        var tab = new SceneWorkspaceTab(page, scene);
+        var pageReference = _modernProject?.Scenes.FirstOrDefault(reference =>
+            string.Equals(reference.EffectivePageCode, page.Id, StringComparison.OrdinalIgnoreCase))
+            ?? new ScadaSceneReference(page.Id, page.Title, $"scenes/{page.Id}.scene.json");
+        var tab = new SceneWorkspaceTab(pageReference, page, scene);
         _openSceneTabs.Add(tab);
         await ActivateSceneTabAsync(tab);
     }
@@ -289,7 +313,10 @@ public partial class MainWindow : Window
         _isUpdatingPageSelection = true;
         try
         {
-            PagesListBox.SelectedItem = tab.ReferencePage;
+            if (tab.ReferencePage is not null)
+            {
+                PagesListBox.SelectedItem = tab.ReferencePage;
+            }
         }
         finally
         {
@@ -305,17 +332,36 @@ public partial class MainWindow : Window
 
     private async Task LoadActiveTabPreviewAsync()
     {
-        if (_activeSceneTab is null || _activeReferencePage is null)
+        if (_activeSceneTab is null || _activeScene is null || _repositoryRoot is null)
         {
             SetPreviewPlaceholder("Aucune scene active.");
             return;
         }
 
-        var source = await ResolveLegacyViewerSourceAsync(_activeReferencePage);
+        var pageReference = _activeSceneTab.Page;
+        var source = _pageSourceProjectionResolver.Resolve(pageReference, _repositoryRoot);
+        PreviewDocument preview;
+        string sourceKind;
+        string previewRoot;
         if (source is null)
         {
-            SetPreviewPlaceholder("Aucune source HTML legacy trouvee pour cette page.");
-            return;
+            previewRoot = Path.Combine(
+                ModernProjectStore.GetReferenceModernProjectRoot(_repositoryRoot),
+                ".studio",
+                "preview");
+            preview = await PreviewDocument.MaterializeNativeAsync(
+                new PageDocumentInput(pageReference, _activeScene),
+                previewRoot);
+            sourceKind = "native";
+        }
+        else
+        {
+            previewRoot = source.RootPath;
+            preview = new PreviewDocument(
+                pageReference.EffectivePageCode,
+                pageReference.Title,
+                source.RelativeHtmlSource);
+            sourceKind = source.Kind;
         }
 
         _selectedSourceObjectIds.Clear();
@@ -327,11 +373,10 @@ public partial class MainWindow : Window
         var backgroundColor = _activeScene?.BackgroundColor ?? "#000000";
         UpdatePreviewSurfaceBackground(backgroundColor);
 
-        var preview = new PreviewDocument(_activeReferencePage.Id, _activeReferencePage.Title, source.RelativeHtmlSource);
-        var sourceUri = preview.GetSourceUri(source.RootPath);
+        var sourceUri = preview.GetSourceUri(previewRoot);
         await PrepareInitialSceneBackgroundScriptAsync(backgroundColor);
 
-        ActivePageText.Text = _activeReferencePage.Id;
+        ActivePageText.Text = pageReference.EffectivePageCode;
         PreviewSourceText.Text = sourceUri.LocalPath;
         PreviewPlaceholder.Visibility = Visibility.Collapsed;
         if (PreviewWebView.Source is not null && PreviewWebView.Source.Equals(sourceUri))
@@ -346,12 +391,12 @@ public partial class MainWindow : Window
             PreviewWebView.Source = sourceUri;
         }
 
-        SetStatus($"Legacy Viewer charge: {_activeReferencePage.Id} ({source.Kind})");
+        SetStatus($"Document page charge: {pageReference.EffectivePageCode} ({sourceKind})");
     }
 
     private void SetPreviewPlaceholder(string message)
     {
-        ActivePageText.Text = _activeReferencePage?.Id ?? "-";
+        ActivePageText.Text = _activeSceneTab?.Page.EffectivePageCode ?? "-";
         PreviewSourceText.Text = "-";
         PreviewWebView.Visibility = Visibility.Collapsed;
         PreviewPlaceholder.Text = message;
@@ -3501,20 +3546,28 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private IReadOnlyList<ScadaSceneReference> GetCurrentSceneReferences()
     {
-        var references = (_modernProject?.Scenes ?? Array.Empty<ScadaSceneReference>())
-            .ToDictionary(scene => scene.Id, StringComparer.Ordinal);
+        var references = (_modernProject?.Scenes ?? Array.Empty<ScadaSceneReference>()).ToList();
 
         foreach (var tab in _openSceneTabs)
         {
             var scene = ReferenceEquals(tab, _activeSceneTab) && _activeScene is not null
                 ? _activeScene
                 : tab.Scene;
-            references[scene.Id] = ToSceneReference(scene);
+            var reference = ToSceneReference(scene);
+            var index = references.FindIndex(existing =>
+                (reference.PageKey != Guid.Empty && existing.PageKey == reference.PageKey) ||
+                string.Equals(existing.EffectivePageCode, reference.EffectivePageCode, StringComparison.OrdinalIgnoreCase));
+            if (index >= 0)
+            {
+                references[index] = reference;
+            }
+            else
+            {
+                references.Add(reference);
+            }
         }
 
-        return references.Values
-            .OrderBy(scene => scene.Id, StringComparer.Ordinal)
-            .ToArray();
+        return references;
     }
 
     private void UpdateModernProjectFromActiveScene()
@@ -3525,11 +3578,18 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
 
         var reference = ToSceneReference(_activeScene);
-        var scenes = _modernProject.Scenes
-            .Where(scene => !string.Equals(scene.Id, reference.Id, StringComparison.Ordinal))
-            .Append(reference)
-            .OrderBy(scene => scene.Id, StringComparer.Ordinal)
-            .ToArray();
+        var scenes = _modernProject.Scenes.ToList();
+        var index = scenes.FindIndex(existing =>
+            (reference.PageKey != Guid.Empty && existing.PageKey == reference.PageKey) ||
+            string.Equals(existing.EffectivePageCode, reference.EffectivePageCode, StringComparison.OrdinalIgnoreCase));
+        if (index >= 0)
+        {
+            scenes[index] = reference;
+        }
+        else
+        {
+            scenes.Add(reference);
+        }
 
         _modernProject = _modernProject with { Scenes = scenes };
     }
@@ -3745,18 +3805,29 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
     }
 
-    private static ScadaSceneReference ToSceneReference(ScadaScene scene)
+    private ScadaSceneReference ToSceneReference(ScadaScene scene)
     {
+        var existing = _modernProject?.Scenes.FirstOrDefault(reference =>
+            (scene.PageKey != Guid.Empty && reference.PageKey == scene.PageKey) ||
+            string.Equals(reference.EffectivePageCode, scene.EffectivePageCode, StringComparison.OrdinalIgnoreCase));
         return new ScadaSceneReference(
-            scene.Id,
+            scene.EffectivePageCode,
             scene.Title,
-            $"scenes/{scene.Id}.scene.json",
+            existing?.RelativePath ?? (scene.PageKey == Guid.Empty
+                ? $"scenes/{scene.Id}.scene.json"
+                : $"scenes/{scene.PageKey:N}.scene.json"),
             scene.PageType,
             scene.CanvasSize,
             scene.EffectiveBackground,
             scene.IncludeInBuild,
             scene.HeaderPageId,
-            scene.FooterPageId);
+            scene.FooterPageId,
+            scene.PageKey,
+            scene.EffectivePageCode,
+            scene.EffectiveOrigin,
+            scene.ImportProvenance,
+            scene.HeaderPageKey,
+            scene.FooterPageKey);
     }
 
     private ScadaPageType GetSelectedPageType()
@@ -4276,7 +4347,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private async void OnExportFt100Click(object sender, RoutedEventArgs e)
     {
-        if (_repositoryRoot is null || _activeScene is null || _activeReferencePage is null)
+        if (_repositoryRoot is null || _activeScene is null || _activeSceneTab is null)
         {
             SetStatus("Aucune scene active a exporter vers FT100.");
             return;
@@ -4339,7 +4410,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
-        if (_repositoryRoot is null || _activeScene is null || _activeReferencePage is null)
+        if (_repositoryRoot is null || _activeScene is null || _activeSceneTab is null)
         {
             SetStatus("Aucune scene active a exporter vers FT100.");
             return;
@@ -4455,51 +4526,38 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private async Task<IReadOnlyList<Ft100ProjectPageExportInput>> BuildFt100ProjectExportInputsAsync(ScadaProject project)
     {
-        if (_repositoryRoot is null || _referenceProject is null)
+        if (_repositoryRoot is null)
         {
-            throw new InvalidOperationException("Aucun projet de reference actif.");
+            throw new InvalidOperationException("Aucun depot actif.");
         }
 
-        var referencePagesById = _referenceProject.Pages.ToDictionary(page => page.Id, StringComparer.Ordinal);
         var inputs = new List<Ft100ProjectPageExportInput>();
-        foreach (var pageReference in project.Scenes.Where(page => page.IncludeInBuild).OrderBy(page => page.Id, StringComparer.Ordinal))
+        foreach (var pageReference in project.Scenes.Where(page => page.IncludeInBuild).OrderBy(page => page.EffectivePageCode, StringComparer.Ordinal))
         {
-            if (!referencePagesById.TryGetValue(pageReference.Id, out var referencePage))
-            {
-                throw new InvalidOperationException($"Reference page '{pageReference.Id}' introuvable.");
-            }
-
-            var source = await ResolveLegacyViewerSourceAsync(referencePage);
-            if (source is null)
-            {
-                throw new InvalidOperationException($"Source HTML legacy introuvable pour {pageReference.Id}.");
-            }
-
-            var scene = await LoadSceneForProjectExportAsync(pageReference, referencePage);
+            var source = _pageSourceProjectionResolver.Resolve(pageReference, _repositoryRoot);
+            var scene = await LoadSceneForProjectExportAsync(pageReference);
             inputs.Add(new Ft100ProjectPageExportInput(
                 scene,
-                Path.Combine(source.RootPath, source.RelativeHtmlSource)));
+                source?.GetSourcePath(),
+                pageReference));
         }
 
         return inputs;
     }
 
     private async Task<ScadaScene> LoadSceneForProjectExportAsync(
-        ScadaSceneReference pageReference,
-        ReferenceScadaPage referencePage)
+        ScadaSceneReference pageReference)
     {
         if (_repositoryRoot is null)
         {
             throw new InvalidOperationException("Aucun depot actif.");
         }
 
-        var openTab = _openSceneTabs.FirstOrDefault(tab => string.Equals(tab.SceneId, pageReference.Id, StringComparison.Ordinal));
+        var openTab = _openSceneTabs.FirstOrDefault(tab =>
+            (pageReference.PageKey != Guid.Empty && tab.Page.PageKey == pageReference.PageKey) ||
+            string.Equals(tab.SceneId, pageReference.EffectivePageCode, StringComparison.OrdinalIgnoreCase));
         var scene = openTab is null
-            ? await _modernProjectStore.LoadOrCreateSceneAsync(
-                _repositoryRoot,
-                pageReference.Id,
-                referencePage.Title,
-                pageReference.EffectiveCanvasSize)
+            ? await _modernProjectStore.LoadOrCreateSceneAsync(_repositoryRoot, pageReference)
             : ReferenceEquals(openTab, _activeSceneTab) && _activeScene is not null
                 ? _activeScene
                 : openTab.Scene;
@@ -4509,7 +4567,15 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             .WithIncludeInBuild(pageReference.IncludeInBuild)
             .WithCanvasSize(pageReference.EffectiveCanvasSize)
             .WithBackground(pageReference.EffectiveBackground)
-            .WithPageComposition(pageReference.HeaderPageId, pageReference.FooterPageId);
+            .WithPageComposition(pageReference.HeaderPageId, pageReference.FooterPageId) with
+        {
+            PageKey = pageReference.PageKey,
+            PageCode = pageReference.EffectivePageCode,
+            Origin = pageReference.EffectiveOrigin,
+            ImportProvenance = pageReference.ImportProvenance,
+            HeaderPageKey = pageReference.HeaderPageKey,
+            FooterPageKey = pageReference.FooterPageKey
+        };
     }
 
     private void OnInsertInputTextClick(object sender, RoutedEventArgs e)
@@ -7340,19 +7406,25 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         private ScadaScene scene;
         private bool isDirty;
 
-        public SceneWorkspaceTab(ReferenceScadaPage referencePage, ScadaScene scene)
+        public SceneWorkspaceTab(
+            ScadaSceneReference page,
+            ReferenceScadaPage? referencePage,
+            ScadaScene scene)
         {
+            Page = page;
             ReferencePage = referencePage;
             this.scene = scene;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
-        public ReferenceScadaPage ReferencePage { get; }
+        public ScadaSceneReference Page { get; }
 
-        public string SceneId => ReferencePage.Id;
+        public ReferenceScadaPage? ReferencePage { get; }
 
-        public string Title => string.IsNullOrWhiteSpace(ReferencePage.Title) ? ReferencePage.Id : ReferencePage.Title;
+        public string SceneId => Page.EffectivePageCode;
+
+        public string Title => string.IsNullOrWhiteSpace(Page.Title) ? Page.EffectivePageCode : Page.Title;
 
         public string Header => IsDirty ? $"{SceneId}*" : SceneId;
 

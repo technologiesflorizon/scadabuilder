@@ -49,4 +49,15 @@ public sealed class PreviewDocumentTests
 
         Assert.ThrowsException<InvalidOperationException>(() => document.GetSourcePath(previewRoot));
     }
+
+    [TestMethod]
+    public void PageSourceProjectionRejectsTraversalOutsideImportedRoot()
+    {
+        var projection = new PageSourceProjection(
+            Path.Combine(Path.GetTempPath(), "imported-page"),
+            Path.Combine("..", "outside.html"),
+            "Wonderware");
+
+        Assert.ThrowsException<InvalidOperationException>(() => projection.GetSourcePath());
+    }
 }

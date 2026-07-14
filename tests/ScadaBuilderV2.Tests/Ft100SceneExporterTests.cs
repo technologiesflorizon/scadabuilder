@@ -1612,6 +1612,57 @@ public sealed class Ft100SceneExporterTests
     }
 
     [TestMethod]
+    public async Task ExportProjectWritesNativePageWithoutImportedHtmlSource()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var pageKey = Guid.NewGuid();
+        var page = new ScadaSceneReference(
+            "legacy_alias",
+            "Native",
+            $"scenes/{pageKey:N}.scene.json",
+            PageKey: pageKey,
+            PageCode: "native_page",
+            Origin: PageOrigin.Native);
+        var project = ScadaProject.CreateDefault("Native") with
+        {
+            HomePageKey = pageKey,
+            Scenes = [page]
+        };
+        var scene = ScadaScene.CreateEmpty("legacy_alias", "Native", CanvasSize.DefaultDesktop) with
+        {
+            PageKey = pageKey,
+            PageCode = "native_page",
+            Origin = PageOrigin.Native,
+            Elements = [ScadaElement.CreateText("native_title", "Title", 10, 10)]
+        };
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportProjectAsync(
+                project,
+                [new Ft100ProjectPageExportInput(scene, SourceHtmlPath: null, page)],
+                root);
+
+            var htmlPath = Path.Combine(result.ExportDirectory, "native_page", "native_page.html");
+            Assert.IsTrue(File.Exists(htmlPath));
+            var html = await File.ReadAllTextAsync(htmlPath);
+            StringAssert.Contains(html, "id=\"ft100-native_page\"");
+            StringAssert.Contains(html, "id=\"ft100-native_page__native_title\"");
+            StringAssert.Contains(html, "class=\"ft100-source-layer\"");
+            StringAssert.Contains(html, "scada-runtime.");
+            Assert.AreEqual(0, result.CopiedImageCount);
+            Assert.IsTrue(Ft100PackageValidator.ValidatePackageDirectory(result.ExportDirectory).IsValid);
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task ExportProjectResolvesPageKeysToHumanCodesWithoutChangingSb2ManifestContract()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

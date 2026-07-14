@@ -1,4 +1,5 @@
 using ScadaBuilderV2.Domain.Scenes;
+using ScadaBuilderV2.Domain.Projects;
 
 namespace ScadaBuilderV2.Rendering;
 
@@ -8,7 +9,8 @@ namespace ScadaBuilderV2.Rendering;
 /// </summary>
 public sealed record Ft100ProjectPageExportInput(
     ScadaScene Scene,
-    string SourceHtmlPath);
+    string? SourceHtmlPath,
+    ScadaSceneReference? Page = null);
 
 /// <summary>
 /// Describes a generated FT100 project package directory.

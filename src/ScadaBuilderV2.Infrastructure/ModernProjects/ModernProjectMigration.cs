@@ -103,6 +103,19 @@ public static class ModernProjectMigration
             origin = PageOrigin.Imported;
         }
 
+        if (imported?.ImportProvenance is { } importedProvenance && provenance is not null)
+        {
+            provenance = provenance with
+            {
+                SourceSystem = string.IsNullOrWhiteSpace(provenance.SourceSystem)
+                    ? importedProvenance.SourceSystem
+                    : provenance.SourceSystem,
+                SourceProjectId = provenance.SourceProjectId ?? importedProvenance.SourceProjectId,
+                SourcePageId = provenance.SourcePageId ?? importedProvenance.SourcePageId,
+                SourcePath = provenance.SourcePath ?? importedProvenance.SourcePath
+            };
+        }
+
         origin ??= provenance is null ? PageOrigin.Native : PageOrigin.Imported;
         return page with
         {

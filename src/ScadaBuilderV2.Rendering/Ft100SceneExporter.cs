@@ -48,14 +48,13 @@ public sealed partial class Ft100SceneExporter
 
     public async Task<Ft100SceneExportResult> ExportAsync(
         ScadaScene scene,
-        string sourceHtmlPath,
+        string? sourceHtmlPath,
         string exportDirectory,
         ScadaProject? project = null,
         CancellationToken cancellationToken = default,
         string? runtimeHash = null)
     {
         ArgumentNullException.ThrowIfNull(scene);
-        ArgumentException.ThrowIfNullOrWhiteSpace(sourceHtmlPath);
         ArgumentException.ThrowIfNullOrWhiteSpace(exportDirectory);
 
         if (project is not null)
@@ -84,7 +83,12 @@ public sealed partial class Ft100SceneExporter
         var tagCatalog = project?.TagCatalog;
         var warnings = new List<string>();
 
-        if (!File.Exists(sourceHtmlPath))
+        if (scene.EffectiveOrigin == PageOrigin.Imported && string.IsNullOrWhiteSpace(sourceHtmlPath))
+        {
+            throw new InvalidOperationException($"Imported page '{scene.EffectivePageCode}' has no resolved HTML projection.");
+        }
+
+        if (!string.IsNullOrWhiteSpace(sourceHtmlPath) && !File.Exists(sourceHtmlPath))
         {
             throw new FileNotFoundException("Source HTML not found.", sourceHtmlPath);
         }
@@ -98,15 +102,20 @@ public sealed partial class Ft100SceneExporter
         Directory.CreateDirectory(cssDirectory);
         Directory.CreateDirectory(imagesDirectory);
 
-        var sourceHtml = await File.ReadAllTextAsync(sourceHtmlPath, cancellationToken);
-        var sourceContent = RemoveSuppressedSourceElements(
-            ExtractPageContent(sourceHtml),
-            scene.GetSuppressedSourceElementIds());
-        var copiedImages = CopyAndRewriteImageAssets(
-            sourceContent,
-            Path.GetDirectoryName(Path.GetFullPath(sourceHtmlPath))!,
-            imagesDirectory,
-            out var rewrittenSourceContent);
+        var copiedImages = 0;
+        var rewrittenSourceContent = string.Empty;
+        if (!string.IsNullOrWhiteSpace(sourceHtmlPath))
+        {
+            var sourceHtml = await File.ReadAllTextAsync(sourceHtmlPath, cancellationToken);
+            var sourceContent = RemoveSuppressedSourceElements(
+                ExtractPageContent(sourceHtml),
+                scene.GetSuppressedSourceElementIds());
+            copiedImages = CopyAndRewriteImageAssets(
+                sourceContent,
+                Path.GetDirectoryName(Path.GetFullPath(sourceHtmlPath))!,
+                imagesDirectory,
+                out rewrittenSourceContent);
+        }
         var normalizedSourceContent = ApplyLegacyTextOverrides(
             RepairLegacyTextEncoding(rewrittenSourceContent),
             scene.TextOverrides);
@@ -121,7 +130,7 @@ public sealed partial class Ft100SceneExporter
 
         await File.WriteAllTextAsync(
             cssPath,
-            BuildCss(scene),
+            BuildDocumentCss(scene),
             Encoding.UTF8,
             cancellationToken);
 
@@ -138,7 +147,13 @@ public sealed partial class Ft100SceneExporter
 
         await File.WriteAllTextAsync(
             htmlPath,
-            BuildHtml(scene, cssFileName, normalizedSourceContent, runtimeHash, tagCatalog, warnings),
+            BuildDocumentHtml(
+                scene,
+                $"css/{cssFileName}",
+                normalizedSourceContent,
+                $"../scada-runtime.{runtimeHash}.js",
+                tagCatalog,
+                warnings),
             Encoding.UTF8,
             cancellationToken);
 
@@ -988,7 +1003,11 @@ public sealed partial class Ft100SceneExporter
         }
     }
 
-    private static string BuildHtml(ScadaScene scene, string cssFileName, string sourceContent, string runtimeHash,
+    internal static string BuildDocumentHtml(
+        ScadaScene scene,
+        string stylesheetHref,
+        string sourceContent,
+        string? runtimeScriptSource,
         ScadaTagCatalog? tagCatalog, List<string> warnings)
     {
         var scope = Ft100ExportScope.ForScene(scene);
@@ -1000,6 +1019,9 @@ public sealed partial class Ft100SceneExporter
         var rootStyle = HtmlEncoder.Default.Encode(BuildSceneRootInlineStyle(scene));
         var modernElements = string.Concat(scene.Elements.Select(
             element => BuildElementHtml(element, 0, 0, scope, tagCatalog, warnings)));
+        var runtimeScript = string.IsNullOrWhiteSpace(runtimeScriptSource)
+            ? string.Empty
+            : $"  <script src=\"{HtmlEncoder.Default.Encode(runtimeScriptSource)}\" defer></script>";
 
         return $$"""
 <!doctype html>
@@ -1008,7 +1030,7 @@ public sealed partial class Ft100SceneExporter
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{title}}</title>
-  <link rel="stylesheet" href="css/{{HtmlEncoder.Default.Encode(cssFileName)}}">
+  <link rel="stylesheet" href="{{HtmlEncoder.Default.Encode(stylesheetHref)}}">
 </head>
 <body style="margin:0;padding:0;">
   <div id="{{rootDomId}}" class="ft100-scada-scene ft100-scada-scene--{{pageClass}}" data-scada-page-id="{{pageId}}" data-scada-page-type="{{sceneType}}" data-scada-width="{{Format(scene.CanvasSize.Width)}}" data-scada-height="{{Format(scene.CanvasSize.Height)}}" style="{{rootStyle}}">
@@ -1019,7 +1041,7 @@ public sealed partial class Ft100SceneExporter
 {{Indent(modernElements, 6)}}
     </div>
   </div>
-  <script src="../scada-runtime.{{runtimeHash}}.js" defer></script>
+{{runtimeScript}}
 </body>
 </html>
 """;
@@ -1643,7 +1665,7 @@ public sealed partial class Ft100SceneExporter
             "box-sizing:border-box;");
     }
 
-    private static string BuildCss(ScadaScene scene)
+    internal static string BuildDocumentCss(ScadaScene scene)
     {
         var css = new StringBuilder();
         var scope = Ft100ExportScope.ForScene(scene);

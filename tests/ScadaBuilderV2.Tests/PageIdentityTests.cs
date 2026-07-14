@@ -95,4 +95,31 @@ public sealed class PageIdentityTests
         Assert.AreEqual(targetKey, migrated.ActionDefinitions.Single().TargetPageKey);
         Assert.AreEqual(targetKey, migrated.Elements.Single().EffectiveCommandConfig.Commands.Single().TargetPageKey);
     }
+
+    [TestMethod]
+    public void ProjectMigrationEnrichesExistingWonderwareProvenanceWithProjectionPath()
+    {
+        var existing = new ScadaSceneReference(
+            "win00009",
+            "Imported",
+            "scenes/win00009.scene.json",
+            PageKey: Guid.NewGuid(),
+            PageCode: "win00009",
+            Origin: PageOrigin.Imported,
+            ImportProvenance: new ImportProvenance("Wonderware", "Legacy", "win00009"));
+        var inventory = existing with
+        {
+            ImportProvenance = existing.ImportProvenance! with
+            {
+                SourcePath = "SCADA_BUILDER/AMR_SCADA/html/win00009.html"
+            }
+        };
+        var project = ScadaProject.CreateDefault("AMR_REF_SCADA_V2") with { Scenes = [existing] };
+
+        var migrated = ModernProjectMigration.MigrateProject(project, [inventory]);
+
+        Assert.AreEqual(
+            "SCADA_BUILDER/AMR_SCADA/html/win00009.html",
+            migrated.Scenes.Single().ImportProvenance?.SourcePath);
+    }
 }

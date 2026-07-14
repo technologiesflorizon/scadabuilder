@@ -83,11 +83,58 @@ public sealed class ModernProjectStore : IPageWorkspaceStore
         return ScadaScene.CreateEmpty(sceneId, title, canvasSize);
     }
 
+    /// <summary>Loads a page scene from its durable project-relative path or creates its modern native snapshot.</summary>
+    public async Task<ScadaScene> LoadOrCreateSceneAsync(
+        string repositoryRoot,
+        ScadaSceneReference page,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositoryRoot);
+        ArgumentNullException.ThrowIfNull(page);
+        var projectRoot = GetReferenceModernProjectRoot(repositoryRoot);
+        await RecoverIncompleteTransactionsAsync(projectRoot, cancellationToken);
+        var path = ResolveContainedScenePath(projectRoot, page.RelativePath);
+        if (File.Exists(path))
+        {
+            await using var stream = File.OpenRead(path);
+            var scene = await JsonSerializer.DeserializeAsync<ScadaScene>(stream, JsonOptions, cancellationToken);
+            if (scene is not null)
+            {
+                var project = await LoadProjectAsync(repositoryRoot);
+                return project is null
+                    ? scene.WithoutConvertedLegacyTextOverrides()
+                    : ModernProjectMigration.MigrateScene(scene.WithoutConvertedLegacyTextOverrides(), project);
+            }
+        }
+
+        return ScadaScene.CreateEmpty(page.EffectivePageCode, page.Title, page.EffectiveCanvasSize) with
+        {
+            PageKey = page.PageKey,
+            PageCode = page.EffectivePageCode,
+            Origin = page.EffectiveOrigin,
+            ImportProvenance = page.ImportProvenance,
+            PageType = page.Type,
+            Background = page.EffectiveBackground,
+            BackgroundColor = page.EffectiveBackground.Color,
+            IncludeInBuild = page.IncludeInBuild,
+            HeaderPageId = page.HeaderPageId,
+            FooterPageId = page.FooterPageId,
+            HeaderPageKey = page.HeaderPageKey,
+            FooterPageKey = page.FooterPageKey
+        };
+    }
+
     public async Task SaveSceneAsync(string repositoryRoot, ScadaScene scene)
     {
         var project = await LoadProjectAsync(repositoryRoot);
         var normalized = project is null ? scene : ModernProjectMigration.MigrateScene(scene, project);
-        var path = GetScenePath(repositoryRoot, normalized.Id);
+        var projectRoot = GetReferenceModernProjectRoot(repositoryRoot);
+        var existingReference = project?.Scenes.FirstOrDefault(reference =>
+            (normalized.PageKey != Guid.Empty && reference.PageKey == normalized.PageKey) ||
+            string.Equals(reference.EffectivePageCode, normalized.EffectivePageCode, StringComparison.OrdinalIgnoreCase));
+        var path = existingReference is null
+            ? GetScenePath(repositoryRoot, normalized.Id)
+            : ResolveContainedScenePath(projectRoot, existingReference.RelativePath);
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
         await SaveJsonAsync(path, normalized);
         await UpsertSceneReferenceAsync(repositoryRoot, normalized);

@@ -34,6 +34,31 @@ public sealed record PreviewDocument
         return new Uri(GetSourcePath(previewRootPath), UriKind.Absolute);
     }
 
+    /// <summary>Materializes a native page document under the editor preview root.</summary>
+    public static async Task<PreviewDocument> MaterializeNativeAsync(
+        PageDocumentInput input,
+        string previewRootPath,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentException.ThrowIfNullOrWhiteSpace(previewRootPath);
+        var document = NativePageDocumentFactory.Create(input);
+        var relativeDirectory = Path.Combine("native", document.PageCode);
+        var pageDirectory = Path.Combine(previewRootPath, relativeDirectory);
+        var cssDirectory = Path.Combine(pageDirectory, "css");
+        Directory.CreateDirectory(cssDirectory);
+        var htmlRelativePath = Path.Combine(relativeDirectory, $"{document.PageCode}.html");
+        await File.WriteAllTextAsync(
+            Path.Combine(previewRootPath, htmlRelativePath),
+            document.Html,
+            cancellationToken);
+        await File.WriteAllTextAsync(
+            Path.Combine(cssDirectory, $"{document.PageCode}.css"),
+            document.Css,
+            cancellationToken);
+        return new PreviewDocument(document.PageCode, input.Page.Title, htmlRelativePath);
+    }
+
     private static string RequireText(string value, string parameterName)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(value, parameterName);
