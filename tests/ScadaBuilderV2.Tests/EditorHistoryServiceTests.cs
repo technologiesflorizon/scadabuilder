@@ -479,6 +479,31 @@ public sealed class EditorHistoryServiceTests
         Assert.AreEqual(2, history.UndoCount);
     }
 
+    [TestMethod]
+    public void SceneActionsWithDifferentPageKeysNeverMerge()
+    {
+        var history = new EditorHistoryService();
+        var elementId = "element-1";
+        var before = new SceneBounds(0, 0, 20, 20);
+        var middle = new SceneBounds(10, 10, 20, 20);
+        var after = new SceneBounds(20, 20, 20, 20);
+
+        history.Push(new ModernElementBoundsChangedAction(
+            "legacy_scene",
+            elementId,
+            before,
+            middle,
+            Guid.NewGuid()));
+        history.Push(new ModernElementBoundsChangedAction(
+            "legacy_scene",
+            elementId,
+            middle,
+            after,
+            Guid.NewGuid()));
+
+        Assert.AreEqual(2, history.UndoCount);
+    }
+
     private static EditorHistoryContext CreateContext(
         ScadaScene scene,
         Action<ScadaScene> replaceScene)

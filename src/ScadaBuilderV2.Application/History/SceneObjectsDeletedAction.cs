@@ -10,8 +10,11 @@ public sealed record DeletedSceneObjectSnapshot(
 public sealed record SceneObjectsDeletedAction(
     string SceneId,
     IReadOnlyList<DeletedSceneObjectSnapshot> DeletedObjects,
-    IReadOnlyList<string>? DeletedSourceElementIds = null) : IEditorHistoryAction
+    IReadOnlyList<string>? DeletedSourceElementIds = null,
+    Guid? PageKey = null) : IEditorHistoryAction
 {
+    public EditorHistoryTarget Target => EditorHistoryTarget.ForScene(SceneId, PageKey);
+
     public string Label => "Supprimer objets";
 
     public bool CanMergeWith(IEditorHistoryAction next)
@@ -26,7 +29,7 @@ public sealed record SceneObjectsDeletedAction(
 
     public async Task UndoAsync(EditorHistoryContext context)
     {
-        var scene = context.GetActiveScene();
+        var scene = context.ResolveScene(Target);
         if (scene is null)
         {
             context.SetStatus("Historique ignore: aucune scene active.");
@@ -39,15 +42,15 @@ public sealed record SceneObjectsDeletedAction(
         }
 
         scene = scene.WithoutRemovedSourceElementIds(GetSourceElementIds());
-        context.ReplaceActiveScene(scene);
-        context.MarkDirty();
-        await context.RefreshPreviewAsync();
+        context.ReplaceScene(Target, scene);
+        context.MarkTargetDirty(Target);
+        await context.RefreshAsync(Target);
         context.SetStatus($"{GetDeletedItemCount()} suppression(s) annulee(s).");
     }
 
     public async Task RedoAsync(EditorHistoryContext context)
     {
-        var scene = context.GetActiveScene();
+        var scene = context.ResolveScene(Target);
         if (scene is null)
         {
             context.SetStatus("Historique ignore: aucune scene active.");
@@ -58,9 +61,9 @@ public sealed record SceneObjectsDeletedAction(
             .WithoutSceneObjects(DeletedObjects.Select(snapshot => snapshot.Element.Id))
             .WithRemovedSourceElementIds(GetSourceElementIds());
 
-        context.ReplaceActiveScene(scene);
-        context.MarkDirty();
-        await context.RefreshPreviewAsync();
+        context.ReplaceScene(Target, scene);
+        context.MarkTargetDirty(Target);
+        await context.RefreshAsync(Target);
         context.SetStatus($"{GetDeletedItemCount()} suppression(s) retablie(s).");
     }
 

@@ -6,8 +6,11 @@ public sealed record SceneSnapshotChangedAction(
     string SceneId,
     ScadaScene BeforeScene,
     ScadaScene AfterScene,
-    string Label) : IEditorHistoryAction
+    string Label,
+    Guid? PageKey = null) : IEditorHistoryAction
 {
+    public EditorHistoryTarget Target => EditorHistoryTarget.ForScene(SceneId, PageKey);
+
     public bool CanMergeWith(IEditorHistoryAction next)
     {
         return false;
@@ -28,11 +31,11 @@ public sealed record SceneSnapshotChangedAction(
         await ApplyAsync(context, AfterScene, $"Redo {Label}.");
     }
 
-    private static async Task ApplyAsync(EditorHistoryContext context, ScadaScene scene, string status)
+    private async Task ApplyAsync(EditorHistoryContext context, ScadaScene scene, string status)
     {
-        context.ReplaceActiveScene(scene);
-        context.MarkDirty();
-        await context.RefreshPreviewAsync();
+        context.ReplaceScene(Target, scene);
+        context.MarkTargetDirty(Target);
+        await context.RefreshAsync(Target);
         context.SetStatus(status);
     }
 }

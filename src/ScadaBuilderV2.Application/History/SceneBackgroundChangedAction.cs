@@ -3,8 +3,11 @@ namespace ScadaBuilderV2.Application.History;
 public sealed record SceneBackgroundChangedAction(
     string SceneId,
     string BeforeColor,
-    string AfterColor) : IEditorHistoryAction
+    string AfterColor,
+    Guid? PageKey = null) : IEditorHistoryAction
 {
+    public EditorHistoryTarget Target => EditorHistoryTarget.ForScene(SceneId, PageKey);
+
     public string Label => "Modifier le fond de scene";
 
     public bool CanMergeWith(IEditorHistoryAction next)
@@ -27,18 +30,18 @@ public sealed record SceneBackgroundChangedAction(
         await ApplyAsync(context, AfterColor, $"Redo fond de scene: {AfterColor}.");
     }
 
-    private static async Task ApplyAsync(EditorHistoryContext context, string color, string status)
+    private async Task ApplyAsync(EditorHistoryContext context, string color, string status)
     {
-        var scene = context.GetActiveScene();
+        var scene = context.ResolveScene(Target);
         if (scene is null)
         {
             context.SetStatus("Historique ignore: aucune scene active.");
             return;
         }
 
-        context.ReplaceActiveScene(scene.WithBackgroundColor(color));
-        context.MarkDirty();
-        await context.RefreshPreviewAsync();
+        context.ReplaceScene(Target, scene.WithBackgroundColor(color));
+        context.MarkTargetDirty(Target);
+        await context.RefreshAsync(Target);
         context.SetStatus(status);
     }
 }

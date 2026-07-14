@@ -6,8 +6,11 @@ public sealed record ModernElementChangedAction(
     string SceneId,
     ScadaElement BeforeElement,
     ScadaElement AfterElement,
-    string Label) : IEditorHistoryAction
+    string Label,
+    Guid? PageKey = null) : IEditorHistoryAction
 {
+    public EditorHistoryTarget Target => EditorHistoryTarget.ForScene(SceneId, PageKey);
+
     public string ElementId => BeforeElement.Id;
 
     public bool CanMergeWith(IEditorHistoryAction next)
@@ -40,7 +43,7 @@ public sealed record ModernElementChangedAction(
 
     private async Task ApplyAsync(EditorHistoryContext context, ScadaElement element, string status)
     {
-        var scene = context.GetActiveScene();
+        var scene = context.ResolveScene(Target);
         if (scene is null)
         {
             context.SetStatus("Historique ignore: aucune scene active.");
@@ -53,9 +56,9 @@ public sealed record ModernElementChangedAction(
             return;
         }
 
-        context.ReplaceActiveScene(scene.WithReplacedElementRecursive(element));
-        context.MarkDirty();
-        await context.RefreshPreviewAsync();
+        context.ReplaceScene(Target, scene.WithReplacedElementRecursive(element));
+        context.MarkTargetDirty(Target);
+        await context.RefreshAsync(Target);
         context.SetStatus(status);
     }
 }

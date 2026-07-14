@@ -4,8 +4,11 @@ namespace ScadaBuilderV2.Application.History;
 
 public sealed record SceneObjectsAddedAction(
     string SceneId,
-    IReadOnlyList<DeletedSceneObjectSnapshot> AddedObjects) : IEditorHistoryAction
+    IReadOnlyList<DeletedSceneObjectSnapshot> AddedObjects,
+    Guid? PageKey = null) : IEditorHistoryAction
 {
+    public EditorHistoryTarget Target => EditorHistoryTarget.ForScene(SceneId, PageKey);
+
     public string Label => "Coller objets";
 
     public bool CanMergeWith(IEditorHistoryAction next) => false;
@@ -17,7 +20,7 @@ public sealed record SceneObjectsAddedAction(
 
     public async Task UndoAsync(EditorHistoryContext context)
     {
-        var scene = context.GetActiveScene();
+        var scene = context.ResolveScene(Target);
         if (scene is null)
         {
             context.SetStatus("Historique ignore: aucune scene active.");
@@ -25,15 +28,15 @@ public sealed record SceneObjectsAddedAction(
         }
 
         scene = scene.WithoutSceneObjects(AddedObjects.Select(snapshot => snapshot.Element.Id));
-        context.ReplaceActiveScene(scene);
-        context.MarkDirty();
-        await context.RefreshPreviewAsync();
+        context.ReplaceScene(Target, scene);
+        context.MarkTargetDirty(Target);
+        await context.RefreshAsync(Target);
         context.SetStatus($"{AddedObjects.Count} collage(s) annule(s).");
     }
 
     public async Task RedoAsync(EditorHistoryContext context)
     {
-        var scene = context.GetActiveScene();
+        var scene = context.ResolveScene(Target);
         if (scene is null)
         {
             context.SetStatus("Historique ignore: aucune scene active.");
@@ -45,9 +48,9 @@ public sealed record SceneObjectsAddedAction(
             scene = RestoreObject(scene, snapshot);
         }
 
-        context.ReplaceActiveScene(scene);
-        context.MarkDirty();
-        await context.RefreshPreviewAsync();
+        context.ReplaceScene(Target, scene);
+        context.MarkTargetDirty(Target);
+        await context.RefreshAsync(Target);
         context.SetStatus($"{AddedObjects.Count} collage(s) retabli(s).");
     }
 

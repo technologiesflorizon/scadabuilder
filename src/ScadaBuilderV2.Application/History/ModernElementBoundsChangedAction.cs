@@ -6,8 +6,11 @@ public sealed record ModernElementBoundsChangedAction(
     string SceneId,
     string ElementId,
     SceneBounds BeforeBounds,
-    SceneBounds AfterBounds) : IEditorHistoryAction
+    SceneBounds AfterBounds,
+    Guid? PageKey = null) : IEditorHistoryAction
 {
+    public EditorHistoryTarget Target => EditorHistoryTarget.ForScene(SceneId, PageKey);
+
     public string Label => "Modifier la geometrie Element+";
 
     public bool CanMergeWith(IEditorHistoryAction next)
@@ -34,7 +37,7 @@ public sealed record ModernElementBoundsChangedAction(
 
     private async Task ApplyAsync(EditorHistoryContext context, SceneBounds bounds, string status)
     {
-        var scene = context.GetActiveScene();
+        var scene = context.ResolveScene(Target);
         if (scene is null)
         {
             context.SetStatus("Historique ignore: aucune scene active.");
@@ -48,9 +51,9 @@ public sealed record ModernElementBoundsChangedAction(
             return;
         }
 
-        context.ReplaceActiveScene(scene.WithReplacedElementRecursive(current with { Bounds = bounds }));
-        context.MarkDirty();
-        await context.RefreshPreviewAsync();
+        context.ReplaceScene(Target, scene.WithReplacedElementRecursive(current with { Bounds = bounds }));
+        context.MarkTargetDirty(Target);
+        await context.RefreshAsync(Target);
         context.SetStatus(status);
     }
 }

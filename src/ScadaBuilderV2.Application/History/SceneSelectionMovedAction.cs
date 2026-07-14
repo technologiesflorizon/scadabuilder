@@ -10,8 +10,11 @@ public sealed record MovedSceneElementBounds(
 public sealed record SceneSelectionMovedAction(
     string SceneId,
     IReadOnlyList<MovedSceneElementBounds> ElementBounds,
-    string Label = "deplacement selection") : IEditorHistoryAction
+    string Label = "deplacement selection",
+    Guid? PageKey = null) : IEditorHistoryAction
 {
+    public EditorHistoryTarget Target => EditorHistoryTarget.ForScene(SceneId, PageKey);
+
     public bool CanMergeWith(IEditorHistoryAction next)
     {
         return false;
@@ -34,7 +37,7 @@ public sealed record SceneSelectionMovedAction(
 
     private async Task ApplyAsync(EditorHistoryContext context, bool useAfterBounds, string status)
     {
-        var scene = context.GetActiveScene();
+        var scene = context.ResolveScene(Target);
         if (scene is null)
         {
             context.SetStatus("Historique ignore: aucune scene active.");
@@ -56,9 +59,9 @@ public sealed record SceneSelectionMovedAction(
             });
         }
 
-        context.ReplaceActiveScene(updatedScene);
-        context.MarkDirty();
-        await context.RefreshPreviewAsync();
+        context.ReplaceScene(Target, updatedScene);
+        context.MarkTargetDirty(Target);
+        await context.RefreshAsync(Target);
         context.SetStatus(status);
     }
 }
