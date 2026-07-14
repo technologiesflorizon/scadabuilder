@@ -8,7 +8,7 @@ Document version: `V2.1.4.0015`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-14 | `V2.1.4.0015` | `PENDING` | Creation du plan executable derive de la specification approuvee et de `DEC-0039`. |
+| 2026-07-14 | `V2.1.4.0015` | `95a57ac` | Creation du plan executable derive de la specification approuvee et de `DEC-0039`. |
 
 > **Pour les agents d'execution :** utiliser un workflow d'execution de plan tache par tache. Ne pas deleguer a des sous-agents sans autorisation explicite de l'utilisateur. Les cases `- [ ]` constituent le suivi d'execution.
 
