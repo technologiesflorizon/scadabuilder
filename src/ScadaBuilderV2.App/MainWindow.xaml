@@ -196,6 +196,27 @@
             </Button>
         </DataTemplate>
 
+        <DataTemplate x:Key="InsertFamilyTemplate">
+            <Button Command="{Binding Command}" ToolTip="{Binding Label}" Margin="0,0,5,5" Padding="8,4">
+                <Button.Style>
+                    <Style TargetType="Button" BasedOn="{StaticResource RibbonCommandButtonStyle}">
+                        <Setter Property="MinWidth" Value="104"/>
+                        <Setter Property="MinHeight" Value="34"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                <Setter Property="Background" Value="#DFF3E7"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource AccentBlueBrush}"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{Binding Icon}" Width="20" Height="20" Margin="0,0,6,0"/>
+                    <TextBlock Text="{Binding Label}" VerticalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </DataTemplate>
+
         <Style x:Key="ElementListBoxItemStyle" TargetType="ListBoxItem">
             <Setter Property="Padding" Value="6,4"/>
             <Setter Property="Margin" Value="0,1"/>
@@ -317,7 +338,15 @@
                         BorderThickness="1"
                         CornerRadius="6">
                     <Grid Margin="8">
-                        <ScrollViewer x:Name="RibbonCommandSurface"
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <ItemsControl x:Name="InsertFamilySurface" Grid.Row="0" Visibility="Collapsed"
+                                      ItemsSource="{Binding InsertFamilies}" ItemTemplate="{StaticResource InsertFamilyTemplate}">
+                            <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                        <ScrollViewer x:Name="RibbonCommandSurface" Grid.Row="1"
                                       HorizontalScrollBarVisibility="Auto"
                                       VerticalScrollBarVisibility="Disabled">
                             <ItemsControl ItemsSource="{Binding ActiveRibbonGroups}"
@@ -1220,6 +1249,21 @@
                                                          Margin="0,3,0,8"
                                                          Visibility="Collapsed"
                                                          TextChanged="OnElementPropertyChanged"/>
+                                            </StackPanel>
+                                        </TabItem>
+                                        <TabItem Header="Tableau">
+                                            <StackPanel x:Name="TablePropertiesPanel" Margin="8" Visibility="Collapsed">
+                                                <TextBlock Text="Selection Tableau" FontWeight="SemiBold"/>
+                                                <TextBlock x:Name="TableSelectionSummaryText" Text="Cellule 1,1" Margin="0,4,0,2"/>
+                                                <TextBlock x:Name="TableDimensionSummaryText" Text="6 rangees x 8 colonnes" Foreground="{StaticResource MutedBrush}" Margin="0,0,0,10"/>
+                                                <Button Content="Proprietes detaillees..." Margin="0,0,0,6" Click="OnOpenTablePropertiesClick"/>
+                                                <Button Content="Format de cellule..." Margin="0,0,0,6" Click="OnOpenCellFormatClick"/>
+                                                <UniformGrid Columns="2">
+                                                    <Button Content="Fusionner" Margin="0,0,3,0" Click="OnMergeTableCellsClick"/>
+                                                    <Button Content="Defusionner" Margin="3,0,0,0" Click="OnUnmergeTableCellsClick"/>
+                                                </UniformGrid>
+                                                <TextBlock Text="Les hauteurs, largeurs, insertions et suppressions sont aussi disponibles par clic droit dans le tableau."
+                                                           TextWrapping="Wrap" Margin="0,10,0,0" Foreground="{StaticResource MutedBrush}"/>
                                             </StackPanel>
                                         </TabItem>
                                     </TabControl>

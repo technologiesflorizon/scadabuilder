@@ -14,6 +14,49 @@ namespace ScadaBuilderV2.Tests;
 public sealed class ModernProjectStoreTests
 {
     [TestMethod]
+    public async Task SaveAndLoadScenePreservesModernTableTracksMergesInputsAndStyles()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var store = new ModernProjectStore();
+        var table = ScadaTableDefinition.CreateDefault(3, 4) with
+        {
+            Columns = [new(110), new(80), new(95), new(125)],
+            Rows = [new(38, IsHeader: true), new(30), new(42)],
+            Cells =
+            [
+                new(0, 0, ColumnSpan: 4, Content: new(Text: "Production"), Style: new(Background: "#123456")),
+                new(1, 0, Content: new(ScadaTableCellContentKind.InputText, "Lot 12")),
+                new(1, 1), new(1, 2), new(1, 3),
+                new(2, 0), new(2, 1), new(2, 2, Content: new(ScadaTableCellContentKind.InputNumeric, NumericValue: 17.5)), new(2, 3)
+            ]
+        };
+        var scene = ScadaScene.CreateEmpty("table-store", "Table store", new(1280, 873))
+            .WithElement(ScadaElement.CreateTable("table_001", "Tableau001", 40, 50, 3, 4) with
+            {
+                Table = table,
+                Bounds = new SceneBounds(40, 50, table.Width, table.Height)
+            });
+
+        try
+        {
+            await store.SaveSceneAsync(root, scene);
+            var loaded = await store.LoadOrCreateSceneAsync(root, "table-store", "Table store", new(1280, 873));
+            var loadedTable = loaded.Elements.Single().Table;
+
+            Assert.IsNotNull(loadedTable);
+            CollectionAssert.AreEqual(new[] { 110d, 80d, 95d, 125d }, loadedTable!.EffectiveColumns.Select(column => column.Width).ToArray());
+            Assert.AreEqual(4, loadedTable.EffectiveCells.Single(cell => cell.Row == 0).ColumnSpan);
+            Assert.AreEqual(ScadaTableCellContentKind.InputText, loadedTable.EffectiveCells.Single(cell => cell.Row == 1 && cell.Column == 0).EffectiveContent.Kind);
+            Assert.AreEqual(17.5, loadedTable.EffectiveCells.Single(cell => cell.Row == 2 && cell.Column == 2).EffectiveContent.NumericValue);
+            Assert.AreEqual("#123456", loadedTable.EffectiveCells.Single(cell => cell.Row == 0).Style?.Background);
+        }
+        finally
+        {
+            if (Directory.Exists(root)) Directory.Delete(root, true);
+        }
+    }
+
+    [TestMethod]
     public async Task EnsureReferenceProjectPersistsStableWonderwarePageIdentity()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

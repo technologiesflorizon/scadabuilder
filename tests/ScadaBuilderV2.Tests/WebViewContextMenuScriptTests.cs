@@ -998,34 +998,13 @@ public sealed class WebViewContextMenuScriptTests
         CollectionAssert.Contains(commandIds, "insert.button.navigation");
         CollectionAssert.Contains(commandIds, "insert.button.alarm-ack");
         CollectionAssert.Contains(commandIds, "insert.button.emergency-stop");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Rectangle);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Ellipse);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Circle, commandId);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Triangle, commandId);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Star, commandId);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Line);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Arrow);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.IndicatorLamp);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.HorizontalBar);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.VerticalBar);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Tank);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.PipeHorizontal);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.PipeVertical);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Valve);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Pump);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Motor);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Fan);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Conveyor);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Gauge);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Switch);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Breaker);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Transformer);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.AlarmBeacon);");
-        StringAssert.Contains(source, "BeginButtonPlacement(ScadaButtonKind.Command);");
-        StringAssert.Contains(source, "BeginButtonPlacement(ScadaButtonKind.Toggle);");
-        StringAssert.Contains(source, "BeginButtonPlacement(ScadaButtonKind.Navigation);");
-        StringAssert.Contains(source, "BeginButtonPlacement(ScadaButtonKind.AlarmAcknowledge);");
-        StringAssert.Contains(source, "BeginButtonPlacement(ScadaButtonKind.EmergencyStop);");
+        StringAssert.Contains(source, "var insertTool = InsertToolCatalog.Find(commandId);");
+        StringAssert.Contains(source, "BeginInsertToolPlacement(insertTool);");
+        StringAssert.Contains(source, "Enum.TryParse<ScadaShapeKind>(tool.Variant, out var shapeKind)");
+        StringAssert.Contains(source, "Enum.TryParse<ScadaButtonKind>(tool.Variant, out var buttonKind)");
+        Assert.IsFalse(source.Contains("case \"insert.shape.", StringComparison.Ordinal));
+        Assert.IsFalse(source.Contains("case \"insert.hmi.", StringComparison.Ordinal));
+        Assert.IsFalse(source.Contains("case \"insert.button.", StringComparison.Ordinal));
     }
 
     [TestMethod]

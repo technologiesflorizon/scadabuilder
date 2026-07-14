@@ -1,10 +1,12 @@
+using ScadaBuilderV2.App.TableEditor;
+
 namespace ScadaBuilderV2.App;
 
 // The WebView2 canvas bootstrap/extraction script, isolated from MainWindow.xaml.cs
 // as a behavior-preserving split. This is data (a raw-string JS/CSS bundle), not logic.
 public partial class MainWindow
 {
-    private const string LegacyExtractionScript = """
+    private static readonly string LegacyExtractionScript = TableWebViewScript.Source + """
 (() => {
   if (window.scadaSceneEditor || window.scadaLegacyExtraction) {
     const api = window.scadaSceneEditor || window.scadaLegacyExtraction;
@@ -1945,6 +1947,8 @@ public partial class MainWindow
         text.style.whiteSpace = 'nowrap';
         inheritElementTextStyle(text);
         wrapper.appendChild(text);
+      } else if (element.Kind === 'Table') {
+        window.scadaModernTable?.render(element, wrapper);
       } else if (element.Kind === 'Button') {
         const button = document.createElement('button');
         button.type = 'button';

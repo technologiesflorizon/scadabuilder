@@ -35,6 +35,9 @@ using ScadaBuilderV2.Rendering;
 using ScadaBuilderV2.App.Pages;
 using ScadaBuilderV2.App.Diagnostics;
 using ScadaBuilderV2.App.Workspace;
+using ScadaBuilderV2.App.TableEditor;
+using ScadaBuilderV2.App.Ribbon;
+using ScadaBuilderV2.Application.Tables;
 
 namespace ScadaBuilderV2.App;
 
@@ -59,6 +62,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
     private readonly PagePropertiesViewModel _pageProperties = new();
     private readonly DiagnosticsPanelViewModel _diagnosticsPanel = new();
     private readonly PageCommandController _pageCommandController;
+    private readonly TableEditorController _tableEditorController;
     private readonly Tf100WebTagCatalogImporter _tagCatalogImporter = new();
     private readonly IElementStudioImportPackageWriter _elementStudioPackageWriter = new ElementStudioImportPackageWriter();
     private readonly ElementStudioComponentPackageStore _elementStudioComponentPackageStore = new();
@@ -108,13 +112,16 @@ public partial class MainWindow : Window, IPageWorkspaceHost
     private ScadaElementKind? _pendingInsertKind;
     private ScadaShapeKind? _pendingInsertShapeKind;
     private ScadaButtonKind? _pendingInsertButtonKind;
+    private TableCreationOptions? _pendingTableCreation;
     private string _activeRibbonKey = "File";
+    private string _activeInsertFamilyId = "text-values";
     private string? _activeInsertCommandId;
     private int _nextTextSequence = 1;
     private int _nextInputTextSequence = 1;
     private int _nextInputNumericSequence = 1;
     private int _nextShapeSequence = 1;
     private int _nextButtonSequence = 1;
+    private int _nextTableSequence = 1;
     private int _nextGroupSequence = 1;
     private bool _activeSceneDirty;
     private bool _isFt100Sb2ExportRunning;
@@ -133,6 +140,8 @@ public partial class MainWindow : Window, IPageWorkspaceHost
 
     public ObservableCollection<RibbonCommandViewModel> ToolPaletteCommands { get; } = [];
 
+    public ObservableCollection<RibbonFamilyViewModel> InsertFamilies { get; } = [];
+
     public PagesPanelViewModel PagesPanel => _pagesPanel;
 
     public PagePropertiesViewModel PageProperties => _pageProperties;
@@ -143,6 +152,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
 
     public MainWindow()
     {
+        _tableEditorController = new TableEditorController(this, CommitTableElement);
         _pageWorkspaceController = new PageWorkspaceController(_modernProjectStore, this);
         _pageExportInputBuilder = new PageExportInputBuilder(_modernProjectStore, _pageSourceProjectionResolver);
         RegisterPageApplicationCommands();
@@ -1297,7 +1307,29 @@ public partial class MainWindow : Window, IPageWorkspaceHost
                     ShowBackgroundCssEditor(message.BackgroundColor);
                     break;
                 case "contextMenuRequest":
+                    if (message.TargetKind == "table" && !string.IsNullOrWhiteSpace(message.Id))
+                    {
+                        _tableEditorController.Select(message.Id, message.Row, message.Column, message.EndRow, message.EndColumn);
+                    }
                     _ = ShowContextMenuForRequestAsync(message);
+                    break;
+                case "tableSelection":
+                    if (!string.IsNullOrWhiteSpace(message.Id))
+                    {
+                        _tableEditorController.Select(message.Id, message.Row, message.Column, message.EndRow, message.EndColumn);
+                        SelectModernElement(message.Id);
+                        RefreshTablePropertiesPanel();
+                    }
+                    break;
+                case "tableCellEdit":
+                    EditTableCell(message);
+                    break;
+                case "tableTrackResize":
+                    var trackElement = _activeScene?.FindElementRecursive(message.Id ?? "");
+                    if (trackElement?.Table is not null)
+                    {
+                        _tableEditorController.SetTrackSize(trackElement, message.Orientation == "row", message.TrackIndex, message.TrackSize);
+                    }
                     break;
                 case "executeCommand":
                     _ = ExecuteEditorCommandAsync(message.CommandId, message);
@@ -1457,6 +1489,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
         {
             _isUpdatingSceneObjectList = false;
         }
+        RefreshTablePropertiesPanel();
     }
 
     private SceneElementInventorySnapshot CreateSceneElementInventorySnapshot()
@@ -3657,7 +3690,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         {
             ApplyLegacySelection(message.Items);
         }
-        else if ((message.TargetKind == "object" || message.TargetKind == "modern") && !string.IsNullOrWhiteSpace(message.Id))
+        else if ((message.TargetKind == "object" || message.TargetKind == "modern" || message.TargetKind == "table") && !string.IsNullOrWhiteSpace(message.Id))
         {
             var selected = _activeScene?.FindElementRecursive(message.Id);
             if (selected is not null && !_selectedSceneObjectIds.Contains(selected.Id))
@@ -3689,6 +3722,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private IReadOnlyList<EditorCommandDescriptor> BuildContextMenuCommands(LegacyViewerMessage message)
     {
+        if (message.TargetKind == "table")
+        {
+            var tableElement = _activeScene?.FindElementRecursive(message.Id ?? "");
+            return tableElement is null ? [] : _tableEditorController.BuildContextMenu(tableElement);
+        }
+
         if (message.TargetKind == "background")
         {
             return
@@ -3845,6 +3884,16 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         if (string.IsNullOrWhiteSpace(commandId))
         {
             SetStatus("Commande ignoree: id manquant.");
+            return;
+        }
+
+        if (commandId.StartsWith("table.", StringComparison.Ordinal))
+        {
+            var tableElement = _activeScene?.FindElementRecursive(message.Id ?? _tableEditorController.ElementId ?? "");
+            if (tableElement is not null && _tableEditorController.Execute(commandId, tableElement))
+            {
+                SetStatus($"Commande tableau executee: {commandId}.");
+            }
             return;
         }
 
@@ -4005,6 +4054,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         if (current is null || current.IsLegacyStatic)
         {
             SetStatus("Les proprietes modales sont disponibles sur les objets Element+ convertis.");
+            return;
+        }
+
+        if (current.Kind == ScadaElementKind.Table)
+        {
+            _tableEditorController.Execute("table.properties", current);
             return;
         }
 
@@ -4500,6 +4555,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ScadaElementKind.InputNumeric => "champ d'entree numerique",
             ScadaElementKind.Shape => FormatShapeLabel(_pendingInsertShapeKind ?? ScadaShapeKind.Rectangle),
             ScadaElementKind.Button => FormatButtonLabel(_pendingInsertButtonKind ?? ScadaButtonKind.Command),
+            ScadaElementKind.Table => "tableau moderne",
             _ => "champ texte"
         };
         var instruction = isTwoPointShape
@@ -4611,6 +4667,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         _pendingInsertKind = null;
         _pendingInsertShapeKind = null;
         _pendingInsertButtonKind = null;
+        _pendingTableCreation = null;
         _activeInsertCommandId = null;
         RefreshActiveRibbonCommandStates();
     }
@@ -4796,6 +4853,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             Math.Max(0, Math.Round(y)),
             Math.Max(8, Math.Round(width)),
             Math.Max(8, Math.Round(height)));
+
+        if (current.Kind == ScadaElementKind.Table && current.Table is not null)
+        {
+            _tableEditorController.ResizeAndMove(current, afterBounds.X, afterBounds.Y, afterBounds.Width, afterBounds.Height);
+            return;
+        }
 
         if (BoundsEqual(current.Bounds, afterBounds))
         {
@@ -6194,6 +6257,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ButtonBehavior = element.ButtonBehavior,
             ShapeKind = element.Kind == ScadaElementKind.Shape ? element.EffectiveShapeKind.ToString() : null,
             ButtonKind = element.Kind == ScadaElementKind.Button ? element.EffectiveButtonKind.ToString() : null,
+            Table = element.Table,
             Children = element.ChildElements
                 .Select((child, childIndex) => ToRenderPayload(child, selectedIds, childIndex))
                 .ToArray()
@@ -6897,7 +6961,30 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     {
         _activeRibbonKey = ribbonKey;
         ActiveRibbonGroups.Clear();
-        if (_ribbonTabs.TryGetValue(ribbonKey, out var groups))
+        InsertFamilies.Clear();
+        InsertFamilySurface.Visibility = ribbonKey == "Insert" ? Visibility.Visible : Visibility.Collapsed;
+        if (ribbonKey == "Insert")
+        {
+            foreach (var family in RibbonCommandCatalog.CreateInsertFamilies())
+            {
+                var familyId = family.Id;
+                InsertFamilies.Add(new RibbonFamilyViewModel(
+                    family.Id,
+                    family.Label,
+                    ResolveRibbonIcon(family.IconKey),
+                    string.Equals(family.Id, _activeInsertFamilyId, StringComparison.Ordinal),
+                    new RibbonRelayCommand(() => SetActiveInsertFamily(familyId), () => true)));
+            }
+            var activeFamily = RibbonCommandCatalog.CreateInsertFamilies().FirstOrDefault(family => family.Id == _activeInsertFamilyId)
+                ?? RibbonCommandCatalog.CreateInsertFamilies()[0];
+            foreach (var group in activeFamily.Tools.GroupBy(tool => tool.GroupLabel, StringComparer.Ordinal))
+            {
+                ActiveRibbonGroups.Add(CreateRibbonGroupViewModel(new RibbonGroupDefinition(
+                    group.Key,
+                    group.Select(tool => new RibbonCommandDefinition(tool.Id, tool.Label, tool.IconKey, tool.ToolTip, tool.IsEnabled, tool.DisabledReason)).ToArray())));
+            }
+        }
+        else if (_ribbonTabs.TryGetValue(ribbonKey, out var groups))
         {
             foreach (var group in groups)
             {
@@ -6914,6 +7001,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         SetRibbonMenuButtonStyle(ToolsMenuButton, ribbonKey == "Tools");
     }
 
+    private void SetActiveInsertFamily(string familyId)
+    {
+        _activeInsertFamilyId = familyId;
+        SetActiveRibbon("Insert");
+    }
+
     private void RefreshActiveRibbonCommandStates()
     {
         SetActiveRibbon(_activeRibbonKey);
@@ -6926,6 +7019,13 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private async void ExecuteRibbonCommand(string commandId)
     {
+        var insertTool = InsertToolCatalog.Find(commandId);
+        if (insertTool is { IsEnabled: true })
+        {
+            BeginInsertToolPlacement(insertTool);
+            return;
+        }
+
         switch (commandId)
         {
             case "page.new":
@@ -6965,99 +7065,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 break;
             case "object.ungroup":
                 UngroupSelectedModernElement();
-                break;
-            case "insert.text":
-                BeginModernElementPlacement(ScadaElementKind.Text, commandId);
-                break;
-            case "insert.input-text":
-                BeginModernElementPlacement(ScadaElementKind.InputText, commandId);
-                break;
-            case "insert.input-numeric":
-                BeginModernElementPlacement(ScadaElementKind.InputNumeric, commandId);
-                break;
-            case "insert.shape.rectangle":
-                BeginShapePlacement(ScadaShapeKind.Rectangle, commandId);
-                break;
-            case "insert.shape.ellipse":
-                BeginShapePlacement(ScadaShapeKind.Ellipse, commandId);
-                break;
-            case "insert.shape.circle":
-                BeginShapePlacement(ScadaShapeKind.Circle, commandId);
-                break;
-            case "insert.shape.triangle":
-                BeginShapePlacement(ScadaShapeKind.Triangle, commandId);
-                break;
-            case "insert.shape.star":
-                BeginShapePlacement(ScadaShapeKind.Star, commandId);
-                break;
-            case "insert.shape.line":
-                BeginShapePlacement(ScadaShapeKind.Line, commandId);
-                break;
-            case "insert.shape.arrow":
-                BeginShapePlacement(ScadaShapeKind.Arrow, commandId);
-                break;
-            case "insert.hmi.indicator-lamp":
-                BeginShapePlacement(ScadaShapeKind.IndicatorLamp, commandId);
-                break;
-            case "insert.hmi.bar-horizontal":
-                BeginShapePlacement(ScadaShapeKind.HorizontalBar, commandId);
-                break;
-            case "insert.hmi.bar-vertical":
-                BeginShapePlacement(ScadaShapeKind.VerticalBar, commandId);
-                break;
-            case "insert.hmi.tank":
-                BeginShapePlacement(ScadaShapeKind.Tank, commandId);
-                break;
-            case "insert.hmi.pipe-horizontal":
-                BeginShapePlacement(ScadaShapeKind.PipeHorizontal, commandId);
-                break;
-            case "insert.hmi.pipe-vertical":
-                BeginShapePlacement(ScadaShapeKind.PipeVertical, commandId);
-                break;
-            case "insert.hmi.valve":
-                BeginShapePlacement(ScadaShapeKind.Valve, commandId);
-                break;
-            case "insert.hmi.pump":
-                BeginShapePlacement(ScadaShapeKind.Pump, commandId);
-                break;
-            case "insert.hmi.motor":
-                BeginShapePlacement(ScadaShapeKind.Motor, commandId);
-                break;
-            case "insert.hmi.fan":
-                BeginShapePlacement(ScadaShapeKind.Fan, commandId);
-                break;
-            case "insert.hmi.conveyor":
-                BeginShapePlacement(ScadaShapeKind.Conveyor, commandId);
-                break;
-            case "insert.hmi.gauge":
-                BeginShapePlacement(ScadaShapeKind.Gauge, commandId);
-                break;
-            case "insert.hmi.switch":
-                BeginShapePlacement(ScadaShapeKind.Switch, commandId);
-                break;
-            case "insert.hmi.breaker":
-                BeginShapePlacement(ScadaShapeKind.Breaker, commandId);
-                break;
-            case "insert.hmi.transformer":
-                BeginShapePlacement(ScadaShapeKind.Transformer, commandId);
-                break;
-            case "insert.hmi.alarm-beacon":
-                BeginShapePlacement(ScadaShapeKind.AlarmBeacon, commandId);
-                break;
-            case "insert.button.command":
-                BeginButtonPlacement(ScadaButtonKind.Command, commandId);
-                break;
-            case "insert.button.toggle":
-                BeginButtonPlacement(ScadaButtonKind.Toggle, commandId);
-                break;
-            case "insert.button.navigation":
-                BeginButtonPlacement(ScadaButtonKind.Navigation, commandId);
-                break;
-            case "insert.button.alarm-ack":
-                BeginButtonPlacement(ScadaButtonKind.AlarmAcknowledge, commandId);
-                break;
-            case "insert.button.emergency-stop":
-                BeginButtonPlacement(ScadaButtonKind.EmergencyStop, commandId);
                 break;
             default:
                 SetStatus($"Commande ruban inconnue: {commandId}");
