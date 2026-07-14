@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active regression coverage map
-Document version: `V2.1.4.0006`
+Document version: `V2.1.4.0007`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0007` | `PENDING` | Couverture des dimensions et de la marge interne de l'icone Nouvelle page. |
 | 2026-07-14 | `V2.1.4.0006` | `PENDING` | Couverture du libelle Recherche, des filtres initiaux Default/Tous et de l'icone partagee Nouvelle page. |
 | 2026-07-14 | `V2.1.4.0005` | `PENDING` | Ajout de la regression interdisant les liaisons `Run.Text` TwoWay implicites vers les proprietes Pages et Diagnostics en lecture seule. |
 | 2026-07-14 | `V2.1.4.0004` | `PENDING` | Ajout de la couverture identité, commandes, historique, sauvegarde atomique, pages natives, surfaces Pages/Diagnostics et cycle `.sb2` complet. |

@@ -55,6 +55,8 @@ public sealed class PageManagementSurfaceContractTests
         StringAssert.Contains(xaml, "SelectedItem=\"{Binding PagesPanel.TypeFilter, Mode=TwoWay}\"");
         StringAssert.Contains(xaml, "SelectedItem=\"{Binding PagesPanel.BuildFilter, Mode=TwoWay}\"");
         StringAssert.Contains(xaml, "Source=\"{StaticResource Icon.Page.New}\"");
+        StringAssert.Contains(xaml, "Width=\"16\" Height=\"16\" Stretch=\"Uniform\"");
+        StringAssert.Contains(xaml, "Width=\"30\" Height=\"28\" Padding=\"3\"");
         StringAssert.Contains(panel, "private string typeFilter = \"Default\";");
         StringAssert.Contains(panel, "private string buildFilter = \"Tous\";");
         StringAssert.Contains(xaml, "DiagnosticLabel");
