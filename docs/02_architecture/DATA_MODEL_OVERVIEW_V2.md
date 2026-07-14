@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Data Model Overview
 
-Date: 2026-06-17
+Date: 2026-07-14
 Status: Active data model overview
-Document version: `V2.1.2.0010`
+Document version: `V2.1.2.0011`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.2.0011` | `PENDING` | Ajout du modèle de page moderne, des clés internes, de la provenance, du snapshot workspace et des diagnostics structurés. |
 | 2026-06-17 | `V2.1.2.0010` | `PENDING` | Ajout de la relation conditionnelle entre action runtime et tag importe. |
 | 2026-06-17 | `V2.1.2.0009` | `PENDING` | Ajout des relations `ReadTagId` et `WriteTagId` sur les donnees Element+. |
 | 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout du catalogue tags TF100Web au modele projet et aux relations runtime. |
@@ -28,9 +29,18 @@ classDiagram
   class ScadaProject {
     Id
     ManifestVersion
+    HomePageKey
     HomePageId
     Scenes
     TagCatalog
+  }
+  class ScadaSceneReference {
+    PageKey
+    PageCode
+    Title
+    Origin
+    ImportProvenance
+    IncludeInBuild
   }
   class ScadaTagCatalog {
     Schema
@@ -45,6 +55,8 @@ classDiagram
   }
   class ScadaScene {
     Id
+    PageKey
+    PageCode
     PageType
     CanvasSize
     Elements
@@ -75,7 +87,8 @@ classDiagram
     SourceTrace
     Geometry
   }
-  ScadaProject "1" --> "*" ScadaScene
+  ScadaProject "1" --> "*" ScadaSceneReference
+  ScadaSceneReference "1" --> "1" ScadaScene : stable PageKey
   ScadaProject "1" --> "0..1" ScadaTagCatalog
   ScadaTagCatalog "1" --> "*" ScadaTagDefinition
   ScadaScene "1" --> "*" ScadaElement

@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Implemented Features
 
-Date: 2026-07-05
+Date: 2026-07-14
 Status: Active implementation status
-Document version: `V2.1.4.0004`
+Document version: `V2.1.4.0005`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0005` | `PENDING` | Gestion moderne des pages : identité stable, commandes partagées, historique projet, sauvegarde atomique, pages natives, surfaces Pages et Diagnostics, propriétés centralisées et compatibilité `.sb2`. |
 | 2026-07-14 | `V2.1.4.0004` | `PENDING` | Assistant de creation d'expressions pour les conditions d'etat : selection des tags actifs, insertion au caret, operateurs guides et application controlee dans le dialogue parent. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Tranche Element+ Style : champs typographiques, Foreground, 9 styles de bordure, BorderRadius, export FT100, preview WebView, surface WPF et icônes `Icon.Property.*`. La preuve d’intake TF100Web reste bloquée par l’absence de MySQL local. |
 | 2026-07-05 | `V2.1.4.0000` | `PENDING` | Implementation du docking AvalonDock pour les panneaux lateraux avec persistance de disposition. |
@@ -121,6 +122,9 @@ As of 2026-06-19, `dotnet test ScadaBuilderV2.sln --no-restore` passes with 253 
 51. The Insert ribbon `Formes` group now uses an icon-only 32x32 shape gallery capped at four columns with a second row for overflow. Active insertion commands show selected state until placement completes or is cancelled, and shape names remain available through command tooltips.
 52. Color-valued Element+ `Style` properties, including background and border color, and `Bouton` properties use a WPF color picker field with swatch preview, hex output, saturation/value area, hue slider, preset swatches, RGB sliders, and a modal `Annuler` / `Enregistrer` flow aligned with `CSS fond`; targeted `WebViewContextMenuScriptTests`, `ModernProjectStoreTests`, and `Ft100SceneExporterTests` coverage passed for the protected property/export contracts.
 53. The WPF shell's left and right side panels (`Outil`, `Projet`, `Catalogue Tags`, `Page`, `Element`, `Propriete`, `Librairie`) are AvalonDock anchorable panes: draggable, floatable, closable/reopenable via a `Fenetres` menu, and persisted across sessions to `%AppData%\ScadaBuilderV2\dock-layout.xml`. A `Fenetres > Reinitialiser la disposition` command restores the default layout without an app restart, and the previously existing selection `Lock` toggle (bound to `IsSelectionLocked`) is preserved in the top bar next to the `Fenetres` menu. The central canvas area (`SceneTabs`, `PreviewWebView`) is unchanged and remains a single non-closable document region.
+54. Modern pages use immutable internal `PageKey` values, mutable human `PageCode` values and optional import provenance. Migration is deterministic/idempotent, native `Blank` pages render without legacy HTML, imported Wonderware duplication preserves its projection, and `.sb2` export projects keys back to human ids without GUID leakage.
+55. The `Pages` ribbon, `Projet > Pages` list, quick actions, keyboard shortcuts and context menu route through the same asynchronous `page.*` commands. Search/type/build filters, disabled reasons and a shared modern page dialog are available without exposing internal keys.
+56. Page lifecycle and properties are coordinated outside `MainWindow`; project-scoped undo/redo retains page operations across tab closure, atomic workspace saves own project/scenes/deletions, and the shared Diagnostics panel plus blocking dialog display structured validation results.
 
 ## 3. Source Of Truth
 

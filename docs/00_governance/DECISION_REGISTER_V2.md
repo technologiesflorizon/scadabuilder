@@ -2,13 +2,14 @@
 
 Date: 2026-07-14
 Status: Active authoritative decision register
-Document version: `V2.1.4.0010`
+Document version: `V2.1.4.0011`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-14 | `V2.1.4.0010` | `PENDING` | Ajout de DEC-0038 pour l’identité moderne des pages, les commandes partagées, l’historique projet, la persistance atomique et la compatibilité `.sb2`. |
+| 2026-07-14 | `V2.1.4.0011` | `PENDING` | DEC-0038 passée de décision approuvée à tranche implémentée et couverte; la vérification UI manuelle et la migration du projet réel restent séparées. |
+| 2026-07-14 | `V2.1.4.0010` | `c5d6f0e` | Ajout de DEC-0038 pour l’identité moderne des pages, les commandes partagées, l’historique projet, la persistance atomique et la compatibilité `.sb2`. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Ajout de DEC-0037 pour le contrat de style avancé Element+ model-backed et la conservation HTML/CSS TF100Web. |
 | 2026-07-09 | `V2.1.4.0002` | `PENDING` | Ajout de DEC-0036 pour les references de tags d'expressions d'etat : libelle humain conserve, Id canonique obligatoire a l'export TF100Web. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de DEC-0032 pour la galerie Formes 32x32 sans libelles visibles. |
@@ -1101,7 +1102,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-07-14 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `c5d6f0e`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -1119,6 +1120,10 @@ Consequences:
 
 Existing projects require an idempotent migration from ids to keys while old id fields remain readable during transition. A new `Default` page is excluded from build by default. Deletion is blocked until dependencies are resolved manually. Error dialogs and the bottom Diagnostics panel consume the same structured issue collection. `MainWindow` must no longer own page mutations, persistence rules, dependency analysis, or imported-source resolution. Roles/permissions, page folders, drag-and-drop organization, full template libraries, and creative table tools remain separate slices.
 
+Implementation status:
+
+Implemented in commits `40c77a3` through `3493055`. Automated lifecycle and `.sb2` compatibility validation are complete. Manual UI verification on an isolated project copy and migration of `projects/AMR_REF_SCADA_V2` remain explicit gates.
+
 Regression coverage:
 
-Planned in `tests/ScadaBuilderV2.Tests/PageIdentityTests.cs`, `tests/ScadaBuilderV2.Tests/PageCommandCoordinatorTests.cs`, `tests/ScadaBuilderV2.Tests/ProjectWorkspaceHistoryTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectAtomicSnapshotTests.cs`, `tests/ScadaBuilderV2.Tests/NativePageDocumentTests.cs`, `tests/ScadaBuilderV2.Tests/PageManagementSurfaceContractTests.cs`, `tests/ScadaBuilderV2.Tests/PageLifecycleIntegrationTests.cs`, and existing `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`.
+`tests/ScadaBuilderV2.Tests/PageIdentityTests.cs`, `tests/ScadaBuilderV2.Tests/PageCommandCoordinatorTests.cs`, `tests/ScadaBuilderV2.Tests/ProjectWorkspaceHistoryTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectAtomicSnapshotTests.cs`, `tests/ScadaBuilderV2.Tests/NativePageDocumentTests.cs`, `tests/ScadaBuilderV2.Tests/PageManagementSurfaceContractTests.cs`, `tests/ScadaBuilderV2.Tests/DiagnosticsSurfaceContractTests.cs`, `tests/ScadaBuilderV2.Tests/PageLifecycleIntegrationTests.cs`, and `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`.

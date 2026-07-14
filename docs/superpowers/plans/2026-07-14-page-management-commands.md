@@ -1,18 +1,30 @@
 # Gestion moderne des pages — Plan d’implémentation
 
 Date: 2026-07-14
-Status: Draft implementation plan — pending execution approval
-Document version: `V2.1.4.0010`
+Status: Implemented with exceptions — manual isolated-copy UI verification and real-project migration pending
+Document version: `V2.1.4.0011`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-14 | `V2.1.4.0010` | `PENDING` | Création du plan exécutable dérivé de la spécification approuvée des commandes et du modèle moderne de pages. |
+| 2026-07-14 | `V2.1.4.0011` | `PENDING` | Tâches 1 à 13 et validation automatisée de la tâche 14 réalisées; vérification UI manuelle et tâche 16 non exécutées. |
+| 2026-07-14 | `V2.1.4.0010` | `c5d6f0e` | Création du plan exécutable dérivé de la spécification approuvée des commandes et du modèle moderne de pages. |
 
 > Ce plan est dérivé de la spécification `docs/superpowers/specs/2026-07-14-page-commands-design.md` (`V2.1.4.0009`, D1–D38). Aucune décision produit n’y reste ouverte.
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` (recommended) or `superpowers:executing-plans` to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+## Execution record
+
+- Tasks 1–13: completed and committed (`40c77a3` through `534da9d`).
+- Task 14 automated lifecycle, targeted build/tests and `.sb2` contract: completed in `3493055`.
+- Task 14 manual WPF verification: pending because the current shell opens the protected real reference project; an isolated-project startup option is required to execute this safely.
+- Full suite baseline after the slice: 558 total, 554 passed, 4 pre-existing unrelated failures listed in `docs/08_implementation_status/KNOWN_GAPS_V2.md`.
+- Task 15 documentation/version synchronization: completed in the current documentation commit (`PENDING`).
+- Task 16 real `AMR_REF_SCADA_V2` migration: not authorized and not executed.
+
+The detailed checkboxes below are retained as the original procedural instructions; this execution record is the authoritative completion status.
 
 **Goal:** Livrer une gestion moderne et cohérente des pages depuis le ruban `Pages`, le panneau `Projet > Pages` et le menu contextuel, avec identité interne immuable, undo/redo au niveau projet, persistance atomique, diagnostics structurés, pages natives et duplication Wonderware fidèle, sans modifier le contrat exporté `.sb2`.
 

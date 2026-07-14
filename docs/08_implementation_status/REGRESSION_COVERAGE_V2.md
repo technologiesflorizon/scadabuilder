@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Regression Coverage
 
-Date: 2026-07-06
+Date: 2026-07-14
 Status: Active regression coverage map
-Document version: `V2.1.3.0002`
+Document version: `V2.1.4.0004`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0004` | `PENDING` | Ajout de la couverture identité, commandes, historique, sauvegarde atomique, pages natives, surfaces Pages/Diagnostics et cycle `.sb2` complet. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Couverture des nouveaux champs de style, export CSS, preview WebView, icônes sémantiques et preuve d’intake TF100Web. |
 | 2026-07-06 | `V2.1.3.0002` | `4dfe7fe` | Ajout de la couverture de la poignée de rotation Element+ et des presets/angle personnalisé du menu contextuel (7 tests WebViewContextMenuScriptTests). |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajout de la couverture icon-only 32x32 pour la galerie Formes. |
@@ -72,6 +73,13 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | TF100Web `.sb2` binding event intake | `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py` (`ValueBindings.ReadTagId` / `WriteTagId` -> host mapping attributes) |
 | TF100Web `DisplayFormat` hash-mask runtime | `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py`, `node --check static\asset\js\station\visualisation_import.js`, targeted Node validation of `formatValue(999, "##.#") -> "99.9"` |
 | Project save/reload | `ModernProjectStoreTests.cs` |
+| Modern page identity and Wonderware migration | `PageIdentityTests.cs`, `ModernProjectStoreTests.cs` |
+| Page command coordinator and shared application commands | `PageCommandCoordinatorTests.cs`, `PageApplicationCommandTests.cs` |
+| Project-scoped page undo/redo | `ProjectWorkspaceHistoryTests.cs`, `PageLifecycleIntegrationTests.cs` |
+| Atomic project/scenes/deletions persistence | `ModernProjectAtomicSnapshotTests.cs`, `ModernProjectStoreTests.cs` |
+| Native page preview/export and `.sb2` identity projection | `NativePageDocumentTests.cs`, `Ft100SceneExporterTests.cs`, `PageLifecycleIntegrationTests.cs` |
+| Pages ribbon/project/context surfaces | `RibbonCommandCatalogTests.cs`, `PageManagementSurfaceContractTests.cs` |
+| Shared error dialog and Diagnostics panel | `DiagnosticsSurfaceContractTests.cs` |
 | Scene/domain rules | `OfficialSceneDomainTests.cs`, `ScadaSceneGroupTests.cs` |
 | Undo/redo/history | `EditorHistoryServiceTests.cs` |
 | WebView bridge/context menu | `WebViewContextMenuScriptTests.cs` |

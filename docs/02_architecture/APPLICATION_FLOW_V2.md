@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Application Flow
 
-Date: 2026-06-16
+Date: 2026-07-14
 Status: Active flow contract
-Document version: `V2.1.1.0039`
+Document version: `V2.1.1.0040`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.1.0040` | `PENDING` | Ajout du flux partagé des commandes de page, de l'historique projet, de la sauvegarde atomique et des diagnostics. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du flow applicatif global pour relier import, edition, preview, Studio Element+, export et validation. |
 
 ## 1. Flow Contract
@@ -27,6 +28,20 @@ flowchart LR
   G --> J[Regression tests]
   H --> J
   I --> J
+```
+
+### Page lifecycle flow
+
+```mermaid
+flowchart LR
+  Surface["Ruban / Projet / contexte / propriétés"] --> Registry["CommandRegistry async"]
+  Registry --> Coordinator["PageCommandCoordinator"]
+  Coordinator --> Snapshot["PageWorkspaceSnapshot"]
+  Snapshot --> History["Historique polymorphe projet"]
+  Snapshot --> Store["Sauvegarde atomique projet + scènes"]
+  Coordinator --> Diagnostics["Diagnostics structurés"]
+  Snapshot --> Identity["Adaptateur PageKey vers PageCode"]
+  Identity --> Sb2["Export .sb2 inchangé"]
 ```
 
 ## 2. Validation Points

@@ -350,7 +350,9 @@ public sealed class StudioElementPlusContractTests
         var decisions = ReadProjectFile("docs", "05_studio_element_plus", "STUDIO_ELEMENT_PLUS_SELECTION_CONTRACT_V2.md");
         var version = ReadProjectFile("VERSION");
 
-        StringAssert.Contains(version, "V2.1.3.0002");
+        Assert.IsTrue(
+            System.Text.RegularExpressions.Regex.IsMatch(version.Trim(), @"^V2\.\d+\.\d+\.\d{4}$"),
+            "VERSION must keep the V2.production.feature.iteration contract without pinning an obsolete release.");
         StringAssert.Contains(code, "case \"clearSelection\":");
         StringAssert.Contains(code, "UpdateSelectionGeometryFields();");
         StringAssert.Contains(xaml, "Text=\"{Binding StructureSummary}\"");

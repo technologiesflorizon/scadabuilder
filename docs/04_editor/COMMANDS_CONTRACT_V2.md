@@ -2,13 +2,14 @@
 
 Date: 2026-07-14
 Status: Active editor command contract
-Document version: `V2.1.4.0011`
+Document version: `V2.1.4.0012`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-14 | `V2.1.4.0011` | `PENDING` | Ajout de la cible approuvée des commandes asynchrones `page.*` partagées par toutes les surfaces. |
+| 2026-07-14 | `V2.1.4.0012` | `PENDING` | Commandes asynchrones `page.*`, coordinateur partagé, diagnostics et mutations de propriétés désormais implémentés. |
+| 2026-07-14 | `V2.1.4.0011` | `4def659` | Ajout de la cible approuvée des commandes asynchrones `page.*` partagées par toutes les surfaces. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout des commandes `insert.shape.circle`, `insert.shape.triangle`, `insert.shape.star` et du placement deux points ligne/fleche. |
 | 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Activation des commandes de ruban `object.group` et `object.ungroup`. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Le catalogue de commandes du ruban devient un contrat applicatif testable. |
@@ -60,13 +61,13 @@ sequenceDiagram
   Handler-->>Surface: result and diagnostics
 ```
 
-## 4. Approved Page Command Target
+## 4. Implemented Page Commands
 
 The `DEC-0038` implementation target replaces synchronous editor execution with `ExecuteAsync(ApplicationContext, CancellationToken)`, while runtime `ScadaCommandBinding` remains unchanged. Commands are non-reentrant, cancellable, authorization-ready through an initial allow-all policy, and return structured outcomes plus diagnostics.
 
-Stable page command ids are `page.new`, `page.rename`, `page.change-code`, `page.duplicate`, `page.delete`, `page.open`, `page.properties`, `page.set-build-inclusion`, `page.set-home`, `page.set-type`, `page.set-composition`, and `page.validate`. The WPF shell must not own their business rules.
+Stable page command ids are `page.new`, `page.rename`, `page.change-code`, `page.duplicate`, `page.delete`, `page.open`, `page.properties`, `page.set-build-inclusion`, `page.set-home`, `page.set-type`, `page.set-composition`, `page.set-canvas`, `page.set-background`, and `page.validate`. The WPF shell does not own their business rules.
 
-Status: approved architecture, not yet implemented.
+`CommandRegistry`, `PageCommandCoordinator` and typed `PageCommandRequest` records are the shared authority for ribbon, project tree, context menu and properties panel. A cancelled command does not display the blocking error dialog; blocked/failed results retain structured diagnostics.
 
 ## 5. Related Tests
 
@@ -74,3 +75,5 @@ Status: approved architecture, not yet implemented.
 2. `tests/ScadaBuilderV2.Tests/EditorHistoryServiceTests.cs`
 3. `tests/ScadaBuilderV2.Tests/ScadaSceneGroupTests.cs`
 4. `tests/ScadaBuilderV2.Tests/RibbonCommandCatalogTests.cs`
+5. `tests/ScadaBuilderV2.Tests/PageApplicationCommandTests.cs`
+6. `tests/ScadaBuilderV2.Tests/PageLifecycleIntegrationTests.cs`

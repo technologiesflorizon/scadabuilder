@@ -1,8 +1,8 @@
 # Spécification — Commandes de gestion des pages
 
 Date: 2026-07-14
-Status: Ready for implementation plan — product decisions resolved
-Document version: `V2.1.4.0009`
+Status: Implemented — automated validation complete; manual isolated-copy UI verification pending
+Document version: `V2.1.4.0010`
 Portée: SCADA Builder V2 — gestion des pages dans le ruban et le panneau Projet
 Dépendances: `docs/04_editor/COMMANDS_CONTRACT_V2.md`, `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md`, `docs/04_editor/STATE_MANAGEMENT_CONTRACT_V2.md`, `docs/02_architecture/DATA_MODEL_OVERVIEW_V2.md`
 
@@ -10,11 +10,12 @@ Dépendances: `docs/04_editor/COMMANDS_CONTRACT_V2.md`, `docs/04_editor/MENUS_AN
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-14 | `V2.1.4.0009` | `PENDING` | Décisions finales confirmées : onglet `Pages`, nouvelle page exclue du build par défaut et duplication d’une page importée conservant automatiquement sa projection Wonderware. |
-| 2026-07-14 | `V2.1.4.0008` | `PENDING` | Décisions confirmées : `PageKey` GUID immuable, `PageCode` visible et modifiable, diagnostics modernes, sauvegarde atomique compatible, commandes éditeur asynchrones, historique au niveau projet et provenance d’import Wonderware générique. |
-| 2026-07-14 | `V2.1.4.0007` | `PENDING` | Revue de complétude fondée sur le code : séparation des états de page, prise en charge des pages sans source legacy, provenance de source, dépendances modernes, historique projet, identité exportable et cycle de vie des onglets. |
-| 2026-07-14 | `V2.1.4.0006` | `PENDING` | Précision de l’audit : undo/redo et navigation existants; ajout des besoins d’extraction hors de `MainWindow`, de modèles réutilisables et de diagnostics de compilation. |
-| 2026-07-14 | `V2.1.4.0005` | `PENDING` | Audit de l’architecture actuelle et spécification initiale des commandes communes de gestion des pages. |
+| 2026-07-14 | `V2.1.4.0010` | `PENDING` | Tranche implémentée : identité, commandes, historique, persistance, pages natives, surfaces et diagnostics; migration réelle toujours soumise à autorisation. |
+| 2026-07-14 | `V2.1.4.0009` | `c5d6f0e` | Décisions finales confirmées : onglet `Pages`, nouvelle page exclue du build par défaut et duplication d’une page importée conservant automatiquement sa projection Wonderware. |
+| 2026-07-14 | `V2.1.4.0008` | `c5d6f0e` | Décisions confirmées : `PageKey` GUID immuable, `PageCode` visible et modifiable, diagnostics modernes, sauvegarde atomique compatible, commandes éditeur asynchrones, historique au niveau projet et provenance d’import Wonderware générique. |
+| 2026-07-14 | `V2.1.4.0007` | `c5d6f0e` | Revue de complétude fondée sur le code : séparation des états de page, prise en charge des pages sans source legacy, provenance de source, dépendances modernes, historique projet, identité exportable et cycle de vie des onglets. |
+| 2026-07-14 | `V2.1.4.0006` | `c5d6f0e` | Précision de l’audit : undo/redo et navigation existants; ajout des besoins d’extraction hors de `MainWindow`, de modèles réutilisables et de diagnostics de compilation. |
+| 2026-07-14 | `V2.1.4.0005` | `c5d6f0e` | Audit de l’architecture actuelle et spécification initiale des commandes communes de gestion des pages. |
 
 ---
 

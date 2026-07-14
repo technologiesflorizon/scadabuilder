@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Known Gaps
 
-Date: 2026-06-17
+Date: 2026-07-14
 Status: Active known gaps register
-Document version: `V2.1.2.0025`
+Document version: `V2.1.2.0026`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.2.0026` | `PENDING` | Ajout des validations manuelles et fonctions avancées de classement/modèles/droits restant hors de la tranche Pages. |
 | 2026-06-17 | `V2.1.2.0025` | `58567eb` | Retrait du gap TF100Web pour les masques `DisplayFormat` `#` apres commit `3c795c2`. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Ajout du gap TF100Web restant pour interpreter les masques `DisplayFormat` de type `##.#`. |
 | 2026-06-17 | `V2.1.2.0023` | `PENDING` | Ajout du backlog de parite events TF100Web pour preparer la prochaine tranche d'implementation. |
@@ -40,6 +41,9 @@ Document version: `V2.1.2.0025`
 7. Sanitized-source approval for divergent pages such as `win00008` remains unresolved.
 8. TF100Web commit `3c795c2` extracts only page root fragments and does not execute SCADA Builder exporter-emitted page scripts. TF100Web now handles `.sb2` `ValueBindings` as host-side binding events and interprets `DisplayFormat` hash masks, but exporter-side lifecycle, popup, condition page-script evaluation, border/effect, and other non-navigation action runtimes remain TF100Web parity gaps until host-side handlers or page-script execution exist.
 9. `.sb2` archive export validates import/package compatibility only. It does not make TF100Web execute SCADA Builder page scripts that remain outside the extracted root fragment.
+10. Manual UI validation of the new Pages and Diagnostics surfaces on an isolated project copy remains pending; launching the current shell would open the protected real reference project. Automated WPF surface contracts and the temporary-project lifecycle test are green.
+11. Page folders, drag-and-drop ordering, reusable page templates beyond `Blank`, and role-based page permissions remain later slices. The command gate and stable identity model are extension points, not claims that these features are complete.
+12. The full test suite currently reports 554 passed and 4 pre-existing unrelated failures (`Ft100ExportPrefersReferenceHtmlSourceBeforeRawFallback`, `LegacyContextMenuExposesElementStudioCommand`, `ModernDoubleClickOpensWpfPropertiesDialog`, `ScadaBuilderLaunchesStudioFromProjectInDevelopmentToAvoidStaleBinaries`). The page lifecycle targeted suite is green.
 
 ## 2. Rule
 

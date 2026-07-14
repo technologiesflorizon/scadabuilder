@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Preview Build Export Contract
 
-Date: 2026-06-19
+Date: 2026-07-14
 Status: Active runtime contract
-Document version: `V2.1.2.0038`
+Document version: `V2.1.2.0039`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.2.0039` | `PENDING` | Ajout des pages natives et de la projection `PageKey` vers `PageCode` sans changement du contrat `.sb2`. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Alignement metadata preview/export pour wrappers de boutons Element+. |
 | 2026-06-19 | `V2.1.2.0037` | `2a540d6` | Ajout du contrat des evenements runtime pour boutons standards. |
 | 2026-06-19 | `V2.1.2.0036` | `8cc4d33` | Ajout du contrat runtime disabled reel pour boutons Element+. |
@@ -50,6 +51,8 @@ Element+ group runtime events are model behavior, not editor overlay geometry. F
 Runtime click affordance is export-owned styling. FT100 export must generate page-scoped `cursor: pointer` CSS for Element+ buttons and elements carrying `data-scada-events`, including descendants and active click state.
 
 FT100 `.sb2` export is a packaging layer over the same V2 project export model. It must first generate the normalized `scada-builder-v2-ft100-package` folder in a staging directory, validate TF100Web intake compatibility and page namespace rules, then create a ZIP archive with `.sb2` extension. The `.sb2` archive must not change scene geometry, runtime markup, CSS scoping, or page composition semantics compared with the validated folder package.
+
+Native pages are rendered from `ScadaScene` without imported HTML. Imported pages continue to use their provenance-backed projection. Before preview/export, `PageRuntimeIdentityResolver` projects internal keys to human `PageCode` values; package folders, manifest page ids, DOM roots and navigation targets therefore preserve the existing `.sb2` contract.
 
 ## 2. Flow
 

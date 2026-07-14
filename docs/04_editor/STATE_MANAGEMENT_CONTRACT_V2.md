@@ -2,13 +2,14 @@
 
 Date: 2026-07-14
 Status: Active editor state contract
-Document version: `V2.1.4.0011`
+Document version: `V2.1.4.0012`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-14 | `V2.1.4.0011` | `PENDING` | Ajout de la cible approuvée pour dirty state, historique et persistance au niveau workspace projet. |
+| 2026-07-14 | `V2.1.4.0012` | `PENDING` | Historique projet, restauration des onglets et snapshot atomique projet/scènes désormais implémentés. |
+| 2026-07-14 | `V2.1.4.0011` | `4def659` | Ajout de la cible approuvée pour dirty state, historique et persistance au niveau workspace projet. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat etat separe des commandes, actions et menus. |
 
 ## 1. Contract
@@ -37,11 +38,11 @@ stateDiagram-v2
   UndoAvailable --> Dirty: new mutation clears redo
 ```
 
-## 4. Approved Project Workspace Target
+## 4. Implemented Project Workspace State
 
 `DEC-0038` moves the polymorphic undo/redo stack to the project workspace. Scene actions keep scene scope; page lifecycle actions use project scope and survive tab closure or deletion. Undo/redo mutates the in-memory workspace and marks it dirty; only Save persists a coherent project/scenes snapshot.
 
-The target snapshot includes the project, touched scenes, active/selected page, open tabs, dirty state, and pending file deletions. This target is approved but not implemented yet.
+`PageWorkspaceSnapshot` includes the project, scenes, active/selected page, open tabs, dirty state, and pending file deletions. `ProjectWorkspaceSnapshotAction` restores this state even after an onglet closes or a page is removed. `ModernProjectStore.SaveWorkspaceSnapshotAsync` stages and commits project/scenes as one recoverable transaction; `SaveSceneAsync` no longer upserts the authoritative page inventory.
 
 ## 5. Related Decisions
 
@@ -52,3 +53,5 @@ The target snapshot includes the project, touched scenes, active/selected page, 
 
 1. `tests/ScadaBuilderV2.Tests/EditorHistoryServiceTests.cs`
 2. `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`
+3. `tests/ScadaBuilderV2.Tests/ProjectWorkspaceHistoryTests.cs`
+4. `tests/ScadaBuilderV2.Tests/ModernProjectAtomicSnapshotTests.cs`

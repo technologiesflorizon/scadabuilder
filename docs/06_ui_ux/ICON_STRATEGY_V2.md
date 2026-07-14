@@ -8,7 +8,7 @@ Document version: `V2.1.4.0004`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-14 | `V2.1.4.0004` | `PENDING` | Ajout de la famille vectorielle sémantique `Icon.Page.*` pour les commandes partagées de gestion des pages. |
+| 2026-07-14 | `V2.1.4.0004` | `7b03231` | Ajout de la famille vectorielle sémantique `Icon.Page.*` pour les commandes partagées de gestion des pages. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Création de la famille vectorielle sémantique `Icon.Property.*` pour l’inspecteur Style Element+. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes vers des icones 32x32 sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout des icones semantiques Cercle, Triangle et Etoile et de la taille 64x64 pour la galerie Formes. |
