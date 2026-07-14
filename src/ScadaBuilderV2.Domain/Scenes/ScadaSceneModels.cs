@@ -14,6 +14,7 @@ public enum ScadaElementKind
     Shape,
     Group,
     Button,
+    Table,
     Container,
     LegacyStatic,
     Custom
@@ -545,7 +546,8 @@ public sealed record ScadaElement(
     ScadaShapeKind? ShapeKind = null,
     ScadaButtonKind? ButtonKind = null,
     ScadaElementStateConfig? StateConfig = null,
-    ScadaElementCommandConfig? CommandConfig = null)
+    ScadaElementCommandConfig? CommandConfig = null,
+    ScadaTableDefinition? Table = null)
 {
     [JsonIgnore]
     public string UserLabel => string.IsNullOrWhiteSpace(DisplayName) ? Id : DisplayName;
@@ -590,6 +592,29 @@ public sealed record ScadaElement(
     public ScadaButtonKind EffectiveButtonKind => Kind == ScadaElementKind.Button
         ? ButtonKind ?? ScadaButtonKind.Command
         : ScadaButtonKind.Command;
+
+    /// <summary>Creates a model-backed modern table Element+.</summary>
+    /// <remarks>Decisions: DEC-0039. Contracts: docs/superpowers/specs/2026-07-14-modern-table-and-insert-ribbon-design.md. Tests: tests/ScadaBuilderV2.Tests/ScadaTableModelTests.cs.</remarks>
+    public static ScadaElement CreateTable(
+        string id,
+        string displayName,
+        double x,
+        double y,
+        int rows = 6,
+        int columns = 8,
+        bool firstRowIsHeader = true)
+    {
+        var table = ScadaTableDefinition.CreateDefault(rows, columns, firstRowIsHeader);
+        return new ScadaElement(
+            id,
+            displayName,
+            ScadaElementKind.Table,
+            new SceneBounds(x, y, table.Width, table.Height),
+            null,
+            ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultText,
+            Table: table);
+    }
 
     /// <summary>
     /// Gets the persisted shape primitive, defaulting older shape elements to rectangles.
