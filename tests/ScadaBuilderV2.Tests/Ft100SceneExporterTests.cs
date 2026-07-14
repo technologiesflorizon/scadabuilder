@@ -1612,6 +1612,161 @@ public sealed class Ft100SceneExporterTests
     }
 
     [TestMethod]
+    public async Task ExportProjectResolvesPageKeysToHumanCodesWithoutChangingSb2ManifestContract()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        Directory.CreateDirectory(sourceRoot);
+
+        async Task<string> WriteSourceAsync(string name)
+        {
+            var path = Path.Combine(sourceRoot, $"{name}.html");
+            await File.WriteAllTextAsync(path, "<!doctype html><html><body><div class=\"page\"></div></body></html>");
+            return path;
+        }
+
+        var headerSource = await WriteSourceAsync("header");
+        var homeSource = await WriteSourceAsync("home");
+        var targetSource = await WriteSourceAsync("target");
+        var headerKey = Guid.NewGuid();
+        var homeKey = Guid.NewGuid();
+        var targetKey = Guid.NewGuid();
+
+        ScadaElement CreateNavigationButton(Guid? targetPageKey, string? targetPageId)
+        {
+            return ScadaElement.CreateButton("navigate", "Navigate", 10, 10) with
+            {
+                CommandConfig = new ScadaElementCommandConfig([
+                    new ScadaCommandBinding(
+                        "navigate-command",
+                        "Navigate",
+                        true,
+                        ScadaCommandTrigger.OnClick,
+                        ScadaCommandKind.Navigate,
+                        TargetPageId: targetPageId,
+                        TargetPageKey: targetPageKey)
+                ])
+            };
+        }
+
+        var legacyProject = ScadaProject.CreateDefault("Runtime identity") with
+        {
+            HomePageId = "process_home",
+            Scenes =
+            [
+                new ScadaSceneReference("top_bar", "Header", "scenes/header.scene.json", ScadaPageType.Header),
+                new ScadaSceneReference("process_home", "Home", "scenes/home.scene.json", HeaderPageId: "top_bar"),
+                new ScadaSceneReference("process_target", "Target", "scenes/target.scene.json")
+            ]
+        };
+        var legacyScenes = new[]
+        {
+            ScadaScene.CreateEmpty("top_bar", "Header", new(1280, 80)).WithPageType(ScadaPageType.Header),
+            ScadaScene.CreateEmpty("process_home", "Home", new(1280, 873))
+                .WithPageComposition("top_bar", null)
+                .WithAction(new ScadaActionDefinition("navigate-action", ScadaActionKind.Navigate, TargetPageId: "process_target"))
+                .WithElement(CreateNavigationButton(null, "process_target")),
+            ScadaScene.CreateEmpty("process_target", "Target", new(1280, 873))
+        };
+
+        var keyedProject = ScadaProject.CreateDefault("Runtime identity") with
+        {
+            HomePageId = "legacy_home",
+            HomePageKey = homeKey,
+            Scenes =
+            [
+                new ScadaSceneReference("legacy_header", "Header", "scenes/header.scene.json", ScadaPageType.Header,
+                    PageKey: headerKey, PageCode: "top_bar"),
+                new ScadaSceneReference("legacy_home", "Home", "scenes/home.scene.json",
+                    PageKey: homeKey, PageCode: "process_home", HeaderPageKey: headerKey),
+                new ScadaSceneReference("legacy_target", "Target", "scenes/target.scene.json",
+                    PageKey: targetKey, PageCode: "process_target")
+            ]
+        };
+        var keyedScenes = new[]
+        {
+            ScadaScene.CreateEmpty("legacy_header", "Header", new(1280, 80)) with
+            {
+                PageType = ScadaPageType.Header,
+                PageKey = headerKey,
+                PageCode = "top_bar"
+            },
+            ScadaScene.CreateEmpty("legacy_home", "Home", new(1280, 873)) with
+            {
+                PageKey = homeKey,
+                PageCode = "process_home",
+                HeaderPageKey = headerKey,
+                Actions = [new ScadaActionDefinition("navigate-action", ScadaActionKind.Navigate, TargetPageKey: targetKey)],
+                Elements = [CreateNavigationButton(targetKey, null)]
+            },
+            ScadaScene.CreateEmpty("legacy_target", "Target", new(1280, 873)) with
+            {
+                PageKey = targetKey,
+                PageCode = "process_target"
+            }
+        };
+
+        try
+        {
+            var inputs = new[] { headerSource, homeSource, targetSource };
+            var legacyResult = await new Ft100SceneExporter().ExportProjectAsync(
+                legacyProject,
+                legacyScenes.Select((scene, index) => new Ft100ProjectPageExportInput(scene, inputs[index])).ToArray(),
+                Path.Combine(root, "legacy-export"));
+            var keyedResult = await new Ft100SceneExporter().ExportProjectAsync(
+                keyedProject,
+                keyedScenes.Select((scene, index) => new Ft100ProjectPageExportInput(scene, inputs[index])).ToArray(),
+                Path.Combine(root, "keyed-export"));
+
+            var legacyManifest = await File.ReadAllTextAsync(legacyResult.ManifestPath);
+            var keyedManifest = await File.ReadAllTextAsync(keyedResult.ManifestPath);
+            Assert.AreEqual(legacyManifest, keyedManifest);
+            StringAssert.Contains(keyedManifest, "\"HomePageId\": \"process_home\"");
+            StringAssert.Contains(keyedManifest, "\"HeaderPageId\": \"top_bar\"");
+            StringAssert.Contains(keyedManifest, "\"TargetPageId\": \"process_target\"");
+            Assert.IsFalse(keyedManifest.Contains("PageKey", StringComparison.OrdinalIgnoreCase));
+            Assert.IsFalse(keyedManifest.Contains(headerKey.ToString(), StringComparison.OrdinalIgnoreCase));
+            Assert.IsFalse(keyedManifest.Contains(homeKey.ToString(), StringComparison.OrdinalIgnoreCase));
+            Assert.IsFalse(keyedManifest.Contains(targetKey.ToString(), StringComparison.OrdinalIgnoreCase));
+            Assert.IsTrue(File.Exists(Path.Combine(keyedResult.ExportDirectory, "process_home", "process_home.html")));
+
+            var homeHtml = await File.ReadAllTextAsync(Path.Combine(
+                keyedResult.ExportDirectory,
+                "process_home",
+                "process_home.html"));
+            StringAssert.Contains(homeHtml, "id=\"ft100-process_home\"");
+            Assert.IsFalse(homeHtml.Contains("PageKey", StringComparison.OrdinalIgnoreCase));
+            Assert.IsFalse(homeHtml.Contains(targetKey.ToString(), StringComparison.OrdinalIgnoreCase));
+
+            var validation = Ft100PackageValidator.ValidatePackageDirectory(keyedResult.ExportDirectory);
+            Assert.IsTrue(validation.IsValid, string.Join(Environment.NewLine, validation.Errors.Select(error => error.Message)));
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
+    public void PageRuntimeIdentityResolverRejectsPartiallyMigratedProjects()
+    {
+        var project = ScadaProject.CreateDefault("Partial") with
+        {
+            Scenes =
+            [
+                new ScadaSceneReference("page_one", "One", "scenes/one.scene.json", PageKey: Guid.NewGuid()),
+                new ScadaSceneReference("page_two", "Two", "scenes/two.scene.json")
+            ]
+        };
+
+        var exception = Assert.ThrowsException<InvalidOperationException>(() => new PageRuntimeIdentityResolver(project));
+        StringAssert.Contains(exception.Message, "Every page must have a PageKey");
+    }
+
+    [TestMethod]
     public async Task ExportCssScopesImportedSourceDataIdsToPageRootForComposition()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

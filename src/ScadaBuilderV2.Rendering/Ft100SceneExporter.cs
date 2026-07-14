@@ -58,6 +58,13 @@ public sealed partial class Ft100SceneExporter
         ArgumentException.ThrowIfNullOrWhiteSpace(sourceHtmlPath);
         ArgumentException.ThrowIfNullOrWhiteSpace(exportDirectory);
 
+        if (project is not null)
+        {
+            var identityProjection = PageRuntimeIdentityResolver.Project(project, [scene]);
+            project = identityProjection.Project;
+            scene = identityProjection.Scenes[0];
+        }
+
         if (!scene.IncludeInBuild)
         {
             throw new InvalidOperationException($"Scene '{scene.Id}' is not included in build.");
@@ -159,6 +166,14 @@ public sealed partial class Ft100SceneExporter
         ArgumentNullException.ThrowIfNull(project);
         ArgumentNullException.ThrowIfNull(pages);
         ArgumentException.ThrowIfNullOrWhiteSpace(exportDirectory);
+
+        var identityProjection = PageRuntimeIdentityResolver.Project(
+            project,
+            pages.Select(page => page.Scene).ToArray());
+        project = identityProjection.Project;
+        pages = pages
+            .Select((page, index) => page with { Scene = identityProjection.Scenes[index] })
+            .ToArray();
 
         var compiledPageIds = project.Scenes
             .Where(page => page.IncludeInBuild)
@@ -1121,7 +1136,7 @@ public sealed partial class Ft100SceneExporter
 
         if (hasCommandConfig)
         {
-            var json = JsonSerializer.Serialize(commandConfig, StateCommandJsonOptions);
+            var json = JsonSerializer.Serialize(BuildRuntimeCommandConfig(commandConfig), StateCommandJsonOptions);
             attributes.Append(" data-scada-command-config=\"");
             attributes.Append(HtmlEncoder.Default.Encode(json));
             attributes.Append('"');
@@ -1840,7 +1855,7 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
             ManifestVersion = "2.1",
             HomePageId = homePageId,
             Pages = new[] { BuildManifestPage(scene, homePageId, projectRelativePath: false, tagCatalog, warnings) },
-            Actions = scene.ActionDefinitions,
+            Actions = scene.ActionDefinitions.Select(BuildRuntimeAction).ToArray(),
             Tags = project?.TagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>()
         };
 
@@ -1860,6 +1875,7 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
             .SelectMany(scene => scene.ActionDefinitions)
             .GroupBy(action => action.Id, StringComparer.Ordinal)
             .Select(group => group.First())
+            .Select(BuildRuntimeAction)
             .ToArray();
         var manifest = new
         {
@@ -1917,9 +1933,51 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
                         || HasNonDefaultFallback(element.EffectiveStateConfig)
                         ? NormalizeStateConfigForExport(element.EffectiveStateConfig, tagCatalog, warnings) : null,
                     CommandConfig = element.EffectiveCommandConfig.Commands.Count > 0
-                        ? element.EffectiveCommandConfig : null
+                        ? BuildRuntimeCommandConfig(element.EffectiveCommandConfig) : null
                 })
                 .ToArray()
+        };
+    }
+
+    private static object BuildRuntimeAction(ScadaActionDefinition action)
+    {
+        return new
+        {
+            action.Id,
+            action.Kind,
+            action.TargetPageId,
+            action.TargetElementId,
+            action.ClassName,
+            action.TagId,
+            action.Value,
+            action.Condition,
+            action.PopupOptions,
+            action.ConditionGroup
+        };
+    }
+
+    private static object BuildRuntimeCommandConfig(ScadaElementCommandConfig config)
+    {
+        return new
+        {
+            Commands = config.Commands.Select(command => new
+            {
+                command.Id,
+                command.Name,
+                command.Enabled,
+                command.Trigger,
+                command.Kind,
+                command.Confirmation,
+                command.WriteTagId,
+                command.ReadTagId,
+                command.WriteMode,
+                command.OnValue,
+                command.OffValue,
+                command.FixedValue,
+                command.TargetPageId,
+                command.Url,
+                command.NewTab
+            }).ToArray()
         };
     }
 

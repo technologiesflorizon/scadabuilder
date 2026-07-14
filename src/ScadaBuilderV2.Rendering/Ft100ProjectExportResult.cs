@@ -3,7 +3,8 @@ using ScadaBuilderV2.Domain.Scenes;
 namespace ScadaBuilderV2.Rendering;
 
 /// <summary>
-/// Input page compiled into a project-level FT100 export.
+/// Input page compiled into a project-level FT100 export. Runtime paths and ids are derived
+/// from the scene's human page code at the export boundary.
 /// </summary>
 public sealed record Ft100ProjectPageExportInput(
     ScadaScene Scene,

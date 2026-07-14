@@ -113,6 +113,8 @@ public static partial class Ft100PackageValidator
                 return new Ft100PackageValidationResult(issues);
             }
 
+            ValidateNoInternalPageKeys(manifest.RootElement, issues);
+
             var pages = ReadCompiledPages(manifest.RootElement, issues);
             if (pages.Count == 0)
             {
@@ -146,6 +148,36 @@ public static partial class Ft100PackageValidator
         {
             issues.Add(Error("invalid-root-manifest", $"Root manifest.json cannot be read: {ex.Message}"));
             return null;
+        }
+    }
+
+    private static void ValidateNoInternalPageKeys(
+        JsonElement element,
+        List<Ft100PackageValidationIssue> issues)
+    {
+        if (element.ValueKind == JsonValueKind.Object)
+        {
+            foreach (var property in element.EnumerateObject())
+            {
+                if (property.Name.EndsWith("PageKey", StringComparison.OrdinalIgnoreCase))
+                {
+                    issues.Add(Error(
+                        "internal-page-key-exported",
+                        $"Internal page identity field '{property.Name}' must not be present in an .sb2 manifest."));
+                }
+
+                ValidateNoInternalPageKeys(property.Value, issues);
+            }
+
+            return;
+        }
+
+        if (element.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var item in element.EnumerateArray())
+            {
+                ValidateNoInternalPageKeys(item, issues);
+            }
         }
     }
 
