@@ -8,7 +8,7 @@ Document version: `V2.1.4.0014`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-14 | `V2.1.4.0014` | `PENDING` | Precision du modele nullable et de ses valeurs effectives, des surfaces de proprietes Tableau, du menu contextuel type tableur, du presse-papiers, des dimensions de pistes et de la limite validee contre `win00012`; la precedence de style reste a confirmer. |
+| 2026-07-14 | `V2.1.4.0014` | `a95addd` | Precision du modele nullable et de ses valeurs effectives, des surfaces de proprietes Tableau, du menu contextuel type tableur, du presse-papiers, des dimensions de pistes et de la limite validee contre `win00012`; la precedence de style reste a confirmer. |
 | 2026-07-14 | `V2.1.4.0013` | `766f8e2` | Validation des cellules texte et inputs natifs sans `ValueBindings` cellule par cellule, avec export direct dans le HTML `.sb2` actuel. |
 | 2026-07-14 | `V2.1.4.0012` | `da244d9` | Premiere specification du nouvel Element+ Tableau, de son edition type tableur, du ruban Inserer a deux niveaux et du refactor hors `MainWindow`. |
 
