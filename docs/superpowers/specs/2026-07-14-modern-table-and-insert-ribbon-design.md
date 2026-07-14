@@ -2,20 +2,23 @@
 
 Date: 2026-07-14
 Status: Draft design - validation utilisateur requise avant planification
-Document version: `V2.1.4.0013`
+Document version: `V2.1.4.0014`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-14 | `V2.1.4.0013` | `PENDING` | Validation des cellules texte et inputs natifs sans `ValueBindings` cellule par cellule, avec export direct dans le HTML `.sb2` actuel. |
-| 2026-07-14 | `V2.1.4.0012` | `PENDING` | Premiere specification du nouvel Element+ Tableau, de son edition type tableur, du ruban Inserer a deux niveaux et du refactor hors `MainWindow`. |
+| 2026-07-14 | `V2.1.4.0014` | `PENDING` | Precision du modele nullable et de ses valeurs effectives, des surfaces de proprietes Tableau, du menu contextuel type tableur, du presse-papiers, des dimensions de pistes et de la limite validee contre `win00012`; la precedence de style reste a confirmer. |
+| 2026-07-14 | `V2.1.4.0013` | `766f8e2` | Validation des cellules texte et inputs natifs sans `ValueBindings` cellule par cellule, avec export direct dans le HTML `.sb2` actuel. |
+| 2026-07-14 | `V2.1.4.0012` | `da244d9` | Premiere specification du nouvel Element+ Tableau, de son edition type tableur, du ruban Inserer a deux niveaux et du refactor hors `MainWindow`. |
 
 ## 1. Probleme
 
 ### 1.1 Tableau de reference `win00012`
 
-La scene `projects/AMR_REF_SCADA_V2/scenes/win00012.scene.json` contient 593 objets, dont 592 projections legacy. Le tableau visible est reconstruit a partir de 348 textes, 197 rectangles et 45 lignes. Le reproduire avec les outils actuels exige donc des centaines d'objets independants, sans relation structurelle entre cellules, rangees ou colonnes.
+La scene `projects/AMR_REF_SCADA_V2/scenes/win00012.scene.json` contient 593 objets : 592 projections legacy et un `InputNumeric`. Les 592 projections legacy comprennent 348 textes, 197 rectangles, 45 lignes et 2 boutons. Le tableau visible est donc reconstruit a partir de centaines d'objets independants, sans relation structurelle entre cellules, rangees ou colonnes.
+
+Cette distribution exacte est conservee ici comme preuve du probleme et comme base de dimensionnement. Elle ne devient pas un contrat de conversion automatique de `win00012`.
 
 Les lignes et rectangles actuels ne permettent pas de :
 
@@ -58,6 +61,8 @@ Cette comparaison sert a organiser les familles et le backlog. Elle ne signifie 
 7. Remplacer le ruban Inserer plat par un niveau 1 de familles et un niveau 2 d'outils.
 8. Sortir le catalogue, le dispatch et les regles de mutation de `MainWindow`.
 9. Elargir le catalogue visible vers les familles attendues d'un editeur SCADA moderne, en distinguant strictement outils disponibles et outils planifies.
+10. Offrir les proprietes Tableau dans le panneau droit et dans un dialogue dedie, sans dupliquer les regles ni les mutations.
+11. Offrir un menu contextuel de cellule, rangee et colonne couvrant copier, coller, insertion, suppression, effacement, format et dimensions.
 
 ## 3. Principes non negociables
 
@@ -78,18 +83,39 @@ Ajouter `ScadaElementKind.Table` et une propriete optionnelle `ScadaElement.Tabl
 
 ```csharp
 public sealed record ScadaTableDefinition(
-    IReadOnlyList<ScadaTableColumn> Columns,
-    IReadOnlyList<ScadaTableRow> Rows,
-    IReadOnlyList<ScadaTableCell> Cells,
-    ScadaTableStyle Style);
+    IReadOnlyList<ScadaTableColumn>? Columns,
+    IReadOnlyList<ScadaTableRow>? Rows,
+    IReadOnlyList<ScadaTableCell>? Cells,
+    ScadaTableStyle? Style = null)
+{
+    [JsonIgnore]
+    public IReadOnlyList<ScadaTableColumn> EffectiveColumns =>
+        Columns ?? Array.Empty<ScadaTableColumn>();
+
+    [JsonIgnore]
+    public IReadOnlyList<ScadaTableRow> EffectiveRows =>
+        Rows ?? Array.Empty<ScadaTableRow>();
+
+    [JsonIgnore]
+    public IReadOnlyList<ScadaTableCell> EffectiveCells =>
+        Cells ?? Array.Empty<ScadaTableCell>();
+
+    [JsonIgnore]
+    public ScadaTableStyle EffectiveStyle =>
+        Style ?? ScadaTableStyle.Default;
+
+    public static ScadaTableDefinition CreateDefault(
+        int rows = 6,
+        int columns = 8);
+}
 
 public sealed record ScadaTableColumn(
     double Width,
-    ScadaTableBandStyle? Style = null);
+    ScadaTableFormat? Style = null);
 
 public sealed record ScadaTableRow(
     double Height,
-    ScadaTableBandStyle? Style = null,
+    ScadaTableFormat? Style = null,
     bool IsHeader = false);
 
 public sealed record ScadaTableCell(
@@ -98,7 +124,29 @@ public sealed record ScadaTableCell(
     int RowSpan = 1,
     int ColumnSpan = 1,
     ScadaTableCellContent? Content = null,
-    ScadaTableCellStyle? Style = null);
+    ScadaTableFormat? Style = null);
+
+public sealed record ScadaTableStyle(
+    ScadaTableFormat? Base = null,
+    ScadaTableFormat? Header = null,
+    ScadaTableFormat? AlternatingRows = null)
+{
+    public static ScadaTableStyle Default { get; } = new(...);
+}
+
+public sealed record ScadaTableFormat(
+    string? Background = null,
+    string? Foreground = null,
+    string? GridColor = null,
+    double? GridWidth = null,
+    string? GridStyle = null,
+    string? HorizontalAlignment = null,
+    string? VerticalAlignment = null,
+    double? Padding = null,
+    string? FontFamily = null,
+    double? FontSize = null,
+    string? FontWeight = null,
+    string? FontStyle = null);
 
 public enum ScadaTableCellContentKind
 {
@@ -118,7 +166,9 @@ public sealed record ScadaTableCellContent(
     bool IsReadOnly = false);
 ```
 
-Le code ci-dessus fixe la forme du contrat; les noms exacts pourront etre ajustes pendant la revue sans changer les invariants.
+`ScadaTableFormat` est partage par les rangees, colonnes et cellules afin que chaque propriete puisse etre heritee ou surchargee independamment. Une valeur `null` signifie `Heriter`; elle ne signifie pas couleur transparente, largeur zero ou alignement vide.
+
+Le code ci-dessus fixe la forme du contrat. Les enums de grille et d'alignement remplaceront les chaines illustratives pendant l'implementation sans changer les invariants.
 
 ### 4.2 Invariants
 
@@ -133,33 +183,48 @@ Le code ci-dessus fixe la forme du contrat; les noms exacts pourront etre ajuste
 9. Les anciens projets sans propriete `Table` restent lisibles sans migration destructive.
 10. Le contenu d'une cellule appartient au tableau; un input de cellule n'est pas un second `ScadaElement` positionne par-dessus la grille.
 11. Aucun `ReadTagId`, `WriteTagId` ou `ValueBindings` cellule par cellule n'est cree dans cette tranche.
+12. Les collections et styles absents utilisent uniquement les proprietes effectives `[JsonIgnore]`; la deserialisation d'un ancien document ne reecrit pas silencieusement son JSON.
+13. Toute definition creee par `CreateDefault` contient au moins une rangee et une colonne et respecte les limites de capacite.
 
 ### 4.3 Creation initiale proposee
 
 1. Dialogue avant placement avec nombre de rangees et colonnes.
-2. Limites proposees : 1 a 64 rangees et 1 a 64 colonnes.
+2. Limites validees pour la tranche initiale : 1 a 64 rangees et 1 a 64 colonnes.
 3. Preset propose : 6 rangees par 8 colonnes.
 4. Taille initiale derivee de 96 px par colonne et 32 px par rangee.
 5. Option `Premiere rangee comme en-tete` activee par defaut.
 
+L'analyse geometrique de `win00012` montre 16 positions de colonnes recurrentes dans sa grille la plus large et aucune zone n'approchant 64 rangees. Une capacite de 64 x 64, soit 4096 cellules logiques avant fusion, couvre donc largement cette reference. Le test de capacite doit inclure une grille representative de `win00012` et une grille maximale 64 x 64.
+
 ## 5. Edition type tableur proposee
 
-### 5.1 Entree dans le mode cellule
+### 5.1 Surfaces de proprietes
+
+1. Le panneau droit existant `Propriete` est la surface rapide et vivante. Quand un tableau est selectionne, il affiche le contexte courant : `Tableau`, `Rangee n`, `Colonne n`, `Cellule r,c` ou `Plage r1,c1:r2,c2`.
+2. Le panneau droit permet les changements courants de contenu, dimensions, alignement, couleurs, typographie, grille et heritage. Les champs mixtes d'une selection multiple sont affiches comme `Mixte` et ne sont changes que si l'utilisateur saisit une nouvelle valeur.
+3. L'action existante `Propriete` ouvre un nouveau `TablePropertiesDialog` dedie. Le dialogue generique `ElementPropertiesDialog` ne doit pas absorber toute la complexite du tableau.
+4. `TablePropertiesDialog` couvre les proprietes generales de l'Element+, la structure du tableau, les rangees et colonnes, les cellules, les inputs et les styles.
+5. Le panneau droit et le dialogue reutilisent les memes view models, validateurs, controles d'edition et commandes Application. Ils ne maintiennent pas deux copies du modele.
+6. Les changements du panneau droit sont appliques par commandes et historique lors de la validation du champ. Le dialogue regroupe ses changements valides dans une seule action d'historique lors de `Enregistrer`; `Annuler` ne modifie pas la scene.
+7. Un `CellFormatDialog` dedie est reutilise par le menu contextuel pour formater la selection courante sans ouvrir tout le dialogue Tableau.
+
+### 5.2 Entree dans le mode cellule
 
 1. Un clic normal selectionne le tableau comme Element+.
 2. Un double-clic entre dans le mode d'edition interne.
 3. Escape quitte le mode interne et revient a la selection du tableau.
 4. La selection interne est un etat d'editeur temporaire et non persistant.
 
-### 5.2 Selection de cellules
+### 5.3 Selection de cellules
 
 1. Clic : selection d'une cellule.
 2. Shift+clic : extension d'une plage rectangulaire depuis l'ancre.
 3. Glissement : selection d'une plage rectangulaire.
 4. Ctrl+clic : ajout/retrait facultatif de cellules discontinues, uniquement pour appliquer un style; fusion interdite si la selection n'est pas rectangulaire.
 5. Les modificateurs internes ne s'appliquent que lorsque le mode cellule est actif.
+6. En mode cellule, un bandeau de colonnes et une gouttiere de rangees editor-only permettent de selectionner une piste complete, d'ouvrir son menu et d'attraper son separateur.
 
-### 5.3 Contenu texte et inputs
+### 5.4 Contenu texte et inputs
 
 1. Chaque cellule utilise un contenu `Text`, `InputText` ou `InputNumeric`.
 2. `Text` reste le contenu par defaut.
@@ -175,7 +240,7 @@ Le code ci-dessus fixe la forme du contrat; les noms exacts pourront etre ajuste
 12. Escape annule l'edition courante sans annuler la selection.
 13. Une cellule fusionnee edite uniquement le contenu de sa cellule d'ancrage.
 
-### 5.4 Dimensions
+### 5.5 Dimensions
 
 1. Les poignees Element+ externes redimensionnent le tableau complet.
 2. Le redimensionnement externe met a l'echelle les largeurs et hauteurs de pistes proportionnellement.
@@ -184,8 +249,12 @@ Le code ci-dessus fixe la forme du contrat; les noms exacts pourront etre ajuste
 5. Alt+glissement modifie seulement la piste precedente et adapte la taille externe du tableau.
 6. Les commandes `Distribuer uniformement` normalisent les pistes selectionnees.
 7. Le feedback live est temporaire; une seule action d'historique est creee a la fin du geste.
+8. Chaque colonne et chaque rangee est redimensionnable manuellement depuis son separateur editor-only.
+9. Le menu `Largeur de colonne...` ouvre un petit dialogue numerique parametrable; il applique la valeur aux colonnes selectionnees.
+10. Le menu demande comme `Hauteur de cellule` est expose sous le libelle structurel `Hauteur de ligne...`, car une cellule seule ne peut pas avoir une hauteur differente des autres cellules de sa rangee sans briser la grille. Il ouvre le meme petit dialogue numerique parametrable et applique la valeur aux rangees selectionnees.
+11. Pour une cellule simple, `Hauteur de ligne...` cible sa rangee et `Largeur de colonne...` cible sa colonne. Pour une plage, les commandes ciblent toutes les pistes couvertes.
 
-### 5.5 Fusion et defusion
+### 5.6 Fusion et defusion
 
 1. `Fusionner` exige une selection rectangulaire continue.
 2. Une plage qui intersecte partiellement une fusion existante est refusee avec diagnostic.
@@ -193,6 +262,39 @@ Le code ci-dessus fixe la forme du contrat; les noms exacts pourront etre ajuste
 4. Les autres contenus sont conserves dans l'action d'historique pour permettre un undo exact.
 5. `Defusionner` recree des cellules unitaires.
 6. Apres recharge d'un projet, une defusion conserve le texte d'ancrage et cree des cellules vides pour les autres positions; les contenus couverts ne sont pas persistes en double.
+
+### 5.7 Menu contextuel et presse-papiers
+
+Le clic droit conserve la selection courante et adapte les commandes a la cible : cellule/plage, en-tete de rangee ou en-tete de colonne.
+
+Commandes cellule ou plage :
+
+1. `Copier`;
+2. `Coller`;
+3. `Inserer une ligne au-dessus` et `Inserer une ligne en dessous`;
+4. `Inserer une colonne a gauche` et `Inserer une colonne a droite`;
+5. `Supprimer la ou les lignes`;
+6. `Supprimer la ou les colonnes`;
+7. `Effacer le contenu`;
+8. `Format de cellule...`;
+9. `Hauteur de ligne...`;
+10. `Largeur de colonne...`;
+11. `Fusionner les cellules` ou `Defusionner les cellules`, selon le contexte.
+
+Sur un en-tete de rangee, seules les commandes de rangee, contenu et format applicables sont affichees. Sur un en-tete de colonne, seules les commandes de colonne, contenu et format applicables sont affichees.
+
+Regles du presse-papiers initial :
+
+1. `Copier` exige une plage rectangulaire. Une fusion doit etre entierement incluse; une intersection partielle est refusee.
+2. Le presse-papiers interne conserve le type de contenu, la valeur initiale, le placeholder, le format explicite de cellule et les fusions entierement incluses. Il ne copie pas les largeurs de colonnes, hauteurs de rangees ni styles de pistes.
+3. Une representation texte tabulee est aussi placee dans le presse-papiers systeme pour permettre un collage vers ou depuis un tableur classique.
+4. `Coller` a partir du format interne restaure contenu, format et fusions; un texte externe separe par tabulations et sauts de ligne cree du contenu `Text`.
+5. Le collage commence a la cellule active. Il ne cree jamais implicitement de rangees ou colonnes; tout depassement est refuse avec diagnostic.
+6. Un collage ne peut pas couper une fusion existante. La cible doit accepter le rectangle complet.
+7. `Effacer le contenu` remet les cellules a un contenu `Text` vide tout en conservant formats, pistes et fusions.
+8. Inserer une piste cree des cellules vides et reprend la dimension de la piste adjacente. Une insertion dans une fusion etend son span; une suppression remappe ou reduit les spans sans produire de chevauchement.
+9. La derniere rangee ou la derniere colonne ne peut pas etre supprimee.
+10. Toutes ces commandes sont atomiques et annulables/retablissables.
 
 ## 6. Styles et couleurs
 
@@ -223,10 +325,25 @@ Le color picker existant est reutilise.
 ### 6.3 Precedence proposee
 
 ```text
-Cellule > Rangee > Colonne > Tableau
+Cellule > Rangee explicite > Bande de rangee > Colonne > Tableau > Defaut systeme
 ```
 
-La rangee est prioritaire sur la colonne afin que les bandes horizontales et les en-tetes restent previsibles. Une cellule peut toujours surcharger les deux.
+La precedence est evaluee propriete par propriete et non style complet par style complet. Pour chaque propriete `p` d'une cellule `(r, c)`, la valeur effective est la premiere valeur non `null` dans :
+
+```text
+Cellule[r,c].Style[p]
+?? Rangee[r].Style[p]
+?? BandeRangee(r).Style[p]
+?? Colonne[c].Style[p]
+?? Tableau.Style.Base[p]
+?? ScadaTableStyle.Default.Base[p]
+```
+
+`BandeRangee(r)` represente le style d'en-tete ou l'alternance de rangee, si applicable. Une valeur explicite de rangee passe devant cette bande automatique. Le bouton `Heriter` efface uniquement la surcharge de la portee courante pour la propriete concernee.
+
+Exemple : le tableau definit un fond blanc et un texte noir; la colonne 2 definit un texte bleu; les rangees alternees definissent un fond gris; la rangee 3 definit un fond orange; la cellule R3C2 definit le gras. R3C2 obtient alors un fond orange, un texte bleu et une typographie grasse. La couleur bleue de colonne n'est pas perdue parce que la rangee n'a surcharge que le fond.
+
+Cette proposition garde les en-tetes et bandes horizontales previsibles tout en permettant a une colonne de fournir les proprietes que la rangee ne definit pas. Elle reste le seul choix produit a confirmer avant `DEC-0039`.
 
 ## 7. Rendu preview et export
 
@@ -268,6 +385,8 @@ Les elements suivants ne sont jamais exportes :
 5. poignees de fusion;
 6. caret ou champ d'edition temporaire;
 7. commandes contextuelles.
+8. bandeau de colonnes et gouttiere de rangees;
+9. separateurs et indicateurs de pistes.
 
 ## 8. Ruban Inserer a deux niveaux
 
@@ -341,7 +460,9 @@ Possede uniquement :
 2. dialogue de creation;
 3. ruban contextuel;
 4. adaptation des messages WebView;
-5. color picker et feedback visuel.
+5. color picker et feedback visuel;
+6. `TablePropertiesDialog`, `CellFormatDialog` et le petit dialogue parametrable de dimension;
+7. controles WPF et view models dedies au panneau droit Tableau.
 
 ### 9.5 Extraction de `MainWindow`
 
@@ -352,7 +473,10 @@ Le chantier doit :
 3. extraire les view models de ruban de `MainWindow.NestedTypes.cs`;
 4. extraire la coordination du ruban de `MainWindow.xaml.cs`;
 5. isoler le bridge tableau dans un fichier ou controle dedie sans regles metier;
-6. conserver dans `MainWindow` seulement l'adaptation au workspace actif.
+6. conserver dans `MainWindow` seulement l'adaptation au workspace actif;
+7. interdire l'ajout dans `MainWindow.xaml.cs` de calculs de grille, fusion, remappage, presse-papiers, validation, precedence de style ou construction de menu Tableau;
+8. limiter les ajouts `MainWindow` a l'activation de la surface, au branchement de haut niveau du contexte actif et a la delegation vers les classes dediees;
+9. placer la coordination UI Tableau dans des classes ou controles dedies et testables, par exemple `TableEditorCoordinator`, `TablePropertiesViewModel`, `TableContextMenuProvider` et `TableWebViewBridgeAdapter`; les noms finaux peuvent changer, mais pas cette separation.
 
 ## 10. Flux d'architecture cible
 
@@ -391,6 +515,9 @@ flowchart TD
 5. ajout/suppression de rangees et colonnes;
 6. remappage des cellules et fusions;
 7. precedence des styles.
+8. insertion/suppression de pistes avec fusions;
+9. copie/collage rectangulaire et refus des intersections partielles;
+10. effacement de contenu sans perte de format.
 
 ### 12.2 Commandes et historique
 
@@ -400,6 +527,8 @@ flowchart TD
 4. undo/redo de texte;
 5. undo/redo de couleur;
 6. mutation invalide sans effet sur scene ou historique.
+7. undo/redo d'insertion et suppression de rangee/colonne;
+8. undo/redo de collage et d'effacement.
 
 ### 12.3 Persistance
 
@@ -425,6 +554,12 @@ flowchart TD
 4. absence des ids individuels `insert.shape.*`, `insert.hmi.*` et `insert.button.*` dans le dispatch `MainWindow`;
 5. ruban contextuel visible uniquement pour un tableau;
 6. raccourcis cellule sans regression de selection globale.
+7. panneau droit contextualise pour tableau, rangee, colonne, cellule et plage;
+8. dialogue Tableau dedie et `CellFormatDialog` utilisant les memes commandes et validateurs;
+9. menu contextuel adapte a une cellule, une rangee ou une colonne;
+10. hauteur de ligne et largeur de colonne modifiables par glissement et dialogue numerique;
+11. test d'architecture interdisant les regles metier Tableau dans `MainWindow`;
+12. creation, sauvegarde et rendu d'une grille maximale 64 x 64 dans les limites de performance acceptees.
 
 ## 13. Hors scope initial
 
@@ -438,10 +573,12 @@ flowchart TD
 8. tableaux virtualises de plusieurs milliers de lignes;
 9. execution des outils planifies affiches dans les nouvelles familles;
 10. changement de l'intake TF100Web des scripts de page.
+11. copie des dimensions de pistes ou des styles de rangee/colonne par le presse-papiers.
+12. ajout implicite de pistes lors d'un collage hors limites.
 
 ## 14. Criteres d'acceptation proposes
 
-1. Creer un tableau 16 colonnes par 10 rangees en une operation.
+1. Creer un tableau 16 colonnes par 10 rangees en une operation et verifier qu'une structure equivalente a `win00012` demeure sous la limite 64 x 64.
 2. Redimensionner le tableau complet.
 3. Ajuster une colonne et une rangee par glissement.
 4. Fusionner une plage rectangulaire, modifier son texte, puis la defusionner.
@@ -451,17 +588,25 @@ flowchart TD
 8. Sauvegarder, fermer, recharger et retrouver la structure intacte.
 9. Obtenir le meme tableau et les memes inputs en preview et dans `.sb2`, sans poignees ni selection editeur.
 10. Naviguer dans le ruban Inserer par famille, puis par outil, sans defilement horizontal excessif.
+11. Modifier les proprietes depuis le panneau droit et depuis le dialogue Tableau sans divergence de resultat.
+12. Copier/coller une plage, inserer et supprimer une rangee ou une colonne, effacer le contenu sans perdre le format, puis annuler chaque operation.
+13. Ajuster manuellement les separateurs et saisir une hauteur de ligne ou une largeur de colonne precise depuis le menu contextuel.
+14. Verifier que `MainWindow` ne contient que le branchement de haut niveau des surfaces Tableau.
 
-## 15. Decision validee et points a valider avant le plan d'implementation
+## 15. Decisions validees et point a valider avant le plan d'implementation
 
-Decision validee : les cellules peuvent contenir des inputs texte ou numeriques natifs. Aucun `ValueBindings` cellule par cellule n'est requis dans cette tranche; les inputs sont exportes directement dans le HTML `.sb2` actuel.
+Decisions validees :
 
-Points restant a valider :
+1. Les cellules peuvent contenir des inputs texte ou numeriques natifs. Aucun `ValueBindings` cellule par cellule n'est requis dans cette tranche; les inputs sont exportes directement dans le HTML `.sb2` actuel.
+2. L'edition principale se fait directement dans le canvas. Le panneau droit `Propriete` est contextualise et un nouveau `TablePropertiesDialog` porte l'edition detaillee.
+3. Le redimensionnement externe est proportionnel; les pistes restent aussi redimensionnables manuellement.
+4. Les outils modernes non implementes restent visibles, clairement desactives et accompagnes d'une raison.
+5. La limite initiale est 64 rangees x 64 colonnes, avec preset 6 x 8; elle couvre la grille de reference `win00012`.
+6. Le menu contextuel Tableau couvre copier/coller, insertion/suppression de pistes, effacement de contenu, format de cellule, hauteur de ligne, largeur de colonne et fusion/defusion.
+7. Les regles metier et la coordination detaillee du Tableau sont interdites dans `MainWindow`; seuls les branchements de haut niveau y sont permis.
 
-1. Confirmer le mode d'edition directement dans le canvas plutot qu'un dialogue modal principal.
-2. Confirmer la politique de redimensionnement externe proportionnel.
-3. Confirmer la precedence `Cellule > Rangee > Colonne > Tableau`.
-4. Confirmer que les outils modernes non implementes peuvent etre visibles mais clairement desactives.
-5. Confirmer les limites 64 x 64 et le preset 6 x 8.
+Point restant a valider :
 
-La decision `DEC-0039` et le plan d'implementation ne doivent etre crees qu'apres validation de ces points.
+1. Confirmer la precedence detaillee de la section 6.3 : `Cellule > Rangee explicite > Bande de rangee > Colonne > Tableau > Defaut systeme`, evaluee propriete par propriete.
+
+La decision `DEC-0039` et le plan d'implementation ne doivent etre crees qu'apres validation de ce point.

@@ -2,14 +2,15 @@
 
 Date: 2026-07-14
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0013`
+Document version: `V2.1.4.0014`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-14 | `V2.1.4.0013` | `PENDING` | Specification Tableau precisee : cellules texte ou inputs natifs, sans `ValueBindings` cellule par cellule. |
-| 2026-07-14 | `V2.1.4.0012` | `PENDING` | Ajout du routage vers la specification draft du tableau moderne et du ruban Inserer hierarchique. |
+| 2026-07-14 | `V2.1.4.0014` | `PENDING` | Specification Tableau precisee avec surfaces de proprietes dediees, menu contextuel type tableur, dimensions manuelles, limite validee contre `win00012` et garde-fou strict hors `MainWindow`; une precedence de style detaillee reste a confirmer. |
+| 2026-07-14 | `V2.1.4.0013` | `766f8e2` | Specification Tableau precisee : cellules texte ou inputs natifs, sans `ValueBindings` cellule par cellule. |
+| 2026-07-14 | `V2.1.4.0012` | `da244d9` | Ajout du routage vers la specification draft du tableau moderne et du ruban Inserer hierarchique. |
 | 2026-07-14 | `V2.1.4.0011` | `PENDING` | Gestion moderne des pages implémentée; contrats, état, surfaces, diagnostics, couverture et limites synchronisés. |
 | 2026-07-14 | `V2.1.4.0010` | `c5d6f0e` | Ajout du routage vers la spécification approuvée et le plan d’implémentation de la gestion moderne des pages. |
 | 2026-07-05 | `V2.1.3.0004` | `PENDING` | Ajout du champ `Component.Provenance` (Legacy/AiModernized) au contrat `.sep` (DEC-0034), avec badge "IA" dans la bibliotheque Element+ des deux applications. |
@@ -165,7 +166,7 @@ Active specifications and implementation plans:
 
 1. `superpowers/specs/2026-07-14-page-commands-design.md` - implemented architecture and product decisions for modern page management.
 2. `superpowers/plans/2026-07-14-page-management-commands.md` - implementation record for page identity, commands, persistence, diagnostics, WPF surfaces, and `.sb2` compatibility; manual isolated-copy UI verification and real-project migration remain gated.
-3. `superpowers/specs/2026-07-14-modern-table-and-insert-ribbon-design.md` - draft design for a model-backed modern table, spreadsheet-style editing, hierarchical Insert ribbon, and `MainWindow` responsibility split; user validation is required before decision registration and planning.
+3. `superpowers/specs/2026-07-14-modern-table-and-insert-ribbon-design.md` - draft design for a model-backed modern table, spreadsheet-style editing, dedicated property surfaces, contextual row/column/cell commands, hierarchical Insert ribbon, and strict `MainWindow` responsibility split; only the detailed style precedence remains open before decision registration and planning.
 
 Generated documentation:
 
