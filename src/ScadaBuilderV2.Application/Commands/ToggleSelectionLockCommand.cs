@@ -11,10 +11,11 @@ public sealed class ToggleSelectionLockCommand : IApplicationCommand
         return context.Selection.SelectedElementIds.Count > 0;
     }
 
-    public CommandResult Execute(ApplicationContext context)
+    public Task<CommandResult> ExecuteAsync(ApplicationContext context, CancellationToken cancellationToken = default)
     {
+        cancellationToken.ThrowIfCancellationRequested();
         var next = !context.Selection.IsSelectionLocked;
         context.Selection.SetSelectionLocked(next);
-        return CommandResult.Success(next ? "Selection locked" : "Selection unlocked");
+        return Task.FromResult(CommandResult.Success(next ? "Selection locked" : "Selection unlocked"));
     }
 }
