@@ -1,13 +1,14 @@
 # Expression Creation Assistant — Plan d'implémentation
 
 Date: 2026-07-13
-Status: Implemented
+Status: Implemented — manual UI verification pending
 Document version: `V2.1.4.0003`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0004` | `29a22b6` | Implementation des deux dialogues, branchement du bouton Outil, tests de contrat et validation build. La verification visuelle STA reste a effectuer. |
 | 2026-07-13 | `V2.1.4.0003` | `PENDING` | Correction du plan : métadonnées, caret initial, contrat Annuler/Appliquer, ressources WPF et tests dédiés non intrusifs. |
 
 > Ce plan est dérivé de la spec `docs/superpowers/specs/2026-07-13-expression-creation-assistant-design.md`.
