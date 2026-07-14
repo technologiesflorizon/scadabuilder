@@ -1,12 +1,13 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using ScadaBuilderV2.Application.Pages;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
 using ScadaBuilderV2.Domain.Versioning;
 
 namespace ScadaBuilderV2.Infrastructure.ModernProjects;
 
-public sealed class ModernProjectStore
+public sealed class ModernProjectStore : IPageWorkspaceStore
 {
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -26,6 +27,7 @@ public sealed class ModernProjectStore
         Directory.CreateDirectory(Path.Combine(projectRoot, "imports", "legacy"));
         Directory.CreateDirectory(Path.Combine(projectRoot, "imports", "tags"));
         Directory.CreateDirectory(Path.Combine(projectRoot, "exports"));
+        await RecoverIncompleteTransactionsAsync(projectRoot);
 
         var projectPath = Path.Combine(projectRoot, "project.json");
         var project = ModernProjectMigration.MigrateProject(new ScadaProject(
@@ -64,6 +66,7 @@ public sealed class ModernProjectStore
 
     public async Task<ScadaScene> LoadOrCreateSceneAsync(string repositoryRoot, string sceneId, string title, CanvasSize canvasSize)
     {
+        await RecoverIncompleteTransactionsAsync(GetReferenceModernProjectRoot(repositoryRoot));
         var path = GetScenePath(repositoryRoot, sceneId);
         if (File.Exists(path))
         {
@@ -92,7 +95,9 @@ public sealed class ModernProjectStore
 
     public async Task<ScadaProject?> LoadProjectAsync(string repositoryRoot)
     {
-        var projectPath = Path.Combine(GetReferenceModernProjectRoot(repositoryRoot), "project.json");
+        var projectRoot = GetReferenceModernProjectRoot(repositoryRoot);
+        await RecoverIncompleteTransactionsAsync(projectRoot);
+        var projectPath = Path.Combine(projectRoot, "project.json");
         var project = File.Exists(projectPath)
             ? await LoadProjectFileAsync(projectPath)
             : null;
@@ -106,9 +111,465 @@ public sealed class ModernProjectStore
         await SaveJsonAsync(projectPath, ModernProjectMigration.MigrateProject(project));
     }
 
+    /// <inheritdoc />
+    public async Task SaveWorkspaceSnapshotAsync(
+        string repositoryRoot,
+        PageWorkspaceSnapshot snapshot,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(repositoryRoot);
+        ArgumentNullException.ThrowIfNull(snapshot);
+
+        var projectRoot = GetReferenceModernProjectRoot(repositoryRoot);
+        Directory.CreateDirectory(projectRoot);
+        await using var workspaceLock = await AcquireWorkspaceLockAsync(projectRoot, cancellationToken);
+        await RecoverIncompleteTransactionsAsync(projectRoot, cancellationToken, lockAlreadyHeld: true);
+        var normalized = ValidateAndNormalizeSnapshot(projectRoot, snapshot);
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var transactionsRoot = Path.Combine(projectRoot, ".studio", "transactions");
+        Directory.CreateDirectory(transactionsRoot);
+        var transactionId = Guid.NewGuid().ToString("N");
+        var transactionRoot = ResolveContainedPath(transactionsRoot, transactionId);
+        Directory.CreateDirectory(transactionRoot);
+
+        WorkspaceSaveJournal? journal = null;
+        try
+        {
+            var entries = new List<WorkspaceSaveFileEntry>();
+            foreach (var reference in normalized.Project.Scenes)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var scene = normalized.Scenes[reference.PageKey];
+                entries.Add(await StageJsonAsync(
+                    projectRoot,
+                    transactionRoot,
+                    reference.RelativePath,
+                    scene,
+                    cancellationToken));
+            }
+
+            entries.Add(await StageJsonAsync(
+                projectRoot,
+                transactionRoot,
+                "project.json",
+                normalized.Project,
+                cancellationToken));
+            await ValidateStagedSnapshotAsync(transactionRoot, entries, normalized.Project, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            journal = new WorkspaceSaveJournal(
+                transactionId,
+                normalized.Version,
+                WorkspaceSavePhase.Prepared,
+                entries,
+                normalized.PendingDeletions.Select(item => NormalizeRelativePath(item.RelativePath)).ToArray());
+            await SaveJournalAsync(transactionRoot, journal);
+
+            journal = journal with { Phase = WorkspaceSavePhase.WritingScenes };
+            await SaveJournalAsync(transactionRoot, journal);
+            foreach (var entry in entries.Where(entry => !string.Equals(entry.TargetRelativePath, "project.json", StringComparison.OrdinalIgnoreCase)))
+            {
+                ReplaceStagedFile(projectRoot, transactionRoot, entry);
+            }
+
+            journal = journal with { Phase = WorkspaceSavePhase.ProjectCommitting };
+            await SaveJournalAsync(transactionRoot, journal);
+            ReplaceStagedFile(
+                projectRoot,
+                transactionRoot,
+                entries.Single(entry => string.Equals(entry.TargetRelativePath, "project.json", StringComparison.OrdinalIgnoreCase)));
+
+            journal = journal with { Phase = WorkspaceSavePhase.ProjectCommitted };
+            await SaveJournalAsync(transactionRoot, journal);
+            ApplyPendingDeletions(projectRoot, journal.Deletions);
+
+            journal = journal with { Phase = WorkspaceSavePhase.Completed };
+            await SaveJournalAsync(transactionRoot, journal);
+            DeleteTransactionDirectory(transactionsRoot, transactionRoot);
+        }
+        catch
+        {
+            if (journal is not null && journal.Phase < WorkspaceSavePhase.ProjectCommitted)
+            {
+                RollbackTransaction(projectRoot, transactionRoot, journal);
+            }
+
+            if (journal is null || journal.Phase < WorkspaceSavePhase.ProjectCommitted)
+            {
+                DeleteTransactionDirectory(transactionsRoot, transactionRoot);
+            }
+
+            throw;
+        }
+    }
+
     public static string GetReferenceModernProjectRoot(string repositoryRoot)
     {
         return Path.Combine(repositoryRoot, "SCADA_BUILDER_V2", "projects", "AMR_REF_SCADA_V2");
+    }
+
+    private static PageWorkspaceSnapshot ValidateAndNormalizeSnapshot(
+        string projectRoot,
+        PageWorkspaceSnapshot snapshot)
+    {
+        if (snapshot.Version <= 0)
+        {
+            throw new InvalidOperationException("Workspace snapshot version must be greater than zero.");
+        }
+
+        var project = ModernProjectMigration.MigrateProject(snapshot.Project);
+        var duplicateKey = project.Scenes
+            .Where(page => page.PageKey != Guid.Empty)
+            .GroupBy(page => page.PageKey)
+            .FirstOrDefault(group => group.Count() > 1);
+        if (duplicateKey is not null)
+        {
+            throw new InvalidOperationException($"Duplicate PageKey '{duplicateKey.Key}' cannot be saved.");
+        }
+
+        if (project.Scenes.Any(page => page.PageKey == Guid.Empty))
+        {
+            throw new InvalidOperationException("Every page must have a PageKey before saving a workspace snapshot.");
+        }
+
+        var duplicateCode = project.Scenes
+            .GroupBy(page => page.EffectivePageCode, StringComparer.OrdinalIgnoreCase)
+            .FirstOrDefault(group => group.Count() > 1);
+        if (duplicateCode is not null)
+        {
+            throw new InvalidOperationException($"Duplicate PageCode '{duplicateCode.Key}' cannot be saved.");
+        }
+
+        var normalizedReferences = project.Scenes.Select(reference =>
+        {
+            var validation = PageCodePolicy.Validate(reference.EffectivePageCode);
+            if (!validation.IsValid)
+            {
+                throw new InvalidOperationException(validation.Errors[0]);
+            }
+
+            var relativePath = NormalizeRelativePath(reference.RelativePath);
+            _ = ResolveContainedScenePath(projectRoot, relativePath);
+            return reference with { RelativePath = relativePath };
+        }).ToArray();
+        var duplicatePath = normalizedReferences
+            .GroupBy(reference => reference.RelativePath, StringComparer.OrdinalIgnoreCase)
+            .FirstOrDefault(group => group.Count() > 1);
+        if (duplicatePath is not null)
+        {
+            throw new InvalidOperationException($"Scene path '{duplicatePath.Key}' is used by more than one page.");
+        }
+
+        project = ModernProjectMigration.MigrateProject(project with { Scenes = normalizedReferences });
+        var activeKeys = project.Scenes.Select(page => page.PageKey).ToHashSet();
+        if (snapshot.Scenes.Count != activeKeys.Count || snapshot.Scenes.Keys.Any(key => !activeKeys.Contains(key)))
+        {
+            throw new InvalidOperationException("Workspace scenes must match the project page inventory exactly.");
+        }
+
+        var scenes = new Dictionary<Guid, ScadaScene>();
+        foreach (var reference in project.Scenes)
+        {
+            if (!snapshot.Scenes.TryGetValue(reference.PageKey, out var scene))
+            {
+                throw new InvalidOperationException($"Page '{reference.EffectivePageCode}' has no scene snapshot.");
+            }
+
+            var normalizedScene = ModernProjectMigration.MigrateScene(scene, project);
+            if (normalizedScene.PageKey != reference.PageKey)
+            {
+                throw new InvalidOperationException($"Scene '{scene.Id}' does not match PageKey '{reference.PageKey}'.");
+            }
+
+            scenes[reference.PageKey] = normalizedScene;
+        }
+
+        var activePaths = project.Scenes
+            .Select(page => page.RelativePath)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var pendingDeletions = snapshot.PendingDeletions.Select(deletion =>
+        {
+            if (deletion.PageKey == Guid.Empty || activeKeys.Contains(deletion.PageKey))
+            {
+                throw new InvalidOperationException("A pending deletion must identify a page absent from the saved project.");
+            }
+
+            var relativePath = NormalizeRelativePath(deletion.RelativePath);
+            _ = ResolveContainedScenePath(projectRoot, relativePath);
+            if (activePaths.Contains(relativePath))
+            {
+                throw new InvalidOperationException($"Active scene path '{relativePath}' cannot be deleted.");
+            }
+
+            return deletion with { RelativePath = relativePath };
+        }).ToArray();
+        if (pendingDeletions.GroupBy(item => item.RelativePath, StringComparer.OrdinalIgnoreCase).Any(group => group.Count() > 1))
+        {
+            throw new InvalidOperationException("Pending workspace deletions contain duplicate scene paths.");
+        }
+
+        return new PageWorkspaceSnapshot(snapshot.Version, project, scenes, pendingDeletions);
+    }
+
+    private static async Task<WorkspaceSaveFileEntry> StageJsonAsync<T>(
+        string projectRoot,
+        string transactionRoot,
+        string targetRelativePath,
+        T value,
+        CancellationToken cancellationToken)
+    {
+        var normalizedTarget = NormalizeRelativePath(targetRelativePath);
+        var targetPath = string.Equals(normalizedTarget, "project.json", StringComparison.OrdinalIgnoreCase)
+            ? ResolveContainedPath(projectRoot, normalizedTarget)
+            : ResolveContainedScenePath(projectRoot, normalizedTarget);
+        var stagedRelativePath = NormalizeRelativePath(Path.Combine("new", normalizedTarget));
+        var backupRelativePath = NormalizeRelativePath(Path.Combine("backup", normalizedTarget));
+        var stagedPath = ResolveContainedPath(transactionRoot, stagedRelativePath);
+        Directory.CreateDirectory(Path.GetDirectoryName(stagedPath)!);
+        await SaveJsonAsync(stagedPath, value, cancellationToken);
+        return new WorkspaceSaveFileEntry(
+            normalizedTarget,
+            stagedRelativePath,
+            backupRelativePath,
+            File.Exists(targetPath));
+    }
+
+    private static async Task ValidateStagedSnapshotAsync(
+        string transactionRoot,
+        IReadOnlyList<WorkspaceSaveFileEntry> entries,
+        ScadaProject expectedProject,
+        CancellationToken cancellationToken)
+    {
+        foreach (var entry in entries)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var stagedPath = ResolveContainedPath(transactionRoot, entry.StagedRelativePath);
+            await using var stream = File.OpenRead(stagedPath);
+            if (string.Equals(entry.TargetRelativePath, "project.json", StringComparison.OrdinalIgnoreCase))
+            {
+                var project = await JsonSerializer.DeserializeAsync<ScadaProject>(stream, JsonOptions, cancellationToken);
+                if (project is null || project.Scenes.Count != expectedProject.Scenes.Count)
+                {
+                    throw new InvalidDataException("Staged project.json did not pass workspace validation.");
+                }
+            }
+            else
+            {
+                var scene = await JsonSerializer.DeserializeAsync<ScadaScene>(stream, JsonOptions, cancellationToken);
+                if (scene is null || scene.PageKey == Guid.Empty)
+                {
+                    throw new InvalidDataException($"Staged scene '{entry.TargetRelativePath}' did not pass validation.");
+                }
+            }
+        }
+    }
+
+    private static void ReplaceStagedFile(
+        string projectRoot,
+        string transactionRoot,
+        WorkspaceSaveFileEntry entry)
+    {
+        var targetPath = ResolveContainedPath(projectRoot, entry.TargetRelativePath);
+        var stagedPath = ResolveContainedPath(transactionRoot, entry.StagedRelativePath);
+        var backupPath = ResolveContainedPath(transactionRoot, entry.BackupRelativePath);
+        Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
+        Directory.CreateDirectory(Path.GetDirectoryName(backupPath)!);
+
+        if (entry.TargetExisted)
+        {
+            if (!File.Exists(targetPath))
+            {
+                throw new IOException($"Workspace target disappeared during save: {entry.TargetRelativePath}");
+            }
+
+            File.Replace(stagedPath, targetPath, backupPath, ignoreMetadataErrors: true);
+            return;
+        }
+
+        File.Move(stagedPath, targetPath);
+    }
+
+    private static void RollbackTransaction(
+        string projectRoot,
+        string transactionRoot,
+        WorkspaceSaveJournal journal)
+    {
+        foreach (var entry in journal.Writes.Reverse())
+        {
+            var targetPath = ResolveContainedPath(projectRoot, entry.TargetRelativePath);
+            var stagedPath = ResolveContainedPath(transactionRoot, entry.StagedRelativePath);
+            var backupPath = ResolveContainedPath(transactionRoot, entry.BackupRelativePath);
+            if (entry.TargetExisted && File.Exists(backupPath))
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(targetPath)!);
+                File.Move(backupPath, targetPath, overwrite: true);
+            }
+            else if (!entry.TargetExisted && !File.Exists(stagedPath) && File.Exists(targetPath))
+            {
+                File.Delete(targetPath);
+            }
+        }
+    }
+
+    private static void ApplyPendingDeletions(string projectRoot, IEnumerable<string> relativePaths)
+    {
+        foreach (var relativePath in relativePaths)
+        {
+            var path = ResolveContainedScenePath(projectRoot, relativePath);
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+    }
+
+    private static async Task RecoverIncompleteTransactionsAsync(
+        string projectRoot,
+        CancellationToken cancellationToken = default,
+        bool lockAlreadyHeld = false)
+    {
+        FileStream? workspaceLock = null;
+        if (!lockAlreadyHeld)
+        {
+            workspaceLock = await AcquireWorkspaceLockAsync(projectRoot, cancellationToken);
+        }
+
+        try
+        {
+            var transactionsRoot = Path.Combine(projectRoot, ".studio", "transactions");
+            if (!Directory.Exists(transactionsRoot))
+            {
+                return;
+            }
+
+            foreach (var transactionRoot in Directory.GetDirectories(transactionsRoot).OrderBy(path => path, StringComparer.Ordinal))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var journalPath = ResolveContainedPath(transactionRoot, "journal.json");
+                if (!File.Exists(journalPath))
+                {
+                    DeleteTransactionDirectory(transactionsRoot, transactionRoot);
+                    continue;
+                }
+
+                WorkspaceSaveJournal journal;
+                await using (var stream = File.OpenRead(journalPath))
+                {
+                    journal = await JsonSerializer.DeserializeAsync<WorkspaceSaveJournal>(stream, JsonOptions, cancellationToken)
+                        ?? throw new InvalidDataException($"Workspace recovery journal is invalid: {journalPath}");
+                }
+                if (journal.Phase >= WorkspaceSavePhase.ProjectCommitted)
+                {
+                    ApplyPendingDeletions(projectRoot, journal.Deletions);
+                }
+                else
+                {
+                    RollbackTransaction(projectRoot, transactionRoot, journal);
+                }
+
+                DeleteTransactionDirectory(transactionsRoot, transactionRoot);
+            }
+        }
+        finally
+        {
+            if (workspaceLock is not null)
+            {
+                await workspaceLock.DisposeAsync();
+            }
+        }
+    }
+
+    private static async Task<FileStream> AcquireWorkspaceLockAsync(
+        string projectRoot,
+        CancellationToken cancellationToken)
+    {
+        var studioRoot = Path.Combine(projectRoot, ".studio");
+        Directory.CreateDirectory(studioRoot);
+        var lockPath = Path.Combine(studioRoot, "workspace-save.lock");
+        while (true)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            try
+            {
+                return new FileStream(
+                    lockPath,
+                    FileMode.OpenOrCreate,
+                    FileAccess.ReadWrite,
+                    FileShare.None,
+                    bufferSize: 1,
+                    FileOptions.Asynchronous);
+            }
+            catch (IOException)
+            {
+                await Task.Delay(50, cancellationToken);
+            }
+        }
+    }
+
+    private static async Task SaveJournalAsync(string transactionRoot, WorkspaceSaveJournal journal)
+    {
+        var journalPath = ResolveContainedPath(transactionRoot, "journal.json");
+        var pendingPath = ResolveContainedPath(transactionRoot, "journal.pending.json");
+        await SaveJsonAsync(pendingPath, journal);
+        File.Move(pendingPath, journalPath, overwrite: true);
+    }
+
+    private static string ResolveContainedScenePath(string projectRoot, string relativePath)
+    {
+        var normalized = NormalizeRelativePath(relativePath);
+        if (!normalized.StartsWith("scenes/", StringComparison.OrdinalIgnoreCase) ||
+            !normalized.EndsWith(".scene.json", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException($"Scene path must remain under scenes/: {relativePath}");
+        }
+
+        return ResolveContainedPath(projectRoot, normalized);
+    }
+
+    private static string ResolveContainedPath(string root, string relativePath)
+    {
+        var normalized = NormalizeRelativePath(relativePath);
+        if (Path.IsPathRooted(normalized) || normalized.Contains(':', StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException($"Workspace path is not portable: {relativePath}");
+        }
+
+        var segments = normalized.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        if (segments.Length == 0 || segments.Any(segment => segment is "." or ".." || segment.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0))
+        {
+            throw new InvalidOperationException($"Workspace path is invalid: {relativePath}");
+        }
+
+        var fullRoot = Path.GetFullPath(root).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        var fullPath = Path.GetFullPath(Path.Combine(fullRoot, Path.Combine(segments)));
+        if (!fullPath.StartsWith($"{fullRoot}{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException($"Workspace path escapes the project root: {relativePath}");
+        }
+
+        return fullPath;
+    }
+
+    private static string NormalizeRelativePath(string relativePath)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(relativePath);
+        return relativePath.Trim().Replace('\\', '/');
+    }
+
+    private static void DeleteTransactionDirectory(string transactionsRoot, string transactionRoot)
+    {
+        var verifiedRoot = Path.GetFullPath(transactionsRoot).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        var verifiedTransaction = Path.GetFullPath(transactionRoot).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        if (!verifiedTransaction.StartsWith($"{verifiedRoot}{Path.DirectorySeparatorChar}", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new InvalidOperationException("Transaction cleanup path escapes the workspace transaction root.");
+        }
+
+        if (Directory.Exists(verifiedTransaction))
+        {
+            Directory.Delete(verifiedTransaction, recursive: true);
+        }
     }
 
     /// <summary>
@@ -124,10 +585,10 @@ public sealed class ModernProjectStore
         return Path.Combine(GetReferenceModernProjectRoot(repositoryRoot), "scenes", $"{sceneId}.scene.json");
     }
 
-    private static async Task SaveJsonAsync<T>(string path, T value)
+    private static async Task SaveJsonAsync<T>(string path, T value, CancellationToken cancellationToken = default)
     {
         await using var write = File.Create(path);
-        await JsonSerializer.SerializeAsync(write, value, JsonOptions);
+        await JsonSerializer.SerializeAsync(write, value, JsonOptions, cancellationToken);
     }
 
     private static async Task<ScadaProject?> LoadProjectFileAsync(string projectPath)
