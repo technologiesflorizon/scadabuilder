@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Menus And Surfaces Contract
 
-Date: 2026-06-17
+Date: 2026-07-14
 Status: Active editor menu and surface contract
-Document version: `V2.1.3.0001`
+Document version: `V2.1.4.0011`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0011` | `PENDING` | Ajout de la cible approuvée du ruban `Pages`, des actions rapides et du menu contextuel commun. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes a des icones 32x32 sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout du contrat de galerie Formes 4 colonnes, icones 64x64, et etat actif d'insertion. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Extraction de la palette laterale d'outils vers la surface de commandes dynamique. |
@@ -76,7 +77,13 @@ flowchart TD
 24. `insert.shape.line` and `insert.shape.arrow` use a two-point placement surface: first click captures start, second click commits the Element+ object, and Escape cancels placement.
 25. The Element+ context menu exposes `object.open-in-element-studio` ("Ouvrir dans Studio Element+") for a single selected converted object only when it was instantiated from a library `.sep` (tracked via `ScadaElementData.TagBinding`); otherwise it is visible but disabled with the reason "Cet objet n'a pas ete instancie depuis la bibliotheque Element+".
 
-## 4. Related Tests
+## 4. Approved Pages Surfaces
+
+The approved `DEC-0038` target adds a top-ribbon tab named `Pages`, quick actions in `Projet > Pages`, and a page context menu. All three surfaces use the same `page.*` command ids, enablement, disabled reasons, results, confirmations, history, and diagnostics.
+
+The project panel is sourced from modern `ScadaProject.Scenes`, exposes search plus type/build filters, and never displays `PageKey`. Right-click selects without opening; `page.open` performs explicit activation. The bottom Diagnostics panel and modern blocking dialog consume one structured issue collection. Status: approved architecture, not yet implemented.
+
+## 5. Related Tests
 
 `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`
 

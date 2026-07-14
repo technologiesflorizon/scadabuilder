@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Project Model Contract
 
-Date: 2026-06-17
+Date: 2026-07-14
 Status: Active project model contract
-Document version: `V2.1.2.0024`
+Document version: `V2.1.4.0011`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0011` | `PENDING` | Ajout de la cible approuvée `PageKey`/`PageCode`, provenance importée et migration compatible, avant implémentation. |
 | 2026-06-17 | `V2.1.2.0024` | `PENDING` | Clarification du role actif de `DisplayFormat` et de la deprecation authoring de `TagBinding`, `Decimals` et `Unit`. |
 | 2026-06-17 | `V2.1.2.0010` | `PENDING` | Ajout du modele `ScadaActionCondition` pour actions objet conditionnelles. |
 | 2026-06-17 | `V2.1.2.0009` | `PENDING` | Ajout des bindings Element+ `ReadTagId` et `WriteTagId` et des validations de build. |
@@ -49,7 +50,13 @@ The catalog preserves:
 
 All enabled tags are exposed for `Lire valeur` authoring. `Ecrire valeur` may target only writeable tags and only editable input Element+ objects. Build/export validation rejects missing tag references, write bindings on non-input or read-only Element+ objects, and write bindings to read-only tags.
 
-## 4. Related Tests
+## 4. Approved Modern Page Target
+
+The approved target in `DEC-0038` is not implemented yet. It adds an immutable internal `PageKey`, a visible mutable `PageCode`, optional import provenance, and canonical internal home/composition/action references by key. Existing id fields remain readable during migration. The `.sb2` boundary resolves keys back to human page codes and must not expose GUIDs.
+
+`ScadaProject.Scenes` remains authoritative for page inventory and metadata. Native pages do not require imported HTML; imported Wonderware projections remain optional provenance-backed inputs. A new `Default` page starts with `IncludeInBuild = false`.
+
+## 5. Related Tests
 
 1. `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`
 2. `tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`
