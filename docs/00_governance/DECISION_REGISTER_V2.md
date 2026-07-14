@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Decision Register
 
-Date: 2026-07-09
+Date: 2026-07-14
 Status: Active authoritative decision register
-Document version: `V2.1.4.0003`
+Document version: `V2.1.4.0010`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0010` | `PENDING` | Ajout de DEC-0038 pour l’identité moderne des pages, les commandes partagées, l’historique projet, la persistance atomique et la compatibilité `.sb2`. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Ajout de DEC-0037 pour le contrat de style avancé Element+ model-backed et la conservation HTML/CSS TF100Web. |
 | 2026-07-09 | `V2.1.4.0002` | `PENDING` | Ajout de DEC-0036 pour les references de tags d'expressions d'etat : libelle humain conserve, Id canonique obligatoire a l'export TF100Web. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de DEC-0032 pour la galerie Formes 32x32 sans libelles visibles. |
@@ -1095,3 +1096,29 @@ Older projects remain readable without migration. The WPF inspector provides a l
 Regression coverage:
 
 `tests/ScadaBuilderV2.Tests/ScadaSceneModelsTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`, `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`, and `F:\Projet\Git\TF100Web\frontend\tests_scada_deploy.py`.
+
+### DEC-0038 - Modern Page Identity And Lifecycle Commands
+
+Status: Active
+Created: 2026-07-14 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/specs/2026-07-14-page-commands-design.md`
+
+Context:
+
+SCADA Builder V2 exposes page properties and tabs, but page lifecycle operations are not available consistently from the ribbon, Project panel, and contextual menus. Page identity is also coupled to the human/export id, imported Wonderware inventory still acts as an implicit workspace identity, page history is scoped to open scene tabs, and project/scene persistence is not committed as one coherent snapshot.
+
+Decision:
+
+Every modern page has an immutable internal GUID `PageKey`, a visible mutable `PageCode`, a visible title, and optional import provenance. Internal home/composition/action/command references use `PageKey`; the `.sb2` adapter resolves keys to `PageCode` and preserves all existing human manifest fields, page folders, DOM roots, and runtime `TargetPageId` values. The shared asynchronous `page.*` application commands own creation, rename, duplication, deletion, properties, dependency validation, project-scoped history, and atomic workspace persistence. WPF surfaces only adapt these commands. Native pages do not require imported HTML, while duplication of an imported Wonderware page preserves its projection and provenance automatically.
+
+Consequences:
+
+Existing projects require an idempotent migration from ids to keys while old id fields remain readable during transition. A new `Default` page is excluded from build by default. Deletion is blocked until dependencies are resolved manually. Error dialogs and the bottom Diagnostics panel consume the same structured issue collection. `MainWindow` must no longer own page mutations, persistence rules, dependency analysis, or imported-source resolution. Roles/permissions, page folders, drag-and-drop organization, full template libraries, and creative table tools remain separate slices.
+
+Regression coverage:
+
+Planned in `tests/ScadaBuilderV2.Tests/PageIdentityTests.cs`, `tests/ScadaBuilderV2.Tests/PageCommandCoordinatorTests.cs`, `tests/ScadaBuilderV2.Tests/ProjectWorkspaceHistoryTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectAtomicSnapshotTests.cs`, `tests/ScadaBuilderV2.Tests/NativePageDocumentTests.cs`, `tests/ScadaBuilderV2.Tests/PageManagementSurfaceContractTests.cs`, `tests/ScadaBuilderV2.Tests/PageLifecycleIntegrationTests.cs`, and existing `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`.

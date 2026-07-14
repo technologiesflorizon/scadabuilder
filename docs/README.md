@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Documentation Index
 
-Date: 2026-07-05
+Date: 2026-07-14
 Status: Active enterprise documentation map
-Document version: `V2.1.3.0004`
+Document version: `V2.1.4.0010`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0010` | `PENDING` | Ajout du routage vers la spécification approuvée et le plan d’implémentation de la gestion moderne des pages. |
 | 2026-07-05 | `V2.1.3.0004` | `PENDING` | Ajout du champ `Component.Provenance` (Legacy/AiModernized) au contrat `.sep` (DEC-0034), avec badge "IA" dans la bibliotheque Element+ des deux applications. |
 | 2026-07-05 | `V2.1.3.0003` | `PENDING` | Ajout du guide de style d'icones SCADA 2026 et du workflow interactif de modernisation Element+ (DEC-0033), en remplacement du pipeline autonome sep-ai-modernizer. |
 | 2026-06-19 | `V2.1.3.0002` | `PENDING` | Ajout du color picker moderne pour les couleurs arriere-plan/bordure Style et Bouton Element+. |
@@ -156,6 +157,11 @@ Implementation status:
 1. `08_implementation_status/IMPLEMENTED_FEATURES_V2.md` - current implemented features.
 2. `08_implementation_status/REGRESSION_COVERAGE_V2.md` - regression coverage map.
 3. `08_implementation_status/KNOWN_GAPS_V2.md` - gaps that must not be documented as implemented behavior.
+
+Active specifications and implementation plans:
+
+1. `superpowers/specs/2026-07-14-page-commands-design.md` - approved architecture and product decisions for modern page management.
+2. `superpowers/plans/2026-07-14-page-management-commands.md` - ordered implementation plan for page identity, commands, persistence, diagnostics, WPF surfaces, and `.sb2` compatibility.
 
 Generated documentation:
 
