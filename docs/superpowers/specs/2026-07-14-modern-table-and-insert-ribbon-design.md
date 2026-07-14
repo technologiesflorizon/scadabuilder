@@ -8,7 +8,7 @@ Document version: `V2.1.4.0016`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-14 | `V2.1.4.0016` | `PENDING` | Implementation du modele Tableau, operations type tableur, surfaces dediees, rendu WebView/FT100, archive `.sb2`, tests et ruban Inserer a huit familles; la verification interactive isolee reste a executer. |
+| 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Implementation du modele Tableau, operations type tableur, surfaces dediees, rendu WebView/FT100, archive `.sb2`, tests et ruban Inserer a huit familles; la verification interactive isolee reste a executer. |
 | 2026-07-14 | `V2.1.4.0015` | `95a57ac` | Approbation utilisateur de la precedence de style propriete par propriete; specification entierement validee, rattachee a `DEC-0039` et prete pour execution du plan. |
 | 2026-07-14 | `V2.1.4.0014` | `a95addd` | Precision du modele nullable et de ses valeurs effectives, des surfaces de proprietes Tableau, du menu contextuel type tableur, du presse-papiers, des dimensions de pistes et de la limite validee contre `win00012`; la precedence de style reste a confirmer. |
 | 2026-07-14 | `V2.1.4.0013` | `766f8e2` | Validation des cellules texte et inputs natifs sans `ValueBindings` cellule par cellule, avec export direct dans le HTML `.sb2` actuel. |

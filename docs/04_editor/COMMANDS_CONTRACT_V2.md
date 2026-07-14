@@ -8,7 +8,7 @@ Document version: `V2.1.4.0016`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-14 | `V2.1.4.0016` | `PENDING` | Ajout des commandes typees Tableau, du presse-papiers rectangulaire et du catalogue Inserer hierarchique pilote par descripteurs. |
+| 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Ajout des commandes typees Tableau, du presse-papiers rectangulaire et du catalogue Inserer hierarchique pilote par descripteurs. |
 | 2026-07-14 | `V2.1.4.0012` | `PENDING` | Commandes asynchrones `page.*`, coordinateur partagé, diagnostics et mutations de propriétés désormais implémentés. |
 | 2026-07-14 | `V2.1.4.0011` | `4def659` | Ajout de la cible approuvée des commandes asynchrones `page.*` partagées par toutes les surfaces. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout des commandes `insert.shape.circle`, `insert.shape.triangle`, `insert.shape.star` et du placement deux points ligne/fleche. |
