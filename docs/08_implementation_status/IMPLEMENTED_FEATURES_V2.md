@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active implementation status
-Document version: `V2.1.4.0006`
+Document version: `V2.1.4.0007`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0007` | `PENDING` | Finition visuelle du panneau Pages : libelle Recherche, filtres Default/Tous et icone Nouvelle page alignee sur le ruban. |
 | 2026-07-14 | `V2.1.4.0006` | `PENDING` | Correction du crash au demarrage cause par des liaisons WPF `Run.Text` TwoWay implicites vers des proprietes Diagnostics et Pages en lecture seule. |
 | 2026-07-14 | `V2.1.4.0005` | `PENDING` | Gestion moderne des pages : identité stable, commandes partagées, historique projet, sauvegarde atomique, pages natives, surfaces Pages et Diagnostics, propriétés centralisées et compatibilité `.sb2`. |
 | 2026-07-14 | `V2.1.4.0004` | `PENDING` | Assistant de creation d'expressions pour les conditions d'etat : selection des tags actifs, insertion au caret, operateurs guides et application controlee dans le dialogue parent. |
@@ -127,6 +128,7 @@ As of 2026-07-14, `dotnet test ScadaBuilderV2.sln --no-restore` reports 555 pass
 55. The `Pages` ribbon, `Projet > Pages` list, quick actions, keyboard shortcuts and context menu route through the same asynchronous `page.*` commands. Search/type/build filters, disabled reasons and a shared modern page dialog are available without exposing internal keys.
 56. Page lifecycle and properties are coordinated outside `MainWindow`; project-scoped undo/redo retains page operations across tab closure, atomic workspace saves own project/scenes/deletions, and the shared Diagnostics panel plus blocking dialog display structured validation results.
 57. The WPF shell, page list and blocking diagnostics dialog now force `OneWay` mode for read-only `Run.Text` bindings. This prevents the startup `InvalidOperationException` that previously terminated the application before the main window became usable.
+58. The `Projet > Pages` panel labels its search field, starts with `Default` and `Tous` for the type/build filters, and reuses the ribbon's semantic `Icon.Page.New` resource for its quick-create action.
 
 ## 3. Source Of Truth
 

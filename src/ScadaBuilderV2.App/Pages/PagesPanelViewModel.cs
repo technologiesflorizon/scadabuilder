@@ -9,7 +9,7 @@ namespace ScadaBuilderV2.App.Pages;
 public sealed class PagesPanelViewModel : INotifyPropertyChanged
 {
     private string searchText = string.Empty;
-    private string typeFilter = "Tous";
+    private string typeFilter = "Default";
     private string buildFilter = "Tous";
     private PageListItemViewModel? selectedPage;
 

@@ -49,8 +49,14 @@ public sealed class PageManagementSurfaceContractTests
         var panel = Read("src", "ScadaBuilderV2.App", "Pages", "PagesPanelViewModel.cs");
 
         StringAssert.Contains(xaml, "x:Name=\"PagesSearchTextBox\"");
+        StringAssert.Contains(xaml, "Text=\"Recherche\"");
         StringAssert.Contains(xaml, "x:Name=\"PagesTypeFilterComboBox\"");
         StringAssert.Contains(xaml, "x:Name=\"PagesBuildFilterComboBox\"");
+        StringAssert.Contains(xaml, "SelectedItem=\"{Binding PagesPanel.TypeFilter, Mode=TwoWay}\"");
+        StringAssert.Contains(xaml, "SelectedItem=\"{Binding PagesPanel.BuildFilter, Mode=TwoWay}\"");
+        StringAssert.Contains(xaml, "Source=\"{StaticResource Icon.Page.New}\"");
+        StringAssert.Contains(panel, "private string typeFilter = \"Default\";");
+        StringAssert.Contains(panel, "private string buildFilter = \"Tous\";");
         StringAssert.Contains(xaml, "DiagnosticLabel");
         StringAssert.Contains(xaml, "{Binding PageCode, Mode=OneWay}");
         StringAssert.Contains(xaml, "{Binding TypeLabel, Mode=OneWay}");

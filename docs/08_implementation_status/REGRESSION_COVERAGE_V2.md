@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active regression coverage map
-Document version: `V2.1.4.0005`
+Document version: `V2.1.4.0006`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0006` | `PENDING` | Couverture du libelle Recherche, des filtres initiaux Default/Tous et de l'icone partagee Nouvelle page. |
 | 2026-07-14 | `V2.1.4.0005` | `PENDING` | Ajout de la regression interdisant les liaisons `Run.Text` TwoWay implicites vers les proprietes Pages et Diagnostics en lecture seule. |
 | 2026-07-14 | `V2.1.4.0004` | `PENDING` | Ajout de la couverture identité, commandes, historique, sauvegarde atomique, pages natives, surfaces Pages/Diagnostics et cycle `.sb2` complet. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Couverture des nouveaux champs de style, export CSS, preview WebView, icônes sémantiques et preuve d’intake TF100Web. |
@@ -79,7 +80,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Project-scoped page undo/redo | `ProjectWorkspaceHistoryTests.cs`, `PageLifecycleIntegrationTests.cs` |
 | Atomic project/scenes/deletions persistence | `ModernProjectAtomicSnapshotTests.cs`, `ModernProjectStoreTests.cs` |
 | Native page preview/export and `.sb2` identity projection | `NativePageDocumentTests.cs`, `Ft100SceneExporterTests.cs`, `PageLifecycleIntegrationTests.cs` |
-| Pages ribbon/project/context surfaces | `RibbonCommandCatalogTests.cs`, `PageManagementSurfaceContractTests.cs` |
+| Pages ribbon/project/context surfaces | `RibbonCommandCatalogTests.cs`, `PageManagementSurfaceContractTests.cs` (search label, initial filters and shared `Icon.Page.New`) |
 | Shared error dialog and Diagnostics panel | `DiagnosticsSurfaceContractTests.cs`, including explicit `OneWay` bindings for read-only WPF `Run.Text` targets |
 | Scene/domain rules | `OfficialSceneDomainTests.cs`, `ScadaSceneGroupTests.cs` |
 | Undo/redo/history | `EditorHistoryServiceTests.cs` |
