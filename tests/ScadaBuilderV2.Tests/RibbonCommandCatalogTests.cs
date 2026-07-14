@@ -34,6 +34,32 @@ public sealed class RibbonCommandCatalogTests
         CollectionAssert.Contains(commands.Select(command => command.Id).ToArray(), "insert.shape.triangle");
         CollectionAssert.Contains(commands.Select(command => command.Id).ToArray(), "insert.shape.star");
         CollectionAssert.Contains(commands.Select(command => command.Id).ToArray(), "insert.button.emergency-stop");
+        CollectionAssert.Contains(commands.Select(command => command.Id).ToArray(), "insert.table");
+    }
+
+    [TestMethod]
+    public void InsertCatalogDefinesEightStableFamilies()
+    {
+        var families = RibbonCommandCatalog.CreateInsertFamilies();
+
+        CollectionAssert.AreEqual(
+            new[] { "text-values", "shapes", "process", "electrical", "commands", "data", "charts", "media" },
+            families.Select(family => family.Id).ToArray());
+        Assert.IsTrue(families.All(family => family.IconKey.StartsWith("Icon.InsertFamily.", StringComparison.Ordinal)));
+    }
+
+    [TestMethod]
+    public void InsertCatalogExposesExecutableModernTableAndExplicitPlannedTools()
+    {
+        var tools = RibbonCommandCatalog.CreateInsertFamilies().SelectMany(family => family.Tools).ToArray();
+        var table = tools.Single(tool => tool.Id == "insert.table");
+
+        Assert.IsTrue(table.IsEnabled);
+        Assert.AreEqual(ScadaBuilderV2.Domain.Scenes.ScadaElementKind.Table, table.ElementKind);
+        Assert.AreEqual(InsertPlacementMode.DialogThenPoint, table.PlacementMode);
+        Assert.IsNull(table.DisabledReason);
+        Assert.IsTrue(tools.Where(tool => !tool.IsEnabled).All(tool => !string.IsNullOrWhiteSpace(tool.DisabledReason)));
+        Assert.AreEqual(tools.Length, tools.Select(tool => tool.Id).Distinct(StringComparer.Ordinal).Count());
     }
 
     [TestMethod]

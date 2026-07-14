@@ -97,45 +97,7 @@ public static class RibbonCommandCatalog
                     Enabled("tool.settings", "Configurer", "Icon.Tool.Settings", "Ouvrir la configuration (librairies)"),
                     Enabled("tool.element-studio", "Studio E+", "Icon.Tool.ElementStudio", "Ouvrir Studio Element+ (editeur de composants Element+)"))
             ],
-            ["Insert"] =
-            [
-                Group("Champs",
-                    Enabled("insert.text", "Champ texte", "Icon.Tool.Text", "Inserer un champ texte statique"),
-                    Enabled("insert.input-text", "Entree texte", "Icon.Tool.Text", "Inserer un champ d'entree texte"),
-                    Enabled("insert.input-numeric", "Entree num.", "Icon.Field.Numeric", "Inserer un champ d'entree numerique")),
-                Group("Formes",
-                    Enabled("insert.shape.rectangle", "Rectangle", "Icon.Shape.Rectangle", "Inserer un rectangle Element+"),
-                    Enabled("insert.shape.ellipse", "Ellipse", "Icon.Shape.Ellipse", "Inserer une ellipse Element+"),
-                    Enabled("insert.shape.circle", "Cercle", "Icon.Shape.Circle", "Inserer un cercle Element+"),
-                    Enabled("insert.shape.triangle", "Triangle", "Icon.Shape.Triangle", "Inserer un triangle Element+"),
-                    Enabled("insert.shape.star", "Etoile", "Icon.Shape.Star", "Inserer une etoile Element+"),
-                    Enabled("insert.shape.line", "Ligne", "Icon.Shape.Line", "Inserer une ligne Element+"),
-                    Enabled("insert.shape.arrow", "Fleche", "Icon.Shape.Arrow", "Inserer une fleche Element+")),
-                Group("HMI process",
-                    Enabled("insert.hmi.indicator-lamp", "Voyant", "Icon.Hmi.IndicatorLamp", "Inserer un voyant HMI Element+"),
-                    Enabled("insert.hmi.bar-horizontal", "Barre H", "Icon.Hmi.BarHorizontal", "Inserer une barre horizontale HMI Element+"),
-                    Enabled("insert.hmi.bar-vertical", "Barre V", "Icon.Hmi.BarVertical", "Inserer une barre verticale HMI Element+"),
-                    Enabled("insert.hmi.tank", "Reservoir", "Icon.Hmi.Tank", "Inserer un reservoir HMI Element+"),
-                    Enabled("insert.hmi.pipe-horizontal", "Tuyau H", "Icon.Hmi.PipeHorizontal", "Inserer un tuyau horizontal HMI Element+"),
-                    Enabled("insert.hmi.pipe-vertical", "Tuyau V", "Icon.Hmi.PipeVertical", "Inserer un tuyau vertical HMI Element+"),
-                    Enabled("insert.hmi.valve", "Vanne", "Icon.Hmi.Valve", "Inserer une vanne HMI Element+"),
-                    Enabled("insert.hmi.pump", "Pompe", "Icon.Hmi.Pump", "Inserer une pompe HMI Element+"),
-                    Enabled("insert.hmi.motor", "Moteur", "Icon.Hmi.Motor", "Inserer un moteur HMI Element+"),
-                    Enabled("insert.hmi.fan", "Ventil.", "Icon.Hmi.Fan", "Inserer un ventilateur HMI Element+"),
-                    Enabled("insert.hmi.conveyor", "Convoy.", "Icon.Hmi.Conveyor", "Inserer un convoyeur HMI Element+"),
-                    Enabled("insert.hmi.gauge", "Jauge", "Icon.Hmi.Gauge", "Inserer une jauge HMI Element+")),
-                Group("HMI electrique",
-                    Enabled("insert.hmi.switch", "Interrup.", "Icon.Hmi.Switch", "Inserer un interrupteur electrique HMI Element+"),
-                    Enabled("insert.hmi.breaker", "Disjonct.", "Icon.Hmi.Breaker", "Inserer un disjoncteur HMI Element+"),
-                    Enabled("insert.hmi.transformer", "Transfo", "Icon.Hmi.Transformer", "Inserer un transformateur HMI Element+"),
-                    Enabled("insert.hmi.alarm-beacon", "Alarme", "Icon.Hmi.AlarmBeacon", "Inserer une balise alarme HMI Element+")),
-                Group("Boutons",
-                    Enabled("insert.button.command", "Bouton", "Icon.Button.Command", "Inserer un bouton Element+"),
-                    Enabled("insert.button.toggle", "Bascule", "Icon.Button.Toggle", "Inserer un bouton bascule Element+"),
-                    Enabled("insert.button.navigation", "Nav", "Icon.Button.Navigation", "Inserer un bouton de navigation Element+"),
-                    Enabled("insert.button.alarm-ack", "Acquitter", "Icon.Button.AlarmAck", "Inserer un bouton acquittement alarme Element+"),
-                    Enabled("insert.button.emergency-stop", "Arret", "Icon.Button.EmergencyStop", "Inserer un bouton arret d'urgence Element+"))
-            ]
+            ["Insert"] = CreateInsertGroups()
         };
     }
 
@@ -155,6 +117,9 @@ public static class RibbonCommandCatalog
         ];
     }
 
+    /// <summary>Creates the stable level-one insertion families.</summary>
+    public static IReadOnlyList<RibbonFamilyDefinition> CreateInsertFamilies() => InsertToolCatalog.CreateDefault();
+
     /// <summary>
     /// Enumerates every command from a ribbon tab collection.
     /// </summary>
@@ -168,6 +133,15 @@ public static class RibbonCommandCatalog
     {
         return new RibbonGroupDefinition(label, commands);
     }
+
+    private static IReadOnlyList<RibbonGroupDefinition> CreateInsertGroups() => InsertToolCatalog.CreateDefault()
+        .SelectMany(family => family.Tools)
+        .GroupBy(tool => tool.GroupLabel, StringComparer.Ordinal)
+        .Select(group => new RibbonGroupDefinition(
+            group.Key,
+            group.Select(tool => new RibbonCommandDefinition(
+                tool.Id, tool.Label, tool.IconKey, tool.ToolTip, tool.IsEnabled, tool.DisabledReason)).ToArray()))
+        .ToArray();
 
     private static RibbonCommandDefinition Enabled(string id, string label, string iconKey, string toolTip)
     {
