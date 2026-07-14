@@ -2,12 +2,13 @@
 
 Date: 2026-07-05
 Status: Active implementation status
-Document version: `V2.1.4.0000`
+Document version: `V2.1.4.0004`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0004` | `PENDING` | Assistant de creation d'expressions pour les conditions d'etat : selection des tags actifs, insertion au caret, operateurs guides et application controlee dans le dialogue parent. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Tranche Element+ Style : champs typographiques, Foreground, 9 styles de bordure, BorderRadius, export FT100, preview WebView, surface WPF et icônes `Icon.Property.*`. La preuve d’intake TF100Web reste bloquée par l’absence de MySQL local. |
 | 2026-07-05 | `V2.1.4.0000` | `PENDING` | Implementation du docking AvalonDock pour les panneaux lateraux avec persistance de disposition. |
 | 2026-06-19 | `V2.1.3.0002` | `PENDING` | Implementation du color picker modal aligne sur `CSS fond` pour les couleurs arriere-plan/bordure Style et Bouton Element+. |

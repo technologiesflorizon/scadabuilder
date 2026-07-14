@@ -67,8 +67,16 @@
 
             <!-- Expression mode -->
             <StackPanel x:Name="ExpressionPanel" Visibility="Collapsed">
-                <TextBox x:Name="ExpressionTextBox" Margin="0,2,0,2" AcceptsReturn="False"
-                         TextChanged="OnExpressionTextChanged"/>
+                <DockPanel Margin="0,2,0,2">
+                    <Button x:Name="ExpressionToolButton" Content="Outil"
+                            DockPanel.Dock="Right" MinWidth="64" MinHeight="28"
+                            Margin="8,0,0,0"
+                            ToolTip="Ouvrir l'assistant de composition d'expression"
+                            Click="OnExpressionToolClick"/>
+                    <TextBlock Text="Expression :" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                    <TextBox x:Name="ExpressionTextBox" AcceptsReturn="False"
+                             TextChanged="OnExpressionTextChanged"/>
+                </DockPanel>
             </StackPanel>
 
             <TextBlock x:Name="ExpressionValidationText" TextWrapping="Wrap" Margin="0,0,0,8"/>

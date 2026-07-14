@@ -376,6 +376,25 @@ private sealed record EffectListItem(EffectKind Kind, string Summary);
 
     private void OnExpressionTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e) => ValidateExpression();
 
+    private void OnExpressionToolClick(object sender, RoutedEventArgs e)
+    {
+        var assistant = new ExpressionCreationDialog(
+            ExpressionTextBox.Text,
+            _tagCatalog,
+            ExpressionTextBox.CaretIndex)
+        {
+            Owner = this
+        };
+
+        if (assistant.ShowDialog() == true && assistant.ResultExpression is not null)
+        {
+            ExpressionTextBox.Text = assistant.ResultExpression;
+            ExpressionTextBox.CaretIndex = assistant.ResultExpression.Length;
+            ExpressionTextBox.Focus();
+            ValidateExpression();
+        }
+    }
+
     private void OnConditionModeChanged(object sender, RoutedEventArgs e)
     {
         var isVariable = VariableModeRadio.IsChecked == true;
