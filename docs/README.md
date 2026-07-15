@@ -2,13 +2,14 @@
 
 Date: 2026-07-14
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0019`
+Document version: `V2.1.4.0020`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-14 | `V2.1.4.0019` | `PENDING` | Specification d'extension Tableau : ruban contextuel sans dialogue de creation, mode cellule non-deplacant, edition complete, portees, bordures et dimensions precises. |
+| 2026-07-15 | `V2.1.4.0020` | `PENDING` | Separation de la completion d'authoring Tableau dans une nouvelle specification dediee, le noyau precedent demeurant un document implemente. |
+| 2026-07-14 | `V2.1.4.0019` | `08affb4` | Premiere redaction de l'extension Tableau, ensuite relocalisee dans une specification distincte afin de respecter son nouveau cycle de vie. |
 | 2026-07-14 | `V2.1.4.0018` | `858473c` | Correction du layout commun des dialogues Tableau afin d'afficher leurs champs WPF en plus des boutons d'action. |
 | 2026-07-14 | `V2.1.4.0017` | `a94016a` | Compactage du niveau 1 du ruban Inserer afin de rendre le niveau 2 entierement visible dans la hauteur normalisee. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Implementation du Tableau Element+ moderne, edition type tableur, export `.sb2` sans bindings cellule, et ruban Inserer hierarchique a huit familles. |
@@ -171,8 +172,9 @@ Active specifications and implementation plans:
 
 1. `superpowers/specs/2026-07-14-page-commands-design.md` - implemented architecture and product decisions for modern page management.
 2. `superpowers/plans/2026-07-14-page-management-commands.md` - implementation record for page identity, commands, persistence, diagnostics, WPF surfaces, and `.sb2` compatibility; manual isolated-copy UI verification and real-project migration remain gated.
-3. `superpowers/specs/2026-07-14-modern-table-and-insert-ribbon-design.md` - `DEC-0039` core design plus the pending Table-authoring extension: contextual ribbon, reliable cell mode, full cell/input editing, scoped formatting, borders, headers, and precision dimensions.
-4. `superpowers/plans/2026-07-14-modern-table-and-insert-ribbon.md` - executable implementation plan for the approved modern table and hierarchical Insert ribbon; execution is gated on isolating the existing user-owned reference-project changes.
+3. `superpowers/specs/2026-07-14-modern-table-and-insert-ribbon-design.md` - implemented `DEC-0039` core design for the model-backed modern table and hierarchical Insert ribbon.
+4. `superpowers/specs/2026-07-15-table-authoring-completion-design.md` - pending specification for contextual Table authoring, reliable cell mode, full cell/input editing, scoped formatting, borders, headers, and precision dimensions.
+5. `superpowers/plans/2026-07-14-modern-table-and-insert-ribbon.md` - implementation record for the approved and implemented modern table core and hierarchical Insert ribbon.
 
 Generated documentation:
 
