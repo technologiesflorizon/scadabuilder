@@ -1,13 +1,14 @@
 # Outils d'authoring Tableau et verrouillage Element+ - Plan d'implementation
 
 Date: 2026-07-15
-Status: Draft implementation plan - pending execution approval
-Document version: `V2.1.4.0024`
+Status: Reviewed implementation plan - pending execution approval
+Document version: `V2.1.4.0025`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0025` | `PENDING` | Integration de la revue du plan : extraction structurelle conforme a la spec, guards d'export conditionnels, tests d'architecture/resize, commandes explicites, retrait controle du dialogue, scenario `win00012` qualifie et staging documentaire ferme. |
 | 2026-07-15 | `V2.1.4.0024` | `3f6e6a5` | Creation du plan executable derive de la specification approuvee et de `DEC-0040`. |
 
 > **Pour les agents d'execution :** executer ce plan tache par tache. Ne pas deleguer a des sous-agents sans autorisation explicite de l'utilisateur. Les cases `- [ ]` constituent le suivi d'execution et chaque tache possede sa propre frontiere de commit.
@@ -136,7 +137,14 @@ git commit -m "feat: add persistent element position lock model"
 - [ ] Implementer `ToggleElementLockCommand` sous `object.lock`, avec `CanExecute` faux sans Element+ et resultat `WorkspaceDirty = true` seulement sur changement.
 - [ ] Implementer `ElementTransformGuard.CanApply` a partir des bounds avant/apres et de la fermeture effective; un changement W/H ou rotation sans changement X/Y reste autorise.
 - [ ] Supprimer `SelectionState.IsSelectionLocked`, `SetSelectionLocked`, le parametre `force` devenu inutile et `ToggleSelectionLockCommand`; ne pas modifier `ElementStudioEditorState`.
-- [ ] Tester aucun/tous/mixte, groupes imbriques, deux clics sur un groupe mixte, undo/redo exact, refus sans historique et disparition complete de `selection.toggle-lock` dans `src/ScadaBuilderV2.Application`.
+- [ ] Tester aucun/tous/mixte, groupes imbriques, deux clics sur un groupe mixte, undo/redo exact, refus sans historique, ainsi que l'acceptation explicite d'un resize W/H et d'une rotation d'objet simple verrouille lorsque X/Y restent inchanges.
+- [ ] Apres suppression, reexecuter la recherche de dependances avant commit :
+
+```powershell
+rg -n "selection\.toggle-lock|ToggleSelectionLockCommand|IsSelectionLocked|SetSelectionLocked" src tests
+```
+
+Attendu : aucune reference residuelle dans l'application principale; les symboles propres a `ElementStudioEditorState` peuvent subsister. Si un consommateur produit inconnu apparait, suspendre la migration et demander une decision.
 - [ ] Executer :
 
 ```powershell
@@ -219,6 +227,7 @@ git commit -m "feat: add shared element lock surfaces"
 - [ ] Sur refus, restaurer le feedback WebView si necessaire, publier un statut clair et ne pousser ni dirty state ni action.
 - [ ] Preserver `IsLocked` dans copie, couper/coller et duplication de scene; normaliser un objet importe de `.sep` a deverrouille.
 - [ ] Verifier que `.sb2` n'emet pas `data-editor-locked`/`IsLocked` et que `.sep` ne transporte pas le verrou de scene.
+- [ ] Si l'inspection de `PreviewDocument.cs`, `Ft100SceneExporter.cs` ou `ElementStudioComponentPackageFactory.cs` revele qu'un verrou ou un artefact editor-only est emis, corriger le producteur concerne, ajouter une regression ciblee et inclure explicitement ce fichier au commit de la tache.
 - [ ] Executer :
 
 ```powershell
@@ -230,7 +239,7 @@ Attendu : aucun chemin connu ne peut modifier X/Y d'une cible effective verrouil
 - [ ] Commit :
 
 ```powershell
-git add src/ScadaBuilderV2.App/MainWindow.WebViewScript.cs src/ScadaBuilderV2.App/MainWindow.xaml.cs src/ScadaBuilderV2.App/MainWindow.TableIntegration.cs tests/ScadaBuilderV2.Tests/ElementTransformGuardTests.cs tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs tests/ScadaBuilderV2.Tests/StudioElementPlusContractTests.cs tests/ScadaBuilderV2.Tests/SceneClipboardTests.cs
+git add src/ScadaBuilderV2.App/MainWindow.WebViewScript.cs src/ScadaBuilderV2.App/MainWindow.xaml.cs src/ScadaBuilderV2.App/MainWindow.TableIntegration.cs src/ScadaBuilderV2.Rendering/PreviewDocument.cs src/ScadaBuilderV2.Rendering/Ft100SceneExporter.cs src/ScadaBuilderV2.Application/ElementStudio/ElementStudioComponentPackageFactory.cs tests/ScadaBuilderV2.Tests/ElementTransformGuardTests.cs tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs tests/ScadaBuilderV2.Tests/StudioElementPlusContractTests.cs tests/ScadaBuilderV2.Tests/SceneClipboardTests.cs
 git commit -m "feat: enforce element position lock across transforms"
 ```
 
@@ -238,10 +247,11 @@ git commit -m "feat: enforce element position lock across transforms"
 
 ## Phase 3 - Operations Domain Tableau avancees
 
-### Task 5: Extraire contenu et format dans des operations ciblees
+### Task 5: Extraire structure, contenu et format dans des operations ciblees
 
 **Files:**
 - Modify: `src/ScadaBuilderV2.Domain/Scenes/Tables/ScadaTableModels.cs`
+- Create: `src/ScadaBuilderV2.Domain/Scenes/Tables/ScadaTableStructureOperations.cs`
 - Create: `src/ScadaBuilderV2.Domain/Scenes/Tables/ScadaTableContentOperations.cs`
 - Create: `src/ScadaBuilderV2.Domain/Scenes/Tables/ScadaTableFormatOperations.cs`
 - Modify: `src/ScadaBuilderV2.Domain/Scenes/Tables/ScadaTableOperations.cs`
@@ -252,12 +262,13 @@ git commit -m "feat: enforce element position lock across transforms"
 
 **Interfaces:**
 - Consumes: contenus/format nullable de `DEC-0039` et matrice section 7 de la spec.
-- Produces/Changes: conversion de type deterministe, `TextWrap`, `LineHeight`, reset par propriete/portee et facade compatible.
+- Produces/Changes: operations structurelles extraites, conversion de type deterministe, `TextWrap`, `LineHeight`, reset par propriete/portee et facade compatible.
 
 - [ ] Ajouter `TextWrap` et `LineHeight` nullable sans changer les defaults historiques.
+- [ ] Extraire `Merge`, `Unmerge`, `InsertRow`, `InsertColumn`, `DeleteRow` et `DeleteColumn` dans `ScadaTableStructureOperations`; conserver les signatures publiques historiques de `ScadaTableOperations` comme facade de compatibilite deleguant a la nouvelle classe.
 - [ ] Implementer exactement les six conversions de la matrice Texte/Input texte/Input numerique, avec parsing/format invariant et suppression des champs caches incompatibles.
 - [ ] Implementer `ApplyFormat`, `ResetProperty` et `ResetScope` pour Tableau, header, alternance, rangees, colonnes, cellule et plage.
-- [ ] Garder `ScadaTableOperations` comme facade des methodes publiques existantes; faire appeler les nouvelles classes par le coordinateur dans les taches suivantes.
+- [ ] Faire appeler directement les classes structure/contenu/format ciblees par le coordinateur dans les taches suivantes; aucun nouvel appelant ne doit ajouter de logique a la facade historique.
 - [ ] Tester conversions valides/invalides, portee multiple avec valeurs distinctes, reset nullable et precedence effective.
 - [ ] Executer :
 
@@ -361,9 +372,10 @@ git commit -m "feat: add table tracks auto fit and headers"
 
 - [ ] Ajouter `InsertPlacementMode.ContextualSurface` et migrer uniquement `insert.table` de `DialogThenPoint` vers ce mode; conserver le libelle `Tableau`.
 - [ ] Implementer les transitions `OpenSurface`, `CloseSurface`, `ConfigureCreation`, `BeginPlacement`, modes Objet/Cellules, plage et portee.
-- [ ] Definir les groupes Creation, Mode, Selection, Contenu, Structure, Format, Dimensions et En-tetes avec ids stables.
+- [ ] Definir les groupes Creation, Mode, Selection, Contenu, Structure, Format, Dimensions et En-tetes avec ids stables; enregistrer explicitement `table.mode.object` et `table.mode.cells` comme toggles mutuellement exclusifs.
 - [ ] Maintenir `table.add` actif sans selection; desactiver les commandes contextuelles avec raisons precises.
 - [ ] Tester toutes les transitions, Escape, retour Donnees, selection/non-selection Tableau, config 6 x 8 et remplacement d'un placement actif.
+- [ ] Ajouter un test d'architecture par reflexion qui echoue si `TableAuthoringSession` contient un champ/propriete/parametre/retour `ScadaElement` mutable ou une reference a `TableEditCoordinator`; la session ne transporte que des ids et snapshots immuables.
 - [ ] Executer :
 
 ```powershell
@@ -398,7 +410,7 @@ git commit -m "feat: add contextual table authoring session"
 - [ ] Faire traiter `insert.table` comme activation de sous-surface dans `ExecuteRibbonCommand`, sans appeler `BeginInsertToolPlacement`.
 - [ ] Rendre le groupe Creation et ses controles Rangées/Colonnes/Premiere rangee d'en-tete dans le ruban secondaire existant; garder `InsertFamilySurface` compact visible.
 - [ ] Faire armer le placement uniquement par `table.add`; utiliser la configuration de session lors du clic canvas puis selectionner le nouvel objet et entrer en mode Cellules.
-- [ ] Supprimer `RequestCreationOptions()` du flux et retirer `TableCreationDialog` s'il n'a plus aucun consommateur; conserver les dialogues de proprietes d'un tableau existant.
+- [ ] Avant le retrait, inventorier les consommateurs avec `rg -n "TableCreationDialog|TableCreationOptions|RequestCreationOptions" src tests`; apres migration de `table.add`, supprimer `RequestCreationOptions`, `TableCreationDialog` et `TableCreationOptions`, puis reexecuter le grep et attendre zero reference. Conserver `TablePropertiesDialog`, `CellFormatDialog` et les dialogues de dimensions d'un tableau existant.
 - [ ] Ne pas voler un autre menu superieur lors d'une selection Tableau; ouvrir automatiquement la sous-surface seulement si `Inserer > Donnees` est deja actif.
 - [ ] Limiter `MainWindow.TableIntegration.cs` aux methodes de delegation nommees par la spec.
 - [ ] Tester absence de dialogue, bouton toujours disponible, placement/Escape, retour Donnees et frontiere MainWindow.
@@ -480,7 +492,7 @@ git commit -m "feat: add typed table webview interaction modes"
 - [ ] Valider le DTO avant de construire une requete Application; aucune mesure DOM ne devient directement une mutation.
 - [ ] Construire 4096 cellules via `DocumentFragment` et un seul `replaceChildren`; conserver un overlay borne pour selection/resize.
 - [ ] Ajouter des tests de contrat qui interdisent un listener permanent par cellule et exigent le batching/document fragment.
-- [ ] Executer les tests automatises puis le gate Release interactif sur une copie isolee : rendu initial <= 500 ms et feedback p95 <= 50 ms, avec machine/date consignees.
+- [ ] Executer les tests automatises puis le gate Release interactif sur une copie isolee : rendu initial <= 500 ms et feedback p95 <= 50 ms. Conserver pour la cloture la date, OS, CPU, RAM, commit/build Release, nombre d'echantillons, valeurs brutes ou resume statistique, rendu initial, p95 selection, p95 resize et conclusion conforme/non conforme.
 
 ```powershell
 dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~TableWebViewMessageAdapterTests|FullyQualifiedName~TableTrackOperationsTests|FullyQualifiedName~TableWebViewPerformanceContractTests"
@@ -504,7 +516,7 @@ git commit -m "perf: add table auto fit and 64x64 rendering guard"
 
 **Files:**
 - Create: `src/ScadaBuilderV2.App/TableEditor/TablePropertiesViewModel.cs`
-- Modify: `src/ScadaBuilderV2.App/TableEditor/TableDialogs.cs`
+- Modify: `src/ScadaBuilderV2.App/TableEditor/TableDialogs.cs` (contient le `CellFormatDialog` existant a adapter, pas a recreer)
 - Modify: `src/ScadaBuilderV2.App/MainWindow.xaml`
 - Modify: `src/ScadaBuilderV2.App/MainWindow.TableIntegration.cs`
 - Modify: `tests/ScadaBuilderV2.Tests/TableUiArchitectureTests.cs`
@@ -558,6 +570,7 @@ git commit -m "feat: add scoped table content and format inspector"
 - [ ] Exposer nombre de rangees d'en-tete, marquer/demarquer et fusion de titres dans les limites du prefixe consecutif.
 - [ ] Etendre le menu clic droit pour cellule/plage/header : copier, coller, inserer/supprimer piste, clear, format, taille, merge/unmerge et header.
 - [ ] Conserver la selection au clic droit et afficher une raison de desactivation issue d'Application.
+- [ ] Conserver `tests/ScadaBuilderV2.Tests/TableClipboardTests.cs` sans modification et verifier explicitement que cette regression `DEC-0039` reste verte.
 - [ ] Tester chaque scope, preset, menu, dialogue numerique, undo/redo et refus sans mutation.
 - [ ] Executer :
 
@@ -595,7 +608,7 @@ git commit -m "feat: add complete table border dimension and header tools"
 - [ ] Rendre wrap, line-height et chaque segment de bordure avec CSS page-scope, sans fusionner arbitrairement des segments heterogenes.
 - [ ] Rendre toutes les rangees `IsHeader` en `<th>` avec spans valides; conserver inputs natifs et absence de binding.
 - [ ] Verifier round-trip d'une table avec contenus mixtes, scopes, bordures, headers, dimensions et `IsLocked`.
-- [ ] Construire en test une grille 16 x 10 representative de `win00012`, puis verifier creation -> edition -> save/reload -> preview -> `.sb2`.
+- [ ] Construire en test une grille 16 x 10 representative des capacites necessaires a `win00012` : contenus Texte/Input texte/Input numerique melanges, au moins deux rangees d'en-tete, un titre de section fusionne, largeurs/hauteurs non uniformes, bandes alternees et bordures exterieures/interieures/par cellule heterogenes. Verifier creation -> edition -> save/reload -> preview -> `.sb2`; ce scenario structurel n'est ni une conversion automatique ni une reproduction des quelque 593 objets legacy de la page complete.
 - [ ] Inspecter le HTML exporte pour exclure `IsLocked`, `data-editor-locked`, headers/gouttieres d'authoring, overlays et handles.
 - [ ] Executer :
 
@@ -631,9 +644,11 @@ git commit -m "feat: render advanced tables through sb2 pipeline"
 - Modify: `docs/08_implementation_status/REGRESSION_COVERAGE_V2.md`
 - Modify: `docs/08_implementation_status/KNOWN_GAPS_V2.md` only for gaps reels restants
 - Modify: `docs/10_generated/CODE_MAP_V2.md`
+- Modify: `docs/10_generated/MODULE_FUNCTION_INDEX_V2.md`
 - Modify: `docs/10_generated/COMMAND_FLOW_DIAGRAM_V2.md`
 - Modify: `docs/10_generated/STATE_FLOW_DIAGRAM_V2.md`
 - Modify: `docs/10_generated/EXPORT_FLOW_DIAGRAM_V2.md`
+- Modify: `docs/10_generated/STUDIO_ELEMENT_PLUS_FLOW_DIAGRAM_V2.md` only if the generated `.sep` flow changes
 - Modify: `docs/README.md`
 - Modify: `docs/superpowers/specs/2026-07-15-table-ui-authoring-and-element-lock-design.md`
 - Modify: this plan
@@ -654,7 +669,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 Attendu : tests cibles verts; suite complete egale ou meilleure que le baseline frais. Toute nouvelle regression bloque la cloture.
 
 - [ ] Effectuer sur une copie isolee le smoke WPF : ouvrir sous-surface Tableau, creer 6 x 8 et 16 x 10, selectionner cellules/headers, resize pistes, formats/bordures, merge/unmerge, auto-fit, lock simple/mixte/groupe, reload et inspection `.sb2`/`.sep`.
-- [ ] Consigner machine, build Release et mesures 64 x 64. Ne jamais ouvrir/sauvegarder le projet utilisateur pendant ce smoke.
+- [ ] Consigner dans `IMPLEMENTED_FEATURES_V2.md` ou `REGRESSION_COVERAGE_V2.md` la preuve 64 x 64 collectee a la tache 11 : date, machine, OS, CPU, RAM, commit/build Release, echantillonnage, temps de rendu initial, p95 selection, p95 resize et conclusion. Ne jamais ouvrir/sauvegarder le projet utilisateur pendant ce smoke.
 - [ ] Mettre `DEC-0040`, la spec et le plan au statut implemente seulement si les preuves requises existent; sinon documenter exactement le gap.
 - [ ] Synchroniser contrats proprietaires, diagrammes Mermaid, cartes generees, XML docs et regression coverage.
 - [ ] Appliquer un bump d'iteration via `scada-builder-v2-versioning` a partir de la version presente au moment de la cloture; ne pas reutiliser aveuglement `V2.1.4.0024`.
@@ -672,9 +687,19 @@ Attendu : aucun nouvel ecart documentaire attribuable a la tranche, aucun fichie
 - [ ] Commit :
 
 ```powershell
-git add VERSION docs
+git add VERSION
+git add docs/00_governance/DECISION_REGISTER_V2.md docs/02_architecture/MODULE_BOUNDARIES_V2.md
+git add docs/03_runtime_contracts/PREVIEW_BUILD_EXPORT_CONTRACT_V2.md docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md
+git add docs/04_editor/COMMANDS_CONTRACT_V2.md docs/04_editor/STATE_MANAGEMENT_CONTRACT_V2.md docs/04_editor/SELECTION_CONTRACT_V2.md docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md
+git add docs/05_studio_element_plus/STUDIO_ELEMENT_PLUS_SEP_CONTRACT_V2.md docs/06_ui_ux/UI_ARCHITECTURE_V2.md docs/06_ui_ux/UI_SPECIFICATION_V2.md
+git add docs/08_implementation_status/IMPLEMENTED_FEATURES_V2.md docs/08_implementation_status/REGRESSION_COVERAGE_V2.md docs/08_implementation_status/KNOWN_GAPS_V2.md
+git add docs/10_generated/CODE_MAP_V2.md docs/10_generated/MODULE_FUNCTION_INDEX_V2.md docs/10_generated/COMMAND_FLOW_DIAGRAM_V2.md docs/10_generated/STATE_FLOW_DIAGRAM_V2.md docs/10_generated/EXPORT_FLOW_DIAGRAM_V2.md docs/10_generated/STUDIO_ELEMENT_PLUS_FLOW_DIAGRAM_V2.md
+git add docs/README.md docs/superpowers/specs/2026-07-15-table-ui-authoring-and-element-lock-design.md docs/superpowers/plans/2026-07-15-table-ui-authoring-and-element-lock.md
+git diff --cached --name-only
 git commit -m "docs: record advanced table and element lock implementation"
 ```
+
+Attendu avant commit : la liste stagee correspond uniquement aux fichiers effectivement modifies par la tranche; aucun `git add docs` global et aucun fichier sous `projects/AMR_REF_SCADA_V2`.
 
 ---
 
