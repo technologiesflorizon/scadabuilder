@@ -36,6 +36,7 @@ internal static class TableWebViewMessageAdapter
                 "tableCellEdit" => ParseCellEdit(root, id),
                 "tableTrackResize" => ParseTrack(root,id),
                 "tableAutoFitMeasured" => new TableAutoFitRequest(id, Numbers(root,"columnSizes"), Numbers(root,"rowSizes")),
+                "tableInteractionModeChanged" => ParseInteractionMode(root, id),
                 _ => null
             };
             if (request is null) error = $"Unsupported table message type '{type}'.";
@@ -68,6 +69,12 @@ internal static class TableWebViewMessageAdapter
         var orientation=Text(root,"orientation"); var size=Number(root,"trackSize"); var index=Int(root,"trackIndex");
         if (orientation is not ("row" or "column") || index<0 || !double.IsFinite(size) || size<=0) throw new InvalidOperationException();
         return new(id,orientation,index,size);
+    }
+    private static TableInteractionModeChangedRequest ParseInteractionMode(JsonElement root, string id)
+    {
+        var mode = Text(root, "mode");
+        if (mode is not ("object" or "cells")) throw new InvalidOperationException("The table interaction mode is invalid.");
+        return new(id, mode);
     }
     private static string Text(JsonElement root,string name) => root.GetProperty(name).GetString() ?? throw new InvalidOperationException();
     private static string? OptionalText(JsonElement root,string name) => root.TryGetProperty(name,out var x) ? x.GetString() : null;

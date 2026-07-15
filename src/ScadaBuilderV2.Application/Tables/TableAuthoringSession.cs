@@ -6,7 +6,7 @@ namespace ScadaBuilderV2.Application.Tables;
 public enum TableInteractionMode { Object, Cells }
 
 /// <summary>Stores contextual table-authoring UI state without owning scene models.</summary>
-/// <remarks>Decisions: DEC-0040. The session carries stable ids and immutable value snapshots only.</remarks>
+/// <remarks>Decisions: DEC-0040, DEC-0041. The session carries stable ids and immutable value snapshots only.</remarks>
 public sealed class TableAuthoringSession
 {
     /// <summary>Gets whether the contextual Table ribbon is open.</summary>
@@ -29,6 +29,8 @@ public sealed class TableAuthoringSession
     public ScadaTableFormatScopeKind FormatScope { get; private set; } = ScadaTableFormatScopeKind.Cells;
     /// <summary>Gets whether editor-only A/1 table guides are visible.</summary>
     public bool ShowEditorGuides { get; private set; } = true;
+    /// <summary>Gets whether the guides are effectively visible in the active Cells mode.</summary>
+    public bool EditorGuidesVisible => Mode == TableInteractionMode.Cells && ShowEditorGuides;
     /// <summary>Gets whether the current selection intersects a merged cell.</summary>
     public bool SelectionContainsMergedCells { get; private set; }
 
@@ -49,15 +51,16 @@ public sealed class TableAuthoringSession
     /// <summary>Updates the selected table id.</summary>
     public void SelectTable(string? id)
     {
+        var selectionChanged = !string.Equals(TableElementId, id, StringComparison.Ordinal);
         TableElementId = id;
-        if (id is null)
+        if (id is null || selectionChanged)
         {
             Mode = TableInteractionMode.Object;
             SelectionContainsMergedCells = false;
         }
     }
-    /// <summary>Completes placement and enters Cells mode.</summary>
-    public void CompletePlacement(string id) { IsPlacementArmed = false; TableElementId = id; Mode = TableInteractionMode.Cells; Selection = new(0, 0, 0, 0); SelectionContainsMergedCells = false; }
+    /// <summary>Completes placement and keeps Object mode available for initial positioning.</summary>
+    public void CompletePlacement(string id) { IsPlacementArmed = false; TableElementId = id; Mode = TableInteractionMode.Object; Selection = new(0, 0, 0, 0); SelectionContainsMergedCells = false; }
     /// <summary>Changes the mutually exclusive interaction mode.</summary>
     public void SetMode(TableInteractionMode mode) { if (mode == TableInteractionMode.Cells && TableElementId is null) throw new InvalidOperationException("A table must be selected."); Mode = mode; }
     /// <summary>Updates the immutable physical cell range snapshot.</summary>
@@ -66,8 +69,18 @@ public sealed class TableAuthoringSession
         Selection = range;
         SelectionContainsMergedCells = containsMergedCells;
     }
-    /// <summary>Toggles the visibility of editor-only A/1 guides.</summary>
-    public void ToggleEditorGuides() => ShowEditorGuides = !ShowEditorGuides;
+    /// <summary>Toggles effective A/1 guides, entering Cells mode when requested from Object mode.</summary>
+    public void ToggleEditorGuides()
+    {
+        if (Mode != TableInteractionMode.Cells)
+        {
+            Mode = TableInteractionMode.Cells;
+            ShowEditorGuides = true;
+            return;
+        }
+
+        ShowEditorGuides = !ShowEditorGuides;
+    }
     /// <summary>Updates the formatting scope without changing physical selection.</summary>
     public void SetFormatScope(ScadaTableFormatScopeKind scope) => FormatScope = scope;
 }

@@ -61,6 +61,8 @@ public sealed class Ft100SceneExporterTests
             Assert.IsFalse(html.Contains("selection-overlay", StringComparison.Ordinal));
             Assert.IsFalse(html.Contains("data-editor-locked", StringComparison.Ordinal));
             Assert.IsFalse(html.Contains("IsLocked", StringComparison.Ordinal));
+            Assert.IsFalse(html.Contains("scada-editor-table-header", StringComparison.Ordinal));
+            Assert.IsFalse(html.Contains("scada-editor-table-track", StringComparison.Ordinal));
         }
         finally
         {

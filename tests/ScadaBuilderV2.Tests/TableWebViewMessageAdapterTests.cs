@@ -12,6 +12,8 @@ public sealed class TableWebViewMessageAdapterTests
         StringAssert.Contains(source, "tableCellEdit");
         StringAssert.Contains(source, "tableTrackResize");
         StringAssert.Contains(source, "tableAutoFitMeasured");
+        StringAssert.Contains(source, "tableInteractionModeChanged");
+        StringAssert.Contains(source, "The table interaction mode is invalid.");
         StringAssert.Contains(source, "The table selection range is not normalized.");
         StringAssert.Contains(source, "The table content kind is invalid.");
         StringAssert.Contains(source, "Invalid table bridge message:");

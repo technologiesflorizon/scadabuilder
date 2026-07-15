@@ -41,6 +41,11 @@ public partial class MainWindow
             case TableAutoFitRequest fit:
                 _tableEditorController.ApplyAutoFit(element, fit.ColumnSizes, fit.RowSizes);
                 break;
+            case TableInteractionModeChangedRequest modeChanged:
+                _tableAuthoringSession.SelectTable(modeChanged.ElementId);
+                _tableAuthoringSession.SetMode(modeChanged.Mode == "cells" ? TableInteractionMode.Cells : TableInteractionMode.Object);
+                RefreshTableRibbonSurface();
+                break;
         }
         return true;
     }
@@ -71,7 +76,7 @@ public partial class MainWindow
     {
         _tableRibbonViewModel.BackToDataTools();
         SetActiveRibbon("Insert");
-        _ = SetTableInteractionModeInWebViewAsync(TableInteractionMode.Object);
+        _ = SyncTableEditorStateInWebViewAsync();
     }
 
     private void RefreshTableRibbonSurface()
@@ -106,22 +111,23 @@ public partial class MainWindow
         if (_selectedSceneObject?.Kind != ScadaElementKind.Table) return;
         _tableAuthoringSession.SelectTable(_selectedSceneObject.Id);
         _tableAuthoringSession.SetMode(mode);
-        await SetTableInteractionModeInWebViewAsync(mode);
+        await SyncTableEditorStateInWebViewAsync();
         RefreshTableRibbonSurface();
     }
 
-    private async Task SetTableInteractionModeInWebViewAsync(TableInteractionMode mode)
+    // Keeps the application-owned Object/Cells and guide state atomic across WebView rerenders.
+    private async Task SyncTableEditorStateInWebViewAsync()
     {
         if (PreviewWebView?.CoreWebView2 is null) return;
-        await PreviewWebView.CoreWebView2.ExecuteScriptAsync($"window.scadaModernTable?.setMode('{(mode == TableInteractionMode.Cells ? "cells" : "object")}');");
+        var state = TableEditorWebViewStateFactory.Create(_tableAuthoringSession);
+        await PreviewWebView.CoreWebView2.ExecuteScriptAsync(TableEditorWebViewStateFactory.BuildApplyScript(state));
     }
 
     private async Task ToggleTableEditorGuidesAsync()
     {
         if (_selectedSceneObject?.Kind != ScadaElementKind.Table) return;
         _tableAuthoringSession.ToggleEditorGuides();
-        if (PreviewWebView?.CoreWebView2 is not null)
-            await PreviewWebView.CoreWebView2.ExecuteScriptAsync($"window.scadaModernTable?.setGuides({(_tableAuthoringSession.ShowEditorGuides ? "true" : "false")});");
+        await SyncTableEditorStateInWebViewAsync();
         RefreshTableRibbonSurface();
     }
 
@@ -167,9 +173,11 @@ public partial class MainWindow
     {
         if (TablePropertiesPanel is null || TableSelectionSummaryText is null) return;
         var element = _selectedSceneObject?.Kind == ScadaElementKind.Table ? _selectedSceneObject : null;
-        var wasCellMode = _tableAuthoringSession.Mode == TableInteractionMode.Cells;
+        var previousTableId = _tableAuthoringSession.TableElementId;
+        var previousMode = _tableAuthoringSession.Mode;
         _tableAuthoringSession.SelectTable(element?.Id);
-        if (element is null && wasCellMode) _ = SetTableInteractionModeInWebViewAsync(TableInteractionMode.Object);
+        if (!string.Equals(previousTableId, _tableAuthoringSession.TableElementId, StringComparison.Ordinal) || previousMode != _tableAuthoringSession.Mode)
+            _ = SyncTableEditorStateInWebViewAsync();
         TablePropertiesPanel.Visibility = element is null ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
         if (element?.Table is null) return;
         var range = _tableEditorController.Selection;

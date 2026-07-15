@@ -44,6 +44,9 @@ public sealed class TableUiArchitectureTests
         StringAssert.Contains(main, "OpenTableAuthoringSurface();");
         StringAssert.Contains(main, "\"table.merge-toggle\" => _tableAuthoringSession.SelectionContainsMergedCells");
         StringAssert.Contains(tableIntegration, "_tableRibbonViewModel.Open();");
+        StringAssert.Contains(tableIntegration, "SyncTableEditorStateInWebViewAsync");
+        StringAssert.Contains(tableIntegration, "TableEditorWebViewStateFactory.Create");
+        StringAssert.Contains(tableIntegration, "TableEditorWebViewStateFactory.BuildApplyScript");
         Assert.IsFalse(tableIntegration.Contains("ShowDialog", StringComparison.Ordinal), "Inserer > Donnees > Tableau must open the contextual ribbon without a modal dialog.");
         Assert.IsFalse(main.Contains("case \"insert.shape.", StringComparison.Ordinal));
         Assert.IsFalse(main.Contains("case \"insert.hmi.", StringComparison.Ordinal));
@@ -52,6 +55,8 @@ public sealed class TableUiArchitectureTests
         StringAssert.Contains(web, "tableTrackResize");
         StringAssert.Contains(web, "tableCellEdit");
         StringAssert.Contains(web, "setGuides");
+        StringAssert.Contains(web, "setEditorState");
+        StringAssert.Contains(web, "tableInteractionModeChanged");
         StringAssert.Contains(web, "data-editor-guides=\"hidden\"");
         StringAssert.Contains(web, "data-mode=\"object\"");
         StringAssert.Contains(web, "createDocumentFragment");

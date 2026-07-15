@@ -359,40 +359,4 @@ public partial class MainWindow
         public int RenderOrder { get; set; }
     }
 
-    private sealed class ModernElementRenderPayload
-    {
-        public string Id { get; set; } = "";
-
-        public string DisplayName { get; set; } = "";
-
-        public string Kind { get; set; } = "";
-
-        public double X { get; set; }
-
-        public double Y { get; set; }
-
-        public double Width { get; set; }
-
-        public double Height { get; set; }
-
-        public bool IsSelected { get; set; }
-
-        public bool IsGroupContextSelected { get; set; }
-
-        public int RenderIndex { get; set; }
-
-        public ScadaElementStyle? Style { get; set; }
-
-        public ScadaElementData? Data { get; set; }
-
-        public ScadaButtonBehavior? ButtonBehavior { get; set; }
-
-        public string? ShapeKind { get; set; }
-
-        public string? ButtonKind { get; set; }
-
-        public ScadaTableDefinition? Table { get; set; }
-
-        public IReadOnlyList<ModernElementRenderPayload> Children { get; set; } = [];
-    }
 }

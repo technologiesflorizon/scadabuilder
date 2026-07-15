@@ -11,7 +11,23 @@ public sealed class TableAuthoringSessionTests
         var session = new TableAuthoringSession();
         Assert.AreEqual(6, session.CreationColumns); Assert.AreEqual(8, session.CreationRows); Assert.IsTrue(session.FirstRowIsHeader);
         session.OpenSurface(); session.BeginPlacement(); session.CompletePlacement("table-1");
-        Assert.IsTrue(session.IsSurfaceOpen); Assert.IsFalse(session.IsPlacementArmed); Assert.AreEqual(TableInteractionMode.Cells, session.Mode);
+        Assert.IsTrue(session.IsSurfaceOpen); Assert.IsFalse(session.IsPlacementArmed); Assert.AreEqual(TableInteractionMode.Object, session.Mode);
+    }
+
+    [TestMethod]
+    public void SelectionChangeResetsToObjectButRefreshOfSameTablePreservesCellsMode()
+    {
+        var session = new TableAuthoringSession();
+        session.SelectTable("table-1");
+        session.SetMode(TableInteractionMode.Cells);
+
+        session.SelectTable("table-1");
+        Assert.AreEqual(TableInteractionMode.Cells, session.Mode);
+
+        session.SelectTable(null);
+        session.SelectTable("table-1");
+        Assert.AreEqual(TableInteractionMode.Object, session.Mode);
+        Assert.IsFalse(session.EditorGuidesVisible);
     }
 
     [TestMethod]
@@ -37,13 +53,20 @@ public sealed class TableAuthoringSessionTests
         session.SetSelection(new(0, 0, 1, 1), containsMergedCells: false);
 
         var commands = TableRibbonStateProvider.Create(session).SelectMany(group => group.Commands).ToDictionary(command => command.Id);
-        Assert.AreEqual("Masquer A/1", commands["table.editor-guides"].Label);
+        Assert.AreEqual("Afficher A/1", commands["table.editor-guides"].Label);
         Assert.AreEqual("Fusionner", commands["table.merge-toggle"].Label);
+
+        session.ToggleEditorGuides();
+        Assert.AreEqual(TableInteractionMode.Cells, session.Mode);
+        Assert.IsTrue(session.EditorGuidesVisible);
+        commands = TableRibbonStateProvider.Create(session).SelectMany(group => group.Commands).ToDictionary(command => command.Id);
+        Assert.AreEqual("Masquer A/1", commands["table.editor-guides"].Label);
 
         session.ToggleEditorGuides();
         session.SetSelection(new(0, 0, 1, 1), containsMergedCells: true);
         commands = TableRibbonStateProvider.Create(session).SelectMany(group => group.Commands).ToDictionary(command => command.Id);
         Assert.AreEqual("Afficher A/1", commands["table.editor-guides"].Label);
+        Assert.IsFalse(session.EditorGuidesVisible);
         Assert.AreEqual("Defusionner", commands["table.merge-toggle"].Label);
     }
 }

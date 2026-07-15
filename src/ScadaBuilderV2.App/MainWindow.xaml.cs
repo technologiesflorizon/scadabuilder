@@ -37,6 +37,7 @@ using ScadaBuilderV2.App.Diagnostics;
 using ScadaBuilderV2.App.Workspace;
 using ScadaBuilderV2.App.TableEditor;
 using ScadaBuilderV2.App.Ribbon;
+using ScadaBuilderV2.App.EditorBridge;
 using ScadaBuilderV2.Application.Tables;
 
 namespace ScadaBuilderV2.App;
@@ -4595,7 +4596,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         if (element.Kind == ScadaElementKind.Table)
         {
             _tableAuthoringSession.CompletePlacement(element.Id);
-            _ = SetTableInteractionModeInWebViewAsync(TableInteractionMode.Cells);
+            _ = SyncTableEditorStateInWebViewAsync();
             RefreshTableRibbonSurface();
         }
     }
@@ -6233,9 +6234,10 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         var payload = _activeScene.Elements
             .Where(element => !element.IsLegacyStatic)
-            .Select((element, index) => ToRenderPayload(element, selectedIds, index));
+            .Select((element, index) => ModernElementRenderPayloadFactory.Create(element, selectedIds, index));
         var json = JsonSerializer.Serialize(payload);
         await PreviewWebView.ExecuteScriptAsync($"window.scadaSceneEditor && window.scadaSceneEditor.renderModernElements({json});");
+        await SyncTableEditorStateInWebViewAsync();
         await ApplyLegacyTextOverridesAsync(_activeScene.TextOverrides);
     }
 
@@ -6264,33 +6266,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         var json = JsonSerializer.Serialize(payload);
         await PreviewWebView.ExecuteScriptAsync($"window.scadaSceneEditor && window.scadaSceneEditor.applySourceElementBounds({json});");
-    }
-
-    private static ModernElementRenderPayload ToRenderPayload(ScadaElement element, IReadOnlySet<string> selectedIds, int renderIndex)
-    {
-        return new ModernElementRenderPayload
-        {
-            Id = element.Id,
-            DisplayName = element.DisplayName,
-            Kind = element.Kind.ToString(),
-            X = element.Bounds.X,
-            Y = element.Bounds.Y,
-            Width = element.Bounds.Width,
-            Height = element.Bounds.Height,
-            IsSelected = selectedIds.Contains(element.Id),
-            IsGroupContextSelected = element.Kind == ScadaElementKind.Group &&
-                element.ChildElements.Any(child => selectedIds.Any(selectedId => ContainsElement(child, selectedId))),
-            RenderIndex = renderIndex,
-            Style = element.Style,
-            Data = element.Data,
-            ButtonBehavior = element.ButtonBehavior,
-            ShapeKind = element.Kind == ScadaElementKind.Shape ? element.EffectiveShapeKind.ToString() : null,
-            ButtonKind = element.Kind == ScadaElementKind.Button ? element.EffectiveButtonKind.ToString() : null,
-            Table = element.Table,
-            Children = element.ChildElements
-                .Select((child, childIndex) => ToRenderPayload(child, selectedIds, childIndex))
-                .ToArray()
-        };
     }
 
     private static bool ContainsElement(ScadaElement element, string elementId)
@@ -6946,7 +6921,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         {
             "table.mode.object" => _tableAuthoringSession.Mode == TableInteractionMode.Object,
             "table.mode.cells" => _tableAuthoringSession.Mode == TableInteractionMode.Cells,
-            "table.editor-guides" => _tableAuthoringSession.ShowEditorGuides,
+            "table.editor-guides" => _tableAuthoringSession.EditorGuidesVisible,
             "table.merge-toggle" => _tableAuthoringSession.SelectionContainsMergedCells,
             _ => false
         };
@@ -7054,7 +7029,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private void SetActiveInsertFamily(string familyId)
     {
-        if (familyId != "data") _tableAuthoringSession.CloseSurface();
+        if (familyId != "data")
+        {
+            _tableAuthoringSession.CloseSurface();
+            _ = SyncTableEditorStateInWebViewAsync();
+        }
         _activeInsertFamilyId = familyId;
         SetActiveRibbon("Insert");
     }

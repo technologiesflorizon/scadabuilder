@@ -1167,7 +1167,8 @@ public sealed class WebViewContextMenuScriptTests
 
         StringAssert.Contains(source, "cursor: url(\"data:image/svg+xml,");
         StringAssert.Contains(source, "10 10, grab;");
-        StringAssert.Contains(source, "mode: event.target?.dataset?.handle === 'ne' ? 'rotate' : (isResize ? 'resize' : 'move')");
+        StringAssert.Contains(source, "const transformMode = handle === 'ne' ? 'rotate' : (isResize ? 'resize' : 'move');");
+        StringAssert.Contains(source, "mode: transformMode,");
         StringAssert.Contains(source, "function getWrapperRotation(wrapper)");
         StringAssert.Contains(source, "function postModernRotation(id, rotation)");
         StringAssert.Contains(source, "modernDrag.mode === 'rotate'");
@@ -1258,14 +1259,22 @@ public sealed class WebViewContextMenuScriptTests
     public void LockedElementMovementIsRejectedBeforeVisualDragStarts()
     {
         var source = ReadMainWindowSource();
+        var payload = ReadMainWindowFile(Path.Combine("EditorBridge", "ModernElementRenderPayload.cs"));
+        var factory = ReadMainWindowFile(Path.Combine("EditorBridge", "ModernElementRenderPayloadFactory.cs"));
 
+        StringAssert.Contains(payload, "public bool IsLocked { get; set; }");
+        StringAssert.Contains(factory, "IsLocked = element.IsLocked,");
         StringAssert.Contains(source, "const blocksPositionMove = candidate => candidate?.dataset?.editorLocked === 'true'");
         StringAssert.Contains(source, "candidate?.querySelector?.('.scada-modern-element[data-editor-locked=\"true\"]') !== null");
-        StringAssert.Contains(source, "if (!isResize && movingWrappers.some(blocksPositionMove))");
+        StringAssert.Contains(source, "const forbiddenTransform = transformMode === 'move' && movingWrappers.some(blocksPositionMove)");
+        StringAssert.Contains(source, "if (forbiddenTransform)");
+        StringAssert.Contains(source, "positionLocked: blocksPositionMove(sceneMoveWrapper)");
+        StringAssert.Contains(source, "if (modernDrag.positionLocked)");
 
-        var guard = source.IndexOf("if (!isResize && movingWrappers.some(blocksPositionMove))", StringComparison.Ordinal);
+        var guard = source.IndexOf("if (forbiddenTransform)", StringComparison.Ordinal);
         var drag = source.IndexOf("modernDrag = {", guard, StringComparison.Ordinal);
-        Assert.IsTrue(guard >= 0 && drag > guard, "The position-lock guard must run before drag preview state is created.");
+        var capture = source.IndexOf("sceneMoveWrapper.setPointerCapture", guard, StringComparison.Ordinal);
+        Assert.IsTrue(guard >= 0 && drag > guard && capture > drag, "The position-lock guard must run before drag preview state and pointer capture.");
     }
 
     [TestMethod]
@@ -1274,6 +1283,19 @@ public sealed class WebViewContextMenuScriptTests
         var source = ReadMainWindowSource();
         const string cellModeGuard = "event.target?.closest?.('.scada-editor-table[data-mode=\"cells\"]')";
         Assert.AreEqual(3, CountOccurrences(source, cellModeGuard), "Pointer, double-click and context-menu gestures must all remain owned by cell mode.");
+    }
+
+    [TestMethod]
+    public void LockedResizeRejectsTranslatingHandlesAndGroupPreview()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, ".scada-modern-handle[data-lock-disabled=\"true\"]");
+        StringAssert.Contains(source, "const positionChangingResize = transformMode === 'resize' && (handle.includes('n') || handle.includes('w'));");
+        StringAssert.Contains(source, "const lockedGroupResize = transformMode === 'resize'");
+        StringAssert.Contains(source, "positionChangingResize && blocksPositionMove(sceneMoveWrapper)");
+        StringAssert.Contains(source, "geometry.x = modernDrag.startX;");
+        StringAssert.Contains(source, "geometry.y = modernDrag.startY;");
     }
 
     [TestMethod]

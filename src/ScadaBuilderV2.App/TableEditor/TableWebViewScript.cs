@@ -27,6 +27,7 @@ internal static class TableWebViewScript
   let trackDrag = null;
   let interactionMode = 'object';
   let showEditorGuides = true;
+  let activeTableId = null;
   document.addEventListener('pointermove', event => {
     if (!trackDrag) return;
     const delta = trackDrag.orientation === 'column' ? event.clientX - trackDrag.start : event.clientY - trackDrag.start;
@@ -53,7 +54,7 @@ internal static class TableWebViewScript
     const table = element.Table || element.table;
     if (!table) return;
     wrapper.style.padding = '0'; wrapper.style.background = 'transparent'; wrapper.style.border = '0';
-    const grid = document.createElement('div'); grid.className = 'scada-editor-table'; grid.dataset.tableId = element.Id; grid.dataset.mode = interactionMode; grid.dataset.editorGuides = showEditorGuides ? 'visible' : 'hidden'; grid.style.position = 'relative';
+    const grid = document.createElement('div'); grid.className = 'scada-editor-table'; grid.dataset.tableId = element.Id; grid.dataset.mode = interactionMode; grid.dataset.editorGuides = interactionMode === 'cells' && showEditorGuides ? 'visible' : 'hidden'; grid.style.position = 'relative';
     grid.dataset.columnSizes = JSON.stringify((table.Columns || []).map(item => Number(item.Width || 24)));
     grid.dataset.rowSizes = JSON.stringify((table.Rows || []).map(item => Number(item.Height || 20)));
     grid.style.gridTemplateColumns = (table.Columns || []).map(item => `${Number(item.Width || 24)}px`).join(' ');
@@ -89,8 +90,8 @@ internal static class TableWebViewScript
     const cellFrom = event => event.target.closest?.('.scada-editor-table-cell');
     const selectTo = (node, extend) => { if(!node) return; const end={row:Number(node.dataset.row),column:Number(node.dataset.column)}; if(!extend||!anchor) anchor=end; grid.querySelectorAll('.scada-editor-table-cell').forEach(item=>{const r=Number(item.dataset.row),c=Number(item.dataset.column);item.dataset.selected=r>=Math.min(anchor.row,end.row)&&r<=Math.max(anchor.row,end.row)&&c>=Math.min(anchor.column,end.column)?'true':'false';}); window.chrome?.webview?.postMessage({type:'tableSelection',id:element.Id,row:anchor.row,column:anchor.column,endRow:end.row,endColumn:end.column}); };
     grid.addEventListener('change', event => { const node=cellFrom(event); if(node && event.target.matches('input')) window.chrome?.webview?.postMessage({type:'tableCellEdit',id:element.Id,row:Number(node.dataset.row),column:Number(node.dataset.column),contentKind:node.dataset.contentKind,text:event.target.value}); });
-    grid.addEventListener('dblclick', event => { const node=cellFrom(event); if(!node||node.dataset.contentKind!=='Text') return; interactionMode='cells';grid.dataset.mode='cells';event.preventDefault();event.stopPropagation();const span=node.querySelector('span');if(!span)return;const input=document.createElement('input');input.type='text';input.value=span.textContent||'';node.replaceChild(input,span);input.focus();input.select();input.addEventListener('blur',()=>window.chrome?.webview?.postMessage({type:'tableCellEdit',id:element.Id,row:Number(node.dataset.row),column:Number(node.dataset.column),contentKind:'Text',text:input.value}),{once:true}); });
-    grid.addEventListener('pointerdown', event => { if(interactionMode!=='cells')return;const node=cellFrom(event);if(!node)return;event.stopPropagation();selectTo(node,event.shiftKey); });
+    grid.addEventListener('dblclick', event => { const node=cellFrom(event); if(!node) return; setEditorState('cells',showEditorGuides,element.Id);window.chrome?.webview?.postMessage({type:'tableInteractionModeChanged',id:element.Id,mode:'cells'});event.preventDefault();event.stopPropagation();if(node.dataset.contentKind!=='Text')return;const span=node.querySelector('span');if(!span)return;const input=document.createElement('input');input.type='text';input.value=span.textContent||'';node.replaceChild(input,span);input.focus();input.select();input.addEventListener('blur',()=>window.chrome?.webview?.postMessage({type:'tableCellEdit',id:element.Id,row:Number(node.dataset.row),column:Number(node.dataset.column),contentKind:'Text',text:input.value}),{once:true}); });
+    grid.addEventListener('pointerdown', event => { activeTableId=element.Id;if(interactionMode!=='cells')return;const node=cellFrom(event);if(!node)return;event.stopPropagation();selectTo(node,event.shiftKey); });
     grid.addEventListener('pointerover', event => { if(interactionMode!=='cells'||event.buttons!==1||!anchor)return;selectTo(cellFrom(event),true); });
     grid.addEventListener('contextmenu', event => { if(interactionMode!=='cells')return;const node=cellFrom(event);if(!node)return;event.preventDefault();event.stopPropagation();if(!anchor)anchor={row:Number(node.dataset.row),column:Number(node.dataset.column)};window.chrome?.webview?.postMessage({type:'contextMenuRequest',targetKind:'table',id:element.Id,row:anchor.row,column:anchor.column,endRow:Number(node.dataset.row),endColumn:Number(node.dataset.column),x:event.clientX,y:event.clientY}); });
     grid.addEventListener('keydown', event => { const node=cellFrom(event);if(!node)return;if((event.ctrlKey||event.metaKey)&&['c','v'].includes(event.key.toLowerCase())){window.chrome?.webview?.postMessage({type:'executeCommand',commandId:event.key.toLowerCase()==='c'?'table.copy':'table.paste',id:element.Id});event.preventDefault();return;}const delta={ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]}[event.key];if(!delta)return;const target=grid.querySelector(`.scada-editor-table-cell[data-row="${Number(node.dataset.row)+delta[0]}"][data-column="${Number(node.dataset.column)+delta[1]}"]`);if(target){target.focus();selectTo(target,event.shiftKey);event.preventDefault();}});
@@ -123,8 +124,9 @@ internal static class TableWebViewScript
     const corner = document.createElement('button'); corner.type='button'; corner.className='scada-editor-table-header scada-editor-table-corner'; corner.addEventListener('pointerdown', event => { event.preventDefault(); event.stopPropagation(); window.chrome?.webview?.postMessage({type:'tableSelection', id:element.Id, row:0, column:0, endRow:(table.Rows||[]).length-1, endColumn:(table.Columns||[]).length-1, scope:'table'}); }); grid.appendChild(corner);
     wrapper.replaceChildren(grid);
   };
-  const setMode = mode => { interactionMode = mode === 'cells' ? 'cells' : 'object'; document.querySelectorAll('.scada-editor-table').forEach(grid => grid.dataset.mode = interactionMode); };
-  const setGuides = visible => { showEditorGuides = visible !== false; document.querySelectorAll('.scada-editor-table').forEach(grid => grid.dataset.editorGuides = showEditorGuides ? 'visible' : 'hidden'); };
+  const setEditorState = (mode, showGuides, tableId) => { interactionMode = mode === 'cells' ? 'cells' : 'object'; showEditorGuides = showGuides !== false; activeTableId = tableId || null; const guidesVisible = interactionMode === 'cells' && showEditorGuides; document.querySelectorAll('.scada-editor-table').forEach(grid => { grid.dataset.mode = interactionMode; grid.dataset.editorGuides = guidesVisible ? 'visible' : 'hidden'; }); };
+  const setMode = mode => setEditorState(mode, showEditorGuides, activeTableId);
+  const setGuides = visible => setEditorState(interactionMode, visible, activeTableId);
   const autoFit = id => {
     const grid = document.querySelector(`.scada-editor-table[data-table-id="${CSS.escape(id)}"]`); if (!grid) return;
     const cells = [...grid.querySelectorAll('.scada-editor-table-cell')];
@@ -141,8 +143,8 @@ internal static class TableWebViewScript
     for(let i=0;i<columnSizes.length;i++)columnSizes[i]=Math.ceil(columnSizes[i]*2)/2; for(let i=0;i<rowSizes.length;i++)rowSizes[i]=Math.ceil(rowSizes[i]*2)/2;
     window.chrome?.webview?.postMessage({type:'tableAutoFitMeasured', id, columnSizes, rowSizes});
   };
-  document.addEventListener('keydown', event => { if (event.key === 'Escape' && interactionMode === 'cells') { setMode('object'); event.preventDefault(); } }, true);
-  window.scadaModernTable = { render, setMode, setGuides, autoFit };
+  document.addEventListener('keydown', event => { if (event.key === 'Escape' && interactionMode === 'cells') { const id=event.target?.closest?.('.scada-editor-table')?.dataset?.tableId||activeTableId;setEditorState('object',showEditorGuides,id);if(id)window.chrome?.webview?.postMessage({type:'tableInteractionModeChanged',id,mode:'object'});event.preventDefault();event.stopPropagation(); } }, true);
+  window.scadaModernTable = { render, setEditorState, setMode, setGuides, autoFit };
 })();
 """;
 }

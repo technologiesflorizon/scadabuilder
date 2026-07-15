@@ -216,6 +216,10 @@ public partial class MainWindow
     .scada-modern-element[data-selected="true"] > .scada-modern-handle {
       display: block;
     }
+    .scada-modern-handle[data-lock-disabled="true"] {
+      cursor: not-allowed !important;
+      opacity: .35;
+    }
     .scada-modern-handle[data-handle="nw"] { left: -6px; top: -6px; cursor: nwse-resize; }
     .scada-modern-handle[data-handle="ne"] { right: -6px; top: -6px; cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath d='M15 5a7 7 0 1 0 1.5 8.5' fill='none' stroke='%230f2a30' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M17 3v5h-5z' fill='%230f2a30'/%3E%3C/svg%3E") 10 10, grab; }
     .scada-modern-handle[data-handle="sw"] { left: -6px; bottom: -6px; cursor: nesw-resize; }
@@ -1844,6 +1848,9 @@ public partial class MainWindow
     return svg;
   }
 
+  const payloadContainsPositionLock = element => element?.IsLocked === true
+    || (element?.Children || element?.children || []).some(payloadContainsPositionLock);
+
   function renderModernElements(elements) {
     modernElements = Array.isArray(elements) ? elements : [];
     const layer = ensureModernLayer();
@@ -2020,6 +2027,9 @@ public partial class MainWindow
         const grip = document.createElement('span');
         grip.className = 'scada-modern-handle';
         grip.dataset.handle = handle;
+        const positionChangingHandle = handle !== 'ne' && (handle.includes('n') || handle.includes('w'));
+        const lockedGroupResize = isGroup && handle !== 'ne' && payloadContainsPositionLock(element);
+        grip.dataset.lockDisabled = (positionChangingHandle && element.IsLocked === true) || lockedGroupResize ? 'true' : 'false';
         if (handle !== 'ne') {
           grip.style.cursor = resizeCursorForHandle(handle, Number(style.Rotation ?? 0));
         }
@@ -2063,8 +2073,10 @@ public partial class MainWindow
             toggle: event.ctrlKey || event.shiftKey
           });
         }
-        const geometry = readWrapperGeometry(sceneMoveWrapper);
         const isResize = event.target?.classList?.contains('scada-modern-handle');
+        const handle = event.target?.dataset?.handle || '';
+        const transformMode = handle === 'ne' ? 'rotate' : (isResize ? 'resize' : 'move');
+        const geometry = readWrapperGeometry(sceneMoveWrapper);
         const groupChildren = isResize && sceneMoveWrapper.classList.contains('scada-modern-group')
           ? Array.from(sceneMoveWrapper.querySelectorAll('.scada-modern-element')).map(child => ({
               id: child.dataset.id,
@@ -2080,15 +2092,22 @@ public partial class MainWindow
               .filter((item, index, items) => item && items.indexOf(item) === index);
         const blocksPositionMove = candidate => candidate?.dataset?.editorLocked === 'true'
           || candidate?.querySelector?.('.scada-modern-element[data-editor-locked="true"]') !== null;
-        if (!isResize && movingWrappers.some(blocksPositionMove)) {
+        const positionChangingResize = transformMode === 'resize' && (handle.includes('n') || handle.includes('w'));
+        const lockedGroupResize = transformMode === 'resize'
+          && sceneMoveWrapper.classList.contains('scada-modern-group')
+          && blocksPositionMove(sceneMoveWrapper);
+        const forbiddenTransform = transformMode === 'move' && movingWrappers.some(blocksPositionMove)
+          || positionChangingResize && blocksPositionMove(sceneMoveWrapper)
+          || lockedGroupResize;
+        if (forbiddenTransform) {
           modernDrag = null;
           return;
         }
         modernDrag = {
           id: sceneMoveId,
           wrapper: sceneMoveWrapper,
-          mode: event.target?.dataset?.handle === 'ne' ? 'rotate' : (isResize ? 'resize' : 'move'),
-          handle: event.target?.dataset?.handle || '',
+          mode: transformMode,
+          handle,
           startClientX: event.clientX,
           startClientY: event.clientY,
           startX: geometry.x,
@@ -2096,6 +2115,7 @@ public partial class MainWindow
           startWidth: geometry.width,
           startHeight: geometry.height,
           aspectRatio: geometry.height > 0 ? geometry.width / geometry.height : null,
+          positionLocked: blocksPositionMove(sceneMoveWrapper),
           groupChildren,
           items: movingWrappers.map(item => ({
             id: item.dataset.id,
@@ -2771,6 +2791,11 @@ public partial class MainWindow
           const screenAnchorNew = rotateAroundCenter(anchorNewX, anchorNewY, newCenterX, newCenterY);
           geometry.x += screenAnchorOld.x - screenAnchorNew.x;
           geometry.y += screenAnchorOld.y - screenAnchorNew.y;
+        }
+
+        if (modernDrag.positionLocked) {
+          geometry.x = modernDrag.startX;
+          geometry.y = modernDrag.startY;
         }
 
         setWrapperGeometry(modernDrag.wrapper, geometry);
