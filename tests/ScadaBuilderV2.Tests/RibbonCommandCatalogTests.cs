@@ -151,6 +151,31 @@ public sealed class RibbonCommandCatalogTests
     }
 
     [TestMethod]
+    public void InsertFamilyRibbonKeepsFirstLevelCompact()
+    {
+        var xaml = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml");
+        var styleStart = xaml.IndexOf("<Style x:Key=\"InsertFamilyButtonStyle\"", StringComparison.Ordinal);
+        var styleEnd = xaml.IndexOf("</Style>", styleStart, StringComparison.Ordinal);
+        var templateStart = xaml.IndexOf("<DataTemplate x:Key=\"InsertFamilyTemplate\">", StringComparison.Ordinal);
+        var templateEnd = xaml.IndexOf("</DataTemplate>", templateStart, StringComparison.Ordinal);
+
+        Assert.IsTrue(styleStart >= 0 && styleEnd > styleStart, "The compact Insert family style was not found.");
+        Assert.IsTrue(templateStart >= 0 && templateEnd > templateStart, "The Insert family template was not found.");
+
+        var style = xaml.Substring(styleStart, styleEnd - styleStart);
+        var template = xaml.Substring(templateStart, templateEnd - templateStart);
+
+        StringAssert.Contains(style, "<Setter Property=\"Height\" Value=\"26\"/>");
+        StringAssert.Contains(style, "<Setter Property=\"MinWidth\" Value=\"86\"/>");
+        StringAssert.Contains(style, "<Setter Property=\"Padding\" Value=\"6,1\"/>");
+        StringAssert.Contains(template, "Style=\"{StaticResource InsertFamilyButtonStyle}\"");
+        StringAssert.Contains(template, "Width=\"14\" Height=\"14\"");
+        Assert.IsFalse(
+            template.Contains("RibbonCommandButtonStyle", StringComparison.Ordinal),
+            "The Insert family row must not inherit the 58-pixel command-button height.");
+    }
+
+    [TestMethod]
     public void ToolPaletteUsesSemanticCommandCatalog()
     {
         var commands = RibbonCommandCatalog.CreateToolPalette().ToArray();
