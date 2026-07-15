@@ -1,13 +1,14 @@
 # SCADA Builder V2 - State Management Contract
 
-Date: 2026-07-14
+Date: 2026-07-15
 Status: Active editor state contract
-Document version: `V2.1.4.0026`
+Document version: `V2.1.4.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Snapshot editor-only atomique du mode Tableau, de la visibilite effective A/1 et de l'id actif; refresh du meme Tableau preserve le mode Cellules. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Ajout de `IsLocked` persistant, de l'agregation de multiselection, du guard de translation et de la session d'authoring Tableau hors modele de scene. |
 | 2026-07-14 | `V2.1.4.0012` | `PENDING` | Historique projet, restauration des onglets et snapshot atomique projet/scènes désormais implémentés. |
 | 2026-07-14 | `V2.1.4.0011` | `4def659` | Ajout de la cible approuvée pour dirty state, historique et persistance au niveau workspace projet. |
@@ -25,7 +26,7 @@ State ownership must be explicit. Durable behavior belongs to project/scene/appl
 4. Panel state: visible context and layout preferences.
 5. History state: undo/redo stacks per active scene context.
 6. Element lock state: `ScadaElement.IsLocked`; les toggles UI projettent l'agregation de la fermeture selection/groupe sans posseder un etat durable distinct.
-7. Table authoring session: surface, mode, configuration de creation, plage et portee; elle ne transporte aucun `ScadaElement` et ne remplace jamais la definition persistante du Tableau.
+7. Table authoring session: surface, mode, configuration de creation, plage et portee; elle ne transporte aucun `ScadaElement` et ne remplace jamais la definition persistante du Tableau. Le WebView recoit un snapshot atomique derive (`mode`, visibilite effective A/1, id actif) apres chaque transition ou rerender.
 
 ## 3. State Diagram
 
@@ -51,6 +52,8 @@ stateDiagram-v2
 
 1. `DEC-0006` - Polymorphic Selection And Durable Source Delete.
 2. `DEC-0038` - Modern Page Identity And Lifecycle Commands.
+3. `DEC-0040` - Advanced Table Authoring And Persistent Element Position Lock.
+4. `DEC-0041` - Deterministic Table Interaction And Immediate Element Position Lock.
 
 ## 6. Related Tests
 
@@ -58,3 +61,5 @@ stateDiagram-v2
 2. `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`
 3. `tests/ScadaBuilderV2.Tests/ProjectWorkspaceHistoryTests.cs`
 4. `tests/ScadaBuilderV2.Tests/ModernProjectAtomicSnapshotTests.cs`
+5. `tests/ScadaBuilderV2.Tests/TableAuthoringSessionTests.cs`
+6. `tests/ScadaBuilderV2.Tests/TableEditorWebViewStateTests.cs`

@@ -2,12 +2,13 @@
 
 Date: 2026-06-16
 Status: Active governance policy
-Document version: `V2.1.4.0033`
+Document version: `V2.1.4.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Bump d'iteration pour l'implementation et la validation corrective de `DEC-0041`. |
 | 2026-07-15 | `V2.1.4.0033` | `e811253` | Bump d'iteration pour l'approbation du contrat correctif Tableau/verrou. |
 | 2026-07-15 | `V2.1.4.0032` | `ff21e33` | Bump d'iteration pour la specification et le plan de correction des regressions d'interaction Tableau/verrou. |
 | 2026-07-15 | `V2.1.4.0031` | `e127190` | Bump d'iteration pour supprimer le clipping et la barre native du ruban secondaire. |

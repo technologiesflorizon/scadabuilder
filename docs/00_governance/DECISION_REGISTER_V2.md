@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active authoritative decision register
-Document version: `V2.1.4.0033`
+Document version: `V2.1.4.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | `DEC-0041` implementee et validee sans changement des contrats `.sb2`, `.sep` ou TF100Web. |
 | 2026-07-15 | `V2.1.4.0033` | `e811253` | Ajout de `DEC-0041` pour les corrections d'interaction Tableau/verrou approuvees. |
 | 2026-07-15 | `V2.1.4.0028` | `c873744` | `DEC-0040` corrigée sur ses surfaces WPF fondamentales : accès Tableau sans modale et état de verrou partagé jusque dans le menu contextuel Element+. |
 | 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | `DEC-0040` synchronisée avec la clôture des tranches de code/tests et les mesures Release automatisées; smoke WebView2 interactif conservé comme gate distinct. |
@@ -1223,3 +1224,7 @@ Consequences:
 Regression coverage:
 
 Required in `ModernElementRenderPayloadFactoryTests`, `TableAuthoringSessionTests`, `TableEditorWebViewStateTests`, `TableUiArchitectureTests`, `WebViewContextMenuScriptTests`, `ElementTransformGuardTests`, `Ft100SceneExporterTests`, and `StudioElementPlusContractTests`.
+
+Implementation status:
+
+Implemented in `b75f1d7`, with source-contract follow-up `c441090`. The editor payload now carries recursive `IsLocked`, forbidden position gestures stop before preview, Table mode/guides synchronize atomically, and the isolated WPF/WebView2 smoke confirmed the principal locked/unlocked Table workflows without changing `.sb2`, `.sep` or TF100Web.

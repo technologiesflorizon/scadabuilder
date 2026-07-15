@@ -1,13 +1,14 @@
 # SCADA Builder V2 - UI Specification
 
-Date: 2026-06-19
+Date: 2026-07-15
 Status: Active UI specification pointer
-Document version: `V2.1.4.0031`
+Document version: `V2.1.4.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Mode Objet initial et reselection deterministe; verrou de position immediat sans bloquer cellules/pistes; A/1 aligne sur la visibilite effective. |
 | 2026-07-15 | `V2.1.4.0031` | `e127190` | Ruban secondaire sans scrollbar native, navigation d'overflow par chevrons et hauteur anti-clipping. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Interactions Tableau corriges : cellules et pistes prioritaires, reperes A/1 masquables, fusion toggle et origine du format explicite. |
 | 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Ruban secondaire modernise en boutons horizontaux compacts sur deux rangees, avec icones, galerie et espacement reduits. |
@@ -23,6 +24,9 @@ Document version: `V2.1.4.0031`
 6. Le mode Cellules donne la priorite aux cellules, inputs et poignees de pistes; le tableau conteneur ne demarre aucun drag pour ces gestes.
 7. Les reperes d'edition A/1 peuvent etre affiches ou masques depuis le ruban sans modifier le modele ni l'export.
 8. Fusionner/Defusionner est une seule commande contextuelle dont le libelle et l'etat actif suivent la plage selectionnee.
+9. Un Tableau nouvellement place ou reselectionne commence en mode Objet. Le mode Cellules s'active explicitement, par double-clic ou par `Afficher A/1`; `Escape` revient en mode Objet.
+10. Le verrou protege immediatement X/Y sans animation de retour. Il ne bloque ni la selection, ni les cellules, ni les separateurs de pistes, ni les resizes qui conservent X/Y.
+11. Le libelle `Afficher/Masquer A/1` decrit la visibilite effective : les reperes ne sont visibles qu'en mode Cellules et peuvent etre retablis immediatement apres masquage.
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Direction haut de gamme de l’inspecteur Style : sections, contrôles à état, icônes sémantiques et aperçu vivant. |
 | 2026-06-19 | `V2.1.3.0002` | `PENDING` | Ajout du standard de polish produit concurrentiel face a ScadaPlant. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes: icones 32x32 et boutons sans libelles visibles. |

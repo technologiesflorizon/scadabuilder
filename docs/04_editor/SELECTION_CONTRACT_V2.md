@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active editor selection contract
-Document version: `V2.1.4.0030`
+Document version: `V2.1.4.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Verrou projete dans le payload editor-only avant hit-testing; mode Tableau Objet/Cellules deterministe et gestes internes disponibles sans translation. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Verrou applique avant tout preview de deplacement et priorite des gestes internes Tableau en mode Cellules. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Separation du verrou de position et de la selection; ajout des portees cellule/plage/rangee/colonne propres au Tableau. |
 | 2026-06-16 | `V2.1.2.0003` | `PENDING` | Clarification que le deplacement normal d'un enfant de groupe Element+ cible son groupe parent. |
@@ -47,6 +48,7 @@ The editor can select:
 1. `DEC-0006` - Polymorphic Selection And Durable Source Delete.
 2. `DEC-0010` - Scene Grouping Is Element+ Only.
 3. `DEC-0040` - Advanced Table Authoring And Persistent Element Position Lock.
+4. `DEC-0041` - Deterministic Table Interaction And Immediate Element Position Lock.
 
 ## 4. Related Tests
 
@@ -54,3 +56,5 @@ The editor can select:
 2. `tests/ScadaBuilderV2.Tests/EditorHistoryServiceTests.cs`
 3. `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
 4. `tests/ScadaBuilderV2.Tests/ScadaSceneGroupTests.cs`
+5. `tests/ScadaBuilderV2.Tests/ModernElementRenderPayloadFactoryTests.cs`
+6. `tests/ScadaBuilderV2.Tests/TableEditorWebViewStateTests.cs`

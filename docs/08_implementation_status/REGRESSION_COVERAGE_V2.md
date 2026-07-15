@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Regression Coverage
 
-Date: 2026-07-14
+Date: 2026-07-15
 Status: Active regression coverage map
-Document version: `V2.1.4.0031`
+Document version: `V2.1.4.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Couverture `DEC-0041` du payload reel, etat Tableau atomique, refus avant preview, resize verrouille, guide A/1 et absence d'artefact export; smoke WPF/WebView2 isole reussi. |
 | 2026-07-15 | `V2.1.4.0031` | `e127190` | Regression XAML du ruban secondaire : hauteur anti-clipping, scrollbar masquee et chevrons de pagination; 14 tests ruban reussis, suite complete inchangee a 614 reussites et 5 echecs historiques. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Couverture verrou avant preview, gestes Tableau, reperes A/1, toggle fusion et format; suite complete observee a 614 reussites et 5 echecs historiques non lies. |
 | 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Regression XAML du ruban secondaire compact : dimensions, disposition horizontale, troncature et groupes sur deux rangees. |
@@ -73,7 +74,7 @@ Document version: `V2.1.4.0031`
 
 ```text
 dotnet test ScadaBuilderV2.sln --no-restore
-598 passed, 5 failed, 0 skipped
+618 passed, 5 failed, 0 skipped
 ```
 
 ## 2. Coverage Map

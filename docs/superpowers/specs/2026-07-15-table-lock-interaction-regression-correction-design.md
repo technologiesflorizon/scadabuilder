@@ -1,13 +1,14 @@
 # Correction des interactions Tableau et du verrou Element+ - Specification
 
 Date: 2026-07-15
-Status: Approved
-Document version: `V2.1.4.0033`
+Status: Implemented
+Document version: `V2.1.4.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Implementation de `DEC-0041` : verrou projete avant les gestes, etat Tableau atomique, mode Objet initial, cellules/pistes verrouillees utilisables et reperes A/1 effectifs. |
 | 2026-07-15 | `V2.1.4.0033` | `e811253` | Specification approuvee pour execution; les corrections d'interaction succedent aux seuls comportements concernes de `DEC-0040`. |
 | 2026-07-15 | `V2.1.4.0032` | `ff21e33` | Specification corrective autonome pour le drag verrouille, le mode initial Tableau, l'acces aux cellules/pistes et l'etat effectif des reperes A/1. |
 
@@ -232,3 +233,7 @@ La correction est complete uniquement si :
 8. build, tests cibles, suite complete, verification documentaire et smoke interactif sont consignes.
 
 L'approbation de cette specification devra etre enregistree comme une nouvelle decision succedant aux seuls comportements d'interaction concernes de `DEC-0040`.
+
+## 11. Resultat d'implementation
+
+`DEC-0041` est implemente dans `b75f1d7`; `c441090` adapte les contrats source au DTO de preview extrait. Le smoke WPF/WebView2 du 2026-07-15 sur le worktree isole `SCADA_BUILDER_V2_table_smoke` a confirme l'insertion sans modale, le drag immediat en mode Objet, le refus visuel immediat du drag verrouille, l'acces aux cellules, le resize de colonne verrouille, le cycle Masquer/Afficher A/1 et la reprise du drag apres deverrouillage. Les guards automatises couvrent les variantes de resize, rotation, groupes, export et etat atomique qui ne reposent pas sur cette seule verification manuelle.
