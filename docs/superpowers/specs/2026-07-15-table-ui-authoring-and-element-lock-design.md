@@ -8,7 +8,7 @@ Document version: `V2.1.4.0023`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-15 | `V2.1.4.0023` | `PENDING` | Revue complète contre le code existant : migrations explicites des catalogues et de l'ancien verrou, contrat JSON, ruban secondaire, états et bindings WPF, bordures par segment, auto-ajustement WebView, messages typés, performance 64 x 64, tests localisés et dépendances documentaires. |
+| 2026-07-15 | `V2.1.4.0023` | `18a9e9d` | Revue complète contre le code existant : migrations explicites des catalogues et de l'ancien verrou, contrat JSON, ruban secondaire, états et bindings WPF, bordures par segment, auto-ajustement WebView, messages typés, performance 64 x 64, tests localisés et dépendances documentaires. |
 | 2026-07-15 | `V2.1.4.0022` | `3a99b99` | Première architecture détaillée des outils Tableau et du verrouillage persistant de tous les Element+. |
 | 2026-07-15 | `V2.1.4.0021` | `f77aedb` | Création de la spécification autonome, sans modifier la spécification Tableau déjà approuvée et implémentée. |
 
