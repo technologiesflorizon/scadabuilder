@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:avalonDock="https://github.com/Dirkster99/AvalonDock"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        xmlns:primitives="clr-namespace:System.Windows.Controls.Primitives;assembly=PresentationFramework"
         xmlns:local="clr-namespace:ScadaBuilderV2.App"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -141,6 +142,24 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
             <Setter Property="Margin" Value="2,0,0,2"/>
+        </Style>
+
+        <Style x:Key="RibbonOverflowButtonStyle" TargetType="RepeatButton">
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="MinHeight" Value="54"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Margin" Value="2,1"/>
+            <Setter Property="Background" Value="#F3F6F4"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrushSoft}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.25"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="CommandIconStyle" TargetType="Image">
@@ -294,14 +313,14 @@
 
     <DockPanel LastChildFill="True">
         <Border DockPanel.Dock="Top"
-                Height="196"
+                Height="212"
                 Background="#F2F8EF"
                 BorderBrush="{StaticResource BorderBrushSoft}"
                 BorderThickness="0,0,0,1">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"/>
-                    <RowDefinition Height="156"/>
+                    <RowDefinition Height="172"/>
                 </Grid.RowDefinitions>
 
                 <DockPanel Grid.Row="0" Margin="14,6,14,0">
@@ -399,18 +418,48 @@
                             <CheckBox x:Name="TableFirstHeaderCheckBox" Content="1re rangee en-tete" IsChecked="True"
                                       VerticalAlignment="Center" Margin="10,0,6,0"/>
                         </StackPanel>
-                        <ScrollViewer x:Name="RibbonCommandSurface" Grid.Row="1"
-                                      HorizontalScrollBarVisibility="Auto"
-                                      VerticalScrollBarVisibility="Disabled">
-                            <ItemsControl ItemsSource="{Binding ActiveRibbonGroups}"
-                                          ItemTemplate="{StaticResource RibbonGroupTemplate}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal"/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
-                        </ScrollViewer>
+                        <Grid Grid.Row="1" Margin="0,2,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <RepeatButton Grid.Column="0"
+                                          Style="{StaticResource RibbonOverflowButtonStyle}"
+                                          Command="{x:Static primitives:ScrollBar.PageLeftCommand}"
+                                          CommandTarget="{Binding ElementName=RibbonCommandSurface}"
+                                          ToolTip="Commandes precedentes">
+                                <Path Data="M 8,1 L 3,6 L 8,11"
+                                      Stroke="{Binding RelativeSource={RelativeSource AncestorType=RepeatButton}, Path=Foreground}"
+                                      StrokeThickness="1.8"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"/>
+                            </RepeatButton>
+                            <ScrollViewer x:Name="RibbonCommandSurface" Grid.Column="1"
+                                          HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Disabled"
+                                          PanningMode="HorizontalOnly">
+                                <ItemsControl ItemsSource="{Binding ActiveRibbonGroups}"
+                                              ItemTemplate="{StaticResource RibbonGroupTemplate}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                            <RepeatButton Grid.Column="2"
+                                          Style="{StaticResource RibbonOverflowButtonStyle}"
+                                          Command="{x:Static primitives:ScrollBar.PageRightCommand}"
+                                          CommandTarget="{Binding ElementName=RibbonCommandSurface}"
+                                          ToolTip="Commandes suivantes">
+                                <Path Data="M 3,1 L 8,6 L 3,11"
+                                      Stroke="{Binding RelativeSource={RelativeSource AncestorType=RepeatButton}, Path=Foreground}"
+                                      StrokeThickness="1.8"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"/>
+                            </RepeatButton>
+                        </Grid>
                     </Grid>
                 </Border>
             </Grid>

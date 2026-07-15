@@ -120,16 +120,16 @@ public sealed class RibbonCommandCatalogTests
     }
 
     [TestMethod]
-    public void MainRibbonUsesNormalizedScrollableHeight()
+    public void MainRibbonUsesClippingSafeOverflowHeight()
     {
         var xaml = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml");
         var ribbonSurfaceIndex = xaml.IndexOf("x:Name=\"RibbonCommandSurface\"", StringComparison.Ordinal);
 
         Assert.IsTrue(ribbonSurfaceIndex >= 0, "Main ribbon command surface was not found.");
-        var ribbonSurface = xaml.Substring(ribbonSurfaceIndex, 600);
+        var ribbonSurface = xaml.Substring(ribbonSurfaceIndex, 1000);
 
-        StringAssert.Contains(xaml, "Height=\"196\"");
-        StringAssert.Contains(xaml, "<RowDefinition Height=\"156\"/>");
+        StringAssert.Contains(xaml, "Height=\"212\"");
+        StringAssert.Contains(xaml, "<RowDefinition Height=\"172\"/>");
         StringAssert.Contains(xaml, "LargeRibbonCommandTemplate");
         StringAssert.Contains(xaml, "LargeCommandIconStyle");
         StringAssert.Contains(xaml, "<Setter Property=\"Width\" Value=\"26\"/>");
@@ -143,11 +143,14 @@ public sealed class RibbonCommandCatalogTests
         Assert.IsFalse(
             shapeTemplate.Contains("<TextBlock", StringComparison.Ordinal),
             "The shape gallery template should be icon-only; shape names remain available through tooltips.");
-        StringAssert.Contains(ribbonSurface, "HorizontalScrollBarVisibility=\"Auto\"");
+        StringAssert.Contains(ribbonSurface, "HorizontalScrollBarVisibility=\"Hidden\"");
         StringAssert.Contains(ribbonSurface, "<StackPanel Orientation=\"Horizontal\"/>");
         Assert.IsFalse(
             ribbonSurface.Contains("<WrapPanel/>", StringComparison.Ordinal),
             "The main ribbon command surface must scroll horizontally instead of wrapping into clipped rows.");
+        StringAssert.Contains(xaml, "Style=\"{StaticResource RibbonOverflowButtonStyle}\"");
+        StringAssert.Contains(xaml, "primitives:ScrollBar.PageLeftCommand");
+        StringAssert.Contains(xaml, "primitives:ScrollBar.PageRightCommand");
     }
 
     [TestMethod]
