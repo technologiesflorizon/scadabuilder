@@ -95,6 +95,30 @@ public sealed class TableUiArchitectureTests
             "Concrete TextBox, CheckBox, ComboBox, and TextBlock tuples must not be filtered through an exact boxed ValueTuple type.");
     }
 
+    [TestMethod]
+    public void NumericCellDialogDelegatesValidationAndReturnsTypedIntentions()
+    {
+        var viewModel = ReadProjectFile("src", "ScadaBuilderV2.App", "TableEditor", "TableNumericInputPropertiesViewModel.cs");
+        var dialog = ReadProjectFile("src", "ScadaBuilderV2.App", "TableEditor", "TableNumericInputPropertiesDialog.xaml.cs");
+        var xaml = ReadProjectFile("src", "ScadaBuilderV2.App", "TableEditor", "TableNumericInputPropertiesDialog.xaml");
+
+        StringAssert.Contains(viewModel, "TableCellNumericInputInspector.ValidateContent");
+        StringAssert.Contains(viewModel, "TableEditKind.SetNumericInputProperties");
+        StringAssert.Contains(viewModel, "TableEditKind.SetCellValueBinding");
+        StringAssert.Contains(viewModel, "TableEditKind.RemoveCellValueBinding");
+        StringAssert.Contains(dialog, "viewModel.TryBuildRequests");
+        StringAssert.Contains(dialog, "Result = requests;");
+        Assert.IsFalse(dialog.Contains("ScadaTableCellBindingOperations", StringComparison.Ordinal));
+        Assert.IsFalse(dialog.Contains("Writeable", StringComparison.Ordinal));
+        Assert.IsFalse(dialog.Contains("ScadaTableDefinition", StringComparison.Ordinal));
+        StringAssert.Contains(xaml, "Valeur initiale");
+        StringAssert.Contains(xaml, "Minimum");
+        StringAssert.Contains(xaml, "Maximum");
+        StringAssert.Contains(xaml, "Format d'affichage");
+        StringAssert.Contains(xaml, "Ajouter / Modifier");
+        StringAssert.Contains(xaml, "Supprimer");
+    }
+
     private static IEnumerable<ScadaBuilderV2.Application.Commands.EditorCommandDescriptor> Flatten(
         IEnumerable<ScadaBuilderV2.Application.Commands.EditorCommandDescriptor> commands) =>
         commands.SelectMany(command => new[] { command }.Concat(command.Children is null ? [] : Flatten(command.Children)));
