@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active authoritative decision register
-Document version: `V2.1.4.0028`
+Document version: `V2.1.4.0033`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0033` | `e811253` | Ajout de `DEC-0041` pour les corrections d'interaction Tableau/verrou approuvees. |
 | 2026-07-15 | `V2.1.4.0028` | `c873744` | `DEC-0040` corrigée sur ses surfaces WPF fondamentales : accès Tableau sans modale et état de verrou partagé jusque dans le menu contextuel Element+. |
 | 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | `DEC-0040` synchronisée avec la clôture des tranches de code/tests et les mesures Release automatisées; smoke WebView2 interactif conservé comme gate distinct. |
 | 2026-07-15 | `V2.1.4.0024` | `3f6e6a5` | Ajout de `DEC-0040` pour la sous-surface Tableau, l'authoring avancé des cellules et le verrouillage persistant de position de tous les Element+. |
@@ -1196,3 +1197,29 @@ Implemented in commits `e497e52` through `c873744`. Code, architecture boundarie
 Regression coverage:
 
 Implemented in `tests/ScadaBuilderV2.Tests/ScadaTableModelTests.cs`, `TableContentOperationsTests.cs`, `TableBorderOperationsTests.cs`, `TableTrackOperationsTests.cs`, `TableAuthoringSessionTests.cs`, `TableEditCoordinatorTests.cs`, `TablePropertiesInspectorTests.cs`, `TableWebViewMessageAdapterTests.cs`, `TableWebViewPerformanceContractTests.cs`, `AdvancedTableAuthoringIntegrationTests.cs`, `TableUiArchitectureTests.cs`, `ElementLockCoordinatorTests.cs`, `ElementTransformGuardTests.cs`, `ScadaSceneGroupTests.cs`, `ModernProjectStoreTests.cs`, `ApplicationCommandTests.cs`, `WebViewContextMenuScriptTests.cs`, `Ft100SceneExporterTests.cs`, and `StudioElementPlusContractTests.cs`.
+
+### DEC-0041 - Deterministic Table Interaction And Immediate Element Position Lock
+
+Status: Active
+Created: 2026-07-15 00:00 America/Toronto
+Created in commit: `e811253`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/specs/2026-07-15-table-lock-interaction-regression-correction-design.md`
+
+Context:
+
+The implemented Table and Element+ lock surfaces expose the intended controls, but the editor render payload omits `IsLocked`, so WebView movement can start before the Application guard rejects the commit. Table placement also enters Cells mode automatically, and the stored A/1 guide preference can disagree with its effective visibility.
+
+Decision:
+
+The editor-only Element+ payload projects `IsLocked` recursively and WebView hit-testing rejects forbidden movement before preview or pointer capture while `ElementTransformGuard` remains the final Application defense. A newly placed or reselected Table starts in Object mode; Cells mode is entered explicitly or by double-click and remains independent from lock state. Locked Tables retain cell, header and track editing in Cells mode. Locked object resize may change dimensions only while X/Y remain invariant, and group transformations that would move a locked descendant are rejected before preview. A/1 ribbon state uses effective visibility, and mode plus guide state are synchronized atomically after every relevant transition.
+
+Consequences:
+
+`DEC-0040` remains active for the Table model, authoring tools and persistent lock semantics; this decision supersedes only its automatic post-placement Cells-mode behavior and clarifies pre-preview enforcement. No Domain field, scene JSON, `.sb2`, `.sep` or TF100Web contract changes. Editor payload, modes, selection and guides remain editor-only.
+
+Regression coverage:
+
+Required in `ModernElementRenderPayloadFactoryTests`, `TableAuthoringSessionTests`, `TableEditorWebViewStateTests`, `TableUiArchitectureTests`, `WebViewContextMenuScriptTests`, `ElementTransformGuardTests`, `Ft100SceneExporterTests`, and `StudioElementPlusContractTests`.
