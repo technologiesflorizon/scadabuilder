@@ -19,11 +19,29 @@ public sealed class TableWebViewPerformanceContractTests
         StringAssert.Contains(source, "grid.appendChild(cellFragment)");
         StringAssert.Contains(source, "grid.addEventListener('pointerdown'");
         StringAssert.Contains(source, "grid.addEventListener('pointerover'");
+        StringAssert.Contains(source, "let cellSelectionDrag = null;");
+        StringAssert.Contains(source, "cellSelectionDrag?.grid!==grid");
+        StringAssert.Contains(source, "event.button!==0");
+        StringAssert.Contains(source, "document.addEventListener('pointercancel'");
         StringAssert.Contains(source, "context.measureText(placeholder).width");
         StringAssert.Contains(source, "distributeDeficit");
         StringAssert.Contains(source, "deficit*(weights[i]||1)/total");
         StringAssert.Contains(source, "Math.ceil(columnSizes[i]*2)/2");
         Assert.IsFalse(source.Contains("node.addEventListener('pointerdown'", StringComparison.Ordinal));
+    }
+
+    [TestMethod]
+    public void EditorGuidesDoNotCoverCellHitTargetsAndHeaderScopesShareSelectionRendering()
+    {
+        var source = ReadProjectFile("src", "ScadaBuilderV2.App", "TableEditor", "TableWebViewScript.cs");
+
+        StringAssert.Contains(source, ".scada-editor-table { display:grid; width:100%; height:100%; overflow:visible; }");
+        StringAssert.Contains(source, ".scada-editor-table-header.column { top:-18px; height:18px; }");
+        StringAssert.Contains(source, ".scada-editor-table-header.row { left:-24px; width:24px; }");
+        StringAssert.Contains(source, ".scada-editor-table-corner { left:-24px; top:-18px;");
+        StringAssert.Contains(source, "const selectRange = (start, end, scope='cells')");
+        StringAssert.Contains(source, "selectRange(anchor,{row:index,column:(table.Columns||[]).length-1},'row')");
+        StringAssert.Contains(source, "selectRange(anchor,{row:(table.Rows||[]).length-1,column:index},'column')");
     }
 
     [TestMethod]

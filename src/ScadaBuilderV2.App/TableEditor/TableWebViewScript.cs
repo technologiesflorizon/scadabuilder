@@ -8,7 +8,7 @@ internal static class TableWebViewScript
   if (window.scadaModernTable) return;
   const css = document.createElement('style');
   css.textContent = `
-    .scada-editor-table { display:grid; width:100%; height:100%; overflow:hidden; }
+    .scada-editor-table { display:grid; width:100%; height:100%; overflow:visible; }
     .scada-editor-table-cell { display:flex; box-sizing:border-box; min-width:0; min-height:0; overflow:hidden; position:relative; }
     .scada-editor-table-cell[data-selected="true"] { outline:2px solid #2090a0; outline-offset:-2px; z-index:2; }
     .scada-editor-table-cell input { width:100%; height:100%; min-width:0; border:0; padding:0; background:transparent; color:inherit; font:inherit; }
@@ -16,9 +16,9 @@ internal static class TableWebViewScript
     .scada-editor-table-track.column { top:0; bottom:0; width:7px; cursor:col-resize; }
     .scada-editor-table-track.row { left:0; right:0; height:7px; cursor:row-resize; }
     .scada-editor-table-header { position:absolute; z-index:6; display:flex; align-items:center; justify-content:center; background:#dcecef; color:#17343b; border:1px solid #8aa0a6; box-sizing:border-box; font:10px Segoe UI; opacity:.92; }
-    .scada-editor-table-header.column { top:0; height:18px; }
-    .scada-editor-table-header.row { left:0; width:24px; }
-    .scada-editor-table-corner { left:0; top:0; width:24px; height:18px; }
+    .scada-editor-table-header.column { top:-18px; height:18px; }
+    .scada-editor-table-header.row { left:-24px; width:24px; }
+    .scada-editor-table-corner { left:-24px; top:-18px; width:24px; height:18px; }
     .scada-editor-table[data-mode="object"] .scada-editor-table-track,
     .scada-editor-table[data-mode="object"] .scada-editor-table-header { display:none; }
     .scada-editor-table[data-editor-guides="hidden"] .scada-editor-table-header { display:none; }
@@ -28,6 +28,7 @@ internal static class TableWebViewScript
   let interactionMode = 'object';
   let showEditorGuides = true;
   let activeTableId = null;
+  let cellSelectionDrag = null;
   document.addEventListener('pointermove', event => {
     if (!trackDrag) return;
     const delta = trackDrag.orientation === 'column' ? event.clientX - trackDrag.start : event.clientY - trackDrag.start;
@@ -37,10 +38,13 @@ internal static class TableWebViewScript
     event.preventDefault();
   }, true);
   document.addEventListener('pointerup', event => {
-    if (!trackDrag) return;
-    window.chrome?.webview?.postMessage({ type:'tableTrackResize', id:trackDrag.id, orientation:trackDrag.orientation, trackIndex:trackDrag.index, trackSize:trackDrag.size });
-    trackDrag = null; event.preventDefault();
+    if (cellSelectionDrag?.pointerId === event.pointerId) cellSelectionDrag = null;
+    if (trackDrag) {
+      window.chrome?.webview?.postMessage({ type:'tableTrackResize', id:trackDrag.id, orientation:trackDrag.orientation, trackIndex:trackDrag.index, trackSize:trackDrag.size });
+      trackDrag = null; event.preventDefault();
+    }
   }, true);
+  document.addEventListener('pointercancel', event => { if (cellSelectionDrag?.pointerId === event.pointerId) cellSelectionDrag = null; }, true);
 
   const effective = (table, row, column, cell) => {
     const base = table?.Style?.Base || table?.style?.base || {};
@@ -88,11 +92,12 @@ internal static class TableWebViewScript
     });
     grid.appendChild(cellFragment);
     const cellFrom = event => event.target.closest?.('.scada-editor-table-cell');
-    const selectTo = (node, extend) => { if(!node) return; const end={row:Number(node.dataset.row),column:Number(node.dataset.column)}; if(!extend||!anchor) anchor=end; grid.querySelectorAll('.scada-editor-table-cell').forEach(item=>{const r=Number(item.dataset.row),c=Number(item.dataset.column);item.dataset.selected=r>=Math.min(anchor.row,end.row)&&r<=Math.max(anchor.row,end.row)&&c>=Math.min(anchor.column,end.column)?'true':'false';}); window.chrome?.webview?.postMessage({type:'tableSelection',id:element.Id,row:anchor.row,column:anchor.column,endRow:end.row,endColumn:end.column}); };
+    const selectRange = (start, end, scope='cells') => { const row=Math.min(start.row,end.row),column=Math.min(start.column,end.column),endRow=Math.max(start.row,end.row),endColumn=Math.max(start.column,end.column); grid.querySelectorAll('.scada-editor-table-cell').forEach(item=>{const r=Number(item.dataset.row),c=Number(item.dataset.column);item.dataset.selected=r>=row&&r<=endRow&&c>=column&&c<=endColumn?'true':'false';}); window.chrome?.webview?.postMessage({type:'tableSelection',id:element.Id,row,column,endRow,endColumn,scope}); };
+    const selectTo = (node, extend) => { if(!node) return; const end={row:Number(node.dataset.row),column:Number(node.dataset.column)}; if(!extend||!anchor) anchor=end; selectRange(anchor,end); };
     grid.addEventListener('change', event => { const node=cellFrom(event); if(node && event.target.matches('input')) window.chrome?.webview?.postMessage({type:'tableCellEdit',id:element.Id,row:Number(node.dataset.row),column:Number(node.dataset.column),contentKind:node.dataset.contentKind,text:event.target.value}); });
     grid.addEventListener('dblclick', event => { const node=cellFrom(event); if(!node) return; setEditorState('cells',showEditorGuides,element.Id);window.chrome?.webview?.postMessage({type:'tableInteractionModeChanged',id:element.Id,mode:'cells'});event.preventDefault();event.stopPropagation();if(node.dataset.contentKind!=='Text')return;const span=node.querySelector('span');if(!span)return;const input=document.createElement('input');input.type='text';input.value=span.textContent||'';node.replaceChild(input,span);input.focus();input.select();input.addEventListener('blur',()=>window.chrome?.webview?.postMessage({type:'tableCellEdit',id:element.Id,row:Number(node.dataset.row),column:Number(node.dataset.column),contentKind:'Text',text:input.value}),{once:true}); });
-    grid.addEventListener('pointerdown', event => { activeTableId=element.Id;if(interactionMode!=='cells')return;const node=cellFrom(event);if(!node)return;event.stopPropagation();selectTo(node,event.shiftKey); });
-    grid.addEventListener('pointerover', event => { if(interactionMode!=='cells'||event.buttons!==1||!anchor)return;selectTo(cellFrom(event),true); });
+    grid.addEventListener('pointerdown', event => { activeTableId=element.Id;if(interactionMode!=='cells'||event.button!==0||event.isPrimary===false)return;const node=cellFrom(event);if(!node)return;event.stopPropagation();selectTo(node,event.shiftKey);cellSelectionDrag={grid,pointerId:event.pointerId}; });
+    grid.addEventListener('pointerover', event => { if(interactionMode!=='cells'||cellSelectionDrag?.grid!==grid||cellSelectionDrag.pointerId!==event.pointerId||(event.buttons&1)!==1||!anchor)return;selectTo(cellFrom(event),true); });
     grid.addEventListener('contextmenu', event => { if(interactionMode!=='cells')return;const node=cellFrom(event);if(!node)return;event.preventDefault();event.stopPropagation();if(!anchor)anchor={row:Number(node.dataset.row),column:Number(node.dataset.column)};window.chrome?.webview?.postMessage({type:'contextMenuRequest',targetKind:'table',id:element.Id,row:anchor.row,column:anchor.column,endRow:Number(node.dataset.row),endColumn:Number(node.dataset.column),x:event.clientX,y:event.clientY}); });
     grid.addEventListener('keydown', event => { const node=cellFrom(event);if(!node)return;if((event.ctrlKey||event.metaKey)&&['c','v'].includes(event.key.toLowerCase())){window.chrome?.webview?.postMessage({type:'executeCommand',commandId:event.key.toLowerCase()==='c'?'table.copy':'table.paste',id:element.Id});event.preventDefault();return;}const delta={ArrowLeft:[0,-1],ArrowRight:[0,1],ArrowUp:[-1,0],ArrowDown:[1,0]}[event.key];if(!delta)return;const target=grid.querySelector(`.scada-editor-table-cell[data-row="${Number(node.dataset.row)+delta[0]}"][data-column="${Number(node.dataset.column)+delta[1]}"]`);if(target){target.focus();selectTo(target,event.shiftKey);event.preventDefault();}});
     let columnOffset = 0;
@@ -114,14 +119,14 @@ internal static class TableWebViewScript
     let x = 0;
     (table.Columns || []).forEach((track, index) => {
       const header = document.createElement('button'); header.type = 'button'; header.className = 'scada-editor-table-header column'; header.textContent = String.fromCharCode(65 + (index % 26)); header.style.left = `${x}px`; header.style.width = `${Number(track.Width || 24)}px`; x += Number(track.Width || 24);
-      header.addEventListener('pointerdown', event => { event.preventDefault(); event.stopPropagation(); anchor = { row:0, column:index }; window.chrome?.webview?.postMessage({type:'tableSelection', id:element.Id, row:0, column:index, endRow:(table.Rows||[]).length-1, endColumn:index, scope:'column'}); }); grid.appendChild(header);
+      header.addEventListener('pointerdown', event => { event.preventDefault(); event.stopPropagation(); anchor = { row:0, column:index }; selectRange(anchor,{row:(table.Rows||[]).length-1,column:index},'column'); }); grid.appendChild(header);
     });
     let y = 0;
     (table.Rows || []).forEach((track, index) => {
       const header = document.createElement('button'); header.type = 'button'; header.className = 'scada-editor-table-header row'; header.textContent = String(index+1); header.style.top = `${y}px`; header.style.height = `${Number(track.Height || 20)}px`; y += Number(track.Height || 20);
-      header.addEventListener('pointerdown', event => { event.preventDefault(); event.stopPropagation(); anchor = { row:index, column:0 }; window.chrome?.webview?.postMessage({type:'tableSelection', id:element.Id, row:index, column:0, endRow:index, endColumn:(table.Columns||[]).length-1, scope:'row'}); }); grid.appendChild(header);
+      header.addEventListener('pointerdown', event => { event.preventDefault(); event.stopPropagation(); anchor = { row:index, column:0 }; selectRange(anchor,{row:index,column:(table.Columns||[]).length-1},'row'); }); grid.appendChild(header);
     });
-    const corner = document.createElement('button'); corner.type='button'; corner.className='scada-editor-table-header scada-editor-table-corner'; corner.addEventListener('pointerdown', event => { event.preventDefault(); event.stopPropagation(); window.chrome?.webview?.postMessage({type:'tableSelection', id:element.Id, row:0, column:0, endRow:(table.Rows||[]).length-1, endColumn:(table.Columns||[]).length-1, scope:'table'}); }); grid.appendChild(corner);
+    const corner = document.createElement('button'); corner.type='button'; corner.className='scada-editor-table-header scada-editor-table-corner'; corner.addEventListener('pointerdown', event => { event.preventDefault(); event.stopPropagation(); anchor={row:0,column:0};selectRange(anchor,{row:(table.Rows||[]).length-1,column:(table.Columns||[]).length-1},'table'); }); grid.appendChild(corner);
     wrapper.replaceChildren(grid);
   };
   const setEditorState = (mode, showGuides, tableId) => { interactionMode = mode === 'cells' ? 'cells' : 'object'; showEditorGuides = showGuides !== false; activeTableId = tableId || null; const guidesVisible = interactionMode === 'cells' && showEditorGuides; document.querySelectorAll('.scada-editor-table').forEach(grid => { grid.dataset.mode = interactionMode; grid.dataset.editorGuides = guidesVisible ? 'visible' : 'hidden'; }); };
