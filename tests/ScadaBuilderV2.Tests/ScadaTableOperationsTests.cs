@@ -95,4 +95,35 @@ public sealed class ScadaTableOperationsTests
         Assert.AreEqual("#123456", anchor.Style?.Background);
         Assert.AreEqual(2, anchor.ColumnSpan);
     }
+
+    [TestMethod]
+    public void InsertDeleteAndUnmergeKeepBindingOnCurrentAnchor()
+    {
+        var table = TableCellBindingOperationsTests.Bind(TableCellBindingOperationsTests.NumericTable(), 1, 1);
+        table = ScadaTableOperations.InsertRow(table, 0);
+        table = ScadaTableOperations.InsertColumn(table, 0);
+        Assert.IsNotNull(ScadaTableCellBindingOperations.GetBinding(table, 2, 2));
+
+        table = ScadaTableOperations.Merge(table, new ScadaTableRange(2, 2, 2, 3));
+        table = ScadaTableOperations.Unmerge(table, 2, 3);
+        Assert.IsNotNull(ScadaTableCellBindingOperations.GetBinding(table, 2, 2));
+        Assert.IsNull(ScadaTableCellBindingOperations.GetBinding(table, 2, 3));
+
+        table = ScadaTableOperations.DeleteRow(table, 0);
+        table = ScadaTableOperations.DeleteColumn(table, 0);
+        Assert.IsNotNull(ScadaTableCellBindingOperations.GetBinding(table, 1, 1));
+    }
+
+    [TestMethod]
+    public void MergeRejectsAbsorbedBindingButAllowsBoundTopLeftAnchor()
+    {
+        var table = TableCellBindingOperationsTests.Bind(TableCellBindingOperationsTests.NumericTable(), 0, 1);
+        Assert.ThrowsException<InvalidOperationException>(() =>
+            ScadaTableOperations.Merge(table, new ScadaTableRange(0, 0, 0, 1)));
+
+        table = ScadaTableCellBindingOperations.RemoveBinding(table, 0, 1);
+        table = TableCellBindingOperationsTests.Bind(table, 0, 0);
+        var merged = ScadaTableOperations.Merge(table, new ScadaTableRange(0, 0, 0, 1));
+        Assert.IsNotNull(ScadaTableCellBindingOperations.GetBinding(merged, 0, 1));
+    }
 }

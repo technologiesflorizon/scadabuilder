@@ -32,4 +32,42 @@ public sealed class TableContentOperationsTests
         var local = table.EffectiveCells.Single(c=>c.Row==0&&c.Column==0).Style!;
         Assert.IsNull(local.Background); Assert.AreEqual(18d, local.FontSize); Assert.AreEqual(true, local.TextWrap);
     }
+
+    [TestMethod]
+    public void ClearBoundCellPreservesNumericPropertiesAndBindingButClearsInitialValue()
+    {
+        var table = TableCellBindingOperationsTests.NumericTable();
+        table = ScadaTableOperations.SetContent(table, 0, 0, new ScadaTableCellContent(
+            ScadaTableCellContentKind.InputNumeric,
+            Placeholder: "Pression",
+            NumericValue: 12.5,
+            Minimum: 0,
+            Maximum: 20,
+            Step: 0.5,
+            DisplayFormat: "0.0"));
+        table = TableCellBindingOperationsTests.Bind(table, 0, 0);
+
+        var cleared = ScadaTableContentOperations.ClearContent(table, new ScadaTableRange(0, 0, 0, 0));
+        var cell = cleared.EffectiveCells.Single(candidate => candidate.Row == 0 && candidate.Column == 0);
+
+        Assert.AreEqual(ScadaTableCellContentKind.InputNumeric, cell.EffectiveContent.Kind);
+        Assert.IsNull(cell.EffectiveContent.NumericValue);
+        Assert.AreEqual(0d, cell.EffectiveContent.Minimum);
+        Assert.AreEqual("0.0", cell.EffectiveContent.DisplayFormat);
+        Assert.IsNotNull(cell.ValueBindings);
+    }
+
+    [TestMethod]
+    public void BoundCellCannotConvertUntilBindingIsRemoved()
+    {
+        var table = TableCellBindingOperationsTests.Bind(TableCellBindingOperationsTests.NumericTable(), 0, 0);
+        var range = new ScadaTableRange(0, 0, 0, 0);
+
+        Assert.ThrowsException<InvalidOperationException>(() =>
+            ScadaTableContentOperations.ConvertKind(table, range, ScadaTableCellContentKind.Text));
+
+        var unbound = ScadaTableCellBindingOperations.RemoveBinding(table, 0, 0);
+        var converted = ScadaTableContentOperations.ConvertKind(unbound, range, ScadaTableCellContentKind.Text);
+        Assert.AreEqual(ScadaTableCellContentKind.Text, converted.EffectiveCells[0].EffectiveContent.Kind);
+    }
 }

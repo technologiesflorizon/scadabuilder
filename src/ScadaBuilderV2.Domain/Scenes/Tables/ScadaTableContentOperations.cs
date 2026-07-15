@@ -3,7 +3,7 @@ using System.Globalization;
 namespace ScadaBuilderV2.Domain.Scenes;
 
 /// <summary>Applies deterministic table-cell content conversion and editing.</summary>
-/// <remarks>Decisions: DEC-0040. Contracts: approved table authoring specification. Tests: TableContentOperationsTests.</remarks>
+/// <remarks>Decisions: DEC-0040, DEC-0042. Contracts: docs/superpowers/specs/2026-07-15-table-cell-numeric-input-tf100web-design.md. Tests: TableContentOperationsTests.</remarks>
 public static class ScadaTableContentOperations
 {
     /// <summary>Sets one anchor content through the compatibility facade.</summary>
@@ -11,8 +11,21 @@ public static class ScadaTableContentOperations
     /// <summary>Clears every anchor in a range.</summary>
     public static ScadaTableDefinition ClearContent(ScadaTableDefinition table, ScadaTableRange range) => ScadaTableOperations.ClearContent(table, range);
     /// <summary>Converts every anchor in a range to the requested content kind.</summary>
-    public static ScadaTableDefinition ConvertKind(ScadaTableDefinition table, ScadaTableRange range, ScadaTableCellContentKind kind) =>
-        table with { Cells = table.EffectiveCells.Select(cell => range.Contains(cell.Row, cell.Column) ? cell with { Content = Convert(cell.EffectiveContent, kind) } : cell).ToArray() };
+    public static ScadaTableDefinition ConvertKind(ScadaTableDefinition table, ScadaTableRange range, ScadaTableCellContentKind kind)
+    {
+        if (kind != ScadaTableCellContentKind.InputNumeric &&
+            table.EffectiveCells.Any(cell => range.Contains(cell.Row, cell.Column) && cell.ValueBindings is not null))
+        {
+            throw new InvalidOperationException("La conversion exige d'abord la suppression confirmee des bindings cellule.");
+        }
+
+        return table with
+        {
+            Cells = table.EffectiveCells.Select(cell => range.Contains(cell.Row, cell.Column)
+                ? cell with { Content = Convert(cell.EffectiveContent, kind) }
+                : cell).ToArray()
+        };
+    }
 
     /// <summary>Converts one content value without retaining incompatible hidden fields.</summary>
     public static ScadaTableCellContent Convert(ScadaTableCellContent source, ScadaTableCellContentKind target)

@@ -11,6 +11,13 @@ public static class ScadaTableOperations
 
         var anchor = FindCell(table, range.StartRow, range.StartColumn)
             ?? throw new InvalidOperationException("The merge anchor cell does not exist.");
+        if (table.EffectiveCells.Any(cell =>
+                cell != anchor &&
+                range.Contains(cell.Row, cell.Column) &&
+                cell.ValueBindings is not null))
+        {
+            throw new InvalidOperationException("La fusion absorberait une cellule liee autre que l'ancre superieure gauche.");
+        }
         var cells = table.EffectiveCells
             .Where(cell => !range.Contains(cell.Row, cell.Column))
             .Append(anchor with
@@ -73,7 +80,9 @@ public static class ScadaTableOperations
         {
             Cells = table.EffectiveCells
                 .Select(cell => range.Contains(cell.Row, cell.Column)
-                    ? cell with { Content = ScadaTableCellContent.EmptyText }
+                    ? cell.ValueBindings is null
+                        ? cell with { Content = ScadaTableCellContent.EmptyText }
+                        : cell with { Content = cell.EffectiveContent with { NumericValue = null } }
                     : cell)
                 .ToArray()
         };

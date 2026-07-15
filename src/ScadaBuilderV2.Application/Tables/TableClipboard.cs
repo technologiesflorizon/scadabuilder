@@ -11,7 +11,7 @@ public sealed record TableClipboardPayload(
     string Tsv);
 
 /// <summary>Copies and pastes table cells without depending on the platform clipboard.</summary>
-/// <remarks>Decisions: DEC-0039. Tests: tests/ScadaBuilderV2.Tests/TableClipboardTests.cs.</remarks>
+/// <remarks>Decisions: DEC-0039, DEC-0042. Contracts: docs/superpowers/specs/2026-07-15-table-cell-numeric-input-tf100web-design.md. Tests: tests/ScadaBuilderV2.Tests/TableClipboardTests.cs.</remarks>
 public static class TableClipboard
 {
     public static TableClipboardPayload Copy(ScadaTableDefinition table, ScadaTableRange range)
@@ -19,7 +19,12 @@ public static class TableClipboard
         EnsureRange(table, range);
         var cells = table.EffectiveCells
             .Where(cell => range.Contains(cell.Row, cell.Column))
-            .Select(cell => cell with { Row = cell.Row - range.StartRow, Column = cell.Column - range.StartColumn })
+            .Select(cell => cell with
+            {
+                Row = cell.Row - range.StartRow,
+                Column = cell.Column - range.StartColumn,
+                ValueBindings = null
+            })
             .ToArray();
         foreach (var cell in table.EffectiveCells.Where(cell => cell.RowSpan > 1 || cell.ColumnSpan > 1))
         {
@@ -38,9 +43,48 @@ public static class TableClipboard
     {
         var target = new ScadaTableRange(startRow, startColumn, startRow + payload.Rows - 1, startColumn + payload.Columns - 1);
         EnsureRange(table, target);
+        var sources = payload.Cells.ToDictionary(cell => (cell.Row, cell.Column));
+        foreach (var targetCell in table.EffectiveCells.Where(cell => target.Contains(cell.Row, cell.Column) && cell.ValueBindings is not null))
+        {
+            if (!sources.TryGetValue((targetCell.Row - startRow, targetCell.Column - startColumn), out var source))
+            {
+                continue;
+            }
+
+            var content = source.EffectiveContent;
+            var isEmpty = content.Kind != ScadaTableCellContentKind.InputNumeric && string.IsNullOrWhiteSpace(content.Text);
+            if (content.Kind != ScadaTableCellContentKind.InputNumeric && !isEmpty)
+            {
+                throw new InvalidOperationException("Une cellule liee accepte seulement une valeur numerique valide ou vide.");
+            }
+        }
+
         var cleared = ScadaTableOperations.ClearContent(table, target);
         var destination = cleared.EffectiveCells.Where(cell => !target.Contains(cell.Row, cell.Column)).ToList();
-        destination.AddRange(payload.Cells.Select(cell => cell with { Row = cell.Row + startRow, Column = cell.Column + startColumn }));
+        foreach (var source in payload.Cells)
+        {
+            var row = source.Row + startRow;
+            var column = source.Column + startColumn;
+            var existing = table.EffectiveCells.First(cell => cell.Covers(row, column));
+            if (existing.ValueBindings is null)
+            {
+                destination.Add(source with { Row = row, Column = column, ValueBindings = null });
+                continue;
+            }
+
+            var sourceContent = source.EffectiveContent;
+            var content = sourceContent.Kind == ScadaTableCellContentKind.InputNumeric
+                ? sourceContent
+                : existing.EffectiveContent with { NumericValue = null };
+            destination.Add(source with
+            {
+                Row = row,
+                Column = column,
+                Content = content,
+                ValueBindings = existing.ValueBindings
+            });
+        }
+
         var result = cleared with { Cells = destination.OrderBy(cell => cell.Row).ThenBy(cell => cell.Column).ToArray() };
         ScadaTableOperations.ValidateDefinition(result);
         return result;
