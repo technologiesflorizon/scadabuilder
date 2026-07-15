@@ -132,8 +132,8 @@ public sealed class RibbonCommandCatalogTests
         StringAssert.Contains(xaml, "<RowDefinition Height=\"156\"/>");
         StringAssert.Contains(xaml, "LargeRibbonCommandTemplate");
         StringAssert.Contains(xaml, "LargeCommandIconStyle");
-        StringAssert.Contains(xaml, "<Setter Property=\"Width\" Value=\"32\"/>");
-        StringAssert.Contains(xaml, "<Setter Property=\"Height\" Value=\"32\"/>");
+        StringAssert.Contains(xaml, "<Setter Property=\"Width\" Value=\"26\"/>");
+        StringAssert.Contains(xaml, "<Setter Property=\"Height\" Value=\"26\"/>");
         StringAssert.Contains(xaml, "<UniformGrid Columns=\"4\"/>");
         var shapeTemplateStart = xaml.IndexOf("<DataTemplate x:Key=\"LargeRibbonCommandTemplate\">", StringComparison.Ordinal);
         var shapeTemplateEnd = xaml.IndexOf("<DataTemplate x:Key=\"RibbonGroupTemplate\">", StringComparison.Ordinal);
@@ -172,7 +172,35 @@ public sealed class RibbonCommandCatalogTests
         StringAssert.Contains(template, "Width=\"14\" Height=\"14\"");
         Assert.IsFalse(
             template.Contains("RibbonCommandButtonStyle", StringComparison.Ordinal),
-            "The Insert family row must not inherit the 58-pixel command-button height.");
+            "The Insert family row must keep its dedicated compact presentation.");
+    }
+
+    [TestMethod]
+    public void SecondLevelRibbonUsesCompactTwoRowCommands()
+    {
+        var xaml = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml");
+        var styleStart = xaml.IndexOf("<Style x:Key=\"RibbonCommandButtonStyle\"", StringComparison.Ordinal);
+        var styleEnd = xaml.IndexOf("</Style>", styleStart, StringComparison.Ordinal);
+        var templateStart = xaml.IndexOf("<DataTemplate x:Key=\"RibbonCommandTemplate\">", StringComparison.Ordinal);
+        var templateEnd = xaml.IndexOf("</DataTemplate>", templateStart, StringComparison.Ordinal);
+        var groupStart = xaml.IndexOf("<DataTemplate x:Key=\"RibbonGroupTemplate\">", StringComparison.Ordinal);
+        var groupEnd = xaml.IndexOf("</DataTemplate>", groupStart, StringComparison.Ordinal);
+
+        Assert.IsTrue(styleStart >= 0 && styleEnd > styleStart, "The second-level ribbon command style was not found.");
+        Assert.IsTrue(templateStart >= 0 && templateEnd > templateStart, "The second-level command template was not found.");
+        Assert.IsTrue(groupStart >= 0 && groupEnd > groupStart, "The second-level ribbon group template was not found.");
+
+        var style = xaml.Substring(styleStart, styleEnd - styleStart);
+        var template = xaml.Substring(templateStart, templateEnd - templateStart);
+        var group = xaml.Substring(groupStart, groupEnd - groupStart);
+
+        StringAssert.Contains(style, "<Setter Property=\"Width\" Value=\"104\"/>");
+        StringAssert.Contains(style, "<Setter Property=\"Height\" Value=\"28\"/>");
+        StringAssert.Contains(style, "<Setter Property=\"Padding\" Value=\"5,2\"/>");
+        StringAssert.Contains(template, "<StackPanel Orientation=\"Horizontal\">");
+        StringAssert.Contains(template, "FontSize=\"10.5\"");
+        StringAssert.Contains(template, "TextTrimming=\"CharacterEllipsis\"");
+        StringAssert.Contains(group, "<UniformGrid Rows=\"2\"/>");
     }
 
     [TestMethod]

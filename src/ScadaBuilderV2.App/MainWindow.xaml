@@ -84,9 +84,10 @@
         </Style>
 
         <Style x:Key="RibbonCommandButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Width" Value="78"/>
-            <Setter Property="Height" Value="58"/>
-            <Setter Property="Padding" Value="6"/>
+            <Setter Property="Width" Value="104"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Padding" Value="5,2"/>
+            <Setter Property="Margin" Value="1"/>
             <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsActive}" Value="True">
@@ -112,9 +113,10 @@
         </Style>
 
         <Style x:Key="LargeRibbonCommandButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Width" Value="44"/>
-            <Setter Property="Height" Value="44"/>
-            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Width" Value="38"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Margin" Value="1"/>
             <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsActive}" Value="True">
@@ -130,27 +132,28 @@
             <Setter Property="BorderBrush" Value="{StaticResource BorderBrushSoft}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="5"/>
-            <Setter Property="Padding" Value="6,4"/>
-            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Padding" Value="4,3"/>
+            <Setter Property="Margin" Value="0,0,5,0"/>
         </Style>
 
         <Style x:Key="RibbonGroupHeaderStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontSize" Value="9.5"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
-            <Setter Property="Margin" Value="3,0,0,3"/>
+            <Setter Property="Margin" Value="2,0,0,2"/>
         </Style>
 
         <Style x:Key="CommandIconStyle" TargetType="Image">
-            <Setter Property="Width" Value="22"/>
-            <Setter Property="Height" Value="22"/>
+            <Setter Property="Width" Value="16"/>
+            <Setter Property="Height" Value="16"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="0,0,0,4"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,5,0"/>
         </Style>
 
         <Style x:Key="LargeCommandIconStyle" TargetType="Image">
-            <Setter Property="Width" Value="32"/>
-            <Setter Property="Height" Value="32"/>
+            <Setter Property="Width" Value="26"/>
+            <Setter Property="Height" Value="26"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Margin" Value="0"/>
@@ -161,9 +164,13 @@
                     ToolTip="{Binding ToolTip}"
                     IsEnabled="{Binding IsEnabled}"
                     Command="{Binding Command}">
-                <StackPanel>
+                <StackPanel Orientation="Horizontal">
                     <Image Style="{StaticResource CommandIconStyle}" Source="{Binding Icon}"/>
-                    <TextBlock Text="{Binding Label}" FontSize="12" TextAlignment="Center"/>
+                    <TextBlock Text="{Binding Label}"
+                               Width="76"
+                               FontSize="10.5"
+                               VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"/>
                 </StackPanel>
             </Button>
         </DataTemplate>
@@ -196,7 +203,7 @@
                         </ItemsControl.Style>
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal"/>
+                                <UniformGrid Rows="2"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
