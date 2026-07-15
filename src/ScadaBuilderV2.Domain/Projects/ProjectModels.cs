@@ -455,6 +455,8 @@ public static class ScadaProjectBuildValidator
                     scene.Id));
             }
 
+            ValidateTableCellValueBindings(issues, scene, element, tagsById);
+
             var writeTagId = element.Data?.WriteTagId;
             if (string.IsNullOrWhiteSpace(writeTagId))
             {
@@ -489,6 +491,108 @@ public static class ScadaProjectBuildValidator
                     scene.Id));
             }
         }
+    }
+
+    private static void ValidateTableCellValueBindings(
+        List<ScadaBuildValidationIssue> issues,
+        ScadaScene scene,
+        ScadaElement element,
+        IReadOnlyDictionary<string, ScadaTagDefinition> tagsById)
+    {
+        if (element.Kind != ScadaElementKind.Table || element.Table is null)
+        {
+            return;
+        }
+
+        foreach (var cell in element.Table.EffectiveCells.Where(cell => cell.ValueBindings is not null))
+        {
+            var path = $"Elements[{element.Id}].Table.Cells[{cell.Row},{cell.Column}]";
+            var content = cell.EffectiveContent;
+            if (content.Kind != ScadaTableCellContentKind.InputNumeric)
+            {
+                AddTableCellIssue(issues, scene, element, path, "table-cell.target-not-numeric", "La cellule liee doit etre de type InputNumeric.");
+            }
+
+            var readTagId = cell.ValueBindings?.ReadTagId;
+            if (!string.IsNullOrWhiteSpace(readTagId) &&
+                (!tagsById.TryGetValue(readTagId, out var readTag) || !readTag.Enabled))
+            {
+                AddTableCellIssue(issues, scene, element, path, "table-cell.tag.read-missing", $"Le tag de lecture actif '{readTagId}' est absent du catalogue.");
+            }
+
+            var writeTagId = cell.ValueBindings?.WriteTagId;
+            if (!string.IsNullOrWhiteSpace(writeTagId))
+            {
+                if (!tagsById.TryGetValue(writeTagId, out var writeTag) || !writeTag.Enabled)
+                {
+                    AddTableCellIssue(issues, scene, element, path, "table-cell.tag.write-missing", $"Le tag d'ecriture actif '{writeTagId}' est absent du catalogue.");
+                }
+                else if (!writeTag.Writeable)
+                {
+                    AddTableCellIssue(issues, scene, element, path, "table-cell.tag.write-readonly", $"Le tag '{writeTagId}' n'est pas ecrivable.");
+                }
+
+                if (content.IsReadOnly)
+                {
+                    AddTableCellIssue(issues, scene, element, path, "table-cell.write-readonly-input", "Une cellule en lecture seule ne peut pas porter un binding d'ecriture.");
+                }
+            }
+
+            if (content.Minimum.HasValue && content.Maximum.HasValue && content.Minimum > content.Maximum)
+            {
+                AddTableCellIssue(issues, scene, element, path, "table-cell.numeric-range", "Le minimum ne peut pas depasser le maximum.");
+            }
+            if (content.Step.HasValue && (!double.IsFinite(content.Step.Value) || content.Step <= 0))
+            {
+                AddTableCellIssue(issues, scene, element, path, "table-cell.numeric-step", "Le pas doit etre un nombre fini superieur a zero.");
+            }
+            if (content.NumericValue.HasValue &&
+                (!double.IsFinite(content.NumericValue.Value) ||
+                 content.Minimum.HasValue && content.NumericValue < content.Minimum ||
+                 content.Maximum.HasValue && content.NumericValue > content.Maximum))
+            {
+                AddTableCellIssue(issues, scene, element, path, "table-cell.numeric-initial-value", "La valeur initiale doit etre finie et respecter minimum/maximum.");
+            }
+            if (!IsSupportedTableDisplayFormat(content.DisplayFormat))
+            {
+                AddTableCellIssue(issues, scene, element, path, "table-cell.display-format", "Le format d'affichage numerique n'est pas supporte.");
+            }
+        }
+    }
+
+    private static void AddTableCellIssue(
+        ICollection<ScadaBuildValidationIssue> issues,
+        ScadaScene scene,
+        ScadaElement element,
+        string path,
+        string code,
+        string message) =>
+        issues.Add(new ScadaBuildValidationIssue(
+            ScadaBuildValidationSeverity.Error,
+            code,
+            message,
+            scene.EffectivePageCode,
+            scene.PageKey,
+            ElementId: element.Id,
+            PropertyPath: path));
+
+    private static bool IsSupportedTableDisplayFormat(string? displayFormat)
+    {
+        if (string.IsNullOrWhiteSpace(displayFormat))
+        {
+            return true;
+        }
+
+        var value = displayFormat.Trim();
+        if (value.StartsWith("fixed:", StringComparison.OrdinalIgnoreCase))
+        {
+            return int.TryParse(value[6..], out var decimals) && decimals >= 0;
+        }
+
+        var separatorCount = value.Count(character => character == '.');
+        return value.Any(character => character == '#') &&
+               separatorCount <= 1 &&
+               value.All(character => character is '#' or '.');
     }
 
     private static void ValidateSceneActions(

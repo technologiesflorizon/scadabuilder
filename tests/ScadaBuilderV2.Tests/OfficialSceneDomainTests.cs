@@ -482,6 +482,54 @@ public sealed class OfficialSceneDomainTests
     }
 
     [TestMethod]
+    public void BuildValidationReportsNumericTableCellBindingsWithStablePaths()
+    {
+        var table = ScadaElement.CreateTable("table_process", "Tableau", 0, 0, 2, 2);
+        var definition = table.Table! with
+        {
+            Cells = table.Table.EffectiveCells.Select(cell => cell.Row == 0 && cell.Column == 0
+                ? cell with
+                {
+                    Content = new ScadaTableCellContent(
+                        ScadaTableCellContentKind.InputNumeric,
+                        NumericValue: 50,
+                        Minimum: 10,
+                        Maximum: 5,
+                        Step: 0,
+                        IsReadOnly: true,
+                        DisplayFormat: "invalid"),
+                    ValueBindings = new ScadaTableCellValueBindings("tag.disabled", "tag.readonly")
+                }
+                : cell).ToArray()
+        };
+        table = table with { Table = definition };
+        var scene = ScadaScene.CreateEmpty("win_table", "win_table", new CanvasSize(1280, 873)).WithElement(table);
+        var project = ScadaProject.CreateDefault("Validation") with
+        {
+            Scenes = [new ScadaSceneReference("win_table", "win_table", "scenes/win_table.scene.json")],
+            TagCatalog = new ScadaTagCatalog(
+                "tf100web-scada-tags-v1",
+                [
+                    new ScadaTagDefinition("tag.disabled", "Inactive", Enabled: false),
+                    new ScadaTagDefinition("tag.readonly", "Lecture seule", Writeable: false)
+                ])
+        };
+
+        var issues = ScadaProjectBuildValidator.Validate(project, [scene]);
+        var cellIssues = issues.Where(issue => issue.Code.StartsWith("table-cell.", StringComparison.Ordinal)).ToArray();
+
+        Assert.IsTrue(cellIssues.Any(issue => issue.Code == "table-cell.tag.read-missing"));
+        Assert.IsTrue(cellIssues.Any(issue => issue.Code == "table-cell.tag.write-readonly"));
+        Assert.IsTrue(cellIssues.Any(issue => issue.Code == "table-cell.write-readonly-input"));
+        Assert.IsTrue(cellIssues.Any(issue => issue.Code == "table-cell.numeric-range"));
+        Assert.IsTrue(cellIssues.Any(issue => issue.Code == "table-cell.numeric-step"));
+        Assert.IsTrue(cellIssues.Any(issue => issue.Code == "table-cell.numeric-initial-value"));
+        Assert.IsTrue(cellIssues.Any(issue => issue.Code == "table-cell.display-format"));
+        Assert.IsTrue(cellIssues.All(issue => issue.PropertyPath == "Elements[table_process].Table.Cells[0,0]"));
+        Assert.IsTrue(cellIssues.All(issue => issue.ElementId == "table_process"));
+    }
+
+    [TestMethod]
     public void BuildValidationRejectsInvalidCompoundActionConditions()
     {
         var button = ScadaElement.CreateText("btn_show", "Afficher", 10, 20);
