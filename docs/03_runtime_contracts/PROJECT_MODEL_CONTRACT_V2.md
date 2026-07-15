@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active project model contract
-Document version: `V2.1.4.0027`
+Document version: `V2.1.4.0039`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0039` | `PENDING` | Les cellules ancres `InputNumeric` peuvent porter `DisplayFormat` et des bindings lecture/ecriture persistants, proteges par les operations structurelles et exclus du clipboard. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Validation end-to-end d'une table 16 x 10 avec contenus mixtes, deux en-têtes, fusion, styles par portée, pistes non uniformes, bordures physiques et `IsLocked`, sans modifier le schéma `.sb2`. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Extension Tableau par retour a la ligne, hauteur typographique et bordures physiques; ajout de `ScadaElement.IsLocked` comme metadata d'authoring. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Ajout du contrat persistant `ScadaElementKind.Table`, pistes, cellules, fusions, contenus input et styles heritables. |
@@ -38,7 +39,9 @@ Legacy source paths and source ids are trace metadata unless explicitly converte
 
 Un tableau est un seul `ScadaElement` de kind `Table` dont `Table` contient les colonnes, rangees, ancres de cellules, spans, contenus et styles. Les pistes sont limitees a 1..64 par axe; les dimensions minimales sont 24 px par colonne et 20 px par rangee. Les anciennes scenes sans champ `Table` restent lisibles.
 
-Une cellule contient du texte statique, un `InputText` ou un `InputNumeric`. Ces inputs sont des valeurs locales simples : aucun `ValueBinding` cellule par cellule n'est cree. Les styles nullable signifient `Heriter`; la resolution se fait propriete par propriete selon `cellule > rangee explicite > bande > colonne > tableau > defaut`.
+Une cellule contient du texte statique, un `InputText` ou un `InputNumeric`. Une cellule ancre `InputNumeric` peut porter `DisplayFormat` ainsi que `ScadaTableCellValueBindings.ReadTagId` et `WriteTagId`; les cellules texte et `InputText` ne sont pas eligibles dans cette tranche. Les styles nullable signifient `Heriter`; la resolution se fait propriete par propriete selon `cellule > rangee explicite > bande > colonne > tableau > defaut`.
+
+L'identite d'une cible liee reste derivee de l'id Tableau et des coordonnees courantes de son ancre. Les insertions de pistes deplacent contenu et binding ensemble; une fusion qui absorberait une autre cellule liee est refusee; la suppression destructive exige confirmation. `ClearContent` conserve type et binding en vidant seulement la valeur initiale. Le clipboard n'embarque jamais les bindings et ne peut pas convertir atomiquement une cible liee vers un contenu non numerique.
 
 `ScadaTableFormat` porte aussi `TextWrap` et `LineHeight`. `BorderOverrides` persiste des segments horizontaux/verticaux unitaires; les presets UI ne sont jamais serialises. Plusieurs rangees initiales consecutives peuvent porter `IsHeader`.
 

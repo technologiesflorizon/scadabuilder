@@ -1,13 +1,14 @@
 # Input numerique lie dans une cellule Tableau et TF100Web - Plan d'implementation
 
 Date: 2026-07-15
-Status: Draft implementation plan - pending execution approval
-Document version: `V2.1.4.0038`
+Status: Implemented in code - Gate B industrial smoke and Gate C delivery open
+Document version: `V2.1.4.0039`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0039` | `PENDING` | Taches 1 a 13 implementees; package 2.2 et compatibilite 2.1 prouves localement sous WSL, smoke industriel et livraison ordonnee non executes. |
 | 2026-07-15 | `V2.1.4.0038` | `PENDING` | Integration de la revue contre le code : valeurs `TableEditKind` et branches de dispatch rendues explicites; role runtime de `data-scada-step` distingue de l'attribut natif `step`. |
 | 2026-07-15 | `V2.1.4.0037` | `PENDING` | Creation du plan executable cross-repo derive de la specification approuvee et de `DEC-0042`, avec TF100Web obligatoire avant le manifest `.sb2` 2.2. |
 
@@ -18,6 +19,14 @@ Document version: `V2.1.4.0038`
 **Architecture:** SCADA Builder Domain porte le contenu, les bindings et les invariants structurels; Application porte les intentions, l'inspection, la securite et l'historique; App/WPF adapte le ruban, le panneau et le dialogue; Rendering produit le HTML et le manifest 2.2. TF100Web valide d'abord la version du package, extrait les cibles cellule dans un module Python dedie, puis reutilise le runtime numerique JavaScript commun sans moteur de polling ou d'ecriture propre aux Tableaux.
 
 **Tech Stack:** C# 12, .NET 8, WPF/WebView2, `System.Text.Json`, MSTest, Python/Django, JavaScript navigateur, HTML/CSS, PowerShell et archives `.sb2`.
+
+## Execution record
+
+- TF100Web: `d1b4944`, `eba1b52`, `30587f9`, `3fc4f3b`; configuration Django locale WSL dediee et ignoree par Git.
+- SCADA Builder V2: `0971f90`, `4d7a2b0`, `faf9600`, `4d9f327`, `ac5ca82`, `e8affc2`, `1aa0149`, `d0d05c2`.
+- Gate B local: package genere 2.2 avec lecture/ecriture distinctes, lecture seule et cellule non liee; composition et resolution des mappings validees; package 2.1 redeploye avec succes.
+- Gate B industriel: polling, POST, focus/Enter/blur/Escape et permissions operateur sur mappings reels restent ouverts faute d'environnement explicitement autorise.
+- Gate C: aucune fusion ni livraison production n'est revendiquee; TF100Web doit toujours preceder SCADA Builder 2.2.
 
 ## Global Constraints
 

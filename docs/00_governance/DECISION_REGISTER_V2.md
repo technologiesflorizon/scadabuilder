@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active authoritative decision register
-Document version: `V2.1.4.0037`
+Document version: `V2.1.4.0039`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0039` | `PENDING` | `DEC-0042` implemente dans les deux depots; preuves package 2.1/2.2 locales acquises, gate industriel et ordre de livraison maintenus ouverts. |
 | 2026-07-15 | `V2.1.4.0037` | `PENDING` | Ajout de `DEC-0042` pour les bindings lecture/ecriture des cellules Tableau `InputNumeric`, le manifest `.sb2` 2.2 et l'intake TF100Web ordonne avant l'exporteur. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | `DEC-0041` implementee et validee sans changement des contrats `.sb2`, `.sep` ou TF100Web. |
 | 2026-07-15 | `V2.1.4.0033` | `e811253` | Ajout de `DEC-0041` pour les corrections d'interaction Tableau/verrou approuvees. |
@@ -1234,7 +1235,7 @@ Implemented in `b75f1d7`, with source-contract follow-up `c441090`. The editor p
 
 Status: Active
 Created: 2026-07-15 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `0086bae`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -1256,8 +1257,8 @@ The delivery is cross-repository and deployment-order sensitive: TF100Web compat
 
 Implementation status:
 
-Planned in `docs/superpowers/plans/2026-07-15-table-cell-numeric-input-tf100web.md`; no implementation behavior is claimed yet.
+Implemented in code on `codex/adding-table-cell-numeric-input`. SCADA Builder commits `0971f90`, `4d7a2b0`, `faf9600`, `4d9f327`, `ac5ca82`, `e8affc2`, `1aa0149` and `d0d05c2` cover model through package validation. TF100Web commits `d1b4944`, `eba1b52`, `30587f9` and `3fc4f3b` cover version gating, manifest intake, shared runtime reuse and regressions. Generated manifest 2.2 and compatibility 2.1 packages deploy and compose in the dedicated local WSL configuration. Real industrial mappings, authorized environment smoke and ordered delivery remain open gates.
 
 Regression coverage:
 
-Planned in SCADA Builder V2 `ScadaTableModelTests`, `TableContentOperationsTests`, `ScadaTableOperationsTests`, `TableClipboardTests`, `TableEditCoordinatorTests`, `TableUiArchitectureTests`, `ModernProjectStoreTests`, `PreviewDocumentTests` and `Ft100SceneExporterTests`, plus TF100Web `frontend.tests_scada_deploy`, `frontend.tests_scada_page_composition` and `frontend.tests_scada_package`.
+Covered by SCADA Builder V2 `TableCellBindingOperationsTests`, `TableContentOperationsTests`, `ScadaTableOperationsTests`, `TableClipboardTests`, `TableEditCoordinatorTests`, WPF table numeric property tests, `ModernProjectStoreTests`, renderer/exporter tests and `Ft100PackageValidatorTests`; plus TF100Web deployment, table-binding, package and runtime suites.

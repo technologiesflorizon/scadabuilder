@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active properties panel contract
-Document version: `V2.1.4.0030`
+Document version: `V2.1.4.0039`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0039` | `PENDING` | Ajout de l'inspecteur/dialogue Input numerique Tableau : valeur, placeholder, readonly, min/max/pas, format et tags lecture/ecriture. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Origine du format Tableau explicitee et fusion/defusion remplacee par un bouton contextuel unique. |
 | 2026-07-15 | `V2.1.4.0028` | `c873744` | La case explicite `Verrouiller la position` est visible dans Propriété > Général et partage l'état normal/mixte avec toutes les autres surfaces. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | `TablePropertiesViewModel` partage les valeurs effectives/locales et les états Hérité/Personnalisé/Mixte; reset de propriété/portée, color picker et X/Y/W/H exacts passent par des requêtes typées et le guard de verrou. |
@@ -76,6 +77,8 @@ The properties panel edits model-backed properties through commands or applicati
 4. Réinitialiser la portée retire toutes ses surcharges dans une seule mutation historique.
 5. Le dialogue Tableau expose X/Y/W/H exacts; une variation X/Y est rejetée par le guard de position si l'Element+ est verrouillé, tandis qu'un resize sans translation demeure permis.
 6. Le panneau expose un seul bouton Fusionner/Defusionner dont le libelle et l'etat suivent la presence de cellules fusionnees dans la plage active.
+7. Une cellule ancre unique de type `InputNumeric` active la section `Input numerique`; le panneau resume son etat et ouvre le dialogue dedie pour valeur initiale, placeholder, lecture seule, minimum, maximum, pas, `DisplayFormat`, tag de lecture et tag d'ecriture.
+8. Les tags proviennent du catalogue courant. Un tag d'ecriture doit etre ecrivable; readonly et binding d'ecriture sont incompatibles. Conversion, suppression de binding et operations structurelles destructives passent par le coordinateur type et ses confirmations, jamais par une mutation directe de `MainWindow`.
 
 ## 4. Related Tests
 

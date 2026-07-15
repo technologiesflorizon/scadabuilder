@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0038`
+Document version: `V2.1.4.0039`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0039` | `PENDING` | `DEC-0042` implemente en code : inputs numeriques cellule, manifest 2.2 et intake TF100Web 2.1/2.2; gates industriels et livraison ordonnee encore ouverts. |
 | 2026-07-15 | `V2.1.4.0038` | `PENDING` | Integration de la revue du plan `DEC-0042` : nouvelles valeurs `TableEditKind` explicites et justification de `data-scada-step` sur la cible cellule TF100Web. |
 | 2026-07-15 | `V2.1.4.0037` | `PENDING` | Approbation de la specification des inputs numeriques lies dans les cellules Tableau, ajout de `DEC-0042` et creation du plan cross-repo ordonnant TF100Web avant l'export `.sb2` 2.2. |
 | 2026-07-15 | `V2.1.4.0036` | `PENDING` | Ajout de la specification cross-repo pour les bindings lecture/ecriture des cellules InputNumeric de Tableau dans TF100Web, sans support InputText dans cette tranche. |
@@ -196,8 +197,8 @@ Active specifications and implementation plans:
 6. `superpowers/specs/2026-07-15-table-lock-interaction-regression-correction-design.md` - approved corrective specification for locked drag enforcement, deterministic Table modes, internal cell/track access, and effective A/1 guide state.
 7. `superpowers/plans/2026-07-15-table-lock-interaction-regression-correction.md` - approved correction plan derived from the regression specification.
 8. `superpowers/plans/2026-07-14-modern-table-and-insert-ribbon.md` - implementation record for the approved and implemented modern table core and hierarchical Insert ribbon.
-9. `superpowers/specs/2026-07-15-table-cell-numeric-input-tf100web-design.md` - approved `DEC-0042` cross-repository specification for functional numeric inputs inside Table cells using the current TF100Web mapping read/write engine.
-10. `superpowers/plans/2026-07-15-table-cell-numeric-input-tf100web.md` - executable cross-repository plan with TF100Web compatibility and deployment gates before the global `.sb2` manifest 2.2 export switch.
+9. `superpowers/specs/2026-07-15-table-cell-numeric-input-tf100web-design.md` - implemented-in-code `DEC-0042` cross-repository specification for functional numeric inputs inside Table cells; industrial delivery gates remain open.
+10. `superpowers/plans/2026-07-15-table-cell-numeric-input-tf100web.md` - executed cross-repository implementation plan with local 2.1/2.2 evidence and TF100Web-first delivery gates still pending.
 
 Generated documentation:
 

@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active runtime package contract
-Document version: `V2.1.4.0016`
+Document version: `V2.1.4.0039`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0039` | `PENDING` | Manifest 2.2 et `Objects[].TableCellBindings` implementes; TF100Web accepte 2.1/2.2, cible le `<td>` page-scope et reutilise l'input numerique enfant. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Le Tableau Element+ est exporte dans le HTML/CSS de page du contrat `.sb2` existant; les inputs cellule restent locaux et les artefacts editeur sont exclus. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Confirmation du contrat réel TF100Web pour les styles Element+ : HTML/CSS opaque, manifest PascalCase, runtime HTML camelCase et preuve de conservation après déploiement. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Clarification de la parite metadata wrapper preview/export pour boutons Element+. |
@@ -270,3 +271,13 @@ flowchart TD
 
 1. `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
 2. `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py`
+
+## 11. Numeric Table Cell Binding Contract (Manifest 2.2)
+
+Current SCADA Builder exports declare `ManifestVersion = "2.2"`, including packages without bound cells. A Table manifest object keeps its normal object-level `ValueBindings` and may additionally expose `TableCellBindings` for anchored `InputNumeric` cells that have at least one read or write tag.
+
+Each entry carries `Row`, `Column`, unscoped `TargetId = <normalized-table-id>__cell-<row>-<column>`, `Kind = InputNumeric`, numeric `Data`, and `ValueBindings`. The page HTML owns the corresponding `ft100-<page-id>__<TargetId>` `<td>` and its existing `<input type="number">`; `min`, `max`, `step`, placeholder, value and readonly remain native input attributes. No cell becomes a synthetic manifest object and no runtime mapping attribute is emitted on the Table wrapper.
+
+TF100Web commits `d1b4944`, `eba1b52`, `30587f9` and `3fc4f3b` gate deployment on manifest 2.1/2.2, preserve `TableCellBindings` through composition, inject mapping metadata on the `<td>`, and reuse the existing input without destructive `replaceChildren`. The local WSL smoke deployed both a compatibility 2.1 package and the generated 2.2 package; the 2.2 composition resolved read mapping 159, distinct write mapping 160, read-only mapping 161, two bound cells and one unbound numeric cell.
+
+Live polling, POST feedback, focus/Enter/blur/Escape and operator permissions against real industrial mappings remain a delivery gate until an explicitly authorized TF100Web environment is available.
