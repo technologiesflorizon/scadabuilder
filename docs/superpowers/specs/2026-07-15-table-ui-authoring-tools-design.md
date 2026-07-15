@@ -1,16 +1,16 @@
-# Authoring Tableau complet - Specification de conception
+# Outils UI d'authoring des tableaux - Specification de conception
 
 Date: 2026-07-15
 Status: Draft - pending approval
-Document version: `V2.1.4.0020`
+Document version: `V2.1.4.0021`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-15 | `V2.1.4.0020` | `PENDING` | Creation d'une specification distincte pour completer l'authoring Tableau apres l'implementation du noyau couvert par `DEC-0039`. |
+| 2026-07-15 | `V2.1.4.0021` | `PENDING` | Creation de la specification autonome des outils UI d'authoring des tableaux; le chantier approuve et implemente couvert par `DEC-0039` demeure immuable. |
 
-Cette specification constitue une nouvelle tranche produit. Elle complete le noyau deja implemente et documente dans [Tableau moderne et ruban Inserer hierarchique](2026-07-14-modern-table-and-insert-ribbon-design.md), sans modifier retrospectivement le statut ni les decisions de cette specification precedente.
+Cette specification ouvre un nouveau chantier produit consacre aux outils UI d'authoring des tableaux. Le Tableau Element+ deja implemente, documente dans [Tableau moderne et ruban Inserer hierarchique](2026-07-14-modern-table-and-insert-ribbon-design.md), est une dependance existante et non une specification a etendre ou a modifier. Le document approuve et implemente demeure immuable.
 
 ## 1. Ecart reel confirme
 
@@ -26,11 +26,11 @@ Le noyau Tableau persiste deja les trois types de contenu et les proprietes d'in
 6. le modele ne distingue pas encore les quatre bordures d'une cellule, le retour a la ligne et la hauteur de ligne;
 7. les actions de dimensions precises, de distribution proportionnelle, d'ajustement au contenu et de gestion complete des en-tetes ne sont pas accessibles.
 
-## 2. Objectif de l'extension
+## 2. Objectif
 
 Completer le Tableau Element+ pour qu'un auteur puisse reconstruire une page equivalente visuellement a `win00012` avec des tableaux structurels, du texte et des inputs locaux, sans bindings de cellules et sans devoir dessiner manuellement des centaines de lignes et rectangles.
 
-Cette extension ne convertit pas automatiquement `win00012`; elle rend sa reconstruction manuelle rapide, precise et maintenable.
+Cette specification ne prevoit pas la conversion automatique de `win00012`; elle rend sa reconstruction manuelle rapide, precise et maintenable.
 
 ## 3. Ruban contextuel sans dialogue de creation
 
@@ -131,7 +131,7 @@ Les en-tetes permettent :
 3. `MainWindow` ne recoit que l'activation de haut niveau, le routage du contexte actif et la delegation; aucune regle de selection, de bordure, de dimension, de conversion ou de format Tableau ne lui est ajoutee.
 4. Aucun changement n'est apporte au contrat de racine `.sb2`, a la composition TF100Web ou a la persistance runtime des valeurs d'input.
 
-## 10. Criteres d'acceptation de l'extension
+## 10. Criteres d'acceptation
 
 1. `Donnees > Tableau` n'ouvre aucun dialogue et le ruban secondaire permet de regler la structure avant placement.
 2. En mode `Cellules`, clic, plage, clic droit et redimensionnement de piste ne deplacent jamais le tableau; en mode `Objet`, les transformations externes restent disponibles.
@@ -152,4 +152,4 @@ Les en-tetes permettent :
 4. Etendre le modele avec bordures par arete, retour a la ligne et hauteur de ligne, tout en maintenant la compatibilite des documents existants.
 5. Maintenir hors scope les formules, bindings par cellule, synchronisation runtime, import Excel/CSV et conversion automatique de `win00012`.
 
-Une fois ces decisions approuvees, cette extension devra etre enregistree dans le registre de decisions, puis integree dans un plan d'implementation distinct avec des tests dedies.
+Une fois ces decisions approuvees, cette nouvelle specification devra etre enregistree dans le registre de decisions, puis recevoir son propre plan d'implementation avec des tests dedies.
