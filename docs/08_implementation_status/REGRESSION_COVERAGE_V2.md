@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active regression coverage map
-Document version: `V2.1.4.0028`
+Document version: `V2.1.4.0029`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Regression XAML du ruban secondaire compact : dimensions, disposition horizontale, troncature et groupes sur deux rangees. |
 | 2026-07-15 | `V2.1.4.0028` | `c873744` | Régressions ciblées pour l'entrée Tableau sans `ShowDialog`, la visibilité des contrôles de verrou et l'action contextuelle Verrouiller/Déverrouiller. |
 | 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | Ajout des suites dédiées inspecteur, bridge, performance 64 x 64 et intégration `win00012`; suite complète observée à 608 réussites et 5 échecs historiques non liés. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Couverture `DEC-0040` : lock/persistance/groupes/guard, session Tableau, conversions, formats, bordures, pistes/en-tetes, architecture WebView 64x64 et export sans artefact editeur. |
@@ -93,7 +94,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Scene/domain rules | `OfficialSceneDomainTests.cs`, `ScadaSceneGroupTests.cs` |
 | Undo/redo/history | `EditorHistoryServiceTests.cs` |
 | WebView bridge/context menu | `WebViewContextMenuScriptTests.cs` |
-| Top ribbon dynamic command surface | `RibbonCommandCatalogTests.MainRibbonUsesOnlyDynamicCommandSurface`, `RibbonCommandCatalogTests.DefaultCatalogDefinesExpectedTopRibbonTabs`, `RibbonCommandCatalogTests.DefaultCatalogRequiresSemanticIconKeys`, `RibbonCommandCatalogTests.InsertFamilyRibbonKeepsFirstLevelCompact` |
+| Top ribbon dynamic command surface | `RibbonCommandCatalogTests.MainRibbonUsesOnlyDynamicCommandSurface`, `RibbonCommandCatalogTests.DefaultCatalogDefinesExpectedTopRibbonTabs`, `RibbonCommandCatalogTests.DefaultCatalogRequiresSemanticIconKeys`, `RibbonCommandCatalogTests.InsertFamilyRibbonKeepsFirstLevelCompact`, `RibbonCommandCatalogTests.SecondLevelRibbonUsesCompactTwoRowCommands` |
 | Left tool palette semantic command surface | `RibbonCommandCatalogTests.ToolPaletteUsesSemanticCommandCatalog`, `RibbonCommandCatalogTests.DefaultCatalogRequiresSemanticIconKeys`, `RibbonCommandCatalogTests.DisabledCommandsExposeReason` |
 | Element inventory hierarchy | `LegacyElementSelectionModelTests.cs` |
 | Element+ legacy conversion | `ElementPlusLegacyConverterTests.cs` |

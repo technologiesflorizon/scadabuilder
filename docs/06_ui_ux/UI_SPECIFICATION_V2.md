@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active UI specification pointer
-Document version: `V2.1.4.0027`
+Document version: `V2.1.4.0029`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Ruban secondaire modernise en boutons horizontaux compacts sur deux rangees, avec icones, galerie et espacement reduits. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Spécification UI synchronisée avec le ruban Tableau contextuel, l'inspecteur Hérité/Personnalisé/Mixte, les dimensions exactes, color pickers, bordures, distribution et en-têtes. |
 
 ## Table Authoring Surface
@@ -74,8 +75,9 @@ Current shell rules:
 10. The `Selection` tab exposes executable group and ungroup actions for Element+ selections; blocked selection states are reported through status feedback from the existing workflow.
 11. The main shell ribbon has a single dynamic command surface. Static per-tab XAML button rows must not be restored as a second command source.
 12. The left tool palette uses the same command metadata adapter as the ribbon for labels, disabled tooltips, and semantic `Icon.Tool.*` lookup.
-13. The Insert `Formes` group is an icon gallery capped at four columns. Shape buttons use 32x32 semantic icons, do not show redundant visible shape-name labels, expose labels through tooltips, wrap to a second row as needed, and show selected state while placement is active.
+13. The Insert `Formes` group is an icon gallery capped at four columns. Shape buttons use 26x26 semantic icons, do not show redundant visible shape-name labels, expose labels through tooltips, wrap to a second row as needed, and show selected state while placement is active.
 14. Line and arrow insertion uses a two-point canvas workflow with editor-only preview feedback between clicks.
+15. Second-level command groups use a compact two-row layout. Regular commands are horizontal 28-pixel buttons with 16-pixel icons and concise labels; full labels remain discoverable through tooltips. Shape-gallery buttons and group spacing use the same dense industrial rhythm.
 
 ## 6. Element+ Style Inspector
 

@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active implementation status
-Document version: `V2.1.4.0028`
+Document version: `V2.1.4.0029`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Ruban de niveau 2 compacte en deux rangees, boutons horizontaux 28 px, icones 16 px et galerie Formes reduite. |
 | 2026-07-15 | `V2.1.4.0028` | `c873744` | Correction de validation des surfaces Tableau/verrou : accès contextuel sans modale, checkbox Propriété, toggle Sélection, indicateur supérieur et action contextuelle état-dépendante. |
 | 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | Tranches automatisées Tableau complétées : view models, états de format et reset ciblé, color pickers, X/Y/W/H, distribution/en-têtes, bridge diagnostique, auto-fit proportionnel, HTML sémantique, intégration 16 x 10 et mesures Release 64 x 64. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Code et couverture automatisee de `DEC-0040` livres : verrou de position Element+, sous-surface Tableau, authoring avance et export commun; cloture produit suspendue au gate UI Release isole. |
@@ -146,6 +147,7 @@ As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The f
 65. The advanced Table inspector uses dedicated ribbon/property view models, computes inherited/custom/mixed states, supports targeted reset without flattening heterogeneous styles, and routes exact dimensions through the typed coordinator plus lock guard.
 66. The representative 16 x 10 `win00012` scenario validates mixed native inputs, two header rows, merged title, non-uniform tracks, alternating/explicit styles, heterogeneous borders, save/reload, preview and `.sb2` without per-cell bindings or editor artifacts.
 67. The base validation surfaces now expose Table authoring without a creation modal and one stateful Element+ position-lock command through Properties, Selection ribbon, top indicator and right-click context menu.
+68. The second-level ribbon uses compact 28-pixel horizontal command buttons with 16-pixel icons, two-row command groups, reduced group spacing, ellipsized labels backed by full tooltips, and a smaller icon-only shape gallery.
 
 ## 3. Source Of Truth
 
