@@ -39,6 +39,22 @@ public sealed class TableUiArchitectureTests
         StringAssert.Contains(xaml, "Header=\"Tableau\"");
     }
 
+    [TestMethod]
+    public void TableDialogLayoutKeepsConcreteWpfControlsVisible()
+    {
+        var dialogs = ReadProjectFile("src", "ScadaBuilderV2.App", "TableEditor", "TableDialogs.cs");
+
+        StringAssert.Contains(dialogs, "params (string Label, FrameworkElement Control)[] fields");
+        StringAssert.Contains(dialogs, "foreach (var field in fields)");
+        StringAssert.Contains(dialogs, "panel.Children.Add(field.Control)");
+        StringAssert.Contains(dialogs, "(\"Rangees (1 a 64)\", rows)");
+        StringAssert.Contains(dialogs, "(\"Colonnes (1 a 64)\", columns)");
+        StringAssert.Contains(dialogs, "(\"\", header)");
+        Assert.IsFalse(
+            dialogs.Contains("params object[] entries", StringComparison.Ordinal),
+            "Concrete TextBox, CheckBox, ComboBox, and TextBlock tuples must not be filtered through an exact boxed ValueTuple type.");
+    }
+
     private static IEnumerable<ScadaBuilderV2.Application.Commands.EditorCommandDescriptor> Flatten(
         IEnumerable<ScadaBuilderV2.Application.Commands.EditorCommandDescriptor> commands) =>
         commands.SelectMany(command => new[] { command }.Concat(command.Children is null ? [] : Flatten(command.Children)));

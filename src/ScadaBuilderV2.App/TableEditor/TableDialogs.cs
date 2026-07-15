@@ -18,8 +18,11 @@ internal sealed class TableCreationDialog : Window
     {
         Title = "Nouveau tableau"; Width = 360; Height = 250; WindowStartupLocation = WindowStartupLocation.CenterOwner; ResizeMode = ResizeMode.NoResize;
         Content = DialogLayout.Create(
-            ("Rangees (1 a 64)", rows), ("Colonnes (1 a 64)", columns), ("", header),
-            (Action)Save, (Action)(() => DialogResult = false));
+            Save,
+            () => DialogResult = false,
+            ("Rangees (1 a 64)", rows),
+            ("Colonnes (1 a 64)", columns),
+            ("", header));
     }
 
     private void Save()
@@ -45,7 +48,10 @@ internal sealed class TrackSizeDialog : Window
     {
         Title = title; Width = 330; Height = 190; WindowStartupLocation = WindowStartupLocation.CenterOwner; ResizeMode = ResizeMode.NoResize;
         minimum = minimumValue; value.Text = current.ToString("0.###", CultureInfo.CurrentCulture);
-        Content = DialogLayout.Create(($"Valeur minimale: {minimumValue:0.###} px", value), (Action)Save, (Action)(() => DialogResult = false));
+        Content = DialogLayout.Create(
+            Save,
+            () => DialogResult = false,
+            ($"Valeur minimale: {minimumValue:0.###} px", value));
     }
 
     private void Save()
@@ -73,8 +79,14 @@ internal sealed class CellFormatDialog : Window
         Title = "Format de cellule"; Width = 400; Height = 430; WindowStartupLocation = WindowStartupLocation.CenterOwner; ResizeMode = ResizeMode.NoResize;
         background.Text = current.Background ?? ""; foreground.Text = current.Foreground ?? ""; gridColor.Text = current.GridColor ?? "";
         gridWidth.Text = (current.GridWidth ?? 1).ToString("0.###", CultureInfo.CurrentCulture); horizontal.SelectedItem = current.HorizontalAlignment ?? ScadaTableHorizontalAlignment.Left;
-        Content = DialogLayout.Create(("Couleur de fond", background), ("Couleur du texte", foreground), ("Couleur de grille", gridColor),
-            ("Epaisseur de grille", gridWidth), ("Alignement horizontal", horizontal), (Action)Save, (Action)(() => DialogResult = false));
+        Content = DialogLayout.Create(
+            Save,
+            () => DialogResult = false,
+            ("Couleur de fond", background),
+            ("Couleur du texte", foreground),
+            ("Couleur de grille", gridColor),
+            ("Epaisseur de grille", gridWidth),
+            ("Alignement horizontal", horizontal));
     }
 
     private void Save()
@@ -108,8 +120,13 @@ internal sealed class TablePropertiesDialog : Window
         baseBackground.Text = table.EffectiveStyle.Base?.Background ?? "";
         headerBackground.Text = table.EffectiveStyle.Header?.Background ?? "";
         alternateBackground.Text = table.EffectiveStyle.AlternatingRows?.Background ?? "";
-        Content = DialogLayout.Create(("Dimensions", dimensions), ("Fond du tableau", baseBackground), ("Fond de l'en-tete", headerBackground),
-            ("Fond des rangees alternees", alternateBackground), (Action)Save, (Action)(() => DialogResult = false));
+        Content = DialogLayout.Create(
+            Save,
+            () => DialogResult = false,
+            ("Dimensions", dimensions),
+            ("Fond du tableau", baseBackground),
+            ("Fond de l'en-tete", headerBackground),
+            ("Fond des rangees alternees", alternateBackground));
     }
 
     private void Save()
@@ -126,19 +143,17 @@ internal sealed class TablePropertiesDialog : Window
 
 internal static class DialogLayout
 {
-    public static FrameworkElement Create(params object[] entries)
+    public static FrameworkElement Create(
+        Action save,
+        Action cancel,
+        params (string Label, FrameworkElement Control)[] fields)
     {
         var panel = new StackPanel { Margin = new Thickness(18) };
-        foreach (var item in entries)
+        foreach (var field in fields)
         {
-            if (item is ValueTuple<string, Control> field)
-            {
-                if (!string.IsNullOrWhiteSpace(field.Item1)) panel.Children.Add(new TextBlock { Text = field.Item1, Margin = new Thickness(0, 3, 0, 3) });
-                field.Item2.Margin = new Thickness(0, 0, 0, 9); panel.Children.Add(field.Item2);
-            }
+            if (!string.IsNullOrWhiteSpace(field.Label)) panel.Children.Add(new TextBlock { Text = field.Label, Margin = new Thickness(0, 3, 0, 3) });
+            field.Control.Margin = new Thickness(0, 0, 0, 9); panel.Children.Add(field.Control);
         }
-        var save = entries.OfType<Action>().First();
-        var cancel = entries.OfType<Action>().Skip(1).First();
         var buttons = new StackPanel { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right, Margin = new Thickness(0, 12, 0, 0) };
         var cancelButton = new Button { Content = "Annuler", MinWidth = 88, Margin = new Thickness(0, 0, 8, 0) };
         var saveButton = new Button { Content = "Enregistrer", MinWidth = 100, IsDefault = true };
