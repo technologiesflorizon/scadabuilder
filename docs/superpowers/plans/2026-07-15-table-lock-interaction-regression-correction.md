@@ -1,13 +1,14 @@
 # Correction des interactions Tableau et du verrou Element+ - Plan d'implementation
 
 Date: 2026-07-15
-Status: Draft - execution bloquee jusqu'a approbation de la specification corrective
-Document version: `V2.1.4.0032`
+Status: Approved - ready for execution
+Document version: `V2.1.4.0033`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0033` | `PENDING` | Approbation utilisateur recue; execution des tranches autorisee. |
 | 2026-07-15 | `V2.1.4.0032` | `ff21e33` | Plan correctif autonome derive de la specification de regression Tableau/verrou. |
 
 > **Pour les agents d'execution :** executer ce plan tache par tache. Ne pas deleguer a des sous-agents sans autorisation explicite. Chaque tache commence par un test en echec, se termine par les validations indiquees et possede sa propre frontiere de commit.
