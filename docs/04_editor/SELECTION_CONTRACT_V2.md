@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active editor selection contract
-Document version: `V2.1.4.0034`
+Document version: `V2.1.4.0035`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0035` | `740796e` | Reperes A/1 places hors des cellules et cycle de drag de plage explicite afin qu'un clic simple conserve une selection unitaire. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Verrou projete dans le payload editor-only avant hit-testing; mode Tableau Objet/Cellules deterministe et gestes internes disponibles sans translation. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Verrou applique avant tout preview de deplacement et priorite des gestes internes Tableau en mode Cellules. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Separation du verrou de position et de la selection; ajout des portees cellule/plage/rangee/colonne propres au Tableau. |
@@ -42,6 +43,7 @@ The editor can select:
 11. En mode Tableau Cellules, la selection interne est une plage distincte de la selection de scene. Les headers de rangee/colonne et le coin produisent une portee explicite sans devenir des Element+.
 12. Un Element+ verrouille, un groupe contenant un descendant verrouille ou une multiselection contenant un verrou ne produit aucun preview de deplacement; la geometrie reste immobile des le pointer down.
 13. En mode Tableau Cellules, le hit-testing interne intercepte clic, double-clic, clic droit et resize de piste avant les gestes de selection/deplacement de l'Element+ conteneur.
+14. Un clic gauche simple sur une cellule produit une selection unitaire; une plage est etendue seulement par `Shift + clic`, les fleches avec `Shift` ou un drag gauche actif. Les reperes A/1 sont editor-only et situes hors des surfaces cliquables des cellules.
 
 ## 3. Related Decision
 

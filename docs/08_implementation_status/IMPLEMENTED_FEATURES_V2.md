@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active implementation status
-Document version: `V2.1.4.0034`
+Document version: `V2.1.4.0035`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0035` | `740796e` | Selection cellule Tableau corrigee : clic unitaire stable, extension de plage liee a un drag explicite, reperes A/1 hors des cellules et scopes rangee/colonne visuellement synchronises. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | `DEC-0041` implemente : verrou avant preview, Table Objet initial, etat WebView atomique, cellules/pistes verrouillees et cycle A/1 fiable; smoke isole reussi. |
 | 2026-07-15 | `V2.1.4.0031` | `e127190` | Niveau 2 agrandi verticalement et overflow horizontal modernise par chevrons sans scrollbar native. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Drag verrouille bloque avant preview; cellules et pistes Tableau utilisables; reperes A/1 masquables; fusion toggle et format explique. |

@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0034`
+Document version: `V2.1.4.0035`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0035` | `740796e` | Correction du hit-testing Tableau : les reperes A/1 ne recouvrent plus les cellules, le drag de plage exige un pointeur gauche actif et les scopes d'en-tete partagent le rendu de selection normalise. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Implementation de `DEC-0041` : verrou immediat avant preview, modes Tableau deterministes, etat A/1 effectif, payload editor-only teste et smoke WPF/WebView2 isole reussi. |
 | 2026-07-15 | `V2.1.4.0033` | `e811253` | Approbation de la specification corrective Tableau/verrou et autorisation de son plan d'implementation. |
 | 2026-07-15 | `V2.1.4.0032` | `ff21e33` | Ajout d'une specification et d'un plan correctifs autonomes pour le drag verrouille, les modes Tableau, l'acces aux cellules/pistes et les reperes A/1. |
