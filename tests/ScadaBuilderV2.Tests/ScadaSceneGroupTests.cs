@@ -139,6 +139,22 @@ public sealed class ScadaSceneGroupTests
     }
 
     [TestMethod]
+    public void SceneLockOperationsPreserveRecursiveLockThroughGroupAndUngroup()
+    {
+        var scene = ScadaScene.CreateEmpty("win-test", "Test", new(1280, 873))
+            .WithElement(CreateShape("shape-001", 10, 20))
+            .WithElement(CreateShape("shape-002", 40, 20));
+        scene = scene.WithGroupedElements("group-001", "Group", ["shape-001", "shape-002"]);
+        scene = ScadaSceneElementLockOperations.ApplyRecursive(scene, ["group-001"], true);
+
+        Assert.IsTrue(scene.FindElementRecursive("group-001")!.IsLocked);
+        Assert.IsTrue(scene.FindElementRecursive("shape-001")!.IsLocked);
+        scene = scene.WithUngroupedElement("group-001");
+        Assert.IsTrue(scene.FindElementRecursive("shape-001")!.IsLocked);
+        Assert.IsTrue(scene.FindElementRecursive("shape-002")!.IsLocked);
+    }
+
+    [TestMethod]
     public void SceneUngroupRemovesEmptyLegacyFrameGroup()
     {
         var group = CreateGroup("group-001", 100, 200, []);

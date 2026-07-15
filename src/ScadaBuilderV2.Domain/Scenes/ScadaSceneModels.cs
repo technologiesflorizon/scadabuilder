@@ -547,7 +547,8 @@ public sealed record ScadaElement(
     ScadaButtonKind? ButtonKind = null,
     ScadaElementStateConfig? StateConfig = null,
     ScadaElementCommandConfig? CommandConfig = null,
-    ScadaTableDefinition? Table = null)
+    ScadaTableDefinition? Table = null,
+    bool IsLocked = false)
 {
     [JsonIgnore]
     public string UserLabel => string.IsNullOrWhiteSpace(DisplayName) ? Id : DisplayName;

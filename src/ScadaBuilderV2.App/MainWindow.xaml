@@ -275,11 +275,20 @@
                 </Grid.RowDefinitions>
 
                 <DockPanel Grid.Row="0" Margin="14,6,14,0">
-                    <TextBlock DockPanel.Dock="Right"
-                               Text="SCADA Builder V2"
-                               VerticalAlignment="Center"
-                               Foreground="{StaticResource InkBrush}"
-                               FontWeight="Bold"/>
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                        <ToggleButton Content="Lock"
+                                      Width="52"
+                                      Margin="0,0,8,0"
+                                      VerticalAlignment="Center"
+                                      IsEnabled="{Binding ElementLockState.IsEnabled}"
+                                      IsChecked="{Binding ElementLockState.IsToggleChecked, Mode=OneWay}"
+                                      ToolTip="{Binding ElementLockState.Summary}"
+                                      Click="OnElementLockToggleClick"/>
+                        <TextBlock Text="SCADA Builder V2"
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource InkBrush}"
+                                   FontWeight="Bold"/>
+                    </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Button x:Name="FileMenuButton"
                                 Content="Fichier"
@@ -329,10 +338,6 @@
                                 <MenuItem Header="Reinitialiser la disposition" Click="OnResetLayoutClick" />
                             </MenuItem>
                         </Menu>
-                        <ToggleButton Content="Lock"
-                                      Width="52"
-                                      Margin="8,0,0,0"
-                                      IsChecked="{Binding IsSelectionLocked}" />
                     </StackPanel>
                 </DockPanel>
 
@@ -1010,6 +1015,13 @@
                                                     <ComboBoxItem Content="Absolue"/>
                                                     <ComboBoxItem Content="Relative"/>
                                                 </ComboBox>
+                                                <CheckBox Content="Verrouillage de position"
+                                                          Margin="0,0,0,8"
+                                                          IsThreeState="True"
+                                                          IsEnabled="{Binding ElementLockState.IsEnabled}"
+                                                          IsChecked="{Binding ElementLockState.IsPropertyChecked, Mode=OneWay}"
+                                                          ToolTip="{Binding ElementLockState.Summary}"
+                                                          Click="OnElementLockToggleClick"/>
                                                 <UniformGrid Columns="2">
                                                     <StackPanel Margin="0,0,4,0">
                                                         <TextBlock Text="X"/>

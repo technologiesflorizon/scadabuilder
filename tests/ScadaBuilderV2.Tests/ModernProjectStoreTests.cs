@@ -14,6 +14,27 @@ namespace ScadaBuilderV2.Tests;
 public sealed class ModernProjectStoreTests
 {
     [TestMethod]
+    public async Task SaveAndLoadScenePreservesPersistentElementLock()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var store = new ModernProjectStore();
+        var scene = ScadaScene.CreateEmpty("lock-store", "Lock", new(1280, 873))
+            .WithElement(ScadaElement.CreateText("locked", "Locked", 10, 20) with { IsLocked = true });
+        try
+        {
+            await store.SaveSceneAsync(root, scene);
+            var json = await File.ReadAllTextAsync(Path.Combine(ModernProjectStore.GetReferenceModernProjectRoot(root), "scenes", "lock-store.scene.json"));
+            StringAssert.Contains(json, "\"IsLocked\": true");
+            var loaded = await store.LoadOrCreateSceneAsync(root, "lock-store", "Lock", new(1280, 873));
+            Assert.IsTrue(loaded.FindElementRecursive("locked")!.IsLocked);
+        }
+        finally
+        {
+            if (Directory.Exists(root)) Directory.Delete(root, true);
+        }
+    }
+
+    [TestMethod]
     public async Task SaveAndLoadScenePreservesModernTableTracksMergesInputsAndStyles()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

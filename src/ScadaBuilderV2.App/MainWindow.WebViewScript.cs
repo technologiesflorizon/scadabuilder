@@ -154,6 +154,7 @@ public partial class MainWindow
     .scada-modern-element[data-transforming="true"] > .scada-modern-handle {
       display: none !important;
     }
+    .scada-modern-element[data-editor-locked="true"] { cursor: not-allowed; }
     .scada-modern-group {
       align-items: stretch;
       padding: 0;
@@ -1860,6 +1861,7 @@ public partial class MainWindow
       wrapper.dataset.id = element.Id;
       wrapper.dataset.selected = element.IsSelected ? 'true' : 'false';
       wrapper.dataset.groupContext = element.IsGroupContextSelected ? 'true' : 'false';
+      wrapper.dataset.editorLocked = element.IsLocked === true ? 'true' : 'false';
       if (parentWrapper?.dataset?.id) {
         wrapper.dataset.parentGroupId = parentWrapper.dataset.id;
       }
@@ -2061,6 +2063,10 @@ public partial class MainWindow
         }
         const geometry = readWrapperGeometry(sceneMoveWrapper);
         const isResize = event.target?.classList?.contains('scada-modern-handle');
+        if (!isResize && sceneMoveWrapper?.dataset?.editorLocked === 'true') {
+          modernDrag = null;
+          return;
+        }
         const groupChildren = isResize && sceneMoveWrapper.classList.contains('scada-modern-group')
           ? Array.from(sceneMoveWrapper.querySelectorAll('.scada-modern-element')).map(child => ({
               id: child.dataset.id,

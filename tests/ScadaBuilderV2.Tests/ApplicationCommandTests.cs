@@ -1,5 +1,6 @@
 using ScadaBuilderV2.Application.Commands;
 using ScadaBuilderV2.Domain.Projects;
+using ScadaBuilderV2.Domain.Scenes;
 
 namespace ScadaBuilderV2.Tests;
 
@@ -7,19 +8,22 @@ namespace ScadaBuilderV2.Tests;
 public sealed class ApplicationCommandTests
 {
     [TestMethod]
-    public async Task RegistryExecutesAdaptedSynchronousCommandAsynchronously()
+    public async Task RegistryTogglesPersistentElementLockAsynchronously()
     {
         var registry = new CommandRegistry();
-        registry.Register(new ToggleSelectionLockCommand());
-        var context = new ApplicationContext();
+        registry.Register(new ToggleElementLockCommand());
+        var element = ScadaElement.CreateText("element-1", "Element 1", 10, 20);
+        var scene = ScadaScene.CreateEmpty("scene", "Scene", new(1280, 873)).WithElement(element);
+        var context = new ApplicationContext { ActiveSceneSnapshot = scene };
+        context.ApplyActiveSceneMutation = updated => context.ActiveSceneSnapshot = updated;
         context.Selection.SetSelection(["element-1"], "element-1");
 
-        var result = await registry.ExecuteAsync("selection.toggle-lock", context);
+        var result = await registry.ExecuteAsync("object.lock", context);
 
         Assert.AreEqual(CommandResultStatus.Succeeded, result.Status);
         Assert.IsTrue(result.Changed);
-        Assert.IsTrue(context.Selection.IsSelectionLocked);
-        Assert.IsFalse(result.WorkspaceDirty);
+        Assert.IsTrue(context.ActiveSceneSnapshot.FindElementRecursive("element-1")!.IsLocked);
+        Assert.IsTrue(result.WorkspaceDirty);
         Assert.IsFalse(context.IsBusy);
     }
 

@@ -80,7 +80,7 @@ public static class RibbonCommandCatalog
                 Group("Objets",
                     Enabled("object.group", "Grouper", "Icon.Selection.Group", "Grouper les Element+ selectionnes"),
                     Enabled("object.ungroup", "Degrouper", "Icon.Selection.Ungroup", "Degrouper le groupe Element+ selectionne"),
-                    Disabled("object.lock", "Verrou", "Icon.Object.Lock", "Verrouiller l'objet a venir")),
+                    Enabled("object.lock", "Verrou", "Icon.Object.Lock", "Verrouiller ou deverrouiller la position des Element+ selectionnes")),
                 Group("Ordre",
                     Disabled("layer.forward", "Avant", "Icon.Layer.Forward", "Avancer a venir"),
                     Disabled("layer.backward", "Arriere", "Icon.Layer.Backward", "Reculer a venir"))

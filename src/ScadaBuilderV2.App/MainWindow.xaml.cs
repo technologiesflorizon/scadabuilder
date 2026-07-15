@@ -148,8 +148,6 @@ public partial class MainWindow : Window, IPageWorkspaceHost
 
     public DiagnosticsPanelViewModel DiagnosticsPanel => _diagnosticsPanel;
 
-    public bool IsSelectionLocked { get; set; } = false;
-
     public MainWindow()
     {
         _tableEditorController = new TableEditorController(this, CommitTableElement);
@@ -178,7 +176,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
         StatusTextBlock.Text = $"Etat / Warning - {LoadVersionText()}";
         SetBackgroundColorControls("#000000");
 
-        _applicationCommandRegistry.Register(new ToggleSelectionLockCommand());
+        _applicationCommandRegistry.Register(new ToggleElementLockCommand());
 
         PreviewWebView.NavigationCompleted += OnPreviewNavigationCompleted;
         Closing += OnMainWindowClosing;
@@ -1490,6 +1488,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
             _isUpdatingSceneObjectList = false;
         }
         RefreshTablePropertiesPanel();
+        RefreshElementLockState();
     }
 
     private SceneElementInventorySnapshot CreateSceneElementInventorySnapshot()
@@ -4854,6 +4853,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             Math.Max(8, Math.Round(width)),
             Math.Max(8, Math.Round(height)));
 
+        var proposedScene = _activeScene.WithReplacedElementRecursive(current with { Bounds = afterBounds });
+        if (!CanApplyElementTransform(proposedScene, [current.Id]))
+        {
+            return;
+        }
+
         if (current.Kind == ScadaElementKind.Table && current.Table is not null)
         {
             _tableEditorController.ResizeAndMove(current, afterBounds.X, afterBounds.Y, afterBounds.Width, afterBounds.Height);
@@ -5024,6 +5029,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             updatedScene = updatedScene.WithReplacedElementRecursive(current with { Bounds = item.AfterBounds });
         }
 
+        if (!CanApplyElementTransform(updatedScene, [group.Id]))
+        {
+            return;
+        }
+
         _activeScene = updatedScene;
         _selectedSceneObject = updatedScene.FindElementRecursive(group.Id);
         _selectedSceneObjectIds.Add(group.Id);
@@ -5155,6 +5165,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             };
             updatedScene = updatedScene.WithReplacedElementRecursive(updated);
             movedBounds.Add(new MovedSceneElementBounds(element.Id, element.Bounds, updated.Bounds));
+        }
+
+        if (!CanApplyElementTransform(updatedScene, selectedIds))
+        {
+            return;
         }
 
         _activeScene = updatedScene;
@@ -5902,7 +5917,13 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
-        _activeScene = _activeScene.WithReplacedElementRecursive(updated);
+        var proposedScene = _activeScene.WithReplacedElementRecursive(updated);
+        if (!CanApplyElementTransform(proposedScene, [updated.Id]))
+        {
+            return;
+        }
+
+        _activeScene = proposedScene;
         _selectedSceneObject = updated;
         _selectedSceneObjectIds.Add(updated.Id);
         _activeSceneTab?.History.Push(new ModernElementChangedAction(
@@ -7065,6 +7086,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 break;
             case "object.ungroup":
                 UngroupSelectedModernElement();
+                break;
+            case "object.lock":
+                await ToggleSelectedElementLockAsync();
                 break;
             default:
                 SetStatus($"Commande ruban inconnue: {commandId}");
