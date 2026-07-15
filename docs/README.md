@@ -2,13 +2,14 @@
 
 Date: 2026-07-15
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0022`
+Document version: `V2.1.4.0023`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-15 | `V2.1.4.0022` | `PENDING` | Specification Tableau detaillee : bouton Ajouter, verrouillage persistant de tous les Element+, groupes, multiselection, surfaces partagees et decoupage concret en classes/methodes. |
+| 2026-07-15 | `V2.1.4.0023` | `PENDING` | Revue de la specification Tableau/verrouillage contre le code : migrations explicites, contrat JSON, ruban secondaire, bindings WPF, bordures par segment, auto-fit WebView, performance, classes et tests localises. |
+| 2026-07-15 | `V2.1.4.0022` | `3a99b99` | Specification Tableau detaillee : bouton Ajouter, verrouillage persistant de tous les Element+, groupes, multiselection, surfaces partagees et decoupage concret en classes/methodes. |
 | 2026-07-15 | `V2.1.4.0021` | `f77aedb` | Creation d'une specification autonome pour les outils UI d'authoring des tableaux, sans modifier la specification approuvee et implementee du Tableau moderne. |
 | 2026-07-15 | `V2.1.4.0020` | `42b3105` | Premiere separation du nouveau besoin Tableau dans un document distinct, ensuite remplace par une specification autonome au vocabulaire et au cycle de vie independants. |
 | 2026-07-14 | `V2.1.4.0019` | `08affb4` | Premiere redaction de l'extension Tableau, ensuite relocalisee dans une specification distincte afin de respecter son nouveau cycle de vie. |
