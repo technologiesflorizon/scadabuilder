@@ -53,6 +53,29 @@
             <Setter Property="BorderBrush" Value="{StaticResource AccentBlueBrush}"/>
         </Style>
 
+        <Style x:Key="TopLockIndicatorStyle" TargetType="ToggleButton">
+            <Setter Property="MinHeight" Value="30"/>
+            <Setter Property="MinWidth" Value="112"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Background" Value="#F3F6F4"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrushSoft}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" Value="#FFF0D6"/>
+                    <Setter Property="BorderBrush" Value="#D99A22"/>
+                    <Setter Property="Foreground" Value="{StaticResource InkBrush}"/>
+                </Trigger>
+                <DataTrigger Binding="{Binding ElementLockState.IsMixed}" Value="True">
+                    <Setter Property="Background" Value="#E8F1F5"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentBlueBrush}"/>
+                    <Setter Property="Foreground" Value="{StaticResource InkBrush}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
         <Style x:Key="IconToolButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Width" Value="72"/>
             <Setter Property="Height" Value="64"/>
@@ -276,14 +299,18 @@
 
                 <DockPanel Grid.Row="0" Margin="14,6,14,0">
                     <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                        <ToggleButton Content="Lock"
-                                      Width="52"
-                                      Margin="0,0,8,0"
+                        <ToggleButton x:Name="TopElementLockIndicator"
+                                      Style="{StaticResource TopLockIndicatorStyle}"
                                       VerticalAlignment="Center"
                                       IsEnabled="{Binding ElementLockState.IsEnabled}"
                                       IsChecked="{Binding ElementLockState.IsToggleChecked, Mode=OneWay}"
                                       ToolTip="{Binding ElementLockState.Summary}"
-                                      Click="OnElementLockToggleClick"/>
+                                      Click="OnElementLockToggleClick">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{StaticResource Icon.Object.Lock}" Width="15" Height="15" Margin="0,0,6,0"/>
+                                <TextBlock Text="{Binding ElementLockState.IndicatorLabel}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </ToggleButton>
                         <TextBlock Text="SCADA Builder V2"
                                    VerticalAlignment="Center"
                                    Foreground="{StaticResource InkBrush}"
@@ -1024,7 +1051,8 @@
                                                     <ComboBoxItem Content="Absolue"/>
                                                     <ComboBoxItem Content="Relative"/>
                                                 </ComboBox>
-                                                <CheckBox Content="Verrouillage de position"
+                                                <CheckBox x:Name="ElementPositionLockCheckBox"
+                                                          Content="Verrouiller la position"
                                                           Margin="0,0,0,8"
                                                           IsThreeState="True"
                                                           IsEnabled="{Binding ElementLockState.IsEnabled}"

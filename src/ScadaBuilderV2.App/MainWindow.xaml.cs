@@ -1481,6 +1481,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
         }
         RefreshTablePropertiesPanel();
         RefreshElementLockState();
+        if (_activeRibbonKey == "Selection") RefreshActiveRibbonCommandStates();
     }
 
     private SceneElementInventorySnapshot CreateSceneElementInventorySnapshot()
@@ -3743,6 +3744,13 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 new("object.delete", "Supprimer la selection", "object")
             };
 
+            var lockState = _elementLockCoordinator.BuildState(_activeScene!, _selectedSceneObjectIds);
+            modernCommands.Insert(1, new EditorCommandDescriptor(
+                "object.lock",
+                lockState.AllLocked ? "Deverrouiller" : "Verrouiller",
+                "lock",
+                IsChecked: lockState.AllLocked));
+
             if (_selectedSceneObjectIds.Count == 1)
             {
                 var sourceSepFileName = selected.Kind == ScadaElementKind.Custom
@@ -3950,6 +3958,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             case "object.ungroup":
             case "element-plus.ungroup":
                 UngroupSelectedModernElement();
+                break;
+            case "object.lock":
+                await ToggleSelectedElementLockAsync();
                 break;
             case "object.order.bring-to-front":
                 ReorderSelectedElement("bring-to-front");
@@ -6930,17 +6941,21 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private RibbonCommandViewModel CreateRibbonCommandViewModel(RibbonCommandDefinition definition)
     {
+        var isElementLockCommand = string.Equals(definition.Id, "object.lock", StringComparison.Ordinal);
         var requiresPageSelection = definition.Id is
             "page.rename" or
             "page.duplicate" or
             "page.delete" or
             "page.properties";
         var hasPageSelection = GetSelectedModernPage() is not null;
-        var isEnabled = definition.IsEnabled && (!requiresPageSelection || hasPageSelection);
+        var hasRequiredElementSelection = !isElementLockCommand || ElementLockState.IsEnabled;
+        var isEnabled = definition.IsEnabled && (!requiresPageSelection || hasPageSelection) && hasRequiredElementSelection;
         var disabledReason = !definition.IsEnabled
             ? definition.DisabledReason
             : requiresPageSelection && !hasPageSelection
                 ? "Selectionnez une page dans le panneau Projet > Pages."
+                : isElementLockCommand && !ElementLockState.IsEnabled
+                    ? "Selectionnez au moins un Element+."
                 : null;
         var toolTip = disabledReason is null
             ? definition.ToolTip
@@ -6951,12 +6966,14 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         return new RibbonCommandViewModel(
             definition.Id,
-            definition.Label,
+            isElementLockCommand ? ElementLockState.ActionLabel : definition.Label,
             toolTip,
             definition.IconKey,
             ResolveRibbonIcon(definition.IconKey),
             isEnabled,
-            string.Equals(definition.Id, _activeInsertCommandId, StringComparison.Ordinal),
+            isElementLockCommand
+                ? ElementLockState.IsToggleChecked
+                : string.Equals(definition.Id, _activeInsertCommandId, StringComparison.Ordinal),
             command);
     }
 

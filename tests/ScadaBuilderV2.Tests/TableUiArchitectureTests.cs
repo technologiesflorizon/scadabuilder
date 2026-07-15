@@ -25,6 +25,7 @@ public sealed class TableUiArchitectureTests
     public void TableUiLogicIsSplitFromMainWindowAndInsertDispatchIsCatalogDriven()
     {
         var main = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");
+        var tableIntegration = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.TableIntegration.cs");
         var web = ReadProjectFile("src", "ScadaBuilderV2.App", "TableEditor", "TableWebViewScript.cs");
         var adapter = ReadProjectFile("src", "ScadaBuilderV2.App", "TableEditor", "TableWebViewMessageAdapter.cs");
         var propertiesViewModel = ReadProjectFile("src", "ScadaBuilderV2.App", "TableEditor", "TablePropertiesViewModel.cs");
@@ -33,6 +34,10 @@ public sealed class TableUiArchitectureTests
         var xaml = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml");
 
         StringAssert.Contains(main, "InsertToolCatalog.Find(commandId)");
+        StringAssert.Contains(main, "insertTool.PlacementMode == InsertPlacementMode.ContextualSurface");
+        StringAssert.Contains(main, "OpenTableAuthoringSurface();");
+        StringAssert.Contains(tableIntegration, "_tableRibbonViewModel.Open();");
+        Assert.IsFalse(tableIntegration.Contains("ShowDialog", StringComparison.Ordinal), "Inserer > Donnees > Tableau must open the contextual ribbon without a modal dialog.");
         Assert.IsFalse(main.Contains("case \"insert.shape.", StringComparison.Ordinal));
         Assert.IsFalse(main.Contains("case \"insert.hmi.", StringComparison.Ordinal));
         Assert.IsFalse(main.Contains("case \"insert.button.", StringComparison.Ordinal));
@@ -51,6 +56,9 @@ public sealed class TableUiArchitectureTests
         Assert.IsFalse(controller.Contains("element.Table! with { Style = dialog.Result }", StringComparison.Ordinal), "Dialogs must submit typed table requests instead of constructing a complete definition directly.");
         StringAssert.Contains(xaml, "x:Name=\"InsertFamilySurface\"");
         StringAssert.Contains(xaml, "x:Name=\"TableCreationConfigurationSurface\"");
+        StringAssert.Contains(xaml, "x:Name=\"ElementPositionLockCheckBox\"");
+        StringAssert.Contains(xaml, "x:Name=\"TopElementLockIndicator\"");
+        StringAssert.Contains(xaml, "Text=\"{Binding ElementLockState.IndicatorLabel}\"");
         StringAssert.Contains(xaml, "Header=\"Tableau\"");
     }
 

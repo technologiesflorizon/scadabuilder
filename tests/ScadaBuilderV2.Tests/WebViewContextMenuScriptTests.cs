@@ -1243,6 +1243,18 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void ContextMenuOffersStatefulElementLockAction()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "_elementLockCoordinator.BuildState(_activeScene!, _selectedSceneObjectIds)");
+        StringAssert.Contains(source, "lockState.AllLocked ? \"Deverrouiller\" : \"Verrouiller\"");
+        StringAssert.Contains(source, "IsChecked: lockState.AllLocked");
+        StringAssert.Contains(source, "case \"object.lock\":");
+        StringAssert.Contains(source, "await ToggleSelectedElementLockAsync();");
+    }
+
+    [TestMethod]
     public void MirrorMenuChildrenReflectCurrentFlipStateViaIsChecked()
     {
         var source = ReadMainWindowSource();
