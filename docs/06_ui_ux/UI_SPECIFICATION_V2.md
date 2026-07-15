@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active UI specification pointer
-Document version: `V2.1.4.0030`
+Document version: `V2.1.4.0031`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0031` | `e127190` | Ruban secondaire sans scrollbar native, navigation d'overflow par chevrons et hauteur anti-clipping. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Interactions Tableau corriges : cellules et pistes prioritaires, reperes A/1 masquables, fusion toggle et origine du format explicite. |
 | 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Ruban secondaire modernise en boutons horizontaux compacts sur deux rangees, avec icones, galerie et espacement reduits. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Spécification UI synchronisée avec le ruban Tableau contextuel, l'inspecteur Hérité/Personnalisé/Mixte, les dimensions exactes, color pickers, bordures, distribution et en-têtes. |
@@ -82,6 +83,7 @@ Current shell rules:
 13. The Insert `Formes` group is an icon gallery capped at four columns. Shape buttons use 26x26 semantic icons, do not show redundant visible shape-name labels, expose labels through tooltips, wrap to a second row as needed, and show selected state while placement is active.
 14. Line and arrow insertion uses a two-point canvas workflow with editor-only preview feedback between clicks.
 15. Second-level command groups use a compact two-row layout. Regular commands are horizontal 28-pixel buttons with 16-pixel icons and concise labels; full labels remain discoverable through tooltips. Shape-gallery buttons and group spacing use the same dense industrial rhythm.
+16. Horizontal overflow uses compact previous/next chevrons instead of a native scrollbar. The ribbon reserves enough vertical space for both command rows and group headers without clipping.
 
 ## 6. Element+ Style Inspector
 

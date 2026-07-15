@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active implementation status
-Document version: `V2.1.4.0030`
+Document version: `V2.1.4.0031`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0031` | `e127190` | Niveau 2 agrandi verticalement et overflow horizontal modernise par chevrons sans scrollbar native. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Drag verrouille bloque avant preview; cellules et pistes Tableau utilisables; reperes A/1 masquables; fusion toggle et format explique. |
 | 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Ruban de niveau 2 compacte en deux rangees, boutons horizontaux 28 px, icones 16 px et galerie Formes reduite. |
 | 2026-07-15 | `V2.1.4.0028` | `c873744` | Correction de validation des surfaces Tableau/verrou : accès contextuel sans modale, checkbox Propriété, toggle Sélection, indicateur supérieur et action contextuelle état-dépendante. |
@@ -150,6 +151,7 @@ As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The f
 67. The base validation surfaces now expose Table authoring without a creation modal and one stateful Element+ position-lock command through Properties, Selection ribbon, top indicator and right-click context menu.
 68. The second-level ribbon uses compact 28-pixel horizontal command buttons with 16-pixel icons, two-row command groups, reduced group spacing, ellipsized labels backed by full tooltips, and a smaller icon-only shape gallery.
 69. Locked Element+ movement is rejected before any visual drag preview, including locked descendants and mixed selections. Table Cells mode owns click, double-click, context-menu and track-resize gestures; editor A/1 guides are toggleable, merge/unmerge is one selection-derived toggle, context checks align right, and inherited format state is explained in plain language.
+70. The second-level ribbon reserves 172 pixels below the top menu, hides the native horizontal scrollbar, keeps both compact command rows visible, and exposes repeatable previous/next overflow chevrons backed by WPF scroll commands.
 
 ## 3. Source Of Truth
 

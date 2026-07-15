@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active regression coverage map
-Document version: `V2.1.4.0030`
+Document version: `V2.1.4.0031`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0031` | `e127190` | Regression XAML du ruban secondaire : hauteur anti-clipping, scrollbar masquee et chevrons de pagination; 14 tests ruban reussis, suite complete inchangee a 614 reussites et 5 echecs historiques. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Couverture verrou avant preview, gestes Tableau, reperes A/1, toggle fusion et format; suite complete observee a 614 reussites et 5 echecs historiques non lies. |
 | 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Regression XAML du ruban secondaire compact : dimensions, disposition horizontale, troncature et groupes sur deux rangees. |
 | 2026-07-15 | `V2.1.4.0028` | `c873744` | Régressions ciblées pour l'entrée Tableau sans `ShowDialog`, la visibilité des contrôles de verrou et l'action contextuelle Verrouiller/Déverrouiller. |
@@ -124,7 +125,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Element+ machine and measurement HMI symbols with manual insertion | `OfficialSceneDomainTests.ShapeElementDefaultsAndFactoriesPreserveShapeKind`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.ModernShapePreviewUsesSvgShapeKind`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
 | Element+ electrical and alarm HMI symbols with manual insertion | `OfficialSceneDomainTests.ShapeElementDefaultsAndFactoriesPreserveShapeKind`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.ModernShapePreviewUsesSvgShapeKind`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
 | Element+ standard, HMI, and process shapes with manual insertion | `OfficialSceneDomainTests.ShapeElementDefaultsAndFactoriesPreserveShapeKind`, `ModernProjectStoreTests.SaveAndReloadPreservesPageManifestBackgroundAndObjectEvents`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.ModernShapePreviewUsesSvgShapeKind`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
-| Insert Formes gallery and two-point line/arrow authoring | `RibbonCommandCatalogTests.MainRibbonUsesNormalizedScrollableHeight`, `RibbonCommandCatalogTests.DefaultCatalogUsesStableUniqueCommandIds`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.LineAndArrowPlacementUseTwoPointMode`, `OfficialSceneDomainTests.ShapeElementDefaultsAndFactoriesPreserveShapeKind`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
+| Insert Formes gallery and two-point line/arrow authoring | `RibbonCommandCatalogTests.MainRibbonUsesClippingSafeOverflowHeight`, `RibbonCommandCatalogTests.DefaultCatalogUsesStableUniqueCommandIds`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.LineAndArrowPlacementUseTwoPointMode`, `OfficialSceneDomainTests.ShapeElementDefaultsAndFactoriesPreserveShapeKind`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
 | Modern table dialog fields | `TableUiArchitectureTests.TableDialogLayoutKeepsConcreteWpfControlsVisible` |
 | Table contextual entry and shared Element+ lock surfaces | `TableUiArchitectureTests`, `TableAuthoringSessionTests.RibbonTogglesEditorGuidesAndMergeActionFromSelectionState`, `TableEditCoordinatorTests.ToggleMergeUsesCurrentSelectionState`, `WebViewContextMenuScriptTests.ContextMenuOffersStatefulElementLockAction`, `WebViewContextMenuScriptTests.LockedElementMovementIsRejectedBeforeVisualDragStarts`, `WebViewContextMenuScriptTests.TableCellModeOwnsPointerInputBeforeElementDrag`, `ElementLockCoordinatorTests`, `ApplicationCommandTests`, `RibbonCommandCatalogTests` |
 | Advanced table format inspection and reset | `TablePropertiesInspectorTests`, `TableEditCoordinatorTests` |
