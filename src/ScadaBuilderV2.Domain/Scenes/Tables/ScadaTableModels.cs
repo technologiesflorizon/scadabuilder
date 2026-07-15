@@ -101,6 +101,7 @@ public sealed record ScadaTableColumn(double Width, ScadaTableFormat? Style = nu
 public sealed record ScadaTableRow(double Height, ScadaTableFormat? Style = null, bool IsHeader = false);
 
 /// <summary>Defines the authored content of one table cell anchor.</summary>
+/// <remarks>Decisions: DEC-0039, DEC-0042. Contracts: docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md. Tests: tests/ScadaBuilderV2.Tests/ScadaTableModelTests.cs.</remarks>
 public sealed record ScadaTableCellContent(
     ScadaTableCellContentKind Kind = ScadaTableCellContentKind.Text,
     string Text = "",
@@ -109,20 +110,29 @@ public sealed record ScadaTableCellContent(
     double? Minimum = null,
     double? Maximum = null,
     double? Step = null,
-    bool IsReadOnly = false)
+    bool IsReadOnly = false,
+    string? DisplayFormat = null)
 {
     /// <summary>Gets an empty text cell content.</summary>
     public static ScadaTableCellContent EmptyText { get; } = new();
 }
 
+/// <summary>Stores optional read and write tag ids for one anchored numeric table cell.</summary>
+/// <remarks>Decisions: DEC-0042. Contracts: docs/superpowers/specs/2026-07-15-table-cell-numeric-input-tf100web-design.md. Tests: tests/ScadaBuilderV2.Tests/ScadaTableModelTests.cs.</remarks>
+public sealed record ScadaTableCellValueBindings(
+    string? ReadTagId = null,
+    string? WriteTagId = null);
+
 /// <summary>Defines one table cell anchor and its optional row/column span.</summary>
+/// <remarks>Decisions: DEC-0039, DEC-0042. Contracts: docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md. Tests: tests/ScadaBuilderV2.Tests/ScadaTableModelTests.cs.</remarks>
 public sealed record ScadaTableCell(
     int Row,
     int Column,
     int RowSpan = 1,
     int ColumnSpan = 1,
     ScadaTableCellContent? Content = null,
-    ScadaTableFormat? Style = null)
+    ScadaTableFormat? Style = null,
+    ScadaTableCellValueBindings? ValueBindings = null)
 {
     /// <summary>Gets the effective content including the empty-text compatibility fallback.</summary>
     [JsonIgnore]

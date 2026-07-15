@@ -48,7 +48,9 @@ public sealed class ModernProjectStoreTests
                 new(0, 0, ColumnSpan: 4, Content: new(Text: "Production"), Style: new(Background: "#123456")),
                 new(1, 0, Content: new(ScadaTableCellContentKind.InputText, "Lot 12")),
                 new(1, 1), new(1, 2), new(1, 3),
-                new(2, 0), new(2, 1), new(2, 2, Content: new(ScadaTableCellContentKind.InputNumeric, NumericValue: 17.5)), new(2, 3)
+                new(2, 0), new(2, 1), new(2, 2,
+                    Content: new(ScadaTableCellContentKind.InputNumeric, NumericValue: 17.5, DisplayFormat: "##.#"),
+                    ValueBindings: new("tf100.mapping.159", "tf100.mapping.160")), new(2, 3)
             ]
         };
         var scene = ScadaScene.CreateEmpty("table-store", "Table store", new(1280, 873))
@@ -69,6 +71,9 @@ public sealed class ModernProjectStoreTests
             Assert.AreEqual(4, loadedTable.EffectiveCells.Single(cell => cell.Row == 0).ColumnSpan);
             Assert.AreEqual(ScadaTableCellContentKind.InputText, loadedTable.EffectiveCells.Single(cell => cell.Row == 1 && cell.Column == 0).EffectiveContent.Kind);
             Assert.AreEqual(17.5, loadedTable.EffectiveCells.Single(cell => cell.Row == 2 && cell.Column == 2).EffectiveContent.NumericValue);
+            Assert.AreEqual("##.#", loadedTable.EffectiveCells.Single(cell => cell.Row == 2 && cell.Column == 2).EffectiveContent.DisplayFormat);
+            Assert.AreEqual("tf100.mapping.159", loadedTable.EffectiveCells.Single(cell => cell.Row == 2 && cell.Column == 2).ValueBindings?.ReadTagId);
+            Assert.AreEqual("tf100.mapping.160", loadedTable.EffectiveCells.Single(cell => cell.Row == 2 && cell.Column == 2).ValueBindings?.WriteTagId);
             Assert.AreEqual("#123456", loadedTable.EffectiveCells.Single(cell => cell.Row == 0).Style?.Background);
         }
         finally

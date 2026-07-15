@@ -49,6 +49,25 @@ public sealed class ScadaTableModelTests
     public void TableRoundTripsThroughSceneJson()
     {
         var element = ScadaElement.CreateTable("table-1", "Tableau1", 20, 30, 3, 4);
+        var boundCell = element.Table!.EffectiveCells.Single(cell => cell.Row == 1 && cell.Column == 2) with
+        {
+            Content = new ScadaTableCellContent(
+                ScadaTableCellContentKind.InputNumeric,
+                NumericValue: 17.5,
+                Minimum: 0,
+                Maximum: 100,
+                Step: 0.1,
+                DisplayFormat: "##.#"),
+            ValueBindings = new ScadaTableCellValueBindings("tf100.mapping.159", "tf100.mapping.160")
+        };
+        element = element with
+        {
+            Table = element.Table with
+            {
+                Cells = element.Table.EffectiveCells.Select(cell =>
+                    cell.Row == boundCell.Row && cell.Column == boundCell.Column ? boundCell : cell).ToArray()
+            }
+        };
         var json = JsonSerializer.Serialize(element);
         var restored = JsonSerializer.Deserialize<ScadaElement>(json);
 
@@ -56,6 +75,25 @@ public sealed class ScadaTableModelTests
         Assert.AreEqual(3, restored.Table.EffectiveRows.Count);
         Assert.AreEqual(4, restored.Table.EffectiveColumns.Count);
         Assert.AreEqual(ScadaElementKind.Table, restored.Kind);
+        var restoredCell = restored.Table.EffectiveCells.Single(cell => cell.Row == 1 && cell.Column == 2);
+        Assert.AreEqual("##.#", restoredCell.EffectiveContent.DisplayFormat);
+        Assert.AreEqual("tf100.mapping.159", restoredCell.ValueBindings?.ReadTagId);
+        Assert.AreEqual("tf100.mapping.160", restoredCell.ValueBindings?.WriteTagId);
+    }
+
+    [TestMethod]
+    public void OldTableJsonWithoutDisplayFormatOrBindingsRemainsReadable()
+    {
+        const string json = """
+            {"Row":0,"Column":0,"Content":{"Kind":2,"Text":"","Placeholder":"0","NumericValue":12.5,"Minimum":0,"Maximum":100,"Step":1,"IsReadOnly":false}}
+            """;
+
+        var restored = JsonSerializer.Deserialize<ScadaTableCell>(json);
+
+        Assert.IsNotNull(restored);
+        Assert.IsNull(restored.ValueBindings);
+        Assert.IsNull(restored.EffectiveContent.DisplayFormat);
+        Assert.AreEqual(12.5, restored.EffectiveContent.NumericValue);
     }
 
     [TestMethod]
