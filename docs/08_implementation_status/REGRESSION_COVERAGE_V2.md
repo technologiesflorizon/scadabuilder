@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active regression coverage map
-Document version: `V2.1.4.0027`
+Document version: `V2.1.4.0028`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0028` | `c873744` | Régressions ciblées pour l'entrée Tableau sans `ShowDialog`, la visibilité des contrôles de verrou et l'action contextuelle Verrouiller/Déverrouiller. |
 | 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | Ajout des suites dédiées inspecteur, bridge, performance 64 x 64 et intégration `win00012`; suite complète observée à 608 réussites et 5 échecs historiques non liés. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Couverture `DEC-0040` : lock/persistance/groupes/guard, session Tableau, conversions, formats, bordures, pistes/en-tetes, architecture WebView 64x64 et export sans artefact editeur. |
 | 2026-07-14 | `V2.1.4.0018` | `858473c` | Couverture du layout type des dialogues Tableau et de l'affichage de leurs controles WPF concrets. |
@@ -123,6 +124,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Element+ standard, HMI, and process shapes with manual insertion | `OfficialSceneDomainTests.ShapeElementDefaultsAndFactoriesPreserveShapeKind`, `ModernProjectStoreTests.SaveAndReloadPreservesPageManifestBackgroundAndObjectEvents`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.ModernShapePreviewUsesSvgShapeKind`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
 | Insert Formes gallery and two-point line/arrow authoring | `RibbonCommandCatalogTests.MainRibbonUsesNormalizedScrollableHeight`, `RibbonCommandCatalogTests.DefaultCatalogUsesStableUniqueCommandIds`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.LineAndArrowPlacementUseTwoPointMode`, `OfficialSceneDomainTests.ShapeElementDefaultsAndFactoriesPreserveShapeKind`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
 | Modern table dialog fields | `TableUiArchitectureTests.TableDialogLayoutKeepsConcreteWpfControlsVisible` |
+| Table contextual entry and shared Element+ lock surfaces | `TableUiArchitectureTests.TableUiLogicIsSplitFromMainWindowAndInsertDispatchIsCatalogDriven`, `WebViewContextMenuScriptTests.ContextMenuOffersStatefulElementLockAction`, `ElementLockCoordinatorTests`, `ApplicationCommandTests`, `RibbonCommandCatalogTests` |
 | Advanced table format inspection and reset | `TablePropertiesInspectorTests`, `TableEditCoordinatorTests` |
 | Typed table WebView bridge diagnostics | `TableWebViewMessageAdapterTests` |
 | 64 x 64 batching and Release measurements | `TableWebViewPerformanceContractTests` |

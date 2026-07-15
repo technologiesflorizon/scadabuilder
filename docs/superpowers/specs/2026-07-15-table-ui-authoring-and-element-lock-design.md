@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Implemented in code and automated regression coverage; isolated WebView2 smoke pending
-Document version: `V2.1.4.0027`
+Document version: `V2.1.4.0028`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0028` | `c873744` | Mise en conformité finale des surfaces prescrites : Tableau sans modale et verrou partagé entre Propriété, Sélection, indicateur supérieur et menu contextuel. |
 | 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | Implémentation complétée avec view models Tableau dédiés, inspection héritée/personnalisée/mixte, dimensions exactes, distribution, en-têtes explicites, bridge diagnostique, rendu sémantique et scénario end-to-end `win00012`; seul le smoke WebView2 interactif isolé demeure. |
 | 2026-07-15 | `V2.1.4.0024` | `3f6e6a5` | Approbation utilisateur de la spécification; activation de `DEC-0040` et autorisation de produire un plan d'implémentation autonome. |
 | 2026-07-15 | `V2.1.4.0023` | `18a9e9d` | Revue complète contre le code existant : migrations explicites des catalogues et de l'ancien verrou, contrat JSON, ruban secondaire, états et bindings WPF, bordures par segment, auto-ajustement WebView, messages typés, performance 64 x 64, tests localisés et dépendances documentaires. |

@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active editor menu and surface contract
-Document version: `V2.1.4.0027`
+Document version: `V2.1.4.0028`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0028` | `c873744` | Entrée Tableau sans modale protégée; commande Verrou du ruban devenue toggle d'état et menu contextuel Element+ étendu à Verrouiller/Déverrouiller. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Ruban/panneau/menu Tableau complétés par distribution proportionnelle, marquage d'en-tête, reset de portée, dimensions exactes et état de format contextuel. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Sous-surface Tableau contextuelle implementee dans le niveau 2 Inserer, creation configuree sans dialogue et modes Objet/Cellules exclusifs. |
 | 2026-07-14 | `V2.1.4.0017` | `a94016a` | Niveau 1 du ruban Inserer compacte avec style independant afin de reserver la hauteur necessaire aux outils du niveau 2. |
@@ -87,6 +88,8 @@ flowchart TD
 26. The first-level Insert family selector must use a compact style independent from second-level command buttons so the active tool groups remain fully visible inside the normalized ribbon height.
 27. `Inserer > Donnees > Tableau` conserve le niveau 1 compact et remplace le niveau 2 par les groupes Creation, Mode, Selection, Contenu, Structure, Format, Dimensions et En-tetes; Retour Donnees restaure les outils generiques.
 28. La configuration 1..64 du prochain Tableau est visible dans le ruban. Aucun dialogue modal n'est ouvert avant le clic canvas.
+29. `object.lock` affiche `Verrouiller` lorsque toute cible n'est pas verrouillée et `Déverrouiller` uniquement lorsque toute la fermeture de sélection est verrouillée; le ruban Sélection et le menu contextuel partagent cet état.
+30. L'indicateur supérieur immédiatement à gauche de `SCADA Builder V2` distingue aucune sélection, déverrouillé, verrouillé et mixte, tout en conservant le même point de commande.
 
 ## 4. Implemented Pages Surfaces
 

@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active authoritative decision register
-Document version: `V2.1.4.0027`
+Document version: `V2.1.4.0028`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0028` | `c873744` | `DEC-0040` corrigée sur ses surfaces WPF fondamentales : accès Tableau sans modale et état de verrou partagé jusque dans le menu contextuel Element+. |
 | 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | `DEC-0040` synchronisée avec la clôture des tranches de code/tests et les mesures Release automatisées; smoke WebView2 interactif conservé comme gate distinct. |
 | 2026-07-15 | `V2.1.4.0024` | `3f6e6a5` | Ajout de `DEC-0040` pour la sous-surface Tableau, l'authoring avancé des cellules et le verrouillage persistant de position de tous les Element+. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | `DEC-0039` implementee avec modele Tableau, edition type tableur, export `.sb2`, tests et ruban Inserer hierarchique; smoke interactif isole restant. |
@@ -1190,7 +1191,7 @@ Existing scene JSON without `IsLocked` remains readable as unlocked. Copy, cut/p
 
 Implementation status:
 
-Implemented in commits `e497e52` through `32a3ef6`. Code, architecture boundaries, persistence, history, WPF surfaces, bridge diagnostics, preview/`.sb2` parity, representative 16 x 10 integration and automated Release measurements are covered. The remaining gate is the isolated WPF/WebView2 interaction smoke; automated model/HTML timings are not claimed as browser composition timings.
+Implemented in commits `e497e52` through `c873744`. Code, architecture boundaries, persistence, history, WPF surfaces, bridge diagnostics, preview/`.sb2` parity, representative 16 x 10 integration and automated Release measurements are covered. Commit `c873744` specifically protects the no-modal Table entry point, visible Properties checkbox, stateful Selection/top indicators and Element+ lock/unlock context action. The remaining gate is the isolated WPF/WebView2 interaction smoke; automated model/HTML timings are not claimed as browser composition timings.
 
 Regression coverage:
 

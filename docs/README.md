@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0027`
+Document version: `V2.1.4.0028`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0028` | `c873744` | Correction des surfaces de base validables : Tableau ouvre le ruban contextuel sans modale; verrouillage visible et synchronisé dans Propriété, ruban Sélection, indicateur supérieur et menu contextuel Element+. |
 | 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | Cloture automatisee des tranches Tableau manquantes : view models dedies, inspecteur herite/personnalise/mixte, distribution/en-tetes, bridge diagnostique, scenario `win00012`, rendu HTML semantique et mesures Release 64 x 64; smoke WebView2 interactif isole encore requis. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Implementation de `DEC-0040` : sous-surface Tableau sans dialogue, modes Objet/Cellules, contenu/format/bordures/pistes/en-tetes avances et verrouillage persistant Element+; validation interactive Release encore requise. |
 | 2026-07-15 | `V2.1.4.0025` | `0b1fbf4` | Integration de la revue du plan `DEC-0040` : extraction structurelle, cas conditionnels export, tests de decouplage/resize, retrait controle du dialogue, preuve performance et staging documentaire explicite. |
