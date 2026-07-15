@@ -189,7 +189,9 @@
         ],
         "ReadVariable": null
       },
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "shape_001",
@@ -368,7 +370,9 @@
         ],
         "ReadVariable": null
       },
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "3e3aeddae19642c296a10fd549933781",
@@ -433,7 +437,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "dd31b543cac64977a5caddd815ec9457",
@@ -498,7 +504,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "c073a13b8dd049f7b1f644d20df7dacd",
@@ -563,7 +571,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "91b81f10b4bb4f169a550cd4767ee2a6",
@@ -628,7 +638,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "4198b9e21f674eacafff8d57a1c4b272",
@@ -693,7 +705,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "1520d4fef5ff455aa84675ae312b5aa8",
@@ -758,7 +772,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "213def4e8eb446d58db760faa2fe0acf",
@@ -823,7 +839,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "077224fd33fb429593b2627dda4c23c0",
@@ -888,7 +906,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "ba1625de403e4c589b88826fa2a601de",
@@ -1067,7 +1087,9 @@
         ],
         "ReadVariable": null
       },
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "827a6ae756474f7c86acd99eab6ae6ee",
@@ -1132,7 +1154,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "2668e02db2bc412ab25ed528a05cf86a",
@@ -1197,7 +1221,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "487596ba58b742398138b8b013d002f9",
@@ -1262,7 +1288,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "lib_nouveau_composant_4",
@@ -1443,7 +1471,9 @@
         ],
         "ReadVariable": null
       },
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "lib_vertical_piping_2",
@@ -1508,7 +1538,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_85",
@@ -1589,7 +1621,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_86",
@@ -1670,7 +1704,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_117",
@@ -1751,7 +1787,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_118",
@@ -1832,7 +1870,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_293",
@@ -1913,7 +1953,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_607",
@@ -1994,7 +2036,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_608",
@@ -2075,7 +2119,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_609",
@@ -2156,7 +2202,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_610",
@@ -2237,7 +2285,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_611",
@@ -2318,7 +2368,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_612",
@@ -2399,7 +2451,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_657",
@@ -2480,7 +2534,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_672",
@@ -2561,7 +2617,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_709",
@@ -2642,7 +2700,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_780",
@@ -2723,7 +2783,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_781",
@@ -2804,7 +2866,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_782",
@@ -2885,7 +2949,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_787",
@@ -2966,7 +3032,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_791",
@@ -3047,7 +3115,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_794",
@@ -3128,7 +3198,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_795",
@@ -3209,7 +3281,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_858",
@@ -3290,7 +3364,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_1010",
@@ -3371,7 +3447,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_1045",
@@ -3452,7 +3530,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_1046",
@@ -3533,7 +3613,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_1047",
@@ -3614,7 +3696,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_1048",
@@ -3695,7 +3779,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_1049",
@@ -3776,7 +3862,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_1050",
@@ -3857,7 +3945,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_1051",
@@ -3938,7 +4028,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_numeric_793",
@@ -4026,10 +4118,13 @@
             "FixedValue": null,
             "TargetPageId": null,
             "Url": null,
-            "NewTab": false
+            "NewTab": false,
+            "TargetPageKey": null
           }
         ]
-      }
+      },
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_numeric_display_789",
@@ -4138,7 +4233,9 @@
           "DisplayFormat": null
         }
       },
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_numeric_display_784",
@@ -4247,7 +4344,9 @@
           "DisplayFormat": null
         }
       },
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "lib_pompeammoniac",
@@ -4312,7 +4411,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "lib_nouveau_composant_7",
@@ -4377,7 +4478,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "lib_nouveau_composant_8",
@@ -4558,7 +4661,9 @@
         ],
         "ReadVariable": null
       },
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "lib_nouveau_composant_9",
@@ -4623,7 +4728,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "lib_nouveau_composant_3",
@@ -4688,14 +4795,16 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "lib_nouveau_composant",
       "DisplayName": "Nouveau composant",
       "Kind": "Custom",
       "Bounds": {
-        "X": 764,
+        "X": 765,
         "Y": 526,
         "Width": 270,
         "Height": 196
@@ -4753,7 +4862,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "lib_nouveau_composant_6",
@@ -4818,7 +4929,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "lib_nouveau_composant_11",
@@ -4883,7 +4996,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "4d39cdc5b25f4726a19985ef161b0e2f",
@@ -4948,7 +5063,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "lib_pipe_elbow_2",
@@ -5013,7 +5130,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "0c9fb60eae08412cb0710bc468137911",
@@ -5078,7 +5197,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "lib_nouveau_composant_18",
@@ -5143,7 +5264,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "lib_nouveau_composant_5",
@@ -5208,7 +5331,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "84df141203a9448195b87c8d8edee705",
@@ -5348,7 +5473,9 @@
         ],
         "ReadVariable": null
       },
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "f68fa008a707405e98cebcb557472e99",
@@ -5413,7 +5540,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "481ea0c720814154bfe0d74365f21583",
@@ -5478,7 +5607,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "lib_polygon436",
@@ -5543,7 +5674,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "08442a551bde49a09dadb1d2c31c985a",
@@ -5608,7 +5741,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "150c515893cb4325be04a48e079adce5",
@@ -5673,7 +5808,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "74aba1e4801846f7bac6a1c3dcecf440",
@@ -5738,7 +5875,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "888a3ff143b14ef9b2376b96051827b5",
@@ -5803,7 +5942,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "164229b89d20432590494a4da410f3d9",
@@ -5868,7 +6009,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "lib_nouveau_composant_2",
@@ -5933,7 +6076,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "f3fbb928b1e343f99c0ad95f8fb9f2e2",
@@ -5998,7 +6143,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "8c87e1ff6c1f4b559a436924945b2d6d",
@@ -6063,7 +6210,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "3922d2f505ee450589d18c3936afd30f",
@@ -6128,7 +6277,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "7af1211344ef42e3b1eda04afe780271",
@@ -6193,7 +6344,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "7ab505e2810444148a5bb707791dc0ba",
@@ -6258,7 +6411,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "bc1f5008237740d3add34e50faf7949c",
@@ -6323,7 +6478,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "1ca9ad2d1aff4c4f85356a080156295b",
@@ -6388,7 +6545,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "6ae3c18c75ac45b89a225f89b1d4fddc",
@@ -6453,7 +6612,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "c946a8e2d1af457ba1990072487332cb",
@@ -6518,7 +6679,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "4539842a43cd432abbf8edbd2ca0ca29",
@@ -6583,7 +6746,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "f9e9c753a6814b30be743c1eabdce229",
@@ -6648,7 +6813,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "55bbcca467664c04a4de7a0f6363b55e",
@@ -6713,7 +6880,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "lib_nouveau_composant_10",
@@ -6778,7 +6947,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "d608690cb95747b8916a9ac55032aa25",
@@ -6843,7 +7014,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_text_605",
@@ -6914,7 +7087,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_text_606",
@@ -6985,7 +7160,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_text_603",
@@ -7056,7 +7233,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_text_604",
@@ -7127,7 +7306,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_text_601",
@@ -7198,7 +7379,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_text_602",
@@ -7269,7 +7452,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_text_1052",
@@ -7340,7 +7525,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_text_790",
@@ -7411,7 +7598,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     }
   ],
   "BackgroundColor": "#A8A8A8",
@@ -8194,8 +8383,19 @@
     "Clip": "border-box",
     "BlendMode": "normal"
   },
-  "Actions": null,
+  "Actions": [],
   "IncludeInBuild": true,
   "HeaderPageId": "win00002",
-  "FooterPageId": "win00003"
+  "FooterPageId": "win00003",
+  "PageKey": "59acb6b8-2617-5754-a6d8-95f8dbfc2d4f",
+  "PageCode": "win00008",
+  "Origin": "Imported",
+  "ImportProvenance": {
+    "SourceSystem": "Wonderware",
+    "SourceProjectId": "AMR_REF_SCADA_V2",
+    "SourcePageId": "win00008",
+    "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00008_updated.html"
+  },
+  "HeaderPageKey": "03cfb85b-ac44-578d-bbfc-240e3d6ed01c",
+  "FooterPageKey": "3679ddd3-579a-5f28-9464-dd7646ab49ca"
 }

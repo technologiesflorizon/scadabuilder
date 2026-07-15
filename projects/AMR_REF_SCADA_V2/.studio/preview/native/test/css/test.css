@@ -1,0 +1,33 @@
+#ft100-test.ft100-scada-scene {
+  position: relative;
+  width: 1280px;
+  height: 873px;
+  background-color: #FFFFFF;
+  overflow: hidden;
+  isolation: isolate;
+}
+#ft100-test .ft100-source-layer, #ft100-test .ft100-legacy-layer, #ft100-test .ft100-elementplus-layer { position: absolute; inset: 0; }
+#ft100-test .ft100-elementplus-layer { pointer-events: none; }
+#ft100-test .ft100-source-layer .shape-layer, #ft100-test .ft100-legacy-layer .shape-layer { position: absolute; left: 0; top: 0; pointer-events: none; }
+#ft100-test .ft100-source-layer .layer, #ft100-test .ft100-legacy-layer .layer { position: absolute; margin: 0; }
+#ft100-test .ft100-element { position: absolute; box-sizing: border-box; overflow: visible; pointer-events: auto; }
+#ft100-test .ft100-element--Button, #ft100-test [data-scada-command-config] { cursor: pointer; }
+#ft100-test .ft100-element--Button *, #ft100-test [data-scada-command-config] * { cursor: pointer; }
+#ft100-test .ft100-element--Button:active, #ft100-test [data-scada-command-config]:active { cursor: pointer; }
+#ft100-test .ft100-element--Button[data-scada-disabled="true"], #ft100-test .ft100-element--Button[data-scada-disabled="true"] * { cursor: not-allowed; opacity: 0.62; }
+#ft100-test .ft100-element svg { display: block; width: 100%; height: 100%; overflow: visible; }
+#ft100-test .ft100-element input { width: 100%; height: 100%; box-sizing: border-box; }
+#ft100-test .ft100-element button { width: 100%; height: 100%; box-sizing: border-box; font: inherit; color: inherit; }
+#ft100-test .scada-modern-table { display: grid; width: 100%; height: 100%; overflow: hidden; }
+#ft100-test .scada-modern-table__cell { display: flex; box-sizing: border-box; min-width: 0; min-height: 0; overflow: hidden; }
+#ft100-test .scada-modern-table__cell input { width: 100%; height: 100%; min-width: 0; border: 0; padding: 0; background: transparent; color: inherit; font: inherit; }
+
+@keyframes ft100-test---scada-blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
+@keyframes ft100-test---scada-pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+@keyframes ft100-test---scada-halo { 0%,100%{box-shadow:0 0 2px currentColor} 50%{box-shadow:0 0 14px currentColor} }
+@keyframes ft100-test---scada-spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+
+.scada-anim-blink { animation: ft100-test---scada-blink 0.6s step-end infinite; }
+.scada-anim-pulse { animation: ft100-test---scada-pulse 1s ease-in-out infinite; }
+.scada-anim-halo  { animation: ft100-test---scada-halo 1.8s ease-in-out infinite; }
+.scada-anim-spin  { animation: ft100-test---scada-spin 1.2s linear infinite; }

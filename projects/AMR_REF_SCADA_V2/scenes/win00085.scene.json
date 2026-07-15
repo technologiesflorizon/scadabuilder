@@ -1,0 +1,40 @@
+{
+  "Id": "win00085",
+  "Title": "win00085",
+  "CanvasSize": {
+    "Width": 1280,
+    "Height": 873
+  },
+  "Elements": [],
+  "BackgroundColor": "#000000",
+  "LegacyTextOverrides": [],
+  "LegacyElementsMaterialized": false,
+  "RemovedSourceElementIds": null,
+  "PageType": "Default",
+  "Background": {
+    "Color": "#000000",
+    "Image": null,
+    "Size": "cover",
+    "Repeat": "no-repeat",
+    "Position": "center center",
+    "Attachment": "scroll",
+    "Origin": "padding-box",
+    "Clip": "border-box",
+    "BlendMode": "normal"
+  },
+  "Actions": [],
+  "IncludeInBuild": true,
+  "HeaderPageId": null,
+  "FooterPageId": null,
+  "PageKey": "7a415624-904b-5300-92bd-5f1df3848dc2",
+  "PageCode": "win00085",
+  "Origin": "Imported",
+  "ImportProvenance": {
+    "SourceSystem": "Wonderware",
+    "SourceProjectId": "AMR_REF_SCADA_V2",
+    "SourcePageId": "win00085",
+    "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00085_updated.html"
+  },
+  "HeaderPageKey": null,
+  "FooterPageKey": null
+}

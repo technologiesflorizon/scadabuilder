@@ -1,0 +1,54 @@
+{
+  "Metadata": {
+    "Schema": "scada-builder-v2.element-studio.import",
+    "SchemaVersion": 1,
+    "Format": "json.ft1",
+    "CreatedByVersion": "V2.1.4.0009"
+  },
+  "PackageId": "studio_edit_Nouveau composant_7d66b6a8fb204cd49230ec5972df3280",
+  "SourceProjectId": "AMR_REF_SCADA_V2",
+  "SourceSceneId": "win00008",
+  "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\pages\\win00008.json",
+  "TargetLibraryPath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER_V2\\projects\\AMR_REF_SCADA_V2\\library\\elements",
+  "Bounds": {
+    "X": 0,
+    "Y": 0,
+    "Width": 270,
+    "Height": 196
+  },
+  "Items": [
+    {
+      "SourceElementId": "Element001",
+      "SourceName": "Element001",
+      "LegacyType": "Path",
+      "BoundsAbsolute": {
+        "X": 0,
+        "Y": 0,
+        "Width": 270,
+        "Height": 196
+      },
+      "BoundsRelativeToPackage": {
+        "X": 0,
+        "Y": 0,
+        "Width": 270,
+        "Height": 196
+      },
+      "Geometry": "\u003Crect x=\u002211\u0022 y=\u00220\u0022 width=\u0022229\u0022 height=\u0022196\u0022 fill=\u0022#c9c9c9\u0022 stroke=\u0022#1f2933\u0022 stroke-width=\u00221\u0022 /\u003E\u003Cpolygon points=\u002240,0 210,0 125,50\u0022 fill=\u0022#c0c0c0\u0022 /\u003E\u003Crect x=\u00220\u0022 y=\u00220\u0022 width=\u0022249\u0022 height=\u00224\u0022 rx=\u00222\u0022 ry=\u00222\u0022 fill=\u0022#d6d6d6\u0022 stroke=\u0022#9a9a9a\u0022 stroke-width=\u00220.5\u0022 /\u003E\u003Crect x=\u00220\u0022 y=\u00227\u0022 width=\u0022249\u0022 height=\u00224\u0022 rx=\u00222\u0022 ry=\u00222\u0022 fill=\u0022#d6d6d6\u0022 stroke=\u0022#9a9a9a\u0022 stroke-width=\u00220.5\u0022 /\u003E\u003Crect x=\u00220\u0022 y=\u002260\u0022 width=\u0022249\u0022 height=\u00224\u0022 rx=\u00222\u0022 ry=\u00222\u0022 fill=\u0022#d6d6d6\u0022 stroke=\u0022#9a9a9a\u0022 stroke-width=\u00220.5\u0022 /\u003E\u003Crect x=\u00220\u0022 y=\u002267\u0022 width=\u0022250\u0022 height=\u00224\u0022 rx=\u00222\u0022 ry=\u00222\u0022 fill=\u0022#d6d6d6\u0022 stroke=\u0022#9a9a9a\u0022 stroke-width=\u00220.5\u0022 /\u003E\u003Crect x=\u00220\u0022 y=\u0022120\u0022 width=\u0022246\u0022 height=\u00224\u0022 rx=\u00222\u0022 ry=\u00222\u0022 fill=\u0022#d6d6d6\u0022 stroke=\u0022#9a9a9a\u0022 stroke-width=\u00220.5\u0022 /\u003E\u003Crect x=\u00220\u0022 y=\u0022128\u0022 width=\u0022246\u0022 height=\u00224\u0022 rx=\u00222\u0022 ry=\u00222\u0022 fill=\u0022#d6d6d6\u0022 stroke=\u0022#9a9a9a\u0022 stroke-width=\u00220.5\u0022 /\u003E\u003Crect x=\u00220\u0022 y=\u0022192\u0022 width=\u0022250\u0022 height=\u00224\u0022 rx=\u00222\u0022 ry=\u00222\u0022 fill=\u0022#d6d6d6\u0022 stroke=\u0022#9a9a9a\u0022 stroke-width=\u00220.5\u0022 /\u003E\u003Crect x=\u00220\u0022 y=\u0022185\u0022 width=\u0022248\u0022 height=\u00224\u0022 rx=\u00222\u0022 ry=\u00222\u0022 fill=\u0022#d6d6d6\u0022 stroke=\u0022#9a9a9a\u0022 stroke-width=\u00220.5\u0022 /\u003E\u003Crect x=\u0022180\u0022 y=\u00221\u0022 width=\u002240\u0022 height=\u00222\u0022 fill=\u0022#e8e8e8\u0022 /\u003E\u003Crect x=\u0022180\u0022 y=\u0022186\u0022 width=\u002240\u0022 height=\u00222\u0022 fill=\u0022#e8e8e8\u0022 /\u003E",
+      "LegacyMarkup": null,
+      "Text": "",
+      "Style": {
+        "FontFamily": "\u0022Segoe UI\u0022, Arial, sans-serif",
+        "FontSize": 16,
+        "Foreground": "rgb(232, 237, 245)",
+        "Background": "rgba(0, 0, 0, 0)",
+        "BorderColor": "rgb(232, 237, 245)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 0,
+      "RawMetadataJson": null
+    }
+  ],
+  "ComponentName": "Nouveau composant"
+}

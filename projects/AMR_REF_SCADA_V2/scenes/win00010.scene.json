@@ -101,7 +101,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_button_24",
@@ -198,7 +200,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_button_19",
@@ -295,7 +299,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_button_23",
@@ -392,7 +398,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_button_32",
@@ -489,7 +497,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_button_20",
@@ -586,7 +596,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_button_21",
@@ -683,7 +695,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_button_22",
@@ -780,7 +794,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_1",
@@ -861,7 +877,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_2",
@@ -942,7 +960,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_3",
@@ -1023,7 +1043,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_4",
@@ -1104,7 +1126,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_5",
@@ -1185,7 +1209,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_6",
@@ -1266,7 +1292,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_7",
@@ -1347,7 +1375,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_8",
@@ -1428,7 +1458,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_9",
@@ -1509,7 +1541,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_10",
@@ -1590,7 +1624,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_11",
@@ -1671,7 +1707,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_12",
@@ -1752,7 +1790,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_13",
@@ -1833,7 +1873,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_14",
@@ -1914,7 +1956,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_15",
@@ -1995,7 +2039,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_16",
@@ -2076,7 +2122,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_17",
@@ -2157,7 +2205,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_18",
@@ -2238,7 +2288,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_29",
@@ -2319,7 +2371,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "text_001",
@@ -2384,7 +2438,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "text_002",
@@ -2449,7 +2505,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "text_003",
@@ -2514,7 +2572,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "text_004",
@@ -2579,7 +2639,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "text_005",
@@ -2644,7 +2706,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "text_006",
@@ -2709,7 +2773,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_text_27",
@@ -2780,7 +2846,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_text_28",
@@ -2851,7 +2919,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_text_25",
@@ -2922,7 +2992,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_text_26",
@@ -2993,7 +3065,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_text_30",
@@ -3064,7 +3138,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_text_31",
@@ -3135,7 +3211,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     }
   ],
   "BackgroundColor": "#ADADAD",
@@ -3146,8 +3224,19 @@
   ],
   "PageType": "Default",
   "Background": null,
-  "Actions": null,
+  "Actions": [],
   "IncludeInBuild": false,
   "HeaderPageId": "win00002",
-  "FooterPageId": "win00003"
+  "FooterPageId": "win00003",
+  "PageKey": "b19eb8af-92b8-5c78-be5f-6acfa09cfb86",
+  "PageCode": "win00010",
+  "Origin": "Imported",
+  "ImportProvenance": {
+    "SourceSystem": "Wonderware",
+    "SourceProjectId": "AMR_REF_SCADA_V2",
+    "SourcePageId": "win00010",
+    "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00010_updated.html"
+  },
+  "HeaderPageKey": "03cfb85b-ac44-578d-bbfc-240e3d6ed01c",
+  "FooterPageKey": "3679ddd3-579a-5f28-9464-dd7646ab49ca"
 }
