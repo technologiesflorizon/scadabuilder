@@ -28,7 +28,9 @@ public enum TableEditKind
     SetHeaderRowCount,
     ApplyFormatScope,
     ResetFormatScope,
-    ApplyBorderPreset
+    ResetFormatProperty,
+    ApplyBorderPreset,
+    SetTableProperties
 }
 
 /// <summary>Describes one typed table edit request independent of WPF and WebView.</summary>
@@ -45,6 +47,8 @@ public sealed record TableEditRequest(
     ScadaTableFormatScope? FormatScope = null,
     ScadaTableBorderPreset? BorderPreset = null,
     ScadaTableBorder? Border = null,
+    ScadaTableStyle? TableStyle = null,
+    string? PropertyName = null,
     int? Count = null,
     IReadOnlyList<double>? ColumnSizes = null,
     IReadOnlyList<double>? RowSizes = null);
@@ -108,7 +112,12 @@ public sealed class TableEditCoordinator
         TableEditKind.SetHeaderRowCount => ScadaTableHeaderOperations.SetHeaderRowCount(table, Require(request.Count, "count")),
         TableEditKind.ApplyFormatScope => ScadaTableFormatOperations.ApplyFormat(table, request.FormatScope ?? throw new ArgumentException("A format scope is required."), request.Format),
         TableEditKind.ResetFormatScope => ScadaTableFormatOperations.ResetScope(table, request.FormatScope ?? throw new ArgumentException("A format scope is required.")),
+        TableEditKind.ResetFormatProperty => ScadaTableFormatOperations.ResetProperty(table, request.FormatScope ?? throw new ArgumentException("A format scope is required."), request.PropertyName ?? throw new ArgumentException("A format property is required.")),
         TableEditKind.ApplyBorderPreset => ScadaTableBorderOperations.ApplyPreset(table, RequireRange(request), Require(request.BorderPreset, "border preset"), request.Border),
+        TableEditKind.SetTableProperties => ScadaTableTrackOperations.ResizeProportionally(
+            table with { Style = request.TableStyle ?? table.EffectiveStyle },
+            Require(request.Width, "width"),
+            Require(request.Height, "height")),
         _ => throw new InvalidOperationException("Unsupported table edit request.")
     };
 
@@ -133,8 +142,9 @@ public sealed class TableEditCoordinator
         TableEditKind.ConvertContentKind => "Type de cellule",
         TableEditKind.EqualizeRows or TableEditKind.EqualizeColumns or TableEditKind.DistributeRows or TableEditKind.DistributeColumns or TableEditKind.ApplyAutoFit => "Dimensions tableau",
         TableEditKind.SetHeaderRowCount => "En-tetes tableau",
-        TableEditKind.ApplyFormatScope or TableEditKind.ResetFormatScope => "Format tableau",
+        TableEditKind.ApplyFormatScope or TableEditKind.ResetFormatScope or TableEditKind.ResetFormatProperty => "Format tableau",
         TableEditKind.ApplyBorderPreset => "Bordures tableau",
+        TableEditKind.SetTableProperties => "Proprietes tableau",
         TableEditKind.InsertRow => "Insertion rangee",
         TableEditKind.InsertColumn => "Insertion colonne",
         TableEditKind.DeleteRow => "Suppression rangee",

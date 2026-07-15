@@ -52,6 +52,8 @@ internal static class TableWebViewScript
     if (!table) return;
     wrapper.style.padding = '0'; wrapper.style.background = 'transparent'; wrapper.style.border = '0';
     const grid = document.createElement('div'); grid.className = 'scada-editor-table'; grid.dataset.tableId = element.Id; grid.dataset.mode = interactionMode; grid.style.position = 'relative';
+    grid.dataset.columnSizes = JSON.stringify((table.Columns || []).map(item => Number(item.Width || 24)));
+    grid.dataset.rowSizes = JSON.stringify((table.Rows || []).map(item => Number(item.Height || 20)));
     grid.style.gridTemplateColumns = (table.Columns || []).map(item => `${Number(item.Width || 24)}px`).join(' ');
     grid.style.gridTemplateRows = (table.Rows || []).map(item => `${Number(item.Height || 20)}px`).join(' ');
     let anchor = null;
@@ -123,9 +125,17 @@ internal static class TableWebViewScript
   const autoFit = id => {
     const grid = document.querySelector(`.scada-editor-table[data-table-id="${CSS.escape(id)}"]`); if (!grid) return;
     const cells = [...grid.querySelectorAll('.scada-editor-table-cell')];
-    const measures = cells.map(node => ({ node, row:Number(node.dataset.row), column:Number(node.dataset.column), rowSpan:Number(node.dataset.rowSpan), columnSpan:Number(node.dataset.columnSpan), width:Math.ceil(node.scrollWidth*2)/2, height:Math.ceil(node.scrollHeight*2)/2 }));
-    const columnSizes = Array.from({length:Math.max(0,...measures.map(m=>m.column+m.columnSpan))}, () => 24); const rowSizes = Array.from({length:Math.max(0,...measures.map(m=>m.row+m.rowSpan))}, () => 20);
-    measures.forEach(m => { const eachW=Math.max(24,m.width/m.columnSpan), eachH=Math.max(20,m.height/m.rowSpan); for(let c=m.column;c<m.column+m.columnSpan;c++) columnSizes[c]=Math.max(columnSizes[c],eachW); for(let r=m.row;r<m.row+m.rowSpan;r++) rowSizes[r]=Math.max(rowSizes[r],eachH); });
+    const canvas = document.createElement('canvas'); const context = canvas.getContext('2d');
+    const desired = node => { const style=getComputedStyle(node); const input=node.querySelector('input'); let width=node.scrollWidth; if(input&&context){const inputStyle=getComputedStyle(input);context.font=inputStyle.font;const value=input.value||'';const placeholder=input.placeholder||'';width=Math.max(width,context.measureText(value).width,context.measureText(placeholder).width)+parseFloat(style.paddingLeft||0)+parseFloat(style.paddingRight||0)+4;} return {width:Math.ceil(width*2)/2,height:Math.ceil(node.scrollHeight*2)/2}; };
+    const measures = cells.map(node => { const size=desired(node); return { node, row:Number(node.dataset.row), column:Number(node.dataset.column), rowSpan:Number(node.dataset.rowSpan), columnSpan:Number(node.dataset.columnSpan), width:size.width, height:size.height }; });
+    const currentColumns=JSON.parse(grid.dataset.columnSizes||'[]'); const currentRows=JSON.parse(grid.dataset.rowSizes||'[]');
+    const columnSizes = currentColumns.map(() => 24); const rowSizes = currentRows.map(() => 20);
+    measures.filter(m=>m.columnSpan===1).forEach(m=>columnSizes[m.column]=Math.max(columnSizes[m.column],m.width));
+    measures.filter(m=>m.rowSpan===1).forEach(m=>rowSizes[m.row]=Math.max(rowSizes[m.row],m.height));
+    const distributeDeficit=(sizes,current,start,span,desiredSize,minimum)=>{const covered=sizes.slice(start,start+span);const deficit=desiredSize-covered.reduce((a,b)=>a+b,0);if(deficit<=0)return;const weights=current.slice(start,start+span);const total=weights.reduce((a,b)=>a+b,0)||span;for(let i=0;i<span;i++)sizes[start+i]=Math.max(minimum,sizes[start+i]+deficit*(weights[i]||1)/total);};
+    measures.filter(m=>m.columnSpan>1).forEach(m=>distributeDeficit(columnSizes,currentColumns,m.column,m.columnSpan,m.width,24));
+    measures.filter(m=>m.rowSpan>1).forEach(m=>distributeDeficit(rowSizes,currentRows,m.row,m.rowSpan,m.height,20));
+    for(let i=0;i<columnSizes.length;i++)columnSizes[i]=Math.ceil(columnSizes[i]*2)/2; for(let i=0;i<rowSizes.length;i++)rowSizes[i]=Math.ceil(rowSizes[i]*2)/2;
     window.chrome?.webview?.postMessage({type:'tableAutoFitMeasured', id, columnSizes, rowSizes});
   };
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && interactionMode === 'cells') { setMode('object'); event.preventDefault(); } }, true);

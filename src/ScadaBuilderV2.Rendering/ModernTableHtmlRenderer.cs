@@ -25,27 +25,32 @@ internal static class ModernTableHtmlRenderer
         html.Append(string.Join(' ', table.EffectiveRows.Select(row => $"{Format(row.Height)}px")));
         html.Append(";\"><tbody style=\"display:contents\">");
 
-        foreach (var cell in table.EffectiveCells.OrderBy(cell => cell.Row).ThenBy(cell => cell.Column))
+        for (var row = 0; row < table.EffectiveRows.Count; row++)
         {
-            if (cell.Row < 0 || cell.Column < 0 || cell.Row >= table.EffectiveRows.Count || cell.Column >= table.EffectiveColumns.Count)
+            html.Append("<tr style=\"display:contents\">");
+            foreach (var cell in table.EffectiveCells.Where(cell => cell.Row == row).OrderBy(cell => cell.Column))
             {
-                continue;
-            }
+                if (cell.Column < 0 || cell.Column >= table.EffectiveColumns.Count) continue;
 
-            var format = ScadaTableStyleResolver.Resolve(table, cell.Row, cell.Column);
-            var cellId = $"{scopedElementId}__cell-{cell.Row}-{cell.Column}";
-            var isHeader = table.EffectiveRows[cell.Row].IsHeader;
-            html.Append(isHeader ? "<th id=\"" : "<td id=\"");
-            html.Append(Html(cellId));
-            html.Append("\" class=\"scada-modern-table__cell\" role=\"gridcell\" data-row=\"");
-            html.Append(cell.Row.ToString(CultureInfo.InvariantCulture));
-            html.Append("\" data-column=\"");
-            html.Append(cell.Column.ToString(CultureInfo.InvariantCulture));
-            html.Append("\" style=\"");
-            AppendCellStyle(html, cell, format);
-            html.Append("\">");
-            AppendContent(html, cell.EffectiveContent, cellId);
-            html.Append(isHeader ? "</th>" : "</td>");
+                var format = ScadaTableStyleResolver.Resolve(table, cell.Row, cell.Column);
+                var cellId = $"{scopedElementId}__cell-{cell.Row}-{cell.Column}";
+                var isHeader = table.EffectiveRows[cell.Row].IsHeader;
+                html.Append(isHeader ? "<th id=\"" : "<td id=\"");
+                html.Append(Html(cellId));
+                html.Append(isHeader ? "\" scope=\"col\" role=\"columnheader\"" : "\" role=\"gridcell\"");
+                if (cell.RowSpan > 1) html.Append($" rowspan=\"{cell.RowSpan}\"");
+                if (cell.ColumnSpan > 1) html.Append($" colspan=\"{cell.ColumnSpan}\"");
+                html.Append(" class=\"scada-modern-table__cell\" data-row=\"");
+                html.Append(cell.Row.ToString(CultureInfo.InvariantCulture));
+                html.Append("\" data-column=\"");
+                html.Append(cell.Column.ToString(CultureInfo.InvariantCulture));
+                html.Append("\" style=\"");
+                AppendCellStyle(html, cell, format);
+                html.Append("\">");
+                AppendContent(html, cell.EffectiveContent, cellId);
+                html.Append(isHeader ? "</th>" : "</td>");
+            }
+            html.Append("</tr>");
         }
         html.Append("</tbody>");
         AppendPhysicalBorders(html, table);
@@ -76,14 +81,14 @@ internal static class ModernTableHtmlRenderer
         {
             if (!ScadaTableBorderResolver.IsVisible(table, ScadaTableBorderOrientation.Horizontal, line, segment)) continue;
             var b = ScadaTableBorderResolver.Resolve(table, ScadaTableBorderOrientation.Horizontal, line, segment);
-            AppendBorder(html, b, x[segment], y[line] - b.Width / 2, table.EffectiveColumns[segment].Width, b.Width);
+            AppendBorder(html, ScadaTableBorderOrientation.Horizontal, b, x[segment], y[line] - b.Width / 2, table.EffectiveColumns[segment].Width, b.Width);
         }
         for (var line = 0; line <= table.EffectiveColumns.Count; line++)
         for (var segment = 0; segment < table.EffectiveRows.Count; segment++)
         {
             if (!ScadaTableBorderResolver.IsVisible(table, ScadaTableBorderOrientation.Vertical, line, segment)) continue;
             var b = ScadaTableBorderResolver.Resolve(table, ScadaTableBorderOrientation.Vertical, line, segment);
-            AppendBorder(html, b, x[line] - b.Width / 2, y[segment], b.Width, table.EffectiveRows[segment].Height);
+            AppendBorder(html, ScadaTableBorderOrientation.Vertical, b, x[line] - b.Width / 2, y[segment], b.Width, table.EffectiveRows[segment].Height);
         }
     }
 
@@ -91,10 +96,13 @@ internal static class ModernTableHtmlRenderer
     {
         var values = new List<double> { 0 }; foreach (var size in sizes) values.Add(values[^1] + size); return values.ToArray();
     }
-    private static void AppendBorder(StringBuilder html, ScadaTableBorder border, double left, double top, double width, double height)
+    private static void AppendBorder(StringBuilder html, ScadaTableBorderOrientation orientation, ScadaTableBorder border, double left, double top, double width, double height)
     {
         if (border.Style == ScadaTableGridStyle.None || border.Width <= 0) return;
-        html.Append($"<span aria-hidden=\"true\" class=\"scada-modern-table__border\" style=\"position:absolute;pointer-events:none;z-index:3;left:{Format(left)}px;top:{Format(top)}px;width:{Format(width)}px;height:{Format(height)}px;background:{Css(border.Color, "transparent")};\"></span>");
+        var borderCss = $"{Format(border.Width)}px {GridStyle(border.Style)} {Css(border.Color, "transparent")}";
+        html.Append($"<span aria-hidden=\"true\" class=\"scada-modern-table__border\" style=\"position:absolute;pointer-events:none;z-index:3;box-sizing:border-box;left:{Format(left)}px;top:{Format(top)}px;width:{Format(width)}px;height:{Format(height)}px;");
+        html.Append(orientation == ScadaTableBorderOrientation.Horizontal ? $"border-top:{borderCss};" : $"border-left:{borderCss};");
+        html.Append("\"></span>");
     }
 
     private static void AppendContent(StringBuilder html, ScadaTableCellContent content, string cellId)

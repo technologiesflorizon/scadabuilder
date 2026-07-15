@@ -1,6 +1,7 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
+using ScadaBuilderV2.Application.Tables;
 using ScadaBuilderV2.Domain.Scenes;
 
 namespace ScadaBuilderV2.App.TableEditor;
@@ -34,9 +35,9 @@ internal sealed class TrackSizeDialog : Window
 
 internal sealed class CellFormatDialog : Window
 {
-    private readonly TextBox background = new();
-    private readonly TextBox foreground = new();
-    private readonly TextBox gridColor = new();
+    private readonly ColorPickerField background = new();
+    private readonly ColorPickerField foreground = new();
+    private readonly ColorPickerField gridColor = new();
     private readonly TextBox gridWidth = new();
     private readonly ComboBox horizontal = new() { ItemsSource = Enum.GetValues<ScadaTableHorizontalAlignment>() };
     private readonly ComboBox vertical = new() { ItemsSource = Enum.GetValues<ScadaTableVerticalAlignment>() };
@@ -48,21 +49,27 @@ internal sealed class CellFormatDialog : Window
     private readonly CheckBox italic = new() { Content = "Italique" };
     private readonly CheckBox wrap = new() { Content = "Retour a la ligne" };
     private readonly TextBox lineHeight = new();
-    public ScadaTableFormat? Result { get; private set; }
+    private readonly ComboBox resetProperty = new() { ItemsSource = TableFormatPropertyChoices.All, DisplayMemberPath = nameof(TableFormatPropertyChoice.Label), SelectedValuePath = nameof(TableFormatPropertyChoice.PropertyName) };
+    private readonly TextBlock state = new() { FontWeight = System.Windows.FontWeights.SemiBold };
+    public TableFormatDialogResult? Result { get; private set; }
 
-    public CellFormatDialog(ScadaTableFormat current)
+    public CellFormatDialog(TableFormatInspection inspection)
     {
+        var current = inspection.EffectiveFormat;
         Title = "Format de cellule"; Width = 430; Height = 720; WindowStartupLocation = WindowStartupLocation.CenterOwner; ResizeMode = ResizeMode.CanResize;
-        background.Text = current.Background ?? ""; foreground.Text = current.Foreground ?? ""; gridColor.Text = current.GridColor ?? "";
+        background.SetColor(current.Background ?? "#FFFFFF"); foreground.SetColor(current.Foreground ?? "#0F2A30"); gridColor.SetColor(current.GridColor ?? "#8AA0A6");
         gridWidth.Text = (current.GridWidth ?? 1).ToString("0.###", CultureInfo.CurrentCulture); horizontal.SelectedItem = current.HorizontalAlignment ?? ScadaTableHorizontalAlignment.Left;
         vertical.SelectedItem = current.VerticalAlignment ?? ScadaTableVerticalAlignment.Middle; gridStyle.SelectedItem = current.GridStyle ?? ScadaTableGridStyle.Solid;
         padding.Text = (current.Padding ?? 4).ToString("0.###", CultureInfo.CurrentCulture); fontFamily.Text = current.FontFamily ?? "Segoe UI";
         fontSize.Text = (current.FontSize ?? 14).ToString("0.###", CultureInfo.CurrentCulture); bold.IsChecked = string.Equals(current.FontWeight, "Bold", StringComparison.OrdinalIgnoreCase);
         italic.IsChecked = string.Equals(current.FontStyle, "Italic", StringComparison.OrdinalIgnoreCase); wrap.IsChecked = current.TextWrap == true;
         lineHeight.Text = current.LineHeight?.ToString("0.###", CultureInfo.CurrentCulture) ?? "";
+        state.Text = inspection.State switch { TablePropertyValueState.Inherited => "Hérité", TablePropertyValueState.Custom => "Personnalisé", _ => "Mixte" };
+        resetProperty.SelectedIndex = 0;
         Content = DialogLayout.Create(
             Save,
             () => DialogResult = false,
+            ("État de la portée", state),
             ("Couleur de fond", background),
             ("Couleur du texte", foreground),
             ("Couleur de grille", gridColor),
@@ -74,7 +81,9 @@ internal sealed class CellFormatDialog : Window
             ("Police", fontFamily),
             ("Taille", fontSize),
             ("", bold), ("", italic), ("", wrap),
-            ("Hauteur de ligne (vide = heriter)", lineHeight));
+            ("Hauteur de ligne (vide = heriter)", lineHeight),
+            ("Propriété à remettre en héritage", resetProperty),
+            ("", CreateResetButton()));
     }
 
     private void Save()
@@ -88,15 +97,46 @@ internal sealed class CellFormatDialog : Window
             (!string.IsNullOrWhiteSpace(lineHeight.Text) && (!double.TryParse(lineHeight.Text, NumberStyles.Float, CultureInfo.CurrentCulture, out var parsedLine) || parsedLine <= 0)))
         { MessageBox.Show(this, "Padding, taille de police ou hauteur de ligne invalide.", Title, MessageBoxButton.OK, MessageBoxImage.Warning); return; }
         double? line = string.IsNullOrWhiteSpace(lineHeight.Text) ? null : double.Parse(lineHeight.Text, NumberStyles.Float, CultureInfo.CurrentCulture);
-        Result = new(NullWhenBlank(background.Text), NullWhenBlank(foreground.Text), NullWhenBlank(gridColor.Text), width,
+        Result = new(TableFormatDialogAction.Apply, new(background.Value, foreground.Value, gridColor.Value, width,
             gridStyle.SelectedItem is ScadaTableGridStyle gs ? gs : ScadaTableGridStyle.Solid,
             horizontal.SelectedItem is ScadaTableHorizontalAlignment alignment ? alignment : ScadaTableHorizontalAlignment.Left,
             vertical.SelectedItem is ScadaTableVerticalAlignment va ? va : ScadaTableVerticalAlignment.Middle,
-            pad, NullWhenBlank(fontFamily.Text), size, bold.IsChecked == true ? "Bold" : "Normal", italic.IsChecked == true ? "Italic" : "Normal", wrap.IsChecked == true, line);
+            pad, NullWhenBlank(fontFamily.Text), size, bold.IsChecked == true ? "Bold" : "Normal", italic.IsChecked == true ? "Italic" : "Normal", wrap.IsChecked == true, line));
         DialogResult = true;
     }
 
+    private Button CreateResetButton()
+    {
+        var button = new Button { Content = "Hériter / Réinitialiser la propriété", MinHeight = 30 };
+        button.Click += (_, _) =>
+        {
+            if (resetProperty.SelectedValue is string property)
+            {
+                Result = new(TableFormatDialogAction.ResetProperty, PropertyName: property);
+                DialogResult = true;
+            }
+        };
+        return button;
+    }
+
     private static string? NullWhenBlank(string value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+}
+
+internal enum TableFormatDialogAction { Apply, ResetProperty }
+internal sealed record TableFormatDialogResult(TableFormatDialogAction Action, ScadaTableFormat? Format = null, string? PropertyName = null);
+internal sealed record TableFormatPropertyChoice(string Label, string PropertyName);
+internal static class TableFormatPropertyChoices
+{
+    public static IReadOnlyList<TableFormatPropertyChoice> All { get; } =
+    [
+        new("Couleur de fond", nameof(ScadaTableFormat.Background)), new("Couleur du texte", nameof(ScadaTableFormat.Foreground)),
+        new("Couleur de grille", nameof(ScadaTableFormat.GridColor)), new("Épaisseur de grille", nameof(ScadaTableFormat.GridWidth)),
+        new("Style de grille", nameof(ScadaTableFormat.GridStyle)), new("Alignement horizontal", nameof(ScadaTableFormat.HorizontalAlignment)),
+        new("Alignement vertical", nameof(ScadaTableFormat.VerticalAlignment)), new("Padding", nameof(ScadaTableFormat.Padding)),
+        new("Police", nameof(ScadaTableFormat.FontFamily)), new("Taille", nameof(ScadaTableFormat.FontSize)),
+        new("Gras", nameof(ScadaTableFormat.FontWeight)), new("Italique", nameof(ScadaTableFormat.FontStyle)),
+        new("Retour à la ligne", nameof(ScadaTableFormat.TextWrap)), new("Hauteur de ligne", nameof(ScadaTableFormat.LineHeight))
+    ];
 }
 
 internal sealed class CellContentDialog : Window
@@ -130,10 +170,10 @@ internal sealed class TableBorderDialog : Window
 {
     private readonly ComboBox preset = new() { ItemsSource = Enum.GetValues<ScadaTableBorderPreset>() };
     private readonly ComboBox style = new() { ItemsSource = Enum.GetValues<ScadaTableGridStyle>() };
-    private readonly TextBox color = new() { Text = "#8AA0A6" }; private readonly TextBox width = new() { Text = "1" };
+    private readonly ColorPickerField color = new() { Value = "#8AA0A6" }; private readonly TextBox width = new() { Text = "1" };
     public (ScadaTableBorderPreset Preset, ScadaTableBorder Border)? Result { get; private set; }
     public TableBorderDialog() { Title="Bordures"; Width=380; Height=360; WindowStartupLocation=WindowStartupLocation.CenterOwner; preset.SelectedItem=ScadaTableBorderPreset.All; style.SelectedItem=ScadaTableGridStyle.Solid; Content=DialogLayout.Create(Save,()=>DialogResult=false,("Appliquer",preset),("Style",style),("Couleur",color),("Epaisseur",width)); }
-    private void Save() { if (!double.TryParse(width.Text, NumberStyles.Float, CultureInfo.CurrentCulture, out var w) || w<0 || string.IsNullOrWhiteSpace(color.Text)) { MessageBox.Show(this,"Bordure invalide.",Title); return; } Result=((ScadaTableBorderPreset)preset.SelectedItem,(new ScadaTableBorder((ScadaTableGridStyle)style.SelectedItem,color.Text.Trim(),w))); DialogResult=true; }
+    private void Save() { if (!double.TryParse(width.Text, NumberStyles.Float, CultureInfo.CurrentCulture, out var w) || w<0 || string.IsNullOrWhiteSpace(color.Value)) { MessageBox.Show(this,"Bordure invalide.",Title); return; } Result=((ScadaTableBorderPreset)preset.SelectedItem,(new ScadaTableBorder((ScadaTableGridStyle)style.SelectedItem,color.Value.Trim(),w))); DialogResult=true; }
 }
 
 internal sealed class HeaderRowsDialog : Window
@@ -146,24 +186,41 @@ internal sealed class HeaderRowsDialog : Window
 internal sealed class TablePropertiesDialog : Window
 {
     private readonly ScadaTableStyle currentStyle;
-    private readonly TextBox baseBackground = new();
-    private readonly TextBox headerBackground = new();
-    private readonly TextBox alternateBackground = new();
+    private readonly ColorPickerField baseBackground = new();
+    private readonly ColorPickerField headerBackground = new();
+    private readonly ColorPickerField alternateBackground = new();
+    private readonly TextBox x = new();
+    private readonly TextBox y = new();
+    private readonly TextBox width = new();
+    private readonly TextBox height = new();
     private readonly TextBlock dimensions = new();
-    public ScadaTableStyle? Result { get; private set; }
+    private readonly int rowCount;
+    private readonly int columnCount;
+    public TablePropertiesDialogResult? Result { get; private set; }
 
-    public TablePropertiesDialog(ScadaTableDefinition table)
+    public TablePropertiesDialog(ScadaElement element)
     {
+        var table = element.Table ?? throw new ArgumentException("A table Element+ is required.", nameof(element));
         currentStyle = table.EffectiveStyle;
-        Title = "Proprietes du tableau"; Width = 430; Height = 390; WindowStartupLocation = WindowStartupLocation.CenterOwner; ResizeMode = ResizeMode.NoResize;
+        rowCount = table.EffectiveRows.Count;
+        columnCount = table.EffectiveColumns.Count;
+        Title = "Proprietes du tableau"; Width = 460; Height = 650; WindowStartupLocation = WindowStartupLocation.CenterOwner; ResizeMode = ResizeMode.CanResize;
         dimensions.Text = $"{table.EffectiveRows.Count} rangees x {table.EffectiveColumns.Count} colonnes — {table.Width:0.##} x {table.Height:0.##} px";
-        baseBackground.Text = table.EffectiveStyle.Base?.Background ?? "";
-        headerBackground.Text = table.EffectiveStyle.Header?.Background ?? "";
-        alternateBackground.Text = table.EffectiveStyle.AlternatingRows?.Background ?? "";
+        baseBackground.SetColor(table.EffectiveStyle.Base?.Background ?? "#FFFFFF");
+        headerBackground.SetColor(table.EffectiveStyle.Header?.Background ?? "#EAF5F7");
+        alternateBackground.SetColor(table.EffectiveStyle.AlternatingRows?.Background ?? "#F6FAFB");
+        x.Text = element.Bounds.X.ToString("0.###", CultureInfo.CurrentCulture);
+        y.Text = element.Bounds.Y.ToString("0.###", CultureInfo.CurrentCulture);
+        width.Text = table.Width.ToString("0.###", CultureInfo.CurrentCulture);
+        height.Text = table.Height.ToString("0.###", CultureInfo.CurrentCulture);
         Content = DialogLayout.Create(
             Save,
             () => DialogResult = false,
             ("Dimensions", dimensions),
+            ("Position X", x),
+            ("Position Y", y),
+            ("Largeur exacte", width),
+            ("Hauteur exacte", height),
             ("Fond du tableau", baseBackground),
             ("Fond de l'en-tete", headerBackground),
             ("Fond des rangees alternees", alternateBackground));
@@ -171,15 +228,28 @@ internal sealed class TablePropertiesDialog : Window
 
     private void Save()
     {
-        Result = new(
-            (currentStyle.Base ?? new ScadaTableFormat()) with { Background = NullWhenBlank(baseBackground.Text) },
-            (currentStyle.Header ?? new ScadaTableFormat()) with { Background = NullWhenBlank(headerBackground.Text) },
-            (currentStyle.AlternatingRows ?? new ScadaTableFormat()) with { Background = NullWhenBlank(alternateBackground.Text) });
+        if (!TryNumber(x.Text, out var parsedX) || !TryNumber(y.Text, out var parsedY) ||
+            !TryNumber(width.Text, out var parsedWidth) || !TryNumber(height.Text, out var parsedHeight) ||
+            parsedX < 0 || parsedY < 0 ||
+            parsedWidth < columnCount * ScadaTableDefinition.MinimumColumnWidth ||
+            parsedHeight < rowCount * ScadaTableDefinition.MinimumRowHeight)
+        {
+            MessageBox.Show(this, "Position ou dimensions invalides pour les minimums des pistes.", Title, MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        Result = new(parsedX, parsedY, parsedWidth, parsedHeight, new(
+            (currentStyle.Base ?? new ScadaTableFormat()) with { Background = baseBackground.Value },
+            (currentStyle.Header ?? new ScadaTableFormat()) with { Background = headerBackground.Value },
+            (currentStyle.AlternatingRows ?? new ScadaTableFormat()) with { Background = alternateBackground.Value }));
         DialogResult = true;
     }
 
-    private static string? NullWhenBlank(string value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+    private static bool TryNumber(string text, out double value) =>
+        double.TryParse(text, NumberStyles.Float, CultureInfo.CurrentCulture, out value) && double.IsFinite(value);
 }
+
+internal sealed record TablePropertiesDialogResult(double X, double Y, double Width, double Height, ScadaTableStyle Style);
 
 internal static class DialogLayout
 {

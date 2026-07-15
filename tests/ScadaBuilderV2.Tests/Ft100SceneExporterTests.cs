@@ -49,6 +49,8 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "En-tete &amp; securise");
             StringAssert.Contains(html, "<th id=");
             StringAssert.Contains(html, "<td id=");
+            StringAssert.Contains(html, "<tr style=\"display:contents\">");
+            StringAssert.Contains(html, "colspan=\"2\"");
             StringAssert.Contains(html, "type=\"text\"");
             StringAssert.Contains(html, "type=\"number\"");
             StringAssert.Contains(html, "min=\"0\"");

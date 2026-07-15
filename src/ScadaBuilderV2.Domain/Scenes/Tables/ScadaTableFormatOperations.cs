@@ -27,8 +27,67 @@ public static class ScadaTableFormatOperations
     /// <summary>Clears one named local property while retaining other overrides.</summary>
     public static ScadaTableDefinition ResetProperty(ScadaTableDefinition table, ScadaTableFormatScope scope, string property)
     {
-        var current = ResolveLocal(table, scope);
-        if (current is null) return table;
+        return scope.Kind switch
+        {
+            ScadaTableFormatScopeKind.Table => table with
+            {
+                Style = table.EffectiveStyle with { Base = Reset(table.EffectiveStyle.Base, property) }
+            },
+            ScadaTableFormatScopeKind.HeaderRows => table with
+            {
+                Style = table.EffectiveStyle with { Header = Reset(table.EffectiveStyle.Header, property) }
+            },
+            ScadaTableFormatScopeKind.AlternatingRows => table with
+            {
+                Style = table.EffectiveStyle with { AlternatingRows = Reset(table.EffectiveStyle.AlternatingRows, property) }
+            },
+            ScadaTableFormatScopeKind.Rows => ResetRows(table, Require(scope), property),
+            ScadaTableFormatScopeKind.Columns => ResetColumns(table, Require(scope), property),
+            ScadaTableFormatScopeKind.Cells => ResetCells(table, Require(scope), property),
+            _ => table
+        };
+    }
+
+    private static ScadaTableDefinition ResetRows(ScadaTableDefinition table, ScadaTableRange range, string property)
+    {
+        var indexes = Rows(range).ToHashSet();
+        return table with
+        {
+            Rows = table.EffectiveRows.Select((row, index) => indexes.Contains(index)
+                ? row with { Style = Reset(row.Style, property) }
+                : row).ToArray()
+        };
+    }
+
+    private static ScadaTableDefinition ResetColumns(ScadaTableDefinition table, ScadaTableRange range, string property)
+    {
+        var indexes = Columns(range).ToHashSet();
+        return table with
+        {
+            Columns = table.EffectiveColumns.Select((column, index) => indexes.Contains(index)
+                ? column with { Style = Reset(column.Style, property) }
+                : column).ToArray()
+        };
+    }
+
+    private static ScadaTableDefinition ResetCells(ScadaTableDefinition table, ScadaTableRange range, string property)
+    {
+        return table with
+        {
+            Cells = table.EffectiveCells.Select(cell => range.Contains(cell.Row, cell.Column)
+                ? cell with { Style = Reset(cell.Style, property) }
+                : cell).ToArray()
+        };
+    }
+
+    private static ScadaTableFormat? Reset(ScadaTableFormat? current, string property)
+    {
+        if (current is null)
+        {
+            ValidateProperty(property);
+            return null;
+        }
+
         var reset = property switch
         {
             nameof(ScadaTableFormat.Background) => current with { Background = null },
@@ -47,19 +106,15 @@ public static class ScadaTableFormatOperations
             nameof(ScadaTableFormat.LineHeight) => current with { LineHeight = null },
             _ => throw new ArgumentException("Unknown table format property.", nameof(property))
         };
-        return ApplyFormat(table, scope, reset);
+        return IsEmpty(reset) ? null : reset;
     }
 
-    private static ScadaTableFormat? ResolveLocal(ScadaTableDefinition table, ScadaTableFormatScope scope) => scope.Kind switch
+    private static void ValidateProperty(string property)
     {
-        ScadaTableFormatScopeKind.Table => table.EffectiveStyle.Base,
-        ScadaTableFormatScopeKind.HeaderRows => table.EffectiveStyle.Header,
-        ScadaTableFormatScopeKind.AlternatingRows => table.EffectiveStyle.AlternatingRows,
-        ScadaTableFormatScopeKind.Rows => table.EffectiveRows[Require(scope).StartRow].Style,
-        ScadaTableFormatScopeKind.Columns => table.EffectiveColumns[Require(scope).StartColumn].Style,
-        ScadaTableFormatScopeKind.Cells => table.EffectiveCells.FirstOrDefault(c => c.Covers(Require(scope).StartRow, Require(scope).StartColumn))?.Style,
-        _ => null
-    };
+        _ = Reset(new ScadaTableFormat(), property);
+    }
+
+    private static bool IsEmpty(ScadaTableFormat format) => format == new ScadaTableFormat();
     private static ScadaTableRange Require(ScadaTableFormatScope scope) => scope.Range ?? throw new ArgumentException("A range is required.");
     private static IEnumerable<int> Rows(ScadaTableRange range) => Enumerable.Range(range.StartRow, range.RowCount);
     private static IEnumerable<int> Columns(ScadaTableRange range) => Enumerable.Range(range.StartColumn, range.ColumnCount);

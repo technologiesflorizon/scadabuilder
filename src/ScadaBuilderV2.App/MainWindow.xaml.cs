@@ -63,6 +63,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
     private readonly DiagnosticsPanelViewModel _diagnosticsPanel = new();
     private readonly PageCommandController _pageCommandController;
     private readonly TableEditorController _tableEditorController;
+    private readonly TableRibbonViewModel _tableRibbonViewModel;
     private readonly Tf100WebTagCatalogImporter _tagCatalogImporter = new();
     private readonly IElementStudioImportPackageWriter _elementStudioPackageWriter = new ElementStudioImportPackageWriter();
     private readonly ElementStudioComponentPackageStore _elementStudioComponentPackageStore = new();
@@ -150,7 +151,8 @@ public partial class MainWindow : Window, IPageWorkspaceHost
 
     public MainWindow()
     {
-        _tableEditorController = new TableEditorController(this, CommitTableElement);
+        _tableRibbonViewModel = new TableRibbonViewModel(_tableAuthoringSession);
+        _tableEditorController = new TableEditorController(this, CommitTableElement, CanCommitTableTransform);
         _pageWorkspaceController = new PageWorkspaceController(_modernProjectStore, this);
         _pageExportInputBuilder = new PageExportInputBuilder(_modernProjectStore, _pageSourceProjectionResolver);
         RegisterPageApplicationCommands();
@@ -7126,7 +7128,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             case "table.select.all":
                 if (_selectedSceneObject is not null) { _tableEditorController.SelectAll(_selectedSceneObject); RefreshTablePropertiesPanel(); }
                 break;
-            case "table.merge": case "table.unmerge": case "table.format": case "table.row.height": case "table.column.width": case "table.properties": case "table.content.properties": case "table.borders": case "table.headers": case "table.equalize": case "table.format.reset": case "table.row.insert": case "table.column.insert": case "table.row.delete": case "table.column.delete":
+            case "table.merge": case "table.unmerge": case "table.format": case "table.row.height": case "table.column.width": case "table.properties": case "table.content.properties": case "table.borders": case "table.headers": case "table.header.mark": case "table.header.unmark": case "table.equalize": case "table.distribute.rows": case "table.distribute.columns": case "table.format.reset": case "table.row.insert": case "table.column.insert": case "table.row.delete": case "table.column.delete":
                 if (_selectedSceneObject is not null) _tableEditorController.Execute(commandId, _selectedSceneObject);
                 break;
             default:

@@ -38,7 +38,14 @@ public static class TableContextMenuProvider
             new("table.row.height", "Hauteur de rangee...", "table"),
             new("table.column.width", "Largeur de colonne...", "table"),
             new("table.equalize", "Uniformiser les pistes", "table"),
+            new("table.distribute", "Distribuer proportionnellement", "table", Children:
+            [
+                new EditorCommandDescriptor("table.distribute.rows", "Distribuer les rangees...", "table"),
+                new EditorCommandDescriptor("table.distribute.columns", "Distribuer les colonnes...", "table")
+            ]),
             new("table.headers", "Rangees d'en-tete...", "table"),
+            new("table.header.mark", "Marquer comme en-tete", "table", range.StartRow >= table.EffectiveRows.TakeWhile(row => row.IsHeader).Count()),
+            new("table.header.unmark", "Demarquer l'en-tete", "table", range.StartRow < table.EffectiveRows.TakeWhile(row => row.IsHeader).Count()),
             new("table.merge", "Fusionner les cellules", "table", canMerge && !isMergedAnchor,
                 DisabledReason: canMerge ? "La plage contient deja une cellule fusionnee." : "Selectionnez plusieurs cellules."),
             new("table.unmerge", "Defusionner les cellules", "table", isMergedAnchor,

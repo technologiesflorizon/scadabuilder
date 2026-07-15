@@ -12,7 +12,12 @@ public partial class MainWindow
 {
     private bool ForwardTableWebViewMessage(string json)
     {
-        if (!TableWebViewMessageAdapter.TryParse(json, out var request) || request is null) return false;
+        if (!TableWebViewMessageAdapter.TryParse(json, out var request, out var error) || request is null)
+        {
+            if (!TableWebViewMessageAdapter.IsTableMessage(json)) return false;
+            SetStatus(error ?? "Message Tableau invalide.");
+            return true;
+        }
         var element = _activeScene?.FindElementRecursive(request.ElementId);
         if (element?.Table is null) return true;
         switch (request)
@@ -55,14 +60,14 @@ public partial class MainWindow
 
     private void OpenTableAuthoringSurface()
     {
-        _tableAuthoringSession.OpenSurface();
+        _tableRibbonViewModel.Open();
         _activeInsertFamilyId = "data";
         SetActiveRibbon("Insert");
     }
 
     private void CloseTableAuthoringSurface()
     {
-        _tableAuthoringSession.CloseSurface();
+        _tableRibbonViewModel.BackToDataTools();
         SetActiveRibbon("Insert");
         _ = SetTableInteractionModeInWebViewAsync(TableInteractionMode.Object);
     }
@@ -70,14 +75,15 @@ public partial class MainWindow
     private void RefreshTableRibbonSurface()
     {
         ActiveRibbonGroups.Clear();
-        foreach (var group in TableRibbonStateProvider.Create(_tableAuthoringSession))
+        _tableRibbonViewModel.Refresh();
+        foreach (var group in _tableRibbonViewModel.Groups)
             ActiveRibbonGroups.Add(CreateRibbonGroupViewModel(group));
         if (TableCreationConfigurationSurface is not null)
         {
             TableCreationConfigurationSurface.Visibility = System.Windows.Visibility.Visible;
-            TableRowsTextBox.Text = _tableAuthoringSession.CreationRows.ToString(CultureInfo.InvariantCulture);
-            TableColumnsTextBox.Text = _tableAuthoringSession.CreationColumns.ToString(CultureInfo.InvariantCulture);
-            TableFirstHeaderCheckBox.IsChecked = _tableAuthoringSession.FirstRowIsHeader;
+            TableRowsTextBox.Text = _tableRibbonViewModel.CreationRows.ToString(CultureInfo.InvariantCulture);
+            TableColumnsTextBox.Text = _tableRibbonViewModel.CreationColumns.ToString(CultureInfo.InvariantCulture);
+            TableFirstHeaderCheckBox.IsChecked = _tableRibbonViewModel.FirstRowIsHeader;
         }
     }
 
@@ -88,7 +94,7 @@ public partial class MainWindow
             SetStatus("Tableau: les rangees et colonnes doivent etre comprises entre 1 et 64.");
             return;
         }
-        _tableAuthoringSession.ConfigureCreation(rows, columns, TableFirstHeaderCheckBox.IsChecked == true);
+        _tableRibbonViewModel.ConfigureCreation(rows, columns, TableFirstHeaderCheckBox.IsChecked == true);
         _tableAuthoringSession.BeginPlacement();
         BeginModernElementPlacement(ScadaElementKind.Table, "table.add");
     }
@@ -131,6 +137,16 @@ public partial class MainWindow
         _ = RenderModernSceneAsync();
     }
 
+    private bool CanCommitTableTransform(ScadaElement updated)
+    {
+        if (_activeScene is null) return false;
+        var current = _activeScene.FindElementRecursive(updated.Id);
+        if (current is null) return false;
+        if (Math.Abs(current.Bounds.X - updated.Bounds.X) < 0.001 && Math.Abs(current.Bounds.Y - updated.Bounds.Y) < 0.001)
+            return true;
+        return CanApplyElementTransform(_activeScene.WithReplacedElementRecursive(updated), [updated.Id]);
+    }
+
     private void RefreshTablePropertiesPanel()
     {
         if (TablePropertiesPanel is null || TableSelectionSummaryText is null) return;
@@ -145,6 +161,7 @@ public partial class MainWindow
             ? $"Cellule {range.StartRow + 1},{range.StartColumn + 1}"
             : $"Plage {range.StartRow + 1},{range.StartColumn + 1}:{range.EndRow + 1},{range.EndColumn + 1}";
         TableDimensionSummaryText.Text = $"{element.Table.EffectiveRows.Count} rangees x {element.Table.EffectiveColumns.Count} colonnes";
+        TableFormatStateSummaryText.Text = _tableEditorController.InspectFormatState(element);
         if (_activeRibbonKey == "Insert" && _activeInsertFamilyId == "data" && !_tableAuthoringSession.IsSurfaceOpen)
         {
             _tableAuthoringSession.OpenSurface();
@@ -184,6 +201,8 @@ public partial class MainWindow
         {
             _tableEditorController.FormatScopeKind = scope;
             _tableAuthoringSession.SetFormatScope(scope);
+            if (_selectedSceneObject?.Kind == ScadaElementKind.Table)
+                TableFormatStateSummaryText.Text = _tableEditorController.InspectFormatState(_selectedSceneObject);
         }
     }
 
@@ -195,5 +214,30 @@ public partial class MainWindow
     private void OnUnmergeTableCellsClick(object sender, System.Windows.RoutedEventArgs e)
     {
         if (_selectedSceneObject?.Kind == ScadaElementKind.Table) _tableEditorController.Execute("table.unmerge", _selectedSceneObject);
+    }
+
+    private void OnResetTableFormatScopeClick(object sender, System.Windows.RoutedEventArgs e)
+    {
+        if (_selectedSceneObject?.Kind == ScadaElementKind.Table) _tableEditorController.Execute("table.format.reset", _selectedSceneObject);
+    }
+
+    private void OnDistributeTableRowsClick(object sender, System.Windows.RoutedEventArgs e)
+    {
+        if (_selectedSceneObject?.Kind == ScadaElementKind.Table) _tableEditorController.Execute("table.distribute.rows", _selectedSceneObject);
+    }
+
+    private void OnDistributeTableColumnsClick(object sender, System.Windows.RoutedEventArgs e)
+    {
+        if (_selectedSceneObject?.Kind == ScadaElementKind.Table) _tableEditorController.Execute("table.distribute.columns", _selectedSceneObject);
+    }
+
+    private void OnMarkTableHeaderClick(object sender, System.Windows.RoutedEventArgs e)
+    {
+        if (_selectedSceneObject?.Kind == ScadaElementKind.Table) _tableEditorController.Execute("table.header.mark", _selectedSceneObject);
+    }
+
+    private void OnUnmarkTableHeaderClick(object sender, System.Windows.RoutedEventArgs e)
+    {
+        if (_selectedSceneObject?.Kind == ScadaElementKind.Table) _tableEditorController.Execute("table.header.unmark", _selectedSceneObject);
     }
 }

@@ -10,13 +10,16 @@ internal sealed class TableEditorController
 {
     private readonly Window owner;
     private readonly Action<ScadaElement, string> commit;
+    private readonly Func<ScadaElement, bool> canCommitTransform;
     private readonly TableEditCoordinator coordinator = new();
+    private readonly TablePropertiesViewModel properties = new();
     private TableClipboardPayload? clipboard;
 
-    public TableEditorController(Window owner, Action<ScadaElement, string> commit)
+    public TableEditorController(Window owner, Action<ScadaElement, string> commit, Func<ScadaElement, bool> canCommitTransform)
     {
         this.owner = owner;
         this.commit = commit;
+        this.canCommitTransform = canCommitTransform;
     }
 
     public string? ElementId { get; private set; }
@@ -60,6 +63,10 @@ internal sealed class TableEditorController
             case "table.borders": return Borders(element);
             case "table.headers": return Headers(element);
             case "table.equalize": return Equalize(element);
+            case "table.distribute.rows": return Distribute(element, rows: true);
+            case "table.distribute.columns": return Distribute(element, rows: false);
+            case "table.header.mark": return Apply(element, new(TableEditKind.SetHeaderRowCount, Count: Selection.StartRow + 1));
+            case "table.header.unmark": return Apply(element, new(TableEditKind.SetHeaderRowCount, Count: Selection.StartRow));
             case "table.format.reset": return Apply(element, new(TableEditKind.ResetFormatScope, FormatScope: new ScadaTableFormatScope(FormatScopeKind,
                 FormatScopeKind is ScadaTableFormatScopeKind.Table or ScadaTableFormatScopeKind.HeaderRows or ScadaTableFormatScopeKind.AlternatingRows ? null : Selection)));
             case "table.row.height": return Size(element, row: true);
@@ -74,6 +81,12 @@ internal sealed class TableEditorController
 
     public bool ConvertContent(ScadaElement element, ScadaTableCellContentKind kind) =>
         Apply(element, new(TableEditKind.ConvertContentKind, Selection, ContentKind: kind));
+
+    public string InspectFormatState(ScadaElement element)
+    {
+        properties.Load(element, Selection, FormatScopeKind);
+        return properties.StateLabel;
+    }
 
     public void SelectAll(ScadaElement element)
     {
@@ -93,7 +106,9 @@ internal sealed class TableEditorController
             MessageBox.Show(owner, result.Error ?? "Dimensions de tableau invalides.", "Tableau", MessageBoxButton.OK, MessageBoxImage.Warning);
             return false;
         }
-        commit(result.Element with { Bounds = result.Element.Bounds with { X = x, Y = y } }, "Redimensionnement tableau");
+        var updated = result.Element with { Bounds = result.Element.Bounds with { X = x, Y = y } };
+        if (!canCommitTransform(updated)) return false;
+        commit(updated, "Redimensionnement tableau");
         return true;
     }
 
@@ -109,11 +124,12 @@ internal sealed class TableEditorController
 
     private bool Format(ScadaElement element)
     {
-        var current = ScadaTableStyleResolver.Resolve(element.Table!, Selection.StartRow, Selection.StartColumn);
-        var dialog = new CellFormatDialog(current) { Owner = owner };
-        return dialog.ShowDialog() == true && dialog.Result is not null &&
-            Apply(element, new(TableEditKind.ApplyFormatScope, Format: dialog.Result,
-                FormatScope: new ScadaTableFormatScope(FormatScopeKind, FormatScopeKind is ScadaTableFormatScopeKind.Table or ScadaTableFormatScopeKind.HeaderRows or ScadaTableFormatScopeKind.AlternatingRows ? null : Selection)));
+        properties.Load(element, Selection, FormatScopeKind);
+        var dialog = new CellFormatDialog(properties.Format!) { Owner = owner };
+        if (dialog.ShowDialog() != true || dialog.Result is null) return false;
+        return dialog.Result.Action == TableFormatDialogAction.ResetProperty && dialog.Result.PropertyName is not null
+            ? Apply(element, properties.ResetProperty(dialog.Result.PropertyName))
+            : dialog.Result.Format is not null && Apply(element, properties.ApplyFormat(dialog.Result.Format));
     }
 
     private bool Content(ScadaElement element)
@@ -145,6 +161,20 @@ internal sealed class TableEditorController
         return Apply(element, new(kind, Selection));
     }
 
+    private bool Distribute(ScadaElement element, bool rows)
+    {
+        var current = rows
+            ? Enumerable.Range(Selection.StartRow, Selection.RowCount).Sum(index => element.Table!.EffectiveRows[index].Height)
+            : Enumerable.Range(Selection.StartColumn, Selection.ColumnCount).Sum(index => element.Table!.EffectiveColumns[index].Width);
+        var count = rows ? Selection.RowCount : Selection.ColumnCount;
+        var minimum = count * (rows ? ScadaTableDefinition.MinimumRowHeight : ScadaTableDefinition.MinimumColumnWidth);
+        var dialog = new TrackSizeDialog(rows ? "Distribuer les rangees" : "Distribuer les colonnes", current, minimum) { Owner = owner };
+        if (dialog.ShowDialog() != true || dialog.Result is null) return false;
+        return Apply(element, rows
+            ? new TableEditRequest(TableEditKind.DistributeRows, Selection, Height: dialog.Result)
+            : new TableEditRequest(TableEditKind.DistributeColumns, Selection, Width: dialog.Result));
+    }
+
     private bool Size(ScadaElement element, bool row)
     {
         var current = row ? element.Table!.EffectiveRows[Selection.StartRow].Height : element.Table!.EffectiveColumns[Selection.StartColumn].Width;
@@ -158,9 +188,23 @@ internal sealed class TableEditorController
 
     private bool Properties(ScadaElement element)
     {
-        var dialog = new TablePropertiesDialog(element.Table!) { Owner = owner };
+        properties.Load(element, Selection, FormatScopeKind);
+        var dialog = new TablePropertiesDialog(element) { Owner = owner };
         if (dialog.ShowDialog() != true || dialog.Result is null) return false;
-        Commit(element with { Table = element.Table! with { Style = dialog.Result } }, "Proprietes tableau");
+        var value = dialog.Result;
+        var result = coordinator.Apply(element, properties.ApplyDimensions(value.Width, value.Height, value.Style));
+        if (!result.Succeeded)
+        {
+            MessageBox.Show(owner, result.Error ?? "Dimensions de tableau invalides.", "Tableau", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return false;
+        }
+        var updated = result.Element with { Bounds = result.Element.Bounds with { X = value.X, Y = value.Y } };
+        if (!canCommitTransform(updated))
+        {
+            MessageBox.Show(owner, "La position d'un tableau verrouille ne peut pas etre modifiee.", "Tableau", MessageBoxButton.OK, MessageBoxImage.Information);
+            return false;
+        }
+        Commit(updated, result.Label);
         return true;
     }
 

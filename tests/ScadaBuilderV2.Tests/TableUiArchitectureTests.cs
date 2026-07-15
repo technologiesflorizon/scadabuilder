@@ -27,6 +27,9 @@ public sealed class TableUiArchitectureTests
         var main = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");
         var web = ReadProjectFile("src", "ScadaBuilderV2.App", "TableEditor", "TableWebViewScript.cs");
         var adapter = ReadProjectFile("src", "ScadaBuilderV2.App", "TableEditor", "TableWebViewMessageAdapter.cs");
+        var propertiesViewModel = ReadProjectFile("src", "ScadaBuilderV2.App", "TableEditor", "TablePropertiesViewModel.cs");
+        var ribbonViewModel = ReadProjectFile("src", "ScadaBuilderV2.App", "TableEditor", "TableRibbonViewModel.cs");
+        var controller = ReadProjectFile("src", "ScadaBuilderV2.App", "TableEditor", "TableEditorController.cs");
         var xaml = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml");
 
         StringAssert.Contains(main, "InsertToolCatalog.Find(commandId)");
@@ -42,6 +45,10 @@ public sealed class TableUiArchitectureTests
         Assert.IsFalse(web.Contains("node.addEventListener", StringComparison.Ordinal), "Cell interaction must use grid-level event delegation for 64 x 64 tables.");
         StringAssert.Contains(adapter, "tableAutoFitMeasured");
         StringAssert.Contains(adapter, "double.IsFinite");
+        StringAssert.Contains(propertiesViewModel, "TablePropertiesInspector.Inspect");
+        StringAssert.Contains(propertiesViewModel, "TableEditRequest");
+        StringAssert.Contains(ribbonViewModel, "TableRibbonStateProvider.Create(session)");
+        Assert.IsFalse(controller.Contains("element.Table! with { Style = dialog.Result }", StringComparison.Ordinal), "Dialogs must submit typed table requests instead of constructing a complete definition directly.");
         StringAssert.Contains(xaml, "x:Name=\"InsertFamilySurface\"");
         StringAssert.Contains(xaml, "x:Name=\"TableCreationConfigurationSurface\"");
         StringAssert.Contains(xaml, "Header=\"Tableau\"");
@@ -57,6 +64,8 @@ public sealed class TableUiArchitectureTests
         StringAssert.Contains(dialogs, "panel.Children.Add(field.Control)");
         StringAssert.Contains(dialogs, "CellContentDialog");
         StringAssert.Contains(dialogs, "TableBorderDialog");
+        StringAssert.Contains(dialogs, "ColorPickerField");
+        StringAssert.Contains(dialogs, "Hériter / Réinitialiser la propriété");
         Assert.IsFalse(
             dialogs.Contains("params object[] entries", StringComparison.Ordinal),
             "Concrete TextBox, CheckBox, ComboBox, and TextBlock tuples must not be filtered through an exact boxed ValueTuple type.");
