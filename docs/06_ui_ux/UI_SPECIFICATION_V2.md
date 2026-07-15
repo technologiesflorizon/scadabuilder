@@ -2,12 +2,21 @@
 
 Date: 2026-06-19
 Status: Active UI specification pointer
-Document version: `V2.1.4.0003`
+Document version: `V2.1.4.0027`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0027` | `88e865a` | Spécification UI synchronisée avec le ruban Tableau contextuel, l'inspecteur Hérité/Personnalisé/Mixte, les dimensions exactes, color pickers, bordures, distribution et en-têtes. |
+
+## Table Authoring Surface
+
+1. `Insérer > Données > Tableau` ouvre les outils sans dialogue; `Ajouter` arme le placement configuré.
+2. Les modes Objet et Cellules sont exclusifs. Les headers editor-only sélectionnent rangée, colonne ou table sans déplacer l'objet.
+3. Le panneau Propriété affiche portée, état de format, contenu, format, bordures, en-têtes, fusion, distribution et reset.
+4. Les dialogues de format et bordure réutilisent le color picker du produit; les propriétés détaillées exposent X/Y/W/H exacts.
+5. Le ruban garde visibles les commandes indisponibles avec une raison issue de l'état applicatif.
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Direction haut de gamme de l’inspecteur Style : sections, contrôles à état, icônes sémantiques et aperçu vivant. |
 | 2026-06-19 | `V2.1.3.0002` | `PENDING` | Ajout du standard de polish produit concurrentiel face a ScadaPlant. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes: icones 32x32 et boutons sans libelles visibles. |

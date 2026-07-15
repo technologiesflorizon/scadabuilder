@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active runtime contract
-Document version: `V2.1.4.0026`
+Document version: `V2.1.4.0027`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0027` | `88e865a` | Les tableaux exportent des rangées HTML valides, des `<th>/<td>` avec `rowspan`/`colspan` et des segments conservant style, couleur et épaisseur; le scénario 16 x 10 vérifie preview et `.sb2`. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Parite Tableau avancee : headers semantiques, wrap/line-height et segments de bordure; exclusion explicite du lock et des gouttieres editor-only. |
 | 2026-07-14 | `V2.1.2.0039` | `PENDING` | Ajout des pages natives et de la projection `PageKey` vers `PageCode` sans changement du contrat `.sb2`. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Alignement metadata preview/export pour wrappers de boutons Element+. |

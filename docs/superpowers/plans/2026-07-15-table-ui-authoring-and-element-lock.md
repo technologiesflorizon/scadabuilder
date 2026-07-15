@@ -1,18 +1,25 @@
 # Outils d'authoring Tableau et verrouillage Element+ - Plan d'implementation
 
 Date: 2026-07-15
-Status: Implemented - automated validation complete; isolated interactive Release gate pending
-Document version: `V2.1.4.0026`
+Status: Implemented - all code and automated slices complete; isolated interactive WebView2 gate pending
+Document version: `V2.1.4.0027`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | Tranches automatisées complétées : `TableRibbonViewModel`, `TablePropertiesViewModel`, états de format, reset par propriété, distribution, en-têtes explicites, bridge diagnostique, HTML `<tr>/<th>/<td>`, bordures hétérogènes, intégration 16 x 10 et mesures Release 64 x 64. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Execution de la tranche : lock persistant, sous-surface et outils Tableau avances, bridge type, rendu/export et regressions automatises; mesure interactive Release non executee. |
 | 2026-07-15 | `V2.1.4.0025` | `0b1fbf4` | Integration de la revue du plan : extraction structurelle conforme a la spec, guards d'export conditionnels, tests d'architecture/resize, commandes explicites, retrait controle du dialogue, scenario `win00012` qualifie et staging documentaire ferme. |
 | 2026-07-15 | `V2.1.4.0024` | `3f6e6a5` | Creation du plan executable derive de la specification approuvee et de `DEC-0040`. |
 
 > **Pour les agents d'execution :** executer ce plan tache par tache. Ne pas deleguer a des sous-agents sans autorisation explicite de l'utilisateur. Les cases `- [ ]` constituent le suivi d'execution et chaque tache possede sa propre frontiere de commit.
+
+## Registre de clôture automatisée
+
+Les tâches 1 à 14 sont implémentées dans les commits `e497e52`, `85d9432`, `a544e0c`, `0874416`, `88e865a` et `32a3ef6`. Les preuves ajoutées depuis la première exécution couvrent les fichiers dédiés attendus, le scénario structurel 16 x 10, le rendu/export et les mesures Release 64 x 64. La tâche 15 reste ouverte uniquement pour le smoke WPF/WebView2 interactif sur copie isolée; le projet utilisateur n'a pas été ouvert ou sauvegardé pendant les mesures automatisées.
+
+Mesure Release du 2026-07-15, commit `32a3ef6`, Windows 11 Pro 10.0.26200, Ryzen 7 5800H (8 cœurs/16 threads), 15,4 Go RAM, 100 échantillons : rendu HTML initial 64 x 64 = 367,556 ms; inspection de sélection p95 = 12,403 ms; resize Domain p95 = 0,023 ms. Ces nombres prouvent le pipeline modèle/rendu, pas le coût de composition WebView2, qui demeure le gate interactif explicite.
 
 **Goal:** Completer le Tableau Element+ afin de reconstruire efficacement une page equivalente a `win00012` sans bindings cellule par cellule, offrir une sous-surface Tableau sans dialogue de creation, puis rendre le verrouillage de position reel et persistant pour tous les Element+ avec une semantique coherente de groupe et de multiselection.
 

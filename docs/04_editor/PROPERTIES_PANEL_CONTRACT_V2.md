@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active properties panel contract
-Document version: `V2.1.4.0026`
+Document version: `V2.1.4.0027`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0027` | `88e865a` | `TablePropertiesViewModel` partage les valeurs effectives/locales et les états Hérité/Personnalisé/Mixte; reset de propriété/portée, color picker et X/Y/W/H exacts passent par des requêtes typées et le guard de verrou. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Onglet Tableau et dialogues etendus aux types/valeurs, portees, format complet, bordures et en-tetes; case de verrouillage partagee ajoutee aux proprietes generales. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Ajout de l'onglet Tableau contextuel, du dialogue de proprietes Tableau, du format de cellule et des dimensions de pistes partageant le coordinateur type. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Ajout des propriétés typographiques Element+, Foreground authorable, styles de bordure avancés, BorderRadius et aperçu vivant. |
@@ -64,7 +65,15 @@ The properties panel edits model-backed properties through commands or applicati
 18. `Format affichage` may use hash masks such as `##.#`; the mask defines visible digit budget and decimal placement. Example: raw numeric value `999` with `##.#` displays as `99.9`, and the maximum visible value for the mask is `99.9`.
 19. `Min` and `Max` are operator-entry clamp constraints only for numeric inputs that are not `Lecture seulement`; they are disabled for read-only displays.
 
-## 3. Related Tests
+## 3. Table Inspector Contract
+
+1. `TablePropertiesInspector` calcule les valeurs effectives et locales par propriété pour les portées Tableau, en-têtes, alternance, rangées, colonnes, cellule et plage.
+2. Le panneau et les dialogues affichent `Hérité`, `Personnalisé` ou `Mixte` depuis le même `TablePropertiesViewModel`.
+3. Réinitialiser une propriété remet uniquement cette propriété à `null` sur chaque cible sans aplatir les autres surcharges hétérogènes.
+4. Réinitialiser la portée retire toutes ses surcharges dans une seule mutation historique.
+5. Le dialogue Tableau expose X/Y/W/H exacts; une variation X/Y est rejetée par le guard de position si l'Element+ est verrouillé, tandis qu'un resize sans translation demeure permis.
+
+## 4. Related Tests
 
 1. `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`
 2. `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`

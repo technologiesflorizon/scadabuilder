@@ -1,13 +1,14 @@
 # Outils d'authoring Tableau et verrouillage Element+ - Spécification de conception
 
 Date: 2026-07-15
-Status: Approved design - implementation pending
-Document version: `V2.1.4.0024`
+Status: Implemented in code and automated regression coverage; isolated WebView2 smoke pending
+Document version: `V2.1.4.0027`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | Implémentation complétée avec view models Tableau dédiés, inspection héritée/personnalisée/mixte, dimensions exactes, distribution, en-têtes explicites, bridge diagnostique, rendu sémantique et scénario end-to-end `win00012`; seul le smoke WebView2 interactif isolé demeure. |
 | 2026-07-15 | `V2.1.4.0024` | `3f6e6a5` | Approbation utilisateur de la spécification; activation de `DEC-0040` et autorisation de produire un plan d'implémentation autonome. |
 | 2026-07-15 | `V2.1.4.0023` | `18a9e9d` | Revue complète contre le code existant : migrations explicites des catalogues et de l'ancien verrou, contrat JSON, ruban secondaire, états et bindings WPF, bordures par segment, auto-ajustement WebView, messages typés, performance 64 x 64, tests localisés et dépendances documentaires. |
 | 2026-07-15 | `V2.1.4.0022` | `3a99b99` | Première architecture détaillée des outils Tableau et du verrouillage persistant de tous les Element+. |
@@ -23,8 +24,8 @@ Depuis son approbation :
 
 1. `DEC-0040` enregistre les décisions de cette tranche;
 2. le plan autonome [Outils d'authoring Tableau et verrouillage Element+](../plans/2026-07-15-table-ui-authoring-and-element-lock.md) en organise l'exécution;
-3. le code actuel demeure celui de `DEC-0039` tant que le plan n'est pas exécuté;
-4. les comportements cibles restent des écarts d'implémentation et ne doivent pas être déclarés disponibles avant leurs preuves de code et de tests.
+3. le code de `DEC-0040` est implémenté et protégé par les tests cités dans le plan et le registre de couverture;
+4. le smoke interactif WebView2 isolé reste une preuve de clôture produit distincte des capacités implémentées.
 
 ### 1.2 Documents propriétaires et décisions liées
 

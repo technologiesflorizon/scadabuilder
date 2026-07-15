@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active project model contract
-Document version: `V2.1.4.0026`
+Document version: `V2.1.4.0027`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0027` | `88e865a` | Validation end-to-end d'une table 16 x 10 avec contenus mixtes, deux en-têtes, fusion, styles par portée, pistes non uniformes, bordures physiques et `IsLocked`, sans modifier le schéma `.sb2`. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Extension Tableau par retour a la ligne, hauteur typographique et bordures physiques; ajout de `ScadaElement.IsLocked` comme metadata d'authoring. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Ajout du contrat persistant `ScadaElementKind.Table`, pistes, cellules, fusions, contenus input et styles heritables. |
 | 2026-07-14 | `V2.1.4.0012` | `PENDING` | Contrat `PageKey`/`PageCode`, provenance Wonderware, pages natives et sauvegarde atomique désormais implémenté. |

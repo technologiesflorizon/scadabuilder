@@ -2,12 +2,13 @@
 
 Date: 2026-06-16
 Status: Active governance policy
-Document version: `V2.1.1.0039`
+Document version: `V2.1.4.0027`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | Bump d'itération pour la clôture automatisée des outils Tableau avancés et leur couverture. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation de la politique de versioning documentaire et changelog pour la nouvelle architecture documentaire. |
 
 ## 1. Version Format
@@ -21,7 +22,7 @@ V2.production.feature.iteration
 Current version:
 
 ```text
-V2.1.4.0026
+V2.1.4.0027
 ```
 
 ## 2. Increment Rules

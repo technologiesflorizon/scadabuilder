@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active implementation status
-Document version: `V2.1.4.0026`
+Document version: `V2.1.4.0027`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | Tranches automatisées Tableau complétées : view models, états de format et reset ciblé, color pickers, X/Y/W/H, distribution/en-têtes, bridge diagnostique, auto-fit proportionnel, HTML sémantique, intégration 16 x 10 et mesures Release 64 x 64. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Code et couverture automatisee de `DEC-0040` livres : verrou de position Element+, sous-surface Tableau, authoring avance et export commun; cloture produit suspendue au gate UI Release isole. |
 | 2026-07-14 | `V2.1.4.0018` | `858473c` | Correction du generateur des dialogues Tableau : les champs TextBox, CheckBox, ComboBox et TextBlock sont maintenant tous rendus. |
 | 2026-07-14 | `V2.1.4.0017` | `a94016a` | Niveau 1 du ruban Inserer reduit a des boutons 26 px et des icones 14 px; le niveau 2 recupere l'espace vertical auparavant consomme par le style de commande 58 px. |
@@ -73,7 +74,7 @@ Document version: `V2.1.4.0026`
 
 ## 1. Current Verified Baseline
 
-As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The full-suite result and its pre-existing unrelated failures are recorded in `REGRESSION_COVERAGE_V2.md`; the isolated interactive Release performance gate remains manual.
+As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The full-suite result and its pre-existing unrelated failures are recorded in `REGRESSION_COVERAGE_V2.md`; only the isolated interactive WebView2 smoke remains manual.
 
 ## 2. Implemented Areas
 
@@ -99,8 +100,6 @@ As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The f
 20. Element+ value bindings can author the binding events `Lire valeur` and `Ecrire valeur` against enabled imported tags. The editor stores `ReadTagId` and `WriteTagId`, disables user-trigger selection for those functions, shows tag labels as `Nom du tag | datatype | Nom de l'appareil`, validates write bindings during build/export, and FT100 export emits tag catalog metadata plus read/write value runtime hooks.
 21. The editor exposes a project-level `Catalogue Tags` panel listing imported tags and records local tag creation as a future protocol-import revision. The panel can filter by text, device, datatype, access, and active state, and reports the visible subset against the full imported catalog.
 22. Element+ events can author `Afficher objet`, `Masquer objet`, and `Basculer visibilite` against Element+ targets, with one optional imported-tag condition using `Vrai`, `Faux`, `=`, `<>`, `>`, `>=`, `<`, or `<=`. Build/export validation rejects invalid condition tags, missing comparison values, missing target objects, and boolean operators on non-boolean tags.
-23. Automated `DEC-0040` implementation evidence covers persistent Element+ position locking, recursive groups, multiselection aggregation, undo/redo, and enforcement against effective X/Y changes.
-24. Automated `DEC-0040` implementation evidence covers the no-dialog Table contextual ribbon, Object/Cells modes, headers, content/format/border/track/header operations, auto-fit and shared export model. Product closure remains pending until the isolated interactive Release gate is recorded.
 23. FT100/TF100Web runtime can apply pushed tag values to all `Lire valeur` Element+ bindings through `window.scadaBuilderSetTagValue` or `scada-builder-tag-value`, while updating the shared runtime tag cache used by conditions.
 24. Element+ events can author `Ouvrir popup`, `Fermer popup`, and `Basculer popup` against compiled `Fragment` pages. Build/export validation rejects invalid popup targets, and FT100/TF100Web runtime opens, closes, or toggles the fragment in a centered iframe popup with close diagnostics and iframe-to-parent close/toggle requests.
 25. Element+ events can author `Afficher bordure`, `Masquer bordure`, and `Basculer bordure` against Element+ targets. Build/export validation rejects missing targets, and FT100/TF100Web runtime adds, removes, or toggles the standard page-scoped border class.
@@ -141,6 +140,10 @@ As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The f
 60. Page context-menu hit testing now traverses `FrameworkContentElement` parents through `ContentOperations.GetParent` and reserves `VisualTreeHelper` for actual visuals, preventing the `Run`-specific WPF crash on right-click.
 61. The first-level Insert family strip uses dedicated 26-pixel buttons with 14-pixel semantic icons instead of inheriting the 58-pixel second-level command style, preserving the full vertical command surface. `RibbonCommandCatalogTests.InsertFamilyRibbonKeepsFirstLevelCompact` locks this layout contract.
 62. The shared Table dialog layout now accepts strongly typed `FrameworkElement` fields, so table creation, track sizing, cell formatting, and table properties display their TextBox, CheckBox, ComboBox, and TextBlock controls instead of only `Annuler` and `Enregistrer`. `TableUiArchitectureTests.TableDialogLayoutKeepsConcreteWpfControlsVisible` protects the fix.
+63. Automated `DEC-0040` implementation evidence covers persistent Element+ position locking, recursive groups, multiselection aggregation, undo/redo, and enforcement against effective X/Y changes.
+64. Automated `DEC-0040` implementation evidence covers the no-dialog Table contextual ribbon, Object/Cells modes, headers, content/format/border/track/header operations, auto-fit and shared export model.
+65. The advanced Table inspector uses dedicated ribbon/property view models, computes inherited/custom/mixed states, supports targeted reset without flattening heterogeneous styles, and routes exact dimensions through the typed coordinator plus lock guard.
+66. The representative 16 x 10 `win00012` scenario validates mixed native inputs, two header rows, merged title, non-uniform tracks, alternating/explicit styles, heterogeneous borders, save/reload, preview and `.sb2` without per-cell bindings or editor artifacts.
 
 ## 3. Source Of Truth
 

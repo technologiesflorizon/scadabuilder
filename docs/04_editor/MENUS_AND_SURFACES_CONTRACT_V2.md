@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active editor menu and surface contract
-Document version: `V2.1.4.0026`
+Document version: `V2.1.4.0027`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0027` | `88e865a` | Ruban/panneau/menu Tableau complétés par distribution proportionnelle, marquage d'en-tête, reset de portée, dimensions exactes et état de format contextuel. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Sous-surface Tableau contextuelle implementee dans le niveau 2 Inserer, creation configuree sans dialogue et modes Objet/Cellules exclusifs. |
 | 2026-07-14 | `V2.1.4.0017` | `a94016a` | Niveau 1 du ruban Inserer compacte avec style independant afin de reserver la hauteur necessaire aux outils du niveau 2. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Ruban Inserer hierarchique a huit familles et menu contextuel Tableau type tableur implementes depuis des catalogues dedies. |

@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active regression coverage map
-Document version: `V2.1.4.0026`
+Document version: `V2.1.4.0027`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | Ajout des suites dédiées inspecteur, bridge, performance 64 x 64 et intégration `win00012`; suite complète observée à 608 réussites et 5 échecs historiques non liés. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Couverture `DEC-0040` : lock/persistance/groupes/guard, session Tableau, conversions, formats, bordures, pistes/en-tetes, architecture WebView 64x64 et export sans artefact editeur. |
 | 2026-07-14 | `V2.1.4.0018` | `858473c` | Couverture du layout type des dialogues Tableau et de l'affichage de leurs controles WPF concrets. |
 | 2026-07-14 | `V2.1.4.0017` | `a94016a` | Ajout de la regression garantissant un niveau 1 Inserer compact, independant du style 58 px des commandes de niveau 2. |
@@ -122,6 +123,10 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Element+ standard, HMI, and process shapes with manual insertion | `OfficialSceneDomainTests.ShapeElementDefaultsAndFactoriesPreserveShapeKind`, `ModernProjectStoreTests.SaveAndReloadPreservesPageManifestBackgroundAndObjectEvents`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.ModernShapePreviewUsesSvgShapeKind`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
 | Insert Formes gallery and two-point line/arrow authoring | `RibbonCommandCatalogTests.MainRibbonUsesNormalizedScrollableHeight`, `RibbonCommandCatalogTests.DefaultCatalogUsesStableUniqueCommandIds`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.LineAndArrowPlacementUseTwoPointMode`, `OfficialSceneDomainTests.ShapeElementDefaultsAndFactoriesPreserveShapeKind`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
 | Modern table dialog fields | `TableUiArchitectureTests.TableDialogLayoutKeepsConcreteWpfControlsVisible` |
+| Advanced table format inspection and reset | `TablePropertiesInspectorTests`, `TableEditCoordinatorTests` |
+| Typed table WebView bridge diagnostics | `TableWebViewMessageAdapterTests` |
+| 64 x 64 batching and Release measurements | `TableWebViewPerformanceContractTests` |
+| Representative `win00012` 16 x 10 round-trip/preview/`.sb2` | `AdvancedTableAuthoringIntegrationTests` |
 | Element+ `Donnees` authoring and `DisplayFormat` masks | `ElementGroupTests.NumericDisplayFormatMaskControlsScalePrecisionAndInputStep`, `ElementGroupTests.NumericDisplayFormatMaskClampsToVisibleDigitBudget`, `WebViewContextMenuScriptTests.ElementDataTabDeprecatesLegacyTagDecimalsAndUnitFields` |
 | Studio Element+ editor state | `ElementStudioEditorStateTests.cs` |
 | Studio Element+ contract | `StudioElementPlusContractTests.cs` |

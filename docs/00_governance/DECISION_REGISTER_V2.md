@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active authoritative decision register
-Document version: `V2.1.4.0024`
+Document version: `V2.1.4.0027`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | `DEC-0040` synchronisée avec la clôture des tranches de code/tests et les mesures Release automatisées; smoke WebView2 interactif conservé comme gate distinct. |
 | 2026-07-15 | `V2.1.4.0024` | `3f6e6a5` | Ajout de `DEC-0040` pour la sous-surface Tableau, l'authoring avancé des cellules et le verrouillage persistant de position de tous les Element+. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | `DEC-0039` implementee avec modele Tableau, edition type tableur, export `.sb2`, tests et ruban Inserer hierarchique; smoke interactif isole restant. |
 | 2026-07-14 | `V2.1.4.0015` | `95a57ac` | Ajout de `DEC-0039` pour l'Element+ Tableau moderne, l'edition type tableur, le ruban Inserer hierarchique et l'extraction des responsabilites hors `MainWindow`. |
@@ -1185,8 +1186,12 @@ Domain owns persistent values and pure operations, Application owns sessions, co
 
 Consequences:
 
-Existing scene JSON without `IsLocked` remains readable as unlocked. Copy, cut/paste, duplicate, group/ungroup and undo/redo must preserve the approved lock semantics. The current `DialogThenPoint`, disabled `object.lock`, `ToggleSelectionLockCommand`, `SelectionState.IsSelectionLocked`, local `MainWindow.IsSelectionLocked` binding and direct Table bridge logic are explicit migration targets. The feature cannot be documented as implemented until persistence, history, WPF/WebView interaction, preview/export parity, performance, architecture boundaries and isolated interactive verification are covered.
+Existing scene JSON without `IsLocked` remains readable as unlocked. Copy, cut/paste, duplicate, group/ungroup and undo/redo preserve the approved lock semantics. The former `DialogThenPoint`, disabled `object.lock`, `ToggleSelectionLockCommand`, `SelectionState.IsSelectionLocked`, local `MainWindow.IsSelectionLocked` binding and direct Table bridge logic have been migrated. Product closure still requires the isolated interactive WebView2 smoke recorded in the implementation plan.
+
+Implementation status:
+
+Implemented in commits `e497e52` through `32a3ef6`. Code, architecture boundaries, persistence, history, WPF surfaces, bridge diagnostics, preview/`.sb2` parity, representative 16 x 10 integration and automated Release measurements are covered. The remaining gate is the isolated WPF/WebView2 interaction smoke; automated model/HTML timings are not claimed as browser composition timings.
 
 Regression coverage:
 
-Planned in `tests/ScadaBuilderV2.Tests/ScadaTableModelTests.cs`, `TableContentOperationsTests.cs`, `TableBorderOperationsTests.cs`, `TableTrackOperationsTests.cs`, `TableAuthoringSessionTests.cs`, `TableEditCoordinatorTests.cs`, `TableWebViewMessageAdapterTests.cs`, `TableUiArchitectureTests.cs`, `ElementLockCoordinatorTests.cs`, `ElementTransformGuardTests.cs`, `ScadaSceneGroupTests.cs`, `ModernProjectStoreTests.cs`, `ApplicationCommandTests.cs`, `WebViewContextMenuScriptTests.cs`, `Ft100SceneExporterTests.cs`, and `StudioElementPlusContractTests.cs`.
+Implemented in `tests/ScadaBuilderV2.Tests/ScadaTableModelTests.cs`, `TableContentOperationsTests.cs`, `TableBorderOperationsTests.cs`, `TableTrackOperationsTests.cs`, `TableAuthoringSessionTests.cs`, `TableEditCoordinatorTests.cs`, `TablePropertiesInspectorTests.cs`, `TableWebViewMessageAdapterTests.cs`, `TableWebViewPerformanceContractTests.cs`, `AdvancedTableAuthoringIntegrationTests.cs`, `TableUiArchitectureTests.cs`, `ElementLockCoordinatorTests.cs`, `ElementTransformGuardTests.cs`, `ScadaSceneGroupTests.cs`, `ModernProjectStoreTests.cs`, `ApplicationCommandTests.cs`, `WebViewContextMenuScriptTests.cs`, `Ft100SceneExporterTests.cs`, and `StudioElementPlusContractTests.cs`.
