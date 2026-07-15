@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active properties panel contract
-Document version: `V2.1.4.0028`
+Document version: `V2.1.4.0030`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Origine du format Tableau explicitee et fusion/defusion remplacee par un bouton contextuel unique. |
 | 2026-07-15 | `V2.1.4.0028` | `c873744` | La case explicite `Verrouiller la position` est visible dans Propriété > Général et partage l'état normal/mixte avec toutes les autres surfaces. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | `TablePropertiesViewModel` partage les valeurs effectives/locales et les états Hérité/Personnalisé/Mixte; reset de propriété/portée, color picker et X/Y/W/H exacts passent par des requêtes typées et le guard de verrou. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Onglet Tableau et dialogues etendus aux types/valeurs, portees, format complet, bordures et en-tetes; case de verrouillage partagee ajoutee aux proprietes generales. |
@@ -70,10 +71,11 @@ The properties panel edits model-backed properties through commands or applicati
 ## 3. Table Inspector Contract
 
 1. `TablePropertiesInspector` calcule les valeurs effectives et locales par propriété pour les portées Tableau, en-têtes, alternance, rangées, colonnes, cellule et plage.
-2. Le panneau et les dialogues affichent `Hérité`, `Personnalisé` ou `Mixte` depuis le même `TablePropertiesViewModel`.
+2. Le panneau et les dialogues expliquent l'origine du format depuis le meme `TablePropertiesViewModel`: `Herite` signifie aucune surcharge locale, `Personnalise` signifie une surcharge sur la portee et `Mixte` signifie plusieurs valeurs locales dans la selection.
 3. Réinitialiser une propriété remet uniquement cette propriété à `null` sur chaque cible sans aplatir les autres surcharges hétérogènes.
 4. Réinitialiser la portée retire toutes ses surcharges dans une seule mutation historique.
 5. Le dialogue Tableau expose X/Y/W/H exacts; une variation X/Y est rejetée par le guard de position si l'Element+ est verrouillé, tandis qu'un resize sans translation demeure permis.
+6. Le panneau expose un seul bouton Fusionner/Defusionner dont le libelle et l'etat suivent la presence de cellules fusionnees dans la plage active.
 
 ## 4. Related Tests
 

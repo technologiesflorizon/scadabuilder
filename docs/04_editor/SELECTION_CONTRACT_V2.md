@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active editor selection contract
-Document version: `V2.1.4.0026`
+Document version: `V2.1.4.0030`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Verrou applique avant tout preview de deplacement et priorite des gestes internes Tableau en mode Cellules. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Separation du verrou de position et de la selection; ajout des portees cellule/plage/rangee/colonne propres au Tableau. |
 | 2026-06-16 | `V2.1.2.0003` | `PENDING` | Clarification que le deplacement normal d'un enfant de groupe Element+ cible son groupe parent. |
 | 2026-06-16 | `V2.1.2.0002` | `PENDING` | Clarification que le groupement de scene consomme uniquement la selection Element+ moderne. |
@@ -38,6 +39,8 @@ The editor can select:
 9. In normal scene movement, a selected child inside an Element+ group is normalized to the containing group so grouped objects move together.
 10. `IsLocked` n'empeche jamais de selectionner un Element+; il bloque seulement les mutations qui changeraient effectivement X ou Y.
 11. En mode Tableau Cellules, la selection interne est une plage distincte de la selection de scene. Les headers de rangee/colonne et le coin produisent une portee explicite sans devenir des Element+.
+12. Un Element+ verrouille, un groupe contenant un descendant verrouille ou une multiselection contenant un verrou ne produit aucun preview de deplacement; la geometrie reste immobile des le pointer down.
+13. En mode Tableau Cellules, le hit-testing interne intercepte clic, double-clic, clic droit et resize de piste avant les gestes de selection/deplacement de l'Element+ conteneur.
 
 ## 3. Related Decision
 

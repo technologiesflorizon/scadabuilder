@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active UI specification pointer
-Document version: `V2.1.4.0029`
+Document version: `V2.1.4.0030`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Interactions Tableau corriges : cellules et pistes prioritaires, reperes A/1 masquables, fusion toggle et origine du format explicite. |
 | 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Ruban secondaire modernise en boutons horizontaux compacts sur deux rangees, avec icones, galerie et espacement reduits. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Spécification UI synchronisée avec le ruban Tableau contextuel, l'inspecteur Hérité/Personnalisé/Mixte, les dimensions exactes, color pickers, bordures, distribution et en-têtes. |
 
@@ -18,6 +19,9 @@ Document version: `V2.1.4.0029`
 3. Le panneau Propriété affiche portée, état de format, contenu, format, bordures, en-têtes, fusion, distribution et reset.
 4. Les dialogues de format et bordure réutilisent le color picker du produit; les propriétés détaillées exposent X/Y/W/H exacts.
 5. Le ruban garde visibles les commandes indisponibles avec une raison issue de l'état applicatif.
+6. Le mode Cellules donne la priorite aux cellules, inputs et poignees de pistes; le tableau conteneur ne demarre aucun drag pour ces gestes.
+7. Les reperes d'edition A/1 peuvent etre affiches ou masques depuis le ruban sans modifier le modele ni l'export.
+8. Fusionner/Defusionner est une seule commande contextuelle dont le libelle et l'etat actif suivent la plage selectionnee.
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Direction haut de gamme de l’inspecteur Style : sections, contrôles à état, icônes sémantiques et aperçu vivant. |
 | 2026-06-19 | `V2.1.3.0002` | `PENDING` | Ajout du standard de polish produit concurrentiel face a ScadaPlant. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes: icones 32x32 et boutons sans libelles visibles. |

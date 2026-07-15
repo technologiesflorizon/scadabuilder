@@ -2,12 +2,13 @@
 
 Date: 2026-06-16
 Status: Active governance policy
-Document version: `V2.1.4.0029`
+Document version: `V2.1.4.0030`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Bump d'iteration pour les corrections d'interaction verrou/Tableau et leur couverture. |
 | 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Bump d'iteration pour la modernisation compacte du ruban de niveau 2 et sa regression. |
 | 2026-07-15 | `V2.1.4.0028` | `c873744` | Bump d'itération pour corriger l'accessibilité et l'état partagé des surfaces Tableau/verrouillage déjà approuvées. |
 | 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | Bump d'itération pour la clôture automatisée des outils Tableau avancés et leur couverture. |
@@ -24,7 +25,7 @@ V2.production.feature.iteration
 Current version:
 
 ```text
-V2.1.4.0029
+V2.1.4.0030
 ```
 
 ## 2. Increment Rules
