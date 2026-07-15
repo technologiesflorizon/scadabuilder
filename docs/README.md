@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0031`
+Document version: `V2.1.4.0032`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0032` | `PENDING` | Ajout d'une specification et d'un plan correctifs autonomes pour le drag verrouille, les modes Tableau, l'acces aux cellules/pistes et les reperes A/1. |
 | 2026-07-15 | `V2.1.4.0031` | `e127190` | Correction du ruban secondaire : hauteur augmentee, barre horizontale native retiree et navigation d'overflow par chevrons. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Correction des interactions verrou/Tableau et clarification des reperes, fusion contextuelle et origine du format. |
 | 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Modernisation compacte du ruban secondaire : commandes horizontales sur deux rangees, icones et galerie reduites. |
@@ -186,7 +187,9 @@ Active specifications and implementation plans:
 3. `superpowers/specs/2026-07-14-modern-table-and-insert-ribbon-design.md` - implemented `DEC-0039` core design for the model-backed modern table and hierarchical Insert ribbon.
 4. `superpowers/specs/2026-07-15-table-ui-authoring-and-element-lock-design.md` - approved `DEC-0040` design for advanced Table UI authoring plus persistent Element+ position locking, group/multiselection semantics, shared lock surfaces, and explicit class/method boundaries.
 5. `superpowers/plans/2026-07-15-table-ui-authoring-and-element-lock.md` - implementation record for advanced Table authoring and global Element+ position locking; automated validation is complete and the isolated interactive Release performance gate remains.
-6. `superpowers/plans/2026-07-14-modern-table-and-insert-ribbon.md` - implementation record for the approved and implemented modern table core and hierarchical Insert ribbon.
+6. `superpowers/specs/2026-07-15-table-lock-interaction-regression-correction-design.md` - draft corrective specification for locked drag enforcement, deterministic Table modes, internal cell/track access, and effective A/1 guide state.
+7. `superpowers/plans/2026-07-15-table-lock-interaction-regression-correction.md` - gated correction plan derived from the draft regression specification; execution requires approval and a successor decision.
+8. `superpowers/plans/2026-07-14-modern-table-and-insert-ribbon.md` - implementation record for the approved and implemented modern table core and hierarchical Insert ribbon.
 
 Generated documentation:
 
