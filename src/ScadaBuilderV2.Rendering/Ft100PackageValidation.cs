@@ -60,7 +60,7 @@ public sealed record Ft100PackageValidationResult(IReadOnlyList<Ft100PackageVali
 /// Validates SCADA Builder V2 FT100 packages against the audited TF100Web fragment intake contract.
 /// </summary>
 /// <remarks>
-/// Decisions: DEC-0003, DEC-0007, DEC-0026, DEC-0027.
+/// Decisions: DEC-0003, DEC-0007, DEC-0026, DEC-0027, DEC-0042.
 /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md.
 /// Reference intake: F:\Projet\Git\TF100Web frontend/scada_package.py at commit 7d57600.
 /// </remarks>
@@ -114,6 +114,8 @@ public static partial class Ft100PackageValidator
             }
 
             ValidateNoInternalPageKeys(manifest.RootElement, issues);
+            var manifestVersion = ValidateManifestVersion(manifest.RootElement, issues);
+            var tags = ReadTags(manifest.RootElement);
 
             var pages = ReadCompiledPages(manifest.RootElement, issues);
             if (pages.Count == 0)
@@ -130,7 +132,7 @@ public static partial class Ft100PackageValidator
             ValidateRuntimePageTargets(manifest.RootElement, pagesById, issues);
             foreach (var page in pages)
             {
-                ValidatePage(fullPackageDirectory, page, pagesById, issues);
+                ValidatePage(fullPackageDirectory, page, pagesById, manifestVersion, tags, issues);
             }
         }
 
@@ -217,7 +219,8 @@ public static partial class Ft100PackageValidator
                 ReadString(pageElement, "Type", "PageType").ToLowerInvariant(),
                 ReadString(pageElement, "RelativePath"),
                 ReadString(pageElement, "HeaderPageId"),
-                ReadString(pageElement, "FooterPageId")));
+                ReadString(pageElement, "FooterPageId"),
+                pageElement));
         }
 
         foreach (var duplicateId in pages.GroupBy(page => page.Id, PageIdComparer).Where(group => group.Count() > 1).Select(group => group.Key))
@@ -342,6 +345,8 @@ public static partial class Ft100PackageValidator
         string packageDirectory,
         ValidatedPage page,
         Dictionary<string, ValidatedPage> pagesById,
+        string manifestVersion,
+        IReadOnlyDictionary<string, ValidatedTag> tags,
         List<Ft100PackageValidationIssue> issues)
     {
         var relativePath = string.IsNullOrWhiteSpace(page.RelativePath)
@@ -373,6 +378,7 @@ public static partial class Ft100PackageValidator
         if (!string.IsNullOrEmpty(html))
         {
             ValidatePageHtml(page, html, issues);
+            ValidateTableCellBindings(page, html, manifestVersion, tags, issues);
         }
 
         var cssDirRelativePath = Path.Combine(
@@ -440,6 +446,220 @@ public static partial class Ft100PackageValidator
             issues.Add(Error("unscoped-dom-id", $"Page '{page.Id}' contains non page-scoped DOM id '{id}'.", page.Id));
         }
     }
+
+    private static string ValidateManifestVersion(JsonElement root, ICollection<Ft100PackageValidationIssue> issues)
+    {
+        var version = ReadString(root, "ManifestVersion");
+        if (string.IsNullOrWhiteSpace(version))
+        {
+            issues.Add(Warning("manifest-version-legacy", "ManifestVersion is absent; validating as legacy 2.1."));
+            return "2.1";
+        }
+
+        if (version is not "2.1" and not "2.2")
+        {
+            issues.Add(Error("manifest-version-unsupported", $"ManifestVersion '{version}' is unsupported; expected 2.1 or 2.2."));
+        }
+        return version;
+    }
+
+    private static IReadOnlyDictionary<string, ValidatedTag> ReadTags(JsonElement root)
+    {
+        if (!TryGetProperty(root, "Tags", out var tagsElement) || tagsElement.ValueKind != JsonValueKind.Array)
+        {
+            return new Dictionary<string, ValidatedTag>(StringComparer.Ordinal);
+        }
+
+        return tagsElement.EnumerateArray()
+            .Where(tag => tag.ValueKind == JsonValueKind.Object)
+            .Select(tag => new ValidatedTag(
+                ReadString(tag, "Id"),
+                !TryGetProperty(tag, "Enabled", out var enabled) || enabled.ValueKind != JsonValueKind.False,
+                TryGetProperty(tag, "Writeable", out var writeable) && writeable.ValueKind == JsonValueKind.True))
+            .Where(tag => !string.IsNullOrWhiteSpace(tag.Id))
+            .GroupBy(tag => tag.Id, StringComparer.Ordinal)
+            .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+    }
+
+    private static void ValidateTableCellBindings(
+        ValidatedPage page,
+        string html,
+        string manifestVersion,
+        IReadOnlyDictionary<string, ValidatedTag> tags,
+        ICollection<Ft100PackageValidationIssue> issues)
+    {
+        if (!TryGetProperty(page.Manifest, "Objects", out var objects) || objects.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        var targetIds = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var element in objects.EnumerateArray())
+        {
+            if (!TryGetProperty(element, "TableCellBindings", out var bindings) || bindings.ValueKind != JsonValueKind.Array || bindings.GetArrayLength() == 0)
+            {
+                continue;
+            }
+
+            var elementId = ReadString(element, "Id");
+            var pathPrefix = $"Elements[{elementId}].Table.Cells";
+            if (manifestVersion != "2.2")
+            {
+                issues.Add(Error("table-cell.version", $"Page '{page.Id}' uses TableCellBindings but ManifestVersion is '{manifestVersion}', expected 2.2.", page.Id));
+            }
+            if (!string.Equals(ReadString(element, "Kind"), "Table", StringComparison.Ordinal))
+            {
+                issues.Add(Error("table-cell.owner-kind", $"Element '{elementId}' owns TableCellBindings but is not Kind Table.", page.Id));
+            }
+
+            var wrapperId = $"ft100-{CssIdentifier(page.Id)}__{CssIdentifier(elementId)}";
+            var wrapperTag = FindOpeningTag(html, wrapperId);
+            if (wrapperTag.Success && HasRuntimeBindingAttributes(wrapperTag.Value))
+            {
+                issues.Add(Error("table-cell.wrapper-binding", $"Table wrapper '{elementId}' must not receive cell runtime binding attributes.", page.Id));
+            }
+
+            foreach (var binding in bindings.EnumerateArray())
+            {
+                var row = ReadInt(binding, "Row");
+                var column = ReadInt(binding, "Column");
+                var path = $"{pathPrefix}[{row},{column}]";
+                var targetId = ReadString(binding, "TargetId");
+                if (row < 0 || column < 0)
+                {
+                    AddCellError("table-cell.coordinates", "Row and Column must be non-negative.");
+                }
+                if (!string.Equals(ReadString(binding, "Kind"), "InputNumeric", StringComparison.Ordinal))
+                {
+                    AddCellError("table-cell.kind", "Kind must be InputNumeric.");
+                }
+
+                var expectedTarget = $"{CssIdentifier(elementId)}__cell-{row}-{column}";
+                if (!string.Equals(targetId, expectedTarget, StringComparison.Ordinal) || targetId.StartsWith("ft100-", StringComparison.Ordinal))
+                {
+                    AddCellError("table-cell.target-id", $"TargetId must be the unscoped id '{expectedTarget}'.");
+                }
+                if (!targetIds.Add(targetId))
+                {
+                    AddCellError("table-cell.target-duplicate", $"TargetId '{targetId}' appears more than once on the page.");
+                }
+
+                var scopedTarget = $"ft100-{CssIdentifier(page.Id)}__{targetId}";
+                var cellTag = FindOpeningTag(html, scopedTarget);
+                if (!cellTag.Success || !string.Equals(cellTag.Groups["tag"].Value, "td", StringComparison.OrdinalIgnoreCase))
+                {
+                    AddCellError("table-cell.target-missing", $"The exact <td> target '{scopedTarget}' is missing.");
+                }
+                else
+                {
+                    if (!HasAttribute(cellTag.Value, "data-row", row.ToString(System.Globalization.CultureInfo.InvariantCulture)) ||
+                        !HasAttribute(cellTag.Value, "data-column", column.ToString(System.Globalization.CultureInfo.InvariantCulture)) ||
+                        !HasAttribute(cellTag.Value, "data-scada-table-cell-kind", "InputNumeric"))
+                    {
+                        AddCellError("table-cell.target-shape", "The target <td> does not match its row, column, and InputNumeric anchor metadata.");
+                    }
+                }
+                var inputTag = FindOpeningTag(html, $"{scopedTarget}__input");
+                if (!inputTag.Success || !string.Equals(inputTag.Groups["tag"].Value, "input", StringComparison.OrdinalIgnoreCase) ||
+                    !HasAttribute(inputTag.Value, "type", "number"))
+                {
+                    AddCellError("table-cell.input-missing", "The target cell must contain its rendered <input type=\"number\">.");
+                }
+
+                ValidateBindingData(binding, path, page.Id, tags, issues);
+
+                void AddCellError(string code, string message) =>
+                    issues.Add(Error(code, $"{path}: {message}", page.Id));
+            }
+        }
+    }
+
+    private static void ValidateBindingData(
+        JsonElement binding,
+        string path,
+        string pageId,
+        IReadOnlyDictionary<string, ValidatedTag> tags,
+        ICollection<Ft100PackageValidationIssue> issues)
+    {
+        if (!TryGetProperty(binding, "Data", out var data) || data.ValueKind != JsonValueKind.Object)
+        {
+            Add("table-cell.data", "Data object is required.");
+            return;
+        }
+        if (!TryGetProperty(binding, "ValueBindings", out var values) || values.ValueKind != JsonValueKind.Object)
+        {
+            Add("table-cell.value-bindings", "ValueBindings object is required.");
+            return;
+        }
+
+        var readTagId = ReadString(values, "ReadTagId");
+        var writeTagId = ReadString(values, "WriteTagId");
+        if (string.IsNullOrWhiteSpace(readTagId) && string.IsNullOrWhiteSpace(writeTagId))
+        {
+            Add("table-cell.value-bindings-empty", "At least one read or write tag is required.");
+        }
+        if (!string.IsNullOrWhiteSpace(readTagId) && (!tags.TryGetValue(readTagId, out var readTag) || !readTag.Enabled))
+        {
+            Add("table-cell.read-tag", $"Read tag '{readTagId}' is missing or disabled.");
+        }
+        if (!string.IsNullOrWhiteSpace(writeTagId))
+        {
+            if (!tags.TryGetValue(writeTagId, out var writeTag) || !writeTag.Enabled)
+                Add("table-cell.write-tag", $"Write tag '{writeTagId}' is missing or disabled.");
+            else if (!writeTag.Writeable)
+                Add("table-cell.write-tag-readonly", $"Write tag '{writeTagId}' is not writeable.");
+        }
+
+        var readOnly = TryGetProperty(data, "IsReadOnly", out var readOnlyElement) && readOnlyElement.ValueKind == JsonValueKind.True;
+        if (readOnly && !string.IsNullOrWhiteSpace(writeTagId))
+        {
+            Add("table-cell.readonly-write", "A read-only numeric cell cannot carry a write binding.");
+        }
+        var minimum = ReadDouble(data, "Min");
+        var maximum = ReadDouble(data, "Max");
+        var step = ReadDouble(data, "Step");
+        if (minimum.HasValue && maximum.HasValue && minimum > maximum)
+            Add("table-cell.range", "Min cannot exceed Max.");
+        if (step.HasValue && (!double.IsFinite(step.Value) || step <= 0))
+            Add("table-cell.step", "Step must be finite and greater than zero.");
+        if (!IsSupportedDisplayFormat(ReadString(data, "DisplayFormat")))
+            Add("table-cell.display-format", "DisplayFormat is not supported.");
+
+        void Add(string code, string message) => issues.Add(Error(code, $"{path}: {message}", pageId));
+    }
+
+    private static Match FindOpeningTag(string html, string id) => new Regex(
+        $"<(?<tag>[a-zA-Z][\\w:-]*)\\b(?=[^>]*\\bid\\s*=\\s*[\"']{Regex.Escape(id)}[\"'])[^>]*>",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant,
+        TimeSpan.FromSeconds(1)).Match(html);
+
+    private static bool HasAttribute(string tag, string name, string value) => Regex.IsMatch(
+        tag,
+        $"\\b{Regex.Escape(name)}\\s*=\\s*[\"']{Regex.Escape(value)}[\"']",
+        RegexOptions.IgnoreCase | RegexOptions.CultureInvariant,
+        TimeSpan.FromSeconds(1));
+
+    private static bool HasRuntimeBindingAttributes(string tag) =>
+        tag.Contains("data-scada-role", StringComparison.OrdinalIgnoreCase) ||
+        tag.Contains("data-scada-mapping-id", StringComparison.OrdinalIgnoreCase) ||
+        tag.Contains("data-scada-write-mapping-id", StringComparison.OrdinalIgnoreCase);
+
+    private static int ReadInt(JsonElement element, string name) =>
+        TryGetProperty(element, name, out var value) && value.TryGetInt32(out var result) ? result : -1;
+
+    private static double? ReadDouble(JsonElement element, string name) =>
+        TryGetProperty(element, name, out var value) && value.ValueKind == JsonValueKind.Number && value.TryGetDouble(out var result) ? result : null;
+
+    private static bool IsSupportedDisplayFormat(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value)) return true;
+        if (value.StartsWith("fixed:", StringComparison.OrdinalIgnoreCase))
+            return int.TryParse(value[6..], out var decimals) && decimals >= 0;
+        return value.Any(character => character == '#') && value.Count(character => character == '.') <= 1 && value.All(character => character is '#' or '.');
+    }
+
+    private static string CssIdentifier(string value) =>
+        string.Concat(value.Select(character => char.IsLetterOrDigit(character) || character is '-' or '_' ? character : '_'));
 
     private static void ValidatePageCss(ValidatedPage page, string cssPath, List<Ft100PackageValidationIssue> issues)
     {
@@ -575,7 +795,10 @@ public static partial class Ft100PackageValidator
         string Type,
         string RelativePath,
         string HeaderPageId,
-        string FooterPageId);
+        string FooterPageId,
+        JsonElement Manifest);
+
+    private sealed record ValidatedTag(string Id, bool Enabled, bool Writeable);
 
     [GeneratedRegex("""(?<![\w:-])id\s*=\s*["'](?<id>[^"']+)["']""", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)]
     private static partial Regex HtmlIdRegex();
