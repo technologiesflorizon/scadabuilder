@@ -6942,6 +6942,14 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     private RibbonCommandViewModel CreateRibbonCommandViewModel(RibbonCommandDefinition definition)
     {
         var isElementLockCommand = string.Equals(definition.Id, "object.lock", StringComparison.Ordinal);
+        var isTableStateActive = definition.Id switch
+        {
+            "table.mode.object" => _tableAuthoringSession.Mode == TableInteractionMode.Object,
+            "table.mode.cells" => _tableAuthoringSession.Mode == TableInteractionMode.Cells,
+            "table.editor-guides" => _tableAuthoringSession.ShowEditorGuides,
+            "table.merge-toggle" => _tableAuthoringSession.SelectionContainsMergedCells,
+            _ => false
+        };
         var requiresPageSelection = definition.Id is
             "page.rename" or
             "page.duplicate" or
@@ -6973,7 +6981,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             isEnabled,
             isElementLockCommand
                 ? ElementLockState.IsToggleChecked
-                : string.Equals(definition.Id, _activeInsertCommandId, StringComparison.Ordinal),
+                : isTableStateActive || string.Equals(definition.Id, _activeInsertCommandId, StringComparison.Ordinal),
             command);
     }
 
@@ -7133,6 +7141,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             case "table.mode.cells":
                 await SetTableModeAsync(TableInteractionMode.Cells);
                 break;
+            case "table.editor-guides":
+                await ToggleTableEditorGuidesAsync();
+                break;
             case "table.content.text":
                 if (_selectedSceneObject is not null) _tableEditorController.ConvertContent(_selectedSceneObject, ScadaTableCellContentKind.Text);
                 break;
@@ -7143,9 +7154,15 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 if (_selectedSceneObject is not null) _tableEditorController.ConvertContent(_selectedSceneObject, ScadaTableCellContentKind.InputNumeric);
                 break;
             case "table.select.all":
-                if (_selectedSceneObject is not null) { _tableEditorController.SelectAll(_selectedSceneObject); RefreshTablePropertiesPanel(); }
+                if (_selectedSceneObject is not null)
+                {
+                    _tableEditorController.SelectAll(_selectedSceneObject);
+                    _tableAuthoringSession.SetSelection(_tableEditorController.Selection, _tableEditorController.SelectionContainsMergedCells(_selectedSceneObject));
+                    RefreshTablePropertiesPanel();
+                    RefreshTableRibbonSurface();
+                }
                 break;
-            case "table.merge": case "table.unmerge": case "table.format": case "table.row.height": case "table.column.width": case "table.properties": case "table.content.properties": case "table.borders": case "table.headers": case "table.header.mark": case "table.header.unmark": case "table.equalize": case "table.distribute.rows": case "table.distribute.columns": case "table.format.reset": case "table.row.insert": case "table.column.insert": case "table.row.delete": case "table.column.delete":
+            case "table.merge-toggle": case "table.merge": case "table.unmerge": case "table.format": case "table.row.height": case "table.column.width": case "table.properties": case "table.content.properties": case "table.borders": case "table.headers": case "table.header.mark": case "table.header.unmark": case "table.equalize": case "table.distribute.rows": case "table.distribute.columns": case "table.format.reset": case "table.row.insert": case "table.column.insert": case "table.row.delete": case "table.column.delete":
                 if (_selectedSceneObject is not null) _tableEditorController.Execute(commandId, _selectedSceneObject);
                 break;
             default:

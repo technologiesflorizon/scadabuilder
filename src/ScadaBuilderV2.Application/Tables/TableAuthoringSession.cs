@@ -27,6 +27,10 @@ public sealed class TableAuthoringSession
     public ScadaTableRange Selection { get; private set; } = new(0, 0, 0, 0);
     /// <summary>Gets the active formatting scope.</summary>
     public ScadaTableFormatScopeKind FormatScope { get; private set; } = ScadaTableFormatScopeKind.Cells;
+    /// <summary>Gets whether editor-only A/1 table guides are visible.</summary>
+    public bool ShowEditorGuides { get; private set; } = true;
+    /// <summary>Gets whether the current selection intersects a merged cell.</summary>
+    public bool SelectionContainsMergedCells { get; private set; }
 
     /// <summary>Opens the contextual surface without arming placement.</summary>
     public void OpenSurface() => IsSurfaceOpen = true;
@@ -46,14 +50,24 @@ public sealed class TableAuthoringSession
     public void SelectTable(string? id)
     {
         TableElementId = id;
-        if (id is null) Mode = TableInteractionMode.Object;
+        if (id is null)
+        {
+            Mode = TableInteractionMode.Object;
+            SelectionContainsMergedCells = false;
+        }
     }
     /// <summary>Completes placement and enters Cells mode.</summary>
-    public void CompletePlacement(string id) { IsPlacementArmed = false; TableElementId = id; Mode = TableInteractionMode.Cells; Selection = new(0, 0, 0, 0); }
+    public void CompletePlacement(string id) { IsPlacementArmed = false; TableElementId = id; Mode = TableInteractionMode.Cells; Selection = new(0, 0, 0, 0); SelectionContainsMergedCells = false; }
     /// <summary>Changes the mutually exclusive interaction mode.</summary>
     public void SetMode(TableInteractionMode mode) { if (mode == TableInteractionMode.Cells && TableElementId is null) throw new InvalidOperationException("A table must be selected."); Mode = mode; }
     /// <summary>Updates the immutable physical cell range snapshot.</summary>
-    public void SetSelection(ScadaTableRange range) => Selection = range;
+    public void SetSelection(ScadaTableRange range, bool containsMergedCells = false)
+    {
+        Selection = range;
+        SelectionContainsMergedCells = containsMergedCells;
+    }
+    /// <summary>Toggles the visibility of editor-only A/1 guides.</summary>
+    public void ToggleEditorGuides() => ShowEditorGuides = !ShowEditorGuides;
     /// <summary>Updates the formatting scope without changing physical selection.</summary>
     public void SetFormatScope(ScadaTableFormatScopeKind scope) => FormatScope = scope;
 }

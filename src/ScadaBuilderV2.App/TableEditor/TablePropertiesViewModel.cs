@@ -13,10 +13,10 @@ internal sealed class TablePropertiesViewModel
 
     public string StateLabel => Format?.State switch
     {
-        TablePropertyValueState.Inherited => "Hérité",
-        TablePropertyValueState.Custom => "Personnalisé",
-        TablePropertyValueState.Mixed => "Mixte",
-        _ => "—"
+        TablePropertyValueState.Inherited => "Format de la portée : hérité (aucune surcharge locale)",
+        TablePropertyValueState.Custom => "Format de la portée : personnalisé",
+        TablePropertyValueState.Mixed => "Format de la portée : mixte",
+        _ => "Format de la portée : —"
     };
 
     public void Load(ScadaElement element, ScadaTableRange range, ScadaTableFormatScopeKind scopeKind)

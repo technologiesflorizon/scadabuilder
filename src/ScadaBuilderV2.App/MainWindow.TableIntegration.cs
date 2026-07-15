@@ -25,8 +25,10 @@ public partial class MainWindow
             case TableSelectionRequest selection:
                 _tableEditorController.Select(selection.ElementId, selection.Row, selection.Column, selection.EndRow, selection.EndColumn);
                 _tableEditorController.FormatScopeKind = selection.Scope switch { "table" => ScadaTableFormatScopeKind.Table, "row" => ScadaTableFormatScopeKind.Rows, "column" => ScadaTableFormatScopeKind.Columns, _ => ScadaTableFormatScopeKind.Cells };
-                _tableAuthoringSession.SelectTable(selection.ElementId); _tableAuthoringSession.SetSelection(ScadaTableRange.Normalize(selection.Row, selection.Column, selection.EndRow, selection.EndColumn));
+                _tableAuthoringSession.SelectTable(selection.ElementId);
+                _tableAuthoringSession.SetSelection(_tableEditorController.Selection, _tableEditorController.SelectionContainsMergedCells(element));
                 SelectModernElement(selection.ElementId); RefreshTablePropertiesPanel();
+                RefreshTableRibbonSurface();
                 break;
             case TableCellEditRequest edit:
                 var kind = Enum.TryParse<ScadaTableCellContentKind>(edit.ContentKind, out var parsed) ? parsed : ScadaTableCellContentKind.Text;
@@ -114,6 +116,15 @@ public partial class MainWindow
         await PreviewWebView.CoreWebView2.ExecuteScriptAsync($"window.scadaModernTable?.setMode('{(mode == TableInteractionMode.Cells ? "cells" : "object")}');");
     }
 
+    private async Task ToggleTableEditorGuidesAsync()
+    {
+        if (_selectedSceneObject?.Kind != ScadaElementKind.Table) return;
+        _tableAuthoringSession.ToggleEditorGuides();
+        if (PreviewWebView?.CoreWebView2 is not null)
+            await PreviewWebView.CoreWebView2.ExecuteScriptAsync($"window.scadaModernTable?.setGuides({(_tableAuthoringSession.ShowEditorGuides ? "true" : "false")});");
+        RefreshTableRibbonSurface();
+    }
+
     private async Task RequestTableAutoFitAsync()
     {
         if (_selectedSceneObject?.Kind != ScadaElementKind.Table || PreviewWebView?.CoreWebView2 is null) return;
@@ -134,6 +145,11 @@ public partial class MainWindow
         RefreshSelectionUi();
         RefreshModernSceneUi();
         RefreshTablePropertiesPanel();
+        if (updated.Kind == ScadaElementKind.Table)
+        {
+            _tableAuthoringSession.SetSelection(_tableEditorController.Selection, _tableEditorController.SelectionContainsMergedCells(updated));
+            if (_tableAuthoringSession.IsSurfaceOpen) RefreshTableRibbonSurface();
+        }
         _ = RenderModernSceneAsync();
     }
 
@@ -157,11 +173,15 @@ public partial class MainWindow
         TablePropertiesPanel.Visibility = element is null ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
         if (element?.Table is null) return;
         var range = _tableEditorController.Selection;
+        var containsMergedCells = _tableEditorController.SelectionContainsMergedCells(element);
+        _tableAuthoringSession.SetSelection(range, containsMergedCells);
         TableSelectionSummaryText.Text = range.RowCount == 1 && range.ColumnCount == 1
             ? $"Cellule {range.StartRow + 1},{range.StartColumn + 1}"
             : $"Plage {range.StartRow + 1},{range.StartColumn + 1}:{range.EndRow + 1},{range.EndColumn + 1}";
         TableDimensionSummaryText.Text = $"{element.Table.EffectiveRows.Count} rangees x {element.Table.EffectiveColumns.Count} colonnes";
         TableFormatStateSummaryText.Text = _tableEditorController.InspectFormatState(element);
+        TableMergeToggleButton.Content = containsMergedCells ? "Défusionner les cellules" : "Fusionner les cellules";
+        TableMergeToggleButton.IsEnabled = containsMergedCells || range.RowCount > 1 || range.ColumnCount > 1;
         if (_activeRibbonKey == "Insert" && _activeInsertFamilyId == "data" && !_tableAuthoringSession.IsSurfaceOpen)
         {
             _tableAuthoringSession.OpenSurface();
@@ -206,14 +226,9 @@ public partial class MainWindow
         }
     }
 
-    private void OnMergeTableCellsClick(object sender, System.Windows.RoutedEventArgs e)
+    private void OnToggleMergeTableCellsClick(object sender, System.Windows.RoutedEventArgs e)
     {
-        if (_selectedSceneObject?.Kind == ScadaElementKind.Table) _tableEditorController.Execute("table.merge", _selectedSceneObject);
-    }
-
-    private void OnUnmergeTableCellsClick(object sender, System.Windows.RoutedEventArgs e)
-    {
-        if (_selectedSceneObject?.Kind == ScadaElementKind.Table) _tableEditorController.Execute("table.unmerge", _selectedSceneObject);
+        if (_selectedSceneObject?.Kind == ScadaElementKind.Table) _tableEditorController.Execute("table.merge-toggle", _selectedSceneObject);
     }
 
     private void OnResetTableFormatScopeClick(object sender, System.Windows.RoutedEventArgs e)

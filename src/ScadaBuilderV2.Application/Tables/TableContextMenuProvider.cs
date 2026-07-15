@@ -13,8 +13,7 @@ public static class TableContextMenuProvider
         ScadaTableRange range,
         bool canPaste)
     {
-        var anchor = table.EffectiveCells.FirstOrDefault(cell => cell.Covers(range.StartRow, range.StartColumn));
-        var isMergedAnchor = anchor is { RowSpan: > 1 } or { ColumnSpan: > 1 };
+        var containsMergedCells = ScadaTableStructureOperations.ContainsMergedCells(table, range);
         var canMerge = range.RowCount > 1 || range.ColumnCount > 1;
 
         return
@@ -46,10 +45,8 @@ public static class TableContextMenuProvider
             new("table.headers", "Rangees d'en-tete...", "table"),
             new("table.header.mark", "Marquer comme en-tete", "table", range.StartRow >= table.EffectiveRows.TakeWhile(row => row.IsHeader).Count()),
             new("table.header.unmark", "Demarquer l'en-tete", "table", range.StartRow < table.EffectiveRows.TakeWhile(row => row.IsHeader).Count()),
-            new("table.merge", "Fusionner les cellules", "table", canMerge && !isMergedAnchor,
-                DisabledReason: canMerge ? "La plage contient deja une cellule fusionnee." : "Selectionnez plusieurs cellules."),
-            new("table.unmerge", "Defusionner les cellules", "table", isMergedAnchor,
-                DisabledReason: "La cellule active n'est pas fusionnee."),
+            new("table.merge-toggle", containsMergedCells ? "Defusionner les cellules" : "Fusionner les cellules", "table", containsMergedCells || canMerge,
+                DisabledReason: "Selectionnez plusieurs cellules."),
             new("table.properties", "Proprietes du tableau...", "table")
         ];
     }

@@ -50,7 +50,7 @@ internal sealed class CellFormatDialog : Window
     private readonly CheckBox wrap = new() { Content = "Retour a la ligne" };
     private readonly TextBox lineHeight = new();
     private readonly ComboBox resetProperty = new() { ItemsSource = TableFormatPropertyChoices.All, DisplayMemberPath = nameof(TableFormatPropertyChoice.Label), SelectedValuePath = nameof(TableFormatPropertyChoice.PropertyName) };
-    private readonly TextBlock state = new() { FontWeight = System.Windows.FontWeights.SemiBold };
+    private readonly TextBlock state = new() { FontWeight = System.Windows.FontWeights.SemiBold, TextWrapping = TextWrapping.Wrap };
     public TableFormatDialogResult? Result { get; private set; }
 
     public CellFormatDialog(TableFormatInspection inspection)
@@ -64,12 +64,17 @@ internal sealed class CellFormatDialog : Window
         fontSize.Text = (current.FontSize ?? 14).ToString("0.###", CultureInfo.CurrentCulture); bold.IsChecked = string.Equals(current.FontWeight, "Bold", StringComparison.OrdinalIgnoreCase);
         italic.IsChecked = string.Equals(current.FontStyle, "Italic", StringComparison.OrdinalIgnoreCase); wrap.IsChecked = current.TextWrap == true;
         lineHeight.Text = current.LineHeight?.ToString("0.###", CultureInfo.CurrentCulture) ?? "";
-        state.Text = inspection.State switch { TablePropertyValueState.Inherited => "Hérité", TablePropertyValueState.Custom => "Personnalisé", _ => "Mixte" };
+        state.Text = inspection.State switch
+        {
+            TablePropertyValueState.Inherited => "Hérité — aucune surcharge locale; le format vient du niveau parent.",
+            TablePropertyValueState.Custom => "Personnalisé — la portée possède une surcharge locale.",
+            _ => "Mixte — la sélection contient plusieurs valeurs locales."
+        };
         resetProperty.SelectedIndex = 0;
         Content = DialogLayout.Create(
             Save,
             () => DialogResult = false,
-            ("État de la portée", state),
+            ("Origine du format", state),
             ("Couleur de fond", background),
             ("Couleur du texte", foreground),
             ("Couleur de grille", gridColor),

@@ -1255,6 +1255,28 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void LockedElementMovementIsRejectedBeforeVisualDragStarts()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "const blocksPositionMove = candidate => candidate?.dataset?.editorLocked === 'true'");
+        StringAssert.Contains(source, "candidate?.querySelector?.('.scada-modern-element[data-editor-locked=\"true\"]') !== null");
+        StringAssert.Contains(source, "if (!isResize && movingWrappers.some(blocksPositionMove))");
+
+        var guard = source.IndexOf("if (!isResize && movingWrappers.some(blocksPositionMove))", StringComparison.Ordinal);
+        var drag = source.IndexOf("modernDrag = {", guard, StringComparison.Ordinal);
+        Assert.IsTrue(guard >= 0 && drag > guard, "The position-lock guard must run before drag preview state is created.");
+    }
+
+    [TestMethod]
+    public void TableCellModeOwnsPointerInputBeforeElementDrag()
+    {
+        var source = ReadMainWindowSource();
+        const string cellModeGuard = "event.target?.closest?.('.scada-editor-table[data-mode=\"cells\"]')";
+        Assert.AreEqual(3, CountOccurrences(source, cellModeGuard), "Pointer, double-click and context-menu gestures must all remain owned by cell mode.");
+    }
+
+    [TestMethod]
     public void MirrorMenuChildrenReflectCurrentFlipStateViaIsChecked()
     {
         var source = ReadMainWindowSource();
@@ -1295,6 +1317,8 @@ public sealed class WebViewContextMenuScriptTests
 
         StringAssert.Contains(createCommandButtonBody, "command.IsChecked === true || command.isChecked === true");
         StringAssert.Contains(createCommandButtonBody, "button.classList.add('checked')");
+        StringAssert.Contains(source, "#scada-extract-menu button.checked::after");
+        Assert.IsFalse(source.Contains("#scada-extract-menu button.checked::before", StringComparison.Ordinal));
     }
 
     [TestMethod]

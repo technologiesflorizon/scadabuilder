@@ -28,4 +28,22 @@ public sealed class TableAuthoringSessionTests
         var members = typeof(TableAuthoringSession).GetMembers().Select(m=>m.ToString() ?? "");
         Assert.IsFalse(members.Any(x=>x.Contains("ScadaElement", StringComparison.Ordinal) || x.Contains("TableEditCoordinator", StringComparison.Ordinal)));
     }
+
+    [TestMethod]
+    public void RibbonTogglesEditorGuidesAndMergeActionFromSelectionState()
+    {
+        var session = new TableAuthoringSession();
+        session.SelectTable("table-1");
+        session.SetSelection(new(0, 0, 1, 1), containsMergedCells: false);
+
+        var commands = TableRibbonStateProvider.Create(session).SelectMany(group => group.Commands).ToDictionary(command => command.Id);
+        Assert.AreEqual("Masquer A/1", commands["table.editor-guides"].Label);
+        Assert.AreEqual("Fusionner", commands["table.merge-toggle"].Label);
+
+        session.ToggleEditorGuides();
+        session.SetSelection(new(0, 0, 1, 1), containsMergedCells: true);
+        commands = TableRibbonStateProvider.Create(session).SelectMany(group => group.Commands).ToDictionary(command => command.Id);
+        Assert.AreEqual("Afficher A/1", commands["table.editor-guides"].Label);
+        Assert.AreEqual("Defusionner", commands["table.merge-toggle"].Label);
+    }
 }

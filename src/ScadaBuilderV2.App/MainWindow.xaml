@@ -1317,7 +1317,9 @@
                                                 <TextBlock Text="Selection Tableau" FontWeight="SemiBold"/>
                                                 <TextBlock x:Name="TableSelectionSummaryText" Text="Cellule 1,1" Margin="0,4,0,2"/>
                                                 <TextBlock x:Name="TableDimensionSummaryText" Text="6 rangees x 8 colonnes" Foreground="{StaticResource MutedBrush}" Margin="0,0,0,10"/>
-                                                <TextBlock x:Name="TableFormatStateSummaryText" Text="Hérité" FontWeight="SemiBold" Margin="0,0,0,8"/>
+                                                <TextBlock x:Name="TableFormatStateSummaryText" Text="Format de la portée : hérité (aucune surcharge locale)" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,0,0,3"/>
+                                                <TextBlock Text="Hérité signifie que la portée utilise le format du niveau parent. Personnalisé indique une surcharge locale; Mixte indique plusieurs valeurs dans la sélection."
+                                                           TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" FontSize="11" Margin="0,0,0,8"/>
                                                 <TextBlock Text="Appliquer le format a"/>
                                                 <ComboBox x:Name="TableFormatScopeComboBox" Margin="0,3,0,8" SelectionChanged="OnTableFormatScopeChanged" SelectedIndex="5">
                                                     <ComboBoxItem Content="Tout le tableau" Tag="Table"/>
@@ -1330,13 +1332,10 @@
                                                 <Button Content="Proprietes detaillees..." Margin="0,0,0,6" Click="OnOpenTablePropertiesClick"/>
                                                 <Button Content="Type et contenu..." Margin="0,0,0,6" Click="OnOpenCellContentClick"/>
                                                 <Button Content="Format de cellule..." Margin="0,0,0,6" Click="OnOpenCellFormatClick"/>
-                                                <Button Content="Hériter / Réinitialiser la portée" Margin="0,0,0,6" Click="OnResetTableFormatScopeClick"/>
+                                                <Button Content="Supprimer les surcharges de format" ToolTip="Réinitialise le format local afin d'utiliser le format hérité du niveau parent." Margin="0,0,0,6" Click="OnResetTableFormatScopeClick"/>
                                                 <Button Content="Bordures avancees..." Margin="0,0,0,6" Click="OnOpenTableBordersClick"/>
                                                 <Button Content="Rangees d'en-tete..." Margin="0,0,0,6" Click="OnOpenTableHeadersClick"/>
-                                                <UniformGrid Columns="2">
-                                                    <Button Content="Fusionner" Margin="0,0,3,0" Click="OnMergeTableCellsClick"/>
-                                                    <Button Content="Defusionner" Margin="3,0,0,0" Click="OnUnmergeTableCellsClick"/>
-                                                </UniformGrid>
+                                                <Button x:Name="TableMergeToggleButton" Content="Fusionner les cellules" Margin="0" Click="OnToggleMergeTableCellsClick"/>
                                                 <UniformGrid Columns="2" Margin="0,6,0,0">
                                                     <Button Content="Distribuer lignes" Margin="0,0,3,0" Click="OnDistributeTableRowsClick"/>
                                                     <Button Content="Distribuer colonnes" Margin="3,0,0,0" Click="OnDistributeTableColumnsClick"/>

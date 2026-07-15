@@ -21,10 +21,12 @@ internal static class TableWebViewScript
     .scada-editor-table-corner { left:0; top:0; width:24px; height:18px; }
     .scada-editor-table[data-mode="object"] .scada-editor-table-track,
     .scada-editor-table[data-mode="object"] .scada-editor-table-header { display:none; }
+    .scada-editor-table[data-editor-guides="hidden"] .scada-editor-table-header { display:none; }
   `;
   document.head.appendChild(css);
   let trackDrag = null;
   let interactionMode = 'object';
+  let showEditorGuides = true;
   document.addEventListener('pointermove', event => {
     if (!trackDrag) return;
     const delta = trackDrag.orientation === 'column' ? event.clientX - trackDrag.start : event.clientY - trackDrag.start;
@@ -51,7 +53,7 @@ internal static class TableWebViewScript
     const table = element.Table || element.table;
     if (!table) return;
     wrapper.style.padding = '0'; wrapper.style.background = 'transparent'; wrapper.style.border = '0';
-    const grid = document.createElement('div'); grid.className = 'scada-editor-table'; grid.dataset.tableId = element.Id; grid.dataset.mode = interactionMode; grid.style.position = 'relative';
+    const grid = document.createElement('div'); grid.className = 'scada-editor-table'; grid.dataset.tableId = element.Id; grid.dataset.mode = interactionMode; grid.dataset.editorGuides = showEditorGuides ? 'visible' : 'hidden'; grid.style.position = 'relative';
     grid.dataset.columnSizes = JSON.stringify((table.Columns || []).map(item => Number(item.Width || 24)));
     grid.dataset.rowSizes = JSON.stringify((table.Rows || []).map(item => Number(item.Height || 20)));
     grid.style.gridTemplateColumns = (table.Columns || []).map(item => `${Number(item.Width || 24)}px`).join(' ');
@@ -122,6 +124,7 @@ internal static class TableWebViewScript
     wrapper.replaceChildren(grid);
   };
   const setMode = mode => { interactionMode = mode === 'cells' ? 'cells' : 'object'; document.querySelectorAll('.scada-editor-table').forEach(grid => grid.dataset.mode = interactionMode); };
+  const setGuides = visible => { showEditorGuides = visible !== false; document.querySelectorAll('.scada-editor-table').forEach(grid => grid.dataset.editorGuides = showEditorGuides ? 'visible' : 'hidden'); };
   const autoFit = id => {
     const grid = document.querySelector(`.scada-editor-table[data-table-id="${CSS.escape(id)}"]`); if (!grid) return;
     const cells = [...grid.querySelectorAll('.scada-editor-table-cell')];
@@ -139,7 +142,7 @@ internal static class TableWebViewScript
     window.chrome?.webview?.postMessage({type:'tableAutoFitMeasured', id, columnSizes, rowSizes});
   };
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && interactionMode === 'cells') { setMode('object'); event.preventDefault(); } }, true);
-  window.scadaModernTable = { render, setMode, autoFit };
+  window.scadaModernTable = { render, setMode, setGuides, autoFit };
 })();
 """;
 }

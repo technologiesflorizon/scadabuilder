@@ -14,11 +14,17 @@ public sealed class TableUiArchitectureTests
         var flat = Flatten(commands).ToDictionary(command => command.Id, StringComparer.Ordinal);
 
         Assert.IsFalse(flat["table.paste"].IsEnabled);
-        Assert.IsTrue(flat["table.merge"].IsEnabled);
-        Assert.IsFalse(flat["table.unmerge"].IsEnabled);
+        Assert.IsTrue(flat["table.merge-toggle"].IsEnabled);
+        Assert.AreEqual("Fusionner les cellules", flat["table.merge-toggle"].Label);
         CollectionAssert.IsSubsetOf(
-            new[] { "table.copy", "table.paste", "table.row.insert", "table.column.insert", "table.row.delete", "table.column.delete", "table.clear", "table.format", "table.row.height", "table.column.width", "table.merge", "table.unmerge" },
+            new[] { "table.copy", "table.paste", "table.row.insert", "table.column.insert", "table.row.delete", "table.column.delete", "table.clear", "table.format", "table.row.height", "table.column.width", "table.merge-toggle" },
             flat.Keys.ToArray());
+
+        var merged = ScadaTableStructureOperations.ToggleMerge(table, new(0, 0, 1, 1));
+        var mergedCommands = Flatten(TableContextMenuProvider.Build(merged, new(0, 0, 1, 1), canPaste: false)).ToDictionary(command => command.Id);
+        Assert.AreEqual("Defusionner les cellules", mergedCommands["table.merge-toggle"].Label);
+        Assert.IsFalse(mergedCommands.ContainsKey("table.merge"));
+        Assert.IsFalse(mergedCommands.ContainsKey("table.unmerge"));
     }
 
     [TestMethod]
@@ -36,6 +42,7 @@ public sealed class TableUiArchitectureTests
         StringAssert.Contains(main, "InsertToolCatalog.Find(commandId)");
         StringAssert.Contains(main, "insertTool.PlacementMode == InsertPlacementMode.ContextualSurface");
         StringAssert.Contains(main, "OpenTableAuthoringSurface();");
+        StringAssert.Contains(main, "\"table.merge-toggle\" => _tableAuthoringSession.SelectionContainsMergedCells");
         StringAssert.Contains(tableIntegration, "_tableRibbonViewModel.Open();");
         Assert.IsFalse(tableIntegration.Contains("ShowDialog", StringComparison.Ordinal), "Inserer > Donnees > Tableau must open the contextual ribbon without a modal dialog.");
         Assert.IsFalse(main.Contains("case \"insert.shape.", StringComparison.Ordinal));
@@ -44,6 +51,8 @@ public sealed class TableUiArchitectureTests
         Assert.IsFalse(main.Contains("ScadaTableOperations.", StringComparison.Ordinal));
         StringAssert.Contains(web, "tableTrackResize");
         StringAssert.Contains(web, "tableCellEdit");
+        StringAssert.Contains(web, "setGuides");
+        StringAssert.Contains(web, "data-editor-guides=\"hidden\"");
         StringAssert.Contains(web, "data-mode=\"object\"");
         StringAssert.Contains(web, "createDocumentFragment");
         StringAssert.Contains(web, "replaceChildren(grid)");
@@ -60,6 +69,8 @@ public sealed class TableUiArchitectureTests
         StringAssert.Contains(xaml, "x:Name=\"TopElementLockIndicator\"");
         StringAssert.Contains(xaml, "Text=\"{Binding ElementLockState.IndicatorLabel}\"");
         StringAssert.Contains(xaml, "Header=\"Tableau\"");
+        StringAssert.Contains(xaml, "x:Name=\"TableMergeToggleButton\"");
+        StringAssert.Contains(xaml, "Supprimer les surcharges de format");
     }
 
     [TestMethod]

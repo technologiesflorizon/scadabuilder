@@ -23,6 +23,22 @@ public sealed class TableEditCoordinatorTests
     }
 
     [TestMethod]
+    public void ToggleMergeUsesCurrentSelectionState()
+    {
+        var source = ScadaElement.CreateTable("t1", "Tableau", 10, 20, 3, 3);
+        var range = new ScadaTableRange(0, 0, 1, 1);
+
+        var merged = _coordinator.Apply(source, new TableEditRequest(TableEditKind.ToggleMerge, Range: range));
+        Assert.IsTrue(merged.Succeeded, merged.Error);
+        Assert.IsTrue(ScadaTableStructureOperations.ContainsMergedCells(merged.Element.Table!, range));
+
+        var unmerged = _coordinator.Apply(merged.Element, new TableEditRequest(TableEditKind.ToggleMerge, Range: range));
+        Assert.IsTrue(unmerged.Succeeded, unmerged.Error);
+        Assert.IsFalse(ScadaTableStructureOperations.ContainsMergedCells(unmerged.Element.Table!, range));
+        Assert.AreEqual(9, unmerged.Element.Table!.EffectiveCells.Count);
+    }
+
+    [TestMethod]
     public void InvalidRequestReturnsDiagnosticWithoutMutation()
     {
         var source = ScadaElement.CreateTable("t1", "Tableau", 0, 0, 2, 2);

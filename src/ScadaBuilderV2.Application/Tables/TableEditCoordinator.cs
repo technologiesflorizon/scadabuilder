@@ -5,6 +5,7 @@ namespace ScadaBuilderV2.Application.Tables;
 /// <summary>Identifies one model-backed table edit operation.</summary>
 public enum TableEditKind
 {
+    ToggleMerge,
     Merge,
     Unmerge,
     SetContent,
@@ -89,6 +90,7 @@ public sealed class TableEditCoordinator
 
     private static ScadaTableDefinition Apply(ScadaTableDefinition table, TableEditRequest request) => request.Kind switch
     {
+        TableEditKind.ToggleMerge => ScadaTableStructureOperations.ToggleMerge(table, RequireRange(request)),
         TableEditKind.Merge => ScadaTableStructureOperations.Merge(table, RequireRange(request)),
         TableEditKind.Unmerge => ScadaTableStructureOperations.Unmerge(table, Require(request.Row, "row"), Require(request.Column, "column")),
         TableEditKind.SetContent => ScadaTableContentOperations.SetContent(table, Require(request.Row, "row"), Require(request.Column, "column"), request.Content ?? ScadaTableCellContent.EmptyText),
@@ -133,6 +135,7 @@ public sealed class TableEditCoordinator
 
     private static string ResolveLabel(TableEditKind kind) => kind switch
     {
+        TableEditKind.ToggleMerge => "Fusion/defusion cellules",
         TableEditKind.Merge => "Fusion cellules",
         TableEditKind.Unmerge => "Defusion cellules",
         TableEditKind.SetContent => "Contenu cellule",

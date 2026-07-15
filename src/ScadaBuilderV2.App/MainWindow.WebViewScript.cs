@@ -65,11 +65,10 @@ public partial class MainWindow
       cursor: not-allowed;
       background: transparent;
     }
-    #scada-extract-menu button.checked {
-      padding-left: 9px;
-    }
-    #scada-extract-menu button.checked::before {
-      content: '✓ ';
+    #scada-extract-menu button.checked::after {
+      content: ' ✓';
+      float: right;
+      margin-left: 14px;
     }
     #scada-extract-menu .submenu {
       position: relative;
@@ -2034,6 +2033,9 @@ public partial class MainWindow
         if (event.target?.closest?.('.scada-modern-element') !== wrapper) {
           return;
         }
+        if (event.target?.closest?.('.scada-editor-table[data-mode="cells"]')) {
+          return;
+        }
         event.preventDefault();
         event.stopPropagation();
         const sceneMoveWrapper = getSceneMoveWrapper(wrapper);
@@ -2063,10 +2065,6 @@ public partial class MainWindow
         }
         const geometry = readWrapperGeometry(sceneMoveWrapper);
         const isResize = event.target?.classList?.contains('scada-modern-handle');
-        if (!isResize && sceneMoveWrapper?.dataset?.editorLocked === 'true') {
-          modernDrag = null;
-          return;
-        }
         const groupChildren = isResize && sceneMoveWrapper.classList.contains('scada-modern-group')
           ? Array.from(sceneMoveWrapper.querySelectorAll('.scada-modern-element')).map(child => ({
               id: child.dataset.id,
@@ -2080,6 +2078,12 @@ public partial class MainWindow
               .filter(item => selectedModernIds.has(item.dataset.id))
               .map(item => getSceneMoveWrapper(item))
               .filter((item, index, items) => item && items.indexOf(item) === index);
+        const blocksPositionMove = candidate => candidate?.dataset?.editorLocked === 'true'
+          || candidate?.querySelector?.('.scada-modern-element[data-editor-locked="true"]') !== null;
+        if (!isResize && movingWrappers.some(blocksPositionMove)) {
+          modernDrag = null;
+          return;
+        }
         modernDrag = {
           id: sceneMoveId,
           wrapper: sceneMoveWrapper,
@@ -2130,6 +2134,9 @@ public partial class MainWindow
         if (event.target?.closest?.('.scada-modern-element') !== wrapper) {
           return;
         }
+        if (event.target?.closest?.('.scada-editor-table[data-mode="cells"]')) {
+          return;
+        }
         event.preventDefault();
         event.stopPropagation();
         if (!event.ctrlKey && !event.shiftKey) {
@@ -2145,6 +2152,9 @@ public partial class MainWindow
           return;
         }
         if (event.target?.closest?.('.scada-modern-element') !== wrapper) {
+          return;
+        }
+        if (event.target?.closest?.('.scada-editor-table[data-mode="cells"]')) {
           return;
         }
         event.preventDefault();

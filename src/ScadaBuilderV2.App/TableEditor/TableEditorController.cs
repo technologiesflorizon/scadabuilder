@@ -42,6 +42,7 @@ internal sealed class TableEditorController
         if (element.Table is null) return false;
         switch (commandId)
         {
+            case "table.merge-toggle": return Apply(element, new(TableEditKind.ToggleMerge, Selection));
             case "table.copy":
                 clipboard = TableClipboard.Copy(element.Table, Selection);
                 Clipboard.SetText(clipboard.Tsv);
@@ -87,6 +88,9 @@ internal sealed class TableEditorController
         properties.Load(element, Selection, FormatScopeKind);
         return properties.StateLabel;
     }
+
+    public bool SelectionContainsMergedCells(ScadaElement element) =>
+        element.Table is not null && ScadaTableStructureOperations.ContainsMergedCells(element.Table, Selection);
 
     public void SelectAll(ScadaElement element)
     {
