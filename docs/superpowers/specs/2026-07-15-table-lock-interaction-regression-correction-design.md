@@ -8,7 +8,7 @@ Document version: `V2.1.4.0032`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-15 | `V2.1.4.0032` | `PENDING` | Specification corrective autonome pour le drag verrouille, le mode initial Tableau, l'acces aux cellules/pistes et l'etat effectif des reperes A/1. |
+| 2026-07-15 | `V2.1.4.0032` | `ff21e33` | Specification corrective autonome pour le drag verrouille, le mode initial Tableau, l'acces aux cellules/pistes et l'etat effectif des reperes A/1. |
 
 ## 1. Objet et relation avec les specifications existantes
 

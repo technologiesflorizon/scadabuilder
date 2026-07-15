@@ -8,7 +8,7 @@ Document version: `V2.1.4.0032`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-15 | `V2.1.4.0032` | `PENDING` | Bump d'iteration pour la specification et le plan de correction des regressions d'interaction Tableau/verrou. |
+| 2026-07-15 | `V2.1.4.0032` | `ff21e33` | Bump d'iteration pour la specification et le plan de correction des regressions d'interaction Tableau/verrou. |
 | 2026-07-15 | `V2.1.4.0031` | `e127190` | Bump d'iteration pour supprimer le clipping et la barre native du ruban secondaire. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Bump d'iteration pour les corrections d'interaction verrou/Tableau et leur couverture. |
 | 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Bump d'iteration pour la modernisation compacte du ruban de niveau 2 et sa regression. |

@@ -8,7 +8,7 @@ Document version: `V2.1.4.0032`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-15 | `V2.1.4.0032` | `PENDING` | Ajout d'une specification et d'un plan correctifs autonomes pour le drag verrouille, les modes Tableau, l'acces aux cellules/pistes et les reperes A/1. |
+| 2026-07-15 | `V2.1.4.0032` | `ff21e33` | Ajout d'une specification et d'un plan correctifs autonomes pour le drag verrouille, les modes Tableau, l'acces aux cellules/pistes et les reperes A/1. |
 | 2026-07-15 | `V2.1.4.0031` | `e127190` | Correction du ruban secondaire : hauteur augmentee, barre horizontale native retiree et navigation d'overflow par chevrons. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Correction des interactions verrou/Tableau et clarification des reperes, fusion contextuelle et origine du format. |
 | 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Modernisation compacte du ruban secondaire : commandes horizontales sur deux rangees, icones et galerie reduites. |
