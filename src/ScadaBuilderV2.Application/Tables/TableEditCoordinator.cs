@@ -18,7 +18,17 @@ public enum TableEditKind
     InsertRow,
     InsertColumn,
     DeleteRow,
-    DeleteColumn
+    DeleteColumn,
+    ConvertContentKind,
+    EqualizeRows,
+    EqualizeColumns,
+    DistributeRows,
+    DistributeColumns,
+    ApplyAutoFit,
+    SetHeaderRowCount,
+    ApplyFormatScope,
+    ResetFormatScope,
+    ApplyBorderPreset
 }
 
 /// <summary>Describes one typed table edit request independent of WPF and WebView.</summary>
@@ -30,7 +40,14 @@ public sealed record TableEditRequest(
     double? Width = null,
     double? Height = null,
     ScadaTableCellContent? Content = null,
-    ScadaTableFormat? Format = null);
+    ScadaTableFormat? Format = null,
+    ScadaTableCellContentKind? ContentKind = null,
+    ScadaTableFormatScope? FormatScope = null,
+    ScadaTableBorderPreset? BorderPreset = null,
+    ScadaTableBorder? Border = null,
+    int? Count = null,
+    IReadOnlyList<double>? ColumnSizes = null,
+    IReadOnlyList<double>? RowSizes = null);
 
 /// <summary>Returns the result and diagnostic of one table edit.</summary>
 public sealed record TableEditResult(bool Succeeded, ScadaElement Element, string Label, string? Error = null);
@@ -68,20 +85,30 @@ public sealed class TableEditCoordinator
 
     private static ScadaTableDefinition Apply(ScadaTableDefinition table, TableEditRequest request) => request.Kind switch
     {
-        TableEditKind.Merge => ScadaTableOperations.Merge(table, RequireRange(request)),
-        TableEditKind.Unmerge => ScadaTableOperations.Unmerge(table, Require(request.Row, "row"), Require(request.Column, "column")),
-        TableEditKind.SetContent => ScadaTableOperations.SetContent(table, Require(request.Row, "row"), Require(request.Column, "column"), request.Content ?? ScadaTableCellContent.EmptyText),
-        TableEditKind.ClearContent => ScadaTableOperations.ClearContent(table, RequireRange(request)),
-        TableEditKind.SetCellFormat => ScadaTableOperations.SetCellFormat(table, RequireRange(request), request.Format),
-        TableEditKind.SetRowFormat => ScadaTableOperations.SetRowFormat(table, Rows(RequireRange(request)), request.Format),
-        TableEditKind.SetColumnFormat => ScadaTableOperations.SetColumnFormat(table, Columns(RequireRange(request)), request.Format),
-        TableEditKind.SetRowHeight => ScadaTableOperations.SetRowHeight(table, Rows(RequireRange(request)), Require(request.Height, "height")),
-        TableEditKind.SetColumnWidth => ScadaTableOperations.SetColumnWidth(table, Columns(RequireRange(request)), Require(request.Width, "width")),
-        TableEditKind.ResizeProportionally => ScadaTableOperations.ResizeProportionally(table, Require(request.Width, "width"), Require(request.Height, "height")),
-        TableEditKind.InsertRow => ScadaTableOperations.InsertRow(table, Require(request.Row, "row")),
-        TableEditKind.InsertColumn => ScadaTableOperations.InsertColumn(table, Require(request.Column, "column")),
-        TableEditKind.DeleteRow => ScadaTableOperations.DeleteRow(table, Require(request.Row, "row")),
-        TableEditKind.DeleteColumn => ScadaTableOperations.DeleteColumn(table, Require(request.Column, "column")),
+        TableEditKind.Merge => ScadaTableStructureOperations.Merge(table, RequireRange(request)),
+        TableEditKind.Unmerge => ScadaTableStructureOperations.Unmerge(table, Require(request.Row, "row"), Require(request.Column, "column")),
+        TableEditKind.SetContent => ScadaTableContentOperations.SetContent(table, Require(request.Row, "row"), Require(request.Column, "column"), request.Content ?? ScadaTableCellContent.EmptyText),
+        TableEditKind.ClearContent => ScadaTableContentOperations.ClearContent(table, RequireRange(request)),
+        TableEditKind.SetCellFormat => ScadaTableFormatOperations.ApplyFormat(table, new(ScadaTableFormatScopeKind.Cells, RequireRange(request)), request.Format),
+        TableEditKind.SetRowFormat => ScadaTableFormatOperations.ApplyFormat(table, new(ScadaTableFormatScopeKind.Rows, RequireRange(request)), request.Format),
+        TableEditKind.SetColumnFormat => ScadaTableFormatOperations.ApplyFormat(table, new(ScadaTableFormatScopeKind.Columns, RequireRange(request)), request.Format),
+        TableEditKind.SetRowHeight => ScadaTableTrackOperations.SetRowHeight(table, Rows(RequireRange(request)), Require(request.Height, "height")),
+        TableEditKind.SetColumnWidth => ScadaTableTrackOperations.SetColumnWidth(table, Columns(RequireRange(request)), Require(request.Width, "width")),
+        TableEditKind.ResizeProportionally => ScadaTableTrackOperations.ResizeProportionally(table, Require(request.Width, "width"), Require(request.Height, "height")),
+        TableEditKind.InsertRow => ScadaTableStructureOperations.InsertRow(table, Require(request.Row, "row")),
+        TableEditKind.InsertColumn => ScadaTableStructureOperations.InsertColumn(table, Require(request.Column, "column")),
+        TableEditKind.DeleteRow => ScadaTableStructureOperations.DeleteRow(table, Require(request.Row, "row")),
+        TableEditKind.DeleteColumn => ScadaTableStructureOperations.DeleteColumn(table, Require(request.Column, "column")),
+        TableEditKind.ConvertContentKind => ScadaTableContentOperations.ConvertKind(table, RequireRange(request), Require(request.ContentKind, "content kind")),
+        TableEditKind.EqualizeRows => ScadaTableTrackOperations.EqualizeRows(table, Rows(RequireRange(request))),
+        TableEditKind.EqualizeColumns => ScadaTableTrackOperations.EqualizeColumns(table, Columns(RequireRange(request))),
+        TableEditKind.DistributeRows => ScadaTableTrackOperations.DistributeRows(table, Rows(RequireRange(request)), Require(request.Height, "height")),
+        TableEditKind.DistributeColumns => ScadaTableTrackOperations.DistributeColumns(table, Columns(RequireRange(request)), Require(request.Width, "width")),
+        TableEditKind.ApplyAutoFit => ScadaTableTrackOperations.ApplySizes(table, request.ColumnSizes ?? throw new ArgumentException("Column sizes are required."), request.RowSizes ?? throw new ArgumentException("Row sizes are required.")),
+        TableEditKind.SetHeaderRowCount => ScadaTableHeaderOperations.SetHeaderRowCount(table, Require(request.Count, "count")),
+        TableEditKind.ApplyFormatScope => ScadaTableFormatOperations.ApplyFormat(table, request.FormatScope ?? throw new ArgumentException("A format scope is required."), request.Format),
+        TableEditKind.ResetFormatScope => ScadaTableFormatOperations.ResetScope(table, request.FormatScope ?? throw new ArgumentException("A format scope is required.")),
+        TableEditKind.ApplyBorderPreset => ScadaTableBorderOperations.ApplyPreset(table, RequireRange(request), Require(request.BorderPreset, "border preset"), request.Border),
         _ => throw new InvalidOperationException("Unsupported table edit request.")
     };
 
@@ -103,6 +130,11 @@ public sealed class TableEditCoordinator
         TableEditKind.ClearContent => "Effacement contenu",
         TableEditKind.SetCellFormat or TableEditKind.SetRowFormat or TableEditKind.SetColumnFormat => "Format tableau",
         TableEditKind.SetRowHeight or TableEditKind.SetColumnWidth or TableEditKind.ResizeProportionally => "Dimensions tableau",
+        TableEditKind.ConvertContentKind => "Type de cellule",
+        TableEditKind.EqualizeRows or TableEditKind.EqualizeColumns or TableEditKind.DistributeRows or TableEditKind.DistributeColumns or TableEditKind.ApplyAutoFit => "Dimensions tableau",
+        TableEditKind.SetHeaderRowCount => "En-tetes tableau",
+        TableEditKind.ApplyFormatScope or TableEditKind.ResetFormatScope => "Format tableau",
+        TableEditKind.ApplyBorderPreset => "Bordures tableau",
         TableEditKind.InsertRow => "Insertion rangee",
         TableEditKind.InsertColumn => "Insertion colonne",
         TableEditKind.DeleteRow => "Suppression rangee",

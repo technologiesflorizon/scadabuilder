@@ -56,7 +56,7 @@ public sealed class RibbonCommandCatalogTests
 
         Assert.IsTrue(table.IsEnabled);
         Assert.AreEqual(ScadaBuilderV2.Domain.Scenes.ScadaElementKind.Table, table.ElementKind);
-        Assert.AreEqual(InsertPlacementMode.DialogThenPoint, table.PlacementMode);
+        Assert.AreEqual(InsertPlacementMode.ContextualSurface, table.PlacementMode);
         Assert.IsNull(table.DisabledReason);
         Assert.IsTrue(tools.Where(tool => !tool.IsEnabled).All(tool => !string.IsNullOrWhiteSpace(tool.DisabledReason)));
         Assert.AreEqual(tools.Length, tools.Select(tool => tool.Id).Distinct(StringComparer.Ordinal).Count());

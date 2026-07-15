@@ -21,12 +21,7 @@ internal sealed class TableEditorController
 
     public string? ElementId { get; private set; }
     public ScadaTableRange Selection { get; private set; } = new(0, 0, 0, 0);
-
-    public TableCreationOptions? RequestCreationOptions()
-    {
-        var dialog = new TableCreationDialog { Owner = owner };
-        return dialog.ShowDialog() == true ? dialog.Result : null;
-    }
+    public ScadaTableFormatScopeKind FormatScopeKind { get; set; } = ScadaTableFormatScopeKind.Cells;
 
     public void Select(string elementId, int row, int column, int endRow, int endColumn)
     {
@@ -61,6 +56,12 @@ internal sealed class TableEditorController
             case "table.row.delete": return Apply(element, new(TableEditKind.DeleteRow, Row: Selection.StartRow));
             case "table.column.delete": return Apply(element, new(TableEditKind.DeleteColumn, Column: Selection.StartColumn));
             case "table.format": return Format(element);
+            case "table.content.properties": return Content(element);
+            case "table.borders": return Borders(element);
+            case "table.headers": return Headers(element);
+            case "table.equalize": return Equalize(element);
+            case "table.format.reset": return Apply(element, new(TableEditKind.ResetFormatScope, FormatScope: new ScadaTableFormatScope(FormatScopeKind,
+                FormatScopeKind is ScadaTableFormatScopeKind.Table or ScadaTableFormatScopeKind.HeaderRows or ScadaTableFormatScopeKind.AlternatingRows ? null : Selection)));
             case "table.row.height": return Size(element, row: true);
             case "table.column.width": return Size(element, row: false);
             case "table.properties": return Properties(element);
@@ -70,6 +71,19 @@ internal sealed class TableEditorController
 
     public bool SetCellContent(ScadaElement element, int row, int column, ScadaTableCellContent content) =>
         Apply(element, new(TableEditKind.SetContent, Row: row, Column: column, Content: content));
+
+    public bool ConvertContent(ScadaElement element, ScadaTableCellContentKind kind) =>
+        Apply(element, new(TableEditKind.ConvertContentKind, Selection, ContentKind: kind));
+
+    public void SelectAll(ScadaElement element)
+    {
+        if (element.Table is null) return;
+        Select(element.Id, 0, 0, element.Table.EffectiveRows.Count - 1, element.Table.EffectiveColumns.Count - 1);
+        FormatScopeKind = ScadaTableFormatScopeKind.Table;
+    }
+
+    public bool ApplyAutoFit(ScadaElement element, IReadOnlyList<double> columns, IReadOnlyList<double> rows) =>
+        Apply(element, new(TableEditKind.ApplyAutoFit, ColumnSizes: columns, RowSizes: rows));
 
     public bool ResizeAndMove(ScadaElement element, double x, double y, double width, double height)
     {
@@ -98,7 +112,37 @@ internal sealed class TableEditorController
         var current = ScadaTableStyleResolver.Resolve(element.Table!, Selection.StartRow, Selection.StartColumn);
         var dialog = new CellFormatDialog(current) { Owner = owner };
         return dialog.ShowDialog() == true && dialog.Result is not null &&
-            Apply(element, new(TableEditKind.SetCellFormat, Selection, Format: dialog.Result));
+            Apply(element, new(TableEditKind.ApplyFormatScope, Format: dialog.Result,
+                FormatScope: new ScadaTableFormatScope(FormatScopeKind, FormatScopeKind is ScadaTableFormatScopeKind.Table or ScadaTableFormatScopeKind.HeaderRows or ScadaTableFormatScopeKind.AlternatingRows ? null : Selection)));
+    }
+
+    private bool Content(ScadaElement element)
+    {
+        var current = element.Table!.EffectiveCells.First(cell => cell.Covers(Selection.StartRow, Selection.StartColumn)).EffectiveContent;
+        var dialog = new CellContentDialog(current) { Owner = owner };
+        if (dialog.ShowDialog() != true || dialog.Result is null) return false;
+        return Apply(element, new(TableEditKind.SetContent, Row: Selection.StartRow, Column: Selection.StartColumn, Content: dialog.Result));
+    }
+
+    private bool Borders(ScadaElement element)
+    {
+        var dialog = new TableBorderDialog { Owner = owner };
+        if (dialog.ShowDialog() != true || dialog.Result is null) return false;
+        return Apply(element, new(TableEditKind.ApplyBorderPreset, Selection, BorderPreset: dialog.Result.Value.Preset, Border: dialog.Result.Value.Border));
+    }
+
+    private bool Headers(ScadaElement element)
+    {
+        var current = element.Table!.EffectiveRows.TakeWhile(row => row.IsHeader).Count();
+        var dialog = new HeaderRowsDialog(current, element.Table.EffectiveRows.Count) { Owner = owner };
+        return dialog.ShowDialog() == true && dialog.Result is int count && Apply(element, new(TableEditKind.SetHeaderRowCount, Count: count));
+    }
+
+    private bool Equalize(ScadaElement element)
+    {
+        var kind = Selection.RowCount > 1 && Selection.ColumnCount == element.Table!.EffectiveColumns.Count
+            ? TableEditKind.EqualizeRows : TableEditKind.EqualizeColumns;
+        return Apply(element, new(kind, Selection));
     }
 
     private bool Size(ScadaElement element, bool row)

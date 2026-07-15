@@ -3,7 +3,7 @@ using ScadaBuilderV2.Domain.Scenes;
 namespace ScadaBuilderV2.Application.Commands;
 
 /// <summary>Describes how an insertion tool acquires its initial bounds.</summary>
-public enum InsertPlacementMode { Point, TwoPoint, DialogThenPoint }
+public enum InsertPlacementMode { Point, TwoPoint, ContextualSurface }
 
 /// <summary>Defines one insertion tool independently of its WPF presentation.</summary>
 public sealed record InsertToolDescriptor(
@@ -69,7 +69,7 @@ public static class InsertToolCatalog
             Planned("insert.checkbox", "Case", "Icon.Command.CheckBox", "Boutons"),
             Planned("insert.radio", "Radio", "Icon.Command.Radio", "Boutons")),
         Family("data", "Donnees", "Icon.InsertFamily.Data",
-            Enabled("insert.table", "Tableau", "Icon.Data.Table", "Inserer un tableau moderne", "Tableaux", ScadaElementKind.Table, InsertPlacementMode.DialogThenPoint),
+            Enabled("insert.table", "Tableau", "Icon.Data.Table", "Ouvrir les outils Tableau", "Tableaux", ScadaElementKind.Table, InsertPlacementMode.ContextualSurface),
             Planned("insert.list", "Liste", "Icon.Data.List", "Donnees"),
             Planned("insert.recipe", "Recette", "Icon.Data.Recipe", "Donnees"),
             Planned("insert.messages", "Messages", "Icon.Data.Messages", "Donnees")),

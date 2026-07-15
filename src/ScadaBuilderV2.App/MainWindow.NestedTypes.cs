@@ -270,11 +270,17 @@ public partial class MainWindow
 
         public string? ContentKind { get; set; }
 
+        public string? Scope { get; set; }
+
         public string? Orientation { get; set; }
 
         public int TrackIndex { get; set; }
 
         public double TrackSize { get; set; }
+
+        public List<double>? ColumnSizes { get; set; }
+
+        public List<double>? RowSizes { get; set; }
 
         public double Rotation { get; set; }
 

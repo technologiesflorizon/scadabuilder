@@ -356,6 +356,15 @@
                                       ItemsSource="{Binding InsertFamilies}" ItemTemplate="{StaticResource InsertFamilyTemplate}">
                             <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
                         </ItemsControl>
+                        <StackPanel x:Name="TableCreationConfigurationSurface" Grid.Row="0" Visibility="Collapsed"
+                                    Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <TextBlock Text="Colonnes" VerticalAlignment="Center" Margin="6,0,3,0"/>
+                            <TextBox x:Name="TableColumnsTextBox" Text="6" Width="34" MaxLength="2"/>
+                            <TextBlock Text="Rangees" VerticalAlignment="Center" Margin="8,0,3,0"/>
+                            <TextBox x:Name="TableRowsTextBox" Text="8" Width="34" MaxLength="2"/>
+                            <CheckBox x:Name="TableFirstHeaderCheckBox" Content="1re rangee en-tete" IsChecked="True"
+                                      VerticalAlignment="Center" Margin="10,0,6,0"/>
+                        </StackPanel>
                         <ScrollViewer x:Name="RibbonCommandSurface" Grid.Row="1"
                                       HorizontalScrollBarVisibility="Auto"
                                       VerticalScrollBarVisibility="Disabled">
@@ -1273,13 +1282,25 @@
                                                 <TextBlock Text="Selection Tableau" FontWeight="SemiBold"/>
                                                 <TextBlock x:Name="TableSelectionSummaryText" Text="Cellule 1,1" Margin="0,4,0,2"/>
                                                 <TextBlock x:Name="TableDimensionSummaryText" Text="6 rangees x 8 colonnes" Foreground="{StaticResource MutedBrush}" Margin="0,0,0,10"/>
+                                                <TextBlock Text="Appliquer le format a"/>
+                                                <ComboBox x:Name="TableFormatScopeComboBox" Margin="0,3,0,8" SelectionChanged="OnTableFormatScopeChanged" SelectedIndex="5">
+                                                    <ComboBoxItem Content="Tout le tableau" Tag="Table"/>
+                                                    <ComboBoxItem Content="Rangees d'en-tete" Tag="HeaderRows"/>
+                                                    <ComboBoxItem Content="Rangees alternees" Tag="AlternatingRows"/>
+                                                    <ComboBoxItem Content="Rangee(s) selectionnee(s)" Tag="Rows"/>
+                                                    <ComboBoxItem Content="Colonne(s) selectionnee(s)" Tag="Columns"/>
+                                                    <ComboBoxItem Content="Cellule ou plage" Tag="Cells"/>
+                                                </ComboBox>
                                                 <Button Content="Proprietes detaillees..." Margin="0,0,0,6" Click="OnOpenTablePropertiesClick"/>
+                                                <Button Content="Type et contenu..." Margin="0,0,0,6" Click="OnOpenCellContentClick"/>
                                                 <Button Content="Format de cellule..." Margin="0,0,0,6" Click="OnOpenCellFormatClick"/>
+                                                <Button Content="Bordures avancees..." Margin="0,0,0,6" Click="OnOpenTableBordersClick"/>
+                                                <Button Content="Rangees d'en-tete..." Margin="0,0,0,6" Click="OnOpenTableHeadersClick"/>
                                                 <UniformGrid Columns="2">
                                                     <Button Content="Fusionner" Margin="0,0,3,0" Click="OnMergeTableCellsClick"/>
                                                     <Button Content="Defusionner" Margin="3,0,0,0" Click="OnUnmergeTableCellsClick"/>
                                                 </UniformGrid>
-                                                <TextBlock Text="Les hauteurs, largeurs, insertions et suppressions sont aussi disponibles par clic droit dans le tableau."
+                                                <TextBlock Text="Les types de cellule, hauteurs, largeurs, insertions et suppressions sont aussi disponibles par clic droit dans le tableau."
                                                            TextWrapping="Wrap" Margin="0,10,0,0" Foreground="{StaticResource MutedBrush}"/>
                                             </StackPanel>
                                         </TabItem>

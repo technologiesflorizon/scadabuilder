@@ -52,7 +52,22 @@ public sealed record ScadaTableFormat(
     string? FontFamily = null,
     double? FontSize = null,
     string? FontWeight = null,
-    string? FontStyle = null);
+    string? FontStyle = null,
+    bool? TextWrap = null,
+    double? LineHeight = null);
+
+/// <summary>Defines one effective physical table-border segment.</summary>
+public sealed record ScadaTableBorder(ScadaTableGridStyle Style, string Color, double Width);
+
+/// <summary>Identifies the orientation of one physical table grid line.</summary>
+public enum ScadaTableBorderOrientation { Horizontal, Vertical }
+
+/// <summary>Overrides one unit segment of a physical table grid line.</summary>
+public sealed record ScadaTableBorderOverride(
+    ScadaTableBorderOrientation Orientation,
+    int GridLine,
+    int Segment,
+    ScadaTableBorder? Border);
 
 /// <summary>Defines base, header and alternating-row formats for a table.</summary>
 public sealed record ScadaTableStyle(
@@ -143,7 +158,8 @@ public sealed record ScadaTableDefinition(
     IReadOnlyList<ScadaTableColumn>? Columns,
     IReadOnlyList<ScadaTableRow>? Rows,
     IReadOnlyList<ScadaTableCell>? Cells,
-    ScadaTableStyle? Style = null)
+    ScadaTableStyle? Style = null,
+    IReadOnlyList<ScadaTableBorderOverride>? BorderOverrides = null)
 {
     public const int MinimumTrackCount = 1;
     public const int MaximumTrackCount = 64;
@@ -160,6 +176,9 @@ public sealed record ScadaTableDefinition(
 
     [JsonIgnore]
     public IReadOnlyList<ScadaTableCell> EffectiveCells => Cells ?? Array.Empty<ScadaTableCell>();
+
+    [JsonIgnore]
+    public IReadOnlyList<ScadaTableBorderOverride> EffectiveBorderOverrides => BorderOverrides ?? Array.Empty<ScadaTableBorderOverride>();
 
     [JsonIgnore]
     public ScadaTableStyle EffectiveStyle => Style ?? ScadaTableStyle.Default;

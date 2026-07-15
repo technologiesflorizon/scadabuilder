@@ -112,7 +112,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
     private ScadaElementKind? _pendingInsertKind;
     private ScadaShapeKind? _pendingInsertShapeKind;
     private ScadaButtonKind? _pendingInsertButtonKind;
-    private TableCreationOptions? _pendingTableCreation;
+    private readonly TableAuthoringSession _tableAuthoringSession = new();
     private string _activeRibbonKey = "File";
     private string _activeInsertFamilyId = "text-values";
     private string? _activeInsertCommandId;
@@ -1265,6 +1265,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
     {
         try
         {
+            if (ForwardTableWebViewMessage(e.WebMessageAsJson)) return;
             var message = JsonSerializer.Deserialize<LegacyViewerMessage>(e.WebMessageAsJson, WebMessageJsonOptions);
             if (message is null)
             {
@@ -1308,26 +1309,15 @@ public partial class MainWindow : Window, IPageWorkspaceHost
                     if (message.TargetKind == "table" && !string.IsNullOrWhiteSpace(message.Id))
                     {
                         _tableEditorController.Select(message.Id, message.Row, message.Column, message.EndRow, message.EndColumn);
+                        _tableEditorController.FormatScopeKind = message.Scope switch
+                        {
+                            "table" => ScadaTableFormatScopeKind.Table,
+                            "row" => ScadaTableFormatScopeKind.Rows,
+                            "column" => ScadaTableFormatScopeKind.Columns,
+                            _ => message.Row == message.EndRow && message.Column == message.EndColumn ? ScadaTableFormatScopeKind.Cells : ScadaTableFormatScopeKind.Cells
+                        };
                     }
                     _ = ShowContextMenuForRequestAsync(message);
-                    break;
-                case "tableSelection":
-                    if (!string.IsNullOrWhiteSpace(message.Id))
-                    {
-                        _tableEditorController.Select(message.Id, message.Row, message.Column, message.EndRow, message.EndColumn);
-                        SelectModernElement(message.Id);
-                        RefreshTablePropertiesPanel();
-                    }
-                    break;
-                case "tableCellEdit":
-                    EditTableCell(message);
-                    break;
-                case "tableTrackResize":
-                    var trackElement = _activeScene?.FindElementRecursive(message.Id ?? "");
-                    if (trackElement?.Table is not null)
-                    {
-                        _tableEditorController.SetTrackSize(trackElement, message.Orientation == "row", message.TrackIndex, message.TrackSize);
-                    }
                     break;
                 case "executeCommand":
                     _ = ExecuteEditorCommandAsync(message.CommandId, message);
@@ -4589,6 +4579,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         var element = CreateModernElement(elementKind.Value, x, y, shapeKind);
         AddModernElementToScene(element, "insertion Element+");
+        if (element.Kind == ScadaElementKind.Table)
+        {
+            _tableAuthoringSession.CompletePlacement(element.Id);
+            _ = SetTableInteractionModeInWebViewAsync(TableInteractionMode.Cells);
+            RefreshTableRibbonSurface();
+        }
     }
 
     private void PlaceTwoPointShape(string? shapeKindText, double x, double y, double x2, double y2)
@@ -4666,7 +4662,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         _pendingInsertKind = null;
         _pendingInsertShapeKind = null;
         _pendingInsertButtonKind = null;
-        _pendingTableCreation = null;
         _activeInsertCommandId = null;
         RefreshActiveRibbonCommandStates();
     }
@@ -6984,6 +6979,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         ActiveRibbonGroups.Clear();
         InsertFamilies.Clear();
         InsertFamilySurface.Visibility = ribbonKey == "Insert" ? Visibility.Visible : Visibility.Collapsed;
+        TableCreationConfigurationSurface.Visibility = Visibility.Collapsed;
         if (ribbonKey == "Insert")
         {
             foreach (var family in RibbonCommandCatalog.CreateInsertFamilies())
@@ -6996,6 +6992,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                     string.Equals(family.Id, _activeInsertFamilyId, StringComparison.Ordinal),
                     new RibbonRelayCommand(() => SetActiveInsertFamily(familyId), () => true)));
             }
+            if (_tableAuthoringSession.IsSurfaceOpen && _activeInsertFamilyId == "data")
+            {
+                RefreshTableRibbonSurface();
+            }
+            else
+            {
             var activeFamily = RibbonCommandCatalog.CreateInsertFamilies().FirstOrDefault(family => family.Id == _activeInsertFamilyId)
                 ?? RibbonCommandCatalog.CreateInsertFamilies()[0];
             foreach (var group in activeFamily.Tools.GroupBy(tool => tool.GroupLabel, StringComparer.Ordinal))
@@ -7003,6 +7005,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 ActiveRibbonGroups.Add(CreateRibbonGroupViewModel(new RibbonGroupDefinition(
                     group.Key,
                     group.Select(tool => new RibbonCommandDefinition(tool.Id, tool.Label, tool.IconKey, tool.ToolTip, tool.IsEnabled, tool.DisabledReason)).ToArray())));
+            }
             }
         }
         else if (_ribbonTabs.TryGetValue(ribbonKey, out var groups))
@@ -7024,6 +7027,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private void SetActiveInsertFamily(string familyId)
     {
+        if (familyId != "data") _tableAuthoringSession.CloseSurface();
         _activeInsertFamilyId = familyId;
         SetActiveRibbon("Insert");
     }
@@ -7043,6 +7047,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         var insertTool = InsertToolCatalog.Find(commandId);
         if (insertTool is { IsEnabled: true })
         {
+            if (insertTool.PlacementMode == InsertPlacementMode.ContextualSurface)
+            {
+                OpenTableAuthoringSurface();
+                return;
+            }
             BeginInsertToolPlacement(insertTool);
             return;
         }
@@ -7089,6 +7098,36 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 break;
             case "object.lock":
                 await ToggleSelectedElementLockAsync();
+                break;
+            case "table.add":
+                BeginConfiguredTablePlacement();
+                break;
+            case "table.autofit":
+                await RequestTableAutoFitAsync();
+                break;
+            case "table.back":
+                CloseTableAuthoringSurface();
+                break;
+            case "table.mode.object":
+                await SetTableModeAsync(TableInteractionMode.Object);
+                break;
+            case "table.mode.cells":
+                await SetTableModeAsync(TableInteractionMode.Cells);
+                break;
+            case "table.content.text":
+                if (_selectedSceneObject is not null) _tableEditorController.ConvertContent(_selectedSceneObject, ScadaTableCellContentKind.Text);
+                break;
+            case "table.content.input-text":
+                if (_selectedSceneObject is not null) _tableEditorController.ConvertContent(_selectedSceneObject, ScadaTableCellContentKind.InputText);
+                break;
+            case "table.content.input-numeric":
+                if (_selectedSceneObject is not null) _tableEditorController.ConvertContent(_selectedSceneObject, ScadaTableCellContentKind.InputNumeric);
+                break;
+            case "table.select.all":
+                if (_selectedSceneObject is not null) { _tableEditorController.SelectAll(_selectedSceneObject); RefreshTablePropertiesPanel(); }
+                break;
+            case "table.merge": case "table.unmerge": case "table.format": case "table.row.height": case "table.column.width": case "table.properties": case "table.content.properties": case "table.borders": case "table.headers": case "table.equalize": case "table.format.reset": case "table.row.insert": case "table.column.insert": case "table.row.delete": case "table.column.delete":
+                if (_selectedSceneObject is not null) _tableEditorController.Execute(commandId, _selectedSceneObject);
                 break;
             default:
                 SetStatus($"Commande ruban inconnue: {commandId}");

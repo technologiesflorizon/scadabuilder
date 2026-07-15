@@ -31,7 +31,8 @@ public sealed class Ft100SceneExporterTests
         var element = ScadaElement.CreateTable("table:main", "Tableau principal", 20, 30, 2, 2) with
         {
             Table = table,
-            Bounds = new SceneBounds(20, 30, table.Width, table.Height)
+            Bounds = new SceneBounds(20, 30, table.Width, table.Height),
+            IsLocked = true
         };
         var scene = ScadaScene.CreateEmpty("table-page", "Table", new(640, 480)).WithElement(element);
 
@@ -46,6 +47,8 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "grid-template-rows:36px 44px");
             StringAssert.Contains(html, "grid-column:1/span 2");
             StringAssert.Contains(html, "En-tete &amp; securise");
+            StringAssert.Contains(html, "<th id=");
+            StringAssert.Contains(html, "<td id=");
             StringAssert.Contains(html, "type=\"text\"");
             StringAssert.Contains(html, "type=\"number\"");
             StringAssert.Contains(html, "min=\"0\"");
@@ -54,6 +57,8 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "ft100-table-page__table_main__cell-1-1");
             StringAssert.Contains(css, ".scada-modern-table__cell");
             Assert.IsFalse(html.Contains("selection-overlay", StringComparison.Ordinal));
+            Assert.IsFalse(html.Contains("data-editor-locked", StringComparison.Ordinal));
+            Assert.IsFalse(html.Contains("IsLocked", StringComparison.Ordinal));
         }
         finally
         {

@@ -26,6 +26,7 @@ public sealed class TableUiArchitectureTests
     {
         var main = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");
         var web = ReadProjectFile("src", "ScadaBuilderV2.App", "TableEditor", "TableWebViewScript.cs");
+        var adapter = ReadProjectFile("src", "ScadaBuilderV2.App", "TableEditor", "TableWebViewMessageAdapter.cs");
         var xaml = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.xaml");
 
         StringAssert.Contains(main, "InsertToolCatalog.Find(commandId)");
@@ -35,7 +36,14 @@ public sealed class TableUiArchitectureTests
         Assert.IsFalse(main.Contains("ScadaTableOperations.", StringComparison.Ordinal));
         StringAssert.Contains(web, "tableTrackResize");
         StringAssert.Contains(web, "tableCellEdit");
+        StringAssert.Contains(web, "data-mode=\"object\"");
+        StringAssert.Contains(web, "createDocumentFragment");
+        StringAssert.Contains(web, "replaceChildren(grid)");
+        Assert.IsFalse(web.Contains("node.addEventListener", StringComparison.Ordinal), "Cell interaction must use grid-level event delegation for 64 x 64 tables.");
+        StringAssert.Contains(adapter, "tableAutoFitMeasured");
+        StringAssert.Contains(adapter, "double.IsFinite");
         StringAssert.Contains(xaml, "x:Name=\"InsertFamilySurface\"");
+        StringAssert.Contains(xaml, "x:Name=\"TableCreationConfigurationSurface\"");
         StringAssert.Contains(xaml, "Header=\"Tableau\"");
     }
 
@@ -47,9 +55,8 @@ public sealed class TableUiArchitectureTests
         StringAssert.Contains(dialogs, "params (string Label, FrameworkElement Control)[] fields");
         StringAssert.Contains(dialogs, "foreach (var field in fields)");
         StringAssert.Contains(dialogs, "panel.Children.Add(field.Control)");
-        StringAssert.Contains(dialogs, "(\"Rangees (1 a 64)\", rows)");
-        StringAssert.Contains(dialogs, "(\"Colonnes (1 a 64)\", columns)");
-        StringAssert.Contains(dialogs, "(\"\", header)");
+        StringAssert.Contains(dialogs, "CellContentDialog");
+        StringAssert.Contains(dialogs, "TableBorderDialog");
         Assert.IsFalse(
             dialogs.Contains("params object[] entries", StringComparison.Ordinal),
             "Concrete TextBox, CheckBox, ComboBox, and TextBlock tuples must not be filtered through an exact boxed ValueTuple type.");

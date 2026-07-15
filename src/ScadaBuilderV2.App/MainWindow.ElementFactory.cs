@@ -1,6 +1,5 @@
 using ScadaBuilderV2.Domain.Elements;
 using ScadaBuilderV2.Domain.Scenes;
-using ScadaBuilderV2.App.TableEditor;
 
 namespace ScadaBuilderV2.App;
 
@@ -127,8 +126,10 @@ public partial class MainWindow
         {
             var sequence = _nextTableSequence++;
             var id = CreateUniqueElementId($"table_{sequence:000}");
-            var options = _pendingTableCreation ?? new TableCreationOptions(6, 8, true);
-            return ScadaElement.CreateTable(id, $"Tableau{sequence:000}", x, y, options.Rows, options.Columns, options.FirstRowIsHeader);
+            return ScadaElement.CreateTable(id, $"Tableau{sequence:000}", x, y,
+                _tableAuthoringSession.CreationRows,
+                _tableAuthoringSession.CreationColumns,
+                _tableAuthoringSession.FirstRowIsHeader);
         }
 
         var textSequence = _nextInputTextSequence++;

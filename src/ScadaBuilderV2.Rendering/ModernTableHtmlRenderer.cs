@@ -18,12 +18,12 @@ internal static class ModernTableHtmlRenderer
         }
 
         var html = new StringBuilder();
-        html.Append("<div class=\"scada-modern-table\" role=\"grid\" data-scada-table=\"true\" style=\"");
+        html.Append("<table class=\"scada-modern-table\" role=\"grid\" data-scada-table=\"true\" style=\"position:relative;border-collapse:collapse;");
         html.Append("grid-template-columns:");
         html.Append(string.Join(' ', table.EffectiveColumns.Select(column => $"{Format(column.Width)}px")));
         html.Append(";grid-template-rows:");
         html.Append(string.Join(' ', table.EffectiveRows.Select(row => $"{Format(row.Height)}px")));
-        html.Append(";\">");
+        html.Append(";\"><tbody style=\"display:contents\">");
 
         foreach (var cell in table.EffectiveCells.OrderBy(cell => cell.Row).ThenBy(cell => cell.Column))
         {
@@ -34,7 +34,8 @@ internal static class ModernTableHtmlRenderer
 
             var format = ScadaTableStyleResolver.Resolve(table, cell.Row, cell.Column);
             var cellId = $"{scopedElementId}__cell-{cell.Row}-{cell.Column}";
-            html.Append("<div id=\"");
+            var isHeader = table.EffectiveRows[cell.Row].IsHeader;
+            html.Append(isHeader ? "<th id=\"" : "<td id=\"");
             html.Append(Html(cellId));
             html.Append("\" class=\"scada-modern-table__cell\" role=\"gridcell\" data-row=\"");
             html.Append(cell.Row.ToString(CultureInfo.InvariantCulture));
@@ -44,10 +45,11 @@ internal static class ModernTableHtmlRenderer
             AppendCellStyle(html, cell, format);
             html.Append("\">");
             AppendContent(html, cell.EffectiveContent, cellId);
-            html.Append("</div>");
+            html.Append(isHeader ? "</th>" : "</td>");
         }
-
-        html.Append("</div>");
+        html.Append("</tbody>");
+        AppendPhysicalBorders(html, table);
+        html.Append("</table>");
         return html.ToString();
     }
 
@@ -61,6 +63,38 @@ internal static class ModernTableHtmlRenderer
         html.Append($"font-family:{Css(format.FontFamily, "Segoe UI")};font-size:{Format(format.FontSize ?? 14)}px;");
         html.Append($"font-weight:{Css(format.FontWeight, "Normal")};font-style:{Css(format.FontStyle, "Normal")};");
         html.Append($"text-align:{Horizontal(format.HorizontalAlignment)};align-items:{Vertical(format.VerticalAlignment)};");
+        html.Append($"white-space:{(format.TextWrap == true ? "normal" : "nowrap")};overflow-wrap:{(format.TextWrap == true ? "anywhere" : "normal")};");
+        if (format.LineHeight is double lineHeight) html.Append($"line-height:{Format(lineHeight)}px;");
+    }
+
+    private static void AppendPhysicalBorders(StringBuilder html, ScadaTableDefinition table)
+    {
+        var x = Prefix(table.EffectiveColumns.Select(c => c.Width));
+        var y = Prefix(table.EffectiveRows.Select(r => r.Height));
+        for (var line = 0; line <= table.EffectiveRows.Count; line++)
+        for (var segment = 0; segment < table.EffectiveColumns.Count; segment++)
+        {
+            if (!ScadaTableBorderResolver.IsVisible(table, ScadaTableBorderOrientation.Horizontal, line, segment)) continue;
+            var b = ScadaTableBorderResolver.Resolve(table, ScadaTableBorderOrientation.Horizontal, line, segment);
+            AppendBorder(html, b, x[segment], y[line] - b.Width / 2, table.EffectiveColumns[segment].Width, b.Width);
+        }
+        for (var line = 0; line <= table.EffectiveColumns.Count; line++)
+        for (var segment = 0; segment < table.EffectiveRows.Count; segment++)
+        {
+            if (!ScadaTableBorderResolver.IsVisible(table, ScadaTableBorderOrientation.Vertical, line, segment)) continue;
+            var b = ScadaTableBorderResolver.Resolve(table, ScadaTableBorderOrientation.Vertical, line, segment);
+            AppendBorder(html, b, x[line] - b.Width / 2, y[segment], b.Width, table.EffectiveRows[segment].Height);
+        }
+    }
+
+    private static double[] Prefix(IEnumerable<double> sizes)
+    {
+        var values = new List<double> { 0 }; foreach (var size in sizes) values.Add(values[^1] + size); return values.ToArray();
+    }
+    private static void AppendBorder(StringBuilder html, ScadaTableBorder border, double left, double top, double width, double height)
+    {
+        if (border.Style == ScadaTableGridStyle.None || border.Width <= 0) return;
+        html.Append($"<span aria-hidden=\"true\" class=\"scada-modern-table__border\" style=\"position:absolute;pointer-events:none;z-index:3;left:{Format(left)}px;top:{Format(top)}px;width:{Format(width)}px;height:{Format(height)}px;background:{Css(border.Color, "transparent")};\"></span>");
     }
 
     private static void AppendContent(StringBuilder html, ScadaTableCellContent content, string cellId)

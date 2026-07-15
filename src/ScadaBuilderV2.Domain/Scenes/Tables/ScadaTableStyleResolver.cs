@@ -36,7 +36,9 @@ public static class ScadaTableStyleResolver
                 format.FontFamily ?? result.FontFamily,
                 format.FontSize ?? result.FontSize,
                 format.FontWeight ?? result.FontWeight,
-                format.FontStyle ?? result.FontStyle);
+                format.FontStyle ?? result.FontStyle,
+                format.TextWrap ?? result.TextWrap,
+                format.LineHeight ?? result.LineHeight);
         }
 
         return result;

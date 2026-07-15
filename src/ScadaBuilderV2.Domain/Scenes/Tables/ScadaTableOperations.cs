@@ -325,6 +325,8 @@ public static class ScadaTableOperations
                 }
             }
         }
+
+        ScadaTableBorderOperations.Validate(table);
     }
 
     private static void Validate(ScadaTableDefinition table, ScadaTableRange range)
