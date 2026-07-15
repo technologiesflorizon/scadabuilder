@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active properties panel contract
-Document version: `V2.1.4.0016`
+Document version: `V2.1.4.0026`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0026` | `0874416` | Onglet Tableau et dialogues etendus aux types/valeurs, portees, format complet, bordures et en-tetes; case de verrouillage partagee ajoutee aux proprietes generales. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Ajout de l'onglet Tableau contextuel, du dialogue de proprietes Tableau, du format de cellule et des dimensions de pistes partageant le coordinateur type. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Ajout des propriétés typographiques Element+, Foreground authorable, styles de bordure avancés, BorderRadius et aperçu vivant. |
 | 2026-06-19 | `V2.1.3.0002` | `PENDING` | Remplacement des couleurs arriere-plan/bordure Style et Bouton par le color picker modal aligne sur `CSS fond`. |

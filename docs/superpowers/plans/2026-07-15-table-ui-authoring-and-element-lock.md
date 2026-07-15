@@ -1,13 +1,14 @@
 # Outils d'authoring Tableau et verrouillage Element+ - Plan d'implementation
 
 Date: 2026-07-15
-Status: Reviewed implementation plan - pending execution approval
-Document version: `V2.1.4.0025`
+Status: Implemented - automated validation complete; isolated interactive Release gate pending
+Document version: `V2.1.4.0026`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0026` | `0874416` | Execution de la tranche : lock persistant, sous-surface et outils Tableau avances, bridge type, rendu/export et regressions automatises; mesure interactive Release non executee. |
 | 2026-07-15 | `V2.1.4.0025` | `0b1fbf4` | Integration de la revue du plan : extraction structurelle conforme a la spec, guards d'export conditionnels, tests d'architecture/resize, commandes explicites, retrait controle du dialogue, scenario `win00012` qualifie et staging documentaire ferme. |
 | 2026-07-15 | `V2.1.4.0024` | `3f6e6a5` | Creation du plan executable derive de la specification approuvee et de `DEC-0040`. |
 

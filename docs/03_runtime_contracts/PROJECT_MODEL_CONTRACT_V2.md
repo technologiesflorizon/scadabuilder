@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active project model contract
-Document version: `V2.1.4.0016`
+Document version: `V2.1.4.0026`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0026` | `0874416` | Extension Tableau par retour a la ligne, hauteur typographique et bordures physiques; ajout de `ScadaElement.IsLocked` comme metadata d'authoring. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Ajout du contrat persistant `ScadaElementKind.Table`, pistes, cellules, fusions, contenus input et styles heritables. |
 | 2026-07-14 | `V2.1.4.0012` | `PENDING` | Contrat `PageKey`/`PageCode`, provenance Wonderware, pages natives et sauvegarde atomique désormais implémenté. |
 | 2026-07-14 | `V2.1.4.0011` | `4def659` | Ajout de la cible approuvée `PageKey`/`PageCode`, provenance importée et migration compatible, avant implémentation. |
@@ -37,6 +38,10 @@ Legacy source paths and source ids are trace metadata unless explicitly converte
 Un tableau est un seul `ScadaElement` de kind `Table` dont `Table` contient les colonnes, rangees, ancres de cellules, spans, contenus et styles. Les pistes sont limitees a 1..64 par axe; les dimensions minimales sont 24 px par colonne et 20 px par rangee. Les anciennes scenes sans champ `Table` restent lisibles.
 
 Une cellule contient du texte statique, un `InputText` ou un `InputNumeric`. Ces inputs sont des valeurs locales simples : aucun `ValueBinding` cellule par cellule n'est cree. Les styles nullable signifient `Heriter`; la resolution se fait propriete par propriete selon `cellule > rangee explicite > bande > colonne > tableau > defaut`.
+
+`ScadaTableFormat` porte aussi `TextWrap` et `LineHeight`. `BorderOverrides` persiste des segments horizontaux/verticaux unitaires; les presets UI ne sont jamais serialises. Plusieurs rangees initiales consecutives peuvent porter `IsHeader`.
+
+`ScadaElement.IsLocked` est une metadata persistante de position. Une scene historique sans cle charge `false`. Cette metadata n'est ni une propriete runtime, ni une geometrie `.sb2`/`.sep`.
 
 Element numeric data keeps compatibility fields for older projects, but active authoring uses:
 

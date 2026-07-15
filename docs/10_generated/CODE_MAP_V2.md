@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Code Map
 
-Date: 2026-07-14
-Status: Generated baseline; page-management slice verified
-Document version: `V2.1.2.0020`
+Date: 2026-07-15
+Status: Generated baseline; DEC-0040 ownership verified
+Document version: `V2.1.4.0026`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0026` | `0874416` | Ajout des proprietaires Tableau avance et verrouillage persistant Element+. |
 | 2026-07-14 | `V2.1.2.0020` | `PENDING` | Ajout des propriétaires identité, commandes, workspace, diagnostics, migration, persistance atomique et projection `.sb2` des pages. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout de la responsabilite export `.sb2` et validation FT100 au module Rendering. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation de la carte code initiale pour verification documentaire. |
@@ -38,7 +39,18 @@ Document version: `V2.1.2.0020`
 | Ribbon/project/context UI | `App/Pages/`, `App/MainWindow.xaml` |
 | Blocking and retained diagnostics | `App/Diagnostics/` |
 
-## 3. Verification
+## 3. DEC-0040 Owners
+
+| Area | Owner |
+| --- | --- |
+| Table persistent model and pure operations | `Domain/Scenes/Tables/` |
+| Element position-lock closure | `Domain/Scenes/ScadaSceneElementLockOperations.cs` |
+| Table session, ribbon state and typed edits | `Application/Tables/` |
+| Lock aggregation, command, guard and history | `Application/Selection/`, `Application/Commands/ToggleElementLockCommand.cs`, `Application/History/ElementLockChangedAction.cs` |
+| WPF Table surfaces and typed WebView bridge | `App/TableEditor/`, `App/MainWindow.TableIntegration.cs` |
+| Shared Table runtime rendering | `Rendering/ModernTableHtmlRenderer.cs` |
+
+## 4. Verification
 
 Run:
 

@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active implementation status
-Document version: `V2.1.4.0018`
+Document version: `V2.1.4.0026`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0026` | `0874416` | Code et couverture automatisee de `DEC-0040` livres : verrou de position Element+, sous-surface Tableau, authoring avance et export commun; cloture produit suspendue au gate UI Release isole. |
 | 2026-07-14 | `V2.1.4.0018` | `858473c` | Correction du generateur des dialogues Tableau : les champs TextBox, CheckBox, ComboBox et TextBlock sont maintenant tous rendus. |
 | 2026-07-14 | `V2.1.4.0017` | `a94016a` | Niveau 1 du ruban Inserer reduit a des boutons 26 px et des icones 14 px; le niveau 2 recupere l'espace vertical auparavant consomme par le style de commande 58 px. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Tableau Element+ moderne implemente : creation 1..64 (preset 6x8), resize global et pistes, selection de plages, fusion, edition, formats/couleurs, clipboard, menu tableur, panneau/dialogues, persistance, preview/export `.sb2`; ruban Inserer a huit familles. |
@@ -72,7 +73,7 @@ Document version: `V2.1.4.0018`
 
 ## 1. Current Verified Baseline
 
-As of 2026-07-14, `dotnet test ScadaBuilderV2.sln --no-restore` reports 555 passed and 4 pre-existing unrelated failures tracked in `KNOWN_GAPS_V2.md`.
+As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The full-suite result and its pre-existing unrelated failures are recorded in `REGRESSION_COVERAGE_V2.md`; the isolated interactive Release performance gate remains manual.
 
 ## 2. Implemented Areas
 
@@ -98,6 +99,8 @@ As of 2026-07-14, `dotnet test ScadaBuilderV2.sln --no-restore` reports 555 pass
 20. Element+ value bindings can author the binding events `Lire valeur` and `Ecrire valeur` against enabled imported tags. The editor stores `ReadTagId` and `WriteTagId`, disables user-trigger selection for those functions, shows tag labels as `Nom du tag | datatype | Nom de l'appareil`, validates write bindings during build/export, and FT100 export emits tag catalog metadata plus read/write value runtime hooks.
 21. The editor exposes a project-level `Catalogue Tags` panel listing imported tags and records local tag creation as a future protocol-import revision. The panel can filter by text, device, datatype, access, and active state, and reports the visible subset against the full imported catalog.
 22. Element+ events can author `Afficher objet`, `Masquer objet`, and `Basculer visibilite` against Element+ targets, with one optional imported-tag condition using `Vrai`, `Faux`, `=`, `<>`, `>`, `>=`, `<`, or `<=`. Build/export validation rejects invalid condition tags, missing comparison values, missing target objects, and boolean operators on non-boolean tags.
+23. Automated `DEC-0040` implementation evidence covers persistent Element+ position locking, recursive groups, multiselection aggregation, undo/redo, and enforcement against effective X/Y changes.
+24. Automated `DEC-0040` implementation evidence covers the no-dialog Table contextual ribbon, Object/Cells modes, headers, content/format/border/track/header operations, auto-fit and shared export model. Product closure remains pending until the isolated interactive Release gate is recorded.
 23. FT100/TF100Web runtime can apply pushed tag values to all `Lire valeur` Element+ bindings through `window.scadaBuilderSetTagValue` or `scada-builder-tag-value`, while updating the shared runtime tag cache used by conditions.
 24. Element+ events can author `Ouvrir popup`, `Fermer popup`, and `Basculer popup` against compiled `Fragment` pages. Build/export validation rejects invalid popup targets, and FT100/TF100Web runtime opens, closes, or toggles the fragment in a centered iframe popup with close diagnostics and iframe-to-parent close/toggle requests.
 25. Element+ events can author `Afficher bordure`, `Masquer bordure`, and `Basculer bordure` against Element+ targets. Build/export validation rejects missing targets, and FT100/TF100Web runtime adds, removes, or toggles the standard page-scoped border class.

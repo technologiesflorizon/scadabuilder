@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active editor state contract
-Document version: `V2.1.4.0012`
+Document version: `V2.1.4.0026`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0026` | `0874416` | Ajout de `IsLocked` persistant, de l'agregation de multiselection, du guard de translation et de la session d'authoring Tableau hors modele de scene. |
 | 2026-07-14 | `V2.1.4.0012` | `PENDING` | Historique projet, restauration des onglets et snapshot atomique projet/scènes désormais implémentés. |
 | 2026-07-14 | `V2.1.4.0011` | `4def659` | Ajout de la cible approuvée pour dirty state, historique et persistance au niveau workspace projet. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat etat separe des commandes, actions et menus. |
@@ -23,6 +24,8 @@ State ownership must be explicit. Durable behavior belongs to project/scene/appl
 3. Selection state: selected source ids and selected scene object ids.
 4. Panel state: visible context and layout preferences.
 5. History state: undo/redo stacks per active scene context.
+6. Element lock state: `ScadaElement.IsLocked`; les toggles UI projettent l'agregation de la fermeture selection/groupe sans posseder un etat durable distinct.
+7. Table authoring session: surface, mode, configuration de creation, plage et portee; elle ne transporte aucun `ScadaElement` et ne remplace jamais la definition persistante du Tableau.
 
 ## 3. State Diagram
 

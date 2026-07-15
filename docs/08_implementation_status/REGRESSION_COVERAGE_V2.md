@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active regression coverage map
-Document version: `V2.1.4.0018`
+Document version: `V2.1.4.0026`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0026` | `0874416` | Couverture `DEC-0040` : lock/persistance/groupes/guard, session Tableau, conversions, formats, bordures, pistes/en-tetes, architecture WebView 64x64 et export sans artefact editeur. |
 | 2026-07-14 | `V2.1.4.0018` | `858473c` | Couverture du layout type des dialogues Tableau et de l'affichage de leurs controles WPF concrets. |
 | 2026-07-14 | `V2.1.4.0017` | `a94016a` | Ajout de la regression garantissant un niveau 1 Inserer compact, independant du style 58 px des commandes de niveau 2. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Couverture Tableau : modele/limites/precedence, operations, coordinator, clipboard, menu, architecture hors MainWindow, persistance scene, rendu HTML et archive `.sb2`; couverture des huit familles Inserer. |
@@ -67,7 +68,7 @@ Document version: `V2.1.4.0018`
 
 ```text
 dotnet test ScadaBuilderV2.sln --no-restore
-555 passed, 4 failed, 0 skipped
+598 passed, 5 failed, 0 skipped
 ```
 
 ## 2. Coverage Map

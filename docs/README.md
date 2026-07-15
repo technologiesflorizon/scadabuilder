@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0025`
+Document version: `V2.1.4.0026`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0026` | `0874416` | Implementation de `DEC-0040` : sous-surface Tableau sans dialogue, modes Objet/Cellules, contenu/format/bordures/pistes/en-tetes avances et verrouillage persistant Element+; validation interactive Release encore requise. |
 | 2026-07-15 | `V2.1.4.0025` | `0b1fbf4` | Integration de la revue du plan `DEC-0040` : extraction structurelle, cas conditionnels export, tests de decouplage/resize, retrait controle du dialogue, preuve performance et staging documentaire explicite. |
 | 2026-07-15 | `V2.1.4.0024` | `3f6e6a5` | Approbation de la specification d'authoring Tableau/verrouillage Element+, ajout de `DEC-0040` et creation de son plan d'implementation autonome. |
 | 2026-07-15 | `V2.1.4.0023` | `18a9e9d` | Revue de la specification Tableau/verrouillage contre le code : migrations explicites, contrat JSON, ruban secondaire, bindings WPF, bordures par segment, auto-fit WebView, performance, classes et tests localises. |
@@ -179,7 +180,7 @@ Active specifications and implementation plans:
 2. `superpowers/plans/2026-07-14-page-management-commands.md` - implementation record for page identity, commands, persistence, diagnostics, WPF surfaces, and `.sb2` compatibility; manual isolated-copy UI verification and real-project migration remain gated.
 3. `superpowers/specs/2026-07-14-modern-table-and-insert-ribbon-design.md` - implemented `DEC-0039` core design for the model-backed modern table and hierarchical Insert ribbon.
 4. `superpowers/specs/2026-07-15-table-ui-authoring-and-element-lock-design.md` - approved `DEC-0040` design for advanced Table UI authoring plus persistent Element+ position locking, group/multiselection semantics, shared lock surfaces, and explicit class/method boundaries.
-5. `superpowers/plans/2026-07-15-table-ui-authoring-and-element-lock.md` - pending execution plan for the approved advanced Table authoring and global Element+ position-lock tranche.
+5. `superpowers/plans/2026-07-15-table-ui-authoring-and-element-lock.md` - implementation record for advanced Table authoring and global Element+ position locking; automated validation is complete and the isolated interactive Release performance gate remains.
 6. `superpowers/plans/2026-07-14-modern-table-and-insert-ribbon.md` - implementation record for the approved and implemented modern table core and hierarchical Insert ribbon.
 
 Generated documentation:

@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Selection Contract
 
-Date: 2026-06-16
+Date: 2026-07-15
 Status: Active editor selection contract
-Document version: `V2.1.2.0003`
+Document version: `V2.1.4.0026`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0026` | `0874416` | Separation du verrou de position et de la selection; ajout des portees cellule/plage/rangee/colonne propres au Tableau. |
 | 2026-06-16 | `V2.1.2.0003` | `PENDING` | Clarification que le deplacement normal d'un enfant de groupe Element+ cible son groupe parent. |
 | 2026-06-16 | `V2.1.2.0002` | `PENDING` | Clarification que le groupement de scene consomme uniquement la selection Element+ moderne. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat actif de selection SCADA Builder V2. |
@@ -35,11 +36,14 @@ The editor can select:
 7. A source/legacy selection can be converted, moved, hidden, deleted, or opened in Studio Element+ according to command contracts, but it cannot be grouped directly in the scene.
 8. A scene group can be created only from two or more selected Element+ scene object ids.
 9. In normal scene movement, a selected child inside an Element+ group is normalized to the containing group so grouped objects move together.
+10. `IsLocked` n'empeche jamais de selectionner un Element+; il bloque seulement les mutations qui changeraient effectivement X ou Y.
+11. En mode Tableau Cellules, la selection interne est une plage distincte de la selection de scene. Les headers de rangee/colonne et le coin produisent une portee explicite sans devenir des Element+.
 
 ## 3. Related Decision
 
 1. `DEC-0006` - Polymorphic Selection And Durable Source Delete.
 2. `DEC-0010` - Scene Grouping Is Element+ Only.
+3. `DEC-0040` - Advanced Table Authoring And Persistent Element Position Lock.
 
 ## 4. Related Tests
 
