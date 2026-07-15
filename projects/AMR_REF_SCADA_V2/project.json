@@ -432,6 +432,51 @@
       }
     },
     {
+      "Id": "win00012_modern",
+      "Title": "Tableau de d\u00E9givrage \u2014 Moderne",
+      "RelativePath": "scenes/win00012_modern.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#061018",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "PageKey": "567f7fee-244f-470c-b4d1-af5b3294506a",
+      "PageCode": "win00012_modern",
+      "Origin": "Native",
+      "ImportProvenance": null,
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#061018",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
       "Id": "win00013",
       "Title": "win00013",
       "RelativePath": "scenes/win00013.scene.json",
