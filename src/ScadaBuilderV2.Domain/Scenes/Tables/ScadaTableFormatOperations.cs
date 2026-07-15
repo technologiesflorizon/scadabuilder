@@ -9,6 +9,7 @@ public sealed record ScadaTableFormatScope(ScadaTableFormatScopeKind Kind, Scada
 /// <summary>Applies and resets nullable table formatting overrides.</summary>
 public static class ScadaTableFormatOperations
 {
+    /// <summary>Applies a nullable local override to an explicit scope.</summary>
     public static ScadaTableDefinition ApplyFormat(ScadaTableDefinition table, ScadaTableFormatScope scope, ScadaTableFormat? format) => scope.Kind switch
     {
         ScadaTableFormatScopeKind.Table => table with { Style = table.EffectiveStyle with { Base = format } },
@@ -20,8 +21,10 @@ public static class ScadaTableFormatOperations
         _ => table
     };
 
+    /// <summary>Clears every local override on a scope.</summary>
     public static ScadaTableDefinition ResetScope(ScadaTableDefinition table, ScadaTableFormatScope scope) => ApplyFormat(table, scope, null);
 
+    /// <summary>Clears one named local property while retaining other overrides.</summary>
     public static ScadaTableDefinition ResetProperty(ScadaTableDefinition table, ScadaTableFormatScope scope, string property)
     {
         var current = ResolveLocal(table, scope);

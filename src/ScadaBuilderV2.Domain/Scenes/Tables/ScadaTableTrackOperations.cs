@@ -3,14 +3,22 @@ namespace ScadaBuilderV2.Domain.Scenes;
 /// <summary>Applies precise deterministic table track dimensions.</summary>
 public static class ScadaTableTrackOperations
 {
+    /// <summary>Sets selected row heights.</summary>
     public static ScadaTableDefinition SetRowHeight(ScadaTableDefinition table, IEnumerable<int> indexes, double height) => ScadaTableOperations.SetRowHeight(table, indexes, height);
+    /// <summary>Sets selected column widths.</summary>
     public static ScadaTableDefinition SetColumnWidth(ScadaTableDefinition table, IEnumerable<int> indexes, double width) => ScadaTableOperations.SetColumnWidth(table, indexes, width);
+    /// <summary>Resizes every track proportionally to exact table bounds.</summary>
     public static ScadaTableDefinition ResizeProportionally(ScadaTableDefinition table, double width, double height) => ScadaTableOperations.ResizeProportionally(table, width, height);
+    /// <summary>Equalizes selected columns while preserving their total.</summary>
     public static ScadaTableDefinition EqualizeColumns(ScadaTableDefinition table, IEnumerable<int> indexes) => SetColumns(table, indexes, null, false);
+    /// <summary>Equalizes selected rows while preserving their total.</summary>
     public static ScadaTableDefinition EqualizeRows(ScadaTableDefinition table, IEnumerable<int> indexes) => SetRows(table, indexes, null, false);
+    /// <summary>Distributes an exact column total by current ratios.</summary>
     public static ScadaTableDefinition DistributeColumns(ScadaTableDefinition table, IEnumerable<int> indexes, double total) => SetColumns(table, indexes, total, true);
+    /// <summary>Distributes an exact row total by current ratios.</summary>
     public static ScadaTableDefinition DistributeRows(ScadaTableDefinition table, IEnumerable<int> indexes, double total) => SetRows(table, indexes, total, true);
 
+    /// <summary>Applies a complete validated auto-fit measurement atomically.</summary>
     public static ScadaTableDefinition ApplySizes(ScadaTableDefinition table, IReadOnlyList<double> widths, IReadOnlyList<double> heights)
     {
         if (widths.Count != table.EffectiveColumns.Count || heights.Count != table.EffectiveRows.Count || widths.Any(x => !double.IsFinite(x) || x < ScadaTableDefinition.MinimumColumnWidth) || heights.Any(x => !double.IsFinite(x) || x < ScadaTableDefinition.MinimumRowHeight))

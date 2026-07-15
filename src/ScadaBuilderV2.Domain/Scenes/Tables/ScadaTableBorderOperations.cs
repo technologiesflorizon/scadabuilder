@@ -6,6 +6,7 @@ public enum ScadaTableBorderPreset { None, All, Outline, Inside, Top, Right, Bot
 /// <summary>Expands border presets into canonical physical segment overrides.</summary>
 public static class ScadaTableBorderOperations
 {
+    /// <summary>Applies a UI preset as physical segment overrides.</summary>
     public static ScadaTableDefinition ApplyPreset(ScadaTableDefinition table, ScadaTableRange range, ScadaTableBorderPreset preset, ScadaTableBorder? border)
     {
         if (preset == ScadaTableBorderPreset.None) border = new ScadaTableBorder(ScadaTableGridStyle.None, border?.Color ?? "#000000", 0);
@@ -16,6 +17,7 @@ public static class ScadaTableBorderOperations
         return table with { BorderOverrides = retained.OrderBy(x => x.Orientation).ThenBy(x => x.GridLine).ThenBy(x => x.Segment).ToArray() };
     }
 
+    /// <summary>Validates all persisted physical segments.</summary>
     public static void Validate(ScadaTableDefinition table)
     {
         foreach (var item in table.EffectiveBorderOverrides)

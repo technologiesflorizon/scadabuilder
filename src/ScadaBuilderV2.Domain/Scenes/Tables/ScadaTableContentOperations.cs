@@ -6,7 +6,9 @@ namespace ScadaBuilderV2.Domain.Scenes;
 /// <remarks>Decisions: DEC-0040. Contracts: approved table authoring specification. Tests: TableContentOperationsTests.</remarks>
 public static class ScadaTableContentOperations
 {
+    /// <summary>Sets one anchor content through the compatibility facade.</summary>
     public static ScadaTableDefinition SetContent(ScadaTableDefinition table, int row, int column, ScadaTableCellContent content) => ScadaTableOperations.SetContent(table, row, column, content);
+    /// <summary>Clears every anchor in a range.</summary>
     public static ScadaTableDefinition ClearContent(ScadaTableDefinition table, ScadaTableRange range) => ScadaTableOperations.ClearContent(table, range);
     /// <summary>Converts every anchor in a range to the requested content kind.</summary>
     public static ScadaTableDefinition ConvertKind(ScadaTableDefinition table, ScadaTableRange range, ScadaTableCellContentKind kind) =>

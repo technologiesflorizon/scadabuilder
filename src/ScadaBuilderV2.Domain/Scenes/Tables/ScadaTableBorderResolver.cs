@@ -3,6 +3,7 @@ namespace ScadaBuilderV2.Domain.Scenes;
 /// <summary>Resolves physical table-border segments and merge visibility.</summary>
 public static class ScadaTableBorderResolver
 {
+    /// <summary>Resolves one override or its effective base-format fallback.</summary>
     public static ScadaTableBorder Resolve(ScadaTableDefinition table, ScadaTableBorderOrientation orientation, int gridLine, int segment)
     {
         var value = table.EffectiveBorderOverrides.LastOrDefault(x => x.Orientation == orientation && x.GridLine == gridLine && x.Segment == segment)?.Border;
@@ -11,6 +12,7 @@ public static class ScadaTableBorderResolver
         return new(format.GridStyle ?? ScadaTableGridStyle.Solid, format.GridColor ?? "#8AA0A6", format.GridWidth ?? 1);
     }
 
+    /// <summary>Returns false for segments hidden inside a merged cell.</summary>
     public static bool IsVisible(ScadaTableDefinition table, ScadaTableBorderOrientation orientation, int gridLine, int segment)
     {
         foreach (var cell in table.EffectiveCells.Where(c => c.RowSpan > 1 || c.ColumnSpan > 1))

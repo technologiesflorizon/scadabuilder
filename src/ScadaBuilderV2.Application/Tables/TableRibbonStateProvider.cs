@@ -5,6 +5,7 @@ namespace ScadaBuilderV2.Application.Tables;
 /// <summary>Builds the stable level-two contextual Table command groups.</summary>
 public static class TableRibbonStateProvider
 {
+    /// <summary>Creates contextual groups with selection-dependent enablement and diagnostics.</summary>
     public static IReadOnlyList<RibbonGroupDefinition> Create(TableAuthoringSession session)
     {
         var table = session.TableElementId is not null;

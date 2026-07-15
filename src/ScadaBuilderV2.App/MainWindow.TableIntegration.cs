@@ -135,7 +135,9 @@ public partial class MainWindow
     {
         if (TablePropertiesPanel is null || TableSelectionSummaryText is null) return;
         var element = _selectedSceneObject?.Kind == ScadaElementKind.Table ? _selectedSceneObject : null;
+        var wasCellMode = _tableAuthoringSession.Mode == TableInteractionMode.Cells;
         _tableAuthoringSession.SelectTable(element?.Id);
+        if (element is null && wasCellMode) _ = SetTableInteractionModeInWebViewAsync(TableInteractionMode.Object);
         TablePropertiesPanel.Visibility = element is null ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
         if (element?.Table is null) return;
         var range = _tableEditorController.Selection;
