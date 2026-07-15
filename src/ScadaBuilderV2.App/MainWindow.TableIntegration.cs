@@ -2,6 +2,7 @@ using System.Globalization;
 using ScadaBuilderV2.Application.Commands;
 using ScadaBuilderV2.Application.Tables;
 using ScadaBuilderV2.Domain.Scenes;
+using ScadaBuilderV2.App.TableEditor;
 
 namespace ScadaBuilderV2.App;
 
