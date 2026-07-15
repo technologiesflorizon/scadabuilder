@@ -14,6 +14,91 @@ namespace ScadaBuilderV2.Tests;
 public sealed class Ft100SceneExporterTests
 {
     [TestMethod]
+    public async Task ProjectManifest22ExportsBoundNumericTableAnchorsWithoutSyntheticObjects()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var table = ScadaElement.CreateTable("table_001", "Tableau", 10, 20, 3, 3);
+        var definition = table.Table! with
+        {
+            Cells = table.Table.EffectiveCells.Select(cell => cell.Row == 1 && cell.Column == 0
+                ? cell with
+                {
+                    Content = new ScadaTableCellContent(
+                        ScadaTableCellContentKind.InputNumeric,
+                        Placeholder: "0.0",
+                        NumericValue: 12.5,
+                        Minimum: 0,
+                        Maximum: 100,
+                        Step: 0.1,
+                        IsReadOnly: false,
+                        DisplayFormat: "##.#"),
+                    ValueBindings = new ScadaTableCellValueBindings("tag.read", "tag.write")
+                }
+                : cell.Row == 2 && cell.Column == 2
+                    ? cell with { Content = new ScadaTableCellContent(ScadaTableCellContentKind.InputNumeric, NumericValue: 5) }
+                    : cell).ToArray()
+        };
+        definition = ScadaTableOperations.Merge(definition, new ScadaTableRange(1, 0, 1, 1));
+        table = table with { Table = definition, Bounds = table.Bounds with { Width = definition.Width, Height = definition.Height } };
+        var first = ScadaScene.CreateEmpty("table-page", "Table", new(640, 480)).WithElement(table);
+        var second = ScadaScene.CreateEmpty("second-page", "Second", new(640, 480));
+        var project = ScadaProject.CreateDefault("TableBindings") with
+        {
+            HomePageId = first.Id,
+            Scenes =
+            [
+                new ScadaSceneReference(first.Id, first.Title, $"scenes/{first.Id}.scene.json"),
+                new ScadaSceneReference(second.Id, second.Title, $"scenes/{second.Id}.scene.json")
+            ],
+            TagCatalog = new ScadaTagCatalog("tf100web-scada-tags-v1",
+            [
+                new ScadaTagDefinition("tag.read", "Lecture"),
+                new ScadaTagDefinition("tag.write", "Ecriture", Writeable: true)
+            ])
+        };
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportProjectAsync(
+                project,
+                [new(first, null), new(second, null)],
+                root);
+            using var manifest = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "manifest.json")));
+            Assert.AreEqual("2.2", manifest.RootElement.GetProperty("ManifestVersion").GetString());
+            Assert.AreEqual(2, manifest.RootElement.GetProperty("Pages").GetArrayLength());
+            var page = manifest.RootElement.GetProperty("Pages").EnumerateArray().Single(item => item.GetProperty("Id").GetString() == first.Id);
+            var objects = page.GetProperty("Objects");
+            Assert.AreEqual(1, objects.GetArrayLength(), "A bound cell must not become a synthetic manifest object.");
+            var tableObject = objects[0];
+            var bindings = tableObject.GetProperty("TableCellBindings");
+            Assert.AreEqual(1, bindings.GetArrayLength());
+            var binding = bindings[0];
+            Assert.AreEqual(1, binding.GetProperty("Row").GetInt32());
+            Assert.AreEqual(0, binding.GetProperty("Column").GetInt32());
+            Assert.AreEqual("table_001__cell-1-0", binding.GetProperty("TargetId").GetString());
+            Assert.AreEqual("InputNumeric", binding.GetProperty("Kind").GetString());
+            Assert.AreEqual("0.0", binding.GetProperty("Data").GetProperty("Placeholder").GetString());
+            Assert.AreEqual("##.#", binding.GetProperty("Data").GetProperty("DisplayFormat").GetString());
+            Assert.AreEqual(0.1, binding.GetProperty("Data").GetProperty("Step").GetDouble(), 0.0001);
+            Assert.AreEqual("tag.read", binding.GetProperty("ValueBindings").GetProperty("ReadTagId").GetString());
+            Assert.AreEqual("tag.write", binding.GetProperty("ValueBindings").GetProperty("WriteTagId").GetString());
+            Assert.AreEqual(JsonValueKind.Null, tableObject.GetProperty("ValueBindings").GetProperty("ReadTagId").ValueKind);
+
+            var html = await File.ReadAllTextAsync(result.PageResults.Single(item =>
+                string.Equals(Path.GetFileNameWithoutExtension(item.HtmlPath), first.Id, StringComparison.Ordinal)).HtmlPath);
+            StringAssert.Contains(html, "id=\"ft100-table-page__table_001__cell-1-0\"");
+            StringAssert.Contains(html, "data-scada-table-cell-kind=\"InputNumeric\"");
+            StringAssert.Contains(html, "colspan=\"2\"");
+            Assert.IsFalse(html.Contains("tag.read", StringComparison.Ordinal));
+            Assert.IsFalse(html.Contains("tag.write", StringComparison.Ordinal));
+        }
+        finally
+        {
+            if (Directory.Exists(root)) Directory.Delete(root, true);
+        }
+    }
+
+    [TestMethod]
     public async Task ExportRendersModernTableStructureInputsMergesAndEffectiveStyles()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
@@ -713,7 +798,7 @@ public sealed class Ft100SceneExporterTests
             AssertHtmlReferencesSharedRuntime(html, exportRoot);
 
             var manifest = await File.ReadAllTextAsync(manifestPath);
-            StringAssert.Contains(manifest, "\"ManifestVersion\": \"2.1\"");
+            StringAssert.Contains(manifest, "\"ManifestVersion\": \"2.2\"");
             StringAssert.Contains(manifest, "\"HomePageId\": \"win00008\"");
             StringAssert.Contains(manifest, "\"RelativePath\": \"win00008.html\"");
             StringAssert.Contains(manifest, "\"Type\": \"default\"");

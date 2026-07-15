@@ -1879,7 +1879,7 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
         var manifest = new
         {
             Name = scene.Title,
-            ManifestVersion = "2.1",
+            ManifestVersion = "2.2",
             HomePageId = homePageId,
             Pages = new[] { BuildManifestPage(scene, homePageId, projectRelativePath: false, tagCatalog, warnings) },
             Actions = scene.ActionDefinitions.Select(BuildRuntimeAction).ToArray(),
@@ -1907,7 +1907,7 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
         var manifest = new
         {
             Name = project.Name,
-            ManifestVersion = "2.1",
+            ManifestVersion = "2.2",
             HomePageId = homePageId,
             Pages = exportedScenes
                 .Select(scene => BuildManifestPage(scene, homePageId, projectRelativePath: true, tagCatalog, warnings))
@@ -1955,6 +1955,7 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
                         ReadTagId = element.Data?.ReadTagId,
                         WriteTagId = element.Data?.WriteTagId
                     },
+                    TableCellBindings = Ft100TableCellBindingManifestBuilder.Build(element, tagCatalog, warnings),
                     StateConfig = element.EffectiveStateConfig.States.Count > 0
                         || element.EffectiveStateConfig.ReadVariable is not null
                         || HasNonDefaultFallback(element.EffectiveStateConfig)

@@ -44,6 +44,8 @@ internal static class ModernTableHtmlRenderer
                 html.Append(cell.Row.ToString(CultureInfo.InvariantCulture));
                 html.Append("\" data-column=\"");
                 html.Append(cell.Column.ToString(CultureInfo.InvariantCulture));
+                html.Append("\" data-scada-table-cell-kind=\"");
+                html.Append(cell.EffectiveContent.Kind.ToString());
                 html.Append("\" style=\"");
                 AppendCellStyle(html, cell, format);
                 html.Append("\">");
