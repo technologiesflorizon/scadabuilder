@@ -1010,7 +1010,7 @@ public sealed class WebViewContextMenuScriptTests
     [TestMethod]
     public void ModernShapePreviewUsesSvgShapeKind()
     {
-        var source = ReadMainWindowSource();
+        var source = ReadModernPreviewSource();
 
         StringAssert.Contains(source, "function renderShapeElement(element, style)");
         StringAssert.Contains(source, "String(element.ShapeKind || element.shapeKind || 'Rectangle').toLowerCase()");
@@ -1045,7 +1045,7 @@ public sealed class WebViewContextMenuScriptTests
     [TestMethod]
     public void ModernPreviewPayloadSerializesVisualDiscriminatorsAsText()
     {
-        var source = ReadMainWindowSource();
+        var source = ReadModernPreviewSource();
 
         StringAssert.Contains(source, "ShapeKind = element.Kind == ScadaElementKind.Shape ? element.EffectiveShapeKind.ToString() : null");
         StringAssert.Contains(source, "ButtonKind = element.Kind == ScadaElementKind.Button ? element.EffectiveButtonKind.ToString() : null");
@@ -1951,6 +1951,15 @@ public sealed class WebViewContextMenuScriptTests
 
         Assert.Fail("Unable to locate src/ScadaBuilderV2.App from test output directory.");
         return "";
+    }
+
+    private static string ReadModernPreviewSource()
+    {
+        return string.Join(
+            "\n",
+            ReadMainWindowSource(),
+            ReadMainWindowFile(Path.Combine("EditorBridge", "ModernElementRenderPayload.cs")),
+            ReadMainWindowFile(Path.Combine("EditorBridge", "ModernElementRenderPayloadFactory.cs")));
     }
 
     private static string ReadMainWindowFile(string fileName)
