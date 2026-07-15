@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0016`
+Document version: `V2.1.4.0017`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0017` | `a94016a` | Compactage du niveau 1 du ruban Inserer afin de rendre le niveau 2 entierement visible dans la hauteur normalisee. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Implementation du Tableau Element+ moderne, edition type tableur, export `.sb2` sans bindings cellule, et ruban Inserer hierarchique a huit familles. |
 | 2026-07-14 | `V2.1.4.0015` | `95a57ac` | Specification Tableau approuvee, `DEC-0039` enregistree et plan d'implementation executable ajoute. |
 | 2026-07-14 | `V2.1.4.0014` | `a95addd` | Specification Tableau precisee avec surfaces de proprietes dediees, menu contextuel type tableur, dimensions manuelles, limite validee contre `win00012` et garde-fou strict hors `MainWindow`; une precedence de style detaillee reste a confirmer. |

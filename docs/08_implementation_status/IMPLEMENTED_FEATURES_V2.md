@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active implementation status
-Document version: `V2.1.4.0016`
+Document version: `V2.1.4.0017`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0017` | `a94016a` | Niveau 1 du ruban Inserer reduit a des boutons 26 px et des icones 14 px; le niveau 2 recupere l'espace vertical auparavant consomme par le style de commande 58 px. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Tableau Element+ moderne implemente : creation 1..64 (preset 6x8), resize global et pistes, selection de plages, fusion, edition, formats/couleurs, clipboard, menu tableur, panneau/dialogues, persistance, preview/export `.sb2`; ruban Inserer a huit familles. |
 | 2026-07-14 | `V2.1.4.0009` | `PENDING` | Correction du crash au clic droit sur une page : la remontée du parent accepte maintenant les contenus WPF `Run` et le menu contextuel peut s'afficher. |
 | 2026-07-14 | `V2.1.4.0008` | `PENDING` | Correction du rognage de l'icone Nouvelle page dans le panneau Projet. |
@@ -134,6 +135,7 @@ As of 2026-07-14, `dotnet test ScadaBuilderV2.sln --no-restore` reports 555 pass
 58. The `Projet > Pages` panel labels its search field, starts with `Default` and `Tous` for the type/build filters, and reuses the ribbon's semantic `Icon.Page.New` resource for its quick-create action.
 59. The page quick-create icon is constrained to 16x16 with explicit button padding so the shared vector remains fully visible inside the compact panel action.
 60. Page context-menu hit testing now traverses `FrameworkContentElement` parents through `ContentOperations.GetParent` and reserves `VisualTreeHelper` for actual visuals, preventing the `Run`-specific WPF crash on right-click.
+61. The first-level Insert family strip uses dedicated 26-pixel buttons with 14-pixel semantic icons instead of inheriting the 58-pixel second-level command style, preserving the full vertical command surface. `RibbonCommandCatalogTests.InsertFamilyRibbonKeepsFirstLevelCompact` locks this layout contract.
 
 ## 3. Source Of Truth
 

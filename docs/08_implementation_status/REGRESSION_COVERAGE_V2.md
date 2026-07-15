@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active regression coverage map
-Document version: `V2.1.4.0016`
+Document version: `V2.1.4.0017`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-14 | `V2.1.4.0017` | `a94016a` | Ajout de la regression garantissant un niveau 1 Inserer compact, independant du style 58 px des commandes de niveau 2. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Couverture Tableau : modele/limites/precedence, operations, coordinator, clipboard, menu, architecture hors MainWindow, persistance scene, rendu HTML et archive `.sb2`; couverture des huit familles Inserer. |
 | 2026-07-14 | `V2.1.4.0008` | `PENDING` | Ajout de la couverture du clic droit sur une page lorsque la cible est un contenu inline WPF `Run`. |
 | 2026-07-14 | `V2.1.4.0007` | `PENDING` | Couverture des dimensions et de la marge interne de l'icone Nouvelle page. |
@@ -88,7 +89,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Scene/domain rules | `OfficialSceneDomainTests.cs`, `ScadaSceneGroupTests.cs` |
 | Undo/redo/history | `EditorHistoryServiceTests.cs` |
 | WebView bridge/context menu | `WebViewContextMenuScriptTests.cs` |
-| Top ribbon dynamic command surface | `RibbonCommandCatalogTests.MainRibbonUsesOnlyDynamicCommandSurface`, `RibbonCommandCatalogTests.DefaultCatalogDefinesExpectedTopRibbonTabs`, `RibbonCommandCatalogTests.DefaultCatalogRequiresSemanticIconKeys` |
+| Top ribbon dynamic command surface | `RibbonCommandCatalogTests.MainRibbonUsesOnlyDynamicCommandSurface`, `RibbonCommandCatalogTests.DefaultCatalogDefinesExpectedTopRibbonTabs`, `RibbonCommandCatalogTests.DefaultCatalogRequiresSemanticIconKeys`, `RibbonCommandCatalogTests.InsertFamilyRibbonKeepsFirstLevelCompact` |
 | Left tool palette semantic command surface | `RibbonCommandCatalogTests.ToolPaletteUsesSemanticCommandCatalog`, `RibbonCommandCatalogTests.DefaultCatalogRequiresSemanticIconKeys`, `RibbonCommandCatalogTests.DisabledCommandsExposeReason` |
 | Element inventory hierarchy | `LegacyElementSelectionModelTests.cs` |
 | Element+ legacy conversion | `ElementPlusLegacyConverterTests.cs` |
