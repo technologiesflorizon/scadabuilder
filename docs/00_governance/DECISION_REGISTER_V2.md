@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active authoritative decision register
-Document version: `V2.1.4.0034`
+Document version: `V2.1.4.0037`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0037` | `PENDING` | Ajout de `DEC-0042` pour les bindings lecture/ecriture des cellules Tableau `InputNumeric`, le manifest `.sb2` 2.2 et l'intake TF100Web ordonne avant l'exporteur. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | `DEC-0041` implementee et validee sans changement des contrats `.sb2`, `.sep` ou TF100Web. |
 | 2026-07-15 | `V2.1.4.0033` | `e811253` | Ajout de `DEC-0041` pour les corrections d'interaction Tableau/verrou approuvees. |
 | 2026-07-15 | `V2.1.4.0028` | `c873744` | `DEC-0040` corrigée sur ses surfaces WPF fondamentales : accès Tableau sans modale et état de verrou partagé jusque dans le menu contextuel Element+. |
@@ -1228,3 +1229,35 @@ Required in `ModernElementRenderPayloadFactoryTests`, `TableAuthoringSessionTest
 Implementation status:
 
 Implemented in `b75f1d7`, with source-contract follow-up `c441090`. The editor payload now carries recursive `IsLocked`, forbidden position gestures stop before preview, Table mode/guides synchronize atomically, and the isolated WPF/WebView2 smoke confirmed the principal locked/unlocked Table workflows without changing `.sb2`, `.sep` or TF100Web.
+
+### DEC-0042 - Functional Numeric Inputs In Table Cells Across SCADA Builder V2 And TF100Web
+
+Status: Active
+Created: 2026-07-15 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/specs/2026-07-15-table-cell-numeric-input-tf100web-design.md`
+
+Context:
+
+The implemented Table authoring tools can render local numeric HTML inputs, but a table cell cannot persist read/write tag bindings or participate in the TF100Web mapping runtime. Reusing the existing object-level binding path without a dedicated cell target would attach runtime behavior to the Table wrapper and risk replacing its complete DOM. The new manifest contract is also globally versioned, so delivery order is a compatibility concern even for exported pages without bound cells.
+
+Decision:
+
+Only anchored `InputNumeric` table cells receive optional read and write bindings in this slice. Bindings are persisted on `ScadaTableCell`, remain separate from copied cell content, move with structural row/column operations, and are protected by explicit confirmation or merge blocking when an operation would destroy them. No synthetic Element+ or persistent cell identifier is introduced; the runtime target is derived deterministically from Table element id, row and column.
+
+The `.sb2` manifest advances globally from `2.1` to `2.2` and adds `Objects[].TableCellBindings` for bound numeric cells only. TF100Web resolves each `TargetId` to the page-scoped `<td>`, injects the existing numeric mapping attributes there, and adapts the common numeric runtime to reuse the renderer-created `<input type="number">` child. Native `min` and `max` attributes remain on that child and are not reinjected. TF100Web must accept and validate manifests `2.1` and `2.2` before SCADA Builder V2 begins exporting `2.2`; unknown versions are rejected explicitly at deployment.
+
+Consequences:
+
+The delivery is cross-repository and deployment-order sensitive: TF100Web compatibility is implemented, tested and rolled out before the SCADA exporter version change. Existing object-level numeric inputs keep the same runtime path. InputText bindings, dynamic table datasets, formulas, automatic mapping creation and per-range bindings remain out of scope. Domain and Application own binding rules and safety; WPF and Django views remain orchestration surfaces; `MainWindow` does not acquire table-binding business logic.
+
+Implementation status:
+
+Planned in `docs/superpowers/plans/2026-07-15-table-cell-numeric-input-tf100web.md`; no implementation behavior is claimed yet.
+
+Regression coverage:
+
+Planned in SCADA Builder V2 `ScadaTableModelTests`, `TableContentOperationsTests`, `ScadaTableOperationsTests`, `TableClipboardTests`, `TableEditCoordinatorTests`, `TableUiArchitectureTests`, `ModernProjectStoreTests`, `PreviewDocumentTests` and `Ft100SceneExporterTests`, plus TF100Web `frontend.tests_scada_deploy`, `frontend.tests_scada_page_composition` and `frontend.tests_scada_package`.

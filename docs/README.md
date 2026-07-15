@@ -2,12 +2,15 @@
 
 Date: 2026-07-15
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0035`
+Document version: `V2.1.4.0038`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0038` | `PENDING` | Integration de la revue du plan `DEC-0042` : nouvelles valeurs `TableEditKind` explicites et justification de `data-scada-step` sur la cible cellule TF100Web. |
+| 2026-07-15 | `V2.1.4.0037` | `PENDING` | Approbation de la specification des inputs numeriques lies dans les cellules Tableau, ajout de `DEC-0042` et creation du plan cross-repo ordonnant TF100Web avant l'export `.sb2` 2.2. |
+| 2026-07-15 | `V2.1.4.0036` | `PENDING` | Ajout de la specification cross-repo pour les bindings lecture/ecriture des cellules InputNumeric de Tableau dans TF100Web, sans support InputText dans cette tranche. |
 | 2026-07-15 | `V2.1.4.0035` | `740796e` | Correction du hit-testing Tableau : les reperes A/1 ne recouvrent plus les cellules, le drag de plage exige un pointeur gauche actif et les scopes d'en-tete partagent le rendu de selection normalise. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Implementation de `DEC-0041` : verrou immediat avant preview, modes Tableau deterministes, etat A/1 effectif, payload editor-only teste et smoke WPF/WebView2 isole reussi. |
 | 2026-07-15 | `V2.1.4.0033` | `e811253` | Approbation de la specification corrective Tableau/verrou et autorisation de son plan d'implementation. |
@@ -193,6 +196,8 @@ Active specifications and implementation plans:
 6. `superpowers/specs/2026-07-15-table-lock-interaction-regression-correction-design.md` - approved corrective specification for locked drag enforcement, deterministic Table modes, internal cell/track access, and effective A/1 guide state.
 7. `superpowers/plans/2026-07-15-table-lock-interaction-regression-correction.md` - approved correction plan derived from the regression specification.
 8. `superpowers/plans/2026-07-14-modern-table-and-insert-ribbon.md` - implementation record for the approved and implemented modern table core and hierarchical Insert ribbon.
+9. `superpowers/specs/2026-07-15-table-cell-numeric-input-tf100web-design.md` - approved `DEC-0042` cross-repository specification for functional numeric inputs inside Table cells using the current TF100Web mapping read/write engine.
+10. `superpowers/plans/2026-07-15-table-cell-numeric-input-tf100web.md` - executable cross-repository plan with TF100Web compatibility and deployment gates before the global `.sb2` manifest 2.2 export switch.
 
 Generated documentation:
 
