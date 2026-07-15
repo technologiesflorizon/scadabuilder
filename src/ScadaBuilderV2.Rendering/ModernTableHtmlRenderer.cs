@@ -6,7 +6,7 @@ using ScadaBuilderV2.Domain.Scenes;
 namespace ScadaBuilderV2.Rendering;
 
 /// <summary>Renders the persistent modern-table model for preview and FT100 export.</summary>
-/// <remarks>Decisions: DEC-0039. Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md. Tests: tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.</remarks>
+/// <remarks>Decisions: DEC-0039, DEC-0042. Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md. Tests: tests/ScadaBuilderV2.Tests/PreviewDocumentTests.cs and Ft100SceneExporterTests.cs.</remarks>
 internal static class ModernTableHtmlRenderer
 {
     public static string Render(ScadaElement element, string scopedElementId)
@@ -116,6 +116,8 @@ internal static class ModernTableHtmlRenderer
                 break;
             case ScadaTableCellContentKind.InputNumeric:
                 html.Append($"<input id=\"{Html(cellId)}__input\" type=\"number\" value=\"{Html(content.NumericValue?.ToString(CultureInfo.InvariantCulture) ?? content.Text)}\" placeholder=\"{Html(content.Placeholder)}\"");
+                if (!string.IsNullOrWhiteSpace(content.DisplayFormat))
+                    html.Append($" data-scada-display-format=\"{Html(content.DisplayFormat.Trim())}\"");
                 AppendNumberAttribute(html, "min", content.Minimum);
                 AppendNumberAttribute(html, "max", content.Maximum);
                 AppendNumberAttribute(html, "step", content.Step);

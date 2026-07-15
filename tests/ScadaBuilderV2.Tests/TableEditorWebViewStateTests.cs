@@ -30,4 +30,19 @@ public sealed class TableEditorWebViewStateTests
         Assert.IsFalse(hiddenState.ShowEditorGuides);
         Assert.IsFalse(hiddenState.EditorGuidesVisible);
     }
+
+    [TestMethod]
+    public void EditorInteractionStateNeverCarriesIndustrialBindingIds()
+    {
+        var session = new TableAuthoringSession();
+        session.SelectTable("table-1");
+        session.SetMode(TableInteractionMode.Cells);
+
+        var script = TableEditorWebViewStateFactory.BuildApplyScript(TableEditorWebViewStateFactory.Create(session));
+
+        Assert.IsFalse(script.Contains("ReadTagId", StringComparison.Ordinal));
+        Assert.IsFalse(script.Contains("WriteTagId", StringComparison.Ordinal));
+        Assert.IsFalse(script.Contains("ValueBindings", StringComparison.Ordinal));
+        StringAssert.Contains(script, "setEditorState(\"cells\", true, \"table-1\")");
+    }
 }
