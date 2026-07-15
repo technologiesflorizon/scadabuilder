@@ -1,6 +1,7 @@
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Application.History;
 using ScadaBuilderV2.Application.Pages;
+using ScadaBuilderV2.Domain.Scenes;
 
 namespace ScadaBuilderV2.Application.Commands;
 
@@ -55,6 +56,15 @@ public sealed class ApplicationContext
     /// <summary>Gets whether an application command currently owns the execution gate.</summary>
     public bool IsBusy => ExecutionGate.IsBusy;
 
+    /// <summary>Gets or sets the active scene snapshot consumed by scene-object commands.</summary>
+    public ScadaScene? ActiveSceneSnapshot { get; set; }
+
+    /// <summary>Gets or sets the callback that commits an immutable active-scene mutation.</summary>
+    public Action<ScadaScene>? ApplyActiveSceneMutation { get; set; }
+
+    /// <summary>Gets or sets the active scene history used by scene-object commands.</summary>
+    public EditorHistoryService? ActiveSceneHistory { get; set; }
+
     public SelectionState Selection { get; } = new();
 }
 
@@ -66,15 +76,8 @@ public sealed class SelectionState
 
     public string? PrimaryElementId { get; private set; }
 
-    public bool IsSelectionLocked { get; private set; }
-
-    public void SetSelection(IEnumerable<string> elementIds, string? primaryElementId, bool force = false)
+    public void SetSelection(IEnumerable<string> elementIds, string? primaryElementId)
     {
-        if (IsSelectionLocked && !force)
-        {
-            return;
-        }
-
         _selectedElementIds.Clear();
         foreach (var elementId in elementIds.Select(k => k.Trim()).Where(k => k.Length > 0).Distinct(StringComparer.Ordinal))
         {
@@ -86,8 +89,4 @@ public sealed class SelectionState
             : _selectedElementIds.FirstOrDefault();
     }
 
-    public void SetSelectionLocked(bool locked)
-    {
-        IsSelectionLocked = locked;
-    }
 }

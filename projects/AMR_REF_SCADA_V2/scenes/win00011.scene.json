@@ -36,7 +36,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -48,7 +60,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -62,7 +80,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_2",
@@ -94,7 +119,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -106,7 +143,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -120,7 +163,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_3",
@@ -152,7 +202,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "Liste des alarmes",
@@ -164,7 +226,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -178,7 +246,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_4",
@@ -210,7 +285,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "Historique des alarmes",
@@ -222,7 +309,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -236,7 +329,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     }
   ],
   "BackgroundColor": "#ADADAD",
@@ -245,8 +345,19 @@
   "RemovedSourceElementIds": null,
   "PageType": "Default",
   "Background": null,
-  "Actions": null,
+  "Actions": [],
   "IncludeInBuild": false,
   "HeaderPageId": null,
-  "FooterPageId": null
+  "FooterPageId": null,
+  "PageKey": "46748a09-ce95-5e09-b11e-b5d7c673d4bb",
+  "PageCode": "win00011",
+  "Origin": "Imported",
+  "ImportProvenance": {
+    "SourceSystem": "Wonderware",
+    "SourceProjectId": "AMR_REF_SCADA_V2",
+    "SourcePageId": "win00011",
+    "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00011_updated.html"
+  },
+  "HeaderPageKey": null,
+  "FooterPageKey": null
 }

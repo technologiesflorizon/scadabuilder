@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:avalonDock="https://github.com/Dirkster99/AvalonDock"
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        xmlns:primitives="clr-namespace:System.Windows.Controls.Primitives;assembly=PresentationFramework"
         xmlns:local="clr-namespace:ScadaBuilderV2.App"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -53,6 +54,29 @@
             <Setter Property="BorderBrush" Value="{StaticResource AccentBlueBrush}"/>
         </Style>
 
+        <Style x:Key="TopLockIndicatorStyle" TargetType="ToggleButton">
+            <Setter Property="MinHeight" Value="30"/>
+            <Setter Property="MinWidth" Value="112"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Background" Value="#F3F6F4"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrushSoft}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="Background" Value="#FFF0D6"/>
+                    <Setter Property="BorderBrush" Value="#D99A22"/>
+                    <Setter Property="Foreground" Value="{StaticResource InkBrush}"/>
+                </Trigger>
+                <DataTrigger Binding="{Binding ElementLockState.IsMixed}" Value="True">
+                    <Setter Property="Background" Value="#E8F1F5"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentBlueBrush}"/>
+                    <Setter Property="Foreground" Value="{StaticResource InkBrush}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
         <Style x:Key="IconToolButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Width" Value="72"/>
             <Setter Property="Height" Value="64"/>
@@ -61,9 +85,24 @@
         </Style>
 
         <Style x:Key="RibbonCommandButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Width" Value="78"/>
-            <Setter Property="Height" Value="58"/>
-            <Setter Property="Padding" Value="6"/>
+            <Setter Property="Width" Value="104"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Padding" Value="5,2"/>
+            <Setter Property="Margin" Value="1"/>
+            <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsActive}" Value="True">
+                    <Setter Property="Background" Value="#DFF3E7"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentBlueBrush}"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="InsertFamilyButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="MinWidth" Value="86"/>
+            <Setter Property="Padding" Value="6,1"/>
             <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsActive}" Value="True">
@@ -75,9 +114,10 @@
         </Style>
 
         <Style x:Key="LargeRibbonCommandButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
-            <Setter Property="Width" Value="44"/>
-            <Setter Property="Height" Value="44"/>
-            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Width" Value="38"/>
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Margin" Value="1"/>
             <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsActive}" Value="True">
@@ -93,27 +133,46 @@
             <Setter Property="BorderBrush" Value="{StaticResource BorderBrushSoft}"/>
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="CornerRadius" Value="5"/>
-            <Setter Property="Padding" Value="6,4"/>
-            <Setter Property="Margin" Value="0,0,8,0"/>
+            <Setter Property="Padding" Value="4,3"/>
+            <Setter Property="Margin" Value="0,0,5,0"/>
         </Style>
 
         <Style x:Key="RibbonGroupHeaderStyle" TargetType="TextBlock">
-            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="FontSize" Value="9.5"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
-            <Setter Property="Margin" Value="3,0,0,3"/>
+            <Setter Property="Margin" Value="2,0,0,2"/>
+        </Style>
+
+        <Style x:Key="RibbonOverflowButtonStyle" TargetType="RepeatButton">
+            <Setter Property="Width" Value="24"/>
+            <Setter Property="MinHeight" Value="54"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Margin" Value="2,1"/>
+            <Setter Property="Background" Value="#F3F6F4"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrushSoft}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Foreground" Value="{StaticResource MutedBrush}"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.25"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <Style x:Key="CommandIconStyle" TargetType="Image">
-            <Setter Property="Width" Value="22"/>
-            <Setter Property="Height" Value="22"/>
+            <Setter Property="Width" Value="16"/>
+            <Setter Property="Height" Value="16"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="Margin" Value="0,0,0,4"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,5,0"/>
         </Style>
 
         <Style x:Key="LargeCommandIconStyle" TargetType="Image">
-            <Setter Property="Width" Value="32"/>
-            <Setter Property="Height" Value="32"/>
+            <Setter Property="Width" Value="26"/>
+            <Setter Property="Height" Value="26"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Margin" Value="0"/>
@@ -124,9 +183,13 @@
                     ToolTip="{Binding ToolTip}"
                     IsEnabled="{Binding IsEnabled}"
                     Command="{Binding Command}">
-                <StackPanel>
+                <StackPanel Orientation="Horizontal">
                     <Image Style="{StaticResource CommandIconStyle}" Source="{Binding Icon}"/>
-                    <TextBlock Text="{Binding Label}" FontSize="12" TextAlignment="Center"/>
+                    <TextBlock Text="{Binding Label}"
+                               Width="76"
+                               FontSize="10.5"
+                               VerticalAlignment="Center"
+                               TextTrimming="CharacterEllipsis"/>
                 </StackPanel>
             </Button>
         </DataTemplate>
@@ -159,7 +222,7 @@
                         </ItemsControl.Style>
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal"/>
+                                <UniformGrid Rows="2"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
@@ -192,6 +255,18 @@
                 <StackPanel>
                     <Image Style="{StaticResource CommandIconStyle}" Source="{Binding Icon}"/>
                     <TextBlock Text="{Binding Label}" FontSize="11" HorizontalAlignment="Center"/>
+                </StackPanel>
+            </Button>
+        </DataTemplate>
+
+        <DataTemplate x:Key="InsertFamilyTemplate">
+            <Button Style="{StaticResource InsertFamilyButtonStyle}"
+                    Command="{Binding Command}"
+                    ToolTip="{Binding Label}"
+                    Margin="0,0,4,3">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="{Binding Icon}" Width="14" Height="14" Margin="0,0,5,0"/>
+                    <TextBlock Text="{Binding Label}" FontSize="11" VerticalAlignment="Center"/>
                 </StackPanel>
             </Button>
         </DataTemplate>
@@ -238,22 +313,35 @@
 
     <DockPanel LastChildFill="True">
         <Border DockPanel.Dock="Top"
-                Height="196"
+                Height="212"
                 Background="#F2F8EF"
                 BorderBrush="{StaticResource BorderBrushSoft}"
                 BorderThickness="0,0,0,1">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"/>
-                    <RowDefinition Height="156"/>
+                    <RowDefinition Height="172"/>
                 </Grid.RowDefinitions>
 
                 <DockPanel Grid.Row="0" Margin="14,6,14,0">
-                    <TextBlock DockPanel.Dock="Right"
-                               Text="SCADA Builder V2"
-                               VerticalAlignment="Center"
-                               Foreground="{StaticResource InkBrush}"
-                               FontWeight="Bold"/>
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                        <ToggleButton x:Name="TopElementLockIndicator"
+                                      Style="{StaticResource TopLockIndicatorStyle}"
+                                      VerticalAlignment="Center"
+                                      IsEnabled="{Binding ElementLockState.IsEnabled}"
+                                      IsChecked="{Binding ElementLockState.IsToggleChecked, Mode=OneWay}"
+                                      ToolTip="{Binding ElementLockState.Summary}"
+                                      Click="OnElementLockToggleClick">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="{StaticResource Icon.Object.Lock}" Width="15" Height="15" Margin="0,0,6,0"/>
+                                <TextBlock Text="{Binding ElementLockState.IndicatorLabel}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </ToggleButton>
+                        <TextBlock Text="SCADA Builder V2"
+                                   VerticalAlignment="Center"
+                                   Foreground="{StaticResource InkBrush}"
+                                   FontWeight="Bold"/>
+                    </StackPanel>
                     <StackPanel Orientation="Horizontal">
                         <Button x:Name="FileMenuButton"
                                 Content="Fichier"
@@ -303,10 +391,6 @@
                                 <MenuItem Header="Reinitialiser la disposition" Click="OnResetLayoutClick" />
                             </MenuItem>
                         </Menu>
-                        <ToggleButton Content="Lock"
-                                      Width="52"
-                                      Margin="8,0,0,0"
-                                      IsChecked="{Binding IsSelectionLocked}" />
                     </StackPanel>
                 </DockPanel>
 
@@ -316,19 +400,66 @@
                         BorderBrush="{StaticResource BorderBrushSoft}"
                         BorderThickness="1"
                         CornerRadius="6">
-                    <Grid Margin="8">
-                        <ScrollViewer x:Name="RibbonCommandSurface"
-                                      HorizontalScrollBarVisibility="Auto"
-                                      VerticalScrollBarVisibility="Disabled">
-                            <ItemsControl ItemsSource="{Binding ActiveRibbonGroups}"
-                                          ItemTemplate="{StaticResource RibbonGroupTemplate}">
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal"/>
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
-                            </ItemsControl>
-                        </ScrollViewer>
+                    <Grid Margin="8,6">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <ItemsControl x:Name="InsertFamilySurface" Grid.Row="0" Visibility="Collapsed"
+                                      ItemsSource="{Binding InsertFamilies}" ItemTemplate="{StaticResource InsertFamilyTemplate}">
+                            <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                        <StackPanel x:Name="TableCreationConfigurationSurface" Grid.Row="0" Visibility="Collapsed"
+                                    Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <TextBlock Text="Colonnes" VerticalAlignment="Center" Margin="6,0,3,0"/>
+                            <TextBox x:Name="TableColumnsTextBox" Text="6" Width="34" MaxLength="2"/>
+                            <TextBlock Text="Rangees" VerticalAlignment="Center" Margin="8,0,3,0"/>
+                            <TextBox x:Name="TableRowsTextBox" Text="8" Width="34" MaxLength="2"/>
+                            <CheckBox x:Name="TableFirstHeaderCheckBox" Content="1re rangee en-tete" IsChecked="True"
+                                      VerticalAlignment="Center" Margin="10,0,6,0"/>
+                        </StackPanel>
+                        <Grid Grid.Row="1" Margin="0,2,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <RepeatButton Grid.Column="0"
+                                          Style="{StaticResource RibbonOverflowButtonStyle}"
+                                          Command="{x:Static primitives:ScrollBar.PageLeftCommand}"
+                                          CommandTarget="{Binding ElementName=RibbonCommandSurface}"
+                                          ToolTip="Commandes precedentes">
+                                <Path Data="M 8,1 L 3,6 L 8,11"
+                                      Stroke="{Binding RelativeSource={RelativeSource AncestorType=RepeatButton}, Path=Foreground}"
+                                      StrokeThickness="1.8"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"/>
+                            </RepeatButton>
+                            <ScrollViewer x:Name="RibbonCommandSurface" Grid.Column="1"
+                                          HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Disabled"
+                                          PanningMode="HorizontalOnly">
+                                <ItemsControl ItemsSource="{Binding ActiveRibbonGroups}"
+                                              ItemTemplate="{StaticResource RibbonGroupTemplate}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Horizontal"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                            </ScrollViewer>
+                            <RepeatButton Grid.Column="2"
+                                          Style="{StaticResource RibbonOverflowButtonStyle}"
+                                          Command="{x:Static primitives:ScrollBar.PageRightCommand}"
+                                          CommandTarget="{Binding ElementName=RibbonCommandSurface}"
+                                          ToolTip="Commandes suivantes">
+                                <Path Data="M 3,1 L 8,6 L 3,11"
+                                      Stroke="{Binding RelativeSource={RelativeSource AncestorType=RepeatButton}, Path=Foreground}"
+                                      StrokeThickness="1.8"
+                                      StrokeStartLineCap="Round"
+                                      StrokeEndLineCap="Round"/>
+                            </RepeatButton>
+                        </Grid>
                     </Grid>
                 </Border>
             </Grid>
@@ -976,6 +1107,14 @@
                                                     <ComboBoxItem Content="Absolue"/>
                                                     <ComboBoxItem Content="Relative"/>
                                                 </ComboBox>
+                                                <CheckBox x:Name="ElementPositionLockCheckBox"
+                                                          Content="Verrouiller la position"
+                                                          Margin="0,0,0,8"
+                                                          IsThreeState="True"
+                                                          IsEnabled="{Binding ElementLockState.IsEnabled}"
+                                                          IsChecked="{Binding ElementLockState.IsPropertyChecked, Mode=OneWay}"
+                                                          ToolTip="{Binding ElementLockState.Summary}"
+                                                          Click="OnElementLockToggleClick"/>
                                                 <UniformGrid Columns="2">
                                                     <StackPanel Margin="0,0,4,0">
                                                         <TextBlock Text="X"/>
@@ -1220,6 +1359,42 @@
                                                          Margin="0,3,0,8"
                                                          Visibility="Collapsed"
                                                          TextChanged="OnElementPropertyChanged"/>
+                                            </StackPanel>
+                                        </TabItem>
+                                        <TabItem Header="Tableau">
+                                            <StackPanel x:Name="TablePropertiesPanel" Margin="8" Visibility="Collapsed">
+                                                <TextBlock Text="Selection Tableau" FontWeight="SemiBold"/>
+                                                <TextBlock x:Name="TableSelectionSummaryText" Text="Cellule 1,1" Margin="0,4,0,2"/>
+                                                <TextBlock x:Name="TableDimensionSummaryText" Text="6 rangees x 8 colonnes" Foreground="{StaticResource MutedBrush}" Margin="0,0,0,10"/>
+                                                <TextBlock x:Name="TableFormatStateSummaryText" Text="Format de la portée : hérité (aucune surcharge locale)" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,0,0,3"/>
+                                                <TextBlock Text="Hérité signifie que la portée utilise le format du niveau parent. Personnalisé indique une surcharge locale; Mixte indique plusieurs valeurs dans la sélection."
+                                                           TextWrapping="Wrap" Foreground="{StaticResource MutedBrush}" FontSize="11" Margin="0,0,0,8"/>
+                                                <TextBlock Text="Appliquer le format a"/>
+                                                <ComboBox x:Name="TableFormatScopeComboBox" Margin="0,3,0,8" SelectionChanged="OnTableFormatScopeChanged" SelectedIndex="5">
+                                                    <ComboBoxItem Content="Tout le tableau" Tag="Table"/>
+                                                    <ComboBoxItem Content="Rangees d'en-tete" Tag="HeaderRows"/>
+                                                    <ComboBoxItem Content="Rangees alternees" Tag="AlternatingRows"/>
+                                                    <ComboBoxItem Content="Rangee(s) selectionnee(s)" Tag="Rows"/>
+                                                    <ComboBoxItem Content="Colonne(s) selectionnee(s)" Tag="Columns"/>
+                                                    <ComboBoxItem Content="Cellule ou plage" Tag="Cells"/>
+                                                </ComboBox>
+                                                <Button Content="Proprietes detaillees..." Margin="0,0,0,6" Click="OnOpenTablePropertiesClick"/>
+                                                <Button Content="Type et contenu..." Margin="0,0,0,6" Click="OnOpenCellContentClick"/>
+                                                <Button Content="Format de cellule..." Margin="0,0,0,6" Click="OnOpenCellFormatClick"/>
+                                                <Button Content="Supprimer les surcharges de format" ToolTip="Réinitialise le format local afin d'utiliser le format hérité du niveau parent." Margin="0,0,0,6" Click="OnResetTableFormatScopeClick"/>
+                                                <Button Content="Bordures avancees..." Margin="0,0,0,6" Click="OnOpenTableBordersClick"/>
+                                                <Button Content="Rangees d'en-tete..." Margin="0,0,0,6" Click="OnOpenTableHeadersClick"/>
+                                                <Button x:Name="TableMergeToggleButton" Content="Fusionner les cellules" Margin="0" Click="OnToggleMergeTableCellsClick"/>
+                                                <UniformGrid Columns="2" Margin="0,6,0,0">
+                                                    <Button Content="Distribuer lignes" Margin="0,0,3,0" Click="OnDistributeTableRowsClick"/>
+                                                    <Button Content="Distribuer colonnes" Margin="3,0,0,0" Click="OnDistributeTableColumnsClick"/>
+                                                </UniformGrid>
+                                                <UniformGrid Columns="2" Margin="0,6,0,0">
+                                                    <Button Content="Marquer en-tête" Margin="0,0,3,0" Click="OnMarkTableHeaderClick"/>
+                                                    <Button Content="Démarquer" Margin="3,0,0,0" Click="OnUnmarkTableHeaderClick"/>
+                                                </UniformGrid>
+                                                <TextBlock Text="Les types de cellule, hauteurs, largeurs, insertions et suppressions sont aussi disponibles par clic droit dans le tableau."
+                                                           TextWrapping="Wrap" Margin="0,10,0,0" Foreground="{StaticResource MutedBrush}"/>
                                             </StackPanel>
                                         </TabItem>
                                     </TabControl>

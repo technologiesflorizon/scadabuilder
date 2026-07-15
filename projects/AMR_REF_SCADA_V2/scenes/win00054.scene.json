@@ -36,7 +36,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -48,7 +60,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -62,7 +80,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_4",
@@ -94,7 +119,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -106,7 +143,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -120,7 +163,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_5",
@@ -152,7 +202,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -164,7 +226,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -178,7 +246,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_6",
@@ -210,7 +285,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -222,7 +309,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -236,7 +329,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_7",
@@ -268,7 +368,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -280,7 +392,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -294,7 +412,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_8",
@@ -326,7 +451,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -338,7 +475,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -352,7 +495,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_9",
@@ -384,7 +534,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -396,7 +558,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -410,7 +578,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_10",
@@ -442,7 +617,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -454,7 +641,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -468,7 +661,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_11",
@@ -500,7 +700,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -512,7 +724,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -526,7 +744,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_14",
@@ -558,7 +783,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -570,7 +807,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -584,7 +827,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_15",
@@ -616,7 +866,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -628,7 +890,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -642,7 +910,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_16",
@@ -674,7 +949,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -686,7 +973,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -700,7 +993,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_19",
@@ -732,7 +1032,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -744,7 +1056,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -758,7 +1076,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_20",
@@ -790,7 +1115,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -802,7 +1139,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -816,7 +1159,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_21",
@@ -848,7 +1198,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -860,7 +1222,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -874,7 +1242,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_24",
@@ -906,7 +1281,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -918,7 +1305,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -932,7 +1325,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_25",
@@ -964,7 +1364,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -976,7 +1388,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -990,7 +1408,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_26",
@@ -1022,7 +1447,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1034,7 +1471,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1048,7 +1491,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_29",
@@ -1080,7 +1530,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1092,7 +1554,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1106,7 +1574,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_30",
@@ -1138,7 +1613,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1150,7 +1637,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1164,7 +1657,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_31",
@@ -1196,7 +1696,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1208,7 +1720,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1222,7 +1740,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_1",
@@ -1254,7 +1779,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "NOM DU MOTEUR",
@@ -1266,7 +1803,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1280,7 +1823,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_2",
@@ -1312,7 +1862,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1324,7 +1886,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1338,7 +1906,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_12",
@@ -1370,7 +1945,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1382,7 +1969,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1396,7 +1989,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_13",
@@ -1428,7 +2028,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "MAN",
@@ -1440,7 +2052,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1454,7 +2072,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_17",
@@ -1486,7 +2111,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1498,7 +2135,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1512,7 +2155,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_18",
@@ -1544,7 +2194,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "DEPART",
@@ -1556,7 +2218,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1570,7 +2238,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_22",
@@ -1602,7 +2277,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1614,7 +2301,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1628,7 +2321,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_23",
@@ -1660,7 +2360,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "ARR\u00CAT",
@@ -1672,7 +2384,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1686,7 +2404,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_27",
@@ -1718,7 +2443,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1730,7 +2467,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1744,7 +2487,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_28",
@@ -1776,7 +2526,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "AUTO",
@@ -1788,7 +2550,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1802,7 +2570,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_32",
@@ -1834,7 +2609,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "Moteur",
@@ -1846,7 +2633,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -1860,7 +2653,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     }
   ],
   "BackgroundColor": "#9C9C9C",
@@ -1869,8 +2669,19 @@
   "RemovedSourceElementIds": null,
   "PageType": "Default",
   "Background": null,
-  "Actions": null,
+  "Actions": [],
   "IncludeInBuild": false,
   "HeaderPageId": null,
-  "FooterPageId": null
+  "FooterPageId": null,
+  "PageKey": "c7e3b6f5-4366-5b0f-a415-c64096d3e42d",
+  "PageCode": "win00054",
+  "Origin": "Imported",
+  "ImportProvenance": {
+    "SourceSystem": "Wonderware",
+    "SourceProjectId": "AMR_REF_SCADA_V2",
+    "SourcePageId": "win00054",
+    "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00054_updated.html"
+  },
+  "HeaderPageKey": null,
+  "FooterPageKey": null
 }

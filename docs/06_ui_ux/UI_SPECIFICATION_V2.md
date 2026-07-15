@@ -1,13 +1,32 @@
 # SCADA Builder V2 - UI Specification
 
-Date: 2026-06-19
+Date: 2026-07-15
 Status: Active UI specification pointer
-Document version: `V2.1.4.0003`
+Document version: `V2.1.4.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Mode Objet initial et reselection deterministe; verrou de position immediat sans bloquer cellules/pistes; A/1 aligne sur la visibilite effective. |
+| 2026-07-15 | `V2.1.4.0031` | `e127190` | Ruban secondaire sans scrollbar native, navigation d'overflow par chevrons et hauteur anti-clipping. |
+| 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Interactions Tableau corriges : cellules et pistes prioritaires, reperes A/1 masquables, fusion toggle et origine du format explicite. |
+| 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Ruban secondaire modernise en boutons horizontaux compacts sur deux rangees, avec icones, galerie et espacement reduits. |
+| 2026-07-15 | `V2.1.4.0027` | `88e865a` | Spécification UI synchronisée avec le ruban Tableau contextuel, l'inspecteur Hérité/Personnalisé/Mixte, les dimensions exactes, color pickers, bordures, distribution et en-têtes. |
+
+## Table Authoring Surface
+
+1. `Insérer > Données > Tableau` ouvre les outils sans dialogue; `Ajouter` arme le placement configuré.
+2. Les modes Objet et Cellules sont exclusifs. Les headers editor-only sélectionnent rangée, colonne ou table sans déplacer l'objet.
+3. Le panneau Propriété affiche portée, état de format, contenu, format, bordures, en-têtes, fusion, distribution et reset.
+4. Les dialogues de format et bordure réutilisent le color picker du produit; les propriétés détaillées exposent X/Y/W/H exacts.
+5. Le ruban garde visibles les commandes indisponibles avec une raison issue de l'état applicatif.
+6. Le mode Cellules donne la priorite aux cellules, inputs et poignees de pistes; le tableau conteneur ne demarre aucun drag pour ces gestes.
+7. Les reperes d'edition A/1 peuvent etre affiches ou masques depuis le ruban sans modifier le modele ni l'export.
+8. Fusionner/Defusionner est une seule commande contextuelle dont le libelle et l'etat actif suivent la plage selectionnee.
+9. Un Tableau nouvellement place ou reselectionne commence en mode Objet. Le mode Cellules s'active explicitement, par double-clic ou par `Afficher A/1`; `Escape` revient en mode Objet.
+10. Le verrou protege immediatement X/Y sans animation de retour. Il ne bloque ni la selection, ni les cellules, ni les separateurs de pistes, ni les resizes qui conservent X/Y.
+11. Le libelle `Afficher/Masquer A/1` decrit la visibilite effective : les reperes ne sont visibles qu'en mode Cellules et peuvent etre retablis immediatement apres masquage.
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Direction haut de gamme de l’inspecteur Style : sections, contrôles à état, icônes sémantiques et aperçu vivant. |
 | 2026-06-19 | `V2.1.3.0002` | `PENDING` | Ajout du standard de polish produit concurrentiel face a ScadaPlant. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes: icones 32x32 et boutons sans libelles visibles. |
@@ -65,8 +84,10 @@ Current shell rules:
 10. The `Selection` tab exposes executable group and ungroup actions for Element+ selections; blocked selection states are reported through status feedback from the existing workflow.
 11. The main shell ribbon has a single dynamic command surface. Static per-tab XAML button rows must not be restored as a second command source.
 12. The left tool palette uses the same command metadata adapter as the ribbon for labels, disabled tooltips, and semantic `Icon.Tool.*` lookup.
-13. The Insert `Formes` group is an icon gallery capped at four columns. Shape buttons use 32x32 semantic icons, do not show redundant visible shape-name labels, expose labels through tooltips, wrap to a second row as needed, and show selected state while placement is active.
+13. The Insert `Formes` group is an icon gallery capped at four columns. Shape buttons use 26x26 semantic icons, do not show redundant visible shape-name labels, expose labels through tooltips, wrap to a second row as needed, and show selected state while placement is active.
 14. Line and arrow insertion uses a two-point canvas workflow with editor-only preview feedback between clicks.
+15. Second-level command groups use a compact two-row layout. Regular commands are horizontal 28-pixel buttons with 16-pixel icons and concise labels; full labels remain discoverable through tooltips. Shape-gallery buttons and group spacing use the same dense industrial rhythm.
+16. Horizontal overflow uses compact previous/next chevrons instead of a native scrollbar. The ribbon reserves enough vertical space for both command rows and group headers without clipping.
 
 ## 6. Element+ Style Inspector
 

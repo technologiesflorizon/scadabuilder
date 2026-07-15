@@ -2,12 +2,16 @@
 
 Date: 2026-07-14
 Status: Active editor command contract
-Document version: `V2.1.4.0012`
+Document version: `V2.1.4.0030`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0030` | `5d762bb` | `table.merge-toggle` remplace les deux choix visibles Fusionner/Defusionner et derive son action de la plage selectionnee. |
+| 2026-07-15 | `V2.1.4.0027` | `88e865a` | Ajout des requêtes typées de propriétés/dimensions, reset d'une propriété, distribution proportionnelle et marquage/démarquage des en-têtes; les dialogues ne remplacent plus directement la définition Tableau. |
+| 2026-07-15 | `V2.1.4.0026` | `0874416` | `object.lock` rendu persistant et commandes `table.*` avancees routees par session, coordinateur et operations Domain. |
+| 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Ajout des commandes typees Tableau, du presse-papiers rectangulaire et du catalogue Inserer hierarchique pilote par descripteurs. |
 | 2026-07-14 | `V2.1.4.0012` | `PENDING` | Commandes asynchrones `page.*`, coordinateur partagé, diagnostics et mutations de propriétés désormais implémentés. |
 | 2026-07-14 | `V2.1.4.0011` | `4def659` | Ajout de la cible approuvée des commandes asynchrones `page.*` partagées par toutes les surfaces. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout des commandes `insert.shape.circle`, `insert.shape.triangle`, `insert.shape.star` et du placement deux points ligne/fleche. |
@@ -40,6 +44,14 @@ Commands are explicit application operations. A command id is the stable bridge 
 13. Disabled future ribbon commands must remain registered with a disabled reason when they are shown, so the surface communicates intent without pretending the command is executable.
 14. The default top-ribbon command catalog is owned by the Application layer, so WPF adapts shared command metadata instead of owning the canonical list of visible commands.
 15. When `object.group` or `object.ungroup` is executable from the top ribbon, it must route to the same Element+ scene workflow as the context menu and preserve history coverage.
+16. Les mutations Tableau passent par `TableEditCoordinator` et les operations Domain; le WebView, le panneau droit, les dialogues et le menu contextuel ne reimplementent pas les invariants.
+17. Le menu Tableau expose copier/coller, insertion/suppression de pistes, effacement, format, dimensions et fusion/defusion; chaque mutation validee produit une entree undo/redo.
+18. `insert.table` active la sous-surface contextuelle sans mutation; `table.add` est le seul identifiant qui arme le placement.
+19. `table.distribute.rows`, `table.distribute.columns`, `table.header.mark` et `table.header.unmark` sont disponibles depuis le ruban, le panneau ou le menu contextuel selon la portée active.
+20. Un message WebView Tableau invalide est consommé par `TableWebViewMessageAdapter`, produit un diagnostic et ne crée aucune mutation.
+21. `table.merge-toggle` fusionne une plage non fusionnee et defusionne toutes les cellules fusionnees qui intersectent la plage; le libelle, l'icone et l'etat actif suivent la selection courante.
+19. `object.lock` est l'unique commande de verrouillage de position de scene; l'ancien verrou transitoire de selection n'est plus un contrat de l'editeur principal.
+18. Le ruban Inserer selectionne d'abord une famille stable, puis un outil. `InsertToolCatalog` est la source canonique; les ids historiques restent stables et les outils planifies restent disabled avec une raison.
 16. Standard shape insert commands include `insert.shape.rectangle`, `insert.shape.ellipse`, `insert.shape.circle`, `insert.shape.triangle`, `insert.shape.star`, `insert.shape.line`, and `insert.shape.arrow`.
 17. `insert.shape.line` and `insert.shape.arrow` must route through two-point placement and persist model-backed start/end geometry rather than creating generic default line geometry.
 

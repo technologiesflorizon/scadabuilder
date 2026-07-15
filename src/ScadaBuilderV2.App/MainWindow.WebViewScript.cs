@@ -1,10 +1,12 @@
+using ScadaBuilderV2.App.TableEditor;
+
 namespace ScadaBuilderV2.App;
 
 // The WebView2 canvas bootstrap/extraction script, isolated from MainWindow.xaml.cs
 // as a behavior-preserving split. This is data (a raw-string JS/CSS bundle), not logic.
 public partial class MainWindow
 {
-    private const string LegacyExtractionScript = """
+    private static readonly string LegacyExtractionScript = TableWebViewScript.Source + """
 (() => {
   if (window.scadaSceneEditor || window.scadaLegacyExtraction) {
     const api = window.scadaSceneEditor || window.scadaLegacyExtraction;
@@ -63,11 +65,10 @@ public partial class MainWindow
       cursor: not-allowed;
       background: transparent;
     }
-    #scada-extract-menu button.checked {
-      padding-left: 9px;
-    }
-    #scada-extract-menu button.checked::before {
-      content: '✓ ';
+    #scada-extract-menu button.checked::after {
+      content: ' ✓';
+      float: right;
+      margin-left: 14px;
     }
     #scada-extract-menu .submenu {
       position: relative;
@@ -152,6 +153,7 @@ public partial class MainWindow
     .scada-modern-element[data-transforming="true"] > .scada-modern-handle {
       display: none !important;
     }
+    .scada-modern-element[data-editor-locked="true"] { cursor: not-allowed; }
     .scada-modern-group {
       align-items: stretch;
       padding: 0;
@@ -213,6 +215,10 @@ public partial class MainWindow
     }
     .scada-modern-element[data-selected="true"] > .scada-modern-handle {
       display: block;
+    }
+    .scada-modern-handle[data-lock-disabled="true"] {
+      cursor: not-allowed !important;
+      opacity: .35;
     }
     .scada-modern-handle[data-handle="nw"] { left: -6px; top: -6px; cursor: nwse-resize; }
     .scada-modern-handle[data-handle="ne"] { right: -6px; top: -6px; cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Cpath d='M15 5a7 7 0 1 0 1.5 8.5' fill='none' stroke='%230f2a30' stroke-width='2' stroke-linecap='round'/%3E%3Cpath d='M17 3v5h-5z' fill='%230f2a30'/%3E%3C/svg%3E") 10 10, grab; }
@@ -1842,6 +1848,9 @@ public partial class MainWindow
     return svg;
   }
 
+  const payloadContainsPositionLock = element => element?.IsLocked === true
+    || (element?.Children || element?.children || []).some(payloadContainsPositionLock);
+
   function renderModernElements(elements) {
     modernElements = Array.isArray(elements) ? elements : [];
     const layer = ensureModernLayer();
@@ -1858,6 +1867,7 @@ public partial class MainWindow
       wrapper.dataset.id = element.Id;
       wrapper.dataset.selected = element.IsSelected ? 'true' : 'false';
       wrapper.dataset.groupContext = element.IsGroupContextSelected ? 'true' : 'false';
+      wrapper.dataset.editorLocked = element.IsLocked === true ? 'true' : 'false';
       if (parentWrapper?.dataset?.id) {
         wrapper.dataset.parentGroupId = parentWrapper.dataset.id;
       }
@@ -1945,6 +1955,8 @@ public partial class MainWindow
         text.style.whiteSpace = 'nowrap';
         inheritElementTextStyle(text);
         wrapper.appendChild(text);
+      } else if (element.Kind === 'Table') {
+        window.scadaModernTable?.render(element, wrapper);
       } else if (element.Kind === 'Button') {
         const button = document.createElement('button');
         button.type = 'button';
@@ -2015,6 +2027,9 @@ public partial class MainWindow
         const grip = document.createElement('span');
         grip.className = 'scada-modern-handle';
         grip.dataset.handle = handle;
+        const positionChangingHandle = handle !== 'ne' && (handle.includes('n') || handle.includes('w'));
+        const lockedGroupResize = isGroup && handle !== 'ne' && payloadContainsPositionLock(element);
+        grip.dataset.lockDisabled = (positionChangingHandle && element.IsLocked === true) || lockedGroupResize ? 'true' : 'false';
         if (handle !== 'ne') {
           grip.style.cursor = resizeCursorForHandle(handle, Number(style.Rotation ?? 0));
         }
@@ -2026,6 +2041,9 @@ public partial class MainWindow
           return;
         }
         if (event.target?.closest?.('.scada-modern-element') !== wrapper) {
+          return;
+        }
+        if (event.target?.closest?.('.scada-editor-table[data-mode="cells"]')) {
           return;
         }
         event.preventDefault();
@@ -2055,8 +2073,10 @@ public partial class MainWindow
             toggle: event.ctrlKey || event.shiftKey
           });
         }
-        const geometry = readWrapperGeometry(sceneMoveWrapper);
         const isResize = event.target?.classList?.contains('scada-modern-handle');
+        const handle = event.target?.dataset?.handle || '';
+        const transformMode = handle === 'ne' ? 'rotate' : (isResize ? 'resize' : 'move');
+        const geometry = readWrapperGeometry(sceneMoveWrapper);
         const groupChildren = isResize && sceneMoveWrapper.classList.contains('scada-modern-group')
           ? Array.from(sceneMoveWrapper.querySelectorAll('.scada-modern-element')).map(child => ({
               id: child.dataset.id,
@@ -2070,11 +2090,24 @@ public partial class MainWindow
               .filter(item => selectedModernIds.has(item.dataset.id))
               .map(item => getSceneMoveWrapper(item))
               .filter((item, index, items) => item && items.indexOf(item) === index);
+        const blocksPositionMove = candidate => candidate?.dataset?.editorLocked === 'true'
+          || candidate?.querySelector?.('.scada-modern-element[data-editor-locked="true"]') !== null;
+        const positionChangingResize = transformMode === 'resize' && (handle.includes('n') || handle.includes('w'));
+        const lockedGroupResize = transformMode === 'resize'
+          && sceneMoveWrapper.classList.contains('scada-modern-group')
+          && blocksPositionMove(sceneMoveWrapper);
+        const forbiddenTransform = transformMode === 'move' && movingWrappers.some(blocksPositionMove)
+          || positionChangingResize && blocksPositionMove(sceneMoveWrapper)
+          || lockedGroupResize;
+        if (forbiddenTransform) {
+          modernDrag = null;
+          return;
+        }
         modernDrag = {
           id: sceneMoveId,
           wrapper: sceneMoveWrapper,
-          mode: event.target?.dataset?.handle === 'ne' ? 'rotate' : (isResize ? 'resize' : 'move'),
-          handle: event.target?.dataset?.handle || '',
+          mode: transformMode,
+          handle,
           startClientX: event.clientX,
           startClientY: event.clientY,
           startX: geometry.x,
@@ -2082,6 +2115,7 @@ public partial class MainWindow
           startWidth: geometry.width,
           startHeight: geometry.height,
           aspectRatio: geometry.height > 0 ? geometry.width / geometry.height : null,
+          positionLocked: blocksPositionMove(sceneMoveWrapper),
           groupChildren,
           items: movingWrappers.map(item => ({
             id: item.dataset.id,
@@ -2120,6 +2154,9 @@ public partial class MainWindow
         if (event.target?.closest?.('.scada-modern-element') !== wrapper) {
           return;
         }
+        if (event.target?.closest?.('.scada-editor-table[data-mode="cells"]')) {
+          return;
+        }
         event.preventDefault();
         event.stopPropagation();
         if (!event.ctrlKey && !event.shiftKey) {
@@ -2135,6 +2172,9 @@ public partial class MainWindow
           return;
         }
         if (event.target?.closest?.('.scada-modern-element') !== wrapper) {
+          return;
+        }
+        if (event.target?.closest?.('.scada-editor-table[data-mode="cells"]')) {
           return;
         }
         event.preventDefault();
@@ -2751,6 +2791,11 @@ public partial class MainWindow
           const screenAnchorNew = rotateAroundCenter(anchorNewX, anchorNewY, newCenterX, newCenterY);
           geometry.x += screenAnchorOld.x - screenAnchorNew.x;
           geometry.y += screenAnchorOld.y - screenAnchorNew.y;
+        }
+
+        if (modernDrag.positionLocked) {
+          geometry.x = modernDrag.startX;
+          geometry.y = modernDrag.startY;
         }
 
         setWrapperGeometry(modernDrag.wrapper, geometry);

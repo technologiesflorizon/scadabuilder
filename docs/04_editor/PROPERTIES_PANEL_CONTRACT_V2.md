@@ -2,12 +2,17 @@
 
 Date: 2026-06-19
 Status: Active properties panel contract
-Document version: `V2.1.4.0003`
+Document version: `V2.1.4.0030`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Origine du format Tableau explicitee et fusion/defusion remplacee par un bouton contextuel unique. |
+| 2026-07-15 | `V2.1.4.0028` | `c873744` | La case explicite `Verrouiller la position` est visible dans Propriété > Général et partage l'état normal/mixte avec toutes les autres surfaces. |
+| 2026-07-15 | `V2.1.4.0027` | `88e865a` | `TablePropertiesViewModel` partage les valeurs effectives/locales et les états Hérité/Personnalisé/Mixte; reset de propriété/portée, color picker et X/Y/W/H exacts passent par des requêtes typées et le guard de verrou. |
+| 2026-07-15 | `V2.1.4.0026` | `0874416` | Onglet Tableau et dialogues etendus aux types/valeurs, portees, format complet, bordures et en-tetes; case de verrouillage partagee ajoutee aux proprietes generales. |
+| 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Ajout de l'onglet Tableau contextuel, du dialogue de proprietes Tableau, du format de cellule et des dimensions de pistes partageant le coordinateur type. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Ajout des propriétés typographiques Element+, Foreground authorable, styles de bordure avancés, BorderRadius et aperçu vivant. |
 | 2026-06-19 | `V2.1.3.0002` | `PENDING` | Remplacement des couleurs arriere-plan/bordure Style et Bouton par le color picker modal aligne sur `CSS fond`. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Clarification de la parite metadata preview/export pour les wrappers de boutons Element+. |
@@ -61,8 +66,18 @@ The properties panel edits model-backed properties through commands or applicati
 17. The Element+ `Donnees` tab exposes `Format affichage` as the active display-format field. `Decimales` and `Unite` are legacy model fields and must not be visible active authoring controls.
 18. `Format affichage` may use hash masks such as `##.#`; the mask defines visible digit budget and decimal placement. Example: raw numeric value `999` with `##.#` displays as `99.9`, and the maximum visible value for the mask is `99.9`.
 19. `Min` and `Max` are operator-entry clamp constraints only for numeric inputs that are not `Lecture seulement`; they are disabled for read-only displays.
+20. `Propriété > Général` affiche toujours la case `Verrouiller la position` pour une sélection Element+; elle est cochée si tout est verrouillé, indéterminée pour une sélection mixte et décochée sinon.
 
-## 3. Related Tests
+## 3. Table Inspector Contract
+
+1. `TablePropertiesInspector` calcule les valeurs effectives et locales par propriété pour les portées Tableau, en-têtes, alternance, rangées, colonnes, cellule et plage.
+2. Le panneau et les dialogues expliquent l'origine du format depuis le meme `TablePropertiesViewModel`: `Herite` signifie aucune surcharge locale, `Personnalise` signifie une surcharge sur la portee et `Mixte` signifie plusieurs valeurs locales dans la selection.
+3. Réinitialiser une propriété remet uniquement cette propriété à `null` sur chaque cible sans aplatir les autres surcharges hétérogènes.
+4. Réinitialiser la portée retire toutes ses surcharges dans une seule mutation historique.
+5. Le dialogue Tableau expose X/Y/W/H exacts; une variation X/Y est rejetée par le guard de position si l'Element+ est verrouillé, tandis qu'un resize sans translation demeure permis.
+6. Le panneau expose un seul bouton Fusionner/Defusionner dont le libelle et l'etat suivent la presence de cellules fusionnees dans la plage active.
+
+## 4. Related Tests
 
 1. `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`
 2. `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`

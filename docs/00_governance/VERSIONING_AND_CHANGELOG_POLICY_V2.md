@@ -2,12 +2,20 @@
 
 Date: 2026-06-16
 Status: Active governance policy
-Document version: `V2.1.1.0039`
+Document version: `V2.1.4.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Bump d'iteration pour l'implementation et la validation corrective de `DEC-0041`. |
+| 2026-07-15 | `V2.1.4.0033` | `e811253` | Bump d'iteration pour l'approbation du contrat correctif Tableau/verrou. |
+| 2026-07-15 | `V2.1.4.0032` | `ff21e33` | Bump d'iteration pour la specification et le plan de correction des regressions d'interaction Tableau/verrou. |
+| 2026-07-15 | `V2.1.4.0031` | `e127190` | Bump d'iteration pour supprimer le clipping et la barre native du ruban secondaire. |
+| 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Bump d'iteration pour les corrections d'interaction verrou/Tableau et leur couverture. |
+| 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Bump d'iteration pour la modernisation compacte du ruban de niveau 2 et sa regression. |
+| 2026-07-15 | `V2.1.4.0028` | `c873744` | Bump d'itération pour corriger l'accessibilité et l'état partagé des surfaces Tableau/verrouillage déjà approuvées. |
+| 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | Bump d'itération pour la clôture automatisée des outils Tableau avancés et leur couverture. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation de la politique de versioning documentaire et changelog pour la nouvelle architecture documentaire. |
 
 ## 1. Version Format
@@ -21,7 +29,7 @@ V2.production.feature.iteration
 Current version:
 
 ```text
-V2.1.1.0039
+V2.1.4.0033
 ```
 
 ## 2. Increment Rules

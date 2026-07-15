@@ -1,13 +1,37 @@
 # SCADA Builder V2 - Documentation Index
 
-Date: 2026-07-14
+Date: 2026-07-15
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0011`
+Document version: `V2.1.4.0035`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0035` | `740796e` | Correction du hit-testing Tableau : les reperes A/1 ne recouvrent plus les cellules, le drag de plage exige un pointeur gauche actif et les scopes d'en-tete partagent le rendu de selection normalise. |
+| 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Implementation de `DEC-0041` : verrou immediat avant preview, modes Tableau deterministes, etat A/1 effectif, payload editor-only teste et smoke WPF/WebView2 isole reussi. |
+| 2026-07-15 | `V2.1.4.0033` | `e811253` | Approbation de la specification corrective Tableau/verrou et autorisation de son plan d'implementation. |
+| 2026-07-15 | `V2.1.4.0032` | `ff21e33` | Ajout d'une specification et d'un plan correctifs autonomes pour le drag verrouille, les modes Tableau, l'acces aux cellules/pistes et les reperes A/1. |
+| 2026-07-15 | `V2.1.4.0031` | `e127190` | Correction du ruban secondaire : hauteur augmentee, barre horizontale native retiree et navigation d'overflow par chevrons. |
+| 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Correction des interactions verrou/Tableau et clarification des reperes, fusion contextuelle et origine du format. |
+| 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Modernisation compacte du ruban secondaire : commandes horizontales sur deux rangees, icones et galerie reduites. |
+| 2026-07-15 | `V2.1.4.0028` | `c873744` | Correction des surfaces de base validables : Tableau ouvre le ruban contextuel sans modale; verrouillage visible et synchronisé dans Propriété, ruban Sélection, indicateur supérieur et menu contextuel Element+. |
+| 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | Cloture automatisee des tranches Tableau manquantes : view models dedies, inspecteur herite/personnalise/mixte, distribution/en-tetes, bridge diagnostique, scenario `win00012`, rendu HTML semantique et mesures Release 64 x 64; smoke WebView2 interactif isole encore requis. |
+| 2026-07-15 | `V2.1.4.0026` | `0874416` | Implementation de `DEC-0040` : sous-surface Tableau sans dialogue, modes Objet/Cellules, contenu/format/bordures/pistes/en-tetes avances et verrouillage persistant Element+; validation interactive Release encore requise. |
+| 2026-07-15 | `V2.1.4.0025` | `0b1fbf4` | Integration de la revue du plan `DEC-0040` : extraction structurelle, cas conditionnels export, tests de decouplage/resize, retrait controle du dialogue, preuve performance et staging documentaire explicite. |
+| 2026-07-15 | `V2.1.4.0024` | `3f6e6a5` | Approbation de la specification d'authoring Tableau/verrouillage Element+, ajout de `DEC-0040` et creation de son plan d'implementation autonome. |
+| 2026-07-15 | `V2.1.4.0023` | `18a9e9d` | Revue de la specification Tableau/verrouillage contre le code : migrations explicites, contrat JSON, ruban secondaire, bindings WPF, bordures par segment, auto-fit WebView, performance, classes et tests localises. |
+| 2026-07-15 | `V2.1.4.0022` | `3a99b99` | Specification Tableau detaillee : bouton Ajouter, verrouillage persistant de tous les Element+, groupes, multiselection, surfaces partagees et decoupage concret en classes/methodes. |
+| 2026-07-15 | `V2.1.4.0021` | `f77aedb` | Creation d'une specification autonome pour les outils UI d'authoring des tableaux, sans modifier la specification approuvee et implementee du Tableau moderne. |
+| 2026-07-15 | `V2.1.4.0020` | `42b3105` | Premiere separation du nouveau besoin Tableau dans un document distinct, ensuite remplace par une specification autonome au vocabulaire et au cycle de vie independants. |
+| 2026-07-14 | `V2.1.4.0019` | `08affb4` | Premiere redaction de l'extension Tableau, ensuite relocalisee dans une specification distincte afin de respecter son nouveau cycle de vie. |
+| 2026-07-14 | `V2.1.4.0018` | `858473c` | Correction du layout commun des dialogues Tableau afin d'afficher leurs champs WPF en plus des boutons d'action. |
+| 2026-07-14 | `V2.1.4.0017` | `a94016a` | Compactage du niveau 1 du ruban Inserer afin de rendre le niveau 2 entierement visible dans la hauteur normalisee. |
+| 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Implementation du Tableau Element+ moderne, edition type tableur, export `.sb2` sans bindings cellule, et ruban Inserer hierarchique a huit familles. |
+| 2026-07-14 | `V2.1.4.0015` | `95a57ac` | Specification Tableau approuvee, `DEC-0039` enregistree et plan d'implementation executable ajoute. |
+| 2026-07-14 | `V2.1.4.0014` | `a95addd` | Specification Tableau precisee avec surfaces de proprietes dediees, menu contextuel type tableur, dimensions manuelles, limite validee contre `win00012` et garde-fou strict hors `MainWindow`; une precedence de style detaillee reste a confirmer. |
+| 2026-07-14 | `V2.1.4.0013` | `766f8e2` | Specification Tableau precisee : cellules texte ou inputs natifs, sans `ValueBindings` cellule par cellule. |
+| 2026-07-14 | `V2.1.4.0012` | `da244d9` | Ajout du routage vers la specification draft du tableau moderne et du ruban Inserer hierarchique. |
 | 2026-07-14 | `V2.1.4.0011` | `PENDING` | Gestion moderne des pages implémentée; contrats, état, surfaces, diagnostics, couverture et limites synchronisés. |
 | 2026-07-14 | `V2.1.4.0010` | `c5d6f0e` | Ajout du routage vers la spécification approuvée et le plan d’implémentation de la gestion moderne des pages. |
 | 2026-07-05 | `V2.1.3.0004` | `PENDING` | Ajout du champ `Component.Provenance` (Legacy/AiModernized) au contrat `.sep` (DEC-0034), avec badge "IA" dans la bibliotheque Element+ des deux applications. |
@@ -163,6 +187,12 @@ Active specifications and implementation plans:
 
 1. `superpowers/specs/2026-07-14-page-commands-design.md` - implemented architecture and product decisions for modern page management.
 2. `superpowers/plans/2026-07-14-page-management-commands.md` - implementation record for page identity, commands, persistence, diagnostics, WPF surfaces, and `.sb2` compatibility; manual isolated-copy UI verification and real-project migration remain gated.
+3. `superpowers/specs/2026-07-14-modern-table-and-insert-ribbon-design.md` - implemented `DEC-0039` core design for the model-backed modern table and hierarchical Insert ribbon.
+4. `superpowers/specs/2026-07-15-table-ui-authoring-and-element-lock-design.md` - approved `DEC-0040` design for advanced Table UI authoring plus persistent Element+ position locking, group/multiselection semantics, shared lock surfaces, and explicit class/method boundaries.
+5. `superpowers/plans/2026-07-15-table-ui-authoring-and-element-lock.md` - implementation record for advanced Table authoring and global Element+ position locking; automated validation is complete and the isolated interactive Release performance gate remains.
+6. `superpowers/specs/2026-07-15-table-lock-interaction-regression-correction-design.md` - approved corrective specification for locked drag enforcement, deterministic Table modes, internal cell/track access, and effective A/1 guide state.
+7. `superpowers/plans/2026-07-15-table-lock-interaction-regression-correction.md` - approved correction plan derived from the regression specification.
+8. `superpowers/plans/2026-07-14-modern-table-and-insert-ribbon.md` - implementation record for the approved and implemented modern table core and hierarchical Insert ribbon.
 
 Generated documentation:
 

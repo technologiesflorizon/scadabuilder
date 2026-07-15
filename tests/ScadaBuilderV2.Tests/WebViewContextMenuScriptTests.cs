@@ -998,40 +998,19 @@ public sealed class WebViewContextMenuScriptTests
         CollectionAssert.Contains(commandIds, "insert.button.navigation");
         CollectionAssert.Contains(commandIds, "insert.button.alarm-ack");
         CollectionAssert.Contains(commandIds, "insert.button.emergency-stop");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Rectangle);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Ellipse);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Circle, commandId);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Triangle, commandId);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Star, commandId);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Line);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Arrow);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.IndicatorLamp);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.HorizontalBar);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.VerticalBar);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Tank);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.PipeHorizontal);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.PipeVertical);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Valve);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Pump);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Motor);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Fan);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Conveyor);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Gauge);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Switch);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Breaker);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.Transformer);");
-        StringAssert.Contains(source, "BeginShapePlacement(ScadaShapeKind.AlarmBeacon);");
-        StringAssert.Contains(source, "BeginButtonPlacement(ScadaButtonKind.Command);");
-        StringAssert.Contains(source, "BeginButtonPlacement(ScadaButtonKind.Toggle);");
-        StringAssert.Contains(source, "BeginButtonPlacement(ScadaButtonKind.Navigation);");
-        StringAssert.Contains(source, "BeginButtonPlacement(ScadaButtonKind.AlarmAcknowledge);");
-        StringAssert.Contains(source, "BeginButtonPlacement(ScadaButtonKind.EmergencyStop);");
+        StringAssert.Contains(source, "var insertTool = InsertToolCatalog.Find(commandId);");
+        StringAssert.Contains(source, "BeginInsertToolPlacement(insertTool);");
+        StringAssert.Contains(source, "Enum.TryParse<ScadaShapeKind>(tool.Variant, out var shapeKind)");
+        StringAssert.Contains(source, "Enum.TryParse<ScadaButtonKind>(tool.Variant, out var buttonKind)");
+        Assert.IsFalse(source.Contains("case \"insert.shape.", StringComparison.Ordinal));
+        Assert.IsFalse(source.Contains("case \"insert.hmi.", StringComparison.Ordinal));
+        Assert.IsFalse(source.Contains("case \"insert.button.", StringComparison.Ordinal));
     }
 
     [TestMethod]
     public void ModernShapePreviewUsesSvgShapeKind()
     {
-        var source = ReadMainWindowSource();
+        var source = ReadModernPreviewSource();
 
         StringAssert.Contains(source, "function renderShapeElement(element, style)");
         StringAssert.Contains(source, "String(element.ShapeKind || element.shapeKind || 'Rectangle').toLowerCase()");
@@ -1066,7 +1045,7 @@ public sealed class WebViewContextMenuScriptTests
     [TestMethod]
     public void ModernPreviewPayloadSerializesVisualDiscriminatorsAsText()
     {
-        var source = ReadMainWindowSource();
+        var source = ReadModernPreviewSource();
 
         StringAssert.Contains(source, "ShapeKind = element.Kind == ScadaElementKind.Shape ? element.EffectiveShapeKind.ToString() : null");
         StringAssert.Contains(source, "ButtonKind = element.Kind == ScadaElementKind.Button ? element.EffectiveButtonKind.ToString() : null");
@@ -1188,7 +1167,8 @@ public sealed class WebViewContextMenuScriptTests
 
         StringAssert.Contains(source, "cursor: url(\"data:image/svg+xml,");
         StringAssert.Contains(source, "10 10, grab;");
-        StringAssert.Contains(source, "mode: event.target?.dataset?.handle === 'ne' ? 'rotate' : (isResize ? 'resize' : 'move')");
+        StringAssert.Contains(source, "const transformMode = handle === 'ne' ? 'rotate' : (isResize ? 'resize' : 'move');");
+        StringAssert.Contains(source, "mode: transformMode,");
         StringAssert.Contains(source, "function getWrapperRotation(wrapper)");
         StringAssert.Contains(source, "function postModernRotation(id, rotation)");
         StringAssert.Contains(source, "modernDrag.mode === 'rotate'");
@@ -1264,6 +1244,61 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void ContextMenuOffersStatefulElementLockAction()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, "_elementLockCoordinator.BuildState(_activeScene!, _selectedSceneObjectIds)");
+        StringAssert.Contains(source, "lockState.AllLocked ? \"Deverrouiller\" : \"Verrouiller\"");
+        StringAssert.Contains(source, "IsChecked: lockState.AllLocked");
+        StringAssert.Contains(source, "case \"object.lock\":");
+        StringAssert.Contains(source, "await ToggleSelectedElementLockAsync();");
+    }
+
+    [TestMethod]
+    public void LockedElementMovementIsRejectedBeforeVisualDragStarts()
+    {
+        var source = ReadMainWindowSource();
+        var payload = ReadMainWindowFile(Path.Combine("EditorBridge", "ModernElementRenderPayload.cs"));
+        var factory = ReadMainWindowFile(Path.Combine("EditorBridge", "ModernElementRenderPayloadFactory.cs"));
+
+        StringAssert.Contains(payload, "public bool IsLocked { get; set; }");
+        StringAssert.Contains(factory, "IsLocked = element.IsLocked,");
+        StringAssert.Contains(source, "const blocksPositionMove = candidate => candidate?.dataset?.editorLocked === 'true'");
+        StringAssert.Contains(source, "candidate?.querySelector?.('.scada-modern-element[data-editor-locked=\"true\"]') !== null");
+        StringAssert.Contains(source, "const forbiddenTransform = transformMode === 'move' && movingWrappers.some(blocksPositionMove)");
+        StringAssert.Contains(source, "if (forbiddenTransform)");
+        StringAssert.Contains(source, "positionLocked: blocksPositionMove(sceneMoveWrapper)");
+        StringAssert.Contains(source, "if (modernDrag.positionLocked)");
+
+        var guard = source.IndexOf("if (forbiddenTransform)", StringComparison.Ordinal);
+        var drag = source.IndexOf("modernDrag = {", guard, StringComparison.Ordinal);
+        var capture = source.IndexOf("sceneMoveWrapper.setPointerCapture", guard, StringComparison.Ordinal);
+        Assert.IsTrue(guard >= 0 && drag > guard && capture > drag, "The position-lock guard must run before drag preview state and pointer capture.");
+    }
+
+    [TestMethod]
+    public void TableCellModeOwnsPointerInputBeforeElementDrag()
+    {
+        var source = ReadMainWindowSource();
+        const string cellModeGuard = "event.target?.closest?.('.scada-editor-table[data-mode=\"cells\"]')";
+        Assert.AreEqual(3, CountOccurrences(source, cellModeGuard), "Pointer, double-click and context-menu gestures must all remain owned by cell mode.");
+    }
+
+    [TestMethod]
+    public void LockedResizeRejectsTranslatingHandlesAndGroupPreview()
+    {
+        var source = ReadMainWindowSource();
+
+        StringAssert.Contains(source, ".scada-modern-handle[data-lock-disabled=\"true\"]");
+        StringAssert.Contains(source, "const positionChangingResize = transformMode === 'resize' && (handle.includes('n') || handle.includes('w'));");
+        StringAssert.Contains(source, "const lockedGroupResize = transformMode === 'resize'");
+        StringAssert.Contains(source, "positionChangingResize && blocksPositionMove(sceneMoveWrapper)");
+        StringAssert.Contains(source, "geometry.x = modernDrag.startX;");
+        StringAssert.Contains(source, "geometry.y = modernDrag.startY;");
+    }
+
+    [TestMethod]
     public void MirrorMenuChildrenReflectCurrentFlipStateViaIsChecked()
     {
         var source = ReadMainWindowSource();
@@ -1304,6 +1339,8 @@ public sealed class WebViewContextMenuScriptTests
 
         StringAssert.Contains(createCommandButtonBody, "command.IsChecked === true || command.isChecked === true");
         StringAssert.Contains(createCommandButtonBody, "button.classList.add('checked')");
+        StringAssert.Contains(source, "#scada-extract-menu button.checked::after");
+        Assert.IsFalse(source.Contains("#scada-extract-menu button.checked::before", StringComparison.Ordinal));
     }
 
     [TestMethod]
@@ -1914,6 +1951,15 @@ public sealed class WebViewContextMenuScriptTests
 
         Assert.Fail("Unable to locate src/ScadaBuilderV2.App from test output directory.");
         return "";
+    }
+
+    private static string ReadModernPreviewSource()
+    {
+        return string.Join(
+            "\n",
+            ReadMainWindowSource(),
+            ReadMainWindowFile(Path.Combine("EditorBridge", "ModernElementRenderPayload.cs")),
+            ReadMainWindowFile(Path.Combine("EditorBridge", "ModernElementRenderPayloadFactory.cs")));
     }
 
     private static string ReadMainWindowFile(string fileName)

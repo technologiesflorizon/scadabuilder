@@ -1,13 +1,24 @@
 # SCADA Builder V2 - Implemented Features
 
-Date: 2026-07-14
+Date: 2026-07-15
 Status: Active implementation status
-Document version: `V2.1.4.0009`
+Document version: `V2.1.4.0035`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0035` | `740796e` | Selection cellule Tableau corrigee : clic unitaire stable, extension de plage liee a un drag explicite, reperes A/1 hors des cellules et scopes rangee/colonne visuellement synchronises. |
+| 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | `DEC-0041` implemente : verrou avant preview, Table Objet initial, etat WebView atomique, cellules/pistes verrouillees et cycle A/1 fiable; smoke isole reussi. |
+| 2026-07-15 | `V2.1.4.0031` | `e127190` | Niveau 2 agrandi verticalement et overflow horizontal modernise par chevrons sans scrollbar native. |
+| 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Drag verrouille bloque avant preview; cellules et pistes Tableau utilisables; reperes A/1 masquables; fusion toggle et format explique. |
+| 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Ruban de niveau 2 compacte en deux rangees, boutons horizontaux 28 px, icones 16 px et galerie Formes reduite. |
+| 2026-07-15 | `V2.1.4.0028` | `c873744` | Correction de validation des surfaces Tableau/verrou : accès contextuel sans modale, checkbox Propriété, toggle Sélection, indicateur supérieur et action contextuelle état-dépendante. |
+| 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | Tranches automatisées Tableau complétées : view models, états de format et reset ciblé, color pickers, X/Y/W/H, distribution/en-têtes, bridge diagnostique, auto-fit proportionnel, HTML sémantique, intégration 16 x 10 et mesures Release 64 x 64. |
+| 2026-07-15 | `V2.1.4.0026` | `0874416` | Code et couverture automatisee de `DEC-0040` livres : verrou de position Element+, sous-surface Tableau, authoring avance et export commun; cloture produit suspendue au gate UI Release isole. |
+| 2026-07-14 | `V2.1.4.0018` | `858473c` | Correction du generateur des dialogues Tableau : les champs TextBox, CheckBox, ComboBox et TextBlock sont maintenant tous rendus. |
+| 2026-07-14 | `V2.1.4.0017` | `a94016a` | Niveau 1 du ruban Inserer reduit a des boutons 26 px et des icones 14 px; le niveau 2 recupere l'espace vertical auparavant consomme par le style de commande 58 px. |
+| 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Tableau Element+ moderne implemente : creation 1..64 (preset 6x8), resize global et pistes, selection de plages, fusion, edition, formats/couleurs, clipboard, menu tableur, panneau/dialogues, persistance, preview/export `.sb2`; ruban Inserer a huit familles. |
 | 2026-07-14 | `V2.1.4.0009` | `PENDING` | Correction du crash au clic droit sur une page : la remontée du parent accepte maintenant les contenus WPF `Run` et le menu contextuel peut s'afficher. |
 | 2026-07-14 | `V2.1.4.0008` | `PENDING` | Correction du rognage de l'icone Nouvelle page dans le panneau Projet. |
 | 2026-07-14 | `V2.1.4.0007` | `PENDING` | Finition visuelle du panneau Pages : libelle Recherche, filtres Default/Tous et icone Nouvelle page alignee sur le ruban. |
@@ -69,7 +80,7 @@ Document version: `V2.1.4.0009`
 
 ## 1. Current Verified Baseline
 
-As of 2026-07-14, `dotnet test ScadaBuilderV2.sln --no-restore` reports 555 passed and 4 pre-existing unrelated failures tracked in `KNOWN_GAPS_V2.md`.
+As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The full-suite result and its pre-existing unrelated failures are recorded in `REGRESSION_COVERAGE_V2.md`; only the isolated interactive WebView2 smoke remains manual.
 
 ## 2. Implemented Areas
 
@@ -133,6 +144,16 @@ As of 2026-07-14, `dotnet test ScadaBuilderV2.sln --no-restore` reports 555 pass
 58. The `Projet > Pages` panel labels its search field, starts with `Default` and `Tous` for the type/build filters, and reuses the ribbon's semantic `Icon.Page.New` resource for its quick-create action.
 59. The page quick-create icon is constrained to 16x16 with explicit button padding so the shared vector remains fully visible inside the compact panel action.
 60. Page context-menu hit testing now traverses `FrameworkContentElement` parents through `ContentOperations.GetParent` and reserves `VisualTreeHelper` for actual visuals, preventing the `Run`-specific WPF crash on right-click.
+61. The first-level Insert family strip uses dedicated 26-pixel buttons with 14-pixel semantic icons instead of inheriting the 58-pixel second-level command style, preserving the full vertical command surface. `RibbonCommandCatalogTests.InsertFamilyRibbonKeepsFirstLevelCompact` locks this layout contract.
+62. The shared Table dialog layout now accepts strongly typed `FrameworkElement` fields, so table creation, track sizing, cell formatting, and table properties display their TextBox, CheckBox, ComboBox, and TextBlock controls instead of only `Annuler` and `Enregistrer`. `TableUiArchitectureTests.TableDialogLayoutKeepsConcreteWpfControlsVisible` protects the fix.
+63. Automated `DEC-0040` implementation evidence covers persistent Element+ position locking, recursive groups, multiselection aggregation, undo/redo, and enforcement against effective X/Y changes.
+64. Automated `DEC-0040` implementation evidence covers the no-dialog Table contextual ribbon, Object/Cells modes, headers, content/format/border/track/header operations, auto-fit and shared export model.
+65. The advanced Table inspector uses dedicated ribbon/property view models, computes inherited/custom/mixed states, supports targeted reset without flattening heterogeneous styles, and routes exact dimensions through the typed coordinator plus lock guard.
+66. The representative 16 x 10 `win00012` scenario validates mixed native inputs, two header rows, merged title, non-uniform tracks, alternating/explicit styles, heterogeneous borders, save/reload, preview and `.sb2` without per-cell bindings or editor artifacts.
+67. The base validation surfaces now expose Table authoring without a creation modal and one stateful Element+ position-lock command through Properties, Selection ribbon, top indicator and right-click context menu.
+68. The second-level ribbon uses compact 28-pixel horizontal command buttons with 16-pixel icons, two-row command groups, reduced group spacing, ellipsized labels backed by full tooltips, and a smaller icon-only shape gallery.
+69. Locked Element+ movement is rejected before any visual drag preview, including locked descendants and mixed selections. Table Cells mode owns click, double-click, context-menu and track-resize gestures; editor A/1 guides are toggleable, merge/unmerge is one selection-derived toggle, context checks align right, and inherited format state is explained in plain language.
+70. The second-level ribbon reserves 172 pixels below the top menu, hides the native horizontal scrollbar, keeps both compact command rows visible, and exposes repeatable previous/next overflow chevrons backed by WPF scroll commands.
 
 ## 3. Source Of Truth
 

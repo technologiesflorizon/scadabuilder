@@ -260,6 +260,28 @@ public partial class MainWindow
 
         public double Height { get; set; }
 
+        public int Row { get; set; }
+
+        public int Column { get; set; }
+
+        public int EndRow { get; set; }
+
+        public int EndColumn { get; set; }
+
+        public string? ContentKind { get; set; }
+
+        public string? Scope { get; set; }
+
+        public string? Orientation { get; set; }
+
+        public int TrackIndex { get; set; }
+
+        public double TrackSize { get; set; }
+
+        public List<double>? ColumnSizes { get; set; }
+
+        public List<double>? RowSizes { get; set; }
+
         public double Rotation { get; set; }
 
         public double BeforeX { get; set; }
@@ -337,38 +359,4 @@ public partial class MainWindow
         public int RenderOrder { get; set; }
     }
 
-    private sealed class ModernElementRenderPayload
-    {
-        public string Id { get; set; } = "";
-
-        public string DisplayName { get; set; } = "";
-
-        public string Kind { get; set; } = "";
-
-        public double X { get; set; }
-
-        public double Y { get; set; }
-
-        public double Width { get; set; }
-
-        public double Height { get; set; }
-
-        public bool IsSelected { get; set; }
-
-        public bool IsGroupContextSelected { get; set; }
-
-        public int RenderIndex { get; set; }
-
-        public ScadaElementStyle? Style { get; set; }
-
-        public ScadaElementData? Data { get; set; }
-
-        public ScadaButtonBehavior? ButtonBehavior { get; set; }
-
-        public string? ShapeKind { get; set; }
-
-        public string? ButtonKind { get; set; }
-
-        public IReadOnlyList<ModernElementRenderPayload> Children { get; set; } = [];
-    }
 }

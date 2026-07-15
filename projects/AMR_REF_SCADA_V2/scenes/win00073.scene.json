@@ -36,7 +36,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -48,7 +60,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -62,7 +80,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_2",
@@ -94,7 +119,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "4641, rue Louis B.Mayer",
@@ -106,7 +143,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -120,7 +163,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_3",
@@ -152,7 +202,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "Laval (Qu\u00E9bec) H7P 6G5",
@@ -164,7 +226,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -178,7 +246,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_4",
@@ -210,7 +285,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "Tel.: (514) 688-4673",
@@ -222,7 +309,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -236,7 +329,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_5",
@@ -268,7 +368,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "Fax: (514) 688-4675",
@@ -280,7 +392,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -294,7 +412,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_6",
@@ -326,7 +451,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "info@fixair.qc.ca",
@@ -338,7 +475,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -352,7 +495,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_7",
@@ -384,7 +534,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "http://www.fixair.qc.ca/",
@@ -396,7 +558,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -410,7 +578,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_8",
@@ -442,7 +617,19 @@
         "BorderWidth": 0,
         "BorderStyle": "None",
         "ShadowPreset": "None",
-        "AdvancedCss": null
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -454,7 +641,13 @@
         "Unit": null,
         "DisplayFormat": null,
         "TagBinding": null,
-        "IsReadOnly": false
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
       },
       "Children": null,
       "LegacyPayload": {
@@ -468,7 +661,14 @@
         "LegacyMarkup": null,
         "RawMetadataJson": null
       },
-      "Events": null
+      "Events": null,
+      "ButtonBehavior": null,
+      "ShapeKind": null,
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     }
   ],
   "BackgroundColor": "#C7C7C7",
@@ -487,8 +687,19 @@
     "Clip": "border-box",
     "BlendMode": "normal"
   },
-  "Actions": null,
+  "Actions": [],
   "IncludeInBuild": false,
   "HeaderPageId": null,
-  "FooterPageId": null
+  "FooterPageId": null,
+  "PageKey": "6481e6d0-3a19-52e7-89b8-73741575b5d6",
+  "PageCode": "win00073",
+  "Origin": "Imported",
+  "ImportProvenance": {
+    "SourceSystem": "Wonderware",
+    "SourceProjectId": "AMR_REF_SCADA_V2",
+    "SourcePageId": "win00073",
+    "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00073_updated.html"
+  },
+  "HeaderPageKey": null,
+  "FooterPageKey": null
 }

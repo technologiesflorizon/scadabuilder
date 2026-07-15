@@ -1,13 +1,17 @@
 # SCADA Builder V2 - Known Gaps
 
-Date: 2026-07-14
+Date: 2026-07-15
 Status: Active known gaps register
-Document version: `V2.1.2.0027`
+Document version: `V2.1.4.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Smoke correctif Tableau/verrou reussi sur copie isolee; le gate performance WebView2 64 x 64 plus large de `DEC-0040` demeure distinct. Baseline : 618 reussites et 5 echecs historiques non lies. |
+| 2026-07-15 | `V2.1.4.0028` | `c873744` | Les quatre blocages de validation des surfaces fondamentales ont été corrigés; le smoke WPF/WebView2 complet demeure le seul gate Tableau/verrou restant. |
+| 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | Mesures automatisées modèle/rendu 64 x 64 consignées; le gap est réduit au smoke WPF/WebView2 interactif isolé. Baseline complète : 608/613, cinq échecs historiques non liés. |
+| 2026-07-15 | `V2.1.4.0026` | `0874416` | Ajout du gate interactif Release 64 x 64 restant avant cloture produit de `DEC-0040`. |
 | 2026-07-14 | `V2.1.2.0027` | `PENDING` | Baseline de tests actualisee apres la correction du crash WPF au demarrage. |
 | 2026-07-14 | `V2.1.2.0026` | `PENDING` | Ajout des validations manuelles et fonctions avancées de classement/modèles/droits restant hors de la tranche Pages. |
 | 2026-06-17 | `V2.1.2.0025` | `58567eb` | Retrait du gap TF100Web pour les masques `DisplayFormat` `#` apres commit `3c795c2`. |
@@ -44,7 +48,8 @@ Document version: `V2.1.2.0027`
 9. `.sb2` archive export validates import/package compatibility only. It does not make TF100Web execute SCADA Builder page scripts that remain outside the extracted root fragment.
 10. Manual UI validation of the new Pages and Diagnostics surfaces on an isolated project copy remains pending; launching the current shell would open the protected real reference project. Automated WPF surface contracts and the temporary-project lifecycle test are green.
 11. Page folders, drag-and-drop ordering, reusable page templates beyond `Blank`, and role-based page permissions remain later slices. The command gate and stable identity model are extension points, not claims that these features are complete.
-12. The full test suite currently reports 555 passed and 4 pre-existing unrelated failures (`Ft100ExportPrefersReferenceHtmlSourceBeforeRawFallback`, `LegacyContextMenuExposesElementStudioCommand`, `ModernDoubleClickOpensWpfPropertiesDialog`, `ScadaBuilderLaunchesStudioFromProjectInDevelopmentToAvoidStaleBinaries`). The page lifecycle and WPF startup-binding targeted suites are green.
+12. The full test suite currently reports 618 passed and 5 pre-existing unrelated failures (`Ft100ExportPrefersReferenceHtmlSourceBeforeRawFallback`, `LegacyContextMenuExposesElementStudioCommand`, `ModernDoubleClickOpensWpfPropertiesDialog`, `ReadOnlyNumericElementsRenderDisplayFormatWhenValueIsMissing`, `ScadaBuilderLaunchesStudioFromProjectInDevelopmentToAvoidStaleBinaries`). The targeted `DEC-0041` suites are green.
+13. `DEC-0040` code and automated slices are complete. Release measurements on the current machine record model/HTML initial rendering at 367,556 ms, selection inspection p95 at 12,403 ms and Domain resize p95 at 0,023 ms over 100 samples. The focused `DEC-0041` WPF/WebView2 smoke passed on an isolated copy; the separate 64 x 64 browser-composition performance gate remains pending, and automated values must not be presented as WebView2 timings.
 
 ## 2. Rule
 

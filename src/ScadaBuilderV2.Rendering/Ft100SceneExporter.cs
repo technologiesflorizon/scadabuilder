@@ -1235,6 +1235,7 @@ public sealed partial class Ft100SceneExporter
             ScadaElementKind.InputText => BuildInput(element, "text"),
             ScadaElementKind.Shape => BuildShape(element, scope),
             ScadaElementKind.Button => BuildButton(element),
+            ScadaElementKind.Table => ModernTableHtmlRenderer.Render(element, scope.ElementDomId(element.Id)),
             _ => ""
         };
     }
@@ -1689,6 +1690,10 @@ public sealed partial class Ft100SceneExporter
         css.AppendLine($"{scope.Descendant(".ft100-element svg")} {{ display: block; width: 100%; height: 100%; overflow: visible; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element input")} {{ width: 100%; height: 100%; box-sizing: border-box; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element button")} {{ width: 100%; height: 100%; box-sizing: border-box; font: inherit; color: inherit; }}");
+        css.AppendLine($"{scope.Descendant(".scada-modern-table")} {{ display: grid; width: 100%; height: 100%; overflow: hidden; }}");
+        css.AppendLine($"{scope.Descendant(".scada-modern-table__cell")} {{ display: flex; box-sizing: border-box; min-width: 0; min-height: 0; overflow: hidden; }}");
+        css.AppendLine($"{scope.Descendant(".scada-modern-table__cell input")} {{ width: 100%; height: 100%; min-width: 0; border: 0; padding: 0; background: transparent; color: inherit; font: inherit; }}");
+        css.AppendLine($"{scope.Descendant(".scada-modern-table > tbody")} {{ display: contents; }}");
 
         foreach (var legacyId in scene.GetSuppressedSourceElementIds().OrderBy(id => id, StringComparer.Ordinal))
         {

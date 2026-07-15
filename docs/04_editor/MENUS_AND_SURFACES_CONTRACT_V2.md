@@ -2,12 +2,20 @@
 
 Date: 2026-07-14
 Status: Active editor menu and surface contract
-Document version: `V2.1.4.0015`
+Document version: `V2.1.4.0031`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0031` | `e127190` | Overflow du niveau 2 remplace par des chevrons sans barre native; hauteur reservee augmentee pour interdire le rognage vertical. |
+| 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Gestes Tableau rendus prioritaires en mode Cellules, reperes A/1 masquables, fusion contextuelle et coche de menu alignee a droite. |
+| 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Niveau 2 du ruban densifie en commandes horizontales compactes sur deux rangees; galerie Formes et groupes visuels reduits. |
+| 2026-07-15 | `V2.1.4.0028` | `c873744` | Entrée Tableau sans modale protégée; commande Verrou du ruban devenue toggle d'état et menu contextuel Element+ étendu à Verrouiller/Déverrouiller. |
+| 2026-07-15 | `V2.1.4.0027` | `88e865a` | Ruban/panneau/menu Tableau complétés par distribution proportionnelle, marquage d'en-tête, reset de portée, dimensions exactes et état de format contextuel. |
+| 2026-07-15 | `V2.1.4.0026` | `0874416` | Sous-surface Tableau contextuelle implementee dans le niveau 2 Inserer, creation configuree sans dialogue et modes Objet/Cellules exclusifs. |
+| 2026-07-14 | `V2.1.4.0017` | `a94016a` | Niveau 1 du ruban Inserer compacte avec style independant afin de reserver la hauteur necessaire aux outils du niveau 2. |
+| 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Ruban Inserer hierarchique a huit familles et menu contextuel Tableau type tableur implementes depuis des catalogues dedies. |
 | 2026-07-14 | `V2.1.4.0015` | `PENDING` | Correction du clic droit Pages pour remonter correctement depuis un contenu WPF `Run` sans appeler `VisualTreeHelper` sur un objet non visuel. |
 | 2026-07-14 | `V2.1.4.0014` | `PENDING` | Ajustement de l'icone Nouvelle page a 16x16 avec marge interne explicite pour eviter son rognage. |
 | 2026-07-14 | `V2.1.4.0013` | `PENDING` | Finition du panneau Pages : libelle Recherche, filtres initiaux Default/Tous et icone semantique partagee pour Nouvelle page. |
@@ -76,10 +84,19 @@ flowchart TD
 19. The top ribbon command list is defined in `ScadaBuilderV2.Application.Commands.RibbonCommandCatalog`; the WPF shell is responsible only for resource lookup, visual templates, and dispatch adaptation.
 20. The `Selection` ribbon may execute `Grouper` and `Degrouper` for Element+ objects. Legacy/source selections still use the existing conversion warning rather than a direct legacy grouping workflow.
 21. The left tool panel palette consumes semantic command metadata from `RibbonCommandCatalog.CreateToolPalette()` and must not duplicate `Icon.Tool.*` resources directly in static XAML buttons.
-22. The Insert ribbon `Formes` group must render as a shape gallery with at most four icons per row, 32x32 semantic shape icons, no visible shape-name labels inside the gallery buttons, and tooltip labels for discoverability.
+22. The Insert ribbon `Formes` group must render as a shape gallery with at most four icons per row, 26x26 semantic shape icons, no visible shape-name labels inside the gallery buttons, and tooltip labels for discoverability.
 23. Active insertion commands must show selected state until the placement completes or is cancelled. Starting another placement replaces the active command state.
 24. `insert.shape.line` and `insert.shape.arrow` use a two-point placement surface: first click captures start, second click commits the Element+ object, and Escape cancels placement.
 25. The Element+ context menu exposes `object.open-in-element-studio` ("Ouvrir dans Studio Element+") for a single selected converted object only when it was instantiated from a library `.sep` (tracked via `ScadaElementData.TagBinding`); otherwise it is visible but disabled with the reason "Cet objet n'a pas ete instancie depuis la bibliotheque Element+".
+26. The first-level Insert family selector must use a compact style independent from second-level command buttons so the active tool groups remain fully visible inside the normalized ribbon height.
+27. `Inserer > Donnees > Tableau` conserve le niveau 1 compact et remplace le niveau 2 par les groupes Creation, Mode, Selection, Contenu, Structure, Format, Dimensions et En-tetes; Retour Donnees restaure les outils generiques.
+28. La configuration 1..64 du prochain Tableau est visible dans le ruban. Aucun dialogue modal n'est ouvert avant le clic canvas.
+29. `object.lock` affiche `Verrouiller` lorsque toute cible n'est pas verrouillée et `Déverrouiller` uniquement lorsque toute la fermeture de sélection est verrouillée; le ruban Sélection et le menu contextuel partagent cet état.
+30. L'indicateur supérieur immédiatement à gauche de `SCADA Builder V2` distingue aucune sélection, déverrouillé, verrouillé et mixte, tout en conservant le même point de commande.
+31. Les groupes de commandes du niveau 2 utilisent deux rangees compactes, des boutons horizontaux de 28 px et des icones de 16 px; les libelles trop longs sont tronques visuellement mais restent disponibles en entier dans leur info-bulle.
+32. En mode Tableau Cellules, les cellules, inputs, poignees de pistes, double-clic et menu contextuel possedent les gestes avant le drag Element+; `Masquer A/1` retire les reperes d'edition sans masquer les poignees de largeur/hauteur.
+33. La coche d'une commande contextuelle active est placee apres son libelle afin de conserver l'alignement gauche commun des commandes.
+34. Le niveau 2 n'affiche aucune barre de defilement native. Lorsque sa largeur depasse la surface disponible, deux chevrons paginent horizontalement les groupes; la hauteur reservee doit conserver les deux rangees entierement visibles.
 
 ## 4. Implemented Pages Surfaces
 

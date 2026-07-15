@@ -85,7 +85,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_button_7",
@@ -156,7 +158,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "elementplus_button_8",
@@ -227,7 +231,9 @@
       "ShapeKind": null,
       "ButtonKind": null,
       "StateConfig": null,
-      "CommandConfig": null
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "group_001",
@@ -355,7 +361,9 @@
           "ShapeKind": null,
           "ButtonKind": null,
           "StateConfig": null,
-          "CommandConfig": null
+          "CommandConfig": null,
+          "Table": null,
+          "IsLocked": false
         },
         {
           "Id": "text_001",
@@ -420,7 +428,9 @@
           "ShapeKind": null,
           "ButtonKind": null,
           "StateConfig": null,
-          "CommandConfig": null
+          "CommandConfig": null,
+          "Table": null,
+          "IsLocked": false
         }
       ],
       "LegacyPayload": null,
@@ -453,10 +463,13 @@
             "FixedValue": null,
             "TargetPageId": "win00004",
             "Url": null,
-            "NewTab": false
+            "NewTab": false,
+            "TargetPageKey": "ce9542e2-c03b-5cc5-a7fb-cd0bbb3de5b9"
           }
         ]
-      }
+      },
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "group_002",
@@ -584,7 +597,9 @@
           "ShapeKind": null,
           "ButtonKind": null,
           "StateConfig": null,
-          "CommandConfig": null
+          "CommandConfig": null,
+          "Table": null,
+          "IsLocked": false
         },
         {
           "Id": "text_002",
@@ -649,7 +664,9 @@
           "ShapeKind": null,
           "ButtonKind": null,
           "StateConfig": null,
-          "CommandConfig": null
+          "CommandConfig": null,
+          "Table": null,
+          "IsLocked": false
         }
       ],
       "LegacyPayload": null,
@@ -682,10 +699,13 @@
             "FixedValue": null,
             "TargetPageId": "win00059",
             "Url": null,
-            "NewTab": false
+            "NewTab": false,
+            "TargetPageKey": "f85d9804-dc09-5214-9ac5-ca8ab00ccd84"
           }
         ]
-      }
+      },
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "group_003",
@@ -813,7 +833,9 @@
           "ShapeKind": null,
           "ButtonKind": null,
           "StateConfig": null,
-          "CommandConfig": null
+          "CommandConfig": null,
+          "Table": null,
+          "IsLocked": false
         },
         {
           "Id": "text_003",
@@ -878,7 +900,9 @@
           "ShapeKind": null,
           "ButtonKind": null,
           "StateConfig": null,
-          "CommandConfig": null
+          "CommandConfig": null,
+          "Table": null,
+          "IsLocked": false
         }
       ],
       "LegacyPayload": null,
@@ -904,10 +928,13 @@
             "FixedValue": null,
             "TargetPageId": "win00017",
             "Url": null,
-            "NewTab": false
+            "NewTab": false,
+            "TargetPageKey": "fc4f1b98-5a34-5ac7-a8ef-013b04a07edd"
           }
         ]
-      }
+      },
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "group_004",
@@ -1035,7 +1062,9 @@
           "ShapeKind": null,
           "ButtonKind": null,
           "StateConfig": null,
-          "CommandConfig": null
+          "CommandConfig": null,
+          "Table": null,
+          "IsLocked": false
         },
         {
           "Id": "text_004",
@@ -1100,7 +1129,9 @@
           "ShapeKind": null,
           "ButtonKind": null,
           "StateConfig": null,
-          "CommandConfig": null
+          "CommandConfig": null,
+          "Table": null,
+          "IsLocked": false
         }
       ],
       "LegacyPayload": null,
@@ -1126,10 +1157,13 @@
             "FixedValue": null,
             "TargetPageId": "win00007",
             "Url": null,
-            "NewTab": false
+            "NewTab": false,
+            "TargetPageKey": "4ace835e-4a0f-59fe-b67e-72755fbfadf9"
           }
         ]
-      }
+      },
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "group_007",
@@ -1257,7 +1291,9 @@
           "ShapeKind": null,
           "ButtonKind": null,
           "StateConfig": null,
-          "CommandConfig": null
+          "CommandConfig": null,
+          "Table": null,
+          "IsLocked": false
         },
         {
           "Id": "text_006",
@@ -1322,7 +1358,9 @@
           "ShapeKind": null,
           "ButtonKind": null,
           "StateConfig": null,
-          "CommandConfig": null
+          "CommandConfig": null,
+          "Table": null,
+          "IsLocked": false
         }
       ],
       "LegacyPayload": null,
@@ -1348,10 +1386,13 @@
             "FixedValue": null,
             "TargetPageId": "win00009",
             "Url": null,
-            "NewTab": false
+            "NewTab": false,
+            "TargetPageKey": "fe557ee6-be46-530b-a211-2b4b599215ee"
           }
         ]
-      }
+      },
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "group_008",
@@ -1479,7 +1520,9 @@
           "ShapeKind": null,
           "ButtonKind": null,
           "StateConfig": null,
-          "CommandConfig": null
+          "CommandConfig": null,
+          "Table": null,
+          "IsLocked": false
         },
         {
           "Id": "text_005",
@@ -1544,7 +1587,9 @@
           "ShapeKind": null,
           "ButtonKind": null,
           "StateConfig": null,
-          "CommandConfig": null
+          "CommandConfig": null,
+          "Table": null,
+          "IsLocked": false
         }
       ],
       "LegacyPayload": null,
@@ -1570,10 +1615,13 @@
             "FixedValue": null,
             "TargetPageId": "win00008",
             "Url": null,
-            "NewTab": false
+            "NewTab": false,
+            "TargetPageKey": "59acb6b8-2617-5754-a6d8-95f8dbfc2d4f"
           }
         ]
-      }
+      },
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "group_007_2",
@@ -1744,10 +1792,13 @@
                 "FixedValue": null,
                 "TargetPageId": "win00087",
                 "Url": null,
-                "NewTab": false
+                "NewTab": false,
+                "TargetPageKey": "df14dd87-2796-5634-92fe-a915530ceac3"
               }
             ]
-          }
+          },
+          "Table": null,
+          "IsLocked": false
         },
         {
           "Id": "text_008",
@@ -1812,7 +1863,9 @@
           "ShapeKind": null,
           "ButtonKind": null,
           "StateConfig": null,
-          "CommandConfig": null
+          "CommandConfig": null,
+          "Table": null,
+          "IsLocked": false
         }
       ],
       "LegacyPayload": null,
@@ -1838,10 +1891,13 @@
             "FixedValue": null,
             "TargetPageId": "win00012",
             "Url": null,
-            "NewTab": false
+            "NewTab": false,
+            "TargetPageKey": "8162dae5-1ad2-5298-8af3-e7cd4d7180c0"
           }
         ]
-      }
+      },
+      "Table": null,
+      "IsLocked": false
     }
   ],
   "BackgroundColor": "#A6A6A6",
@@ -1876,7 +1932,8 @@
       "Value": null,
       "Condition": null,
       "PopupOptions": null,
-      "ConditionGroup": null
+      "ConditionGroup": null,
+      "TargetPageKey": "f85d9804-dc09-5214-9ac5-ca8ab00ccd84"
     },
     {
       "Id": "action_changepage_click_group_001_win00004",
@@ -1888,10 +1945,22 @@
       "Value": null,
       "Condition": null,
       "PopupOptions": null,
-      "ConditionGroup": null
+      "ConditionGroup": null,
+      "TargetPageKey": "ce9542e2-c03b-5cc5-a7fb-cd0bbb3de5b9"
     }
   ],
   "IncludeInBuild": true,
   "HeaderPageId": null,
-  "FooterPageId": null
+  "FooterPageId": null,
+  "PageKey": "3679ddd3-579a-5f28-9464-dd7646ab49ca",
+  "PageCode": "win00003",
+  "Origin": "Imported",
+  "ImportProvenance": {
+    "SourceSystem": "Wonderware",
+    "SourceProjectId": "AMR_REF_SCADA_V2",
+    "SourcePageId": "win00003",
+    "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
+  },
+  "HeaderPageKey": null,
+  "FooterPageKey": null
 }

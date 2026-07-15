@@ -14,6 +14,100 @@ namespace ScadaBuilderV2.Tests;
 public sealed class Ft100SceneExporterTests
 {
     [TestMethod]
+    public async Task ExportRendersModernTableStructureInputsMergesAndEffectiveStyles()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var table = ScadaTableDefinition.CreateDefault(2, 2) with
+        {
+            Columns = [new ScadaTableColumn(120), new ScadaTableColumn(80)],
+            Rows = [new ScadaTableRow(36, IsHeader: true), new ScadaTableRow(44)],
+            Cells =
+            [
+                new ScadaTableCell(0, 0, ColumnSpan: 2, Content: new ScadaTableCellContent(Text: "En-tete & securise")),
+                new ScadaTableCell(1, 0, Content: new ScadaTableCellContent(ScadaTableCellContentKind.InputText, "Operateur", "Saisir")),
+                new ScadaTableCell(1, 1, Content: new ScadaTableCellContent(ScadaTableCellContentKind.InputNumeric, NumericValue: 42, Minimum: 0, Maximum: 100, Step: 0.5))
+            ]
+        };
+        var element = ScadaElement.CreateTable("table:main", "Tableau principal", 20, 30, 2, 2) with
+        {
+            Table = table,
+            Bounds = new SceneBounds(20, 30, table.Width, table.Height),
+            IsLocked = true
+        };
+        var scene = ScadaScene.CreateEmpty("table-page", "Table", new(640, 480)).WithElement(element);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, null, root);
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+            var css = await File.ReadAllTextAsync(result.CssPath);
+
+            StringAssert.Contains(html, "class=\"scada-modern-table\"");
+            StringAssert.Contains(html, "grid-template-columns:120px 80px");
+            StringAssert.Contains(html, "grid-template-rows:36px 44px");
+            StringAssert.Contains(html, "grid-column:1/span 2");
+            StringAssert.Contains(html, "En-tete &amp; securise");
+            StringAssert.Contains(html, "<th id=");
+            StringAssert.Contains(html, "<td id=");
+            StringAssert.Contains(html, "<tr style=\"display:contents\">");
+            StringAssert.Contains(html, "colspan=\"2\"");
+            StringAssert.Contains(html, "type=\"text\"");
+            StringAssert.Contains(html, "type=\"number\"");
+            StringAssert.Contains(html, "min=\"0\"");
+            StringAssert.Contains(html, "max=\"100\"");
+            StringAssert.Contains(html, "step=\"0.5\"");
+            StringAssert.Contains(html, "ft100-table-page__table_main__cell-1-1");
+            StringAssert.Contains(css, ".scada-modern-table__cell");
+            Assert.IsFalse(html.Contains("selection-overlay", StringComparison.Ordinal));
+            Assert.IsFalse(html.Contains("data-editor-locked", StringComparison.Ordinal));
+            Assert.IsFalse(html.Contains("IsLocked", StringComparison.Ordinal));
+            Assert.IsFalse(html.Contains("scada-editor-table-header", StringComparison.Ordinal));
+            Assert.IsFalse(html.Contains("scada-editor-table-track", StringComparison.Ordinal));
+        }
+        finally
+        {
+            if (Directory.Exists(root)) Directory.Delete(root, true);
+        }
+    }
+
+    [TestMethod]
+    public async Task Sb2ArchiveCarriesModernTableThroughExistingPageHtmlContract()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var archivePath = Path.Combine(root, "modern-table.sb2");
+        var table = ScadaElement.CreateTable("table_001", "Tableau001", 10, 20, 6, 8);
+        var scene = ScadaScene.CreateEmpty("table-native", "Table native", new(1280, 873)).WithElement(table);
+        var project = ScadaProject.CreateDefault("TableProject") with
+        {
+            HomePageId = scene.Id,
+            Scenes = [new ScadaSceneReference(scene.Id, scene.Title, $"scenes/{scene.Id}.scene.json")]
+        };
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportProjectArchiveAsync(
+                project,
+                [new Ft100ProjectPageExportInput(scene, null)],
+                archivePath);
+
+            Assert.IsTrue(result.Validation.IsValid);
+            using var zip = ZipFile.OpenRead(result.ArchivePath);
+            var htmlEntry = zip.GetEntry("scada-builder-v2-ft100-package/table-native/table-native.html");
+            Assert.IsNotNull(htmlEntry);
+            using var reader = new StreamReader(htmlEntry!.Open(), Encoding.UTF8);
+            var html = await reader.ReadToEndAsync();
+            StringAssert.Contains(html, "data-scada-table=\"true\"");
+            StringAssert.Contains(html, "grid-template-columns:96px 96px 96px 96px 96px 96px 96px 96px");
+            Assert.IsFalse(html.Contains("scada-modern-handle", StringComparison.Ordinal));
+            Assert.IsFalse(html.Contains("scada-editor-table-track", StringComparison.Ordinal));
+        }
+        finally
+        {
+            if (Directory.Exists(root)) Directory.Delete(root, true);
+        }
+    }
+
+    [TestMethod]
     public async Task ExportCreatesBrowserOpenableFolderWithRelativeCssAndImages()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

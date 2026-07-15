@@ -1,13 +1,24 @@
 # SCADA Builder V2 - Regression Coverage
 
-Date: 2026-07-14
+Date: 2026-07-15
 Status: Active regression coverage map
-Document version: `V2.1.4.0008`
+Document version: `V2.1.4.0035`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0035` | `740796e` | Regression du hit-testing cellule Tableau : guides A/1 externes, drag primaire explicite, annulation pointeur, normalisation des plages et rendu commun des scopes rangee/colonne. |
+| 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Couverture `DEC-0041` du payload reel, etat Tableau atomique, refus avant preview, resize verrouille, guide A/1 et absence d'artefact export; smoke WPF/WebView2 isole reussi. |
+| 2026-07-15 | `V2.1.4.0031` | `e127190` | Regression XAML du ruban secondaire : hauteur anti-clipping, scrollbar masquee et chevrons de pagination; 14 tests ruban reussis, suite complete inchangee a 614 reussites et 5 echecs historiques. |
+| 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Couverture verrou avant preview, gestes Tableau, reperes A/1, toggle fusion et format; suite complete observee a 614 reussites et 5 echecs historiques non lies. |
+| 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Regression XAML du ruban secondaire compact : dimensions, disposition horizontale, troncature et groupes sur deux rangees. |
+| 2026-07-15 | `V2.1.4.0028` | `c873744` | Régressions ciblées pour l'entrée Tableau sans `ShowDialog`, la visibilité des contrôles de verrou et l'action contextuelle Verrouiller/Déverrouiller. |
+| 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | Ajout des suites dédiées inspecteur, bridge, performance 64 x 64 et intégration `win00012`; suite complète observée à 608 réussites et 5 échecs historiques non liés. |
+| 2026-07-15 | `V2.1.4.0026` | `0874416` | Couverture `DEC-0040` : lock/persistance/groupes/guard, session Tableau, conversions, formats, bordures, pistes/en-tetes, architecture WebView 64x64 et export sans artefact editeur. |
+| 2026-07-14 | `V2.1.4.0018` | `858473c` | Couverture du layout type des dialogues Tableau et de l'affichage de leurs controles WPF concrets. |
+| 2026-07-14 | `V2.1.4.0017` | `a94016a` | Ajout de la regression garantissant un niveau 1 Inserer compact, independant du style 58 px des commandes de niveau 2. |
+| 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Couverture Tableau : modele/limites/precedence, operations, coordinator, clipboard, menu, architecture hors MainWindow, persistance scene, rendu HTML et archive `.sb2`; couverture des huit familles Inserer. |
 | 2026-07-14 | `V2.1.4.0008` | `PENDING` | Ajout de la couverture du clic droit sur une page lorsque la cible est un contenu inline WPF `Run`. |
 | 2026-07-14 | `V2.1.4.0007` | `PENDING` | Couverture des dimensions et de la marge interne de l'icone Nouvelle page. |
 | 2026-07-14 | `V2.1.4.0006` | `PENDING` | Couverture du libelle Recherche, des filtres initiaux Default/Tous et de l'icone partagee Nouvelle page. |
@@ -64,7 +75,7 @@ Document version: `V2.1.4.0008`
 
 ```text
 dotnet test ScadaBuilderV2.sln --no-restore
-555 passed, 4 failed, 0 skipped
+618 passed, 5 failed, 0 skipped
 ```
 
 ## 2. Coverage Map
@@ -87,7 +98,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Scene/domain rules | `OfficialSceneDomainTests.cs`, `ScadaSceneGroupTests.cs` |
 | Undo/redo/history | `EditorHistoryServiceTests.cs` |
 | WebView bridge/context menu | `WebViewContextMenuScriptTests.cs` |
-| Top ribbon dynamic command surface | `RibbonCommandCatalogTests.MainRibbonUsesOnlyDynamicCommandSurface`, `RibbonCommandCatalogTests.DefaultCatalogDefinesExpectedTopRibbonTabs`, `RibbonCommandCatalogTests.DefaultCatalogRequiresSemanticIconKeys` |
+| Top ribbon dynamic command surface | `RibbonCommandCatalogTests.MainRibbonUsesOnlyDynamicCommandSurface`, `RibbonCommandCatalogTests.DefaultCatalogDefinesExpectedTopRibbonTabs`, `RibbonCommandCatalogTests.DefaultCatalogRequiresSemanticIconKeys`, `RibbonCommandCatalogTests.InsertFamilyRibbonKeepsFirstLevelCompact`, `RibbonCommandCatalogTests.SecondLevelRibbonUsesCompactTwoRowCommands` |
 | Left tool palette semantic command surface | `RibbonCommandCatalogTests.ToolPaletteUsesSemanticCommandCatalog`, `RibbonCommandCatalogTests.DefaultCatalogRequiresSemanticIconKeys`, `RibbonCommandCatalogTests.DisabledCommandsExposeReason` |
 | Element inventory hierarchy | `LegacyElementSelectionModelTests.cs` |
 | Element+ legacy conversion | `ElementPlusLegacyConverterTests.cs` |
@@ -116,7 +127,13 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Element+ machine and measurement HMI symbols with manual insertion | `OfficialSceneDomainTests.ShapeElementDefaultsAndFactoriesPreserveShapeKind`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.ModernShapePreviewUsesSvgShapeKind`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
 | Element+ electrical and alarm HMI symbols with manual insertion | `OfficialSceneDomainTests.ShapeElementDefaultsAndFactoriesPreserveShapeKind`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.ModernShapePreviewUsesSvgShapeKind`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
 | Element+ standard, HMI, and process shapes with manual insertion | `OfficialSceneDomainTests.ShapeElementDefaultsAndFactoriesPreserveShapeKind`, `ModernProjectStoreTests.SaveAndReloadPreservesPageManifestBackgroundAndObjectEvents`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.ModernShapePreviewUsesSvgShapeKind`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
-| Insert Formes gallery and two-point line/arrow authoring | `RibbonCommandCatalogTests.MainRibbonUsesNormalizedScrollableHeight`, `RibbonCommandCatalogTests.DefaultCatalogUsesStableUniqueCommandIds`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.LineAndArrowPlacementUseTwoPointMode`, `OfficialSceneDomainTests.ShapeElementDefaultsAndFactoriesPreserveShapeKind`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
+| Insert Formes gallery and two-point line/arrow authoring | `RibbonCommandCatalogTests.MainRibbonUsesClippingSafeOverflowHeight`, `RibbonCommandCatalogTests.DefaultCatalogUsesStableUniqueCommandIds`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.LineAndArrowPlacementUseTwoPointMode`, `OfficialSceneDomainTests.ShapeElementDefaultsAndFactoriesPreserveShapeKind`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
+| Modern table dialog fields | `TableUiArchitectureTests.TableDialogLayoutKeepsConcreteWpfControlsVisible` |
+| Table contextual entry and shared Element+ lock surfaces | `TableUiArchitectureTests`, `TableAuthoringSessionTests.RibbonTogglesEditorGuidesAndMergeActionFromSelectionState`, `TableEditCoordinatorTests.ToggleMergeUsesCurrentSelectionState`, `WebViewContextMenuScriptTests.ContextMenuOffersStatefulElementLockAction`, `WebViewContextMenuScriptTests.LockedElementMovementIsRejectedBeforeVisualDragStarts`, `WebViewContextMenuScriptTests.TableCellModeOwnsPointerInputBeforeElementDrag`, `ElementLockCoordinatorTests`, `ApplicationCommandTests`, `RibbonCommandCatalogTests` |
+| Advanced table format inspection and reset | `TablePropertiesInspectorTests`, `TableEditCoordinatorTests` |
+| Typed table WebView bridge diagnostics | `TableWebViewMessageAdapterTests` |
+| 64 x 64 batching and Release measurements | `TableWebViewPerformanceContractTests` |
+| Representative `win00012` 16 x 10 round-trip/preview/`.sb2` | `AdvancedTableAuthoringIntegrationTests` |
 | Element+ `Donnees` authoring and `DisplayFormat` masks | `ElementGroupTests.NumericDisplayFormatMaskControlsScalePrecisionAndInputStep`, `ElementGroupTests.NumericDisplayFormatMaskClampsToVisibleDigitBudget`, `WebViewContextMenuScriptTests.ElementDataTabDeprecatesLegacyTagDecimalsAndUnitFields` |
 | Studio Element+ editor state | `ElementStudioEditorStateTests.cs` |
 | Studio Element+ contract | `StudioElementPlusContractTests.cs` |

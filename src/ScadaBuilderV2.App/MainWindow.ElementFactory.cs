@@ -16,7 +16,8 @@ public partial class MainWindow
                 parsed == ScadaElementKind.InputText ||
                 parsed == ScadaElementKind.InputNumeric ||
                 parsed == ScadaElementKind.Shape ||
-                parsed == ScadaElementKind.Button)
+                parsed == ScadaElementKind.Button ||
+                parsed == ScadaElementKind.Table)
                 ? parsed
                 : null;
     }
@@ -40,6 +41,7 @@ public partial class MainWindow
             ScadaElementKind.Text => "insert.text",
             ScadaElementKind.InputText => "insert.input-text",
             ScadaElementKind.InputNumeric => "insert.input-numeric",
+            ScadaElementKind.Table => "insert.table",
             _ => null
         };
     }
@@ -118,6 +120,16 @@ public partial class MainWindow
             var buttonKind = _pendingInsertButtonKind ?? ScadaButtonKind.Command;
             var id = CreateUniqueElementId($"button_{sequence:000}");
             return ScadaElement.CreateButton(id, $"{FormatButtonName(buttonKind)}{sequence:000}", x, y, buttonKind);
+        }
+
+        if (kind == ScadaElementKind.Table)
+        {
+            var sequence = _nextTableSequence++;
+            var id = CreateUniqueElementId($"table_{sequence:000}");
+            return ScadaElement.CreateTable(id, $"Tableau{sequence:000}", x, y,
+                _tableAuthoringSession.CreationRows,
+                _tableAuthoringSession.CreationColumns,
+                _tableAuthoringSession.FirstRowIsHeader);
         }
 
         var textSequence = _nextInputTextSequence++;
@@ -219,6 +231,7 @@ public partial class MainWindow
         _nextInputNumericSequence = elements.Count(element => element.Kind == ScadaElementKind.InputNumeric) + 1;
         _nextShapeSequence = elements.Count(element => element.Kind == ScadaElementKind.Shape && !element.IsImportedFromLegacy) + 1;
         _nextButtonSequence = elements.Count(element => element.Kind == ScadaElementKind.Button && !element.IsImportedFromLegacy) + 1;
+        _nextTableSequence = elements.Count(element => element.Kind == ScadaElementKind.Table) + 1;
         _nextGroupSequence = elements.Count(element => element.Kind == ScadaElementKind.Group) + 1;
     }
 }

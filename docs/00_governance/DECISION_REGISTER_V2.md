@@ -1,13 +1,20 @@
 # SCADA Builder V2 - Decision Register
 
-Date: 2026-07-14
+Date: 2026-07-15
 Status: Active authoritative decision register
-Document version: `V2.1.4.0011`
+Document version: `V2.1.4.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | `DEC-0041` implementee et validee sans changement des contrats `.sb2`, `.sep` ou TF100Web. |
+| 2026-07-15 | `V2.1.4.0033` | `e811253` | Ajout de `DEC-0041` pour les corrections d'interaction Tableau/verrou approuvees. |
+| 2026-07-15 | `V2.1.4.0028` | `c873744` | `DEC-0040` corrigée sur ses surfaces WPF fondamentales : accès Tableau sans modale et état de verrou partagé jusque dans le menu contextuel Element+. |
+| 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | `DEC-0040` synchronisée avec la clôture des tranches de code/tests et les mesures Release automatisées; smoke WebView2 interactif conservé comme gate distinct. |
+| 2026-07-15 | `V2.1.4.0024` | `3f6e6a5` | Ajout de `DEC-0040` pour la sous-surface Tableau, l'authoring avancé des cellules et le verrouillage persistant de position de tous les Element+. |
+| 2026-07-14 | `V2.1.4.0016` | `10cfa72` | `DEC-0039` implementee avec modele Tableau, edition type tableur, export `.sb2`, tests et ruban Inserer hierarchique; smoke interactif isole restant. |
+| 2026-07-14 | `V2.1.4.0015` | `95a57ac` | Ajout de `DEC-0039` pour l'Element+ Tableau moderne, l'edition type tableur, le ruban Inserer hierarchique et l'extraction des responsabilites hors `MainWindow`. |
 | 2026-07-14 | `V2.1.4.0011` | `PENDING` | DEC-0038 passée de décision approuvée à tranche implémentée et couverte; la vérification UI manuelle et la migration du projet réel restent séparées. |
 | 2026-07-14 | `V2.1.4.0010` | `c5d6f0e` | Ajout de DEC-0038 pour l’identité moderne des pages, les commandes partagées, l’historique projet, la persistance atomique et la compatibilité `.sb2`. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Ajout de DEC-0037 pour le contrat de style avancé Element+ model-backed et la conservation HTML/CSS TF100Web. |
@@ -1127,3 +1134,97 @@ Implemented in commits `40c77a3` through `3493055`. Automated lifecycle and `.sb
 Regression coverage:
 
 `tests/ScadaBuilderV2.Tests/PageIdentityTests.cs`, `tests/ScadaBuilderV2.Tests/PageCommandCoordinatorTests.cs`, `tests/ScadaBuilderV2.Tests/ProjectWorkspaceHistoryTests.cs`, `tests/ScadaBuilderV2.Tests/ModernProjectAtomicSnapshotTests.cs`, `tests/ScadaBuilderV2.Tests/NativePageDocumentTests.cs`, `tests/ScadaBuilderV2.Tests/PageManagementSurfaceContractTests.cs`, `tests/ScadaBuilderV2.Tests/DiagnosticsSurfaceContractTests.cs`, `tests/ScadaBuilderV2.Tests/PageLifecycleIntegrationTests.cs`, and `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`.
+
+### DEC-0039 - Modern Table Element And Hierarchical Insert Ribbon
+
+Status: Active
+Created: 2026-07-14 00:00 America/Toronto
+Created in commit: `95a57ac`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/specs/2026-07-14-modern-table-and-insert-ribbon-design.md`
+
+Context:
+
+The `win00012` reference scene reconstructs tabular information with hundreds of independent legacy text, rectangle, line, and button objects. The current Insert ribbon is flat, grows for every tool, and routes many insertion ids through `MainWindow`. SCADA Builder V2 has no model-backed table capable of track resizing, merged cells, contextual row/column commands, coherent style inheritance, persistence, or direct `.sb2` export.
+
+Decision:
+
+SCADA Builder V2 introduces one Element+ `Table` object backed by a nullable, backward-compatible domain definition. It supports 1 to 64 rows and columns, manual and proportional track resize, rectangular selection, merge/unmerge, native text and numeric inputs without per-cell `ValueBindings`, table/column/row/cell formatting, internal and TSV clipboard exchange, and contextual insert/delete/clear/format/size commands. Effective formatting is resolved property by property in the order `Cell > explicit Row > automatic Row Band > Column > Table > system default`, where `null` means inherit.
+
+The right `Propriete` panel, a dedicated `TablePropertiesDialog`, `CellFormatDialog`, dimension dialog, WebView table editor, and contextual menu route typed requests through shared Application commands and Domain operations. Editor gutters, selections, handles, and previews are never exported. The live WebView canvas and FT100 renderer consume the same table model; `.sb2` keeps its existing page-root, folder, namespace, and manifest contract.
+
+The Insert ribbon becomes hierarchical: level 1 selects a semantic family and level 2 exposes its tools. Implemented tools keep stable ids; future modern SCADA tools may remain visible only with explicit disabled reasons. Catalog, generic insertion descriptors, table behavior, validation, clipboard rules, and detailed coordination are extracted from `MainWindow`; only high-level shell/workspace adaptation may remain there.
+
+Consequences:
+
+Existing projects remain readable with `Table = null` and are not converted automatically. `win00012` remains evidence and a visual/capacity reference, not an automatic migration target. Table inputs are standard HTML controls whose runtime values are local and not persisted after page reload. Implementation must add Domain, Application, Rendering, WebView, WPF, persistence, history, architecture, and `.sb2` regression coverage before the feature is documented as implemented.
+
+Regression coverage:
+
+Implemented in `tests/ScadaBuilderV2.Tests/ScadaTableModelTests.cs`, `ScadaTableOperationsTests.cs`, `TableEditCoordinatorTests.cs`, `TableClipboardTests.cs`, `RibbonCommandCatalogTests.cs`, `TableUiArchitectureTests.cs`, `ModernProjectStoreTests.cs`, `WebViewContextMenuScriptTests.cs`, and `Ft100SceneExporterTests.cs`.
+
+### DEC-0040 - Advanced Table Authoring And Persistent Element Position Lock
+
+Status: Active
+Created: 2026-07-15 00:00 America/Toronto
+Created in commit: `3f6e6a5`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/specs/2026-07-15-table-ui-authoring-and-element-lock-design.md`
+
+Context:
+
+The `DEC-0039` table core persists and exports modern tables, but its current insertion flow opens a creation dialog and its editor does not yet expose the complete cell types, formatting scopes, heterogeneous borders, precise dimensions, headers, or reliable object-versus-cell interaction required to reconstruct `win00012` efficiently. The visible scene lock controls currently protect only transient selection state and do not prevent Element+ movement.
+
+Decision:
+
+`insert.table` opens a secondary Table authoring surface inside the existing Insert ribbon. The always-available `table.add` command configures and arms point placement without a modal creation dialog. Object and Cells modes own mutually exclusive gestures. Table authoring adds explicit direct and calculated scopes, deterministic cell-content conversion, inheritable full formatting, physical border-segment overrides, precise track operations, WebView-measured auto-fit, multiple consecutive header rows, typed bridge messages, and a validated 64 x 64 performance gate.
+
+Every scene `ScadaElement` receives persistent `IsLocked` position metadata. `object.lock` becomes the sole main-editor lock command and replaces `selection.toggle-lock` without an alias. Group toggles recurse through descendants; a locked descendant blocks a group translation. Mixed selection appears unlocked in toggle surfaces and indeterminate in the Properties checkbox; activating it locks the complete selection closure. The Selection ribbon, right Properties panel, and top `Lock` indicator share one application-derived state. WebView feedback and an Application transform guard both reject effective X/Y changes while selection, resize without translation, rotation, content, style, events, and internal Table editing remain available.
+
+Domain owns persistent values and pure operations, Application owns sessions, commands, guards, mutations and history, App owns WPF view models and WebView adapters, and Rendering consumes only the project model. `MainWindow` remains a high-level host. Scene locks, cell overlays, headers used only for authoring, handles and diagnostics never become `.sb2` or `.sep` runtime geometry. Per-cell `ValueBindings`, formulas, CSV/Excel import, automatic `win00012` conversion and tables larger than 64 x 64 remain out of scope.
+
+Consequences:
+
+Existing scene JSON without `IsLocked` remains readable as unlocked. Copy, cut/paste, duplicate, group/ungroup and undo/redo preserve the approved lock semantics. The former `DialogThenPoint`, disabled `object.lock`, `ToggleSelectionLockCommand`, `SelectionState.IsSelectionLocked`, local `MainWindow.IsSelectionLocked` binding and direct Table bridge logic have been migrated. Product closure still requires the isolated interactive WebView2 smoke recorded in the implementation plan.
+
+Implementation status:
+
+Implemented in commits `e497e52` through `c873744`. Code, architecture boundaries, persistence, history, WPF surfaces, bridge diagnostics, preview/`.sb2` parity, representative 16 x 10 integration and automated Release measurements are covered. Commit `c873744` specifically protects the no-modal Table entry point, visible Properties checkbox, stateful Selection/top indicators and Element+ lock/unlock context action. The remaining gate is the isolated WPF/WebView2 interaction smoke; automated model/HTML timings are not claimed as browser composition timings.
+
+Regression coverage:
+
+Implemented in `tests/ScadaBuilderV2.Tests/ScadaTableModelTests.cs`, `TableContentOperationsTests.cs`, `TableBorderOperationsTests.cs`, `TableTrackOperationsTests.cs`, `TableAuthoringSessionTests.cs`, `TableEditCoordinatorTests.cs`, `TablePropertiesInspectorTests.cs`, `TableWebViewMessageAdapterTests.cs`, `TableWebViewPerformanceContractTests.cs`, `AdvancedTableAuthoringIntegrationTests.cs`, `TableUiArchitectureTests.cs`, `ElementLockCoordinatorTests.cs`, `ElementTransformGuardTests.cs`, `ScadaSceneGroupTests.cs`, `ModernProjectStoreTests.cs`, `ApplicationCommandTests.cs`, `WebViewContextMenuScriptTests.cs`, `Ft100SceneExporterTests.cs`, and `StudioElementPlusContractTests.cs`.
+
+### DEC-0041 - Deterministic Table Interaction And Immediate Element Position Lock
+
+Status: Active
+Created: 2026-07-15 00:00 America/Toronto
+Created in commit: `e811253`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/specs/2026-07-15-table-lock-interaction-regression-correction-design.md`
+
+Context:
+
+The implemented Table and Element+ lock surfaces expose the intended controls, but the editor render payload omits `IsLocked`, so WebView movement can start before the Application guard rejects the commit. Table placement also enters Cells mode automatically, and the stored A/1 guide preference can disagree with its effective visibility.
+
+Decision:
+
+The editor-only Element+ payload projects `IsLocked` recursively and WebView hit-testing rejects forbidden movement before preview or pointer capture while `ElementTransformGuard` remains the final Application defense. A newly placed or reselected Table starts in Object mode; Cells mode is entered explicitly or by double-click and remains independent from lock state. Locked Tables retain cell, header and track editing in Cells mode. Locked object resize may change dimensions only while X/Y remain invariant, and group transformations that would move a locked descendant are rejected before preview. A/1 ribbon state uses effective visibility, and mode plus guide state are synchronized atomically after every relevant transition.
+
+Consequences:
+
+`DEC-0040` remains active for the Table model, authoring tools and persistent lock semantics; this decision supersedes only its automatic post-placement Cells-mode behavior and clarifies pre-preview enforcement. No Domain field, scene JSON, `.sb2`, `.sep` or TF100Web contract changes. Editor payload, modes, selection and guides remain editor-only.
+
+Regression coverage:
+
+Required in `ModernElementRenderPayloadFactoryTests`, `TableAuthoringSessionTests`, `TableEditorWebViewStateTests`, `TableUiArchitectureTests`, `WebViewContextMenuScriptTests`, `ElementTransformGuardTests`, `Ft100SceneExporterTests`, and `StudioElementPlusContractTests`.
+
+Implementation status:
+
+Implemented in `b75f1d7`, with source-contract follow-up `c441090`. The editor payload now carries recursive `IsLocked`, forbidden position gestures stop before preview, Table mode/guides synchronize atomically, and the isolated WPF/WebView2 smoke confirmed the principal locked/unlocked Table workflows without changing `.sb2`, `.sep` or TF100Web.

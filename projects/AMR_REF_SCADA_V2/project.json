@@ -82,7 +82,7 @@
   "Scenes": [
     {
       "Id": "win00002",
-      "Title": "win00002",
+      "Title": "Entete",
       "RelativePath": "scenes/win00002.scene.json",
       "Type": "Header",
       "CanvasSize": {
@@ -103,6 +103,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "03cfb85b-ac44-578d-bbfc-240e3d6ed01c",
+      "PageCode": "win00002",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00002",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00002_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 120
@@ -142,6 +153,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "3679ddd3-579a-5f28-9464-dd7646ab49ca",
+      "PageCode": "win00003",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00003",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00003_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 120
@@ -181,6 +203,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": "win00002",
       "FooterPageId": "win00003",
+      "PageKey": "ce9542e2-c03b-5cc5-a7fb-cd0bbb3de5b9",
+      "PageCode": "win00004",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00004",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00004_updated.html"
+      },
+      "HeaderPageKey": "03cfb85b-ac44-578d-bbfc-240e3d6ed01c",
+      "FooterPageKey": "3679ddd3-579a-5f28-9464-dd7646ab49ca",
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -220,6 +253,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": "win00002",
       "FooterPageId": "win00003",
+      "PageKey": "4ace835e-4a0f-59fe-b67e-72755fbfadf9",
+      "PageCode": "win00007",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00007",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00007_updated.html"
+      },
+      "HeaderPageKey": "03cfb85b-ac44-578d-bbfc-240e3d6ed01c",
+      "FooterPageKey": "3679ddd3-579a-5f28-9464-dd7646ab49ca",
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -259,6 +303,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": "win00002",
       "FooterPageId": "win00003",
+      "PageKey": "59acb6b8-2617-5754-a6d8-95f8dbfc2d4f",
+      "PageCode": "win00008",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00008",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00008_updated.html"
+      },
+      "HeaderPageKey": "03cfb85b-ac44-578d-bbfc-240e3d6ed01c",
+      "FooterPageKey": "3679ddd3-579a-5f28-9464-dd7646ab49ca",
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -298,6 +353,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": "win00002",
       "FooterPageId": "win00003",
+      "PageKey": "fe557ee6-be46-530b-a211-2b4b599215ee",
+      "PageCode": "win00009",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00009",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00009_updated.html"
+      },
+      "HeaderPageKey": "03cfb85b-ac44-578d-bbfc-240e3d6ed01c",
+      "FooterPageKey": "3679ddd3-579a-5f28-9464-dd7646ab49ca",
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -337,6 +403,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": "win00002",
       "FooterPageId": "win00003",
+      "PageKey": "b19eb8af-92b8-5c78-be5f-6acfa09cfb86",
+      "PageCode": "win00010",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00010",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00010_updated.html"
+      },
+      "HeaderPageKey": "03cfb85b-ac44-578d-bbfc-240e3d6ed01c",
+      "FooterPageKey": "3679ddd3-579a-5f28-9464-dd7646ab49ca",
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -376,6 +453,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "46748a09-ce95-5e09-b11e-b5d7c673d4bb",
+      "PageCode": "win00011",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00011",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00011_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -394,7 +482,7 @@
     },
     {
       "Id": "win00012",
-      "Title": "win00012",
+      "Title": "TableauDegivrage",
       "RelativePath": "scenes/win00012.scene.json",
       "Type": "Default",
       "CanvasSize": {
@@ -415,12 +503,68 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "8162dae5-1ad2-5298-8af3-e7cd4d7180c0",
+      "PageCode": "win00012",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00012",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00012_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
       },
       "EffectiveBackground": {
         "Color": "#ADADAD",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
+    },
+    {
+      "Id": "win00012_modern",
+      "Title": "Tableau de d\u00E9givrage \u2014 Moderne",
+      "RelativePath": "scenes/win00012_modern.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#061018",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": false,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "PageKey": "567f7fee-244f-470c-b4d1-af5b3294506a",
+      "PageCode": "win00012_modern",
+      "Origin": "Native",
+      "ImportProvenance": null,
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#061018",
         "Image": null,
         "Size": "cover",
         "Repeat": "no-repeat",
@@ -454,6 +598,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "4ce5cf8c-e0ae-5d94-a6ed-980d14c50046",
+      "PageCode": "win00013",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00013",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00013_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -493,6 +648,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "2a255aa6-d864-5932-a25d-512934c4dbcf",
+      "PageCode": "win00014",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00014",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00014_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -532,6 +698,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "f6721b9b-6cc0-5aca-ba22-0af8861122a7",
+      "PageCode": "win00015",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00015",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00015_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -571,6 +748,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": "win00002",
       "FooterPageId": "win00003",
+      "PageKey": "fc4f1b98-5a34-5ac7-a8ef-013b04a07edd",
+      "PageCode": "win00017",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00017",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00017_updated.html"
+      },
+      "HeaderPageKey": "03cfb85b-ac44-578d-bbfc-240e3d6ed01c",
+      "FooterPageKey": "3679ddd3-579a-5f28-9464-dd7646ab49ca",
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -610,6 +798,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "2ecff3dd-88f5-57fb-ab03-aec5cce007d1",
+      "PageCode": "win00025",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00025",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00025_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -649,6 +848,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "959c528a-b79f-5afe-a8b5-efce655d6c76",
+      "PageCode": "win00026",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00026",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00026_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -688,6 +898,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "a2244b5a-dc14-552c-8a31-cf483dc73f75",
+      "PageCode": "win00027",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00027",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00027_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -727,6 +948,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "313f3c13-9a38-53d1-b323-2e554c3a95f4",
+      "PageCode": "win00028",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00028",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00028_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -766,6 +998,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "1490335e-b39e-5cf6-ab0c-33e93685a721",
+      "PageCode": "win00029",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00029",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00029_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -805,6 +1048,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "8015f146-2451-59a5-a2b3-24e373c76d50",
+      "PageCode": "win00030",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00030",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00030_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -844,6 +1098,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "052e1f37-d967-5535-b076-6aab684189de",
+      "PageCode": "win00031",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00031",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00031_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -883,6 +1148,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "6274801b-e8ac-5dc7-9e85-f11a00ac6774",
+      "PageCode": "win00032",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00032",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00032_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -922,6 +1198,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "14326e70-cebd-5928-92c1-b18995e4eec4",
+      "PageCode": "win00033",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00033",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00033_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -961,6 +1248,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "698f3b13-0768-581f-832d-e50ccae6307e",
+      "PageCode": "win00034",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00034",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00034_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1000,6 +1298,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "4c23ce86-59cf-5238-8246-1a388853995c",
+      "PageCode": "win00047",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00047",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00047_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1039,6 +1348,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "c9725a9d-e9c1-5c7f-b436-5e74a16e524e",
+      "PageCode": "win00048",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00048",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00048_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1078,6 +1398,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "c7e3b6f5-4366-5b0f-a415-c64096d3e42d",
+      "PageCode": "win00054",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00054",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00054_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1117,6 +1448,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": "win00002",
       "FooterPageId": "win00003",
+      "PageKey": "f85d9804-dc09-5214-9ac5-ca8ab00ccd84",
+      "PageCode": "win00059",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00059",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00059_updated.html"
+      },
+      "HeaderPageKey": "03cfb85b-ac44-578d-bbfc-240e3d6ed01c",
+      "FooterPageKey": "3679ddd3-579a-5f28-9464-dd7646ab49ca",
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1156,6 +1498,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "c16d2bb1-9e17-5ed7-93bd-f9bbb6d03b2f",
+      "PageCode": "win00065",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00065",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00065_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1195,6 +1548,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "525c01b2-db44-57f8-bd1e-7ce7da7bc042",
+      "PageCode": "win00068",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00068",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00068_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1234,6 +1598,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "a6b4aeda-0d38-59b0-8b30-e545bf7e2c60",
+      "PageCode": "win00069",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00069",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00069_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1273,6 +1648,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "87bb6f4a-4a6e-5565-b6db-3bf18a16d7e9",
+      "PageCode": "win00070",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00070",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00070_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1312,6 +1698,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "faf2672d-e2a3-54dd-9746-b294bf96bb05",
+      "PageCode": "win00072",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00072",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00072_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1351,6 +1748,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "6481e6d0-3a19-52e7-89b8-73741575b5d6",
+      "PageCode": "win00073",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00073",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00073_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1390,6 +1798,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "6f69ffed-c4d7-581d-bb5d-7cd26a3b8652",
+      "PageCode": "win00074",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00074",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00074_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1429,6 +1848,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "b7929eeb-cc8f-58be-9664-c369ce844b0d",
+      "PageCode": "win00075",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00075",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00075_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1468,6 +1898,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "d8b8a83c-92ad-5db4-a7e6-9286b589fa7a",
+      "PageCode": "win00076",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00076",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00076_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1507,6 +1948,17 @@
       "IncludeInBuild": false,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "2df3a32a-9f0e-5d18-8b86-97cb5d8a6a07",
+      "PageCode": "win00077",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00077",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00077_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1533,6 +1985,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "dec75d0b-45b4-5be9-a36e-90d2f3df58a8",
+      "PageCode": "win00078",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00078",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00078_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1559,6 +2022,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "a51841a5-9bb4-5c79-9068-dfca3794e3d9",
+      "PageCode": "win00079",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00079",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00079_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1585,6 +2059,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "b0e4fb3b-645f-5923-89aa-e0c64c5486f4",
+      "PageCode": "win00082",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00082",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00082_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1611,6 +2096,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "60de0202-31ac-5132-945f-eda71282c014",
+      "PageCode": "win00083",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00083",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00083_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1637,6 +2133,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "fd46ba84-2abe-5bf9-b8b0-0d74583c94da",
+      "PageCode": "win00084",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00084",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00084_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1663,6 +2170,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "7a415624-904b-5300-92bd-5f1df3848dc2",
+      "PageCode": "win00085",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00085",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00085_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1689,6 +2207,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "65f71e0f-6205-50f5-8e0c-c77bee5cc534",
+      "PageCode": "win00086",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00086",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00086_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1728,6 +2257,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": "win00002",
       "FooterPageId": "win00003",
+      "PageKey": "df14dd87-2796-5634-92fe-a915530ceac3",
+      "PageCode": "win00087",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00087",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00087_updated.html"
+      },
+      "HeaderPageKey": "03cfb85b-ac44-578d-bbfc-240e3d6ed01c",
+      "FooterPageKey": "3679ddd3-579a-5f28-9464-dd7646ab49ca",
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1754,6 +2294,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "ada8a55e-ed5e-51cc-9fb4-3189302db04a",
+      "PageCode": "win00088",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00088",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00088_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1780,6 +2331,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "fc010f03-7c4d-5df4-9f1b-a88d520bf9af",
+      "PageCode": "win00089",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00089",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00089_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1819,6 +2381,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "804ad2db-1654-57ed-b506-ca5498a4f19d",
+      "PageCode": "win00090",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00090",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00090_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1858,6 +2431,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "e7332181-5997-5f77-9439-0a23f17c30a8",
+      "PageCode": "win00092",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00092",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00092_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1897,6 +2481,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "66f2656a-7262-53e1-b016-053295e2a304",
+      "PageCode": "win00093",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00093",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00093_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1936,6 +2531,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "7690e0e6-f0cc-52e0-8ea2-d0a410c62787",
+      "PageCode": "win00094",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00094",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00094_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -1975,6 +2581,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "1730e212-5052-5628-bf49-954fa1ec4847",
+      "PageCode": "win00095",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00095",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00095_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -2014,6 +2631,17 @@
       "IncludeInBuild": true,
       "HeaderPageId": null,
       "FooterPageId": null,
+      "PageKey": "6c98956f-115e-5980-824b-fe6b3652bda1",
+      "PageCode": "win00096",
+      "Origin": "Imported",
+      "ImportProvenance": {
+        "SourceSystem": "Wonderware",
+        "SourceProjectId": "AMR_REF_SCADA_V2",
+        "SourcePageId": "win00096",
+        "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00096_updated.html"
+      },
+      "HeaderPageKey": null,
+      "FooterPageKey": null,
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873
@@ -2611,5 +3239,6 @@
     ],
     "SourceFileName": "20260709_143006_tf100web-scada-tags.json",
     "ImportedAtUtc": "2026-07-09T14:30:06.0408223+00:00"
-  }
+  },
+  "HomePageKey": "59acb6b8-2617-5754-a6d8-95f8dbfc2d4f"
 }

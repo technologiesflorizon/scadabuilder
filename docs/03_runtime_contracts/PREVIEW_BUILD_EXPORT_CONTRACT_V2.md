@@ -2,12 +2,14 @@
 
 Date: 2026-07-14
 Status: Active runtime contract
-Document version: `V2.1.2.0039`
+Document version: `V2.1.4.0027`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0027` | `88e865a` | Les tableaux exportent des rangées HTML valides, des `<th>/<td>` avec `rowspan`/`colspan` et des segments conservant style, couleur et épaisseur; le scénario 16 x 10 vérifie preview et `.sb2`. |
+| 2026-07-15 | `V2.1.4.0026` | `0874416` | Parite Tableau avancee : headers semantiques, wrap/line-height et segments de bordure; exclusion explicite du lock et des gouttieres editor-only. |
 | 2026-07-14 | `V2.1.2.0039` | `PENDING` | Ajout des pages natives et de la projection `PageKey` vers `PageCode` sans changement du contrat `.sb2`. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Alignement metadata preview/export pour wrappers de boutons Element+. |
 | 2026-06-19 | `V2.1.2.0037` | `2a540d6` | Ajout du contrat des evenements runtime pour boutons standards. |
@@ -33,6 +35,10 @@ Editor-only artifacts are never runtime geometry:
 5. Layout tools.
 6. Test panels.
 7. Studio workzone state.
+8. Element position-lock indicators and `IsLocked` metadata.
+9. Table cell-selection headers, gutters, handles, modes, and auto-fit diagnostics.
+
+Le renderer commun emet les rangees d'en-tete Tableau en `<th>`, les autres ancres en `<td>`, et resout les segments de bordure depuis le modele. Le contrat TF100Web `.sb2` reste inchange : aucun binding cellule par cellule ni metadata de verrouillage n'est ajoute au runtime.
 
 Element+ button hover behavior is FT100Web runtime metadata, not an editor overlay and not SCADA Builder V2 preview styling. Preview must preserve `ScadaButtonBehavior` without applying hover locally. FT100 export must preserve `ScadaButtonBehavior` in the manifest and may generate page-scoped CSS `:hover` rules from enabled hover metadata.
 

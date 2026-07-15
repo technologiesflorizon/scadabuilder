@@ -40,7 +40,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -75,7 +83,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_2",
@@ -111,7 +123,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -146,7 +166,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_3",
@@ -182,7 +206,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -217,7 +249,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_4",
@@ -253,7 +289,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -288,7 +332,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_5",
@@ -324,7 +372,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -359,7 +415,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_6",
@@ -395,7 +455,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -430,7 +498,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_7",
@@ -466,7 +538,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -501,7 +581,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_8",
@@ -537,7 +621,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -572,7 +664,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_9",
@@ -608,7 +704,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -643,7 +747,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_10",
@@ -679,7 +787,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -714,7 +830,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_11",
@@ -750,7 +870,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -785,7 +913,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_19",
@@ -821,7 +953,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -856,7 +996,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_20",
@@ -892,7 +1036,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -927,7 +1079,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_21",
@@ -963,7 +1119,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -998,7 +1162,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_25",
@@ -1034,7 +1202,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1069,7 +1245,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_26",
@@ -1105,7 +1285,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1140,7 +1328,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_27",
@@ -1176,7 +1368,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1211,7 +1411,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_31",
@@ -1247,7 +1451,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1282,7 +1494,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_32",
@@ -1318,7 +1534,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1353,7 +1577,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_33",
@@ -1389,7 +1617,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1424,7 +1660,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_37",
@@ -1460,7 +1700,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1495,7 +1743,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_38",
@@ -1531,7 +1783,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1566,7 +1826,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_39",
@@ -1602,7 +1866,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1637,7 +1909,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_43",
@@ -1673,7 +1949,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1708,7 +1992,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_44",
@@ -1744,7 +2032,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1779,7 +2075,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_45",
@@ -1815,7 +2115,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1850,7 +2158,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_49",
@@ -1886,7 +2198,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1921,7 +2241,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_50",
@@ -1957,7 +2281,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -1992,7 +2324,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_51",
@@ -2028,7 +2364,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -2063,7 +2407,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_55",
@@ -2099,7 +2447,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -2134,7 +2490,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_56",
@@ -2170,7 +2530,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "",
@@ -2205,7 +2573,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_12",
@@ -2241,7 +2613,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "Consigne Alarmes Temp.",
@@ -2276,7 +2656,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_13",
@@ -2312,7 +2696,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "R1 - R2",
@@ -2347,7 +2739,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_14",
@@ -2383,7 +2779,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "###.0",
@@ -2418,7 +2822,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_15",
@@ -2454,7 +2862,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "\u00B0F",
@@ -2489,7 +2905,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_16",
@@ -2525,7 +2945,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": " ",
@@ -2560,7 +2988,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_17",
@@ -2596,7 +3028,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "D\u00C9GIVRAGE",
@@ -2631,7 +3071,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_18",
@@ -2667,7 +3111,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "CONSIGNES ",
@@ -2702,7 +3154,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_22",
@@ -2738,7 +3194,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "R3 - R4",
@@ -2773,7 +3237,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_23",
@@ -2809,7 +3277,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "###.0",
@@ -2844,7 +3320,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_24",
@@ -2880,7 +3360,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "\u00B0F",
@@ -2915,7 +3403,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_28",
@@ -2951,7 +3443,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "800 - 900",
@@ -2986,7 +3486,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_29",
@@ -3022,7 +3526,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "###.0",
@@ -3057,7 +3569,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_30",
@@ -3093,7 +3609,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "\u00B0F",
@@ -3128,7 +3652,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_34",
@@ -3164,7 +3692,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "C1 - C2 - C7",
@@ -3199,7 +3735,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_35",
@@ -3235,7 +3775,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "###.0",
@@ -3270,7 +3818,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_36",
@@ -3306,7 +3858,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "\u00B0F",
@@ -3341,7 +3901,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_40",
@@ -3377,7 +3941,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "C3 - C4 - C5 - C6",
@@ -3412,7 +3984,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_41",
@@ -3448,7 +4024,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "###.0",
@@ -3483,7 +4067,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_42",
@@ -3519,7 +4107,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "\u00B0F",
@@ -3554,7 +4150,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_46",
@@ -3590,7 +4190,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "Q1 - Q2 - Q3 - Q4",
@@ -3625,7 +4233,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_47",
@@ -3661,7 +4273,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "###.0",
@@ -3696,7 +4316,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_48",
@@ -3732,7 +4356,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "\u00B0F",
@@ -3767,7 +4399,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_52",
@@ -3803,7 +4439,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "Q5 - Q6 - Q7 - Q8",
@@ -3838,7 +4482,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_53",
@@ -3874,7 +4522,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "###.0",
@@ -3909,7 +4565,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     },
     {
       "Id": "legacy_54",
@@ -3945,7 +4605,15 @@
         "Opacity": 1,
         "Rotation": 0,
         "FlipHorizontally": false,
-        "FlipVertically": false
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Left",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 0,
+        "BorderRadius": null
       },
       "Data": {
         "Text": "\u00B0F",
@@ -3980,7 +4648,11 @@
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
-      "ButtonKind": null
+      "ButtonKind": null,
+      "StateConfig": null,
+      "CommandConfig": null,
+      "Table": null,
+      "IsLocked": false
     }
   ],
   "BackgroundColor": "#A8A8A8",
@@ -3999,8 +4671,19 @@
     "Clip": "border-box",
     "BlendMode": "normal"
   },
-  "Actions": null,
+  "Actions": [],
   "IncludeInBuild": true,
   "HeaderPageId": null,
-  "FooterPageId": null
+  "FooterPageId": null,
+  "PageKey": "6c98956f-115e-5980-824b-fe6b3652bda1",
+  "PageCode": "win00096",
+  "Origin": "Imported",
+  "ImportProvenance": {
+    "SourceSystem": "Wonderware",
+    "SourceProjectId": "AMR_REF_SCADA_V2",
+    "SourcePageId": "win00096",
+    "SourcePath": "SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00096_updated.html"
+  },
+  "HeaderPageKey": null,
+  "FooterPageKey": null
 }
