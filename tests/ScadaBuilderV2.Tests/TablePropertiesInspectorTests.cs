@@ -1,4 +1,5 @@
 using ScadaBuilderV2.Application.Tables;
+using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
 
 namespace ScadaBuilderV2.Tests;
@@ -50,5 +51,36 @@ public sealed class TablePropertiesInspectorTests
         Assert.IsNull(second!.Background);
         Assert.AreEqual("#AAAAAA", first.Foreground);
         Assert.AreEqual("#BBBBBB", second.Foreground);
+    }
+
+    [TestMethod]
+    public void NumericInspectorRequiresOneAnchorAndFiltersActiveWritableTags()
+    {
+        var element = ScadaElement.CreateTable("t1", "Tableau", 0, 0, 2, 2);
+        element = element with
+        {
+            Table = element.Table! with
+            {
+                Cells = element.Table.EffectiveCells.Select(cell => cell with
+                {
+                    Content = new ScadaTableCellContent(ScadaTableCellContentKind.InputNumeric)
+                }).ToArray()
+            }
+        };
+        var catalog = new ScadaTagCatalog("tf100web-scada-tags-v1",
+        [
+            new("read", "Lecture"),
+            new("write", "Ecriture", Writeable: true),
+            new("disabled", "Inactive", Writeable: true, Enabled: false)
+        ]);
+
+        var single = TableCellNumericInputInspector.Inspect(element, new ScadaTableRange(0, 0, 0, 0), catalog);
+        Assert.IsTrue(single.CanEditProperties);
+        Assert.AreEqual(2, single.ReadTags.Count);
+        Assert.AreEqual(1, single.WriteTags.Count);
+
+        var range = TableCellNumericInputInspector.Inspect(element, new ScadaTableRange(0, 0, 0, 1), catalog);
+        Assert.IsFalse(range.CanEditProperties);
+        StringAssert.Contains(range.Diagnostic!, "une seule cellule ancre");
     }
 }

@@ -7,6 +7,7 @@ namespace ScadaBuilderV2.App.TableEditor;
 internal sealed class TableRibbonViewModel
 {
     private readonly TableAuthoringSession session;
+    private TableCellNumericInputInspection? numericInspection;
 
     public TableRibbonViewModel(TableAuthoringSession session)
     {
@@ -37,5 +38,38 @@ internal sealed class TableRibbonViewModel
         Refresh();
     }
 
-    public void Refresh() => Groups = TableRibbonStateProvider.Create(session);
+    public void UpdateNumericInspection(TableCellNumericInputInspection? inspection)
+    {
+        numericInspection = inspection;
+        Refresh();
+    }
+
+    public void Refresh()
+    {
+        var groups = TableRibbonStateProvider.Create(session).ToList();
+        if (session.TableElementId is not null)
+        {
+            var enabled = numericInspection?.CanEditProperties == true;
+            var reason = numericInspection?.Diagnostic ?? "Selectionnez une cellule InputNumeric unique.";
+            var numericGroup = new RibbonGroupDefinition(
+                "Input numerique",
+                [
+                    Command("table.numeric.properties", "Proprietes", "Icon.Field.Numeric", "Valeur initiale, contraintes et bindings", enabled, reason),
+                    Command("table.binding.read", "Lire", "Icon.Field.Numeric", $"Lire valeur: {numericInspection?.ReadBindingSummary ?? "Aucun"}", enabled, reason),
+                    Command("table.binding.write", "Ecrire", "Icon.Field.Numeric", $"Ecrire valeur: {numericInspection?.WriteBindingSummary ?? "Aucun"}", enabled, reason)
+                ]);
+            var index = Math.Min(groups.Count, Math.Max(0, groups.FindIndex(group => group.Label == "Contenu") + 1));
+            groups.Insert(index, numericGroup);
+        }
+        Groups = groups;
+    }
+
+    private static RibbonCommandDefinition Command(
+        string id,
+        string label,
+        string icon,
+        string toolTip,
+        bool enabled,
+        string reason) =>
+        new(id, label, icon, toolTip, enabled, enabled ? null : reason);
 }

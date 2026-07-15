@@ -85,12 +85,6 @@ internal sealed class TableNumericInputPropertiesViewModel
             return false;
         }
 
-        if (IsReadOnly && SelectedWriteTagId is not null)
-        {
-            error = "Une cellule en lecture seule ne peut pas conserver un binding d'ecriture.";
-            return false;
-        }
-
         var content = new ScadaTableCellContent(
             ScadaTableCellContentKind.InputNumeric,
             Text: inspection.Content?.Text ?? string.Empty,
@@ -112,7 +106,7 @@ internal sealed class TableNumericInputPropertiesViewModel
             new(TableEditKind.SetNumericInputProperties, Row: row, Column: column, Content: content)
         };
         AddBindingRequest(result, row, column, TableCellBindingKind.Read, inspection.ValueBindings?.ReadTagId, SelectedReadTagId);
-        AddBindingRequest(result, row, column, TableCellBindingKind.Write, inspection.ValueBindings?.WriteTagId, SelectedWriteTagId);
+        AddBindingRequest(result, row, column, TableCellBindingKind.Write, inspection.ValueBindings?.WriteTagId, IsReadOnly ? null : SelectedWriteTagId);
         requests = result;
         return true;
     }

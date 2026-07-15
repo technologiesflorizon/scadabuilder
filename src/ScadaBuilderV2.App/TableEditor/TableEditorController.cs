@@ -1,6 +1,7 @@
 using System.Windows;
 using ScadaBuilderV2.Application.Commands;
 using ScadaBuilderV2.Application.Tables;
+using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
 
 namespace ScadaBuilderV2.App.TableEditor;
@@ -11,15 +12,21 @@ internal sealed class TableEditorController
     private readonly Window owner;
     private readonly Action<ScadaElement, string> commit;
     private readonly Func<ScadaElement, bool> canCommitTransform;
+    private readonly Func<ScadaTagCatalog?> tagCatalogProvider;
     private readonly TableEditCoordinator coordinator = new();
     private readonly TablePropertiesViewModel properties = new();
     private TableClipboardPayload? clipboard;
 
-    public TableEditorController(Window owner, Action<ScadaElement, string> commit, Func<ScadaElement, bool> canCommitTransform)
+    public TableEditorController(
+        Window owner,
+        Action<ScadaElement, string> commit,
+        Func<ScadaElement, bool> canCommitTransform,
+        Func<ScadaTagCatalog?> tagCatalogProvider)
     {
         this.owner = owner;
         this.commit = commit;
         this.canCommitTransform = canCommitTransform;
+        this.tagCatalogProvider = tagCatalogProvider;
     }
 
     public string? ElementId { get; private set; }
@@ -61,6 +68,9 @@ internal sealed class TableEditorController
             case "table.column.delete": return Apply(element, new(TableEditKind.DeleteColumn, Column: Selection.StartColumn));
             case "table.format": return Format(element);
             case "table.content.properties": return Content(element);
+            case "table.numeric.properties":
+            case "table.binding.read":
+            case "table.binding.write": return OpenNumericInputProperties(element);
             case "table.borders": return Borders(element);
             case "table.headers": return Headers(element);
             case "table.equalize": return Equalize(element);
@@ -82,6 +92,24 @@ internal sealed class TableEditorController
 
     public bool ConvertContent(ScadaElement element, ScadaTableCellContentKind kind) =>
         Apply(element, new(TableEditKind.ConvertContentKind, Selection, ContentKind: kind));
+
+    public TableCellNumericInputInspection InspectNumericInput(ScadaElement element) =>
+        properties.LoadNumericInput(element, Selection, tagCatalogProvider());
+
+    public bool SetCellBinding(ScadaElement element, TableCellBindingKind kind, string tagId) =>
+        Apply(element, new(
+            TableEditKind.SetCellValueBinding,
+            Row: Selection.StartRow,
+            Column: Selection.StartColumn,
+            BindingKind: kind,
+            TagId: tagId));
+
+    public bool RemoveCellBinding(ScadaElement element, TableCellBindingKind kind) =>
+        Apply(element, new(
+            TableEditKind.RemoveCellValueBinding,
+            Row: Selection.StartRow,
+            Column: Selection.StartColumn,
+            BindingKind: kind));
 
     public string InspectFormatState(ScadaElement element)
     {
@@ -139,9 +167,26 @@ internal sealed class TableEditorController
     private bool Content(ScadaElement element)
     {
         var current = element.Table!.EffectiveCells.First(cell => cell.Covers(Selection.StartRow, Selection.StartColumn)).EffectiveContent;
+        if (current.Kind == ScadaTableCellContentKind.InputNumeric)
+        {
+            return OpenNumericInputProperties(element);
+        }
         var dialog = new CellContentDialog(current) { Owner = owner };
         if (dialog.ShowDialog() != true || dialog.Result is null) return false;
         return Apply(element, new(TableEditKind.SetContent, Row: Selection.StartRow, Column: Selection.StartColumn, Content: dialog.Result));
+    }
+
+    public bool OpenNumericInputProperties(ScadaElement element)
+    {
+        var inspection = InspectNumericInput(element);
+        if (!inspection.HasSingleAnchor || !inspection.IsNumericInput)
+        {
+            MessageBox.Show(owner, inspection.Diagnostic ?? "Selectionnez une cellule InputNumeric unique.", "Input numerique", MessageBoxButton.OK, MessageBoxImage.Information);
+            return false;
+        }
+
+        var dialog = new TableNumericInputPropertiesDialog(new TableNumericInputPropertiesViewModel(inspection)) { Owner = owner };
+        return dialog.ShowDialog() == true && dialog.Result is { } requests && ApplyRequests(element, requests);
     }
 
     private bool Borders(ScadaElement element)
@@ -214,13 +259,68 @@ internal sealed class TableEditorController
 
     private bool Apply(ScadaElement element, TableEditRequest request)
     {
-        var result = coordinator.Apply(element, request);
+        if (!TryConfirmBindingImpact(element.Table!, ref request))
+        {
+            return false;
+        }
+        var result = coordinator.Apply(element, request, tagCatalogProvider());
         if (!result.Succeeded)
         {
             MessageBox.Show(owner, result.Error ?? "La modification du tableau a echoue.", "Tableau", MessageBoxButton.OK, MessageBoxImage.Warning);
             return false;
         }
         Commit(result.Element, result.Label);
+        return true;
+    }
+
+    private bool ApplyRequests(ScadaElement element, IReadOnlyList<TableEditRequest> requests)
+    {
+        var current = element;
+        var labels = new List<string>();
+        foreach (var original in requests)
+        {
+            var request = original;
+            if (!TryConfirmBindingImpact(current.Table!, ref request))
+            {
+                return false;
+            }
+
+            var result = coordinator.Apply(current, request, tagCatalogProvider());
+            if (!result.Succeeded)
+            {
+                MessageBox.Show(owner, result.Error ?? "La modification du tableau a echoue.", "Tableau", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return false;
+            }
+            current = result.Element;
+            labels.Add(result.Label);
+        }
+
+        if (!Equals(current, element))
+        {
+            Commit(current, labels.Count == 1 ? labels[0] : "Proprietes input numerique");
+        }
+        return true;
+    }
+
+    private bool TryConfirmBindingImpact(ScadaTableDefinition table, ref TableEditRequest request)
+    {
+        var safety = TableBindingSafetyPolicy.Evaluate(request, table);
+        if (safety.Disposition != TableBindingSafetyDisposition.RequiresConfirmation || request.ConfirmedBindingRemoval)
+        {
+            return true;
+        }
+
+        if (MessageBox.Show(
+                owner,
+                safety.Reason ?? "Cette operation supprimera des bindings cellule. Continuer?",
+                "Bindings de cellule",
+                MessageBoxButton.YesNo,
+                MessageBoxImage.Warning) != MessageBoxResult.Yes)
+        {
+            return false;
+        }
+
+        request = request with { ConfirmedBindingRemoval = true };
         return true;
     }
 

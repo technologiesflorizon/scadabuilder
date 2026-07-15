@@ -67,7 +67,16 @@ public sealed class TableUiArchitectureTests
         StringAssert.Contains(propertiesViewModel, "TablePropertiesInspector.Inspect");
         StringAssert.Contains(propertiesViewModel, "TableEditRequest");
         StringAssert.Contains(ribbonViewModel, "TableRibbonStateProvider.Create(session)");
+        StringAssert.Contains(ribbonViewModel, "Input numerique");
+        StringAssert.Contains(ribbonViewModel, "table.numeric.properties");
+        StringAssert.Contains(controller, "OpenNumericInputProperties");
+        StringAssert.Contains(controller, "SetCellBinding");
+        StringAssert.Contains(controller, "RemoveCellBinding");
+        StringAssert.Contains(controller, "TableBindingSafetyPolicy.Evaluate");
+        StringAssert.Contains(controller, "tagCatalogProvider");
         Assert.IsFalse(controller.Contains("element.Table! with { Style = dialog.Result }", StringComparison.Ordinal), "Dialogs must submit typed table requests instead of constructing a complete definition directly.");
+        Assert.IsFalse(tableIntegration.Contains(".Where(tag", StringComparison.Ordinal), "Tag filtering belongs to the inspector/view model, not MainWindow integration.");
+        Assert.IsFalse(tableIntegration.Contains("ScadaTableCellBindingOperations", StringComparison.Ordinal));
         StringAssert.Contains(xaml, "x:Name=\"InsertFamilySurface\"");
         StringAssert.Contains(xaml, "x:Name=\"TableCreationConfigurationSurface\"");
         StringAssert.Contains(xaml, "x:Name=\"ElementPositionLockCheckBox\"");
@@ -75,6 +84,9 @@ public sealed class TableUiArchitectureTests
         StringAssert.Contains(xaml, "Text=\"{Binding ElementLockState.IndicatorLabel}\"");
         StringAssert.Contains(xaml, "Header=\"Tableau\"");
         StringAssert.Contains(xaml, "x:Name=\"TableMergeToggleButton\"");
+        StringAssert.Contains(xaml, "x:Name=\"TableNumericInputPropertiesButton\"");
+        StringAssert.Contains(xaml, "x:Name=\"TableNumericReadBindingText\"");
+        StringAssert.Contains(xaml, "x:Name=\"TableNumericWriteBindingText\"");
         StringAssert.Contains(xaml, "Supprimer les surcharges de format");
     }
 

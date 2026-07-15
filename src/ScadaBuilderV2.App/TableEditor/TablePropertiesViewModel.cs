@@ -1,5 +1,6 @@
 using ScadaBuilderV2.Application.Tables;
 using ScadaBuilderV2.Domain.Scenes;
+using ScadaBuilderV2.Domain.Projects;
 
 namespace ScadaBuilderV2.App.TableEditor;
 
@@ -10,6 +11,7 @@ internal sealed class TablePropertiesViewModel
     public ScadaTableRange Range { get; private set; } = new(0, 0, 0, 0);
     public ScadaTableFormatScopeKind ScopeKind { get; private set; } = ScadaTableFormatScopeKind.Cells;
     public TableFormatInspection? Format { get; private set; }
+    public TableCellNumericInputInspection? NumericInput { get; private set; }
 
     public string StateLabel => Format?.State switch
     {
@@ -26,6 +28,15 @@ internal sealed class TablePropertiesViewModel
         Range = range;
         ScopeKind = scopeKind;
         Format = TablePropertiesInspector.Inspect(element.Table, CreateScope());
+    }
+
+    public TableCellNumericInputInspection LoadNumericInput(
+        ScadaElement element,
+        ScadaTableRange range,
+        ScadaTagCatalog? tagCatalog)
+    {
+        NumericInput = TableCellNumericInputInspector.Inspect(element, range, tagCatalog);
+        return NumericInput;
     }
 
     public TableEditRequest ApplyFormat(ScadaTableFormat format) =>

@@ -82,7 +82,8 @@ public partial class MainWindow
     private void RefreshTableRibbonSurface()
     {
         ActiveRibbonGroups.Clear();
-        _tableRibbonViewModel.Refresh();
+        var table = _selectedSceneObject?.Kind == ScadaElementKind.Table ? _selectedSceneObject : null;
+        _tableRibbonViewModel.UpdateNumericInspection(table is null ? null : _tableEditorController.InspectNumericInput(table));
         foreach (var group in _tableRibbonViewModel.Groups)
             ActiveRibbonGroups.Add(CreateRibbonGroupViewModel(group));
         if (TableCreationConfigurationSurface is not null)
@@ -188,6 +189,13 @@ public partial class MainWindow
             : $"Plage {range.StartRow + 1},{range.StartColumn + 1}:{range.EndRow + 1},{range.EndColumn + 1}";
         TableDimensionSummaryText.Text = $"{element.Table.EffectiveRows.Count} rangees x {element.Table.EffectiveColumns.Count} colonnes";
         TableFormatStateSummaryText.Text = _tableEditorController.InspectFormatState(element);
+        var numericInput = _tableEditorController.InspectNumericInput(element);
+        TableNumericInputStateText.Text = numericInput.IsNumericInput
+            ? "Input numerique"
+            : numericInput.Diagnostic ?? "Cellule non numerique";
+        TableNumericReadBindingText.Text = $"Lire valeur : {numericInput.ReadBindingSummary}";
+        TableNumericWriteBindingText.Text = $"Ecrire valeur : {numericInput.WriteBindingSummary}";
+        TableNumericInputPropertiesButton.IsEnabled = numericInput.CanEditProperties;
         TableMergeToggleButton.Content = containsMergedCells ? "Défusionner les cellules" : "Fusionner les cellules";
         TableMergeToggleButton.IsEnabled = containsMergedCells || range.RowCount > 1 || range.ColumnCount > 1;
         if (_activeRibbonKey == "Insert" && _activeInsertFamilyId == "data" && !_tableAuthoringSession.IsSurfaceOpen)
@@ -210,6 +218,12 @@ public partial class MainWindow
     private void OnOpenCellContentClick(object sender, System.Windows.RoutedEventArgs e)
     {
         if (_selectedSceneObject?.Kind == ScadaElementKind.Table) _tableEditorController.Execute("table.content.properties", _selectedSceneObject);
+    }
+
+    private void OnOpenTableNumericInputPropertiesClick(object sender, System.Windows.RoutedEventArgs e)
+    {
+        if (_selectedSceneObject?.Kind == ScadaElementKind.Table)
+            _tableEditorController.OpenNumericInputProperties(_selectedSceneObject);
     }
 
     private void OnOpenTableBordersClick(object sender, System.Windows.RoutedEventArgs e)

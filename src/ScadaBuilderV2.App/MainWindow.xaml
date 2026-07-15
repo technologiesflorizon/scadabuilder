@@ -1380,6 +1380,15 @@
                                                 </ComboBox>
                                                 <Button Content="Proprietes detaillees..." Margin="0,0,0,6" Click="OnOpenTablePropertiesClick"/>
                                                 <Button Content="Type et contenu..." Margin="0,0,0,6" Click="OnOpenCellContentClick"/>
+                                                <Border Padding="10" Margin="0,2,0,8" CornerRadius="4" BorderThickness="1" BorderBrush="#CBD6DB" Background="#F7FAFB">
+                                                    <StackPanel>
+                                                        <TextBlock Text="Input numerique" FontWeight="SemiBold"/>
+                                                        <TextBlock x:Name="TableNumericInputStateText" Text="Selectionnez une cellule InputNumeric" Margin="0,3,0,5" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
+                                                        <TextBlock x:Name="TableNumericReadBindingText" Text="Lire valeur : Aucun" TextTrimming="CharacterEllipsis"/>
+                                                        <TextBlock x:Name="TableNumericWriteBindingText" Text="Ecrire valeur : Aucun" Margin="0,2,0,7" TextTrimming="CharacterEllipsis"/>
+                                                        <Button x:Name="TableNumericInputPropertiesButton" Content="Proprietes input numerique..." Click="OnOpenTableNumericInputPropertiesClick" IsEnabled="False"/>
+                                                    </StackPanel>
+                                                </Border>
                                                 <Button Content="Format de cellule..." Margin="0,0,0,6" Click="OnOpenCellFormatClick"/>
                                                 <Button Content="Supprimer les surcharges de format" ToolTip="Réinitialise le format local afin d'utiliser le format hérité du niveau parent." Margin="0,0,0,6" Click="OnResetTableFormatScopeClick"/>
                                                 <Button Content="Bordures avancees..." Margin="0,0,0,6" Click="OnOpenTableBordersClick"/>
