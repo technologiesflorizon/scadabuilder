@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0023`
+Document version: `V2.1.4.0024`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0024` | `PENDING` | Approbation de la specification d'authoring Tableau/verrouillage Element+, ajout de `DEC-0040` et creation de son plan d'implementation autonome. |
 | 2026-07-15 | `V2.1.4.0023` | `18a9e9d` | Revue de la specification Tableau/verrouillage contre le code : migrations explicites, contrat JSON, ruban secondaire, bindings WPF, bordures par segment, auto-fit WebView, performance, classes et tests localises. |
 | 2026-07-15 | `V2.1.4.0022` | `3a99b99` | Specification Tableau detaillee : bouton Ajouter, verrouillage persistant de tous les Element+, groupes, multiselection, surfaces partagees et decoupage concret en classes/methodes. |
 | 2026-07-15 | `V2.1.4.0021` | `f77aedb` | Creation d'une specification autonome pour les outils UI d'authoring des tableaux, sans modifier la specification approuvee et implementee du Tableau moderne. |
@@ -176,8 +177,9 @@ Active specifications and implementation plans:
 1. `superpowers/specs/2026-07-14-page-commands-design.md` - implemented architecture and product decisions for modern page management.
 2. `superpowers/plans/2026-07-14-page-management-commands.md` - implementation record for page identity, commands, persistence, diagnostics, WPF surfaces, and `.sb2` compatibility; manual isolated-copy UI verification and real-project migration remain gated.
 3. `superpowers/specs/2026-07-14-modern-table-and-insert-ribbon-design.md` - implemented `DEC-0039` core design for the model-backed modern table and hierarchical Insert ribbon.
-4. `superpowers/specs/2026-07-15-table-ui-authoring-and-element-lock-design.md` - autonomous pending specification for Table UI authoring plus persistent Element+ position locking, group/multiselection semantics, shared lock surfaces, and explicit class/method boundaries.
-5. `superpowers/plans/2026-07-14-modern-table-and-insert-ribbon.md` - implementation record for the approved and implemented modern table core and hierarchical Insert ribbon.
+4. `superpowers/specs/2026-07-15-table-ui-authoring-and-element-lock-design.md` - approved `DEC-0040` design for advanced Table UI authoring plus persistent Element+ position locking, group/multiselection semantics, shared lock surfaces, and explicit class/method boundaries.
+5. `superpowers/plans/2026-07-15-table-ui-authoring-and-element-lock.md` - pending execution plan for the approved advanced Table authoring and global Element+ position-lock tranche.
+6. `superpowers/plans/2026-07-14-modern-table-and-insert-ribbon.md` - implementation record for the approved and implemented modern table core and hierarchical Insert ribbon.
 
 Generated documentation:
 

@@ -1,13 +1,14 @@
 # Outils d'authoring Tableau et verrouillage Element+ - Spécification de conception
 
 Date: 2026-07-15
-Status: Draft soumis à approbation
-Document version: `V2.1.4.0023`
+Status: Approved design - implementation pending
+Document version: `V2.1.4.0024`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0024` | `PENDING` | Approbation utilisateur de la spécification; activation de `DEC-0040` et autorisation de produire un plan d'implémentation autonome. |
 | 2026-07-15 | `V2.1.4.0023` | `18a9e9d` | Revue complète contre le code existant : migrations explicites des catalogues et de l'ancien verrou, contrat JSON, ruban secondaire, états et bindings WPF, bordures par segment, auto-ajustement WebView, messages typés, performance 64 x 64, tests localisés et dépendances documentaires. |
 | 2026-07-15 | `V2.1.4.0022` | `3a99b99` | Première architecture détaillée des outils Tableau et du verrouillage persistant de tous les Element+. |
 | 2026-07-15 | `V2.1.4.0021` | `f77aedb` | Création de la spécification autonome, sans modifier la spécification Tableau déjà approuvée et implémentée. |
@@ -16,14 +17,14 @@ Document version: `V2.1.4.0023`
 
 ### 1.1 Cycle de vie autonome
 
-Cette spécification définit une nouvelle tranche. Elle ne modifie pas rétroactivement la spécification approuvée et implémentée [Tableau moderne et ruban Insérer hiérarchique](./2026-07-14-modern-table-and-insert-ribbon-design.md), son [plan d'implémentation](../plans/2026-07-14-modern-table-and-insert-ribbon.md) ni `DEC-0039`.
+Cette spécification approuvée définit une nouvelle tranche. Elle ne modifie pas rétroactivement la spécification approuvée et implémentée [Tableau moderne et ruban Insérer hiérarchique](./2026-07-14-modern-table-and-insert-ribbon-design.md), son [plan d'implémentation](../plans/2026-07-14-modern-table-and-insert-ribbon.md) ni `DEC-0039`.
 
-Tant que le présent document n'est pas approuvé :
+Depuis son approbation :
 
-1. le code et les contrats actifs continuent de décrire le comportement implémenté par `DEC-0039`;
-2. les comportements cibles ci-dessous restent des écarts d'implémentation, jamais des fonctionnalités déclarées disponibles;
-3. aucun plan d'implémentation de cette tranche n'est produit;
-4. `DEC-0040` est réservé comme identifiant candidat, mais ne sera ajouté au registre qu'après approbation du présent document.
+1. `DEC-0040` enregistre les décisions de cette tranche;
+2. le plan autonome [Outils d'authoring Tableau et verrouillage Element+](../plans/2026-07-15-table-ui-authoring-and-element-lock.md) en organise l'exécution;
+3. le code actuel demeure celui de `DEC-0039` tant que le plan n'est pas exécuté;
+4. les comportements cibles restent des écarts d'implémentation et ne doivent pas être déclarés disponibles avant leurs preuves de code et de tests.
 
 ### 1.2 Documents propriétaires et décisions liées
 
@@ -38,7 +39,7 @@ Tant que le présent document n'est pas approuvé :
 | Groupes et sélection Element+ | `docs/05_studio_element_plus/STUDIO_ELEMENT_PLUS_SELECTION_CONTRACT_V2.md`, `DEC-0008`, `DEC-0010` |
 | Parité modèle/preview/export et exclusion des artefacts éditeur | `docs/03_runtime_contracts/PREVIEW_BUILD_EXPORT_CONTRACT_V2.md`, `DEC-0004` |
 
-Après approbation, le plan devra mettre à jour les documents propriétaires concernés et créer `DEC-0040`. Il ne devra ni réécrire `DEC-0039`, ni présenter cette tranche comme une correction historique de la première spécification.
+Le plan doit mettre à jour les documents propriétaires concernés au rythme de l'implémentation. Il ne doit ni réécrire `DEC-0039`, ni présenter cette tranche comme une correction historique de la première spécification.
 
 ## 2. Problème et preuves dans le code actuel
 
@@ -571,7 +572,7 @@ La limite approuvée de 64 rangées x 64 colonnes, soit 4096 cellules logiques, 
 9. modification du contrat runtime TF100Web pour persister les valeurs saisies dans les inputs;
 10. refonte générale de tous les rubans hors des points nécessaires à la sous-surface Tableau.
 
-## 18. Décisions candidates pour approbation
+## 18. Décisions approuvées pour `DEC-0040`
 
 1. `insert.table` conserve le libellé `Tableau` et ouvre la sous-surface de niveau 2; `table.add` est le bouton toujours disponible qui arme le placement.
 2. Le dialogue initial est retiré; le seul preset initial est 6 x 8 avec première rangée d'en-tête.
@@ -587,4 +588,4 @@ La limite approuvée de 64 rangées x 64 colonnes, soit 4096 cellules logiques, 
 12. Les nouvelles opérations Tableau sont réparties par responsabilité; `ScadaTableOperations` reste seulement une façade de compatibilité.
 13. `MainWindow` reste un hôte et délègue aux classes nommées dans la section 11.
 
-Cette spécification demeure Draft jusqu'à approbation explicite. Après approbation seulement, `DEC-0040` et un nouveau plan d'implémentation autonome seront créés.
+Cette spécification est approuvée. `DEC-0040` enregistre ces choix et le plan `docs/superpowers/plans/2026-07-15-table-ui-authoring-and-element-lock.md` doit les exécuter sans redéfinir l'architecture.

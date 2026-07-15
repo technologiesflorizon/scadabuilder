@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Decision Register
 
-Date: 2026-07-14
+Date: 2026-07-15
 Status: Active authoritative decision register
-Document version: `V2.1.4.0016`
+Document version: `V2.1.4.0024`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0024` | `PENDING` | Ajout de `DEC-0040` pour la sous-surface Tableau, l'authoring avancé des cellules et le verrouillage persistant de position de tous les Element+. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | `DEC-0039` implementee avec modele Tableau, edition type tableur, export `.sb2`, tests et ruban Inserer hierarchique; smoke interactif isole restant. |
 | 2026-07-14 | `V2.1.4.0015` | `95a57ac` | Ajout de `DEC-0039` pour l'Element+ Tableau moderne, l'edition type tableur, le ruban Inserer hierarchique et l'extraction des responsabilites hors `MainWindow`. |
 | 2026-07-14 | `V2.1.4.0011` | `PENDING` | DEC-0038 passée de décision approuvée à tranche implémentée et couverte; la vérification UI manuelle et la migration du projet réel restent séparées. |
@@ -1159,3 +1160,33 @@ Existing projects remain readable with `Table = null` and are not converted auto
 Regression coverage:
 
 Implemented in `tests/ScadaBuilderV2.Tests/ScadaTableModelTests.cs`, `ScadaTableOperationsTests.cs`, `TableEditCoordinatorTests.cs`, `TableClipboardTests.cs`, `RibbonCommandCatalogTests.cs`, `TableUiArchitectureTests.cs`, `ModernProjectStoreTests.cs`, `WebViewContextMenuScriptTests.cs`, and `Ft100SceneExporterTests.cs`.
+
+### DEC-0040 - Advanced Table Authoring And Persistent Element Position Lock
+
+Status: Active
+Created: 2026-07-15 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/specs/2026-07-15-table-ui-authoring-and-element-lock-design.md`
+
+Context:
+
+The `DEC-0039` table core persists and exports modern tables, but its current insertion flow opens a creation dialog and its editor does not yet expose the complete cell types, formatting scopes, heterogeneous borders, precise dimensions, headers, or reliable object-versus-cell interaction required to reconstruct `win00012` efficiently. The visible scene lock controls currently protect only transient selection state and do not prevent Element+ movement.
+
+Decision:
+
+`insert.table` opens a secondary Table authoring surface inside the existing Insert ribbon. The always-available `table.add` command configures and arms point placement without a modal creation dialog. Object and Cells modes own mutually exclusive gestures. Table authoring adds explicit direct and calculated scopes, deterministic cell-content conversion, inheritable full formatting, physical border-segment overrides, precise track operations, WebView-measured auto-fit, multiple consecutive header rows, typed bridge messages, and a validated 64 x 64 performance gate.
+
+Every scene `ScadaElement` receives persistent `IsLocked` position metadata. `object.lock` becomes the sole main-editor lock command and replaces `selection.toggle-lock` without an alias. Group toggles recurse through descendants; a locked descendant blocks a group translation. Mixed selection appears unlocked in toggle surfaces and indeterminate in the Properties checkbox; activating it locks the complete selection closure. The Selection ribbon, right Properties panel, and top `Lock` indicator share one application-derived state. WebView feedback and an Application transform guard both reject effective X/Y changes while selection, resize without translation, rotation, content, style, events, and internal Table editing remain available.
+
+Domain owns persistent values and pure operations, Application owns sessions, commands, guards, mutations and history, App owns WPF view models and WebView adapters, and Rendering consumes only the project model. `MainWindow` remains a high-level host. Scene locks, cell overlays, headers used only for authoring, handles and diagnostics never become `.sb2` or `.sep` runtime geometry. Per-cell `ValueBindings`, formulas, CSV/Excel import, automatic `win00012` conversion and tables larger than 64 x 64 remain out of scope.
+
+Consequences:
+
+Existing scene JSON without `IsLocked` remains readable as unlocked. Copy, cut/paste, duplicate, group/ungroup and undo/redo must preserve the approved lock semantics. The current `DialogThenPoint`, disabled `object.lock`, `ToggleSelectionLockCommand`, `SelectionState.IsSelectionLocked`, local `MainWindow.IsSelectionLocked` binding and direct Table bridge logic are explicit migration targets. The feature cannot be documented as implemented until persistence, history, WPF/WebView interaction, preview/export parity, performance, architecture boundaries and isolated interactive verification are covered.
+
+Regression coverage:
+
+Planned in `tests/ScadaBuilderV2.Tests/ScadaTableModelTests.cs`, `TableContentOperationsTests.cs`, `TableBorderOperationsTests.cs`, `TableTrackOperationsTests.cs`, `TableAuthoringSessionTests.cs`, `TableEditCoordinatorTests.cs`, `TableWebViewMessageAdapterTests.cs`, `TableUiArchitectureTests.cs`, `ElementLockCoordinatorTests.cs`, `ElementTransformGuardTests.cs`, `ScadaSceneGroupTests.cs`, `ModernProjectStoreTests.cs`, `ApplicationCommandTests.cs`, `WebViewContextMenuScriptTests.cs`, `Ft100SceneExporterTests.cs`, and `StudioElementPlusContractTests.cs`.
