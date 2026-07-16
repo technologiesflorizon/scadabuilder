@@ -96,6 +96,37 @@ public sealed class RuntimeConformancePackageTests
         }
     }
 
+    [TestMethod]
+    public void EverySupportedFixtureHasModelRuntimeAndHostEvidenceBeforeItCanBeExported()
+    {
+        var model = ScadaV2RuntimeConformanceProjectFactory.Create();
+        var analysis = ScadaRuntimeCapabilityAnalyzer.Analyze(
+            model.Project,
+            model.Pages.Select(page => page.Scene).ToArray());
+        var required = analysis.RequiredCapabilities.ToDictionary(capability => capability.Id, StringComparer.Ordinal);
+        using var index = JsonDocument.Parse(File.ReadAllText(Path.Combine(
+            FindRepositoryRoot(), "tests", "conformance", "expected-runtime-capabilities.json")));
+
+        foreach (var fixture in index.RootElement.GetProperty("Fixtures").EnumerateArray())
+        {
+            var capabilityId = fixture.GetProperty("CapabilityId").GetString()!;
+            var status = fixture.GetProperty("Status").GetString();
+            if (status == nameof(ScadaRuntimeCapabilityStatus.Supported))
+            {
+                Assert.IsTrue(required.TryGetValue(capabilityId, out var capability), capabilityId);
+                Assert.IsTrue(capability!.Evidence.BuilderTests.Count > 0, capabilityId);
+                Assert.IsTrue(capability.Evidence.SharedRuntimeTests.Count > 0, capabilityId);
+                Assert.IsTrue(capability.Evidence.Tf100WebTests.Count > 0, capabilityId);
+                Assert.AreEqual("manifest-declared-and-runtime-initialized", fixture.GetProperty("ExpectedResult").GetString());
+            }
+            else
+            {
+                Assert.IsFalse(required.ContainsKey(capabilityId), capabilityId);
+                Assert.AreEqual("strict-export-rejected", fixture.GetProperty("ExpectedResult").GetString());
+            }
+        }
+    }
+
     private static async Task<string> ExportAsync(string directory)
     {
         Directory.CreateDirectory(directory);

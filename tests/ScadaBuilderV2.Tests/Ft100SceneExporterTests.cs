@@ -6,13 +6,63 @@ using ScadaBuilderV2.Domain.ElementEvents.Expressions;
 using ScadaBuilderV2.Domain.ElementEvents.State;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
+using ScadaBuilderV2.Application.RuntimeContracts;
+using ScadaBuilderV2.Domain.RuntimeContracts;
 using ScadaBuilderV2.Rendering;
+using ScadaBuilderV2.Tests.RuntimeContracts;
 
 namespace ScadaBuilderV2.Tests;
 
 [TestClass]
 public sealed class Ft100SceneExporterTests
 {
+    [TestMethod]
+    public async Task ConformanceExportLocksModelManifestNamespaceCapabilityAndRuntimeParity()
+    {
+        var model = ScadaV2RuntimeConformanceProjectFactory.Create();
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportProjectAsync(model.Project, model.Pages, root);
+            using var manifest = JsonDocument.Parse(await File.ReadAllTextAsync(result.ManifestPath));
+            var required = manifest.RootElement.GetProperty("RuntimeContract").GetProperty("RequiredCapabilities")
+                .EnumerateArray().Select(item => item.GetString()!).ToArray();
+            var analysis = ScadaRuntimeCapabilityAnalyzer.Analyze(model.Project, model.Pages.Select(page => page.Scene).ToArray());
+            CollectionAssert.AreEqual(analysis.RequiredCapabilities.Select(capability => capability.Id).ToArray(), required);
+
+            var supported = ScadaRuntimeCapabilityCatalog.All
+                .Where(capability => capability.Status == ScadaRuntimeCapabilityStatus.Supported)
+                .ToDictionary(capability => capability.Id, StringComparer.Ordinal);
+            Assert.IsTrue(required.All(supported.ContainsKey));
+            Assert.IsTrue(required.All(id => supported[id].Evidence.IsComplete),
+                "No exported feature may be declared supported without Builder/runtime/TF100Web evidence.");
+
+            var runtimeFile = Directory.GetFiles(result.ExportDirectory, "scada-runtime.*.js").Single();
+            var runtimeSha = Ft100SceneExporter.Sha256Hash(runtimeFile);
+            Assert.AreEqual(runtimeSha, manifest.RootElement.GetProperty("RuntimeContract").GetProperty("RuntimeSha256").GetString());
+            Assert.AreEqual($"scada-runtime.{runtimeSha[..8]}.js", Path.GetFileName(runtimeFile));
+
+            foreach (var page in model.Pages)
+            {
+                var htmlPath = result.PageResults.Single(item =>
+                    Path.GetFileNameWithoutExtension(item.HtmlPath) == page.Scene.Id).HtmlPath;
+                var html = await File.ReadAllTextAsync(htmlPath);
+                StringAssert.Contains(html, $"id=\"ft100-{page.Scene.Id}\"");
+                foreach (var element in FlattenForParity(page.Scene.Elements)
+                             .Where(element => element.Kind != ScadaElementKind.Group))
+                {
+                    StringAssert.Contains(html, $"id=\"ft100-{page.Scene.Id}__{element.Id.Replace(':', '_')}\"");
+                }
+                Assert.IsFalse(html.Contains("selection-overlay", StringComparison.OrdinalIgnoreCase));
+                Assert.IsFalse(html.Contains("scada-editor-", StringComparison.OrdinalIgnoreCase));
+            }
+        }
+        finally
+        {
+            if (Directory.Exists(root)) Directory.Delete(root, true);
+        }
+    }
+
     [TestMethod]
     public async Task ProjectManifest23ExportsBoundNumericTableAnchorsWithoutSyntheticObjects()
     {
@@ -119,6 +169,15 @@ public sealed class Ft100SceneExporterTests
         finally
         {
             if (Directory.Exists(root)) Directory.Delete(root, true);
+        }
+    }
+
+    private static IEnumerable<ScadaElement> FlattenForParity(IEnumerable<ScadaElement> elements)
+    {
+        foreach (var element in elements)
+        {
+            yield return element;
+            foreach (var child in FlattenForParity(element.Children ?? [])) yield return child;
         }
     }
 
