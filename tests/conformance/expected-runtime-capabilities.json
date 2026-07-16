@@ -1,0 +1,1982 @@
+{
+  "Schema": "scada-v2-runtime-conformance-v1",
+  "ContractVersion": "1.0",
+  "PackageFile": "scada-v2-runtime-conformance.sb2",
+  "PackageSha256": "9e64bb33c9ad99389e5bbd0228f876a34120d85a66931729a86f9c63cc89e274",
+  "Fixtures": [
+    {
+      "CapabilityId": "action.close-popup",
+      "FixtureId": "blocked:action.close-popup",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.close-popup"
+    },
+    {
+      "CapabilityId": "action.condition",
+      "FixtureId": "blocked:action.condition",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.condition"
+    },
+    {
+      "CapabilityId": "action.condition-group",
+      "FixtureId": "blocked:action.condition-group",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.condition-group"
+    },
+    {
+      "CapabilityId": "action.condition-group.all",
+      "FixtureId": "blocked:action.condition-group.all",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.condition-group.all"
+    },
+    {
+      "CapabilityId": "action.condition-group.any",
+      "FixtureId": "blocked:action.condition-group.any",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.condition-group.any"
+    },
+    {
+      "CapabilityId": "action.condition.equals",
+      "FixtureId": "blocked:action.condition.equals",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.condition.equals"
+    },
+    {
+      "CapabilityId": "action.condition.false",
+      "FixtureId": "blocked:action.condition.false",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.condition.false"
+    },
+    {
+      "CapabilityId": "action.condition.greater-than",
+      "FixtureId": "blocked:action.condition.greater-than",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.condition.greater-than"
+    },
+    {
+      "CapabilityId": "action.condition.greater-than-or-equal",
+      "FixtureId": "blocked:action.condition.greater-than-or-equal",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.condition.greater-than-or-equal"
+    },
+    {
+      "CapabilityId": "action.condition.less-than",
+      "FixtureId": "blocked:action.condition.less-than",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.condition.less-than"
+    },
+    {
+      "CapabilityId": "action.condition.less-than-or-equal",
+      "FixtureId": "blocked:action.condition.less-than-or-equal",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.condition.less-than-or-equal"
+    },
+    {
+      "CapabilityId": "action.condition.not-equals",
+      "FixtureId": "blocked:action.condition.not-equals",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.condition.not-equals"
+    },
+    {
+      "CapabilityId": "action.condition.true",
+      "FixtureId": "blocked:action.condition.true",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.condition.true"
+    },
+    {
+      "CapabilityId": "action.hide",
+      "FixtureId": "blocked:action.hide",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.hide"
+    },
+    {
+      "CapabilityId": "action.missing-policy.allow-action",
+      "FixtureId": "blocked:action.missing-policy.allow-action",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.missing-policy.allow-action"
+    },
+    {
+      "CapabilityId": "action.missing-policy.block-action",
+      "FixtureId": "blocked:action.missing-policy.block-action",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.missing-policy.block-action"
+    },
+    {
+      "CapabilityId": "action.mount-fragment",
+      "FixtureId": "blocked:action.mount-fragment",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.mount-fragment"
+    },
+    {
+      "CapabilityId": "action.navigate",
+      "FixtureId": "conformance:action.navigate",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "click-action-source",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "action.read-value",
+      "FixtureId": "blocked:action.read-value",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.read-value"
+    },
+    {
+      "CapabilityId": "action.show",
+      "FixtureId": "blocked:action.show",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.show"
+    },
+    {
+      "CapabilityId": "action.toggle-popup",
+      "FixtureId": "blocked:action.toggle-popup",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.toggle-popup"
+    },
+    {
+      "CapabilityId": "action.toggle-visibility",
+      "FixtureId": "blocked:action.toggle-visibility",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.toggle-visibility"
+    },
+    {
+      "CapabilityId": "action.write-value",
+      "FixtureId": "blocked:action.write-value",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "click-action-source",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "action.write-value"
+    },
+    {
+      "CapabilityId": "binding.element.distinct-write",
+      "FixtureId": "conformance:binding.element.distinct-write",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-edit-readback",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "binding.element.read",
+      "FixtureId": "conformance:binding.element.read",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-edit-readback",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "binding.element.write",
+      "FixtureId": "conformance:binding.element.write",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-edit-readback",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "binding.table.distinct-write",
+      "FixtureId": "conformance:binding.table.distinct-write",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-edit-readback",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "binding.table.read",
+      "FixtureId": "conformance:binding.table.read",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-edit-readback",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "binding.table.write",
+      "FixtureId": "conformance:binding.table.write",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-edit-readback",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "button.alarm-acknowledge",
+      "FixtureId": "conformance:button.alarm-acknowledge",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "button.command",
+      "FixtureId": "conformance:button.command",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "button.disabled",
+      "FixtureId": "conformance:button.disabled",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "button.emergency-stop",
+      "FixtureId": "conformance:button.emergency-stop",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "button.hover",
+      "FixtureId": "conformance:button.hover",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "button.navigation",
+      "FixtureId": "conformance:button.navigation",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "button.pressed",
+      "FixtureId": "conformance:button.pressed",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "button.toggle",
+      "FixtureId": "conformance:button.toggle",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "command.back",
+      "FixtureId": "conformance:command.back",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "dispatch-command",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "command.close-popup",
+      "FixtureId": "conformance:command.close-popup",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "dispatch-command",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "command.confirmation",
+      "FixtureId": "conformance:command.confirmation",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "dispatch-command",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "command.navigate",
+      "FixtureId": "conformance:command.navigate",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "dispatch-command",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "command.open-popup",
+      "FixtureId": "conformance:command.open-popup",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "dispatch-command",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "command.open-url",
+      "FixtureId": "conformance:command.open-url",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "dispatch-command",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "command.toggle-popup",
+      "FixtureId": "conformance:command.toggle-popup",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "dispatch-command",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "command.trigger.on-click",
+      "FixtureId": "conformance:command.trigger.on-click",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "pointer-trigger",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "command.trigger.on-hover",
+      "FixtureId": "conformance:command.trigger.on-hover",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "pointer-trigger",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "command.trigger.on-hover-enter",
+      "FixtureId": "conformance:command.trigger.on-hover-enter",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "pointer-trigger",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "command.trigger.on-hover-exit",
+      "FixtureId": "conformance:command.trigger.on-hover-exit",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "pointer-trigger",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "command.trigger.on-release",
+      "FixtureId": "conformance:command.trigger.on-release",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "pointer-trigger",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "command.write-tag",
+      "FixtureId": "conformance:command.write-tag",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "dispatch-command",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "command.write.momentary",
+      "FixtureId": "blocked:command.write.momentary",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "dispatch-command",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "command.write.momentary"
+    },
+    {
+      "CapabilityId": "command.write.set-fixed",
+      "FixtureId": "conformance:command.write.set-fixed",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "dispatch-command",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "command.write.set-from-input",
+      "FixtureId": "conformance:command.write.set-from-input",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "dispatch-command",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "command.write.toggle",
+      "FixtureId": "conformance:command.write.toggle",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "dispatch-command",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "effect.animation",
+      "FixtureId": "blocked:effect.animation",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "effect.animation"
+    },
+    {
+      "CapabilityId": "effect.animation.blink",
+      "FixtureId": "blocked:effect.animation.blink",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "effect.animation.blink"
+    },
+    {
+      "CapabilityId": "effect.animation.halo",
+      "FixtureId": "blocked:effect.animation.halo",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "effect.animation.halo"
+    },
+    {
+      "CapabilityId": "effect.animation.none",
+      "FixtureId": "blocked:effect.animation.none",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "effect.animation.none"
+    },
+    {
+      "CapabilityId": "effect.animation.pulse",
+      "FixtureId": "blocked:effect.animation.pulse",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "effect.animation.pulse"
+    },
+    {
+      "CapabilityId": "effect.animation.spin",
+      "FixtureId": "blocked:effect.animation.spin",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "effect.animation.spin"
+    },
+    {
+      "CapabilityId": "effect.background-color",
+      "FixtureId": "conformance:effect.background-color",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "effect.border-color",
+      "FixtureId": "conformance:effect.border-color",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "effect.border-width",
+      "FixtureId": "conformance:effect.border-width",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "effect.color-filter",
+      "FixtureId": "conformance:effect.color-filter",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "effect.color-filter-halo",
+      "FixtureId": "conformance:effect.color-filter-halo",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "effect.color-filter-halo-color",
+      "FixtureId": "conformance:effect.color-filter-halo-color",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "effect.color-filter-opacity",
+      "FixtureId": "conformance:effect.color-filter-opacity",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "effect.element-visible",
+      "FixtureId": "conformance:effect.element-visible",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "effect.opacity",
+      "FixtureId": "conformance:effect.opacity",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "effect.rotation",
+      "FixtureId": "conformance:effect.rotation",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "effect.text-color",
+      "FixtureId": "conformance:effect.text-color",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "effect.text-content",
+      "FixtureId": "conformance:effect.text-content",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "effect.text-visible",
+      "FixtureId": "conformance:effect.text-visible",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "element.button",
+      "FixtureId": "conformance:element.button",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "element.container",
+      "FixtureId": "conformance:element.container",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "element.custom",
+      "FixtureId": "conformance:element.custom",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "element.group",
+      "FixtureId": "conformance:element.group",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "element.image",
+      "FixtureId": "conformance:element.image",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "element.input-numeric",
+      "FixtureId": "conformance:element.input-numeric",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "element.input-text",
+      "FixtureId": "conformance:element.input-text",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "element.legacy-static",
+      "FixtureId": "conformance:element.legacy-static",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "element.shape",
+      "FixtureId": "conformance:element.shape",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "element.table",
+      "FixtureId": "conformance:element.table",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "element.text",
+      "FixtureId": "conformance:element.text",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.binary",
+      "FixtureId": "conformance:expression.binary",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.binary.add",
+      "FixtureId": "conformance:expression.binary.add",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.binary.and",
+      "FixtureId": "conformance:expression.binary.and",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.binary.divide",
+      "FixtureId": "conformance:expression.binary.divide",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.binary.equal",
+      "FixtureId": "conformance:expression.binary.equal",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.binary.greater-than",
+      "FixtureId": "conformance:expression.binary.greater-than",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.binary.greater-than-or-equal",
+      "FixtureId": "conformance:expression.binary.greater-than-or-equal",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.binary.less-than",
+      "FixtureId": "conformance:expression.binary.less-than",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.binary.less-than-or-equal",
+      "FixtureId": "conformance:expression.binary.less-than-or-equal",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.binary.modulo",
+      "FixtureId": "conformance:expression.binary.modulo",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.binary.multiply",
+      "FixtureId": "conformance:expression.binary.multiply",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.binary.not-equal",
+      "FixtureId": "conformance:expression.binary.not-equal",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.binary.or",
+      "FixtureId": "conformance:expression.binary.or",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.binary.subtract",
+      "FixtureId": "conformance:expression.binary.subtract",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.function",
+      "FixtureId": "conformance:expression.function",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.function.abs",
+      "FixtureId": "conformance:expression.function.abs",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.function.bit",
+      "FixtureId": "conformance:expression.function.bit",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.function.max",
+      "FixtureId": "conformance:expression.function.max",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.function.min",
+      "FixtureId": "conformance:expression.function.min",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.literal-bool",
+      "FixtureId": "conformance:expression.literal-bool",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.literal-number",
+      "FixtureId": "conformance:expression.literal-number",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.literal-string",
+      "FixtureId": "conformance:expression.literal-string",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.tag-ref",
+      "FixtureId": "conformance:expression.tag-ref",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.unary",
+      "FixtureId": "conformance:expression.unary",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.unary.negate",
+      "FixtureId": "conformance:expression.unary.negate",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "expression.unary.not",
+      "FixtureId": "conformance:expression.unary.not",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "page.compose.footer",
+      "FixtureId": "conformance:page.compose.footer",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "page.compose.header",
+      "FixtureId": "conformance:page.compose.header",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "page.default",
+      "FixtureId": "conformance:page.default",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "page.footer",
+      "FixtureId": "conformance:page.footer",
+      "Status": "Supported",
+      "PageId": "conformance-footer",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "page.fragment",
+      "FixtureId": "conformance:page.fragment",
+      "Status": "Supported",
+      "PageId": "conformance-fragment",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "page.header",
+      "FixtureId": "conformance:page.header",
+      "Status": "Supported",
+      "PageId": "conformance-header",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "popup.options",
+      "FixtureId": "blocked:popup.options",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "popup.options"
+    },
+    {
+      "CapabilityId": "popup.position.bottom-left",
+      "FixtureId": "blocked:popup.position.bottom-left",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "popup.position.bottom-left"
+    },
+    {
+      "CapabilityId": "popup.position.bottom-right",
+      "FixtureId": "blocked:popup.position.bottom-right",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "popup.position.bottom-right"
+    },
+    {
+      "CapabilityId": "popup.position.center",
+      "FixtureId": "blocked:popup.position.center",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "popup.position.center"
+    },
+    {
+      "CapabilityId": "popup.position.dock-bottom",
+      "FixtureId": "blocked:popup.position.dock-bottom",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "popup.position.dock-bottom"
+    },
+    {
+      "CapabilityId": "popup.position.dock-left",
+      "FixtureId": "blocked:popup.position.dock-left",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "popup.position.dock-left"
+    },
+    {
+      "CapabilityId": "popup.position.dock-right",
+      "FixtureId": "blocked:popup.position.dock-right",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "popup.position.dock-right"
+    },
+    {
+      "CapabilityId": "popup.position.dock-top",
+      "FixtureId": "blocked:popup.position.dock-top",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "popup.position.dock-top"
+    },
+    {
+      "CapabilityId": "popup.position.host-region",
+      "FixtureId": "blocked:popup.position.host-region",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "popup.position.host-region"
+    },
+    {
+      "CapabilityId": "popup.position.top-left",
+      "FixtureId": "blocked:popup.position.top-left",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "popup.position.top-left"
+    },
+    {
+      "CapabilityId": "popup.position.top-right",
+      "FixtureId": "blocked:popup.position.top-right",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "popup.position.top-right"
+    },
+    {
+      "CapabilityId": "popup.size.fullscreen",
+      "FixtureId": "blocked:popup.size.fullscreen",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "popup.size.fullscreen"
+    },
+    {
+      "CapabilityId": "popup.size.large",
+      "FixtureId": "blocked:popup.size.large",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "popup.size.large"
+    },
+    {
+      "CapabilityId": "popup.size.medium",
+      "FixtureId": "blocked:popup.size.medium",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "popup.size.medium"
+    },
+    {
+      "CapabilityId": "popup.size.small",
+      "FixtureId": "blocked:popup.size.small",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "popup.size.small"
+    },
+    {
+      "CapabilityId": "shape.alarm-beacon",
+      "FixtureId": "conformance:shape.alarm-beacon",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.arrow",
+      "FixtureId": "conformance:shape.arrow",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.breaker",
+      "FixtureId": "conformance:shape.breaker",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.circle",
+      "FixtureId": "conformance:shape.circle",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.conveyor",
+      "FixtureId": "conformance:shape.conveyor",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.ellipse",
+      "FixtureId": "conformance:shape.ellipse",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.fan",
+      "FixtureId": "conformance:shape.fan",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.gauge",
+      "FixtureId": "conformance:shape.gauge",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.horizontal-bar",
+      "FixtureId": "conformance:shape.horizontal-bar",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.indicator-lamp",
+      "FixtureId": "conformance:shape.indicator-lamp",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.line",
+      "FixtureId": "conformance:shape.line",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.motor",
+      "FixtureId": "conformance:shape.motor",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.pipe-horizontal",
+      "FixtureId": "conformance:shape.pipe-horizontal",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.pipe-vertical",
+      "FixtureId": "conformance:shape.pipe-vertical",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.pump",
+      "FixtureId": "conformance:shape.pump",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.rectangle",
+      "FixtureId": "conformance:shape.rectangle",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.rounded-rectangle",
+      "FixtureId": "conformance:shape.rounded-rectangle",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.star",
+      "FixtureId": "conformance:shape.star",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.switch",
+      "FixtureId": "conformance:shape.switch",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.tank",
+      "FixtureId": "conformance:shape.tank",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.transformer",
+      "FixtureId": "conformance:shape.transformer",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.triangle",
+      "FixtureId": "conformance:shape.triangle",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.valve",
+      "FixtureId": "conformance:shape.valve",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "shape.vertical-bar",
+      "FixtureId": "conformance:shape.vertical-bar",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "state.default-effect",
+      "FixtureId": "conformance:state.default-effect",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "state.quality-fallback",
+      "FixtureId": "conformance:state.quality-fallback",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "state.read-variable",
+      "FixtureId": "conformance:state.read-variable",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "state.rules",
+      "FixtureId": "conformance:state.rules",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "hydrate-state",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "table.cell.input-numeric",
+      "FixtureId": "conformance:table.cell.input-numeric",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "table.cell.input-text",
+      "FixtureId": "conformance:table.cell.input-text",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "table.cell.text",
+      "FixtureId": "conformance:table.cell.text",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "load-page",
+      "ExpectedResult": "manifest-declared-and-runtime-initialized",
+      "ExpectedDiagnostic": null
+    }
+  ]
+}

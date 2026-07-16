@@ -1,13 +1,14 @@
 # Conformite runtime generale SCADA Builder V2 vers TF100Web - Plan d'implementation
 
 Date: 2026-07-16
-Status: Draft implementation plan - pending execution approval
-Document version: `V2.1.4.0049`
+Status: Active implementation plan - execution in progress
+Document version: `V2.1.4.0050`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0050` | `PENDING` | Task 4 completee : fixture `.sb2` deterministe, index exhaustif, sanitization et hash canonique. |
 | 2026-07-16 | `V2.1.4.0049` | `PENDING` | Task 3 completee cote Builder : manifest 2.3 strict, SHA-256 runtime, validation et profils de compatibilite explicites. |
 | 2026-07-16 | `V2.1.4.0048` | `PENDING` | Task 2 completee : matrice generee, verification stale, evidence typee et statut strict fail-closed. |
 | 2026-07-16 | `V2.1.4.0047` | `PENDING` | Task 1 completee : registre type, analyseur pur, statuts de gaps et 7 tests d'exhaustivite/analyse verts. |
@@ -135,11 +136,11 @@ dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~Ft100SceneExporterTe
 
 **Interfaces:** Une fixture minimale par capacite; aucun chemin utilisateur ou projet client.
 
-- [ ] Couvrir tous les axes de la matrice §4 de la specification.
-- [ ] Garder les fixtures petites, nommees par capability id et independantes.
-- [ ] Verifier generation deterministe, manifest, DOM, CSS, assets et runtime hash.
-- [ ] Ajouter un index machine-readable des valeurs/gestes/resultats attendus.
-- [ ] Interdire les secrets, mappings industriels et HTML de projet client.
+- [x] Couvrir tous les axes de la matrice §4 de la specification.
+- [x] Garder les fixtures petites, nommees par capability id et independantes.
+- [x] Verifier generation deterministe, manifest, DOM, CSS, assets et runtime hash.
+- [x] Ajouter un index machine-readable des valeurs/gestes/resultats attendus.
+- [x] Interdire les secrets, mappings industriels et HTML de projet client.
 
 **Commit:** `test: add deterministic scada runtime conformance package`
 

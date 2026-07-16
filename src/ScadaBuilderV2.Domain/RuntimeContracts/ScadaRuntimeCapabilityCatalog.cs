@@ -266,7 +266,7 @@ public static class ScadaRuntimeCapabilityCatalog
             owner,
             status,
             ArtifactsFor(id),
-            $"planned:{id}",
+            status == ScadaRuntimeCapabilityStatus.Supported ? $"conformance:{id}" : $"blocked:{id}",
             evidence ?? (status == ScadaRuntimeCapabilityStatus.Supported
                 ? BaselineEvidence
                 : ScadaRuntimeCapabilityEvidence.Pending));

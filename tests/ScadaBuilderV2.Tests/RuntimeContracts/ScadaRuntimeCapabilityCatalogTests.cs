@@ -101,7 +101,8 @@ public sealed class ScadaRuntimeCapabilityCatalogTests
         Assert.IsTrue(all.All(capability => Regex.IsMatch(capability.Id, "^[a-z0-9]+(?:[.-][a-z0-9]+)*$")));
         Assert.IsTrue(all.All(capability => capability.MinimumContractVersion == ScadaRuntimeCapabilityCatalog.ContractVersion));
         Assert.IsTrue(all.All(capability => capability.Artifacts.Count > 0));
-        Assert.IsTrue(all.All(capability => capability.FixtureId == $"planned:{capability.Id}"));
+        Assert.IsTrue(all.All(capability => capability.FixtureId ==
+            $"{(capability.Status == ScadaRuntimeCapabilityStatus.Supported ? "conformance" : "blocked")}:{capability.Id}"));
     }
 
     [TestMethod]

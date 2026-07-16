@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active authoritative decision register
-Document version: `V2.1.4.0049`
+Document version: `V2.1.4.0050`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0050` | `PENDING` | `DEC-0047` tranche 4 Builder : package de conformance deterministe, index exhaustif et empreinte partagee. |
 | 2026-07-16 | `V2.1.4.0049` | `PENDING` | `DEC-0047` tranche 3 Builder : manifest 2.3 strict, hash runtime complet, validation fail-closed et compatibilite 2.1/2.2 explicite. |
 | 2026-07-16 | `V2.1.4.0048` | `PENDING` | `DEC-0047` tranche 2 : matrice code-generee, preuves typees et verification stale; les gaps sans preuves restent bloques. |
 | 2026-07-16 | `V2.1.4.0047` | `PENDING` | `DEC-0047` tranche 1 : registre Domain et analyseur Application implementes avec tests d'exhaustivite; negotiation 2.3 encore pending. |
@@ -1426,7 +1427,7 @@ The default new export contract advances from manifest 2.2 to 2.3 only after TF1
 
 Implementation status:
 
-Implementation slices 1 through 3 are complete on the Builder branch: Domain owns stable capability ids, minimum contract version, execution owner, artifact contracts, reserved fixture ids, strict-export status and typed evidence; Application derives sorted requirements; Rendering emits manifest 2.3 by default with `RuntimeContract.Version`, sorted unique `RequiredCapabilities` and the complete SHA-256 of the packaged runtime. Strict export rejects blocked capabilities before replacing staging output. The package validator rejects unknown/duplicate/unsorted/blocked capabilities, unsupported contract versions, missing/invalid/mismatched hashes and altered runtime files. Compatibility 2.1/2.2 requires an explicit profile. The shared conformance package, unified action runtime, TF100Web negotiation and `DEC-0046` remain pending; Builder 2.3 artifacts must not be deployed before TF100Web intake support.
+Implementation slices 1 through 4 are complete on the Builder branch: Domain owns stable capability ids, minimum contract version, execution owner, artifact contracts, fixture ids, strict-export status and typed evidence; Application derives sorted requirements; Rendering emits manifest 2.3 by default with `RuntimeContract.Version`, sorted unique `RequiredCapabilities` and the complete SHA-256 of the packaged runtime. Strict export rejects blocked capabilities before replacing staging output. The package validator rejects unknown/duplicate/unsorted/blocked capabilities, unsupported contract versions, missing/invalid/mismatched hashes and altered runtime files. Compatibility 2.1/2.2 requires an explicit profile. A sanitized deterministic `.sb2`, its SHA-256 and an exhaustive 162-capability expectation index now constitute the shared fixture source; TF100Web execution of that fixture, the unified action runtime and `DEC-0046` remain pending. Builder 2.3 artifacts must not be deployed before TF100Web intake support.
 
 Regression coverage:
 

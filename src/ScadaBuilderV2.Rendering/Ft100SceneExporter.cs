@@ -326,11 +326,7 @@ public sealed partial class Ft100SceneExporter
                 File.Delete(fullArchivePath);
             }
 
-            ZipFile.CreateFromDirectory(
-                stagingRoot,
-                fullArchivePath,
-                CompressionLevel.Optimal,
-                includeBaseDirectory: false);
+            CreateDeterministicArchive(stagingRoot, fullArchivePath);
 
             return new Ft100ProjectArchiveExportResult(
                 fullArchivePath,
@@ -372,7 +368,7 @@ public sealed partial class Ft100SceneExporter
         var assembly = typeof(Ft100SceneExporter).Assembly;
         var resourceNames = assembly.GetManifestResourceNames();
         var sb = new StringBuilder();
-        var version = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
+        var version = $"contract-{ScadaRuntimeCapabilityCatalog.ContractVersion}";
 
         foreach (var moduleName in RuntimeModuleOrder)
         {
@@ -1924,6 +1920,23 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
         };
 
         return SerializeManifest(manifest, BuildRuntimeContract(runtimeCapabilities, runtimeSha256, manifestProfile));
+    }
+
+    private static void CreateDeterministicArchive(string sourceDirectory, string archivePath)
+    {
+        var sourceRoot = Path.GetFullPath(sourceDirectory);
+        using var output = new FileStream(archivePath, FileMode.CreateNew, FileAccess.Write, FileShare.None);
+        using var archive = new ZipArchive(output, ZipArchiveMode.Create, leaveOpen: false, Encoding.UTF8);
+        foreach (var filePath in Directory.GetFiles(sourceRoot, "*", SearchOption.AllDirectories)
+                     .OrderBy(path => Path.GetRelativePath(sourceRoot, path), StringComparer.Ordinal))
+        {
+            var entryName = Path.GetRelativePath(sourceRoot, filePath).Replace('\\', '/');
+            var entry = archive.CreateEntry(entryName, CompressionLevel.Optimal);
+            entry.LastWriteTime = new DateTimeOffset(1980, 1, 1, 0, 0, 0, TimeSpan.Zero);
+            using var source = File.OpenRead(filePath);
+            using var destination = entry.Open();
+            source.CopyTo(destination);
+        }
     }
 
     private static string BuildProjectManifest(
