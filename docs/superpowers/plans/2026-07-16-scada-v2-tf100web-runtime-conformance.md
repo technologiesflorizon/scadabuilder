@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation plan - execution in progress
-Document version: `V2.1.4.0059`
+Document version: `V2.1.4.0060`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | Task 14 completee : parite modele/preview/export/host et runtime deploye exact. |
 | 2026-07-16 | `V2.1.4.0059` | TF100Web `2fb46e6` | Task 13 completee : fixture executee, SHA verrouille, Supported/Blocked gates exhaustifs. |
 | 2026-07-16 | `V2.1.4.0058` | TF100Web `9e85844` | Task 12 completee : composition lineaire, caches revisionnes, observabilite et swap atomique. |
 | 2026-07-16 | `V2.1.4.0057` | TF100Web `c304af3` | Task 11 completee : bindings generiques, controles edit/readback, formats et fallback mapping. |
@@ -341,10 +342,10 @@ python manage.py check
 - Modify: `tests/ScadaBuilderV2.Tests/RuntimeContracts/RuntimeConformancePackageTests.cs`
 - Modify: parity tests TF100Web
 
-- [ ] Comparer modele, preview markup, export markup, manifest capabilities et rendu host par fixture.
-- [ ] Verifier exclusion editor-only et namespace.
-- [ ] Verifier que le runtime package teste est celui dont le hash est manifeste/deploye.
-- [ ] Ajouter un test qui interdit une nouvelle feature exportee sans capability et preuve.
+- [x] Comparer modele, preview markup, export markup, manifest capabilities et rendu host par fixture.
+- [x] Verifier exclusion editor-only et namespace.
+- [x] Verifier que le runtime package teste est celui dont le hash est manifeste/deploye.
+- [x] Ajouter un test qui interdit une nouvelle feature exportee sans capability et preuve.
 
 **Commit:** `test: lock preview export and host runtime parity`
 

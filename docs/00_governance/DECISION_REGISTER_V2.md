@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active authoritative decision register
-Document version: `V2.1.4.0059`
+Document version: `V2.1.4.0060`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | `DEC-0047` tranche 14 : parite preview/export/host et preuve obligatoire par capability. |
 | 2026-07-16 | `V2.1.4.0059` | Builder `PENDING`, TF100Web `2fb46e6` | `DEC-0047` tranche 13 : fixture package/runtime executee et matrice Supported/Blocked fermee automatiquement. |
 | 2026-07-16 | `V2.1.4.0058` | Builder `PENDING`, TF100Web `9e85844` | `DEC-0047` tranche 12 : composition O(tags), observabilite, caches revisionnes et deploiement atomique. |
 | 2026-07-16 | `V2.1.4.0057` | Builder `PENDING`, TF100Web `c304af3` | `DEC-0047` tranche 11 : politique binding, edition numerique, qualite mapping et formatage partages. |
@@ -1436,7 +1437,7 @@ The default new export contract advances from manifest 2.2 to 2.3 only after TF1
 
 Implementation status:
 
-Implementation slices 1 through 13 are complete across the Builder and TF100Web branches: Domain owns stable capability ids, typed evidence and strict-export status; Rendering emits manifest 2.3 with sorted requirements and exact packaged-runtime SHA. The portable runtime owns State/Expression/Effect, CommandConfig and object actions; TF100Web owns one negotiated HostAdapter, latest-wins lifecycle, generic bindings and linear composition. TF100Web `2fb46e6` executes the exact Builder fixture through production validation/composition and the packaged runtime, assigns every one of 118 supported capabilities to an executed evidence gate, and proves all 44 blocked capabilities fail the production deploy validator. Preview/build/export parity expansion and industrial page validation remain pending; the branch is not yet an operator deployment claim.
+Implementation slices 1 through 14 are complete across the Builder and TF100Web branches. Builder `22c787f` proves the conformance model projects equivalent native-preview and export markup, locks page namespaces/editor-artifact exclusion, compares analyzer requirements to manifest declarations, verifies every exported capability has complete Builder/runtime/host evidence, and hashes the packaged runtime. TF100Web `6fac468` proves the exact manifested runtime is copied to both stable and hashed deployment paths and executes that deployed stable runtime through the host gate. Industrial page validation remains pending; the branch is not yet an operator deployment claim.
 
 Regression coverage:
 
