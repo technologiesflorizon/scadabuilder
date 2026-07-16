@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active authoritative decision register
-Document version: `V2.1.4.0039`
+Document version: `V2.1.4.0040`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-15 | `V2.1.4.0040` | `PENDING` | Ajout de `DEC-0043` pour simplifier l'authoring InputNumeric Tableau, fiabiliser l'identite A1 et initialiser Lire depuis Ecrire lorsque Lire est vide. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | `DEC-0042` implemente dans les deux depots; preuves package 2.1/2.2 locales acquises, gate industriel et ordre de livraison maintenus ouverts. |
 | 2026-07-15 | `V2.1.4.0037` | `PENDING` | Ajout de `DEC-0042` pour les bindings lecture/ecriture des cellules Tableau `InputNumeric`, le manifest `.sb2` 2.2 et l'intake TF100Web ordonne avant l'exporteur. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | `DEC-0041` implementee et validee sans changement des contrats `.sb2`, `.sep` ou TF100Web. |
@@ -1262,3 +1263,35 @@ Implemented in code on `codex/adding-table-cell-numeric-input`. SCADA Builder co
 Regression coverage:
 
 Covered by SCADA Builder V2 `TableCellBindingOperationsTests`, `TableContentOperationsTests`, `ScadaTableOperationsTests`, `TableClipboardTests`, `TableEditCoordinatorTests`, WPF table numeric property tests, `ModernProjectStoreTests`, renderer/exporter tests and `Ft100PackageValidatorTests`; plus TF100Web deployment, table-binding, package and runtime suites.
+
+### DEC-0043 - Reliable Single-Surface Authoring For Numeric Table Cells
+
+Status: Active
+Created: 2026-07-15 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/specs/2026-07-15-table-numeric-cell-authoring-correction-design.md`
+
+Context:
+
+The implemented `DEC-0042` ribbon exposes `Properties`, `Read` and `Write` as three commands even though all three open the same single-page dialog. The dialog does not identify the selected cell, and the controller can retain coordinates from another Table because selection provenance is not checked during numeric inspection. Authoring also permits an accidental write-only configuration even though an operator control should normally read back the value it writes.
+
+Decision:
+
+The Table `Input numeric` ribbon group exposes one command, `table.numeric.properties`, labeled contextually as `Configure <A1 address>`. The dialog remains a single page with value/constraints, read and write sections; the three-tab alternative is rejected as unnecessary navigation. Ribbon, properties panel and dialog display the same editor-only A1 address and Table element id. Numeric configuration is enabled only when the selected cell snapshot belongs to the current Table.
+
+When a write tag is saved while the read tag is empty, authoring explicitly persists the same tag id in both `ReadTagId` and `WriteTagId`. An existing distinct read tag is preserved. This default is applied during user authoring, not through load-time migration or late renderer/runtime inference. Double-click on an `InputNumeric` cell opens the same configuration dialog for the validated emitting cell.
+
+Consequences:
+
+Application owns selection provenance, A1 formatting and Write-to-Read defaulting. WPF and WebView remain presentation and typed-intent surfaces. No persistent model field, scene schema migration, manifest change or TF100Web modification is introduced. Existing write-only cells are normalized only when their configuration is saved by a user.
+
+Implementation status:
+
+Approved and planned; implementation has not started. The current worktree contains unrelated user changes under `projects/AMR_REF_SCADA_V2`, so execution requires their own commit boundary or a clean worktree before code edits.
+
+Regression coverage:
+
+Planned in `TableCellAddressTests`, `TableEditCoordinatorTests`, `TableUiArchitectureTests`, `RibbonCommandCatalogTests`, `TableWebViewMessageAdapterTests`, `ModernProjectStoreTests` and `Ft100SceneExporterTests`, plus an isolated `win00012_modern_no_legacy` smoke.
