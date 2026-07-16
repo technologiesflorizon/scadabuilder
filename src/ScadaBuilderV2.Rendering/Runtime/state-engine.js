@@ -14,6 +14,7 @@
 
   /** Map of element id -> true for paused (edit-locked) elements. */
   var _paused = {};
+  var _pausedElements = new WeakSet();
 
   /** Element-local cache avoids collisions when composed slots reuse source ids. */
   var _stateCache = new WeakMap();
@@ -187,7 +188,7 @@
     var elementId = element.id;
 
     // Skip if paused (edit lock)
-    if (elementId && _paused[elementId]) {
+    if (_pausedElements.has(element) || (elementId && _paused[elementId])) {
       return;
     }
 
@@ -306,7 +307,7 @@
       if (!id) {
         continue;
       }
-      delete _paused[id];
+      _pausedElements.delete(elements[i]);
       var applier = _getEffectApplier();
       if (applier && typeof applier.reset === 'function') {
         applier.reset(elements[i]);
@@ -323,9 +324,11 @@
    *
    * @param {string} id  - Element id.
    */
-  function pauseElement(id) {
-    if (id) {
-      _paused[id] = true;
+  function pauseElement(target) {
+    if (target && typeof target === 'object') {
+      _pausedElements.add(target);
+    } else if (target) {
+      _paused[target] = true;
     }
   }
 
@@ -334,9 +337,11 @@
    *
    * @param {string} id  - Element id.
    */
-  function resumeElement(id) {
-    if (id) {
-      delete _paused[id];
+  function resumeElement(target) {
+    if (target && typeof target === 'object') {
+      _pausedElements.delete(target);
+    } else if (target) {
+      delete _paused[target];
     }
   }
 

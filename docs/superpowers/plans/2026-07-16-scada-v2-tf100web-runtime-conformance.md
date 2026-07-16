@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation plan - execution in progress
-Document version: `V2.1.4.0051`
+Document version: `V2.1.4.0052`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0052` | `PENDING` | Task 6 completee : CommandConfig canonique, Momentary press/release, intents 1.0, async et cleanup. |
 | 2026-07-16 | `V2.1.4.0051` | `PENDING` | Task 5 completee : semantiques Etat/Expression/Effet table-driven, reversibles et deterministes. |
 | 2026-07-16 | `V2.1.4.0050` | `PENDING` | Task 4 completee : fixture `.sb2` deterministe, index exhaustif, sanitization et hash canonique. |
 | 2026-07-16 | `V2.1.4.0049` | `PENDING` | Task 3 completee cote Builder : manifest 2.3 strict, SHA-256 runtime, validation et profils de compatibilite explicites. |
@@ -178,11 +179,11 @@ dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~Ft100SceneExporterTe
 
 **Interfaces:** Produit des intents host canoniques; ecrit uniquement via `TagBridge`.
 
-- [ ] Tester les 5 triggers, 7 kinds, 4 write modes, confirmations et enabled/disabled.
-- [ ] Implementer `Momentary` avec press/release reels et cleanup sur DOM remplace/perte de focus.
-- [ ] Garantir idempotence, permissions, valeurs manquantes et concurrence write/readback.
-- [ ] Normaliser navigate/popup/openUrl/back vers un seul schema d'intent versionne.
-- [ ] Interdire toute implementation equivalente dans TF100Web hors adaptateur host.
+- [x] Tester les 5 triggers, 7 kinds, 4 write modes, confirmations et enabled/disabled.
+- [x] Implementer `Momentary` avec press/release reels et cleanup sur DOM remplace/perte de focus.
+- [x] Garantir idempotence, permissions, valeurs manquantes et concurrence write/readback.
+- [x] Normaliser navigate/popup/openUrl/back vers un seul schema d'intent versionne.
+- [x] Interdire toute implementation equivalente dans TF100Web hors adaptateur host.
 
 **Commit:** `feat: complete canonical command runtime semantics`
 

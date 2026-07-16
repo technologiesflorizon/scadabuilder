@@ -53,6 +53,20 @@
     }));
   }
 
+  function disposePage(container) {
+    if (!container) {
+      return;
+    }
+    if (window.ScadaRuntime && window.ScadaRuntime.CommandDispatcher &&
+        typeof window.ScadaRuntime.CommandDispatcher.dispose === 'function') {
+      window.ScadaRuntime.CommandDispatcher.dispose(container);
+    }
+    if (window.ScadaRuntime && window.ScadaRuntime.InputEditGuard &&
+        typeof window.ScadaRuntime.InputEditGuard.dispose === 'function') {
+      window.ScadaRuntime.InputEditGuard.dispose(container);
+    }
+  }
+
   /**
    * Handles tag value changes from the host.
    * Updates TagBridge values and re-evaluates all state-config elements.
@@ -84,5 +98,6 @@
 
   window.ScadaRuntime.version = _version;
   window.ScadaRuntime.initPage = initPage;
+  window.ScadaRuntime.disposePage = disposePage;
   window.ScadaRuntime.onTagValuesChanged = onTagValuesChanged;
 })();

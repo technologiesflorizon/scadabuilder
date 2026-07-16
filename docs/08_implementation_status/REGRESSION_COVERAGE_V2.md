@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active regression coverage map
-Document version: `V2.1.4.0051`
+Document version: `V2.1.4.0052`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0052` | `PENDING` | 47 tests runtime JS et 113 tests .NET cibles verts; suite 678/683, cinq echecs historiques; fixture `4381347c...40a6`. |
 | 2026-07-16 | `V2.1.4.0051` | `PENDING` | 35 tests runtime JS et 113 tests .NET cibles verts; suite complete 678/683, cinq echecs historiques; hash fixture `6976e192...15ef`. |
 | 2026-07-16 | `V2.1.4.0050` | `PENDING` | 3 tests de conformance et 94 tests cibles verts; package byte-identique et SHA-256 canonique verifies; suite complete 678/683, cinq echecs historiques. |
 | 2026-07-16 | `V2.1.4.0049` | `PENDING` | 84 tests FT100 exporter/package verts : 2.3, requirements, hash, tamper, blocked et profils compatibles; suite complete 675/680, cinq echecs historiques. |
@@ -93,7 +94,8 @@ dotnet test ScadaBuilderV2.sln --no-restore
 
 | Contract area | Primary tests |
 | --- | --- |
-| Runtime capability completeness (`DEC-0047`, partial) | `RuntimeContracts/ScadaRuntimeCapabilityCatalogTests.cs` and `ScadaRuntimeCapabilityAnalyzerTests.cs` cover typed inventory, artifacts, fixture ids, three-layer evidence requirements and model analysis. `RuntimeConformancePackageTests.cs` proves exact 118-capability factory coverage, byte-identical package regeneration, canonical SHA `6976e192e0919825225d1bb6f67c9457f0b6325c7b3c20b6aad1b0507fd615ef`, archive/manifest/DOM/CSS/runtime integrity, sanitization and an exhaustive 162-entry expectation index. The three runtime JS suites add table-driven AST/state/effect semantics, transitions and re-init coverage. `tools/docs/generate-runtime-capability-matrix.ps1` plus `verify-docs` enforce code/matrix parity. Command/action tables and TF100Web execution of the committed fixture remain pending. |
+| Runtime capability completeness (`DEC-0047`, partial) | `RuntimeContracts/ScadaRuntimeCapabilityCatalogTests.cs` and `ScadaRuntimeCapabilityAnalyzerTests.cs` cover typed inventory, artifacts, fixture ids, three-layer evidence requirements and model analysis. `RuntimeConformancePackageTests.cs` proves exact 118-capability factory coverage, byte-identical package regeneration, canonical SHA `4381347cbcbe2a499a4760059b7bdc8c1ffe06a7998a008699407bef54c240a6`, archive/manifest/DOM/CSS/runtime integrity, sanitization and an exhaustive 162-entry expectation index. Runtime JS suites add table-driven AST/state/effect/command semantics, transitions, async and re-init coverage. `tools/docs/generate-runtime-capability-matrix.ps1` plus `verify-docs` enforce code/matrix parity. Object-action tables and TF100Web execution of the committed fixture remain pending. |
+| Shared command and input semantics (`DEC-0047`, partial) | `tests/runtime-js/command-dispatcher.test.mjs` covers all five triggers, seven kinds, Toggle/SetFixed/SetFromInput and real Momentary phases, confirmation ordering, disabled/missing values, canonical intents, HostAdapter precedence, async rejection and duplicate suppression. `input-edit-guard.test.mjs` covers identity-safe locks, idempotent watch, Escape/baseline restoration, inactivity refresh/readback and scoped disposal. `RuntimeJsModulesTests.cs` locks embedded camelCase cases, intent/lifecycle symbols and the concatenated package. TF100Web HostAdapter and end-to-end Momentary promotion remain pending. |
 | FT100/TF100Web export | `Ft100SceneExporterTests.cs`: manifest 2.3 default, sorted/deduplicated requirements, packaged runtime SHA-256, pre-staging blocked-capability rejection, and explicit 2.1/2.2 profiles. |
 | FT100 `.sb2` archive and namespace validation | `Ft100PackageValidator`, `Ft100PackageValidatorTests`: unknown/duplicate/unsorted/blocked capabilities, runtime contract version, missing/invalid/mismatched SHA-256, tampering and runtime filename; plus archive and page-scope regressions in `Ft100SceneExporterTests`. |
 | TF100Web package intake audit | `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py` |

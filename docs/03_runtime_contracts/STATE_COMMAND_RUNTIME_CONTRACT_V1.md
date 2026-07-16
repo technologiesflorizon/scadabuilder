@@ -2,13 +2,14 @@
 
 Date: 2026-07-16
 Status: Active implemented runtime contract
-Document version: `V2.1.4.0051`
-Owner: SCADA Builder V2 authoring team. Runtime implementation owner: TF100Web team (`F:\Projet\Git\TF100Web`).
+Document version: `V2.1.4.0052`
+Owner: SCADA Builder V2 authoring team and shared package runtime. TF100Web owns host services only (`F:\Projet\Git\TF100Web`).
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0052` | `PENDING` | CommandConfig complete : 5 triggers, 7 kinds, 4 modes, intent 1.0, Momentary reel, confirmations et cleanup. |
 | 2026-07-16 | `V2.1.4.0051` | `PENDING` | Semantiques Etat/Expression/Effet partagees completees et table-driven : fallback, erreurs, coercions, transitions, tokens, animations et re-init. |
 | 2026-07-16 | `V2.1.4.0046` | `PENDING` | `DEC-0047` approuvee : couverture exhaustive de chaque trigger/kind/mode/expression/effet et migration des actions vers l'executeur partage unique. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Contrat Etat/Commande confirme dans TF100Web : runtime partage deploye, mappings Etat/Commande collectes, boutons avec cible texte semantique et 56 toggles de degivrage configures. |
@@ -132,6 +133,19 @@ past is not null.
   and `Back` are new and have no prior runtime behavior to match.
 - If `confirmation` is present, TF100Web must show `confirmation.message` and require
   operator acknowledgement before executing the command's effect.
+- A command with `enabled = false` binds no trigger and cannot execute through the public
+  dispatcher. Unknown triggers, kinds/modes, missing write values and an unavailable Toggle
+  read value fail closed with diagnostics; they never infer a potentially unsafe write.
+- `Momentary` binds real pointer/keyboard press and release phases. Pointer cancel, lost
+  capture, window blur, explicit unbind, page disposal and detected DOM removal all release
+  an energized command. An asynchronous confirmation accepted after release never writes
+  `onValue`; an asynchronous accepted press is settled before `offValue` is sent.
+- `TagBridge.writeTag` returns the host permission/write result. A command object permits one
+  in-flight write, propagates rejection and leaves display state to the next confirmed
+  snapshot rather than optimistically changing the host value.
+- Navigation, popup, URL and history commands produce the versioned `scada-runtime-intent`
+  1.0 envelope. Host behavior is provided by one adapter and is not duplicated in this
+  module. Writes remain on the single TagBridge path.
 
 ## 6. Non-goals for this contract version
 
@@ -154,4 +168,4 @@ true/false states drive green/red 70% filters and `ACTIF`/`ARRÊTÉ` labels from
 PLC bit. Toggle writes continue through the existing TF100Web bridge and are reflected only
 after the shared snapshot reports the resulting value.
 
-The shared State/Expression/Effect path now has executable table-driven evidence for all serialized AST nodes, unary/binary operators, canonical functions and effect fields. First-match selection, disabled rules, all-unevaluable quality fallback, valid no-match default, cross-cutting error badges, dynamic read/token refresh, reversible style/text/visibility/filter baselines, duplicate ids across composed slots, re-init, all animation names and halo transitions are covered. Animation capabilities remain blocked in the strict registry until the committed fixture is executed end-to-end by TF100Web. `DEC-0047` command/action completion, manifest 2.3 host negotiation and lifecycle conformance remain pending.
+The shared State/Expression/Effect and CommandConfig paths now have executable table-driven evidence. Command coverage includes every trigger/kind/write mode, enabled/disabled, missing inputs, confirmation timing, asynchronous rejection, duplicate suppression, real Momentary release and page/input cleanup. Input locks are keyed by DOM identity, refresh inactivity on edits and restore from the declared read tag. Animation and Momentary capabilities remain blocked in the strict registry until the committed fixture is executed end-to-end by TF100Web. `DEC-0047` object-action completion, manifest 2.3 host negotiation/adapter and lifecycle conformance remain pending.

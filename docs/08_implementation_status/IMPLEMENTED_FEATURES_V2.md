@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation status
-Document version: `V2.1.4.0051`
+Document version: `V2.1.4.0052`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0052` | `PENDING` | `DEC-0047` tranche 6 : CommandConfig complet, intent host 1.0, Momentary reel et cleanup input/DOM. |
 | 2026-07-16 | `V2.1.4.0051` | `PENDING` | `DEC-0047` tranche 5 : Etat/Expression/Effet partages complets, reversibles et table-driven. |
 | 2026-07-16 | `V2.1.4.0050` | `PENDING` | `DEC-0047` tranche 4 : fixture `.sb2` deterministe, index exhaustif et archive reproductible. |
 | 2026-07-16 | `V2.1.4.0049` | `PENDING` | `DEC-0047` tranche 3 Builder : manifest 2.3, requirements tries, SHA-256 runtime et validation stricte. |
@@ -175,6 +176,7 @@ As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The f
 79. Builder manifest 2.3 is the default export profile. It serializes the analyzed capability ids in stable ordinal order and binds the package to the complete SHA-256 of its actual shared runtime. Strict export fails before staging replacement for a blocked capability. Validation covers unknown, duplicate, unsorted and blocked ids, unsupported runtime-contract versions, absent/invalid/mismatched hashes, tampering and runtime filename integrity. Manifest 2.1/2.2 generation remains available only through explicit compatibility profiles.
 80. `DEC-0047` slice 4 adds a sanitized conformance project factory and commits its deterministic manifest 2.3 `.sb2`, SHA-256 and exhaustive expectation index. Every one of the 118 currently supported capabilities is exercised by the fixture model; all 44 blocked capabilities are indexed as expected fail-closed outcomes. Export now produces ordinal ZIP entry order, fixed timestamps and a stable contract runtime version, yielding byte-identical archives while preserving manifest/runtime hash validation and excluding editor artifacts, client HTML, workstation paths and industrial mappings.
 81. `DEC-0047` slice 5 completes the portable State/Expression/Effect semantics. Table-driven Node tests cover every AST node/operator/function, finite numeric coercion, null propagation, short-circuiting and arithmetic errors. State selection now distinguishes all-unevaluable quality fallback from valid no-match default, preserves cross-cutting errors, refreshes read variables and tokenized text, isolates duplicate ids by DOM identity and resets exact page-slot elements. Effect transitions restore design baselines for style, text, visibility, transforms, overlays and content layers; all animation names and filter halo transitions are non-cumulative. The runtime JS test command is Windows/Node 24 compatible.
+82. `DEC-0047` slice 6 completes portable `CommandConfig`: all five triggers, seven kinds and four write modes are handled by one dispatcher. Navigation/popup/URL/history become a versioned 1.0 host intent; writes stay on `TagBridge`. Momentary uses real pointer/keyboard press/release and guarantees release on cancel, focus loss, unbind, page disposal or DOM removal. Confirmation timing, missing values, toggle read quality, asynchronous permission rejection and duplicate in-flight writes fail safely. Input edit locks use DOM identity across composed slots, restore declared read values after inactivity and expose deterministic disposal.
 
 ## 3. Source Of Truth
 

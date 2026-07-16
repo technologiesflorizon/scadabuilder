@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active authoritative decision register
-Document version: `V2.1.4.0051`
+Document version: `V2.1.4.0052`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0052` | `PENDING` | `DEC-0047` tranche 6 : CommandConfig canonique, intents host 1.0 et Momentary reel avec cleanup. |
 | 2026-07-16 | `V2.1.4.0051` | `PENDING` | `DEC-0047` tranche 5 : executeur partage Etat/Expression/Effet rendu deterministe et couvert par tables. |
 | 2026-07-16 | `V2.1.4.0050` | `PENDING` | `DEC-0047` tranche 4 Builder : package de conformance deterministe, index exhaustif et empreinte partagee. |
 | 2026-07-16 | `V2.1.4.0049` | `PENDING` | `DEC-0047` tranche 3 Builder : manifest 2.3 strict, hash runtime complet, validation fail-closed et compatibilite 2.1/2.2 explicite. |
@@ -1428,7 +1429,7 @@ The default new export contract advances from manifest 2.2 to 2.3 only after TF1
 
 Implementation status:
 
-Implementation slices 1 through 5 are complete on the Builder branch: Domain owns stable capability ids, minimum contract version, execution owner, artifact contracts, fixture ids, strict-export status and typed evidence; Application derives sorted requirements; Rendering emits manifest 2.3 by default with `RuntimeContract.Version`, sorted unique `RequiredCapabilities` and the complete SHA-256 of the packaged runtime. Strict export rejects blocked capabilities before replacing staging output. The package validator rejects unknown/duplicate/unsorted/blocked capabilities, unsupported contract versions, missing/invalid/mismatched hashes and altered runtime files. Compatibility 2.1/2.2 requires an explicit profile. A sanitized deterministic `.sb2`, its SHA-256 and an exhaustive 162-capability expectation index now constitute the shared fixture source. The shared State/Expression/Effect executor has table-driven coverage for every current AST node, operator, function and effect field; state selection, quality/default fallback, error badges, token refresh, reversible baselines, composed-slot isolation, re-init, animation and halo transitions are deterministic. TF100Web execution of the fixture, the unified command/action runtime and `DEC-0046` remain pending. Builder 2.3 artifacts must not be deployed before TF100Web intake support.
+Implementation slices 1 through 6 are complete on the Builder branch: Domain owns stable capability ids, minimum contract version, execution owner, artifact contracts, fixture ids, strict-export status and typed evidence; Application derives sorted requirements; Rendering emits manifest 2.3 by default with `RuntimeContract.Version`, sorted unique `RequiredCapabilities` and the complete SHA-256 of the packaged runtime. Strict export rejects blocked capabilities before replacing staging output. The package validator rejects unknown/duplicate/unsorted/blocked capabilities, unsupported contract versions, missing/invalid/mismatched hashes and altered runtime files. Compatibility 2.1/2.2 requires an explicit profile. A sanitized deterministic `.sb2`, its SHA-256 and an exhaustive 162-capability expectation index now constitute the shared fixture source. The shared State/Expression/Effect executor has table-driven coverage for every current AST node, operator, function and effect field. `CommandConfig` now owns every trigger/kind/write mode locally, emits one versioned host-intent envelope, routes writes only through `TagBridge`, performs real Momentary press/release with cleanup and serializes asynchronous permission feedback. TF100Web execution of the fixture, the unified object-action runtime, host adapter/negotiation and `DEC-0046` remain pending. Builder 2.3 artifacts must not be deployed before TF100Web intake support.
 
 Regression coverage:
 

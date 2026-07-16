@@ -42,16 +42,17 @@
    */
   function writeTag(tagId, value, payload) {
     if (!tagId) {
-      return;
+      return false;
     }
-
-    // Update local cache
-    _localValues[tagId] = value;
 
     // Delegate to host bridge if available
     if (window.tf100webScadaBuilder && typeof window.tf100webScadaBuilder.writeTag === 'function') {
-      window.tf100webScadaBuilder.writeTag(tagId, value, payload || {});
+      return window.tf100webScadaBuilder.writeTag(tagId, value, payload || {});
     }
+
+    // Standalone preview fallback only. Deployed values remain confirmed by host snapshots.
+    _localValues[tagId] = value;
+    return true;
   }
 
   /**

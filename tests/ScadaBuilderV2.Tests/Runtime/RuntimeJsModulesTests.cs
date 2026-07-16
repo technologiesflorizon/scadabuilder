@@ -157,7 +157,7 @@ public sealed class RuntimeJsModulesTests
 
     /// <summary>
     /// The command-dispatcher.js module must be embedded and expose
-    /// WriteTag, Navigate, Toggle, and confirmation-gate symbols.
+    /// the canonical command kinds, versioned host intent and confirmation gate.
     /// </summary>
     [TestMethod]
     public void CommandDispatcherModule_IsEmbeddedResource()
@@ -169,10 +169,14 @@ public sealed class RuntimeJsModulesTests
         Assert.IsNotNull(match, "command-dispatcher.js must be an embedded resource in ScadaBuilderV2.Rendering");
 
         var source = ReadEmbeddedResource("command-dispatcher.js");
-        StringAssert.Contains(source, "WriteTag");
-        StringAssert.Contains(source, "Navigate");
-        StringAssert.Contains(source, "Toggle");
+        StringAssert.Contains(source, "writeTag");
+        StringAssert.Contains(source, "navigate");
+        StringAssert.Contains(source, "toggle");
         StringAssert.Contains(source, "confirm");
+        StringAssert.Contains(source, "scada-runtime-intent");
+        StringAssert.Contains(source, "INTENT_VERSION");
+        StringAssert.Contains(source, "pointerdown");
+        StringAssert.Contains(source, "dispose");
     }
 
     /// <summary>
