@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation plan - execution in progress
-Document version: `V2.1.4.0053`
+Document version: `V2.1.4.0054`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0054` | TF100Web `7d60c63` | Task 8 completee : negotiation 2.3, registry host, hash runtime et fixture exacte avant remplacement. |
 | 2026-07-16 | `V2.1.4.0053` | `PENDING` | Task 7 completee : 9 actions objet, conditions, ordre/propagation, page scope et lifecycle partage. |
 | 2026-07-16 | `V2.1.4.0052` | `PENDING` | Task 6 completee : CommandConfig canonique, Momentary press/release, intents 1.0, async et cleanup. |
 | 2026-07-16 | `V2.1.4.0051` | `PENDING` | Task 5 completee : semantiques Etat/Expression/Effet table-driven, reversibles et deterministes. |
@@ -226,11 +227,11 @@ dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~Ft100SceneExporterTe
 
 **Interfaces:** Consomme manifest 2.3; compare `RequiredCapabilities` au registre host.
 
-- [ ] Definir le registre TF100Web des services/capacites reellement disponibles.
-- [ ] Refuser version/capability/hash non supporte avant remplacement du package actif.
-- [ ] Retourner diagnostics capability ids et versions, sans stack trace operateur.
-- [ ] Preserver et tester les profils 2.1/2.2.
-- [ ] Verifier que la fixture vendoree a le SHA produit par Builder.
+- [x] Definir le registre TF100Web des services/capacites reellement disponibles.
+- [x] Refuser version/capability/hash non supporte avant remplacement du package actif.
+- [x] Retourner diagnostics capability ids et versions, sans stack trace operateur.
+- [x] Preserver et tester les profils 2.1/2.2.
+- [x] Verifier que la fixture vendoree a le SHA produit par Builder.
 
 **Validation:**
 

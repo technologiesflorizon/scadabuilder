@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active authoritative decision register
-Document version: `V2.1.4.0053`
+Document version: `V2.1.4.0054`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0054` | Builder `PENDING`, TF100Web `7d60c63` | `DEC-0047` tranche 8 : negotiation TF100Web 2.3 fail-closed et fixture exacte vendoree. |
 | 2026-07-16 | `V2.1.4.0053` | `PENDING` | `DEC-0047` tranche 7 : actions objet adaptees au runtime partage avec conditions et page scope. |
 | 2026-07-16 | `V2.1.4.0052` | `PENDING` | `DEC-0047` tranche 6 : CommandConfig canonique, intents host 1.0 et Momentary reel avec cleanup. |
 | 2026-07-16 | `V2.1.4.0051` | `PENDING` | `DEC-0047` tranche 5 : executeur partage Etat/Expression/Effet rendu deterministe et couvert par tables. |
@@ -385,9 +386,9 @@ Regression coverage:
 Status: Superseded
 Created: 2026-06-16 00:00 America/Toronto
 Created in commit: `PENDING`
-Deprecated: N/A
-Deprecated in commit: N/A
-Superseded by: N/A
+Deprecated: 2026-07-16 00:00 America/Toronto
+Deprecated in commit: `bcec075`
+Superseded by: DEC-0047
 Owner document: `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md`
 
 Context:
@@ -411,9 +412,9 @@ Regression coverage:
 Status: Superseded
 Created: 2026-06-16 00:00 America/Toronto
 Created in commit: `PENDING`
-Deprecated: N/A
-Deprecated in commit: N/A
-Superseded by: N/A
+Deprecated: 2026-07-16 00:00 America/Toronto
+Deprecated in commit: `bcec075`
+Superseded by: DEC-0047
 Owner document: `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md`
 
 Context:
@@ -1315,7 +1316,7 @@ Created: 2026-07-16 00:00 America/Toronto
 Created in commit: `8489dbd`
 Deprecated: N/A
 Deprecated in commit: N/A
-Superseded by: DEC-0047
+Superseded by: N/A
 Owner document: `docs/superpowers/specs/2026-07-16-stateful-defrost-toggle-buttons-design.md`
 
 Context:
@@ -1341,7 +1342,7 @@ Created: 2026-07-16 00:00 America/Toronto
 Created in commit: `de37a35`
 Deprecated: N/A
 Deprecated in commit: N/A
-Superseded by: DEC-0047
+Superseded by: N/A
 Owner document: `docs/superpowers/specs/2026-07-16-shared-runtime-visual-and-table-binding-correction-design.md`
 
 Context:
@@ -1430,7 +1431,7 @@ The default new export contract advances from manifest 2.2 to 2.3 only after TF1
 
 Implementation status:
 
-Implementation slices 1 through 7 are complete on the Builder branch: Domain owns stable capability ids, minimum contract version, execution owner, artifact contracts, fixture ids, strict-export status and typed evidence; Application derives sorted requirements; Rendering emits manifest 2.3 by default with `RuntimeContract.Version`, sorted unique `RequiredCapabilities` and the complete SHA-256 of the packaged runtime. Strict export rejects blocked capabilities before replacing staging output. The package validator rejects unknown/duplicate/unsorted/blocked capabilities, unsupported contract versions, missing/invalid/mismatched hashes and altered runtime files. Compatibility 2.1/2.2 requires an explicit profile. A sanitized deterministic `.sb2`, its SHA-256 and an exhaustive 162-capability expectation index now constitute the shared fixture source. The portable runtime owns State/Expression/Effect, all `CommandConfig` variants and the nine object-action kinds. Object actions consume canonical root registries plus element bindings, evaluate simple/compound conditions through the shared evaluator, preserve binding order/propagation and resolve DOM targets only inside the initialized page root. Host-bound action capabilities remain strict-blocked until TF100Web installs negotiation and the single adapter, executes the committed fixture and supplies end-to-end evidence. `DEC-0046` also remains pending; Builder 2.3 artifacts must not be deployed before TF100Web intake support.
+Implementation slices 1 through 8 are complete across the Builder and TF100Web branches: Domain owns stable capability ids, minimum contract version, execution owner, artifact contracts, fixture ids, strict-export status and typed evidence; Application derives sorted requirements; Rendering emits manifest 2.3 by default with `RuntimeContract.Version`, sorted unique `RequiredCapabilities` and the complete SHA-256 of the packaged runtime. The portable runtime owns State/Expression/Effect, all `CommandConfig` variants and the nine object-action kinds. TF100Web `7d60c63` now accepts 2.3 only when contract version, sorted unique required capabilities, exact runtime filename/content SHA and its explicit 118-capability registry all agree; rejection occurs before active static replacement. Compatibility 2.1/2.2 remains accepted. The exact Builder fixture and SHA are vendored and test-verified in TF100Web. The single HostAdapter, fixture execution semantics, `DEC-0046` lifecycle and industrial page validation remain pending; the branch is not yet an operator deployment claim.
 
 Regression coverage:
 

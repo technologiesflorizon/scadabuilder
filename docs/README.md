@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0053`
+Document version: `V2.1.4.0054`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0054` | Builder `PENDING`, TF100Web `7d60c63` | Intake TF100Web 2.3 negocie capabilities, contrat et hash avant remplacement actif; fixture Builder vendoree. |
 | 2026-07-16 | `V2.1.4.0053` | `PENDING` | Actions objet portables unifiees : 9 kinds, conditions, propagation, cibles page-scope et bindings DOM canoniques. |
 | 2026-07-16 | `V2.1.4.0052` | `PENDING` | CommandConfig partage complete : intents host 1.0, Momentary press/release, confirmations, concurrence et cleanup DOM. |
 | 2026-07-16 | `V2.1.4.0051` | `PENDING` | Runtime partage Etat/Expression/Effet complete : semantiques table-driven, transitions reversibles, animations, tokens et fallback qualite. |
