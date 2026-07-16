@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active runtime package contract
-Document version: `V2.1.4.0058`
+Document version: `V2.1.4.0059`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0059` | TF100Web `2fb46e6` | Fixture exacte executee : negotiation, composition, runtime, host, snapshot, securite et blocages. |
 | 2026-07-16 | `V2.1.4.0058` | TF100Web `9e85844` | Composition/caches bornes par generation et revisions; publication statique atomique avec rollback. |
 | 2026-07-16 | `V2.1.4.0057` | TF100Web `c304af3` | Binding numerique commun et exhaustif : politiques read/write, edition/readback, formats et qualite mapping absente. |
 | 2026-07-16 | `V2.1.4.0056` | TF100Web `1fc3ac4` | Cycle latest-wins implemente avec AbortController, ownership generationnel, disposal et hydration forcee coalescee. |
@@ -167,6 +168,7 @@ The active TF100Web intake contract is:
 34. TF100Web `1fc3ac4` implements `DEC-0046`. A navigation generation plus AbortController owns fetch, DOM/runtime replacement, popup closure, dimensions, history and loading teardown. Superseded work returns without mutation; timeout, HTTP/session and offline failures preserve a recoverable host. Existing page runtime listeners are disposed before replacement. Snapshot requests are generation-bound and abort on navigation. A forced hydration requested during an in-flight poll is coalesced into a mandatory awaited follow-up cycle that recollects dependencies from the accepted DOM and notifies the runtime even when values are unchanged or the dependency set is empty.
 35. TF100Web `c304af3` uses one numeric binding policy, edit controller, value formatter, tag cache and write bridge for Element+ and Table targets in header/body/footer/popup slots. Read-only, write-only, same-mapping and split read/write combinations are explicit. Focus and pending writes are not overwritten by polls; Enter commits once, Escape restores without writing, invalid/denied/rejected/offline writes restore the confirmed read value, and subsequent snapshots own divergent readback. `fixed:n`, hash masks, FLOAT32/FLOAT64 and every integer datatype share one formatter. Missing mappings delete stale cache values, set deterministic `data-scada-quality`/`---` fallback and emit mapping-id-only diagnostics without blocking other controls or fabricating tags.
 36. TF100Web `9e85844` composes each fragment with one tag pass and one bulk mapping-catalog resolution per response. Structural caches are keyed by the atomically published package generation; rendered-response caches additionally include catalog and override revisions. Package deployment validates and stages before an atomic active-directory swap, restores the previous generation if publication fails, and invalidates local structural caches only after success. `Server-Timing`, generation/cache headers and structured logs expose phase durations and cardinalities without PLC values.
+37. TF100Web `2fb46e6` vendors machine-readable expectations beside the exact Builder conformance package. Its production validator and composer load the fixture, while the packaged runtime is executed for initialization, expressions, effects, host intents, snapshots and disposal. Every supported manifest capability is assigned a successful evidence gate; every blocked capability is injected individually and must be rejected before deployment. SHA and sanitized-diagnostic assertions prevent fixture drift or client data leakage.
 
 ## 4. Element+ Style Transport Contract
 

@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active authoritative decision register
-Document version: `V2.1.4.0058`
+Document version: `V2.1.4.0059`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0059` | Builder `PENDING`, TF100Web `2fb46e6` | `DEC-0047` tranche 13 : fixture package/runtime executee et matrice Supported/Blocked fermee automatiquement. |
 | 2026-07-16 | `V2.1.4.0058` | Builder `PENDING`, TF100Web `9e85844` | `DEC-0047` tranche 12 : composition O(tags), observabilite, caches revisionnes et deploiement atomique. |
 | 2026-07-16 | `V2.1.4.0057` | Builder `PENDING`, TF100Web `c304af3` | `DEC-0047` tranche 11 : politique binding, edition numerique, qualite mapping et formatage partages. |
 | 2026-07-16 | `V2.1.4.0056` | Builder `PENDING`, TF100Web `1fc3ac4` | `DEC-0046` et `DEC-0047` tranche 10 : generation latest-wins et hydration obligatoire implementees. |
@@ -1435,7 +1436,7 @@ The default new export contract advances from manifest 2.2 to 2.3 only after TF1
 
 Implementation status:
 
-Implementation slices 1 through 12 are complete across the Builder and TF100Web branches: Domain owns stable capability ids, minimum contract version, execution owner, artifact contracts, fixture ids, strict-export status and typed evidence; Application derives sorted requirements; Rendering emits manifest 2.3 by default with `RuntimeContract.Version`, sorted unique `RequiredCapabilities` and the complete SHA-256 of the packaged runtime. The portable runtime owns State/Expression/Effect, all `CommandConfig` variants and the nine object-action kinds. TF100Web negotiates 2.3, installs one HostAdapter, enforces latest-wins and shares one generic binding path. TF100Web `9e85844` makes fragment injection a single tag pass, resolves the mapping catalog in bulk, keys structural/response caches by package generation and catalog/override revisions, publishes packages through an atomic staged swap with rollback, and emits safe per-phase timings. Fixture execution semantics and industrial page validation remain pending; the branch is not yet an operator deployment claim.
+Implementation slices 1 through 13 are complete across the Builder and TF100Web branches: Domain owns stable capability ids, typed evidence and strict-export status; Rendering emits manifest 2.3 with sorted requirements and exact packaged-runtime SHA. The portable runtime owns State/Expression/Effect, CommandConfig and object actions; TF100Web owns one negotiated HostAdapter, latest-wins lifecycle, generic bindings and linear composition. TF100Web `2fb46e6` executes the exact Builder fixture through production validation/composition and the packaged runtime, assigns every one of 118 supported capabilities to an executed evidence gate, and proves all 44 blocked capabilities fail the production deploy validator. Preview/build/export parity expansion and industrial page validation remain pending; the branch is not yet an operator deployment claim.
 
 Regression coverage:
 

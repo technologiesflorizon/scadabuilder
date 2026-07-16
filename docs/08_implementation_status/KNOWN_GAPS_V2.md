@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active known gaps register
-Document version: `V2.1.4.0058`
+Document version: `V2.1.4.0059`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0059` | TF100Web `2fb46e6` | Gate fixture general ferme; parity preview/export/host et integrations industrielles restent ouvertes. |
 | 2026-07-16 | `V2.1.4.0058` | TF100Web `9e85844` | Gap algorithmique composition/cache ferme sur branche; mesure distante industrielle reste requise. |
 | 2026-07-16 | `V2.1.4.0057` | TF100Web `c304af3` | Couverture binding generale et fallback mapping fermes sur branche; preuves PLC autorisees et performance restent ouvertes. |
 | 2026-07-16 | `V2.1.4.0056` | TF100Web `1fc3ac4` | Gap `DEC-0046` ferme sur branche; bindings exhaustifs, performance, fixture executee et promotion industrielle restent ouverts. |
@@ -71,7 +72,7 @@ Document version: `V2.1.4.0058`
 15. TF100Web `9d5d400` had the confirmed navigation/poll race observed on `win00008 -> win00012_modern_no_legacy -> win00008`. Branch commit `1fc3ac4` implements `DEC-0046` with abortable generations and mandatory coalesced hydration; an industrial browser smoke after deployment remains required before release closure.
 16. Remote page composition previously measured approximately 6.7 s for `win00008` and 14.2 s for `win00012_modern_no_legacy`, while a 426-mapping snapshot measured approximately 0.2 s. TF100Web `9e85844` closes the known algorithmic gap with single-pass injection, bulk catalog resolution, generation/revision caches, phase instrumentation and atomic invalidation. Remote post-deployment measurements on the industrial server remain required; cellular latency remains a separate external factor.
 17. The official `tf100web-scada-tags (3).json` audit contains 425 tags but no `YL_E12_HDEG4` or mapping 615. TF100Web `c304af3` now handles this as a non-blocking `data-scada-quality`/`---` diagnostic without fabricated mapping; industrial visual confirmation remains pending.
-18. Runtime coverage is not yet general. The typed capability registry, analyzer, generated matrix, Builder-side manifest 2.3/hash/strict validator and deterministic shared `.sb2` now exist. TF100Web negotiates, installs the HostAdapter, enforces latest-wins, has exhaustive generic numeric binding tests and parameterized composition/cache evidence. Execution assertions for each fixture case and industrial deployment remain pending. Builder 2.3 output is therefore not yet an operator promotion claim.
+18. General fixture execution is complete on the branches. TF100Web `2fb46e6` runs the exact Builder package and packaged runtime, gates all 118 supported capabilities and rejects all 44 blocked capabilities. Expanded preview/build/export/host parity and the four industrial integrations remain pending, so Builder 2.3 output is not yet an operator promotion claim.
 19. Portable state, expression, effect, command and object-action semantics now have one shared-runtime owner. TF100Web `cab2733` removed the parallel new-host message action switch: canonical direct intents and 2.1/2.2 aliases converge into one adapter. The mutually exclusive legacy per-request diagram loader remains a compatibility surface to retire only with explicit migration evidence. Exporter inline scripts are not a semantic fallback.
 20. Shared State/Expression/Effect behavior is now complete and table-tested locally, including animation execution. The six `effect.animation*` contract entries intentionally remain `Blocked` until TF100Web runs the canonical fixture and supplies end-to-end evidence; this is a promotion gate, not a remaining shared-runtime implementation gap.
 21. Shared CommandConfig behavior is complete locally, including real Momentary cleanup and the canonical host-intent envelope. TF100Web `cab2733` supplies the single protected write/intent adapter, but `command.write.momentary` remains `Blocked` until press/release executes through the canonical fixture with permission/readback evidence. Top-level aliases preserve 2.1/2.2 compatibility only; they normalize into the target 2.3 adapter.

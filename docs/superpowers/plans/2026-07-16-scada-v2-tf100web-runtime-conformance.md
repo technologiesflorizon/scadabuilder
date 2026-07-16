@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation plan - execution in progress
-Document version: `V2.1.4.0058`
+Document version: `V2.1.4.0059`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0059` | TF100Web `2fb46e6` | Task 13 completee : fixture executee, SHA verrouille, Supported/Blocked gates exhaustifs. |
 | 2026-07-16 | `V2.1.4.0058` | TF100Web `9e85844` | Task 12 completee : composition lineaire, caches revisionnes, observabilite et swap atomique. |
 | 2026-07-16 | `V2.1.4.0057` | TF100Web `c304af3` | Task 11 completee : bindings generiques, controles edit/readback, formats et fallback mapping. |
 | 2026-07-16 | `V2.1.4.0056` | TF100Web `1fc3ac4` | Task 10 completee : latest-wins, abort/stale gates, hydration coalescee, disposal et reprise. |
@@ -324,11 +325,11 @@ python manage.py check
 - Create/Modify: harness JS/browser sous `frontend/tests_runtime_js/`
 - Modify: CI/test documentation TF100Web
 
-- [ ] Charger chaque fixture capability et comparer l'attendu machine-readable.
-- [ ] Couvrir composition, runtime, intents host, snapshots, erreurs et securite.
-- [ ] Faire echouer toute capability `Supported` sans test execute.
-- [ ] Faire echouer toute capability `Blocked` acceptee au deploiement.
-- [ ] Comparer SHA fixture Builder/TF100Web.
+- [x] Charger chaque fixture capability et comparer l'attendu machine-readable.
+- [x] Couvrir composition, runtime, intents host, snapshots, erreurs et securite.
+- [x] Faire echouer toute capability `Supported` sans test execute.
+- [x] Faire echouer toute capability `Blocked` acceptee au deploiement.
+- [x] Comparer SHA fixture Builder/TF100Web.
 
 **Commit:** `test: enforce end-to-end scada runtime conformance`
 

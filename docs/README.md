@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0058`
+Document version: `V2.1.4.0059`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0059` | Builder `PENDING`, TF100Web `2fb46e6` | Fixture Builder executee dans TF100Web : 118 capabilities supportees et 44 bloquees gatees. |
 | 2026-07-16 | `V2.1.4.0058` | Builder `PENDING`, TF100Web `9e85844` | Composition lineaire instrumentee, caches generationnels et publication/rollback atomiques. |
 | 2026-07-16 | `V2.1.4.0057` | Builder `PENDING`, TF100Web `c304af3` | Bindings numeriques generiques completes : read/write combos, controles edit, formatage partage et fallback mapping. |
 | 2026-07-16 | `V2.1.4.0056` | Builder `PENDING`, TF100Web `1fc3ac4` | `DEC-0046` implemente : navigation latest-wins, hydration forcee coalescee et mutations stale rejetees. |

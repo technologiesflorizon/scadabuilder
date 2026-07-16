@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation status
-Document version: `V2.1.4.0058`
+Document version: `V2.1.4.0059`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0059` | TF100Web `2fb46e6` | Harness end-to-end de fixture, preuves par capability et rejet exhaustif des capabilities bloquees. |
 | 2026-07-16 | `V2.1.4.0058` | TF100Web `9e85844` | Composition single-pass, catalogue bulk, caches revisionnes, metriques et swap atomique rollbackable. |
 | 2026-07-16 | `V2.1.4.0057` | TF100Web `c304af3` | Binding numerique commun Element+/Table, controle edit testable, formats exhaustifs et fallback qualite non bloquant. |
 | 2026-07-16 | `V2.1.4.0056` | TF100Web `1fc3ac4` | Navigation latest-wins, snapshots generationnels, disposal runtime et hydration forcee coalescee. |
@@ -189,6 +190,7 @@ As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The f
 86. TF100Web `1fc3ac4` implements the complete `DEC-0046` latest-wins lifecycle. New navigation aborts older page and snapshot requests; generation checks gate every asynchronous mutation, history/loading/popups and dimensions; page runtime disposal precedes replacement; timeout/session/offline failures remain recoverable. Forced snapshot hydration is awaitable and coalesced, recollects accepted-DOM dependencies, rejects stale responses and notifies the shared runtime even when confirmed values are identical.
 87. TF100Web `c304af3` completes generic numeric binding conformance with one policy/controller/formatter reused by Element+ and Table inputs in every composed slot. Read/write combinations, permission and validity gates, focus/pending poll protection, single Enter commit, Escape restore, rejected/offline restoration, readback, fixed/hash formats and all integer/float datatypes are covered. Missing mappings use deterministic quality/placeholder diagnostics and never block unrelated mappings.
 88. TF100Web `9e85844` replaces binding-by-fragment rescans with single-pass tag injection and bulk catalog resolution. Package structure and rendered responses are cached against explicit generation/catalog/override revisions; deploy validates and stages before an atomic swap and restores the prior generation on failure. Safe phase timings, cache/generation headers and parameterized 1/3-page benchmarks through 3,072 bindings provide regression evidence.
+89. TF100Web `2fb46e6` executes the byte-exact Builder conformance package through production manifest negotiation, atomic deployment composition and the packaged Runtime 1.0. Machine-readable gates cover composition, expression/effect execution, host intents, snapshots, disposal and security. All 118 supported capabilities require executed evidence, while each of 44 blocked capabilities is individually rejected by the production deployment validator.
 
 ## 3. Source Of Truth
 
