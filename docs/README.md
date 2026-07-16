@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0056`
+Document version: `V2.1.4.0057`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0057` | Builder `PENDING`, TF100Web `c304af3` | Bindings numeriques generiques completes : read/write combos, controles edit, formatage partage et fallback mapping. |
 | 2026-07-16 | `V2.1.4.0056` | Builder `PENDING`, TF100Web `1fc3ac4` | `DEC-0046` implemente : navigation latest-wins, hydration forcee coalescee et mutations stale rejetees. |
 | 2026-07-16 | `V2.1.4.0055` | Builder `PENDING`, TF100Web `cab2733` | HostAdapter Runtime 1.0 unique : navigation/history/popup/URL/ecriture, validation fail-closed et compatibilite 2.1/2.2. |
 | 2026-07-16 | `V2.1.4.0054` | Builder `PENDING`, TF100Web `7d60c63` | Intake TF100Web 2.3 negocie capabilities, contrat et hash avant remplacement actif; fixture Builder vendoree. |

@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active regression coverage map
-Document version: `V2.1.4.0056`
+Document version: `V2.1.4.0057`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0057` | TF100Web `c304af3` | 23 tests JS et 20 contrats Django verts; bindings read/write, edit, formats/datatype et mapping absent couverts. |
 | 2026-07-16 | `V2.1.4.0056` | TF100Web `1fc3ac4` | 16 tests JS host/lifecycle/hydration et 19 tests contrat Django verts; ordre inverse, timeout, reprise et forced poll couverts. |
 | 2026-07-16 | `V2.1.4.0055` | TF100Web `cab2733` | 7 tests JS HostAdapter et 16 tests contrat runtime Django verts : intents, origine, doublons, stale scope, URL/ecriture/permissions. |
 | 2026-07-16 | `V2.1.4.0054` | TF100Web `7d60c63` | 11 tests negotiation/fixture cibles verts; check Django local vert; suite module expose des echecs historiques hors tranche. |
@@ -102,6 +103,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Shared command and input semantics (`DEC-0047`, partial) | Builder `tests/runtime-js/command-dispatcher.test.mjs` covers all five triggers, seven kinds, Toggle/SetFixed/SetFromInput and real Momentary phases, confirmation ordering, disabled/missing values, canonical intents, HostAdapter precedence, async rejection and duplicate suppression. TF100Web `frontend/tests_runtime_js/host-adapter.test.mjs` covers canonical service mapping, invalid input, duplicate delivery, origin, stale declared page and protected writes. End-to-end Momentary/readback promotion remains pending. |
 | Shared object-action semantics (`DEC-0047`, partial) | Builder `tests/runtime-js/action-dispatcher.test.mjs` covers all nine kinds, every condition operator, All/Any, both missing policies, binding order, prevent/stop propagation, disabled sources, disposal and duplicate ids across composed page roots. `Ft100SceneExporterTests.cs` locks canonical registries/bindings and scope. TF100Web `cab2733` removes the parallel message switch and routes action-owned host intents into one adapter; fixture execution proof remains pending. |
 | Latest-wins navigation and hydration (`DEC-0046`) | TF100Web `frontend/tests_runtime_js/navigation-lifecycle.test.mjs` covers supersession, inverse completion, timeout ownership, stale settle, offline/retry and generation-gated mutation symbols. `tag-cache-hydration.test.mjs` covers forced-during-in-flight follow-up, force coalescing, unchanged-value notification, dependency recollection and stale snapshot rejection. `ScadaRuntimeInitContractTests` locks the deployed integration; 16 JS and 19 Django contract tests are green. |
+| Generic numeric bindings (`DEC-0047`) | TF100Web `frontend/tests_runtime_js/binding-runtime.test.mjs` table-tests read-only/write-only/read-write/denied/unbound policies, fixed/hash formatting across FLOAT32/FLOAT64 and eight integer datatypes, valid/invalid/denied/rejected/offline commits, pending duplicate suppression and Enter/Escape behavior. Source integration locks one Element+/Table path, all composed slots, poll focus/pending protection and missing-mapping quality fallback. Combined JS runtime count is 23; 20 focused Django contracts are green. |
 | TF100Web manifest 2.3 negotiation (`DEC-0047`, partial) | `frontend.tests_scada_deploy.DeployScadaBuilderManifestTests` and targeted package tests cover 2.1/2.2 compatibility, valid 2.3, missing/unknown versions, unsupported capability ids, contract version, runtime tampering, missing contract, pre-replacement preservation and exact vendored fixture SHA. Eleven focused tests and the local Django check pass under SQLite verification settings. |
 | FT100/TF100Web export | `Ft100SceneExporterTests.cs`: manifest 2.3 default, sorted/deduplicated requirements, packaged runtime SHA-256, pre-staging blocked-capability rejection, and explicit 2.1/2.2 profiles. |
 | FT100 `.sb2` archive and namespace validation | `Ft100PackageValidator`, `Ft100PackageValidatorTests`: unknown/duplicate/unsorted/blocked capabilities, runtime contract version, missing/invalid/mismatched SHA-256, tampering and runtime filename; plus archive and page-scope regressions in `Ft100SceneExporterTests`. |

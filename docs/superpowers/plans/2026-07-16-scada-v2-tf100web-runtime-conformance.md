@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation plan - execution in progress
-Document version: `V2.1.4.0056`
+Document version: `V2.1.4.0057`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0057` | TF100Web `c304af3` | Task 11 completee : bindings generiques, controles edit/readback, formats et fallback mapping. |
 | 2026-07-16 | `V2.1.4.0056` | TF100Web `1fc3ac4` | Task 10 completee : latest-wins, abort/stale gates, hydration coalescee, disposal et reprise. |
 | 2026-07-16 | `V2.1.4.0055` | TF100Web `cab2733` | Task 9 completee : adaptateur host unique, compatibilite normalisee, securite intents/URL/ecriture et tests. |
 | 2026-07-16 | `V2.1.4.0054` | TF100Web `7d60c63` | Task 8 completee : negotiation 2.3, registry host, hash runtime et fixture exacte avant remplacement. |
@@ -288,10 +289,10 @@ python manage.py check
 - Modify: `F:\Projet\Git\TF100Web\frontend\tests_runtime_js\binding-runtime.test.mjs`
 - Modify: `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py`
 
-- [ ] Tester toutes les combinaisons read/write, cibles, slots, formats et datatypes.
-- [ ] Tester focus/poll, Enter/Escape/blur/change, rejet, readback et permissions.
-- [ ] Gerer mapping absent par fallback qualite/diagnostic non bloquant.
-- [ ] Prouver qu'Element+ et Tableau utilisent cache et handler communs.
+- [x] Tester toutes les combinaisons read/write, cibles, slots, formats et datatypes.
+- [x] Tester focus/poll, Enter/Escape/blur/change, rejet, readback et permissions.
+- [x] Gerer mapping absent par fallback qualite/diagnostic non bloquant.
+- [x] Prouver qu'Element+ et Tableau utilisent cache et handler communs.
 
 **Commit:** `test: complete generic scada binding conformance`
 

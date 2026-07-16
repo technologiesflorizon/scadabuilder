@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation status
-Document version: `V2.1.4.0056`
+Document version: `V2.1.4.0057`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0057` | TF100Web `c304af3` | Binding numerique commun Element+/Table, controle edit testable, formats exhaustifs et fallback qualite non bloquant. |
 | 2026-07-16 | `V2.1.4.0056` | TF100Web `1fc3ac4` | Navigation latest-wins, snapshots generationnels, disposal runtime et hydration forcee coalescee. |
 | 2026-07-16 | `V2.1.4.0055` | TF100Web `cab2733` | Adaptateur host unique Runtime 1.0 avec validation, services navigation/popup/URL/ecriture et compatibilite message unifiee. |
 | 2026-07-16 | `V2.1.4.0054` | TF100Web `7d60c63` | Negotiation 2.3 fail-closed, registry host explicite et fixture Builder vendoree par SHA. |
@@ -185,6 +186,7 @@ As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The f
 84. TF100Web `7d60c63` implements manifest 2.3 deployment negotiation shared by CLI and admin validation. It checks contract version, required-capability shape/order/uniqueness/support, runtime filename prefix, exact runtime content SHA and one-file cardinality before touching the active package. Its explicit registry contains the 118 Builder-supported capabilities, keeps 2.1/2.2 compatibility, vendors the canonical `.sb2` plus SHA and verifies that exact artifact through the same production gate.
 85. TF100Web `cab2733` installs one testable Runtime 1.0 HostAdapter. Direct canonical intents and 2.1/2.2 message aliases use one dispatch path for navigation/history, popup, URL and diagnostics; tag writes use the same adapter and protected mapping endpoint with same-origin credentials, CSRF and permission gating. Invalid envelopes, versions, kinds, pages, duplicate delivery, untrusted origins, stale declared source pages and denied writes fail closed without logging PLC values.
 86. TF100Web `1fc3ac4` implements the complete `DEC-0046` latest-wins lifecycle. New navigation aborts older page and snapshot requests; generation checks gate every asynchronous mutation, history/loading/popups and dimensions; page runtime disposal precedes replacement; timeout/session/offline failures remain recoverable. Forced snapshot hydration is awaitable and coalesced, recollects accepted-DOM dependencies, rejects stale responses and notifies the shared runtime even when confirmed values are identical.
+87. TF100Web `c304af3` completes generic numeric binding conformance with one policy/controller/formatter reused by Element+ and Table inputs in every composed slot. Read/write combinations, permission and validity gates, focus/pending poll protection, single Enter commit, Escape restore, rejected/offline restoration, readback, fixed/hash formats and all integer/float datatypes are covered. Missing mappings use deterministic quality/placeholder diagnostics and never block unrelated mappings.
 
 ## 3. Source Of Truth
 
