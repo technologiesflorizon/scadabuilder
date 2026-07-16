@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation plan - execution in progress
-Document version: `V2.1.4.0055`
+Document version: `V2.1.4.0056`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0056` | TF100Web `1fc3ac4` | Task 10 completee : latest-wins, abort/stale gates, hydration coalescee, disposal et reprise. |
 | 2026-07-16 | `V2.1.4.0055` | TF100Web `cab2733` | Task 9 completee : adaptateur host unique, compatibilite normalisee, securite intents/URL/ecriture et tests. |
 | 2026-07-16 | `V2.1.4.0054` | TF100Web `7d60c63` | Task 8 completee : negotiation 2.3, registry host, hash runtime et fixture exacte avant remplacement. |
 | 2026-07-16 | `V2.1.4.0053` | `PENDING` | Task 7 completee : 9 actions objet, conditions, ordre/propagation, page scope et lifecycle partage. |
@@ -272,11 +273,11 @@ python manage.py check
 - Modify: `F:\Projet\Git\TF100Web\static\asset\js\station\visualisation_import.js`
 - Create/Modify: tests `navigation-lifecycle.test.mjs`, `tag-cache-hydration.test.mjs`
 
-- [ ] Generation latest-wins, AbortController et rejet stale.
-- [ ] Historique/loading/popups possedes uniquement par la generation courante.
-- [ ] Hydratation forced awaitable/coalescee; aucune no-op sous `pollInFlight`.
-- [ ] Recalcul dependances du DOM accepte et notify meme valeur identique.
-- [ ] Offline, timeout, erreur HTTP, session expiree, back/forward et reprise.
+- [x] Generation latest-wins, AbortController et rejet stale.
+- [x] Historique/loading/popups possedes uniquement par la generation courante.
+- [x] Hydratation forced awaitable/coalescee; aucune no-op sous `pollInFlight`.
+- [x] Recalcul dependances du DOM accepte et notify meme valeur identique.
+- [x] Offline, timeout, erreur HTTP, session expiree, back/forward et reprise.
 
 **Commit:** `fix: enforce latest-wins navigation and hydration`
 

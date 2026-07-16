@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation status
-Document version: `V2.1.4.0055`
+Document version: `V2.1.4.0056`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0056` | TF100Web `1fc3ac4` | Navigation latest-wins, snapshots generationnels, disposal runtime et hydration forcee coalescee. |
 | 2026-07-16 | `V2.1.4.0055` | TF100Web `cab2733` | Adaptateur host unique Runtime 1.0 avec validation, services navigation/popup/URL/ecriture et compatibilite message unifiee. |
 | 2026-07-16 | `V2.1.4.0054` | TF100Web `7d60c63` | Negotiation 2.3 fail-closed, registry host explicite et fixture Builder vendoree par SHA. |
 | 2026-07-16 | `V2.1.4.0053` | `PENDING` | `DEC-0047` tranche 7 : 9 actions objet, conditions, bindings DOM et cibles page-scope partages. |
@@ -183,6 +184,7 @@ As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The f
 83. `DEC-0047` slice 7 completes the portable object-action adapter for all nine `ScadaActionKind` values. Exported roots carry a canonical action registry and source objects carry ordered action bindings without reviving `data-scada-events`; action-only groups retain transparent runtime wrappers. Simple/compound conditions delegate comparisons to `ExpressionEvaluator`, read/write delegate to `TagBridge`, and navigation/popup reuse the command intent schema. All/Any, both missing policies, five triggers, disabled sources, ordering, propagation, lifecycle disposal, all action kinds and duplicate-id page isolation have executable Node/.NET coverage. Host-dependent capabilities remain strict-blocked pending TF100Web evidence.
 84. TF100Web `7d60c63` implements manifest 2.3 deployment negotiation shared by CLI and admin validation. It checks contract version, required-capability shape/order/uniqueness/support, runtime filename prefix, exact runtime content SHA and one-file cardinality before touching the active package. Its explicit registry contains the 118 Builder-supported capabilities, keeps 2.1/2.2 compatibility, vendors the canonical `.sb2` plus SHA and verifies that exact artifact through the same production gate.
 85. TF100Web `cab2733` installs one testable Runtime 1.0 HostAdapter. Direct canonical intents and 2.1/2.2 message aliases use one dispatch path for navigation/history, popup, URL and diagnostics; tag writes use the same adapter and protected mapping endpoint with same-origin credentials, CSRF and permission gating. Invalid envelopes, versions, kinds, pages, duplicate delivery, untrusted origins, stale declared source pages and denied writes fail closed without logging PLC values.
+86. TF100Web `1fc3ac4` implements the complete `DEC-0046` latest-wins lifecycle. New navigation aborts older page and snapshot requests; generation checks gate every asynchronous mutation, history/loading/popups and dimensions; page runtime disposal precedes replacement; timeout/session/offline failures remain recoverable. Forced snapshot hydration is awaitable and coalesced, recollects accepted-DOM dependencies, rejects stale responses and notifies the shared runtime even when confirmed values are identical.
 
 ## 3. Source Of Truth
 

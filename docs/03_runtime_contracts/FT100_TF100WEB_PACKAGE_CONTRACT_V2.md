@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active runtime package contract
-Document version: `V2.1.4.0055`
+Document version: `V2.1.4.0056`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0056` | TF100Web `1fc3ac4` | Cycle latest-wins implemente avec AbortController, ownership generationnel, disposal et hydration forcee coalescee. |
 | 2026-07-16 | `V2.1.4.0055` | TF100Web `cab2733` | HostAdapter 1.0 unique installe; intents canoniques/compatibles convergent vers les memes services host et l'ecriture protegee existante. |
 | 2026-07-16 | `V2.1.4.0054` | TF100Web `7d60c63` | Intake 2.3 negocie version/capabilities/SHA avant remplacement; fixture `fb06431e...08404` vendoree. |
 | 2026-07-16 | `V2.1.4.0053` | `PENDING` | ActionDispatcher partage ajoute; bindings/registre DOM canoniques; fixture regeneree au SHA-256 `fb06431e...08404`. |
@@ -161,6 +162,7 @@ The active TF100Web intake contract is:
 31. Shared object actions consume `data-scada-action-registry` on the initialized page root and ordered `data-scada-action-bindings` on source objects. The nine persisted action kinds are interpreted once by `ActionDispatcher`: visibility/read/write stay portable and page-scoped; navigation/popup reuse the command intent envelope. Event order, `PreventDefault`, `StopPropagation`, disabled sources, missing actions/tags/targets and disposal are deterministic. Strict 2.3 still blocks action/popup capabilities lacking TF100Web fixture evidence before export.
 32. TF100Web `7d60c63` accepts manifest 2.3 only when `RuntimeContract.Version` is supported, `RequiredCapabilities` is valid/sorted/unique and every id belongs to its explicit 118-capability registry, exactly one runtime file has the declared eight-character filename prefix, and its complete SHA-256 matches. The CLI and admin validator share this gate before the active static package is removed. The exact Builder fixture and SHA are vendored under `frontend/test_fixtures`; 2.1/2.2 remain explicit compatibility paths.
 33. TF100Web `cab2733` installs exactly one `ScadaRuntime.HostAdapter` for Runtime 1.0 intents. Canonical direct dispatch and the explicit 2.1/2.2 `postMessage` compatibility shape converge into the same validator and service map. The adapter owns only navigation/history, popup mounting, URL policy, protected mapping writes and diagnostics; it rejects invalid versions/kinds/page ids, duplicate delivery, untrusted message origin, stale declared source pages and denied writes. `TagBridge.writeTag` delegates to the existing endpoint with same-origin credentials and CSRF; TF100Web does not re-evaluate expressions, conditions, commands or object actions.
+34. TF100Web `1fc3ac4` implements `DEC-0046`. A navigation generation plus AbortController owns fetch, DOM/runtime replacement, popup closure, dimensions, history and loading teardown. Superseded work returns without mutation; timeout, HTTP/session and offline failures preserve a recoverable host. Existing page runtime listeners are disposed before replacement. Snapshot requests are generation-bound and abort on navigation. A forced hydration requested during an in-flight poll is coalesced into a mandatory awaited follow-up cycle that recollects dependencies from the accepted DOM and notifies the runtime even when values are unchanged or the dependency set is empty.
 
 ## 4. Element+ Style Transport Contract
 
