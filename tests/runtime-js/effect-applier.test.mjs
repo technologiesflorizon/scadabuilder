@@ -15,11 +15,13 @@ function makeFakeOverlayNode() {
 function makeFakeElement() {
   const style = {};
   const children = [];
+  const contentLayer = { style: {} };
   return {
     style,
     classList: { length: 0, add() {}, remove() {}, contains: () => false },
     hidden: false,
     _textTarget: { textContent: '' },
+    _contentLayer: contentLayer,
     _children: children,
     appendChild(node) { children.push(node); return node; },
     removeChild(node) {
@@ -31,6 +33,7 @@ function makeFakeElement() {
       if (selector === '[data-scada-color-filter-overlay]') {
         return children.find((c) => c.dataset && c.dataset['scada-color-filter-overlay']) || null;
       }
+      if (selector.startsWith('button, svg')) return this._contentLayer;
       return null;
     },
   };
@@ -79,6 +82,9 @@ test('apply() creates a translucent overlay for colorFilterColor', () => {
   assert.ok(overlay, 'expected an overlay element to be created');
   assert.equal(overlay.style.backgroundColor, '#E53935');
   assert.equal(overlay.style.opacity, 0.35);
+  assert.equal(overlay.style.zIndex, '0');
+  assert.equal(element._contentLayer.style.zIndex, '1');
+  assert.equal(element.style.isolation, 'isolate');
 });
 
 test('apply() reuses the same overlay node across repeated calls', () => {
@@ -120,4 +126,33 @@ test('apply() removes the overlay when colorFilterColor is absent', () => {
   window.ScadaRuntime.EffectApplier.apply(element, {});
 
   assert.equal(element.querySelector('[data-scada-color-filter-overlay]'), null);
+});
+
+test('apply() restores fallback opacity and border before a confirmed state', () => {
+  const window = loadRuntime(['tag-bridge.js', 'effect-applier.js']);
+  window.document = { createElement: () => makeFakeOverlayNode() };
+
+  const element = makeFakeElement();
+  element.style.opacity = '1';
+  element.style.borderColor = '#49A9B8';
+  element.style.borderWidth = '1px';
+
+  window.ScadaRuntime.EffectApplier.apply(element, {
+    opacity: 0.4,
+    borderColor: '#000000',
+    borderWidth: 2,
+  });
+  assert.equal(element.style.opacity, 0.4);
+  assert.equal(element.style.borderColor, '#000000');
+
+  window.ScadaRuntime.EffectApplier.apply(element, {
+    colorFilterColor: '#12B729',
+    colorFilterOpacity: 0.7,
+    textContent: 'ACTIF',
+  });
+
+  assert.equal(element.style.opacity, '1');
+  assert.equal(element.style.borderColor, '#49A9B8');
+  assert.equal(element.style.borderWidth, '1px');
+  assert.equal(element._textTarget.textContent, 'ACTIF');
 });

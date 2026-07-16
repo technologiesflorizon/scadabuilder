@@ -26,10 +26,93 @@
     });
   }
 
+  var _baselines = new WeakMap();
+  var _previousEffects = new WeakMap();
+
+  function _styleValue(style, name) {
+    return style && style[name] != null ? style[name] : '';
+  }
+
+  function _baselineFor(element) {
+    var baseline = _baselines.get(element);
+    if (baseline) {
+      return baseline;
+    }
+    var textTarget = element.querySelector('[data-scada-text]');
+    baseline = {
+      backgroundColor: _styleValue(element.style, 'backgroundColor'),
+      borderColor: _styleValue(element.style, 'borderColor'),
+      borderWidth: _styleValue(element.style, 'borderWidth'),
+      color: _styleValue(element.style, 'color'),
+      opacity: _styleValue(element.style, 'opacity'),
+      transform: _styleValue(element.style, 'transform'),
+      hidden: !!element.hidden,
+      textHidden: textTarget ? !!textTarget.hidden : false
+    };
+    _baselines.set(element, baseline);
+    return baseline;
+  }
+
+  function _removeAnimationClasses(element) {
+    var classList = element.classList;
+    var animClasses = [];
+    for (var i = 0; i < classList.length; i++) {
+      if (classList[i].indexOf('scada-anim-') === 0) {
+        animClasses.push(classList[i]);
+      }
+    }
+    for (var j = 0; j < animClasses.length; j++) {
+      classList.remove(animClasses[j]);
+    }
+  }
+
+  // State effects are transitions, not cumulative style patches. Restore only
+  // the properties controlled by the previous effect before applying the next.
+  function _restorePreviousEffect(element) {
+    var previous = _previousEffects.get(element);
+    if (!previous) {
+      return;
+    }
+    var baseline = _baselineFor(element);
+    if (previous.backgroundColor != null) element.style.backgroundColor = baseline.backgroundColor;
+    if (previous.borderColor != null) element.style.borderColor = baseline.borderColor;
+    if (previous.borderWidth != null) element.style.borderWidth = baseline.borderWidth;
+    if (previous.textColor != null) element.style.color = baseline.color;
+    if (previous.opacity != null) element.style.opacity = baseline.opacity;
+    if (previous.rotation != null) element.style.transform = baseline.transform;
+    if (previous.elementVisible != null) element.hidden = baseline.hidden;
+    if (previous.textVisible != null) {
+      var textTarget = element.querySelector('[data-scada-text]');
+      if (textTarget) textTarget.hidden = baseline.textHidden;
+    }
+    if (previous.animation !== null && previous.animation !== undefined) {
+      _removeAnimationClasses(element);
+    }
+  }
+
+  function _placeOverlayBehindContent(element, overlay) {
+    overlay.style.zIndex = '0';
+    overlay.style.borderRadius = 'inherit';
+    element.style.isolation = 'isolate';
+    if (!element.style.position) {
+      element.style.position = 'relative';
+    }
+    var contentLayer = element.querySelector(
+      'button, svg, canvas, img, table, input, textarea, select, [data-scada-text]'
+    );
+    if (contentLayer && contentLayer.style) {
+      if (!contentLayer.style.position) contentLayer.style.position = 'relative';
+      contentLayer.style.zIndex = '1';
+    }
+  }
+
   function apply(element, effect) {
     if (!element || !effect) {
       return;
     }
+
+    _baselineFor(element);
+    _restorePreviousEffect(element);
 
     // ── background color ────────────────────────────────────────────────
     if (effect.backgroundColor != null) {
@@ -85,16 +168,7 @@
     // ── animation ────────────────────────────────────────────────────────
     if (effect.animation !== null && effect.animation !== undefined) {
       // Remove all scada-anim-* classes
-      var classList = element.classList;
-      var animClasses = [];
-      for (var i = 0; i < classList.length; i++) {
-        if (classList[i].indexOf('scada-anim-') === 0) {
-          animClasses.push(classList[i]);
-        }
-      }
-      for (var j = 0; j < animClasses.length; j++) {
-        classList.remove(animClasses[j]);
-      }
+      _removeAnimationClasses(element);
       // If a non-null/non-None animation name was provided, add the class
       if (effect.animation !== 'None' && effect.animation !== 'none') {
         classList.add('scada-anim-' + effect.animation);
@@ -113,6 +187,7 @@
         overlay.style.pointerEvents = 'none';
         element.appendChild(overlay);
       }
+      _placeOverlayBehindContent(element, overlay);
       overlay.style.backgroundColor = effect.colorFilterColor;
       overlay.style.opacity = effect.colorFilterOpacity != null ? effect.colorFilterOpacity : 1;
       if (effect.colorFilterHalo) {
@@ -124,6 +199,8 @@
     } else if (existingOverlay) {
       element.removeChild(existingOverlay);
     }
+
+    _previousEffects.set(element, effect);
   }
 
   // ── public API ──────────────────────────────────────────────────────────

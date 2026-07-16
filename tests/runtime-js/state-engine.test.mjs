@@ -207,6 +207,73 @@ test('evaluate() updates a button semantic label and color filter from the confi
   assert.equal(children[0].style.opacity, 0.70);
 });
 
+test('evaluate() restores the button baseline after quality fallback resolves', () => {
+  const window = loadRuntime(['tag-bridge.js', 'expression-evaluator.js', 'effect-applier.js', 'state-engine.js']);
+  let confirmedValue = null;
+  window.tf100webScadaBuilder = { getTagValue: () => confirmedValue };
+
+  const makeClassList = () => ({
+    _classes: new Set(), length: 0,
+    add(value) { this._classes.add(value); },
+    remove(value) { this._classes.delete(value); },
+    contains(value) { return this._classes.has(value); },
+  });
+  window.document = {
+    createElement() {
+      return {
+        style: {}, dataset: {}, classList: makeClassList(),
+        setAttribute(name, value) {
+          if (name === 'data-scada-color-filter-overlay') this.dataset.scadaColorFilterOverlay = value;
+        },
+      };
+    },
+  };
+
+  const config = {
+    qualityFallback: { opacity: 0.4, borderColor: '#000000', borderWidth: 2 },
+    defaultEffect: {},
+    states: [{
+      id: 'active', enabled: true,
+      expression: { ast: { type: 'binary', op: 'Equal', left: { type: 'tagRef', tagName: 'tf100.mapping.614' }, right: { type: 'literalBool', value: true } } },
+      effect: { colorFilterColor: '#12B729', colorFilterOpacity: 0.70, textContent: 'ACTIF' },
+    }],
+  };
+
+  const label = { textContent: 'ON/OFF', hidden: false };
+  const contentLayer = { style: {} };
+  const children = [];
+  const element = {
+    id: 'defrost-toggle-fallback',
+    hidden: false,
+    style: { opacity: '1', borderColor: '#49A9B8', borderWidth: '1px' },
+    classList: makeClassList(),
+    getAttribute(name) { return name === 'data-scada-state-config' ? JSON.stringify(config) : null; },
+    querySelector(selector) {
+      if (selector === '[data-scada-text]') return label;
+      if (selector === '[data-scada-color-filter-overlay]') return children.find((node) => node.dataset.scadaColorFilterOverlay) || null;
+      if (selector === '.scada-error-badge') return null;
+      if (selector.startsWith('button, svg')) return contentLayer;
+      return null;
+    },
+    querySelectorAll(selector) { return selector === '[data-scada-text]' ? [label] : []; },
+    appendChild(node) { children.push(node); return node; },
+    removeChild(node) { children.splice(children.indexOf(node), 1); },
+  };
+
+  window.ScadaRuntime.StateEngine.evaluate(element, {});
+  assert.equal(element.style.opacity, 0.4);
+  assert.equal(element.style.borderColor, '#000000');
+
+  confirmedValue = true;
+  window.ScadaRuntime.StateEngine.evaluate(element, {});
+  assert.equal(element.style.opacity, '1');
+  assert.equal(element.style.borderColor, '#49A9B8');
+  assert.equal(element.style.borderWidth, '1px');
+  assert.equal(label.textContent, 'ACTIF');
+  assert.equal(children[0].style.zIndex, '0');
+  assert.equal(contentLayer.style.zIndex, '1');
+});
+
 test('initPage only resets pause/cache state for elements within its own container, not the whole page', () => {
   const window = loadRuntime(['tag-bridge.js', 'expression-evaluator.js', 'effect-applier.js', 'state-engine.js']);
 
