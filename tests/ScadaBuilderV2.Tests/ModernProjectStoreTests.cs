@@ -1,6 +1,7 @@
 using ScadaBuilderV2.Application.Conversion;
 using ScadaBuilderV2.Application.Selection;
 using ScadaBuilderV2.Application.Pages;
+using ScadaBuilderV2.Application.Tables;
 using ScadaBuilderV2.Domain.Editor;
 using ScadaBuilderV2.Domain.ElementEvents.Command;
 using ScadaBuilderV2.Domain.ElementEvents.State;
@@ -39,6 +40,7 @@ public sealed class ModernProjectStoreTests
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
         var store = new ModernProjectStore();
+        var normalized = TableNumericBindingAuthoringPolicy.Normalize(null, "tf100.mapping.161", isReadOnly: false);
         var table = ScadaTableDefinition.CreateDefault(3, 4) with
         {
             Columns = [new(110), new(80), new(95), new(125)],
@@ -47,7 +49,9 @@ public sealed class ModernProjectStoreTests
             [
                 new(0, 0, ColumnSpan: 4, Content: new(Text: "Production"), Style: new(Background: "#123456")),
                 new(1, 0, Content: new(ScadaTableCellContentKind.InputText, "Lot 12")),
-                new(1, 1), new(1, 2), new(1, 3),
+                new(1, 1), new(1, 2), new(1, 3,
+                    Content: new(ScadaTableCellContentKind.InputNumeric),
+                    ValueBindings: new(normalized.ReadTagId, normalized.WriteTagId)),
                 new(2, 0), new(2, 1), new(2, 2,
                     Content: new(ScadaTableCellContentKind.InputNumeric, NumericValue: 17.5, DisplayFormat: "##.#"),
                     ValueBindings: new("tf100.mapping.159", "tf100.mapping.160")), new(2, 3)
@@ -74,6 +78,8 @@ public sealed class ModernProjectStoreTests
             Assert.AreEqual("##.#", loadedTable.EffectiveCells.Single(cell => cell.Row == 2 && cell.Column == 2).EffectiveContent.DisplayFormat);
             Assert.AreEqual("tf100.mapping.159", loadedTable.EffectiveCells.Single(cell => cell.Row == 2 && cell.Column == 2).ValueBindings?.ReadTagId);
             Assert.AreEqual("tf100.mapping.160", loadedTable.EffectiveCells.Single(cell => cell.Row == 2 && cell.Column == 2).ValueBindings?.WriteTagId);
+            Assert.AreEqual("tf100.mapping.161", loadedTable.EffectiveCells.Single(cell => cell.Row == 1 && cell.Column == 3).ValueBindings?.ReadTagId);
+            Assert.AreEqual("tf100.mapping.161", loadedTable.EffectiveCells.Single(cell => cell.Row == 1 && cell.Column == 3).ValueBindings?.WriteTagId);
             Assert.AreEqual("#123456", loadedTable.EffectiveCells.Single(cell => cell.Row == 0).Style?.Background);
         }
         finally

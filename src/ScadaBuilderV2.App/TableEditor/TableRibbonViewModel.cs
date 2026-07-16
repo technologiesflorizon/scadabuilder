@@ -51,12 +51,18 @@ internal sealed class TableRibbonViewModel
         {
             var enabled = numericInspection?.CanEditProperties == true;
             var reason = numericInspection?.Diagnostic ?? "Selectionnez une cellule InputNumeric unique.";
+            var address = numericInspection?.CellAddress ?? "—";
+            var tableId = numericInspection?.TableElementId ?? session.TableElementId;
             var numericGroup = new RibbonGroupDefinition(
                 "Input numerique",
                 [
-                    Command("table.numeric.properties", "Proprietes", "Icon.Field.Numeric", "Valeur initiale, contraintes et bindings", enabled, reason),
-                    Command("table.binding.read", "Lire", "Icon.Field.Numeric", $"Lire valeur: {numericInspection?.ReadBindingSummary ?? "Aucun"}", enabled, reason),
-                    Command("table.binding.write", "Ecrire", "Icon.Field.Numeric", $"Ecrire valeur: {numericInspection?.WriteBindingSummary ?? "Aucun"}", enabled, reason)
+                    Command(
+                        "table.numeric.properties",
+                        $"Configurer {address}",
+                        "Icon.Field.Numeric",
+                        $"Tableau: {tableId} | Cellule: {address} | Lire: {numericInspection?.ReadBindingSummary ?? "Aucun"} | Ecrire: {numericInspection?.WriteBindingSummary ?? "Aucun"}",
+                        enabled,
+                        reason)
                 ]);
             var index = Math.Min(groups.Count, Math.Max(0, groups.FindIndex(group => group.Label == "Contenu") + 1));
             groups.Insert(index, numericGroup);

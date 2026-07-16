@@ -35,7 +35,11 @@ public sealed class Ft100SceneExporterTests
                     ValueBindings = new ScadaTableCellValueBindings("tag.read", "tag.write")
                 }
                 : cell.Row == 2 && cell.Column == 2
-                    ? cell with { Content = new ScadaTableCellContent(ScadaTableCellContentKind.InputNumeric, NumericValue: 5) }
+                    ? cell with
+                    {
+                        Content = new ScadaTableCellContent(ScadaTableCellContentKind.InputNumeric, NumericValue: 5),
+                        ValueBindings = new ScadaTableCellValueBindings("tag.write", "tag.write")
+                    }
                     : cell).ToArray()
         };
         definition = ScadaTableOperations.Merge(definition, new ScadaTableRange(1, 0, 1, 1));
@@ -71,8 +75,8 @@ public sealed class Ft100SceneExporterTests
             Assert.AreEqual(1, objects.GetArrayLength(), "A bound cell must not become a synthetic manifest object.");
             var tableObject = objects[0];
             var bindings = tableObject.GetProperty("TableCellBindings");
-            Assert.AreEqual(1, bindings.GetArrayLength());
-            var binding = bindings[0];
+            Assert.AreEqual(2, bindings.GetArrayLength());
+            var binding = bindings.EnumerateArray().Single(item => item.GetProperty("Row").GetInt32() == 1);
             Assert.AreEqual(1, binding.GetProperty("Row").GetInt32());
             Assert.AreEqual(0, binding.GetProperty("Column").GetInt32());
             Assert.AreEqual("table_001__cell-1-0", binding.GetProperty("TargetId").GetString());
@@ -82,6 +86,9 @@ public sealed class Ft100SceneExporterTests
             Assert.AreEqual(0.1, binding.GetProperty("Data").GetProperty("Step").GetDouble(), 0.0001);
             Assert.AreEqual("tag.read", binding.GetProperty("ValueBindings").GetProperty("ReadTagId").GetString());
             Assert.AreEqual("tag.write", binding.GetProperty("ValueBindings").GetProperty("WriteTagId").GetString());
+            var defaultedBinding = bindings.EnumerateArray().Single(item => item.GetProperty("Row").GetInt32() == 2);
+            Assert.AreEqual("tag.write", defaultedBinding.GetProperty("ValueBindings").GetProperty("ReadTagId").GetString());
+            Assert.AreEqual("tag.write", defaultedBinding.GetProperty("ValueBindings").GetProperty("WriteTagId").GetString());
             Assert.AreEqual(JsonValueKind.Null, tableObject.GetProperty("ValueBindings").GetProperty("ReadTagId").ValueKind);
 
             var html = await File.ReadAllTextAsync(result.PageResults.Single(item =>
@@ -91,6 +98,7 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "colspan=\"2\"");
             Assert.IsFalse(html.Contains("tag.read", StringComparison.Ordinal));
             Assert.IsFalse(html.Contains("tag.write", StringComparison.Ordinal));
+            Assert.IsFalse(html.Contains("CellAddress", StringComparison.Ordinal));
         }
         finally
         {

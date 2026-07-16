@@ -74,13 +74,21 @@ public sealed class TablePropertiesInspectorTests
             new("disabled", "Inactive", Writeable: true, Enabled: false)
         ]);
 
-        var single = TableCellNumericInputInspector.Inspect(element, new ScadaTableRange(0, 0, 0, 0), catalog);
+        var single = TableCellNumericInputInspector.Inspect(element, element.Id, new ScadaTableRange(0, 0, 0, 0), catalog);
         Assert.IsTrue(single.CanEditProperties);
+        Assert.AreEqual("A1", single.CellAddress);
+        Assert.AreEqual(element.Id, single.TableElementId);
         Assert.AreEqual(2, single.ReadTags.Count);
         Assert.AreEqual(1, single.WriteTags.Count);
 
-        var range = TableCellNumericInputInspector.Inspect(element, new ScadaTableRange(0, 0, 0, 1), catalog);
+        var range = TableCellNumericInputInspector.Inspect(element, element.Id, new ScadaTableRange(0, 0, 0, 1), catalog);
         Assert.IsFalse(range.CanEditProperties);
         StringAssert.Contains(range.Diagnostic!, "une seule cellule ancre");
+
+        var stale = TableCellNumericInputInspector.Inspect(element, "another-table", new ScadaTableRange(0, 0, 0, 0), catalog);
+        Assert.IsFalse(stale.CanEditProperties);
+        Assert.AreEqual(element.Id, stale.TableElementId);
+        Assert.IsNull(stale.CellAddress);
+        StringAssert.Contains(stale.Diagnostic!, "tableau actif");
     }
 }

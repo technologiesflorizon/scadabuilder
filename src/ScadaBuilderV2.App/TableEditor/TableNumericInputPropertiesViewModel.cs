@@ -9,7 +9,7 @@ namespace ScadaBuilderV2.App.TableEditor;
 internal sealed record TableNumericTagOption(string Id, string Label, ScadaTagDefinition Tag);
 
 /// <summary>Collects and validates numeric table-cell property and binding intentions.</summary>
-/// <remarks>Decisions: DEC-0042. Contracts: docs/superpowers/specs/2026-07-15-table-cell-numeric-input-tf100web-design.md. Tests: tests/ScadaBuilderV2.Tests/TableUiArchitectureTests.cs.</remarks>
+/// <remarks>Decisions: DEC-0042, DEC-0043. Contracts: docs/superpowers/specs/2026-07-15-table-numeric-cell-authoring-correction-design.md. Tests: tests/ScadaBuilderV2.Tests/TableUiArchitectureTests.cs.</remarks>
 internal sealed class TableNumericInputPropertiesViewModel
 {
     private readonly TableCellNumericInputInspection inspection;
@@ -25,8 +25,13 @@ internal sealed class TableNumericInputPropertiesViewModel
         Step = Format(content.Step);
         DisplayFormat = content.DisplayFormat ?? string.Empty;
         IsReadOnly = content.IsReadOnly;
-        SelectedReadTagId = inspection.ValueBindings?.ReadTagId;
-        SelectedWriteTagId = inspection.ValueBindings?.WriteTagId;
+        var bindings = TableNumericBindingAuthoringPolicy.Normalize(
+            inspection.ValueBindings?.ReadTagId,
+            inspection.ValueBindings?.WriteTagId,
+            content.IsReadOnly);
+        SelectedReadTagId = bindings.ReadTagId;
+        SelectedWriteTagId = bindings.WriteTagId;
+        ReadDefaultedFromWrite = bindings.ReadDefaultedFromWrite;
         ReadTags = CreateOptions(inspection.ReadTags);
         WriteTags = CreateOptions(inspection.WriteTags);
     }
@@ -38,8 +43,15 @@ internal sealed class TableNumericInputPropertiesViewModel
     public string Step { get; private set; }
     public string DisplayFormat { get; private set; }
     public bool IsReadOnly { get; private set; }
+    public string TableElementId => inspection.TableElementId ?? "—";
+    public string CellAddress => inspection.CellAddress ?? "—";
+    public string TargetSummary => $"Tableau : {TableElementId}  |  Cellule : {CellAddress}";
     public string? SelectedReadTagId { get; private set; }
     public string? SelectedWriteTagId { get; private set; }
+    public bool ReadDefaultedFromWrite { get; private set; }
+    public string ReadDefaultNotice => ReadDefaultedFromWrite
+        ? "Lecture automatiquement alignee sur Ecrire."
+        : string.Empty;
     public string ReadBindingSummary => inspection.ReadBindingSummary;
     public string WriteBindingSummary => inspection.WriteBindingSummary;
     public IReadOnlyList<TableNumericTagOption> ReadTags { get; }
@@ -63,8 +75,16 @@ internal sealed class TableNumericInputPropertiesViewModel
         Step = step;
         DisplayFormat = displayFormat;
         IsReadOnly = isReadOnly;
-        SelectedReadTagId = Normalize(readTagId);
-        SelectedWriteTagId = Normalize(writeTagId);
+        UpdateBindingDraft(readTagId, writeTagId, isReadOnly);
+    }
+
+    public TableNumericBindingDraft UpdateBindingDraft(string? readTagId, string? writeTagId, bool isReadOnly)
+    {
+        var bindings = TableNumericBindingAuthoringPolicy.Normalize(readTagId, writeTagId, isReadOnly);
+        SelectedReadTagId = bindings.ReadTagId;
+        SelectedWriteTagId = bindings.WriteTagId;
+        ReadDefaultedFromWrite = bindings.ReadDefaultedFromWrite;
+        return bindings;
     }
 
     public bool TryBuildRequests(out IReadOnlyList<TableEditRequest> requests, out string? error)

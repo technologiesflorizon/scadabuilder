@@ -39,6 +39,15 @@ internal sealed class TableEditorController
         Selection = ScadaTableRange.Normalize(row, column, endRow, endColumn);
     }
 
+    /// <summary>Clears stale cell coordinates when the active Table differs from their owner.</summary>
+    public void SynchronizeSelectionOwner(string? activeElementId)
+    {
+        if (string.Equals(ElementId, activeElementId, StringComparison.Ordinal)) return;
+        ElementId = null;
+        Selection = new(0, 0, 0, 0);
+        FormatScopeKind = ScadaTableFormatScopeKind.Cells;
+    }
+
     public IReadOnlyList<EditorCommandDescriptor> BuildContextMenu(ScadaElement element)
     {
         return element.Table is null ? [] : TableContextMenuProvider.Build(element.Table, Selection, clipboard is not null || Clipboard.ContainsText());
@@ -68,9 +77,7 @@ internal sealed class TableEditorController
             case "table.column.delete": return Apply(element, new(TableEditKind.DeleteColumn, Column: Selection.StartColumn));
             case "table.format": return Format(element);
             case "table.content.properties": return Content(element);
-            case "table.numeric.properties":
-            case "table.binding.read":
-            case "table.binding.write": return OpenNumericInputProperties(element);
+            case "table.numeric.properties": return OpenNumericInputProperties(element);
             case "table.borders": return Borders(element);
             case "table.headers": return Headers(element);
             case "table.equalize": return Equalize(element);
@@ -94,7 +101,7 @@ internal sealed class TableEditorController
         Apply(element, new(TableEditKind.ConvertContentKind, Selection, ContentKind: kind));
 
     public TableCellNumericInputInspection InspectNumericInput(ScadaElement element) =>
-        properties.LoadNumericInput(element, Selection, tagCatalogProvider());
+        properties.LoadNumericInput(element, ElementId, Selection, tagCatalogProvider());
 
     public bool SetCellBinding(ScadaElement element, TableCellBindingKind kind, string tagId) =>
         Apply(element, new(

@@ -23,12 +23,11 @@ public partial class MainWindow
         switch (request)
         {
             case TableSelectionRequest selection:
-                _tableEditorController.Select(selection.ElementId, selection.Row, selection.Column, selection.EndRow, selection.EndColumn);
-                _tableEditorController.FormatScopeKind = selection.Scope switch { "table" => ScadaTableFormatScopeKind.Table, "row" => ScadaTableFormatScopeKind.Rows, "column" => ScadaTableFormatScopeKind.Columns, _ => ScadaTableFormatScopeKind.Cells };
-                _tableAuthoringSession.SelectTable(selection.ElementId);
-                _tableAuthoringSession.SetSelection(_tableEditorController.Selection, _tableEditorController.SelectionContainsMergedCells(element));
-                SelectModernElement(selection.ElementId); RefreshTablePropertiesPanel();
-                RefreshTableRibbonSurface();
+                ApplyTableSelection(element, selection.Row, selection.Column, selection.EndRow, selection.EndColumn, selection.Scope);
+                break;
+            case TableOpenNumericPropertiesRequest openNumeric:
+                ApplyTableSelection(element, openNumeric.Row, openNumeric.Column, openNumeric.Row, openNumeric.Column, "cells");
+                _tableEditorController.OpenNumericInputProperties(element);
                 break;
             case TableCellEditRequest edit:
                 var kind = Enum.TryParse<ScadaTableCellContentKind>(edit.ContentKind, out var parsed) ? parsed : ScadaTableCellContentKind.Text;
@@ -48,6 +47,24 @@ public partial class MainWindow
                 break;
         }
         return true;
+    }
+
+    // Applies one typed WebView selection so every Table surface observes the same owner and coordinates.
+    private void ApplyTableSelection(ScadaElement element, int row, int column, int endRow, int endColumn, string? scope)
+    {
+        _tableEditorController.Select(element.Id, row, column, endRow, endColumn);
+        _tableEditorController.FormatScopeKind = scope switch
+        {
+            "table" => ScadaTableFormatScopeKind.Table,
+            "row" => ScadaTableFormatScopeKind.Rows,
+            "column" => ScadaTableFormatScopeKind.Columns,
+            _ => ScadaTableFormatScopeKind.Cells
+        };
+        _tableAuthoringSession.SelectTable(element.Id);
+        _tableAuthoringSession.SetSelection(_tableEditorController.Selection, _tableEditorController.SelectionContainsMergedCells(element));
+        SelectModernElement(element.Id);
+        RefreshTablePropertiesPanel();
+        RefreshTableRibbonSurface();
     }
     private void BeginInsertToolPlacement(InsertToolDescriptor tool)
     {
@@ -83,6 +100,7 @@ public partial class MainWindow
     {
         ActiveRibbonGroups.Clear();
         var table = _selectedSceneObject?.Kind == ScadaElementKind.Table ? _selectedSceneObject : null;
+        _tableEditorController.SynchronizeSelectionOwner(table?.Id);
         _tableRibbonViewModel.UpdateNumericInspection(table is null ? null : _tableEditorController.InspectNumericInput(table));
         foreach (var group in _tableRibbonViewModel.Groups)
             ActiveRibbonGroups.Add(CreateRibbonGroupViewModel(group));
@@ -181,21 +199,25 @@ public partial class MainWindow
             _ = SyncTableEditorStateInWebViewAsync();
         TablePropertiesPanel.Visibility = element is null ? System.Windows.Visibility.Collapsed : System.Windows.Visibility.Visible;
         if (element?.Table is null) return;
+        _tableEditorController.SynchronizeSelectionOwner(element.Id);
         var range = _tableEditorController.Selection;
         var containsMergedCells = _tableEditorController.SelectionContainsMergedCells(element);
         _tableAuthoringSession.SetSelection(range, containsMergedCells);
-        TableSelectionSummaryText.Text = range.RowCount == 1 && range.ColumnCount == 1
-            ? $"Cellule {range.StartRow + 1},{range.StartColumn + 1}"
-            : $"Plage {range.StartRow + 1},{range.StartColumn + 1}:{range.EndRow + 1},{range.EndColumn + 1}";
         TableDimensionSummaryText.Text = $"{element.Table.EffectiveRows.Count} rangees x {element.Table.EffectiveColumns.Count} colonnes";
         TableFormatStateSummaryText.Text = _tableEditorController.InspectFormatState(element);
         var numericInput = _tableEditorController.InspectNumericInput(element);
+        TableSelectionSummaryText.Text = numericInput.CellAddress is { } address
+            ? $"Tableau : {numericInput.TableElementId}  |  Cellule : {address}"
+            : $"Tableau : {numericInput.TableElementId ?? element.Id}  |  {numericInput.Diagnostic ?? "Selectionnez une cellule."}";
         TableNumericInputStateText.Text = numericInput.IsNumericInput
             ? "Input numerique"
             : numericInput.Diagnostic ?? "Cellule non numerique";
         TableNumericReadBindingText.Text = $"Lire valeur : {numericInput.ReadBindingSummary}";
         TableNumericWriteBindingText.Text = $"Ecrire valeur : {numericInput.WriteBindingSummary}";
         TableNumericInputPropertiesButton.IsEnabled = numericInput.CanEditProperties;
+        TableNumericInputPropertiesButton.Content = numericInput.CellAddress is { } numericAddress
+            ? $"Configurer {numericAddress}..."
+            : "Configurer la cellule...";
         TableMergeToggleButton.Content = containsMergedCells ? "Défusionner les cellules" : "Fusionner les cellules";
         TableMergeToggleButton.IsEnabled = containsMergedCells || range.RowCount > 1 || range.ColumnCount > 1;
         if (_activeRibbonKey == "Insert" && _activeInsertFamilyId == "data" && !_tableAuthoringSession.IsSurfaceOpen)

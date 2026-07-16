@@ -10,6 +10,7 @@ public sealed class TableWebViewMessageAdapterTests
         StringAssert.Contains(source, "TryParse(string json, out ITableWebViewRequest? request, out string? error)");
         StringAssert.Contains(source, "tableSelection");
         StringAssert.Contains(source, "tableCellEdit");
+        StringAssert.Contains(source, "tableOpenNumericProperties");
         StringAssert.Contains(source, "tableTrackResize");
         StringAssert.Contains(source, "tableAutoFitMeasured");
         StringAssert.Contains(source, "tableInteractionModeChanged");

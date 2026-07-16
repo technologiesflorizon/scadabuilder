@@ -69,7 +69,12 @@ public sealed class TableUiArchitectureTests
         StringAssert.Contains(ribbonViewModel, "TableRibbonStateProvider.Create(session)");
         StringAssert.Contains(ribbonViewModel, "Input numerique");
         StringAssert.Contains(ribbonViewModel, "table.numeric.properties");
+        Assert.AreEqual(1, ribbonViewModel.Split("\"table.numeric.properties\"", StringSplitOptions.None).Length - 1);
+        StringAssert.Contains(ribbonViewModel, "$\"Configurer {address}\"");
+        Assert.IsFalse(ribbonViewModel.Contains("table.binding.read", StringComparison.Ordinal));
+        Assert.IsFalse(ribbonViewModel.Contains("table.binding.write", StringComparison.Ordinal));
         StringAssert.Contains(controller, "OpenNumericInputProperties");
+        StringAssert.Contains(controller, "SynchronizeSelectionOwner");
         StringAssert.Contains(controller, "SetCellBinding");
         StringAssert.Contains(controller, "RemoveCellBinding");
         StringAssert.Contains(controller, "TableBindingSafetyPolicy.Evaluate");
@@ -113,8 +118,12 @@ public sealed class TableUiArchitectureTests
         var viewModel = ReadProjectFile("src", "ScadaBuilderV2.App", "TableEditor", "TableNumericInputPropertiesViewModel.cs");
         var dialog = ReadProjectFile("src", "ScadaBuilderV2.App", "TableEditor", "TableNumericInputPropertiesDialog.xaml.cs");
         var xaml = ReadProjectFile("src", "ScadaBuilderV2.App", "TableEditor", "TableNumericInputPropertiesDialog.xaml");
+        var integration = ReadProjectFile("src", "ScadaBuilderV2.App", "MainWindow.TableIntegration.cs");
 
         StringAssert.Contains(viewModel, "TableCellNumericInputInspector.ValidateContent");
+        StringAssert.Contains(viewModel, "TableNumericBindingAuthoringPolicy.Normalize");
+        StringAssert.Contains(viewModel, "TargetSummary");
+        Assert.IsTrue(viewModel.IndexOf("TableCellBindingKind.Read", StringComparison.Ordinal) < viewModel.IndexOf("TableCellBindingKind.Write", StringComparison.Ordinal));
         StringAssert.Contains(viewModel, "TableEditKind.SetNumericInputProperties");
         StringAssert.Contains(viewModel, "TableEditKind.SetCellValueBinding");
         StringAssert.Contains(viewModel, "TableEditKind.RemoveCellValueBinding");
@@ -129,6 +138,11 @@ public sealed class TableUiArchitectureTests
         StringAssert.Contains(xaml, "Format d'affichage");
         StringAssert.Contains(xaml, "Ajouter / Modifier");
         StringAssert.Contains(xaml, "Supprimer");
+        StringAssert.Contains(xaml, "TargetSummaryText");
+        StringAssert.Contains(xaml, "ReadDefaultNoticeText");
+        Assert.IsFalse(xaml.Contains("TabControl", StringComparison.Ordinal));
+        StringAssert.Contains(integration, "case TableOpenNumericPropertiesRequest");
+        StringAssert.Contains(integration, "ApplyTableSelection(element, openNumeric.Row, openNumeric.Column");
     }
 
     private static IEnumerable<ScadaBuilderV2.Application.Commands.EditorCommandDescriptor> Flatten(

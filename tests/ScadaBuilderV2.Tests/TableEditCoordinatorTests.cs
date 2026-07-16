@@ -225,10 +225,11 @@ public sealed class TableEditCoordinatorTests
     {
         var element = NumericTableElement();
         element = element with { Table = ScadaTableOperations.Merge(element.Table!, new ScadaTableRange(0, 0, 0, 1)) };
-        var inspection = TableCellNumericInputInspector.Inspect(element, new ScadaTableRange(0, 1, 0, 1), Catalog());
+        var inspection = TableCellNumericInputInspector.Inspect(element, element.Id, new ScadaTableRange(0, 1, 0, 1), Catalog());
         Assert.IsTrue(inspection.HasSingleAnchor);
         Assert.AreEqual(0, inspection.AnchorRow);
         Assert.AreEqual(0, inspection.AnchorColumn);
+        Assert.AreEqual("A1", inspection.CellAddress);
         Assert.AreEqual(2, inspection.ReadTags.Count);
         Assert.AreEqual(1, inspection.WriteTags.Count);
     }

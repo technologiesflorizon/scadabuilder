@@ -1364,7 +1364,7 @@
                                         <TabItem Header="Tableau">
                                             <StackPanel x:Name="TablePropertiesPanel" Margin="8" Visibility="Collapsed">
                                                 <TextBlock Text="Selection Tableau" FontWeight="SemiBold"/>
-                                                <TextBlock x:Name="TableSelectionSummaryText" Text="Cellule 1,1" Margin="0,4,0,2"/>
+                                                <TextBlock x:Name="TableSelectionSummaryText" Text="Selectionnez une cellule" Margin="0,4,0,2" TextWrapping="Wrap"/>
                                                 <TextBlock x:Name="TableDimensionSummaryText" Text="6 rangees x 8 colonnes" Foreground="{StaticResource MutedBrush}" Margin="0,0,0,10"/>
                                                 <TextBlock x:Name="TableFormatStateSummaryText" Text="Format de la portée : hérité (aucune surcharge locale)" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,0,0,3"/>
                                                 <TextBlock Text="Hérité signifie que la portée utilise le format du niveau parent. Personnalisé indique une surcharge locale; Mixte indique plusieurs valeurs dans la sélection."
@@ -1386,7 +1386,7 @@
                                                         <TextBlock x:Name="TableNumericInputStateText" Text="Selectionnez une cellule InputNumeric" Margin="0,3,0,5" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap"/>
                                                         <TextBlock x:Name="TableNumericReadBindingText" Text="Lire valeur : Aucun" TextTrimming="CharacterEllipsis"/>
                                                         <TextBlock x:Name="TableNumericWriteBindingText" Text="Ecrire valeur : Aucun" Margin="0,2,0,7" TextTrimming="CharacterEllipsis"/>
-                                                        <Button x:Name="TableNumericInputPropertiesButton" Content="Proprietes input numerique..." Click="OnOpenTableNumericInputPropertiesClick" IsEnabled="False"/>
+                                                        <Button x:Name="TableNumericInputPropertiesButton" Content="Configurer la cellule..." Click="OnOpenTableNumericInputPropertiesClick" IsEnabled="False"/>
                                                     </StackPanel>
                                                 </Border>
                                                 <Button Content="Format de cellule..." Margin="0,0,0,6" Click="OnOpenCellFormatClick"/>

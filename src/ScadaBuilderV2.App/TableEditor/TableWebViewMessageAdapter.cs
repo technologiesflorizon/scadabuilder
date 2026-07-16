@@ -34,6 +34,7 @@ internal static class TableWebViewMessageAdapter
             {
                 "tableSelection" => ParseSelection(root, id),
                 "tableCellEdit" => ParseCellEdit(root, id),
+                "tableOpenNumericProperties" => new TableOpenNumericPropertiesRequest(id, Int(root, "row"), Int(root, "column")),
                 "tableTrackResize" => ParseTrack(root,id),
                 "tableAutoFitMeasured" => new TableAutoFitRequest(id, Numbers(root,"columnSizes"), Numbers(root,"rowSizes")),
                 "tableInteractionModeChanged" => ParseInteractionMode(root, id),

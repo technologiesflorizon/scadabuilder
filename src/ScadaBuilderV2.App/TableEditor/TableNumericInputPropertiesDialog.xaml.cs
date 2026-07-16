@@ -7,11 +7,14 @@ namespace ScadaBuilderV2.App.TableEditor;
 public partial class TableNumericInputPropertiesDialog : Window
 {
     private readonly TableNumericInputPropertiesViewModel viewModel;
+    private bool isSynchronizingBindings;
 
     internal TableNumericInputPropertiesDialog(TableNumericInputPropertiesViewModel viewModel)
     {
         InitializeComponent();
         this.viewModel = viewModel;
+        Title = $"Input numerique — {viewModel.CellAddress}";
+        TargetSummaryText.Text = viewModel.TargetSummary;
         InitialValueTextBox.Text = viewModel.InitialValue;
         PlaceholderTextBox.Text = viewModel.Placeholder;
         MinimumTextBox.Text = viewModel.Minimum;
@@ -21,10 +24,13 @@ public partial class TableNumericInputPropertiesDialog : Window
         ReadOnlyCheckBox.IsChecked = viewModel.IsReadOnly;
         ReadBindingSummaryText.Text = viewModel.ReadBindingSummary;
         WriteBindingSummaryText.Text = viewModel.WriteBindingSummary;
+        isSynchronizingBindings = true;
         ReadTagComboBox.ItemsSource = viewModel.ReadTags;
         WriteTagComboBox.ItemsSource = viewModel.WriteTags;
         ReadTagComboBox.SelectedValue = viewModel.SelectedReadTagId;
         WriteTagComboBox.SelectedValue = viewModel.SelectedWriteTagId;
+        isSynchronizingBindings = false;
+        ReadDefaultNoticeText.Text = viewModel.ReadDefaultNotice;
     }
 
     internal IReadOnlyList<TableEditRequest>? Result { get; private set; }
@@ -36,6 +42,19 @@ public partial class TableNumericInputPropertiesDialog : Window
     private void OnChooseWriteBinding(object sender, RoutedEventArgs e) => WriteTagComboBox.IsDropDownOpen = true;
 
     private void OnRemoveWriteBinding(object sender, RoutedEventArgs e) => WriteTagComboBox.SelectedItem = null;
+
+    private void OnWriteTagSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+    {
+        if (isSynchronizingBindings) return;
+        var bindings = viewModel.UpdateBindingDraft(
+            ReadTagComboBox.SelectedValue as string,
+            WriteTagComboBox.SelectedValue as string,
+            ReadOnlyCheckBox.IsChecked == true);
+        isSynchronizingBindings = true;
+        ReadTagComboBox.SelectedValue = bindings.ReadTagId;
+        isSynchronizingBindings = false;
+        ReadDefaultNoticeText.Text = viewModel.ReadDefaultNotice;
+    }
 
     private void OnSaveClick(object sender, RoutedEventArgs e)
     {

@@ -7145,7 +7145,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                     RefreshTableRibbonSurface();
                 }
                 break;
-            case "table.merge-toggle": case "table.merge": case "table.unmerge": case "table.format": case "table.row.height": case "table.column.width": case "table.properties": case "table.content.properties": case "table.numeric.properties": case "table.binding.read": case "table.binding.write": case "table.borders": case "table.headers": case "table.header.mark": case "table.header.unmark": case "table.equalize": case "table.distribute.rows": case "table.distribute.columns": case "table.format.reset": case "table.row.insert": case "table.column.insert": case "table.row.delete": case "table.column.delete":
+            case "table.merge-toggle": case "table.merge": case "table.unmerge": case "table.format": case "table.row.height": case "table.column.width": case "table.properties": case "table.content.properties": case "table.numeric.properties": case "table.borders": case "table.headers": case "table.header.mark": case "table.header.unmark": case "table.equalize": case "table.distribute.rows": case "table.distribute.columns": case "table.format.reset": case "table.row.insert": case "table.column.insert": case "table.row.delete": case "table.column.delete":
                 if (_selectedSceneObject is not null) _tableEditorController.Execute(commandId, _selectedSceneObject);
                 break;
             default:

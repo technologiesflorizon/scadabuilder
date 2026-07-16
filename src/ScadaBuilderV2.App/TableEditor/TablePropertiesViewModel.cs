@@ -32,10 +32,11 @@ internal sealed class TablePropertiesViewModel
 
     public TableCellNumericInputInspection LoadNumericInput(
         ScadaElement element,
+        string? selectionElementId,
         ScadaTableRange range,
         ScadaTagCatalog? tagCatalog)
     {
-        NumericInput = TableCellNumericInputInspector.Inspect(element, range, tagCatalog);
+        NumericInput = TableCellNumericInputInspector.Inspect(element, selectionElementId, range, tagCatalog);
         return NumericInput;
     }
 

@@ -9,8 +9,10 @@ public sealed record TableCellNumericInputInspection(
     bool HasSingleAnchor,
     bool IsNumericInput,
     bool CanEditProperties,
+    string? TableElementId,
     int? AnchorRow,
     int? AnchorColumn,
+    string? CellAddress,
     ScadaTableCellContent? Content,
     ScadaTableCellValueBindings? ValueBindings,
     string ReadBindingSummary,
@@ -20,12 +22,13 @@ public sealed record TableCellNumericInputInspection(
     string? Diagnostic = null);
 
 /// <summary>Builds the shared ribbon, properties-panel, and dialog state for one numeric table cell.</summary>
-/// <remarks>Decisions: DEC-0042. Contracts: docs/superpowers/specs/2026-07-15-table-cell-numeric-input-tf100web-design.md. Tests: tests/ScadaBuilderV2.Tests/TableEditCoordinatorTests.cs.</remarks>
+/// <remarks>Decisions: DEC-0042, DEC-0043. Contracts: docs/superpowers/specs/2026-07-15-table-numeric-cell-authoring-correction-design.md. Tests: tests/ScadaBuilderV2.Tests/TablePropertiesInspectorTests.cs.</remarks>
 public static partial class TableCellNumericInputInspector
 {
     /// <summary>Inspects an Element+ table selection and available active tags.</summary>
     public static TableCellNumericInputInspection Inspect(
         ScadaElement element,
+        string? selectionElementId,
         ScadaTableRange? range,
         ScadaTagCatalog? tagCatalog)
     {
@@ -37,7 +40,12 @@ public static partial class TableCellNumericInputInspector
 
         if (element.Kind != ScadaElementKind.Table || element.Table is null || range is null)
         {
-            return Empty(active, writable, "Selectionnez une cellule d'un tableau Element+.");
+            return Empty(active, writable, "Selectionnez une cellule d'un tableau Element+.", element.Kind == ScadaElementKind.Table ? element.Id : null);
+        }
+
+        if (!string.Equals(element.Id, selectionElementId, StringComparison.Ordinal))
+        {
+            return Empty(active, writable, "La selection de cellule n'appartient pas au tableau actif.", element.Id);
         }
 
         var anchors = element.Table.EffectiveCells
@@ -46,7 +54,7 @@ public static partial class TableCellNumericInputInspector
             .ToArray();
         if (anchors.Length != 1)
         {
-            return Empty(active, writable, "Selectionnez une seule cellule ancre pour modifier ses bindings.");
+            return Empty(active, writable, "Selectionnez une seule cellule ancre pour modifier ses bindings.", element.Id);
         }
 
         var anchor = anchors[0];
@@ -56,8 +64,10 @@ public static partial class TableCellNumericInputInspector
             true,
             content.Kind == ScadaTableCellContentKind.InputNumeric,
             content.Kind == ScadaTableCellContentKind.InputNumeric,
+            element.Id,
             anchor.Row,
             anchor.Column,
+            TableCellAddress.FromZeroBased(anchor.Row, anchor.Column),
             content,
             binding,
             ResolveSummary(binding?.ReadTagId, active),
@@ -119,8 +129,9 @@ public static partial class TableCellNumericInputInspector
     private static TableCellNumericInputInspection Empty(
         IReadOnlyList<ScadaTagDefinition> active,
         IReadOnlyList<ScadaTagDefinition> writable,
-        string diagnostic) =>
-        new(false, false, false, null, null, null, null, "Aucun", "Aucun", active, writable, diagnostic);
+        string diagnostic,
+        string? tableElementId = null) =>
+        new(false, false, false, tableElementId, null, null, null, null, null, "Aucun", "Aucun", active, writable, diagnostic);
 
     private static string ResolveSummary(string? tagId, IReadOnlyList<ScadaTagDefinition> tags)
     {
