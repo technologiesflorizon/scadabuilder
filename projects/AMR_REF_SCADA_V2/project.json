@@ -597,13 +597,13 @@
       },
       "IncludeInBuild": true,
       "HeaderPageId": null,
-      "FooterPageId": null,
+      "FooterPageId": "win00003",
       "PageKey": "8c1d7699-cd16-487a-b80f-0ebba77bfbf5",
       "PageCode": "win00012_modern_no_legacy",
       "Origin": "Native",
       "ImportProvenance": null,
       "HeaderPageKey": null,
-      "FooterPageKey": null,
+      "FooterPageKey": "3679ddd3-579a-5f28-9464-dd7646ab49ca",
       "EffectiveCanvasSize": {
         "Width": 1280,
         "Height": 873

@@ -1,4 +1,4 @@
-#ft100-win00012_modern.ft100-scada-scene {
+#ft100-win00012_modern_no_legacy.ft100-scada-scene {
   position: relative;
   width: 1280px;
   height: 873px;
@@ -6,24 +6,24 @@
   overflow: hidden;
   isolation: isolate;
 }
-#ft100-win00012_modern .ft100-source-layer, #ft100-win00012_modern .ft100-legacy-layer, #ft100-win00012_modern .ft100-elementplus-layer { position: absolute; inset: 0; }
-#ft100-win00012_modern .ft100-elementplus-layer { pointer-events: none; }
-#ft100-win00012_modern .ft100-source-layer .shape-layer, #ft100-win00012_modern .ft100-legacy-layer .shape-layer { position: absolute; left: 0; top: 0; pointer-events: none; }
-#ft100-win00012_modern .ft100-source-layer .layer, #ft100-win00012_modern .ft100-legacy-layer .layer { position: absolute; margin: 0; }
-#ft100-win00012_modern .ft100-element { position: absolute; box-sizing: border-box; overflow: visible; pointer-events: auto; }
-#ft100-win00012_modern .ft100-element--Button, #ft100-win00012_modern [data-scada-command-config] { cursor: pointer; }
-#ft100-win00012_modern .ft100-element--Button *, #ft100-win00012_modern [data-scada-command-config] * { cursor: pointer; }
-#ft100-win00012_modern .ft100-element--Button:active, #ft100-win00012_modern [data-scada-command-config]:active { cursor: pointer; }
-#ft100-win00012_modern .ft100-element--Button[data-scada-disabled="true"], #ft100-win00012_modern .ft100-element--Button[data-scada-disabled="true"] * { cursor: not-allowed; opacity: 0.62; }
-#ft100-win00012_modern .ft100-element svg { display: block; width: 100%; height: 100%; overflow: visible; }
-#ft100-win00012_modern .ft100-element input { width: 100%; height: 100%; box-sizing: border-box; }
-#ft100-win00012_modern .ft100-element button { width: 100%; height: 100%; box-sizing: border-box; font: inherit; color: inherit; }
-#ft100-win00012_modern .scada-modern-table { display: grid; width: 100%; height: 100%; overflow: hidden; }
-#ft100-win00012_modern .scada-modern-table__cell { display: flex; box-sizing: border-box; min-width: 0; min-height: 0; overflow: hidden; }
-#ft100-win00012_modern .scada-modern-table__cell input { width: 100%; height: 100%; min-width: 0; border: 0; padding: 0; background: transparent; color: inherit; font: inherit; }
-#ft100-win00012_modern .scada-modern-table > tbody { display: contents; }
+#ft100-win00012_modern_no_legacy .ft100-source-layer, #ft100-win00012_modern_no_legacy .ft100-legacy-layer, #ft100-win00012_modern_no_legacy .ft100-elementplus-layer { position: absolute; inset: 0; }
+#ft100-win00012_modern_no_legacy .ft100-elementplus-layer { pointer-events: none; }
+#ft100-win00012_modern_no_legacy .ft100-source-layer .shape-layer, #ft100-win00012_modern_no_legacy .ft100-legacy-layer .shape-layer { position: absolute; left: 0; top: 0; pointer-events: none; }
+#ft100-win00012_modern_no_legacy .ft100-source-layer .layer, #ft100-win00012_modern_no_legacy .ft100-legacy-layer .layer { position: absolute; margin: 0; }
+#ft100-win00012_modern_no_legacy .ft100-element { position: absolute; box-sizing: border-box; overflow: visible; pointer-events: auto; }
+#ft100-win00012_modern_no_legacy .ft100-element--Button, #ft100-win00012_modern_no_legacy [data-scada-command-config] { cursor: pointer; }
+#ft100-win00012_modern_no_legacy .ft100-element--Button *, #ft100-win00012_modern_no_legacy [data-scada-command-config] * { cursor: pointer; }
+#ft100-win00012_modern_no_legacy .ft100-element--Button:active, #ft100-win00012_modern_no_legacy [data-scada-command-config]:active { cursor: pointer; }
+#ft100-win00012_modern_no_legacy .ft100-element--Button[data-scada-disabled="true"], #ft100-win00012_modern_no_legacy .ft100-element--Button[data-scada-disabled="true"] * { cursor: not-allowed; opacity: 0.62; }
+#ft100-win00012_modern_no_legacy .ft100-element svg { display: block; width: 100%; height: 100%; overflow: visible; }
+#ft100-win00012_modern_no_legacy .ft100-element input { width: 100%; height: 100%; box-sizing: border-box; }
+#ft100-win00012_modern_no_legacy .ft100-element button { width: 100%; height: 100%; box-sizing: border-box; font: inherit; color: inherit; }
+#ft100-win00012_modern_no_legacy .scada-modern-table { display: grid; width: 100%; height: 100%; overflow: hidden; }
+#ft100-win00012_modern_no_legacy .scada-modern-table__cell { display: flex; box-sizing: border-box; min-width: 0; min-height: 0; overflow: hidden; }
+#ft100-win00012_modern_no_legacy .scada-modern-table__cell input { width: 100%; height: 100%; min-width: 0; border: 0; padding: 0; background: transparent; color: inherit; font: inherit; }
+#ft100-win00012_modern_no_legacy .scada-modern-table > tbody { display: contents; }
 
-#ft100-win00012_modern #ft100-win00012_modern__table_outdoor_temperature {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__table_outdoor_temperature {
   left: 11px;
   top: 9px;
   width: 218px;
@@ -45,43 +45,7 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__button_adjust_datetime {
-  left: 896px;
-  top: 32px;
-  width: 180px;
-  height: 53px;
-  color: #EAF8FF;
-  background: #123D57;
-  font-family: Segoe UI;
-  font-size: 11px;
-  font-weight:semibold;
-  font-style:normal;
-  text-align:center;
-  text-transform:none;
-  letter-spacing:0px;
-  line-height:normal;
-  border-radius:6px 6px 6px 6px;
-  opacity:1;
-  transform-origin:center center;
-  transform:rotate(0deg) scaleX(1) scaleY(1);
-  border: 1.5px solid #2B8193;
-  box-shadow: 0 12px 26px rgba(15,42,48,.24);
-}
-
-#ft100-win00012_modern #ft100-win00012_modern__button_adjust_datetime:hover {
-  background: #19536E;
-  color: #FFFFFF;
-  border-color: #48A6B8;
-}
-
-#ft100-win00012_modern #ft100-win00012_modern__button_adjust_datetime:active,
-#ft100-win00012_modern #ft100-win00012_modern__button_adjust_datetime[data-scada-toggle-state="on"] {
-  background: #0B2A3D;
-  color: #FFFFFF;
-  border-color: #48A6B8;
-}
-
-#ft100-win00012_modern #ft100-win00012_modern__button_pressure_setpoints {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__button_pressure_setpoints {
   left: 1090px;
   top: 32px;
   width: 180px;
@@ -104,20 +68,20 @@
   box-shadow: 0 12px 26px rgba(15,42,48,.24);
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__button_pressure_setpoints:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__button_pressure_setpoints:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__button_pressure_setpoints:active,
-#ft100-win00012_modern #ft100-win00012_modern__button_pressure_setpoints[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__button_pressure_setpoints:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__button_pressure_setpoints[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__table_defrost_upper {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__table_defrost_upper {
   left: 13px;
   top: 109px;
   width: 1254px;
@@ -139,10 +103,10 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e1 {
-  left: 255px;
-  top: 177px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e1 {
+  left: 259px;
+  top: 175px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -162,23 +126,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e1:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e1:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e1:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e1[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e1:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e1[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e2 {
-  left: 327.429px;
-  top: 177px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e2 {
+  left: 331.429px;
+  top: 175px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -198,23 +162,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e2:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e2:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e2:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e2[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e2:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e2[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e3 {
-  left: 399.857px;
-  top: 177px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e3 {
+  left: 403.857px;
+  top: 175px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -234,23 +198,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e3:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e3:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e3:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e3[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e3:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e3[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e4 {
-  left: 472.286px;
-  top: 177px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e4 {
+  left: 476.286px;
+  top: 175px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -270,23 +234,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e4:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e4:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e4:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e4[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e4:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e4[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e5 {
-  left: 544.714px;
-  top: 177px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e5 {
+  left: 548.714px;
+  top: 175px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -306,23 +270,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e5:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e5:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e5:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e5[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e5:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e5[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e6 {
-  left: 617.143px;
-  top: 177px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e6 {
+  left: 621.143px;
+  top: 175px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -342,23 +306,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e6:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e6:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e6:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e6[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e6:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e6[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e7 {
-  left: 689.571px;
-  top: 177px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e7 {
+  left: 693.571px;
+  top: 175px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -378,23 +342,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e7:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e7:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e7:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e7[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e7:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e7[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e8 {
-  left: 762px;
-  top: 177px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e8 {
+  left: 766px;
+  top: 175px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -414,23 +378,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e8:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e8:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e8:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e8[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e8:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e8[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e9 {
-  left: 834.429px;
-  top: 177px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e9 {
+  left: 838.429px;
+  top: 175px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -450,23 +414,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e9:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e9:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e9:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e9[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e9:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e9[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e10 {
-  left: 906.857px;
-  top: 177px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e10 {
+  left: 910.857px;
+  top: 175px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -486,23 +450,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e10:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e10:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e10:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e10[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e10:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e10[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e11 {
-  left: 979.286px;
-  top: 177px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e11 {
+  left: 983.286px;
+  top: 175px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -522,23 +486,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e11:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e11:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e11:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e11[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e11:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e11[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e12 {
-  left: 1051.714px;
-  top: 177px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e12 {
+  left: 1055.714px;
+  top: 175px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -558,23 +522,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e12:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e12:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e12:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e12[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e12:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e12[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e13 {
-  left: 1124.143px;
-  top: 177px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e13 {
+  left: 1128.143px;
+  top: 175px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -594,23 +558,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e13:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e13:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e13:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e13[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e13:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e13[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e14 {
-  left: 1196.571px;
-  top: 177px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e14 {
+  left: 1200.571px;
+  top: 175px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -630,23 +594,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e14:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e14:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e14:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p1_e14[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e14:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p1_e14[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e1 {
-  left: 255px;
-  top: 213px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e1 {
+  left: 259px;
+  top: 239px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -666,23 +630,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e1:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e1:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e1:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e1[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e1:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e1[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e2 {
-  left: 327.429px;
-  top: 213px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e2 {
+  left: 331.429px;
+  top: 239px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -702,23 +666,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e2:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e2:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e2:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e2[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e2:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e2[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e3 {
-  left: 399.857px;
-  top: 213px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e3 {
+  left: 403.857px;
+  top: 239px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -738,23 +702,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e3:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e3:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e3:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e3[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e3:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e3[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e4 {
-  left: 472.286px;
-  top: 213px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e4 {
+  left: 476.286px;
+  top: 239px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -774,23 +738,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e4:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e4:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e4:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e4[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e4:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e4[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e5 {
-  left: 544.714px;
-  top: 213px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e5 {
+  left: 548.714px;
+  top: 239px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -810,23 +774,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e5:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e5:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e5:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e5[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e5:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e5[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e6 {
-  left: 617.143px;
-  top: 213px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e6 {
+  left: 621.143px;
+  top: 239px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -846,23 +810,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e6:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e6:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e6:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e6[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e6:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e6[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e7 {
-  left: 689.571px;
-  top: 213px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e7 {
+  left: 693.571px;
+  top: 239px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -882,23 +846,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e7:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e7:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e7:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e7[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e7:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e7[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e8 {
-  left: 762px;
-  top: 213px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e8 {
+  left: 766px;
+  top: 239px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -918,23 +882,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e8:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e8:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e8:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e8[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e8:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e8[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e9 {
-  left: 834.429px;
-  top: 213px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e9 {
+  left: 838.429px;
+  top: 239px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -954,23 +918,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e9:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e9:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e9:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e9[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e9:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e9[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e10 {
-  left: 906.857px;
-  top: 213px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e10 {
+  left: 910.857px;
+  top: 239px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -990,23 +954,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e10:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e10:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e10:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e10[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e10:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e10[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e11 {
-  left: 979.286px;
-  top: 213px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e11 {
+  left: 983.286px;
+  top: 239px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1026,23 +990,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e11:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e11:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e11:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e11[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e11:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e11[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e12 {
-  left: 1051.714px;
-  top: 213px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e12 {
+  left: 1055.714px;
+  top: 239px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1062,23 +1026,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e12:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e12:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e12:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e12[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e12:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e12[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e13 {
-  left: 1124.143px;
-  top: 213px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e13 {
+  left: 1128.143px;
+  top: 239px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1098,23 +1062,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e13:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e13:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e13:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e13[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e13:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e13[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e14 {
-  left: 1196.571px;
-  top: 213px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e14 {
+  left: 1200.571px;
+  top: 239px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1134,23 +1098,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e14:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e14:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e14:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p2_e14[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e14:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p2_e14[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e1 {
-  left: 255px;
-  top: 249px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e1 {
+  left: 259px;
+  top: 303px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1170,23 +1134,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e1:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e1:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e1:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e1[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e1:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e1[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e2 {
-  left: 327.429px;
-  top: 249px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e2 {
+  left: 331.429px;
+  top: 303px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1206,23 +1170,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e2:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e2:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e2:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e2[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e2:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e2[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e3 {
-  left: 399.857px;
-  top: 249px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e3 {
+  left: 403.857px;
+  top: 303px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1242,23 +1206,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e3:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e3:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e3:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e3[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e3:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e3[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e4 {
-  left: 472.286px;
-  top: 249px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e4 {
+  left: 476.286px;
+  top: 303px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1278,23 +1242,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e4:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e4:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e4:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e4[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e4:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e4[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e5 {
-  left: 544.714px;
-  top: 249px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e5 {
+  left: 548.714px;
+  top: 303px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1314,23 +1278,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e5:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e5:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e5:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e5[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e5:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e5[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e6 {
-  left: 617.143px;
-  top: 249px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e6 {
+  left: 621.143px;
+  top: 303px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1350,23 +1314,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e6:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e6:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e6:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e6[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e6:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e6[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e7 {
-  left: 689.571px;
-  top: 249px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e7 {
+  left: 693.571px;
+  top: 303px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1386,23 +1350,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e7:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e7:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e7:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e7[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e7:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e7[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e8 {
-  left: 762px;
-  top: 249px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e8 {
+  left: 766px;
+  top: 303px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1422,23 +1386,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e8:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e8:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e8:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e8[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e8:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e8[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e9 {
-  left: 834.429px;
-  top: 249px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e9 {
+  left: 838.429px;
+  top: 303px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1458,23 +1422,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e9:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e9:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e9:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e9[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e9:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e9[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e10 {
-  left: 906.857px;
-  top: 249px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e10 {
+  left: 910.857px;
+  top: 303px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1494,23 +1458,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e10:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e10:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e10:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e10[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e10:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e10[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e11 {
-  left: 979.286px;
-  top: 249px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e11 {
+  left: 983.286px;
+  top: 303px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1530,23 +1494,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e11:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e11:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e11:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e11[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e11:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e11[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e12 {
-  left: 1051.714px;
-  top: 249px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e12 {
+  left: 1055.714px;
+  top: 303px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1566,23 +1530,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e12:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e12:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e12:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e12[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e12:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e12[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e13 {
-  left: 1124.143px;
-  top: 249px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e13 {
+  left: 1128.143px;
+  top: 303px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1602,23 +1566,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e13:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e13:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e13:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e13[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e13:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e13[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e14 {
-  left: 1196.571px;
-  top: 249px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e14 {
+  left: 1200.571px;
+  top: 303px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1638,23 +1602,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e14:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e14:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e14:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p3_e14[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e14:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p3_e14[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e1 {
-  left: 255px;
-  top: 285px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e1 {
+  left: 259px;
+  top: 367px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1674,23 +1638,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e1:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e1:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e1:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e1[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e1:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e1[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e2 {
-  left: 327.429px;
-  top: 285px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e2 {
+  left: 331.429px;
+  top: 367px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1710,23 +1674,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e2:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e2:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e2:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e2[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e2:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e2[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e3 {
-  left: 399.857px;
-  top: 285px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e3 {
+  left: 403.857px;
+  top: 367px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1746,23 +1710,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e3:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e3:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e3:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e3[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e3:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e3[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e4 {
-  left: 472.286px;
-  top: 285px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e4 {
+  left: 476.286px;
+  top: 367px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1782,23 +1746,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e4:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e4:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e4:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e4[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e4:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e4[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e5 {
-  left: 544.714px;
-  top: 285px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e5 {
+  left: 548.714px;
+  top: 367px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1818,23 +1782,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e5:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e5:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e5:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e5[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e5:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e5[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e6 {
-  left: 617.143px;
-  top: 285px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e6 {
+  left: 621.143px;
+  top: 367px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1854,23 +1818,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e6:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e6:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e6:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e6[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e6:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e6[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e7 {
-  left: 689.571px;
-  top: 285px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e7 {
+  left: 693.571px;
+  top: 367px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1890,23 +1854,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e7:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e7:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e7:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e7[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e7:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e7[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e8 {
-  left: 762px;
-  top: 285px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e8 {
+  left: 766px;
+  top: 367px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1926,23 +1890,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e8:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e8:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e8:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e8[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e8:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e8[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e9 {
-  left: 834.429px;
-  top: 285px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e9 {
+  left: 838.429px;
+  top: 367px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1962,23 +1926,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e9:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e9:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e9:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e9[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e9:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e9[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e10 {
-  left: 906.857px;
-  top: 285px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e10 {
+  left: 910.857px;
+  top: 367px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -1998,23 +1962,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e10:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e10:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e10:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e10[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e10:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e10[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e11 {
-  left: 979.286px;
-  top: 285px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e11 {
+  left: 983.286px;
+  top: 367px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -2034,23 +1998,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e11:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e11:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e11:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e11[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e11:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e11[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e12 {
-  left: 1051.714px;
-  top: 285px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e12 {
+  left: 1055.714px;
+  top: 367px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -2070,23 +2034,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e12:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e12:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e12:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e12[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e12:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e12[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e13 {
-  left: 1124.143px;
-  top: 285px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e13 {
+  left: 1128.143px;
+  top: 367px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -2106,23 +2070,23 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e13:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e13:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e13:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e13[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e13:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e13[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e14 {
-  left: 1196.571px;
-  top: 285px;
-  width: 32px;
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e14 {
+  left: 1200.571px;
+  top: 367px;
+  width: 60.429px;
   height: 28px;
   color: #F5FBFF;
   background: #315566;
@@ -2142,25 +2106,25 @@
   box-shadow: none;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e14:hover {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e14:hover {
   background: #19536E;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e14:active,
-#ft100-win00012_modern #ft100-win00012_modern__toggle_defrost_p4_e14[data-scada-toggle-state="on"] {
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e14:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__toggle_defrost_p4_e14[data-scada-toggle-state="on"] {
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
 }
 
-@keyframes ft100-win00012_modern---scada-blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
-@keyframes ft100-win00012_modern---scada-pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
-@keyframes ft100-win00012_modern---scada-halo { 0%,100%{box-shadow:0 0 2px currentColor} 50%{box-shadow:0 0 14px currentColor} }
-@keyframes ft100-win00012_modern---scada-spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+@keyframes ft100-win00012_modern_no_legacy---scada-blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
+@keyframes ft100-win00012_modern_no_legacy---scada-pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+@keyframes ft100-win00012_modern_no_legacy---scada-halo { 0%,100%{box-shadow:0 0 2px currentColor} 50%{box-shadow:0 0 14px currentColor} }
+@keyframes ft100-win00012_modern_no_legacy---scada-spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
 
-.scada-anim-blink { animation: ft100-win00012_modern---scada-blink 0.6s step-end infinite; }
-.scada-anim-pulse { animation: ft100-win00012_modern---scada-pulse 1s ease-in-out infinite; }
-.scada-anim-halo  { animation: ft100-win00012_modern---scada-halo 1.8s ease-in-out infinite; }
-.scada-anim-spin  { animation: ft100-win00012_modern---scada-spin 1.2s linear infinite; }
+.scada-anim-blink { animation: ft100-win00012_modern_no_legacy---scada-blink 0.6s step-end infinite; }
+.scada-anim-pulse { animation: ft100-win00012_modern_no_legacy---scada-pulse 1s ease-in-out infinite; }
+.scada-anim-halo  { animation: ft100-win00012_modern_no_legacy---scada-halo 1.8s ease-in-out infinite; }
+.scada-anim-spin  { animation: ft100-win00012_modern_no_legacy---scada-spin 1.2s linear infinite; }

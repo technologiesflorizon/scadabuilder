@@ -1889,10 +1889,10 @@
             "OnValue": null,
             "OffValue": null,
             "FixedValue": null,
-            "TargetPageId": "win00012",
+            "TargetPageId": "win00012_modern_no_legacy",
             "Url": null,
             "NewTab": false,
-            "TargetPageKey": "8162dae5-1ad2-5298-8af3-e7cd4d7180c0"
+            "TargetPageKey": "8c1d7699-cd16-487a-b80f-0ebba77bfbf5"
           }
         ]
       },
