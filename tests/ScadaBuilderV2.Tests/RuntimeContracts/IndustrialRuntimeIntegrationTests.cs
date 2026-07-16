@@ -70,6 +70,8 @@ public sealed class IndustrialRuntimeIntegrationTests
                 BuilderVersion = File.ReadAllText(Path.Combine(repositoryRoot, "SCADA_BUILDER_V2", "VERSION")).Trim(),
                 ManifestVersion = "2.3",
                 RuntimeSha256 = runtimeSha,
+                RequiredCapabilities = runtimeContract.GetProperty("RequiredCapabilities")
+                    .EnumerateArray().Select(item => item.GetString()).ToArray(),
                 PackageSha256 = Sha256File(export.ArchivePath),
                 ExportDurationMs = Math.Round(stopwatch.Elapsed.TotalMilliseconds, 3),
                 PageCount = export.PageCount,
@@ -96,7 +98,7 @@ public sealed class IndustrialRuntimeIntegrationTests
                 using var actual = JsonDocument.Parse(reportJson);
                 foreach (var property in new[]
                          {
-                             "ManifestVersion", "RuntimeSha256", "PackageSha256", "PageCount",
+                             "ManifestVersion", "RuntimeSha256", "RequiredCapabilities", "PackageSha256", "PageCount",
                              "LiveWritesExecuted", "Pages", "Diagnostics"
                          })
                 {
