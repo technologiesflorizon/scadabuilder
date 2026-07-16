@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active regression coverage map
-Document version: `V2.1.4.0052`
+Document version: `V2.1.4.0053`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0053` | `PENDING` | 53 tests runtime JS et 98 tests cibles verts; suite 679/684 avec cinq echecs historiques; fixture `fb06431e...08404`. |
 | 2026-07-16 | `V2.1.4.0052` | `PENDING` | 47 tests runtime JS et 113 tests .NET cibles verts; suite 678/683, cinq echecs historiques; fixture `4381347c...40a6`. |
 | 2026-07-16 | `V2.1.4.0051` | `PENDING` | 35 tests runtime JS et 113 tests .NET cibles verts; suite complete 678/683, cinq echecs historiques; hash fixture `6976e192...15ef`. |
 | 2026-07-16 | `V2.1.4.0050` | `PENDING` | 3 tests de conformance et 94 tests cibles verts; package byte-identique et SHA-256 canonique verifies; suite complete 678/683, cinq echecs historiques. |
@@ -94,8 +95,9 @@ dotnet test ScadaBuilderV2.sln --no-restore
 
 | Contract area | Primary tests |
 | --- | --- |
-| Runtime capability completeness (`DEC-0047`, partial) | `RuntimeContracts/ScadaRuntimeCapabilityCatalogTests.cs` and `ScadaRuntimeCapabilityAnalyzerTests.cs` cover typed inventory, artifacts, fixture ids, three-layer evidence requirements and model analysis. `RuntimeConformancePackageTests.cs` proves exact 118-capability factory coverage, byte-identical package regeneration, canonical SHA `4381347cbcbe2a499a4760059b7bdc8c1ffe06a7998a008699407bef54c240a6`, archive/manifest/DOM/CSS/runtime integrity, sanitization and an exhaustive 162-entry expectation index. Runtime JS suites add table-driven AST/state/effect/command semantics, transitions, async and re-init coverage. `tools/docs/generate-runtime-capability-matrix.ps1` plus `verify-docs` enforce code/matrix parity. Object-action tables and TF100Web execution of the committed fixture remain pending. |
+| Runtime capability completeness (`DEC-0047`, partial) | `RuntimeContracts/ScadaRuntimeCapabilityCatalogTests.cs` and `ScadaRuntimeCapabilityAnalyzerTests.cs` cover typed inventory, artifacts, fixture ids, three-layer evidence requirements and model analysis. `RuntimeConformancePackageTests.cs` proves exact 118-capability factory coverage, byte-identical package regeneration, canonical SHA `fb06431eafbdb39f8e75aaa5216a8e6517e36a8f04bde6f6b1945aea90b08404`, archive/manifest/DOM/CSS/runtime integrity, sanitization and an exhaustive 162-entry expectation index. Runtime JS suites add table-driven AST/state/effect/command/action semantics, transitions, async and re-init coverage. `tools/docs/generate-runtime-capability-matrix.ps1` plus `verify-docs` enforce code/matrix parity. TF100Web execution of the committed fixture remains pending. |
 | Shared command and input semantics (`DEC-0047`, partial) | `tests/runtime-js/command-dispatcher.test.mjs` covers all five triggers, seven kinds, Toggle/SetFixed/SetFromInput and real Momentary phases, confirmation ordering, disabled/missing values, canonical intents, HostAdapter precedence, async rejection and duplicate suppression. `input-edit-guard.test.mjs` covers identity-safe locks, idempotent watch, Escape/baseline restoration, inactivity refresh/readback and scoped disposal. `RuntimeJsModulesTests.cs` locks embedded camelCase cases, intent/lifecycle symbols and the concatenated package. TF100Web HostAdapter and end-to-end Momentary promotion remain pending. |
+| Shared object-action semantics (`DEC-0047`, partial) | `tests/runtime-js/action-dispatcher.test.mjs` covers all nine kinds, every condition operator, All/Any, both missing policies, binding order, prevent/stop propagation, disabled sources, disposal and duplicate ids across composed page roots. `Ft100SceneExporterTests.cs` locks canonical root registries, element bindings, transparent group wrappers, manifest events, page-scoped CSS and permanent absence of `data-scada-events`. TF100Web HostAdapter/fixture proof remains pending. |
 | FT100/TF100Web export | `Ft100SceneExporterTests.cs`: manifest 2.3 default, sorted/deduplicated requirements, packaged runtime SHA-256, pre-staging blocked-capability rejection, and explicit 2.1/2.2 profiles. |
 | FT100 `.sb2` archive and namespace validation | `Ft100PackageValidator`, `Ft100PackageValidatorTests`: unknown/duplicate/unsorted/blocked capabilities, runtime contract version, missing/invalid/mismatched SHA-256, tampering and runtime filename; plus archive and page-scope regressions in `Ft100SceneExporterTests`. |
 | TF100Web package intake audit | `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py` |

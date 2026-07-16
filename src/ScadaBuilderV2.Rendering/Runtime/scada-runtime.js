@@ -30,6 +30,10 @@
       window.ScadaRuntime.StateEngine.initPage(container, pageId);
     }
 
+    if (window.ScadaRuntime && window.ScadaRuntime.ActionDispatcher) {
+      window.ScadaRuntime.ActionDispatcher.initPage(container, pageId);
+    }
+
     // Bind command dispatchers
     var commandElements = container.querySelectorAll('[data-scada-command-config]');
     for (var i = 0; i < commandElements.length; i++) {
@@ -60,6 +64,10 @@
     if (window.ScadaRuntime && window.ScadaRuntime.CommandDispatcher &&
         typeof window.ScadaRuntime.CommandDispatcher.dispose === 'function') {
       window.ScadaRuntime.CommandDispatcher.dispose(container);
+    }
+    if (window.ScadaRuntime && window.ScadaRuntime.ActionDispatcher &&
+        typeof window.ScadaRuntime.ActionDispatcher.dispose === 'function') {
+      window.ScadaRuntime.ActionDispatcher.dispose(container);
     }
     if (window.ScadaRuntime && window.ScadaRuntime.InputEditGuard &&
         typeof window.ScadaRuntime.InputEditGuard.dispose === 'function') {

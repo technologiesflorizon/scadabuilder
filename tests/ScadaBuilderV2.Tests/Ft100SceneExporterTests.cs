@@ -878,8 +878,9 @@ public sealed class Ft100SceneExporterTests
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             Assert.IsFalse(html.Contains("data-scada-events="),
                 "data-scada-events is decommissioned and must not appear in export.");
-            Assert.IsFalse(html.Contains("action_nav_win00009"),
-                "Legacy action IDs from EventBindings must not appear in HTML.");
+            StringAssert.Contains(html, "data-scada-action-registry=\"");
+            StringAssert.Contains(html, "data-scada-action-bindings=\"");
+            StringAssert.Contains(html, "action_nav_win00009");
             StringAssert.Contains(html, "<button type=\"button\"");
             StringAssert.Contains(html, "data-scada-button-kind=\"Navigation\"");
             StringAssert.Contains(html, "Suivant");
@@ -905,10 +906,8 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(manifest, "\"BorderColor\": \"#2090A0\"");
             StringAssert.Contains(manifest, "\"Pressed\"");
             StringAssert.Contains(manifest, "\"Background\": \"#0F7280\"");
-            Assert.IsFalse(manifest.Contains("\"Trigger\": \"click\""),
-                "Manifest objects must not serialize legacy EventBindings Trigger.");
-            Assert.IsFalse(manifest.Contains("\"ActionId\": \"action_"),
-                "Manifest objects must not serialize legacy EventBindings ActionId.");
+            StringAssert.Contains(manifest, "\"Trigger\": \"click\"");
+            StringAssert.Contains(manifest, "\"ActionId\": \"action_nav_win00009\"");
             StringAssert.Contains(manifest, "\"Kind\": \"navigate\"");
             StringAssert.Contains(manifest, "\"TargetPageId\": \"win00009\"");
             Assert.IsFalse(manifest.Contains("\"PageEvents\"", StringComparison.Ordinal));
@@ -4153,7 +4152,7 @@ public sealed class Ft100SceneExporterTests
     }
 
     [TestMethod]
-    public async Task Export_GroupWithOnlyLegacyEventBindings_DoesNotExportRuntimeEvents()
+    public async Task Export_GroupWithOnlyObjectActionBindings_RendersCanonicalRuntimeWrapper()
     {
         var root = CreateTempExportDir();
         var sourceHtmlPath = Path.Combine(root, "source", "grp_legacy_evt.html");
@@ -4183,16 +4182,17 @@ public sealed class Ft100SceneExporterTests
             var html = await File.ReadAllTextAsync(result.HtmlPath);
 
             Assert.IsFalse(html.Contains("data-scada-events="),
-                "Legacy EventBindings must not produce data-scada-events in export.");
-            Assert.IsFalse(html.Contains("id=\"ft100-win00008__grp_legacy_evt\""),
-                "Group with only EventBindings must be flattened.");
+                "The obsolete host-interpreted data-scada-events contract must stay decommissioned.");
+            StringAssert.Contains(html, "id=\"ft100-win00008__grp_legacy_evt\"");
+            StringAssert.Contains(html, "data-scada-action-bindings=\"");
+            StringAssert.Contains(html, "data-scada-action-registry=\"");
             StringAssert.Contains(html, "id=\"ft100-win00008__btn_legacy\"");
         }
         finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
     }
 
     [TestMethod]
-    public async Task Export_NonGroupWithLegacyEventBindings_DoesNotExportRuntimeEvents()
+    public async Task Export_NonGroupWithObjectActionBindings_UsesCanonicalRuntimeAttribute()
     {
         var root = CreateTempExportDir();
         var sourceHtmlPath = Path.Combine(root, "source", "nongrp_legacy.html");
@@ -4217,15 +4217,18 @@ public sealed class Ft100SceneExporterTests
 
             Assert.IsFalse(html.Contains("data-scada-events="),
                 "Non-group element must not emit data-scada-events.");
+            StringAssert.Contains(html, "data-scada-action-bindings=\"");
+            StringAssert.Contains(html, "data-scada-action-registry=\"");
             var css = await File.ReadAllTextAsync(result.CssPath);
             Assert.IsFalse(css.Contains("data-scada-events"),
                 "Exported CSS must not contain data-scada-events selector.");
+            StringAssert.Contains(css, "[data-scada-action-bindings]");
         }
         finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
     }
 
     [TestMethod]
-    public async Task Export_GroupWithCommandConfigAndLegacyEventBindings_UsesCommandConfigOnly()
+    public async Task Export_GroupWithCommandConfigAndObjectActionBindings_ExportsBothCanonicalContracts()
     {
         var root = CreateTempExportDir();
         var sourceHtmlPath = Path.Combine(root, "source", "grp_hybrid.html");
@@ -4263,6 +4266,7 @@ public sealed class Ft100SceneExporterTests
 
             StringAssert.Contains(html, "id=\"ft100-win00008__grp_hybrid\"");
             StringAssert.Contains(html, "data-scada-command-config=\"");
+            StringAssert.Contains(html, "data-scada-action-bindings=\"");
             StringAssert.Contains(decoded, "\"kind\":\"navigate\"");
             Assert.IsFalse(html.Contains("data-scada-events="),
                 "Hybrid group must not emit data-scada-events even with legacy EventBindings.");
@@ -4271,7 +4275,7 @@ public sealed class Ft100SceneExporterTests
     }
 
     [TestMethod]
-    public async Task Export_Manifest_DoesNotSerializeLegacyEventBindingsAsActiveEvents()
+    public async Task Export_Manifest_SerializesCanonicalObjectActionBindings()
     {
         var root = CreateTempExportDir();
         var sourceHtmlPath = Path.Combine(root, "source", "manifest_test.html");
@@ -4309,8 +4313,8 @@ public sealed class Ft100SceneExporterTests
 
             StringAssert.Contains(manifest, "\"Id\": \"grp_man\"");
             StringAssert.Contains(manifest, "\"CommandConfig\":");
-            Assert.IsFalse(manifest.Contains("\"Trigger\": \"click\""),
-                "Manifest must not serialize legacy EventBindings as active events.");
+            StringAssert.Contains(manifest, "\"Trigger\": \"click\"");
+            StringAssert.Contains(manifest, "\"ActionId\": \"action_changepage_click_grp_man_win00009\"");
         }
         finally { if (Directory.Exists(root)) Directory.Delete(root, true); }
     }

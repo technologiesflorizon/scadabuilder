@@ -6,6 +6,7 @@
     <EmbeddedResource Include="Runtime\state-engine.js" />
     <EmbeddedResource Include="Runtime\animation-controller.js" />
     <EmbeddedResource Include="Runtime\command-dispatcher.js" />
+    <EmbeddedResource Include="Runtime\action-dispatcher.js" />
     <EmbeddedResource Include="Runtime\tag-bridge.js" />
     <EmbeddedResource Include="Runtime\input-edit-guard.js" />
     <EmbeddedResource Include="Runtime\confirmation-modal.js" />

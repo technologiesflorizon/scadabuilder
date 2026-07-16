@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0052`
+Document version: `V2.1.4.0053`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0053` | `PENDING` | Actions objet portables unifiees : 9 kinds, conditions, propagation, cibles page-scope et bindings DOM canoniques. |
 | 2026-07-16 | `V2.1.4.0052` | `PENDING` | CommandConfig partage complete : intents host 1.0, Momentary press/release, confirmations, concurrence et cleanup DOM. |
 | 2026-07-16 | `V2.1.4.0051` | `PENDING` | Runtime partage Etat/Expression/Effet complete : semantiques table-driven, transitions reversibles, animations, tokens et fallback qualite. |
 | 2026-07-16 | `V2.1.4.0050` | `PENDING` | Fixture de conformance `.sb2` deterministe : 162 capabilities indexees, 118 cas supportes, gaps bloques et SHA-256 partage. |

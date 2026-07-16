@@ -353,6 +353,7 @@ public sealed partial class Ft100SceneExporter
         "animation-controller.js",
         "command-dispatcher.js",
         "tag-bridge.js",
+        "action-dispatcher.js",
         "input-edit-guard.js",
         "confirmation-modal.js",
         "scada-runtime.js"
@@ -1044,6 +1045,7 @@ public sealed partial class Ft100SceneExporter
         var pageClass = HtmlEncoder.Default.Encode(CssIdentifier(scene.Id));
         var sceneType = HtmlEncoder.Default.Encode(ToManifestPageType(scene.PageType));
         var rootStyle = HtmlEncoder.Default.Encode(BuildSceneRootInlineStyle(scene));
+        var actionRegistryAttribute = BuildActionRegistryAttribute(scene);
         var modernElements = string.Concat(scene.Elements.Select(
             element => BuildElementHtml(element, 0, 0, scope, tagCatalog, warnings)));
         var runtimeScript = string.IsNullOrWhiteSpace(runtimeScriptSource)
@@ -1060,7 +1062,7 @@ public sealed partial class Ft100SceneExporter
   <link rel="stylesheet" href="{{HtmlEncoder.Default.Encode(stylesheetHref)}}">
 </head>
 <body style="margin:0;padding:0;">
-  <div id="{{rootDomId}}" class="ft100-scada-scene ft100-scada-scene--{{pageClass}}" data-scada-page-id="{{pageId}}" data-scada-page-type="{{sceneType}}" data-scada-width="{{Format(scene.CanvasSize.Width)}}" data-scada-height="{{Format(scene.CanvasSize.Height)}}" style="{{rootStyle}}">
+  <div id="{{rootDomId}}" class="ft100-scada-scene ft100-scada-scene--{{pageClass}}" data-scada-page-id="{{pageId}}" data-scada-page-type="{{sceneType}}" data-scada-width="{{Format(scene.CanvasSize.Width)}}" data-scada-height="{{Format(scene.CanvasSize.Height)}}" style="{{rootStyle}}"{{actionRegistryAttribute}}>
     <div class="ft100-source-layer" style="position:absolute;inset:0;">
 {{Indent(sourceContent, 6)}}
     </div>
@@ -1095,10 +1097,11 @@ public sealed partial class Ft100SceneExporter
                 var groupInlineStyle = HtmlEncoder.Default.Encode(BuildRuntimeGroupInlineStyle(element, absoluteX, absoluteY));
                 var groupValueBindingAttributes = BuildValueBindingAttributes(element);
                 var groupStateCommandAttributes = BuildStateCommandAttributes(element, tagCatalog, warnings);
+                var groupActionBindingAttributes = BuildActionBindingAttribute(element);
                 var children = string.Concat(element.ChildElements.Select(child => BuildElementHtml(child, 0, 0, scope, tagCatalog, warnings)));
 
                 return $$"""
-<div id="{{groupId}}" class="ft100-element ft100-element--{{groupKind}}" data-scada-element-id="{{groupSceneElementId}}" data-name="{{groupName}}" style="{{groupInlineStyle}}"{{groupValueBindingAttributes}}{{groupStateCommandAttributes}}>
+<div id="{{groupId}}" class="ft100-element ft100-element--{{groupKind}}" data-scada-element-id="{{groupSceneElementId}}" data-name="{{groupName}}" style="{{groupInlineStyle}}"{{groupValueBindingAttributes}}{{groupStateCommandAttributes}}{{groupActionBindingAttributes}}>
 {{Indent(children, 2)}}
 </div>
 """;
@@ -1116,27 +1119,42 @@ public sealed partial class Ft100SceneExporter
         var valueBindingAttributes = BuildValueBindingAttributes(element);
         var buttonRuntimeAttributes = BuildButtonRuntimeAttributes(element);
         var stateCommandAttributes = BuildStateCommandAttributes(element, tagCatalog, warnings);
+        var actionBindingAttributes = BuildActionBindingAttribute(element);
 
         return $$"""
-<div id="{{id}}" class="ft100-element ft100-element--{{kind}}" data-scada-element-id="{{sceneElementId}}" data-name="{{name}}" style="{{inlineStyle}}"{{valueBindingAttributes}}{{buttonRuntimeAttributes}}{{stateCommandAttributes}}>
+<div id="{{id}}" class="ft100-element ft100-element--{{kind}}" data-scada-element-id="{{sceneElementId}}" data-name="{{name}}" style="{{inlineStyle}}"{{valueBindingAttributes}}{{buttonRuntimeAttributes}}{{stateCommandAttributes}}{{actionBindingAttributes}}>
   {{content}}
 </div>
 """;
     }
 
     /// <summary>
-    /// Decommissioned: <c>data-scada-events</c> is no longer emitted as an active
-    /// runtime contract. This method returns an empty string unconditionally.
-    /// The legacy implementation is preserved for reference until physical
-    /// removal of the decommissioned EventBindings code.
+    /// Serializes canonical object action bindings without reviving the obsolete
+    /// <c>data-scada-events</c> host-interpreted contract.
     /// </summary>
     /// <remarks>
-    /// Contracts: docs/superpowers/specs/2026-07-09-export-group-runtime-wrapper.md §4.2.
+    /// Decisions: DEC-0047.
+    /// Contracts: docs/superpowers/specs/2026-07-16-scada-v2-tf100web-runtime-conformance-design.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
     /// </remarks>
-    private static string BuildEventAttribute(ScadaElement element)
+    private static string BuildActionBindingAttribute(ScadaElement element)
     {
-        _ = element;
-        return "";
+        if (element.EventBindings.Count == 0)
+            return "";
+
+        var json = JsonSerializer.Serialize(element.EventBindings, StateCommandJsonOptions);
+        return $" data-scada-action-bindings=\"{HtmlEncoder.Default.Encode(json)}\"";
+    }
+
+    private static string BuildActionRegistryAttribute(ScadaScene scene)
+    {
+        if (scene.ActionDefinitions.Count == 0)
+            return "";
+
+        var json = JsonSerializer.Serialize(
+            new { Actions = scene.ActionDefinitions.Select(BuildRuntimeAction).ToArray() },
+            StateCommandJsonOptions);
+        return $" data-scada-action-registry=\"{HtmlEncoder.Default.Encode(json)}\"";
     }
 
     private static string BuildButtonRuntimeAttributes(ScadaElement element)
@@ -1206,13 +1224,12 @@ public sealed partial class Ft100SceneExporter
 
     /// <summary>
     /// Determines whether a Group element requires a runtime DOM wrapper in the
-    /// exported output. Only modern runtime data is considered; legacy
-    /// <see cref="ScadaElement.EventBindings"/> and
-    /// <see cref="ScadaElementData.ReadTagId"/>/<see cref="ScadaElementData.WriteTagId"/>
-    /// are intentionally excluded (decommissioned paths).
+    /// exported output. Canonical object action bindings, state rules and commands
+    /// all require a stable page-scoped hit-test target.
     /// </summary>
     /// <remarks>
-    /// Contracts: docs/superpowers/specs/2026-07-09-export-group-runtime-wrapper.md.
+    /// Decisions: DEC-0047.
+    /// Contracts: docs/superpowers/specs/2026-07-16-scada-v2-tf100web-runtime-conformance-design.md.
     /// Tests: tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.
     /// </remarks>
     private static bool GroupRequiresRuntimeWrapper(ScadaElement element)
@@ -1224,6 +1241,7 @@ public sealed partial class Ft100SceneExporter
         var stateConfig = element.EffectiveStateConfig;
 
         return commandConfig.Commands.Count > 0
+            || element.EventBindings.Count > 0
             || stateConfig.States.Count > 0
             || stateConfig.ReadVariable is not null
             || HasNonDefaultFallback(stateConfig);
@@ -1713,6 +1731,9 @@ public sealed partial class Ft100SceneExporter
         css.AppendLine($"{scope.Descendant(".ft100-element--Button")}, {scope.Descendant("[data-scada-command-config]")} {{ cursor: pointer; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element--Button *")}, {scope.Descendant("[data-scada-command-config] *")} {{ cursor: pointer; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element--Button:active")}, {scope.Descendant("[data-scada-command-config]:active")} {{ cursor: pointer; }}");
+        css.AppendLine($"{scope.Descendant("[data-scada-action-bindings]")} {{ cursor: pointer; }}");
+        css.AppendLine($"{scope.Descendant("[data-scada-action-bindings] *")} {{ cursor: pointer; }}");
+        css.AppendLine($"{scope.Descendant("[data-scada-action-bindings]:active")} {{ cursor: pointer; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element--Button[data-scada-disabled=\"true\"]")}, {scope.Descendant(".ft100-element--Button[data-scada-disabled=\"true\"] *")} {{ cursor: not-allowed; opacity: 0.62; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element svg")} {{ display: block; width: 100%; height: 100%; overflow: visible; }}");
         css.AppendLine($"{scope.Descendant(".ft100-element input")} {{ width: 100%; height: 100%; box-sizing: border-box; }}");
@@ -2048,7 +2069,7 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
                     ButtonKind = element.Kind == ScadaElementKind.Button ? element.EffectiveButtonKind.ToString() : null,
                     ButtonBehavior = element.Kind == ScadaElementKind.Button ? element.EffectiveButtonBehavior : null,
                     Data = BuildManifestElementData(element),
-                    Events = Array.Empty<ScadaObjectEventBinding>(),
+                    Events = element.EventBindings,
                     ValueBindings = new
                     {
                         ReadTagId = element.Data?.ReadTagId,

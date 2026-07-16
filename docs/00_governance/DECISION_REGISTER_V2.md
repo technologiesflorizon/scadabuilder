@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active authoritative decision register
-Document version: `V2.1.4.0052`
+Document version: `V2.1.4.0053`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0053` | `PENDING` | `DEC-0047` tranche 7 : actions objet adaptees au runtime partage avec conditions et page scope. |
 | 2026-07-16 | `V2.1.4.0052` | `PENDING` | `DEC-0047` tranche 6 : CommandConfig canonique, intents host 1.0 et Momentary reel avec cleanup. |
 | 2026-07-16 | `V2.1.4.0051` | `PENDING` | `DEC-0047` tranche 5 : executeur partage Etat/Expression/Effet rendu deterministe et couvert par tables. |
 | 2026-07-16 | `V2.1.4.0050` | `PENDING` | `DEC-0047` tranche 4 Builder : package de conformance deterministe, index exhaustif et empreinte partagee. |
@@ -381,7 +382,7 @@ Regression coverage:
 
 ### DEC-0014 - Runtime Pointer Cursor For Clickable Targets
 
-Status: Active
+Status: Superseded
 Created: 2026-06-16 00:00 America/Toronto
 Created in commit: `PENDING`
 Deprecated: N/A
@@ -407,7 +408,7 @@ Regression coverage:
 
 ### DEC-0013 - Runtime Group Event Wrapper Export
 
-Status: Active
+Status: Superseded
 Created: 2026-06-16 00:00 America/Toronto
 Created in commit: `PENDING`
 Deprecated: N/A
@@ -1314,7 +1315,7 @@ Created: 2026-07-16 00:00 America/Toronto
 Created in commit: `8489dbd`
 Deprecated: N/A
 Deprecated in commit: N/A
-Superseded by: N/A
+Superseded by: DEC-0047
 Owner document: `docs/superpowers/specs/2026-07-16-stateful-defrost-toggle-buttons-design.md`
 
 Context:
@@ -1340,7 +1341,7 @@ Created: 2026-07-16 00:00 America/Toronto
 Created in commit: `de37a35`
 Deprecated: N/A
 Deprecated in commit: N/A
-Superseded by: N/A
+Superseded by: DEC-0047
 Owner document: `docs/superpowers/specs/2026-07-16-shared-runtime-visual-and-table-binding-correction-design.md`
 
 Context:
@@ -1429,7 +1430,7 @@ The default new export contract advances from manifest 2.2 to 2.3 only after TF1
 
 Implementation status:
 
-Implementation slices 1 through 6 are complete on the Builder branch: Domain owns stable capability ids, minimum contract version, execution owner, artifact contracts, fixture ids, strict-export status and typed evidence; Application derives sorted requirements; Rendering emits manifest 2.3 by default with `RuntimeContract.Version`, sorted unique `RequiredCapabilities` and the complete SHA-256 of the packaged runtime. Strict export rejects blocked capabilities before replacing staging output. The package validator rejects unknown/duplicate/unsorted/blocked capabilities, unsupported contract versions, missing/invalid/mismatched hashes and altered runtime files. Compatibility 2.1/2.2 requires an explicit profile. A sanitized deterministic `.sb2`, its SHA-256 and an exhaustive 162-capability expectation index now constitute the shared fixture source. The shared State/Expression/Effect executor has table-driven coverage for every current AST node, operator, function and effect field. `CommandConfig` now owns every trigger/kind/write mode locally, emits one versioned host-intent envelope, routes writes only through `TagBridge`, performs real Momentary press/release with cleanup and serializes asynchronous permission feedback. TF100Web execution of the fixture, the unified object-action runtime, host adapter/negotiation and `DEC-0046` remain pending. Builder 2.3 artifacts must not be deployed before TF100Web intake support.
+Implementation slices 1 through 7 are complete on the Builder branch: Domain owns stable capability ids, minimum contract version, execution owner, artifact contracts, fixture ids, strict-export status and typed evidence; Application derives sorted requirements; Rendering emits manifest 2.3 by default with `RuntimeContract.Version`, sorted unique `RequiredCapabilities` and the complete SHA-256 of the packaged runtime. Strict export rejects blocked capabilities before replacing staging output. The package validator rejects unknown/duplicate/unsorted/blocked capabilities, unsupported contract versions, missing/invalid/mismatched hashes and altered runtime files. Compatibility 2.1/2.2 requires an explicit profile. A sanitized deterministic `.sb2`, its SHA-256 and an exhaustive 162-capability expectation index now constitute the shared fixture source. The portable runtime owns State/Expression/Effect, all `CommandConfig` variants and the nine object-action kinds. Object actions consume canonical root registries plus element bindings, evaluate simple/compound conditions through the shared evaluator, preserve binding order/propagation and resolve DOM targets only inside the initialized page root. Host-bound action capabilities remain strict-blocked until TF100Web installs negotiation and the single adapter, executes the committed fixture and supplies end-to-end evidence. `DEC-0046` also remains pending; Builder 2.3 artifacts must not be deployed before TF100Web intake support.
 
 Regression coverage:
 

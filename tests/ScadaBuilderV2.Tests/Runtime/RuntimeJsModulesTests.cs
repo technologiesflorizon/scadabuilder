@@ -239,6 +239,27 @@ public sealed class RuntimeJsModulesTests
         StringAssert.Contains(source, "tf100webScadaBuilder");
     }
 
+    /// <summary>The object action dispatcher must be embedded and expose all canonical action families.</summary>
+    [TestMethod]
+    public void ActionDispatcherModule_IsEmbeddedResource()
+    {
+        var source = ReadEmbeddedResource("action-dispatcher.js");
+
+        foreach (var actionKind in new[]
+                 {
+                     "navigate", "show", "hide", "toggleVisibility", "mountFragment",
+                     "closePopup", "togglePopup", "readValue", "writeValue"
+                 })
+        {
+            StringAssert.Contains(source, $"case '{actionKind}':");
+        }
+
+        StringAssert.Contains(source, "ActionDispatcher");
+        StringAssert.Contains(source, "conditionGroup");
+        StringAssert.Contains(source, "missingTagPolicy");
+        StringAssert.Contains(source, "data-scada-action-bindings");
+    }
+
     /// <summary>
     /// The input-edit-guard.js module must be embedded and contain
     /// the EDIT_TIMEOUT constant (30000) and the scada-input-edit-overlay class name.
@@ -290,6 +311,7 @@ public sealed class RuntimeJsModulesTests
         StringAssert.Contains(script, "StateEngine");
         StringAssert.Contains(script, "AnimationController");
         StringAssert.Contains(script, "CommandDispatcher");
+        StringAssert.Contains(script, "ActionDispatcher");
         StringAssert.Contains(script, "TagBridge");
         StringAssert.Contains(script, "InputEditGuard");
         StringAssert.Contains(script, "showConfirmation");

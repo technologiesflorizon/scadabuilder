@@ -86,6 +86,10 @@
     return false;
   }
 
+  function dispatchIntent(kind, actionId, payload) {
+    return _dispatchIntent(kind, { id: actionId || '' }, payload || {});
+  }
+
   function _trackWrite(cmd, result) {
     if (!result || typeof result.then !== 'function') return result;
     _pendingCommands.set(cmd, result);
@@ -335,6 +339,7 @@
     unbind: unbind,
     dispose: dispose,
     execute: execute,
+    dispatchIntent: dispatchIntent,
     _run: _run,
     intentVersion: INTENT_VERSION
   };

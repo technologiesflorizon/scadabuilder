@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation plan - execution in progress
-Document version: `V2.1.4.0052`
+Document version: `V2.1.4.0053`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0053` | `PENDING` | Task 7 completee : 9 actions objet, conditions, ordre/propagation, page scope et lifecycle partage. |
 | 2026-07-16 | `V2.1.4.0052` | `PENDING` | Task 6 completee : CommandConfig canonique, Momentary press/release, intents 1.0, async et cleanup. |
 | 2026-07-16 | `V2.1.4.0051` | `PENDING` | Task 5 completee : semantiques Etat/Expression/Effet table-driven, reversibles et deterministes. |
 | 2026-07-16 | `V2.1.4.0050` | `PENDING` | Task 4 completee : fixture `.sb2` deterministe, index exhaustif, sanitization et hash canonique. |
@@ -200,11 +201,11 @@ dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~Ft100SceneExporterTe
 
 **Interfaces:** Consomme actions/events exportes; reutilise `ExpressionEvaluator`, `TagBridge` et les intents host.
 
-- [ ] Adapter les 9 `ScadaActionKind` sans copier leurs semantiques dans TF100Web.
-- [ ] Implementer conditions, `All`/`Any`, missing policy, ordre et propagation.
-- [ ] Resoudre les cibles dans le root page-scope uniquement.
-- [ ] Remplacer les scripts inline semantiques par un bootstrap vers le runtime partage.
-- [ ] Bloquer explicitement toute action qui reste non supportee avant export 2.3.
+- [x] Adapter les 9 `ScadaActionKind` sans copier leurs semantiques dans TF100Web.
+- [x] Implementer conditions, `All`/`Any`, missing policy, ordre et propagation.
+- [x] Resoudre les cibles dans le root page-scope uniquement.
+- [x] Remplacer les scripts inline semantiques par un bootstrap vers le runtime partage.
+- [x] Bloquer explicitement toute action qui reste non supportee avant export 2.3.
 
 **Commit:** `feat: unify object actions in shared scada runtime`
 
