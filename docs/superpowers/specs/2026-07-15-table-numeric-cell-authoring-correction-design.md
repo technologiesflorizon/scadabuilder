@@ -1,13 +1,14 @@
 # Correction de l'authoring des cellules Tableau InputNumeric - Specification
 
-Date: 2026-07-15
-Status: Approved - pending implementation
-Document version: `V2.1.4.0040`
+Date: 2026-07-16
+Status: Implemented
+Document version: `V2.1.4.0041`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0041` | `6afe427` | Specification implementee : identite A1 partagee, selection fraiche, surface unique, double-clic cible et normalisation Lire/Ecrire. |
 | 2026-07-15 | `V2.1.4.0040` | `PENDING` | Specification corrective approuvee pour une commande unique, une identite de cellule visible, une selection fraiche et le fallback Ecrire vers Lire. |
 
 ## 1. Objet et cycle de vie
@@ -266,3 +267,10 @@ La correction est complete seulement si :
 9. les tests automatises et le smoke `win00012_modern_no_legacy` reussissent.
 
 Ces choix sont enregistres dans `DEC-0043`. Le plan d'implementation doit appliquer cette specification sans redefinir le contrat runtime de `DEC-0042`.
+
+## 12. Preuves d'implementation
+
+1. Le commit `6afe427` implemente les responsabilites Application, WPF et WebView2 sans modifier Domain, le schema de scene, le manifest 2.2 ou TF100Web.
+2. Le build solution reussit sans erreur; les 35 regressions ciblees de la tranche reussissent.
+3. La suite complete observee compte 658 reussites sur 663 et les cinq echecs historiques deja repertories, sans nouvel echec lie a `DEC-0043`.
+4. Le smoke isole `win00012_modern_no_legacy` confirme la cible B7 dans ruban/panneau/dialogue, l'alignement immediat de Lire depuis Ecrire, la sauvegarde/reouverture et l'absence de l'adresse A1 dans le JSON persistant.

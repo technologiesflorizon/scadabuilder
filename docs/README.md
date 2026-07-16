@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Documentation Index
 
-Date: 2026-07-15
+Date: 2026-07-16
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0040`
+Document version: `V2.1.4.0041`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0041` | `PENDING` | `DEC-0043` implementee et validee : surface InputNumeric unique, identite A1 fiable, fallback Lire/Ecrire explicite et smoke isole reussi. |
 | 2026-07-15 | `V2.1.4.0040` | `PENDING` | Approbation de `DEC-0043` : commande unique pour les cellules InputNumeric, identite A1 fiable et fallback Ecrire vers Lire; specification et plan correctifs ajoutes. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | `DEC-0042` implemente en code : inputs numeriques cellule, manifest 2.2 et intake TF100Web 2.1/2.2; gates industriels et livraison ordonnee encore ouverts. |
 | 2026-07-15 | `V2.1.4.0038` | `PENDING` | Integration de la revue du plan `DEC-0042` : nouvelles valeurs `TableEditKind` explicites et justification de `data-scada-step` sur la cible cellule TF100Web. |
@@ -200,8 +201,8 @@ Active specifications and implementation plans:
 8. `superpowers/plans/2026-07-14-modern-table-and-insert-ribbon.md` - implementation record for the approved and implemented modern table core and hierarchical Insert ribbon.
 9. `superpowers/specs/2026-07-15-table-cell-numeric-input-tf100web-design.md` - implemented-in-code `DEC-0042` cross-repository specification for functional numeric inputs inside Table cells; industrial delivery gates remain open.
 10. `superpowers/plans/2026-07-15-table-cell-numeric-input-tf100web.md` - executed cross-repository implementation plan with local 2.1/2.2 evidence and TF100Web-first delivery gates still pending.
-11. `superpowers/specs/2026-07-15-table-numeric-cell-authoring-correction-design.md` - approved `DEC-0043` corrective specification for one configuration command, fresh cell identity, A1 display, double-click authoring, and explicit Write-to-Read defaulting.
-12. `superpowers/plans/2026-07-15-table-numeric-cell-authoring-correction.md` - draft executable plan for the `DEC-0043` authoring correction; code execution remains pending approval and a clean worktree.
+11. `superpowers/specs/2026-07-15-table-numeric-cell-authoring-correction-design.md` - implemented `DEC-0043` corrective specification for one configuration command, fresh cell identity, A1 display, double-click authoring, and explicit Write-to-Read defaulting.
+12. `superpowers/plans/2026-07-15-table-numeric-cell-authoring-correction.md` - executed implementation record for the `DEC-0043` authoring correction, including automated coverage and an isolated `win00012_modern_no_legacy` smoke.
 
 Generated documentation:
 

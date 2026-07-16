@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Regression Coverage
 
-Date: 2026-07-15
+Date: 2026-07-16
 Status: Active regression coverage map
-Document version: `V2.1.4.0039`
+Document version: `V2.1.4.0041`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0041` | `6afe427` | Couverture `DEC-0043` pour A1, provenance de selection, commande/dialogue unique, fallback Lire/Ecrire, double-clic, round-trip/export et smoke isole; suite complete 658/663 avec cinq echecs historiques inchanges. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | Couverture `DEC-0042` Domain/Application/WPF/rendu/export/validation et intake TF100Web; suite SCADA 645/650 avec cinq echecs historiques inchanges. |
 | 2026-07-15 | `V2.1.4.0035` | `740796e` | Regression du hit-testing cellule Tableau : guides A/1 externes, drag primaire explicite, annulation pointeur, normalisation des plages et rendu commun des scopes rangee/colonne. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Couverture `DEC-0041` du payload reel, etat Tableau atomique, refus avant preview, resize verrouille, guide A/1 et absence d'artefact export; smoke WPF/WebView2 isole reussi. |
@@ -139,6 +140,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Table cell numeric binding domain and edit safety | `TableCellBindingOperationsTests`, `TableContentOperationsTests`, `ScadaTableOperationsTests`, `TableClipboardTests`, `TableEditCoordinatorTests`, `OfficialSceneDomainTests` |
 | Table cell numeric authoring surfaces | `TableNumericInputPropertiesViewModelTests`, `TableNumericInputPropertiesDialogTests`, `TableUiArchitectureTests`, `TablePropertiesViewModelTests` |
 | Table cell numeric preview/export/validation | `ModernTableHtmlRendererTests`, `ModernProjectStoreTests`, `Ft100SceneExporterTests`, `Ft100PackageValidatorTests` |
+| Reliable single-surface numeric cell authoring (`DEC-0043`) | `TableCellAddressTests`, `TableNumericBindingAuthoringPolicyTests`, `TablePropertiesInspectorTests`, `TableEditCoordinatorTests`, `TableUiArchitectureTests`, `TableWebViewMessageAdapterTests`, `ModernProjectStoreTests`, `Ft100SceneExporterTests`; isolated `win00012_modern_no_legacy` WPF/WebView2 smoke |
 | TF100Web manifest 2.1/2.2 and cell runtime intake | `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py`, `frontend/tests_scada_table_bindings.py`, `frontend/tests_scada_runtime.py`, `frontend/tests_deploy_scada_builder.py` |
 | Studio Element+ editor state | `ElementStudioEditorStateTests.cs` |
 | Studio Element+ contract | `StudioElementPlusContractTests.cs` |

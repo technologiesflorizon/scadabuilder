@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Implemented Features
 
-Date: 2026-07-15
+Date: 2026-07-16
 Status: Active implementation status
-Document version: `V2.1.4.0039`
+Document version: `V2.1.4.0041`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0041` | `6afe427` | `DEC-0043` implementee : une commande InputNumeric, cible Tableau/A1 partagee, selection perimee refusee, double-clic exact et fallback Ecrire vers Lire explicite. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | `DEC-0042` implemente en code : inputs numeriques cellule lies, authoring dedie, manifest 2.2 et intake TF100Web 2.1/2.2; validation industrielle reelle encore gatee. |
 | 2026-07-15 | `V2.1.4.0035` | `740796e` | Selection cellule Tableau corrigee : clic unitaire stable, extension de plage liee a un drag explicite, reperes A/1 hors des cellules et scopes rangee/colonne visuellement synchronises. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | `DEC-0041` implemente : verrou avant preview, Table Objet initial, etat WebView atomique, cellules/pistes verrouillees et cycle A/1 fiable; smoke isole reussi. |
@@ -157,6 +158,7 @@ As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The f
 70. The second-level ribbon reserves 172 pixels below the top menu, hides the native horizontal scrollbar, keeps both compact command rows visible, and exposes repeatable previous/next overflow chevrons backed by WPF scroll commands.
 71. Anchored Table `InputNumeric` cells persist read/write bindings and display format, expose a dedicated ribbon/properties dialog, preserve binding safety across structural edits and clipboard operations, and render the same native numeric input through save/reload, preview and export.
 72. `.sb2` export now emits manifest 2.2 globally and `Objects[].TableCellBindings` only for valid bound numeric cells. TF100Web branch `codex/adding-table-cell-numeric-input` accepts 2.1/2.2, targets the page-scoped `<td>`, and reuses its existing numeric input and shared mapping runtime.
+73. Table `InputNumeric` authoring uses one `Configurer <A1>` command and a shared Table/A1 target across ribbon, properties and dialog. Stale cross-Table selections are rejected, numeric double-click opens the exact cell, and saving Write with an empty Read explicitly persists the same tag in both bindings while preserving distinct reads.
 
 ## 3. Source Of Truth
 

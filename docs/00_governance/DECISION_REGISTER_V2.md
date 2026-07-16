@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Decision Register
 
-Date: 2026-07-15
+Date: 2026-07-16
 Status: Active authoritative decision register
-Document version: `V2.1.4.0040`
+Document version: `V2.1.4.0041`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0041` | `PENDING` | `DEC-0043` implementee : commande numerique unique, identite Tableau/A1 partagee, selection fraiche, double-clic cible et fallback Ecrire vers Lire valides. |
 | 2026-07-15 | `V2.1.4.0040` | `PENDING` | Ajout de `DEC-0043` pour simplifier l'authoring InputNumeric Tableau, fiabiliser l'identite A1 et initialiser Lire depuis Ecrire lorsque Lire est vide. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | `DEC-0042` implemente dans les deux depots; preuves package 2.1/2.2 locales acquises, gate industriel et ordre de livraison maintenus ouverts. |
 | 2026-07-15 | `V2.1.4.0037` | `PENDING` | Ajout de `DEC-0042` pour les bindings lecture/ecriture des cellules Tableau `InputNumeric`, le manifest `.sb2` 2.2 et l'intake TF100Web ordonne avant l'exporteur. |
@@ -1290,8 +1291,8 @@ Application owns selection provenance, A1 formatting and Write-to-Read defaultin
 
 Implementation status:
 
-Approved and planned; implementation has not started. The current worktree contains unrelated user changes under `projects/AMR_REF_SCADA_V2`, so execution requires their own commit boundary or a clean worktree before code edits.
+Implemented on `codex/numeric-cell-authoring-correction` in `6afe427`. Application now owns A1 formatting, selection provenance and binding normalization; the ribbon exposes one contextual configuration command; the panel and dialog share the same Table/A1 snapshot; and the typed WebView bridge opens the exact numeric cell on double-click. Build and targeted regressions pass. An isolated `win00012_modern_no_legacy` smoke confirmed B7 targeting, immediate Write-to-Read alignment, save/reopen persistence and absence of editor-only A1 data from scene JSON. No schema, manifest or TF100Web contract changed.
 
 Regression coverage:
 
-Planned in `TableCellAddressTests`, `TableEditCoordinatorTests`, `TableUiArchitectureTests`, `RibbonCommandCatalogTests`, `TableWebViewMessageAdapterTests`, `ModernProjectStoreTests` and `Ft100SceneExporterTests`, plus an isolated `win00012_modern_no_legacy` smoke.
+Covered by `TableCellAddressTests`, `TableNumericBindingAuthoringPolicyTests`, `TablePropertiesInspectorTests`, `TableEditCoordinatorTests`, `TableUiArchitectureTests`, `TableWebViewMessageAdapterTests`, `ModernProjectStoreTests` and `Ft100SceneExporterTests`, plus the isolated `win00012_modern_no_legacy` smoke.

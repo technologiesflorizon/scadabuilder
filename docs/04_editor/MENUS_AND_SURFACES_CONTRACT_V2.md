@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Menus And Surfaces Contract
 
-Date: 2026-07-14
+Date: 2026-07-16
 Status: Active editor menu and surface contract
-Document version: `V2.1.4.0039`
+Document version: `V2.1.4.0041`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0041` | `PENDING` | Le groupe Input numerique est reduit a `Configurer <A1>` et partage une cible Tableau/cellule fraiche avec le panneau, le dialogue et le double-clic. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | Le ruban contextuel Tableau expose le groupe Input numerique et route ses editions liees vers le controleur/dialogue dedies. |
 | 2026-07-15 | `V2.1.4.0031` | `e127190` | Overflow du niveau 2 remplace par des chevrons sans barre native; hauteur reservee augmentee pour interdire le rognage vertical. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Gestes Tableau rendus prioritaires en mode Cellules, reperes A/1 masquables, fusion contextuelle et coche de menu alignee a droite. |
@@ -96,7 +97,7 @@ flowchart TD
 30. L'indicateur supérieur immédiatement à gauche de `SCADA Builder V2` distingue aucune sélection, déverrouillé, verrouillé et mixte, tout en conservant le même point de commande.
 31. Les groupes de commandes du niveau 2 utilisent deux rangees compactes, des boutons horizontaux de 28 px et des icones de 16 px; les libelles trop longs sont tronques visuellement mais restent disponibles en entier dans leur info-bulle.
 32. En mode Tableau Cellules, les cellules, inputs, poignees de pistes, double-clic et menu contextuel possedent les gestes avant le drag Element+; `Masquer A/1` retire les reperes d'edition sans masquer les poignees de largeur/hauteur.
-33. Le groupe contextuel `Input numerique` est actif pour une cellule ancre unique en mode Cellules. Il ouvre les proprietes numeriques et offre les commandes de binding sans ajouter de logique de validation ou de mutation dans `MainWindow`.
+33. Le groupe contextuel `Input numerique` est actif seulement pour une cellule ancre `InputNumeric` appartenant au Tableau courant. Il expose uniquement `table.numeric.properties`, libelle `Configurer <A1>`; Lire et Ecrire restent des sections de son dialogue unique et ne sont plus des commandes visibles. Le ruban, le panneau et le dialogue partagent le meme id Tableau/adresse A1, et le double-clic ouvre la cellule emettrice validee sans ajouter de logique de mutation dans `MainWindow`.
 33. La coche d'une commande contextuelle active est placee apres son libelle afin de conserver l'alignement gauche commun des commandes.
 34. Le niveau 2 n'affiche aucune barre de defilement native. Lorsque sa largeur depasse la surface disponible, deux chevrons paginent horizontalement les groupes; la hauteur reservee doit conserver les deux rangees entierement visibles.
 
