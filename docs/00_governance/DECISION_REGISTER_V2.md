@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active authoritative decision register
-Document version: `V2.1.4.0057`
+Document version: `V2.1.4.0058`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0058` | Builder `PENDING`, TF100Web `9e85844` | `DEC-0047` tranche 12 : composition O(tags), observabilite, caches revisionnes et deploiement atomique. |
 | 2026-07-16 | `V2.1.4.0057` | Builder `PENDING`, TF100Web `c304af3` | `DEC-0047` tranche 11 : politique binding, edition numerique, qualite mapping et formatage partages. |
 | 2026-07-16 | `V2.1.4.0056` | Builder `PENDING`, TF100Web `1fc3ac4` | `DEC-0046` et `DEC-0047` tranche 10 : generation latest-wins et hydration obligatoire implementees. |
 | 2026-07-16 | `V2.1.4.0055` | Builder `PENDING`, TF100Web `cab2733` | `DEC-0047` tranche 9 : adaptateur host unique, services host securises et branche message unifiee. |
@@ -1434,7 +1435,7 @@ The default new export contract advances from manifest 2.2 to 2.3 only after TF1
 
 Implementation status:
 
-Implementation slices 1 through 11 are complete across the Builder and TF100Web branches: Domain owns stable capability ids, minimum contract version, execution owner, artifact contracts, fixture ids, strict-export status and typed evidence; Application derives sorted requirements; Rendering emits manifest 2.3 by default with `RuntimeContract.Version`, sorted unique `RequiredCapabilities` and the complete SHA-256 of the packaged runtime. The portable runtime owns State/Expression/Effect, all `CommandConfig` variants and the nine object-action kinds. TF100Web `7d60c63` negotiates 2.3, `cab2733` installs one HostAdapter and `1fc3ac4` implements latest-wins. TF100Web `c304af3` adds one binding policy/edit controller/formatter for Element+ and Table numeric inputs across read-only, write-only and read/write mappings; focus/pending writes resist polling, Enter/Escape/change are deterministic, rejected/offline writes restore readback, all integer/float formats are table-tested and missing mappings produce `---` plus quality diagnostics without blocking the page. Fixture execution semantics and industrial page validation remain pending; the branch is not yet an operator deployment claim.
+Implementation slices 1 through 12 are complete across the Builder and TF100Web branches: Domain owns stable capability ids, minimum contract version, execution owner, artifact contracts, fixture ids, strict-export status and typed evidence; Application derives sorted requirements; Rendering emits manifest 2.3 by default with `RuntimeContract.Version`, sorted unique `RequiredCapabilities` and the complete SHA-256 of the packaged runtime. The portable runtime owns State/Expression/Effect, all `CommandConfig` variants and the nine object-action kinds. TF100Web negotiates 2.3, installs one HostAdapter, enforces latest-wins and shares one generic binding path. TF100Web `9e85844` makes fragment injection a single tag pass, resolves the mapping catalog in bulk, keys structural/response caches by package generation and catalog/override revisions, publishes packages through an atomic staged swap with rollback, and emits safe per-phase timings. Fixture execution semantics and industrial page validation remain pending; the branch is not yet an operator deployment claim.
 
 Regression coverage:
 
