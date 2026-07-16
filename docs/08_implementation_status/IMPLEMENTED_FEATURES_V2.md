@@ -8,7 +8,7 @@ Document version: `V2.1.4.0042`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-16 | `V2.1.4.0042` | `PENDING` | Correction du menu Pages > Proprietes : la page cible est ouverte et activee avant le panneau Page, sans dirty state ni historique artificiel. |
+| 2026-07-16 | `V2.1.4.0042` | `9fd2a30` | Correction du menu Pages > Proprietes : la page cible est ouverte et activee avant le panneau Page, sans dirty state ni historique artificiel. |
 | 2026-07-16 | `V2.1.4.0041` | `6afe427` | `DEC-0043` implementee : une commande InputNumeric, cible Tableau/A1 partagee, selection perimee refusee, double-clic exact et fallback Ecrire vers Lire explicite. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | `DEC-0042` implemente en code : inputs numeriques cellule lies, authoring dedie, manifest 2.2 et intake TF100Web 2.1/2.2; validation industrielle reelle encore gatee. |
 | 2026-07-15 | `V2.1.4.0035` | `740796e` | Selection cellule Tableau corrigee : clic unitaire stable, extension de plage liee a un drag explicite, reperes A/1 hors des cellules et scopes rangee/colonne visuellement synchronises. |

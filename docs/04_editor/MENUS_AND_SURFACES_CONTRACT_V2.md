@@ -8,7 +8,7 @@ Document version: `V2.1.4.0042`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-16 | `V2.1.4.0042` | `PENDING` | `page.properties` ouvre et active maintenant la page selectionnee avant d'afficher le panneau Page afin de charger le bon snapshot de proprietes. |
+| 2026-07-16 | `V2.1.4.0042` | `9fd2a30` | `page.properties` ouvre et active maintenant la page selectionnee avant d'afficher le panneau Page afin de charger le bon snapshot de proprietes. |
 | 2026-07-16 | `V2.1.4.0041` | `PENDING` | Le groupe Input numerique est reduit a `Configurer <A1>` et partage une cible Tableau/cellule fraiche avec le panneau, le dialogue et le double-clic. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | Le ruban contextuel Tableau expose le groupe Input numerique et route ses editions liees vers le controleur/dialogue dedies. |
 | 2026-07-15 | `V2.1.4.0031` | `e127190` | Overflow du niveau 2 remplace par des chevrons sans barre native; hauteur reservee augmentee pour interdire le rognage vertical. |
