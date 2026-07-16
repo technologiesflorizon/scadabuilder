@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active authoritative decision register
-Document version: `V2.1.4.0044`
+Document version: `V2.1.4.0045`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0045` | `PENDING` | Ajout de `DEC-0046` : navigation TF100Web latest-wins, hydratation obligatoire et acceptation exhaustive des quatre pages de reference. |
 | 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | Ajout et implementation de `DEC-0045` : transitions Etat reversibles, filtre sous le contenu et ValueBinding numerique TF100Web commun. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Ajout et implementation de `DEC-0044` : boutons de degivrage sur le pipeline Etat/Commande partage, texte semantique et collecte des mappings de commande TF100Web. |
 | 2026-07-16 | `V2.1.4.0041` | `PENDING` | `DEC-0043` implementee : commande numerique unique, identite Tableau/A1 partagee, selection fraiche, double-clic cible et fallback Ecrire vers Lire valides. |
@@ -1354,3 +1355,39 @@ Implemented in SCADA Builder V2 commit `de37a35` and TF100Web commit `9d5d400`. 
 Regression coverage:
 
 `tests/runtime-js/effect-applier.test.mjs`, `tests/runtime-js/state-engine.test.mjs`, `tests/ScadaBuilderV2.Tests/RuntimeJsModulesTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`, and `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py::ScadaRuntimeInitContractTests`.
+
+### DEC-0046 - Latest Navigation Wins And Every Accepted DOM Is Hydrated
+
+Status: Active - pending implementation
+Created: 2026-07-16 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/specs/2026-07-16-tf100web-navigation-lifecycle-and-page-performance-design.md`
+
+Context:
+
+TF100Web commit `9d5d400` requests a forced snapshot after page composition, but `ScadaTagCache.poll(true)` returns immediately when another poll is in flight. A subsequent normal poll sees unchanged cached values and does not notify the freshly initialized runtime. The reproduced `win00008 -> win00012_modern_no_legacy -> win00008` sequence therefore returns a valid body with missing state effects and readings. Slow page composition makes out-of-order responses and wasted obsolete work more likely.
+
+Decision:
+
+TF100Web owns a monotone navigation generation. A new body navigation invalidates and, where possible, aborts obsolete page and snapshot work. Every asynchronous result verifies that it still owns the current generation before changing fragments, dimensions, history, diagnostics or loading state. Only the accepted generation commits browser history.
+
+After rendering header, body and footer, the accepted generation crosses an awaitable hydration barrier. A forced hydration requested during an in-flight poll is queued/coalesced rather than discarded, recomputes dependencies from the current DOM and notifies ValueBindings plus the shared `TagBridge`/`StateEngine` even when values are unchanged. Cached PLC values may survive navigation, but stale dependencies, promises, controllers and DOM references do not. One cache, poller, bridge, state engine and command dispatcher remain authoritative.
+
+TF100Web also replaces binding-by-binding whole-fragment scans with indexed or single-pass composition and may cache deployed package structure only with explicit deployment and mapping-catalog invalidation. The release gate is the exhaustive authored-behavior matrix for `win00003`, `win00004`, `win00008` and `win00012_modern_no_legacy`.
+
+Consequences:
+
+No manifest, scene schema or alternate runtime path is introduced. Client cancellation cannot guarantee that already-started server CPU work stops, so stale responses are always discarded and server composition is optimized independently. The cache preserves responsiveness without allowing stale mappings or write permissions. Production write/readback tests remain gated by an authorized industrial window.
+
+The official 425-tag catalog audited for this decision does not contain `YL_E12_HDEG4`/mapping 615. The navigation correction may ship independently, but 56/56 Toggle acceptance cannot close until a new official TF100Web export resolves that tag; no fabricated mapping is allowed.
+
+Implementation status:
+
+Approved and planned; no runtime code is claimed complete. The confirmed baseline is SCADA Builder V2 `de37a35` and TF100Web `9d5d400`.
+
+Regression coverage:
+
+Required in TF100Web behavioral JavaScript tests, Django composition/package/deployment suites, SCADA Builder V2 reference-page contract tests, and an authorized browser smoke covering fresh load, round trip, rapid navigation, back/forward and safe PLC readback/write.
