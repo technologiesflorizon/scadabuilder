@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active authoritative decision register
-Document version: `V2.1.4.0046`
+Document version: `V2.1.4.0047`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0047` | `PENDING` | `DEC-0047` tranche 1 : registre Domain et analyseur Application implementes avec tests d'exhaustivite; negotiation 2.3 encore pending. |
 | 2026-07-16 | `V2.1.4.0046` | `PENDING` | Ajout de `DEC-0047` : couverture runtime generale par capabilities, negotiation manifest 2.3 et executeur semantique unique. |
 | 2026-07-16 | `V2.1.4.0045` | `PENDING` | Ajout de `DEC-0046` : navigation TF100Web latest-wins, hydratation obligatoire et acceptation exhaustive des quatre pages de reference. |
 | 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | Ajout et implementation de `DEC-0045` : transitions Etat reversibles, filtre sous le contenu et ValueBinding numerique TF100Web commun. |
@@ -1423,7 +1424,7 @@ The default new export contract advances from manifest 2.2 to 2.3 only after TF1
 
 Implementation status:
 
-Approved and planned. No manifest 2.3, capability registry or unified action runtime is claimed implemented yet. `DEC-0046` remains pending and is executed as one phase of this plan.
+Implementation slice 1 is complete: Domain owns stable capability ids, minimum contract version, execution owner and strict-export status; Application derives a sorted deduplicated requirement set from compiled pages and scenes without UI or I/O. Reflection/fingerprint tests cover persistent enums, every `ScadaEffectBlock` property and every AST node type. Manifest 2.3, generated documentation, the conformance package, unified action runtime and TF100Web negotiation remain pending. `DEC-0046` also remains pending.
 
 Regression coverage:
 

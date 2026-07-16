@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active regression coverage map
-Document version: `V2.1.4.0046`
+Document version: `V2.1.4.0047`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0047` | `PENDING` | 7 regressions `RuntimeContracts` couvrent catalogue, exhaustivite enum/effet/AST, gaps bloques, analyse et deduplication. |
 | 2026-07-16 | `V2.1.4.0046` | `PENDING` | Plan `DEC-0047` : matrice generee, tests d'exhaustivite, fixture `.sb2` partagee et preuves end-to-end requises pour chaque capability. |
 | 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | Couverture `DEC-0045` : restauration fallback, overlay sous contenu, collecte mappings resolus, snapshot force et binding numerique commun idempotent. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Ajout de la couverture `DEC-0044` pour les 56 toggles, le texte semantique exporte, les effets true/false et la collecte TF100Web des mappings de commande. |
@@ -88,7 +89,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 
 | Contract area | Primary tests |
 | --- | --- |
-| Runtime capability completeness (`DEC-0047`, pending) | Planned reflection tests, generated `RUNTIME_CAPABILITY_MATRIX_V2.md`, deterministic conformance `.sb2`, shared runtime table tests and TF100Web end-to-end fixture execution. No general support claim until these gates exist. |
+| Runtime capability completeness (`DEC-0047`, partial) | `RuntimeContracts/ScadaRuntimeCapabilityCatalogTests.cs` and `ScadaRuntimeCapabilityAnalyzerTests.cs` cover the typed inventory and model analysis. Generated matrix, manifest 2.3, deterministic conformance `.sb2`, shared-runtime tables and TF100Web end-to-end execution remain pending. |
 | FT100/TF100Web export | `Ft100SceneExporterTests.cs` |
 | FT100 `.sb2` archive and namespace validation | `Ft100PackageValidator`, `Ft100SceneExporterTests.ExportProjectArchiveWritesSb2RootAndScopesLegacyDomIds`, `Ft100SceneExporterTests.PackageValidatorAcceptsIndentedPageScopedCssIdSelectors` |
 | TF100Web package intake audit | `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py` |

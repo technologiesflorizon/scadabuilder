@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0046`
+Document version: `V2.1.4.0047`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0047` | `PENDING` | Premiere tranche `DEC-0047` : registre type de plus de 100 capabilities, proprietaire/statut/version et analyseur pur avec exhaustivite enum/effet/AST. |
 | 2026-07-16 | `V2.1.4.0046` | `PENDING` | `DEC-0047` approuvee : registre exhaustif de capacites, manifest 2.3 negocie, runtime semantique unique et suite de conformance partagee Builder/TF100Web. |
 | 2026-07-16 | `V2.1.4.0045` | `PENDING` | `DEC-0046` approuvee : navigation TF100Web latest-wins, hydratation obligatoire et matrice exhaustive pour `win00003`, `win00004`, `win00008` et `win00012_modern_no_legacy`. |
 | 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | `DEC-0045` implementee : effets Etat reversibles, filtre sous le contenu et bindings numeriques standards/Tableau reunis dans le cache et le bridge TF100Web partages. |

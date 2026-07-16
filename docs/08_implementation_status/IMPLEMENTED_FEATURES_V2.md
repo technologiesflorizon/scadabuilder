@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation status
-Document version: `V2.1.4.0044`
+Document version: `V2.1.4.0047`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0047` | `PENDING` | `DEC-0047` tranche 1 : registre runtime type et analyseur de capabilities implemente avec tests d'exhaustivite. |
 | 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | `DEC-0045` implementee : transitions Etat non cumulatives, filtre lisible et runtime numerique partage pour Element+ et cellules Tableau. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | `DEC-0044` implementee : 56 boutons de degivrage pilotent filtre vert/rouge et texte ACTIF/ARRÊTÉ depuis le bit PLC confirme via le runtime Etat/Commande partage. |
 | 2026-07-16 | `V2.1.4.0042` | `9fd2a30` | Correction du menu Pages > Proprietes : la page cible est ouverte et activee avant le panneau Page, sans dirty state ni historique artificiel. |
@@ -165,6 +166,7 @@ As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The f
 74. `Projet > Pages > Proprietes` now routes the selected page into the active workspace before showing the Page panel. The page reference, scene snapshot and subsequent property commands therefore target the same page without creating a dirty state or history entry merely for opening the surface.
 75. The 56 `win00012_modern_no_legacy` defrost Toggle buttons use their existing command bit for two continuous display states: true applies a 70% green filter and `ACTIF`, false applies a 70% red filter and `ARRÊTÉ`. Button labels expose the common `[data-scada-text]` target, and TF100Web collects state and command mapping dependencies into its existing deduplicated tag snapshot before using the shared `StateEngine`, `CommandDispatcher`, `EffectApplier` and write bridge.
 76. State effects restore runtime-managed baseline properties before every transition and render color overlays below semantic content. TF100Web now includes resolved mapping attributes in the shared snapshot, forces initial hydration, and uses one idempotent numeric read/write handler for standard Element+ and Table-cell inputs without replacing their existing DOM.
+77. `DEC-0047` slice 1 adds a typed runtime capability registry in Domain and a pure analyzer in Application. More than 100 stable capability ids cover page, element, shape, button, table, binding, state, expression, effect, command, action and popup variants with one owner, minimum version and strict-export status. Seven focused tests lock enum fingerprints, all effect properties, all AST node types, unique ids, known blocked gaps, model traversal, deduplication and excluded-page behavior. Manifest 2.3 and TF100Web negotiation are not yet implemented.
 
 ## 3. Source Of Truth
 

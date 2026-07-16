@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Draft implementation plan - pending execution approval
-Document version: `V2.1.4.0046`
+Document version: `V2.1.4.0047`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0047` | `PENDING` | Task 1 completee : registre type, analyseur pur, statuts de gaps et 7 tests d'exhaustivite/analyse verts. |
 | 2026-07-16 | `V2.1.4.0046` | `PENDING` | Plan general remplacant l'execution page-centrique par un registre, une negotiation 2.3 et une suite de conformance partagee. |
 
 > **For agentic workers:** Execute this plan task-by-task. Preserve one coherent commit per task and do not start a later phase while an earlier contract gate is red.
@@ -58,11 +59,11 @@ Document version: `V2.1.4.0046`
 - Consumes: pages, bindings, `ScadaActionKind`, `ScadaCommandKind`, `ScadaCommandTrigger`, `ScadaWriteMode`, AST et `ScadaEffectBlock`.
 - Produces: ensemble stable, trie et deduplique des capacites requises.
 
-- [ ] Definir les identifiants stables par famille page/binding/state/expression/effect/command/action/host.
-- [ ] Mapper chaque variante persistante vers exactement une capacite.
-- [ ] Ajouter des tests de reflection qui echouent lorsqu'un enum/champ exportable est ajoute sans mapping de capacite.
-- [ ] Distinguer `Supported`, `Blocked`, `Deprecated` sans encoder un statut TF100Web dans la couche Domain.
-- [ ] Tester projet vide, combinaison complexe, groupes, tableaux, fragments et deduplication.
+- [x] Definir les identifiants stables par famille page/binding/state/expression/effect/command/action/host.
+- [x] Mapper chaque variante persistante vers exactement une capacite.
+- [x] Ajouter des tests de reflection qui echouent lorsqu'un enum/champ exportable est ajoute sans mapping de capacite.
+- [x] Distinguer `Supported`, `Blocked`, `Deprecated` sans encoder un statut TF100Web dans la couche Domain.
+- [x] Tester projet vide, combinaison complexe, groupes, tableaux, fragments et deduplication.
 
 **Validation:**
 
