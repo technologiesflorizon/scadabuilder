@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation plan - execution in progress
-Document version: `V2.1.4.0050`
+Document version: `V2.1.4.0051`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0051` | `PENDING` | Task 5 completee : semantiques Etat/Expression/Effet table-driven, reversibles et deterministes. |
 | 2026-07-16 | `V2.1.4.0050` | `PENDING` | Task 4 completee : fixture `.sb2` deterministe, index exhaustif, sanitization et hash canonique. |
 | 2026-07-16 | `V2.1.4.0049` | `PENDING` | Task 3 completee cote Builder : manifest 2.3 strict, SHA-256 runtime, validation et profils de compatibilite explicites. |
 | 2026-07-16 | `V2.1.4.0048` | `PENDING` | Task 2 completee : matrice generee, verification stale, evidence typee et statut strict fail-closed. |
@@ -160,10 +161,10 @@ dotnet test ScadaBuilderV2.sln --filter "FullyQualifiedName~Ft100SceneExporterTe
 
 **Interfaces:** Consomme les formes JSON existantes; produit des transitions deterministes sans styles cumulatifs.
 
-- [ ] Ajouter des tests table-driven pour chaque node, operateur, fonction, fallback et champ d'effet.
-- [ ] Tester toutes les transitions entre effets, restauration baseline, slots multiples et re-init.
-- [ ] Corriger les gaps decouverts par les tests, incluant animations/halo et variables non definies.
-- [ ] Verifier tokens texte, valeurs nulles, erreurs arithmetiques et coercitions documentees.
+- [x] Ajouter des tests table-driven pour chaque node, operateur, fonction, fallback et champ d'effet.
+- [x] Tester toutes les transitions entre effets, restauration baseline, slots multiples et re-init.
+- [x] Corriger les gaps decouverts par les tests, incluant animations/halo et variables non definies.
+- [x] Verifier tokens texte, valeurs nulles, erreurs arithmetiques et coercitions documentees.
 
 **Commit:** `test: complete shared state expression and effect semantics`
 

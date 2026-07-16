@@ -26,6 +26,31 @@
     return _errorFlag;
   }
 
+  function getError() {
+    return _errorMessage;
+  }
+
+  function _number(value, context) {
+    if (value === null || value === undefined || (typeof value === 'string' && value.trim() === '')) {
+      _flagError((context || 'Value') + ' is not numeric');
+      return null;
+    }
+    var result = Number(value);
+    if (!Number.isFinite(result)) {
+      _flagError((context || 'Value') + ' is not finite');
+      return null;
+    }
+    return result;
+  }
+
+  function _comparableNumber(value) {
+    if (value === null || value === undefined || (typeof value === 'string' && value.trim() === '')) {
+      return null;
+    }
+    var result = Number(value);
+    return Number.isFinite(result) ? result : null;
+  }
+
   // ── internal walk (no error-reset) ──────────────────────────────────────
 
   function walkNode(node, tagValues) {
@@ -35,7 +60,7 @@
 
     switch (node.type) {
       case 'literalNumber':
-        return typeof node.value === 'number' ? node.value : Number(node.value);
+        return _number(node.value, 'Numeric literal');
 
       case 'literalBool':
         return node.value === true;
@@ -68,28 +93,33 @@
           return !operand;
         }
         if (node.op === 'Negate') {
-          return -Number(operand);
+          var negated = _number(operand, 'Unary operand');
+          return negated === null ? null : -negated;
         }
+        _flagError('Unknown unary operator: ' + String(node.op || ''));
         return null;
       }
 
       case 'binary': {
         if (node.op === 'And') {
           var andLeft = walkNode(node.left, tagValues);
-          if (!andLeft) {
+          if (andLeft === null) {
+            return null;
+          }
+          if (!Boolean(andLeft)) {
             return false;
           }
           var andRight = walkNode(node.right, tagValues);
-          return Boolean(andRight);
+          return andRight === null ? null : Boolean(andRight);
         }
 
         if (node.op === 'Or') {
           var orLeft = walkNode(node.left, tagValues);
-          if (orLeft) {
+          if (orLeft !== null && Boolean(orLeft)) {
             return true;
           }
           var orRight = walkNode(node.right, tagValues);
-          return Boolean(orRight);
+          return orRight === null ? null : Boolean(orRight);
         }
 
         var left = walkNode(node.left, tagValues);
@@ -99,89 +129,119 @@
           return null;
         }
 
-        var nLeft = Number(left);
-        var nRight = Number(right);
-
         switch (node.op) {
-          case 'Add':
-            return nLeft + nRight;
+          case 'Add': {
+            var addLeft = _number(left, 'Left operand');
+            var addRight = _number(right, 'Right operand');
+            if (addLeft === null || addRight === null) return null;
+            return addLeft + addRight;
+          }
           case 'Subtract':
-            return nLeft - nRight;
           case 'Multiply':
-            return nLeft * nRight;
           case 'Divide':
-            if (nRight === 0) {
-              _flagError('Division by zero');
-              return null;
-            }
-            return nLeft / nRight;
           case 'Modulo':
-            if (nRight === 0) {
-              _flagError('Modulo by zero');
-              return null;
-            }
-            return nLeft % nRight;
-          case 'Equal':
-            return left === right || nLeft === nRight;
-          case 'NotEqual':
-            return left !== right && nLeft !== nRight;
           case 'LessThan':
-            return nLeft < nRight;
           case 'LessThanOrEqual':
-            return nLeft <= nRight;
           case 'GreaterThan':
-            return nLeft > nRight;
-          case 'GreaterThanOrEqual':
+          case 'GreaterThanOrEqual': {
+            var nLeft = _number(left, 'Left operand');
+            var nRight = _number(right, 'Right operand');
+            if (nLeft === null || nRight === null) return null;
+            if (node.op === 'Subtract') return nLeft - nRight;
+            if (node.op === 'Multiply') return nLeft * nRight;
+            if (node.op === 'Divide') {
+              if (nRight === 0) {
+                _flagError('Division by zero');
+                return null;
+              }
+              return nLeft / nRight;
+            }
+            if (node.op === 'Modulo') {
+              if (nRight === 0) {
+                _flagError('Modulo by zero');
+                return null;
+              }
+              return nLeft % nRight;
+            }
+            if (node.op === 'LessThan') return nLeft < nRight;
+            if (node.op === 'LessThanOrEqual') return nLeft <= nRight;
+            if (node.op === 'GreaterThan') return nLeft > nRight;
             return nLeft >= nRight;
+          }
+          case 'Equal': {
+            if (left === right) return true;
+            var equalLeft = _comparableNumber(left);
+            var equalRight = _comparableNumber(right);
+            return equalLeft !== null && equalRight !== null && equalLeft === equalRight;
+          }
+          case 'NotEqual': {
+            if (left === right) return false;
+            var notEqualLeft = _comparableNumber(left);
+            var notEqualRight = _comparableNumber(right);
+            return notEqualLeft === null || notEqualRight === null || notEqualLeft !== notEqualRight;
+          }
           default:
+            _flagError('Unknown binary operator: ' + String(node.op || ''));
             return null;
         }
       }
 
       case 'func': {
         if (!node.name || !node.args || !Array.isArray(node.args)) {
+          _flagError('Invalid function expression');
           return null;
         }
         var name = node.name.toUpperCase();
 
         if (name === 'ABS') {
-          if (node.args.length < 1) return null;
+          if (node.args.length !== 1) {
+            _flagError('ABS expects one argument');
+            return null;
+          }
           var absArg = walkNode(node.args[0], tagValues);
           if (absArg === null) return null;
-          return Math.abs(Number(absArg));
+          var absNumber = _number(absArg, 'ABS argument');
+          return absNumber === null ? null : Math.abs(absNumber);
         }
 
-        if (name === 'MIN') {
-          if (node.args.length < 2) return null;
-          var minA = walkNode(node.args[0], tagValues);
-          var minB = walkNode(node.args[1], tagValues);
-          if (minA === null || minB === null) return null;
-          return Math.min(Number(minA), Number(minB));
-        }
-
-        if (name === 'MAX') {
-          if (node.args.length < 2) return null;
-          var maxA = walkNode(node.args[0], tagValues);
-          var maxB = walkNode(node.args[1], tagValues);
-          if (maxA === null || maxB === null) return null;
-          return Math.max(Number(maxA), Number(maxB));
+        if (name === 'MIN' || name === 'MAX') {
+          if (node.args.length !== 2) {
+            _flagError(name + ' expects two arguments');
+            return null;
+          }
+          var first = walkNode(node.args[0], tagValues);
+          var second = walkNode(node.args[1], tagValues);
+          if (first === null || second === null) return null;
+          var firstNumber = _number(first, name + ' first argument');
+          var secondNumber = _number(second, name + ' second argument');
+          if (firstNumber === null || secondNumber === null) return null;
+          return name === 'MIN' ? Math.min(firstNumber, secondNumber) : Math.max(firstNumber, secondNumber);
         }
 
         if (name === 'BIT') {
-          if (node.args.length < 2) return null;
-          var bitTag = walkNode(node.args[0], tagValues);
-          var bitN = walkNode(node.args[1], tagValues);
-          if (bitTag === null || bitN === null) return null;
-          var val = Number(bitTag);
-          var bit = Number(bitN);
-          if (!Number.isFinite(val) || !Number.isFinite(bit)) return null;
-          return ((val >> bit) & 1) === 1;
+          if (node.args.length !== 2) {
+            _flagError('BIT expects two arguments');
+            return null;
+          }
+          var bitValue = walkNode(node.args[0], tagValues);
+          var bitIndex = walkNode(node.args[1], tagValues);
+          if (bitValue === null || bitIndex === null) return null;
+          var valueNumber = _number(bitValue, 'BIT value');
+          var indexNumber = _number(bitIndex, 'BIT index');
+          if (valueNumber === null || indexNumber === null) return null;
+          if (!Number.isInteger(indexNumber) || indexNumber < 0 || indexNumber > 31) {
+            _flagError('BIT index must be an integer from 0 to 31');
+            return null;
+          }
+          return ((valueNumber >>> indexNumber) & 1) === 1;
         }
 
+        _flagError('Unknown function: ' + name);
         return null;
       }
 
       default:
+        _flagError('Unknown expression node: ' + String(node.type || ''));
         return null;
     }
   }
@@ -194,7 +254,7 @@
    * @returns {number|boolean|string|null} Evaluated value, or null if a tag is unavailable.
    *
    * Before calling walk(), the host should call resetError().
-   * After walk() returns, call hasError() to check for divide-by-zero etc.
+   * After walk() returns, call hasError() to check for invalid arithmetic or AST data.
    */
   function walk(node, tagValues) {
     return walkNode(node, tagValues || {});
@@ -204,12 +264,13 @@
 
   window.ScadaRuntime = window.ScadaRuntime || {};
 
-  /** @type {({walk, _errorFlag, _flagError, resetError, hasError})} */
+  /** @type {({walk, _errorFlag, _flagError, resetError, hasError, getError})} */
   var publicApi = {
     walk: walk,
     _flagError: _flagError,
     resetError: resetError,
-    hasError: hasError
+    hasError: hasError,
+    getError: getError
   };
 
   Object.defineProperty(publicApi, '_errorFlag', {

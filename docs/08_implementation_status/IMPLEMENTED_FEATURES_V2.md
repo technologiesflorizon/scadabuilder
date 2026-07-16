@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation status
-Document version: `V2.1.4.0050`
+Document version: `V2.1.4.0051`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0051` | `PENDING` | `DEC-0047` tranche 5 : Etat/Expression/Effet partages complets, reversibles et table-driven. |
 | 2026-07-16 | `V2.1.4.0050` | `PENDING` | `DEC-0047` tranche 4 : fixture `.sb2` deterministe, index exhaustif et archive reproductible. |
 | 2026-07-16 | `V2.1.4.0049` | `PENDING` | `DEC-0047` tranche 3 Builder : manifest 2.3, requirements tries, SHA-256 runtime et validation stricte. |
 | 2026-07-16 | `V2.1.4.0048` | `PENDING` | `DEC-0047` tranche 2 : matrice code-generee, evidence typee et gate stale de documentation. |
@@ -173,6 +174,7 @@ As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The f
 78. `DEC-0047` slice 2 extends every registry entry with consumed artifacts, a reserved conformance fixture id and typed Builder/shared-runtime/TF100Web evidence. The generated `RUNTIME_CAPABILITY_MATRIX_V2.md` exposes all 162 entries and `verify-docs` rejects a stale artifact. Strict promotion is fail-closed: a `Supported` entry must cite all three executable evidence layers; known semantic gaps remain `Blocked`, and the per-capability shared fixture remains a later release gate.
 79. Builder manifest 2.3 is the default export profile. It serializes the analyzed capability ids in stable ordinal order and binds the package to the complete SHA-256 of its actual shared runtime. Strict export fails before staging replacement for a blocked capability. Validation covers unknown, duplicate, unsorted and blocked ids, unsupported runtime-contract versions, absent/invalid/mismatched hashes, tampering and runtime filename integrity. Manifest 2.1/2.2 generation remains available only through explicit compatibility profiles.
 80. `DEC-0047` slice 4 adds a sanitized conformance project factory and commits its deterministic manifest 2.3 `.sb2`, SHA-256 and exhaustive expectation index. Every one of the 118 currently supported capabilities is exercised by the fixture model; all 44 blocked capabilities are indexed as expected fail-closed outcomes. Export now produces ordinal ZIP entry order, fixed timestamps and a stable contract runtime version, yielding byte-identical archives while preserving manifest/runtime hash validation and excluding editor artifacts, client HTML, workstation paths and industrial mappings.
+81. `DEC-0047` slice 5 completes the portable State/Expression/Effect semantics. Table-driven Node tests cover every AST node/operator/function, finite numeric coercion, null propagation, short-circuiting and arithmetic errors. State selection now distinguishes all-unevaluable quality fallback from valid no-match default, preserves cross-cutting errors, refreshes read variables and tokenized text, isolates duplicate ids by DOM identity and resets exact page-slot elements. Effect transitions restore design baselines for style, text, visibility, transforms, overlays and content layers; all animation names and filter halo transitions are non-cumulative. The runtime JS test command is Windows/Node 24 compatible.
 
 ## 3. Source Of Truth
 

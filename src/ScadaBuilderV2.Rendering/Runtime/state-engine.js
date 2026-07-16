@@ -15,8 +15,8 @@
   /** Map of element id -> true for paused (edit-locked) elements. */
   var _paused = {};
 
-  /** Map of element id -> cached state (initPage pre-cache). */
-  var _stateCache = {};
+  /** Element-local cache avoids collisions when composed slots reuse source ids. */
+  var _stateCache = new WeakMap();
 
   /** The evaluator reference (resolved lazily). */
   var _evaluator = null;
@@ -106,6 +106,30 @@
     }
   }
 
+  function _effectTokenSignature(effect) {
+    if (!effect || typeof effect.textContent !== 'string' || effect.textContent.indexOf('{') === -1) {
+      return '';
+    }
+    var bridge = window.ScadaRuntime && window.ScadaRuntime.TagBridge;
+    return effect.textContent.replace(/\{([^}]+)\}/g, function (match, tagId) {
+      var value = bridge ? bridge.getTagValue(tagId) : null;
+      return tagId + '=' + (value === null || value === undefined ? '<missing>' : String(value));
+    });
+  }
+
+  function _applySelectedEffect(element, cacheKey, effect, readVariable, tagValues) {
+    var applier = _getEffectApplier();
+    var selectedEffect = effect || {};
+    var signature = cacheKey + '|' + _effectTokenSignature(selectedEffect);
+    if (_stateCache.get(element) !== signature) {
+      applier.apply(element, selectedEffect);
+      _stateCache.set(element, signature);
+    }
+    if (selectedEffect.textContent == null) {
+      _applyReadVariable(element, readVariable, tagValues);
+    }
+  }
+
   // ── error badge ───────────────────────────────────────────────────────────
 
   /**
@@ -184,10 +208,8 @@
       return;
     }
 
-    // Independent pass: readVariable is never blocked by, and never blocks, the States loop below.
-    _applyReadVariable(element, config.readVariable, tagValues);
-
     if (!Array.isArray(config.states)) {
+      _applyReadVariable(element, config.readVariable, tagValues);
       return;
     }
 
@@ -198,8 +220,8 @@
       return;
     }
 
-    // Reset any error flag before walking
-    evaluator.resetError();
+    var evaluableStateCount = 0;
+    var hasEvaluationError = false;
 
     // Loop states top-to-bottom (first-match-wins)
     for (var i = 0; i < config.states.length; i++) {
@@ -233,33 +255,30 @@
       }
 
       // Evaluate expression
+      evaluableStateCount++;
+      evaluator.resetError();
       var result = evaluator.walk(expression.ast, tagValues);
+      if (evaluator.hasError()) {
+        hasEvaluationError = true;
+        continue;
+      }
 
       if (result === true) {
-        // Match — apply effect if state changed, cache state id, return
-        if (state.effect && _stateCache[elementId] !== state.id) {
-          applier.apply(element, state.effect);
-          _stateCache[elementId] = state.id;
-        }
+        _applySelectedEffect(element, 'state:' + String(state.id || i), state.effect, config.readVariable, tagValues);
+        _showErrorBadge(element, hasEvaluationError);
         return;
       }
     }
 
-    // All states skipped — apply qualityFallback if present
-    if (config.qualityFallback && _stateCache[elementId] !== '__quality__') {
-      applier.apply(element, config.qualityFallback);
-      _stateCache[elementId] = '__quality__';
+    // Quality fallback is reserved for a pass where no enabled rule could be evaluated.
+    if (evaluableStateCount === 0 && config.qualityFallback) {
+      _applySelectedEffect(element, 'quality', config.qualityFallback, config.readVariable, tagValues);
+      _showErrorBadge(element, false);
       return;
     }
 
-    // No match — apply defaultEffect if present
-    if (config.defaultEffect && _stateCache[elementId] !== '__default__') {
-      applier.apply(element, config.defaultEffect);
-      _stateCache[elementId] = '__default__';
-    }
-
-    // Check for expression evaluation errors and show/hide the badge
-    _showErrorBadge(element, evaluator.hasError());
+    _applySelectedEffect(element, 'default', config.defaultEffect, config.readVariable, tagValues);
+    _showErrorBadge(element, hasEvaluationError);
   }
 
   // ── initPage ────────────────────────────────────────────────────────────
@@ -288,7 +307,11 @@
         continue;
       }
       delete _paused[id];
-      _stateCache[id] = null;
+      var applier = _getEffectApplier();
+      if (applier && typeof applier.reset === 'function') {
+        applier.reset(elements[i]);
+      }
+      _stateCache.delete(elements[i]);
     }
   }
 

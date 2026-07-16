@@ -372,3 +372,149 @@ test('initPage is idempotent — calling it twice on the same container does not
   assert.equal(applied.length, 1, 'state engine evaluate still works after double initPage');
   assert.equal(applied[0].effect.backgroundColor, '#E53935');
 });
+
+test('evaluate() is first-match-wins, skips disabled rules, and uses default only for a valid no-match', () => {
+  const window = loadRuntime(['expression-evaluator.js', 'effect-applier.js', 'state-engine.js']);
+  const applied = [];
+  window.ScadaRuntime.EffectApplier.apply = (_element, effect) => applied.push(effect);
+  const config = {
+    qualityFallback: { textContent: 'QUALITY' },
+    defaultEffect: { textContent: 'DEFAULT' },
+    states: [
+      { id: 'disabled', enabled: false, expression: { ast: { type: 'literalBool', value: true } }, effect: { textContent: 'DISABLED' } },
+      { id: 'false', enabled: true, expression: { ast: { type: 'literalBool', value: false } }, effect: { textContent: 'FALSE' } },
+      { id: 'first', enabled: true, expression: { ast: { type: 'literalBool', value: true } }, effect: { textContent: 'FIRST' } },
+      { id: 'second', enabled: true, expression: { ast: { type: 'literalBool', value: true } }, effect: { textContent: 'SECOND' } },
+    ],
+  };
+  const element = makeFakeElement('first-match', JSON.stringify(config));
+  window.ScadaRuntime.StateEngine.evaluate(element, {});
+  assert.equal(applied.length, 1);
+  assert.equal(applied[0].textContent, 'FIRST');
+
+  config.states = [{ id: 'false', enabled: true, expression: { ast: { type: 'literalBool', value: false } }, effect: {} }];
+  element._attrs['data-scada-state-config'] = JSON.stringify(config);
+  window.ScadaRuntime.StateEngine.evaluate(element, {});
+  assert.equal(applied.at(-1).textContent, 'DEFAULT');
+});
+
+test('evaluate() uses quality fallback only when no rule is evaluable and reports evaluation errors on default', () => {
+  const window = loadRuntime(['expression-evaluator.js', 'effect-applier.js', 'state-engine.js']);
+  const applied = [];
+  window.ScadaRuntime.EffectApplier.apply = (_element, effect) => applied.push(effect);
+  window.document = { createElement: () => ({ className: '', textContent: '', title: '', style: {}, remove() {} }) };
+  const badgeHolder = { badge: null };
+  const config = {
+    qualityFallback: { textContent: 'QUALITY' },
+    defaultEffect: { textContent: 'DEFAULT' },
+    states: [{
+      id: 'tag-state', enabled: true,
+      expression: { ast: { type: 'tagRef', tagName: 'missing' } },
+      effect: { textContent: 'MATCH' },
+    }],
+  };
+  const element = {
+    id: 'quality-semantics',
+    getAttribute: () => JSON.stringify(config),
+    querySelector(selector) { return selector === '.scada-error-badge' ? badgeHolder.badge : null; },
+    querySelectorAll() { return []; },
+    appendChild(node) { badgeHolder.badge = node; node.remove = () => { badgeHolder.badge = null; }; },
+  };
+
+  window.ScadaRuntime.StateEngine.evaluate(element, {});
+  assert.equal(applied.at(-1).textContent, 'QUALITY');
+  assert.equal(badgeHolder.badge, null, 'missing data is a quality fallback, not an expression error badge');
+
+  config.states.push({
+    id: 'valid-false', enabled: true,
+    expression: { ast: { type: 'literalBool', value: false } }, effect: {},
+  });
+  window.ScadaRuntime.StateEngine.evaluate(element, {});
+  assert.equal(applied.at(-1).textContent, 'DEFAULT', 'one evaluable false rule selects default even if another rule has missing data');
+  config.states.pop();
+
+  config.states[0].expression.ast = {
+    type: 'binary', op: 'Divide',
+    left: { type: 'literalNumber', value: 1 }, right: { type: 'literalNumber', value: 0 },
+  };
+  window.ScadaRuntime.StateEngine.evaluate(element, {});
+  assert.equal(applied.at(-1).textContent, 'DEFAULT');
+  assert.ok(badgeHolder.badge, 'invalid arithmetic exposes the expression error badge');
+
+  config.states.push({
+    id: 'later-match', enabled: true,
+    expression: { ast: { type: 'literalBool', value: true } }, effect: { textContent: 'LATER' },
+  });
+  window.ScadaRuntime.StateEngine.evaluate(element, {});
+  assert.equal(applied.at(-1).textContent, 'LATER');
+  assert.ok(badgeHolder.badge, 'an earlier evaluation error remains visible when a later rule matches');
+  config.states.pop();
+
+  config.states[0].expression.ast = { type: 'literalBool', value: false };
+  window.ScadaRuntime.StateEngine.evaluate(element, {});
+  assert.equal(applied.at(-1).textContent, 'DEFAULT');
+  assert.equal(badgeHolder.badge, null, 'a later valid cycle clears the prior error badge');
+});
+
+test('evaluate() refreshes readVariable and effect tokens while the same state stays selected', () => {
+  const window = loadRuntime(['tag-bridge.js', 'expression-evaluator.js', 'effect-applier.js', 'state-engine.js']);
+  const values = { read: 1, token: 'A' };
+  window.tf100webScadaBuilder = { getTagValue: (tagId) => values[tagId] ?? null };
+  const applied = [];
+  window.ScadaRuntime.EffectApplier.apply = (_element, effect) => applied.push(effect.textContent ?? null);
+  const textTarget = { textContent: '' };
+  const config = {
+    readVariable: { tagId: 'read', displayFormat: 'Read={valeur}' },
+    defaultEffect: {}, qualityFallback: {},
+    states: [{
+      id: 'dynamic', enabled: true,
+      expression: { ast: { type: 'literalBool', value: true } },
+      effect: { textContent: 'Token={token}' },
+    }],
+  };
+  const element = {
+    id: 'dynamic-state',
+    getAttribute: () => JSON.stringify(config),
+    querySelector: (selector) => selector === '[data-scada-text]' ? textTarget : null,
+  };
+
+  window.ScadaRuntime.StateEngine.evaluate(element, {});
+  values.token = 'B';
+  window.ScadaRuntime.StateEngine.evaluate(element, {});
+  assert.equal(applied.length, 2, 'a changed token value must reapply the selected effect');
+
+  config.states[0].effect = {};
+  window.ScadaRuntime.StateEngine.evaluate(element, {});
+  assert.equal(textTarget.textContent, 'Read=1');
+  values.read = 2;
+  window.ScadaRuntime.StateEngine.evaluate(element, {});
+  assert.equal(textTarget.textContent, 'Read=2', 'readVariable must refresh even when the selected state id is unchanged');
+});
+
+test('evaluate() caches by element identity so repeated ids in composed slots stay independent', () => {
+  const window = loadRuntime(['expression-evaluator.js', 'effect-applier.js', 'state-engine.js']);
+  const applied = [];
+  window.ScadaRuntime.EffectApplier.apply = (element) => applied.push(element.slot);
+  const config = JSON.stringify({
+    defaultEffect: {}, qualityFallback: {},
+    states: [{ id: 'on', enabled: true, expression: { ast: { type: 'literalBool', value: true } }, effect: { opacity: 1 } }],
+  });
+  const first = { ...makeFakeElement('shared-id', config), slot: 'header' };
+  const second = { ...makeFakeElement('shared-id', config), slot: 'body' };
+
+  window.ScadaRuntime.StateEngine.evaluate(first, {});
+  window.ScadaRuntime.StateEngine.evaluate(second, {});
+  assert.deepEqual(applied, ['header', 'body']);
+});
+
+test('initPage resets only its elements through EffectApplier before the next hydration', () => {
+  const window = loadRuntime(['expression-evaluator.js', 'effect-applier.js', 'state-engine.js']);
+  const reset = [];
+  window.ScadaRuntime.EffectApplier.reset = (element) => reset.push(element.id);
+  const first = makeFakeElement('first', '{}');
+  const second = makeFakeElement('second', '{}');
+  const container = { querySelectorAll: () => [first, second] };
+
+  window.ScadaRuntime.StateEngine.initPage(container, 'page');
+  assert.deepEqual(reset, ['first', 'second']);
+});

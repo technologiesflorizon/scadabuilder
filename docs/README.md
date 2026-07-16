@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0050`
+Document version: `V2.1.4.0051`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0051` | `PENDING` | Runtime partage Etat/Expression/Effet complete : semantiques table-driven, transitions reversibles, animations, tokens et fallback qualite. |
 | 2026-07-16 | `V2.1.4.0050` | `PENDING` | Fixture de conformance `.sb2` deterministe : 162 capabilities indexees, 118 cas supportes, gaps bloques et SHA-256 partage. |
 | 2026-07-16 | `V2.1.4.0049` | `PENDING` | Builder manifest 2.3 strict par defaut : capabilities triees, SHA-256 runtime, rejet des gaps et profils 2.1/2.2 explicites. |
 | 2026-07-16 | `V2.1.4.0048` | `PENDING` | Matrice runtime generee depuis le registre et gate stale branche dans `verify-docs`; promotion `Supported` interdite sans trois couches de preuves. |

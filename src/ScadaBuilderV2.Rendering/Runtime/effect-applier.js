@@ -39,6 +39,9 @@
       return baseline;
     }
     var textTarget = element.querySelector('[data-scada-text]');
+    var contentLayer = element.querySelector(
+      'button, svg, canvas, img, table, input, textarea, select, [data-scada-text]'
+    );
     baseline = {
       backgroundColor: _styleValue(element.style, 'backgroundColor'),
       borderColor: _styleValue(element.style, 'borderColor'),
@@ -46,8 +49,14 @@
       color: _styleValue(element.style, 'color'),
       opacity: _styleValue(element.style, 'opacity'),
       transform: _styleValue(element.style, 'transform'),
+      position: _styleValue(element.style, 'position'),
+      isolation: _styleValue(element.style, 'isolation'),
       hidden: !!element.hidden,
-      textHidden: textTarget ? !!textTarget.hidden : false
+      textHidden: textTarget ? !!textTarget.hidden : false,
+      textContent: textTarget ? textTarget.textContent : '',
+      contentLayer: contentLayer,
+      contentPosition: contentLayer ? _styleValue(contentLayer.style, 'position') : '',
+      contentZIndex: contentLayer ? _styleValue(contentLayer.style, 'zIndex') : ''
     };
     _baselines.set(element, baseline);
     return baseline;
@@ -85,8 +94,25 @@
       var textTarget = element.querySelector('[data-scada-text]');
       if (textTarget) textTarget.hidden = baseline.textHidden;
     }
+    if (previous.textContent != null) {
+      var textContentTarget = element.querySelector('[data-scada-text]');
+      if (textContentTarget) textContentTarget.textContent = baseline.textContent;
+    }
     if (previous.animation !== null && previous.animation !== undefined) {
-      _removeAnimationClasses(element);
+      var animationController = window.ScadaRuntime && window.ScadaRuntime.AnimationController;
+      if (animationController) animationController.clearAnimation(element);
+      else _removeAnimationClasses(element);
+    }
+    if (previous.colorFilterColor != null) {
+      var overlay = element.querySelector('[data-scada-color-filter-overlay]');
+      if (overlay && overlay.parentNode === element) element.removeChild(overlay);
+      else if (overlay) element.removeChild(overlay);
+      element.style.position = baseline.position;
+      element.style.isolation = baseline.isolation;
+      if (baseline.contentLayer && baseline.contentLayer.style) {
+        baseline.contentLayer.style.position = baseline.contentPosition;
+        baseline.contentLayer.style.zIndex = baseline.contentZIndex;
+      }
     }
   }
 
@@ -167,11 +193,13 @@
 
     // ── animation ────────────────────────────────────────────────────────
     if (effect.animation !== null && effect.animation !== undefined) {
-      // Remove all scada-anim-* classes
-      _removeAnimationClasses(element);
-      // If a non-null/non-None animation name was provided, add the class
-      if (effect.animation !== 'None' && effect.animation !== 'none') {
-        classList.add('scada-anim-' + effect.animation);
+      var controller = window.ScadaRuntime && window.ScadaRuntime.AnimationController;
+      var animationName = String(effect.animation).toLowerCase();
+      if (controller) {
+        controller.setAnimation(element, animationName === 'none' ? null : animationName);
+      } else {
+        _removeAnimationClasses(element);
+        if (animationName !== 'none') element.classList.add('scada-anim-' + animationName);
       }
     }
 
@@ -203,12 +231,22 @@
     _previousEffects.set(element, effect);
   }
 
+  function reset(element) {
+    if (!element) {
+      return;
+    }
+    _restorePreviousEffect(element);
+    _previousEffects.delete(element);
+    _baselines.delete(element);
+  }
+
   // ── public API ──────────────────────────────────────────────────────────
 
   window.ScadaRuntime = window.ScadaRuntime || {};
 
   window.ScadaRuntime.EffectApplier = {
     apply: apply,
+    reset: reset,
     resolveTagTokens: resolveTagTokens
   };
 })();

@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active known gaps register
-Document version: `V2.1.4.0050`
+Document version: `V2.1.4.0051`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0051` | `PENDING` | Trous unitaires Etat/Expression/Effet fermes; promotion animation et preuve TF100Web demeurent gates end-to-end. |
 | 2026-07-16 | `V2.1.4.0050` | `PENDING` | Fixture partageable Builder creee; execution par TF100Web, negotiation 2.3 et preuves end-to-end restent ouvertes. |
 | 2026-07-16 | `V2.1.4.0049` | `PENDING` | Builder 2.3 strict implemente; negotiation/rejet atomique TF100Web et fixture partagee restent gaps actifs. |
 | 2026-07-16 | `V2.1.4.0048` | `PENDING` | Matrice runtime generee et verifiee; gaps semantiques bloques et fixture end-to-end par capability encore pending. |
@@ -65,6 +66,7 @@ Document version: `V2.1.4.0050`
 17. The official `tf100web-scada-tags (3).json` audit contains 425 tags but no `YL_E12_HDEG4` or mapping 615. This is a non-blocking quality case: deterministic fallback and diagnostics are required while all other controls remain functional. A local fabricated mapping is forbidden.
 18. Runtime coverage is not yet general. The typed capability registry, analyzer, generated matrix, Builder-side manifest 2.3/hash/strict validator and deterministic shared `.sb2` now exist. The expectation index covers all 162 registry entries and the package exercises all 118 currently supported capabilities; known semantic gaps remain fail-closed `Blocked`. TF100Web negotiation, execution of the fixture by its committed SHA and per-capability end-to-end CI evidence remain pending. Builder 2.3 output is therefore not yet deployable to current TF100Web `9d5d400`.
 19. Some portable behavior remains split between shared package modules, exporter inline scripts and TF100Web host branches. Until `DEC-0047` establishes one semantic owner and blocks unsupported capabilities, new behavior risks duplicate implementation or silent fragment-intake gaps.
+20. Shared State/Expression/Effect behavior is now complete and table-tested locally, including animation execution. The six `effect.animation*` contract entries intentionally remain `Blocked` until TF100Web runs the canonical fixture and supplies end-to-end evidence; this is a promotion gate, not a remaining shared-runtime implementation gap.
 
 ## 2. Rule
 
