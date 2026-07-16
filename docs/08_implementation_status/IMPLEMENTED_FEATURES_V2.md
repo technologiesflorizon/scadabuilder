@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation status
-Document version: `V2.1.4.0042`
+Document version: `V2.1.4.0043`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0043` | `PENDING` | `DEC-0044` implementee : 56 boutons de degivrage pilotent filtre vert/rouge et texte ACTIF/ARRÊTÉ depuis le bit PLC confirme via le runtime Etat/Commande partage. |
 | 2026-07-16 | `V2.1.4.0042` | `9fd2a30` | Correction du menu Pages > Proprietes : la page cible est ouverte et activee avant le panneau Page, sans dirty state ni historique artificiel. |
 | 2026-07-16 | `V2.1.4.0041` | `6afe427` | `DEC-0043` implementee : une commande InputNumeric, cible Tableau/A1 partagee, selection perimee refusee, double-clic exact et fallback Ecrire vers Lire explicite. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | `DEC-0042` implemente en code : inputs numeriques cellule lies, authoring dedie, manifest 2.2 et intake TF100Web 2.1/2.2; validation industrielle reelle encore gatee. |
@@ -161,6 +162,7 @@ As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The f
 72. `.sb2` export now emits manifest 2.2 globally and `Objects[].TableCellBindings` only for valid bound numeric cells. TF100Web branch `codex/adding-table-cell-numeric-input` accepts 2.1/2.2, targets the page-scoped `<td>`, and reuses its existing numeric input and shared mapping runtime.
 73. Table `InputNumeric` authoring uses one `Configurer <A1>` command and a shared Table/A1 target across ribbon, properties and dialog. Stale cross-Table selections are rejected, numeric double-click opens the exact cell, and saving Write with an empty Read explicitly persists the same tag in both bindings while preserving distinct reads.
 74. `Projet > Pages > Proprietes` now routes the selected page into the active workspace before showing the Page panel. The page reference, scene snapshot and subsequent property commands therefore target the same page without creating a dirty state or history entry merely for opening the surface.
+75. The 56 `win00012_modern_no_legacy` defrost Toggle buttons use their existing command bit for two continuous display states: true applies a 70% green filter and `ACTIF`, false applies a 70% red filter and `ARRÊTÉ`. Button labels expose the common `[data-scada-text]` target, and TF100Web collects state and command mapping dependencies into its existing deduplicated tag snapshot before using the shared `StateEngine`, `CommandDispatcher`, `EffectApplier` and write bridge.
 
 ## 3. Source Of Truth
 

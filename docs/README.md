@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0042`
+Document version: `V2.1.4.0043`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0043` | `PENDING` | `DEC-0044` implementee : runtime Etat/Commande TF100Web partage, cible texte semantique et 56 boutons de degivrage relies au bit PLC confirme. |
 | 2026-07-16 | `V2.1.4.0042` | `9fd2a30` | Correction du routage `page.properties` : la page cible est ouverte et activee avant le chargement du panneau Page, avec regression dediee. |
 | 2026-07-16 | `V2.1.4.0041` | `PENDING` | `DEC-0043` implementee et validee : surface InputNumeric unique, identite A1 fiable, fallback Lire/Ecrire explicite et smoke isole reussi. |
 | 2026-07-15 | `V2.1.4.0040` | `PENDING` | Approbation de `DEC-0043` : commande unique pour les cellules InputNumeric, identite A1 fiable et fallback Ecrire vers Lire; specification et plan correctifs ajoutes. |
@@ -204,6 +205,8 @@ Active specifications and implementation plans:
 10. `superpowers/plans/2026-07-15-table-cell-numeric-input-tf100web.md` - executed cross-repository implementation plan with local 2.1/2.2 evidence and TF100Web-first delivery gates still pending.
 11. `superpowers/specs/2026-07-15-table-numeric-cell-authoring-correction-design.md` - implemented `DEC-0043` corrective specification for one configuration command, fresh cell identity, A1 display, double-click authoring, and explicit Write-to-Read defaulting.
 12. `superpowers/plans/2026-07-15-table-numeric-cell-authoring-correction.md` - executed implementation record for the `DEC-0043` authoring correction, including automated coverage and an isolated `win00012_modern_no_legacy` smoke.
+13. `superpowers/specs/2026-07-16-stateful-defrost-toggle-buttons-design.md` - implemented `DEC-0044` contract for confirmed PLC state, shared dynamic text and command mapping dependencies on the 56 defrost Toggle buttons.
+14. `superpowers/plans/2026-07-16-stateful-defrost-toggle-buttons.md` - executed cross-repository implementation record for SCADA Builder V2 and TF100Web.
 
 Generated documentation:
 
@@ -235,8 +238,8 @@ These guardrails are active decisions in `00_governance/DECISION_REGISTER_V2.md`
 15. Runtime action conditions support optional compound groups with `All` or `Any` mode and explicit missing-tag policy.
 16. Exported pages expose `window.scadaBuilderRuntime` and lifecycle events for page ready, action executed, and runtime errors.
 17. Standard runtime visual effects include blink, glow, pulse, alarm highlight, and degraded treatment through page-scoped CSS classes.
-18. Current TF100Web intake source is `F:\Projet\Git\TF100Web` on branch `implementation_scada_builder`; as audited through commit `3c795c2`, TF100Web extracts only `<div id="ft100-<page-id>">`, loads sibling CSS/assets, composes header/body/footer fragments, and executes host-side navigation plus mapping refresh/write behavior.
-19. SCADA Builder exporter-emitted page scripts are not executed by the current TF100Web fragment intake. Documentation must separate exporter behavior from TF100Web-executed behavior until parity is implemented.
+18. Current TF100Web intake source is `F:\Projet\Git\TF100Web` on branch `codex/adding-table-cell-numeric-input`; as audited through commit `29ebd35`, TF100Web extracts `<div id="ft100-<page-id>">`, loads sibling CSS/assets, deploys and loads the package shared runtime, composes fragments, and initializes value bindings plus `StateConfig`/`CommandConfig`.
+19. Inline SCADA Builder scripts emitted outside the page root are not executed by fragment intake. The separately deployed package runtime is executed and owns State/Command behavior; documentation must keep the remaining legacy action gaps distinct.
 20. `.sb2` is the preferred FT100 transfer artifact. It is a ZIP archive whose top-level entry is `scada-builder-v2-ft100-package/`.
 21. `.sb2` export rewrites legacy source ids under `ft100-<page-id>__legacy-*` before validation, then blocks packages that still contain duplicate DOM ids, unscoped DOM ids, unsafe paths, missing page roots, invalid header/footer references, or generated global CSS selectors that could collide in TF100Web composition.
 22. FT100 `.sb2` export must keep the WPF shell responsive and show an indeterminate progress indicator in the bottom status bar while package generation and archive creation are running.
@@ -244,6 +247,7 @@ These guardrails are active decisions in `00_governance/DECISION_REGISTER_V2.md`
 24. Not every SCADA Builder V2 event family is currently functional in TF100Web. `03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` owns the event parity matrix and next implementation tranche; `08_implementation_status/KNOWN_GAPS_V2.md` owns the active gap list.
 25. Element+ `Donnees` authoring uses `Format affichage` as the active numeric display signal. Hash masks such as `##.#` and `###.#` are exported through `Objects[].Data.DisplayFormat` and interpreted by TF100Web against `RegisterMapping.DataType`: `FLOAT32` and `FLOAT64` round raw values directly, integer datatypes scale by mask decimals, and unknown datatypes fall back to direct rounding. `Mapping / Tag`, `Decimales`, and `Unite` are legacy model fields and are not active authoring controls. `Min` and `Max` are input constraints only for non-read-only numeric inputs.
 26. Standard and HMI Element+ shapes created from SCADA Builder V2 persist `ShapeKind` and render/export as Element+-owned SVG content. Standard authoring includes rectangle, ellipse, circle, triangle, star, line, and arrow; line and arrow persist explicit start/end coordinates captured by a two-point Insert workflow. They remain real scene objects; editor-only placement previews, selection overlays, handles, drag rectangles, workzone state, zoom, and pan must not be exported.
+27. Element+ state and command events share the deployed TF100Web tag cache and runtime. Button text effects use `[data-scada-text]`; command read/write mapping ids are collected and deduplicated with state and binding dependencies, and Toggle appearance follows the confirmed snapshot rather than an optimistic local state.
 
 ## 5. Decommissioned Legacy Documents
 

@@ -1962,7 +1962,9 @@ public partial class MainWindow
         button.type = 'button';
         button.dataset.scadaButtonKind = buttonKind;
         button.dataset.scadaButtonBehavior = JSON.stringify(buttonBehavior || {});
-        button.textContent = data.Text || data.Placeholder || element.DisplayName || 'Bouton';
+        const buttonLabel = document.createElement('span');
+        buttonLabel.dataset.scadaText = '';
+        buttonLabel.textContent = data.Text || data.Placeholder || element.DisplayName || 'Bouton';
         button.style.width = '100%';
         button.style.height = '100%';
         button.style.boxSizing = 'border-box';
@@ -1975,6 +1977,7 @@ public partial class MainWindow
         button.style.whiteSpace = 'nowrap';
         button.style.pointerEvents = 'none';
         inheritElementTextStyle(button);
+        button.appendChild(buttonLabel);
         wrapper.appendChild(button);
       } else if (element.Kind === 'InputNumeric' && data.IsReadOnly === true) {
         const value = document.createElement('span');

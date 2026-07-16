@@ -1,8 +1,8 @@
 # SCADA Builder V2 - Actions Events Contract
 
-Date: 2026-06-17
+Date: 2026-07-16
 Status: Active editor/runtime actions contract
-Document version: `V2.1.2.0022`
+Document version: `V2.1.4.0043`
 
 > **DEPRECATED (2026-07-07):** `SetClass`/`RemoveClass`/`ToggleClass`/`WriteTag` (legacy)
 > action kinds and the border/visual-effect authoring described in §3, §8, §9 have been
@@ -16,6 +16,7 @@ Document version: `V2.1.2.0022`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0043` | `PENDING` | `DEC-0044` applique le modele Etat/Commande qui remplace les anciennes actions visuelles : 56 boutons Toggle, filtres PLC et texte dynamique via cible semantique partagee. |
 | 2026-06-17 | `V2.1.2.0022` | `PENDING` | Clarification que `Lire valeur` et `Ecrire valeur` sont des events de binding runtime sans trigger utilisateur. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des effets visuels runtime standards. |
 | 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout du bridge lifecycle runtime global exporte. |
@@ -41,6 +42,8 @@ SCADA Builder V2 treats every runtime function as an event family. Triggered eve
 
 ## 2. Active Implemented Baseline
 
+Le baseline ci-dessous decrit le contrat historique encore valide pour ses familles non absorbees. Pour l'authoring courant d'etat et de commande, `ScadaElementStateConfig` et `ScadaElementCommandConfig` sont proprietaires selon `STATE_COMMAND_RUNTIME_CONTRACT_V1.md`.
+
 1. Object-owned click navigation action exists in the scene model and FT100 manifest output.
 2. Page type, dimensions, background, actions, and event bindings persist through project save/reload.
 3. The Element+ property/editor surface exposes an `Evenement` entry that opens a modal authoring flow.
@@ -55,6 +58,8 @@ SCADA Builder V2 treats every runtime function as an event family. Triggered eve
 12. `Ouvrir popup`, `Fermer popup`, and `Basculer popup` are authorable against compiled `Fragment` pages and persist as popup runtime actions with optional advanced runtime options.
 13. `Afficher bordure`, `Masquer bordure`, and `Basculer bordure` are authorable against Element+ targets and apply the standard runtime border class.
 14. Standard visual effects are authorable against Element+ targets through start, stop, and toggle functions for blink, glow, pulse, alarm highlight, and degraded treatment.
+15. Model-backed display states are evaluated continuously by the shared runtime and may combine color-filter effects with `TextContent`; generated text and button labels expose the same `[data-scada-text]` target.
+16. Model-backed commands execute through the shared `CommandDispatcher`. Toggle reads `ReadTagId` (or `WriteTagId`) from the shared TF100Web snapshot and writes through the existing bridge; appearance follows the confirmed subsequent snapshot.
 
 ## 3. Event Registry
 

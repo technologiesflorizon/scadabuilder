@@ -80,7 +80,9 @@ public sealed class WebViewContextMenuScriptTests
         var source = ReadMainWindowSource();
 
         StringAssert.Contains(source, "element.Kind === 'Button'");
-        StringAssert.Contains(source, "button.textContent = data.Text || data.Placeholder || element.DisplayName || 'Bouton';");
+        StringAssert.Contains(source, "buttonLabel.dataset.scadaText = '';");
+        StringAssert.Contains(source, "buttonLabel.textContent = data.Text || data.Placeholder || element.DisplayName || 'Bouton';");
+        StringAssert.Contains(source, "button.appendChild(buttonLabel);");
         StringAssert.Contains(source, "const buttonKind = String(element.ButtonKind || element.buttonKind || 'Command');");
         StringAssert.Contains(source, "wrapper.dataset.scadaButtonKind = buttonKind;");
         StringAssert.Contains(source, "wrapper.dataset.scadaButtonBehavior = JSON.stringify(buttonBehavior || {});");

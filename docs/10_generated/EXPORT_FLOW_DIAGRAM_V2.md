@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Export Flow Diagram
 
-Date: 2026-06-17
+Date: 2026-07-16
 Status: Generated baseline
-Document version: `V2.1.4.0027`
+Document version: `V2.1.4.0043`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0043` | `PENDING` | Ajout du deploiement du runtime package partage et de l'initialisation Etat/Commande sur les fragments TF100Web. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Ajout du chemin Tableau model-backed vers HTML sémantique partagé preview/`.sb2`. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout de l'archive `.sb2` apres validation de staging. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Ajout du chemin d'intake fragment TF100Web audite. |
@@ -23,6 +24,7 @@ flowchart TD
   Pages --> Html[page-id.html]
   Pages --> Css[css/page-id.css]
   Pages --> Images[images]
+  Exporter --> Runtime[scada-runtime.hash.js]
   Manifest --> Package[scada-builder-v2-ft100-package]
   Html --> Package
   TableHtml --> Html
@@ -37,5 +39,9 @@ flowchart TD
   TfPages --> TfCss[Load page sibling CSS]
   TfFragment --> TfHost[TF100Web visualisation host runtime]
   TfCss --> TfHost
-  Html -. exported script outside extracted root not executed .-> TfGap[Runtime parity gap]
+  Runtime --> TfRuntime[static scada js scada-runtime.js]
+  TfRuntime --> TfHost
+  TfHost --> Init[Initialize composed fragments]
+  Init --> StateCommand[Shared StateEngine and CommandDispatcher]
+  Html -. inline scripts outside extracted root not executed .-> TfGap[Legacy action parity gap]
 ```

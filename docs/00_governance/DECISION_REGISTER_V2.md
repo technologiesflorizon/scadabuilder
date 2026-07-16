@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active authoritative decision register
-Document version: `V2.1.4.0041`
+Document version: `V2.1.4.0043`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0043` | `PENDING` | Ajout et implementation de `DEC-0044` : boutons de degivrage sur le pipeline Etat/Commande partage, texte semantique et collecte des mappings de commande TF100Web. |
 | 2026-07-16 | `V2.1.4.0041` | `PENDING` | `DEC-0043` implementee : commande numerique unique, identite Tableau/A1 partagee, selection fraiche, double-clic cible et fallback Ecrire vers Lire valides. |
 | 2026-07-15 | `V2.1.4.0040` | `PENDING` | Ajout de `DEC-0043` pour simplifier l'authoring InputNumeric Tableau, fiabiliser l'identite A1 et initialiser Lire depuis Ecrire lorsque Lire est vide. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | `DEC-0042` implemente dans les deux depots; preuves package 2.1/2.2 locales acquises, gate industriel et ordre de livraison maintenus ouverts. |
@@ -1296,3 +1297,29 @@ Implemented on `codex/numeric-cell-authoring-correction` in `6afe427`. Applicati
 Regression coverage:
 
 Covered by `TableCellAddressTests`, `TableNumericBindingAuthoringPolicyTests`, `TablePropertiesInspectorTests`, `TableEditCoordinatorTests`, `TableUiArchitectureTests`, `TableWebViewMessageAdapterTests`, `ModernProjectStoreTests` and `Ft100SceneExporterTests`, plus the isolated `win00012_modern_no_legacy` smoke.
+
+### DEC-0044 - Confirmed PLC State Drives Defrost Toggle Appearance And Text
+
+Status: Active
+Created: 2026-07-16 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/specs/2026-07-16-stateful-defrost-toggle-buttons-design.md`
+
+Context:
+
+The 56 defrost On/Off buttons in `win00012_modern_no_legacy` already use the canonical `CommandConfig` Toggle path, while their color and label remain static. `ScadaEffectBlock.TextContent` already targets `[data-scada-text]`, but generated buttons do not expose that semantic descendant. TF100Web's shared tag cache also collects state references but not command-only `readTagId` and `writeTagId` dependencies.
+
+Decision:
+
+Each defrost button keeps its existing Toggle command and receives two first-match `StateConfig` rules on the same canonical PLC command bit: true applies a 70% `#12B729` filter and `ACTIF`; false applies a 70% `#E53935` filter and `ARRÊTÉ`. Generated and editor button DOM wraps the label in `[data-scada-text]`, allowing the existing `EffectApplier` to own dynamic text for every element type. TF100Web extends only `_collectRequiredMappingIds()` so command read/write tag ids join state and value-binding dependencies in the existing deduplicated snapshot pipeline.
+
+Consequences:
+
+Visual state follows the confirmed polled PLC value after writes; no optimistic local state, second poller, second dispatcher, button-specific text field, or alternate write path is introduced. A Toggle remains functional even without a `StateConfig` because its command dependency is collected directly.
+
+Regression coverage:
+
+`tests/ScadaBuilderV2.Tests/Win00012DefrostToggleConfigurationTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`, `tests/runtime-js/state-engine.test.mjs`, and `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py`.

@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Known Gaps
 
-Date: 2026-07-15
+Date: 2026-07-16
 Status: Active known gaps register
-Document version: `V2.1.4.0039`
+Document version: `V2.1.4.0043`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0043` | `PENDING` | Retrait du gap Etat/Commande TF100Web : runtime package partage deploye et initialise, mappings de commande collectes; les anciennes actions popup/lifecycle restent distinctes. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | `DEC-0042` est implemente et valide localement; polling/ecriture/gestes et permissions sur mappings industriels reels restent un gate de livraison autorise. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Smoke correctif Tableau/verrou reussi sur copie isolee; le gate performance WebView2 64 x 64 plus large de `DEC-0040` demeure distinct. Baseline : 618 reussites et 5 echecs historiques non lies. |
 | 2026-07-15 | `V2.1.4.0028` | `c873744` | Les quatre blocages de validation des surfaces fondamentales ont été corrigés; le smoke WPF/WebView2 complet demeure le seul gate Tableau/verrou restant. |
@@ -45,11 +46,11 @@ Document version: `V2.1.4.0039`
 5. Expression binding and SCADA Builder-side tag creation remain roadmap. Local tag creation depends on a future project protocol import revision.
 6. The final `FT100`, `TF100Web`, and `tf100-web` naming convention remains to be decided.
 7. Sanitized-source approval for divergent pages such as `win00008` remains unresolved.
-8. TF100Web commit `3c795c2` extracts only page root fragments and does not execute SCADA Builder exporter-emitted page scripts. TF100Web now handles `.sb2` `ValueBindings` as host-side binding events and interprets `DisplayFormat` hash masks, but exporter-side lifecycle, popup, condition page-script evaluation, border/effect, and other non-navigation action runtimes remain TF100Web parity gaps until host-side handlers or page-script execution exist.
-9. `.sb2` archive export validates import/package compatibility only. It does not make TF100Web execute SCADA Builder page scripts that remain outside the extracted root fragment.
+8. TF100Web commit `29ebd35` still extracts only page root fragments, but it deploys and loads the package shared runtime independently and initializes `StateConfig`/`CommandConfig` on composed fragments. Inline exporter scripts remain excluded; lifecycle, popup and legacy non-navigation action families therefore remain parity gaps until their host handlers or a controlled inline-script contract exist.
+9. `.sb2` archive export validates import/package compatibility and transports the shared runtime. It does not make TF100Web execute inline page scripts that remain outside the extracted root fragment.
 10. Manual UI validation of the new Pages and Diagnostics surfaces on an isolated project copy remains pending; launching the current shell would open the protected real reference project. Automated WPF surface contracts and the temporary-project lifecycle test are green.
 11. Page folders, drag-and-drop ordering, reusable page templates beyond `Blank`, and role-based page permissions remain later slices. The command gate and stable identity model are extension points, not claims that these features are complete.
-12. The full test suite currently reports 645 passed and 5 pre-existing unrelated failures (`Ft100ExportPrefersReferenceHtmlSourceBeforeRawFallback`, `LegacyContextMenuExposesElementStudioCommand`, `ModernDoubleClickOpensWpfPropertiesDialog`, `ReadOnlyNumericElementsRenderDisplayFormatWhenValueIsMissing`, `ScadaBuilderLaunchesStudioFromProjectInDevelopmentToAvoidStaleBinaries`). The targeted `DEC-0042` suites are green.
+12. The full test suite currently reports 661 passed and 5 pre-existing unrelated failures (`Ft100ExportPrefersReferenceHtmlSourceBeforeRawFallback`, `LegacyContextMenuExposesElementStudioCommand`, `ModernDoubleClickOpensWpfPropertiesDialog`, `ReadOnlyNumericElementsRenderDisplayFormatWhenValueIsMissing`, `ScadaBuilderLaunchesStudioFromProjectInDevelopmentToAvoidStaleBinaries`). The targeted `DEC-0044` suites are green.
 13. Numeric Table cell bindings are proven through generated 2.2 package intake and a 2.1 compatibility package in the dedicated local WSL configuration. Polling, POST feedback, focus/Enter/blur/Escape semantics and operator permissions still require an explicitly authorized TF100Web environment with real mappings before delivery closure.
 13. `DEC-0040` code and automated slices are complete. Release measurements on the current machine record model/HTML initial rendering at 367,556 ms, selection inspection p95 at 12,403 ms and Domain resize p95 at 0,023 ms over 100 samples. The focused `DEC-0041` WPF/WebView2 smoke passed on an isolated copy; the separate 64 x 64 browser-composition performance gate remains pending, and automated values must not be presented as WebView2 timings.
 
@@ -60,6 +61,8 @@ Known gaps must not be documented as implemented behavior.
 ## 3. TF100Web Event Parity Backlog
 
 The following items are the active correction backlog for TF100Web after the `.sb2` binding-event intake slice:
+
+State/Command polling, AST evaluation, effects, Toggle reads and writes use the implemented shared runtime and are no longer part of this backlog.
 
 1. Validate `ReadTag` production behavior on `win00007 / Element+ Text20 / tf100.mapping.180`.
 2. Identify a writeable production candidate for `WriteTag` / `Ecrire valeur` and verify `data-scada-write-mapping-id` when read and write mappings differ.

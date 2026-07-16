@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active runtime package contract
-Document version: `V2.1.4.0039`
+Document version: `V2.1.4.0043`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0043` | `PENDING` | Runtime Etat/Commande partage confirme : runtime package deploye, fragments initialises, mappings de commande collectes et texte de bouton cible via `[data-scada-text]`. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | Manifest 2.2 et `Objects[].TableCellBindings` implementes; TF100Web accepte 2.1/2.2, cible le `<td>` page-scope et reutilise l'input numerique enfant. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Le Tableau Element+ est exporte dans le HTML/CSS de page du contrat `.sb2` existant; les inputs cellule restent locaux et les artefacts editeur sont exclus. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Confirmation du contrat réel TF100Web pour les styles Element+ : HTML/CSS opaque, manifest PascalCase, runtime HTML camelCase et preuve de conservation après déploiement. |
@@ -104,7 +105,7 @@ SCADA Builder V2 packages this folder as a `.sb2` archive for direct FT100 uploa
 
 ## 3. Current TF100Web Intake Contract
 
-Audit source: `F:\Projet\Git\TF100Web`, branch `implementation_scada_builder`, commit `3c795c2`.
+Audit source: `F:\Projet\Git\TF100Web`, branch `codex/adding-table-cell-numeric-input`, commit `29ebd35`.
 
 TF100Web currently consumes SCADA Builder V2 packages through these Django/runtime files:
 
@@ -135,11 +136,12 @@ The active TF100Web intake contract is:
 16. TF100Web injects `--ft100-scada-width` and `--ft100-scada-height` CSS variables onto each extracted page root and onto the host.
 17. TF100Web serves page navigation through a JSON endpoint that returns the extracted fragment, CSS URLs, dimensions, actions, and warnings for a requested page id.
 18. The station visualisation page activates this runtime only when the station type is `SCADA_BUILDER_2`.
-19. TF100Web's active browser runtime handles `Navigate` actions from `data-scada-events`, legacy same-package page links, and binding events resolved from manifest `ValueBindings`.
-20. TF100Web extracts and renders the page root fragment only. Scripts emitted after the exported page root in `<page-id>.html`, including SCADA Builder's `window.scadaBuilderRuntime`, popup runtime, condition runtime, tag push runtime, and visual-effect runtime, are not executed by the current TF100Web intake path.
+19. TF100Web's active browser runtime handles `Navigate` actions from `data-scada-events`, legacy same-package page links, binding events resolved from manifest `ValueBindings`, and the shared package `StateEngine`/`CommandDispatcher` runtime.
+20. TF100Web extracts and renders the page root fragment only, but `deploy_scada_builder` also installs the package `scada-runtime.*.js` as `static/scada/js/scada-runtime.js`. The station template loads that shared runtime and `visualisation_import.js` initializes it on each composed fragment. Inline scripts emitted after the page root remain outside fragment execution; this no longer blocks `data-scada-state-config` or `data-scada-command-config`.
 21. TF100Web runtime value display/write is driven by TF100Web-injected `data-scada-role`, `data-scada-mapping-id`, `data-scada-write-mapping-id`, `data-scada-writeable`, `data-scada-writable`, `data-scada-format`, and related mapping attributes. `data-scada-format` supports `fixed:n` and hash masks made of `#` plus an optional decimal point. TF100Web first reads the canonical manifest value `Objects[].Data.DisplayFormat`; for legacy `.sb2` packages generated before that field was exported, it may fall back to an initial hash-mask text content such as `###.#`.
 22. TF100Web derives those mapping attributes from SCADA Builder V2 `ValueBindings.ReadTagId` / `ValueBindings.WriteTagId`, legacy `Binding`, `RuntimeBinding`, `Bindings`, `RuntimeBindings`, `TagBinding`, manual page bindings, or `scada-runtime-overrides.json`.
 23. TF100Web exports tags to SCADA Builder V2 through the `tf100web-scada-tags-v1` JSON schema from `frontend/scada_tags.py`.
+24. `ScadaTagCache` collects and deduplicates mapping dependencies from value-binding attributes, state configuration tag ids, and command `readTagId`/`writeTagId` fields before requesting snapshots. `TagBridge`, `StateEngine` and `CommandDispatcher` consume the same cache; command writes continue through the single `tf100webScadaBuilder.writeTag` bridge.
 
 ## 4. Element+ Style Transport Contract
 
@@ -170,6 +172,8 @@ SCADA Builder V2 and TF100Web do not currently have identical event coverage. Th
 | `ReadTag` / `Lire valeur` binding event | Implemented through `ValueBindings.ReadTagId` | Functional through TF100Web host mapping refresh after `.sb2` intake | TF100Web resolves `tf100.mapping.<id>` to `RegisterMapping` and injects `data-scada-mapping-id` | Production validation on `win00007 / Element+ Text20 / tf100.mapping.180`. |
 | `WriteTag` / `Ecrire valeur` binding event | Implemented through `ValueBindings.WriteTagId` | Functional for writable mappings and writable input Element+ objects | TF100Web uses `data-scada-write-mapping-id` when read/write mappings differ | Add or identify a production candidate with a writeable mapping and verify POST behavior on the unit. |
 | Legacy `Binding`, `RuntimeBinding`, `TagBinding`, and overrides | Compatibility only | Functional as TF100Web compatibility paths | TF100Web still reads legacy binding shapes and `scada-runtime-overrides.json` | Do not use as the primary SCADA Builder V2 acceptance path. |
+| Etat `StateConfig` | Implemented | Functional through shared package runtime | `ScadaTagCache -> TagBridge -> StateEngine -> EffectApplier`; canonical `tf100.mapping.*` AST refs | Keep runtime JS and composed-fragment initialization regressions. |
+| Commande `CommandConfig` (`WriteTag` Toggle included) | Implemented | Functional through shared package runtime | Command read/write mappings are collected and `CommandDispatcher` uses the existing `writeTag` bridge | Validate operator permissions and PLC feedback in the authorized industrial environment. |
 | Lifecycle bridge | Exported by SCADA Builder page script | Not active in current TF100Web fragment intake | Scripts outside the extracted root are not executed | Implement host-side lifecycle emission or execute the exporter runtime script safely. |
 | Popup open/close/toggle and popup options | Exported by SCADA Builder page script | Not active in current TF100Web fragment intake | `MountFragment`, `ClosePopup`, `TogglePopup`, `PopupOptions` are exporter-side behavior | Add TF100Web host handlers for popup actions and fragment mounting. |
 | Visibility actions | Exported by SCADA Builder page script | Not active in current TF100Web fragment intake | `Show`, `Hide`, `ToggleVisibility` actions are present in manifests | Add TF100Web host dispatcher for non-navigation action kinds. |
@@ -177,9 +181,9 @@ SCADA Builder V2 and TF100Web do not currently have identical event coverage. Th
 | Action conditions and condition groups | Exported by SCADA Builder page script | Not active in current TF100Web fragment intake for host-handled actions | Conditions rely on tag cache and exporter runtime evaluation | Add host-side condition evaluation before dispatching actions. |
 | Custom/page scripts | Roadmap or exporter-controlled depending on source | Not active in current TF100Web fragment intake | No safe host execution contract is active | Decide between controlled script execution and explicit host-side handlers. |
 
-## 6. Next TF100Web Event Tranche Plan
+## 6. Current And Next TF100Web Event Tranches
 
-The next implementation tranche should be prepared in this order:
+The State/Command tranche is implemented without a parallel host dispatcher: TF100Web deploys the shared package runtime, initializes composed fragments, feeds its tag cache and retains one write bridge. The next legacy action tranche should be prepared in this order:
 
 1. Lock production evidence for the binding-event fix:
    - Upload a fresh `.sb2` through TF100Web.
@@ -210,19 +214,17 @@ The next implementation tranche should be prepared in this order:
 
 SCADA Builder V2 currently exports more runtime behavior than TF100Web executes through its active fragment intake.
 
-The following SCADA Builder V2 export capabilities are implemented and regression-covered on the exporter side, but are not proven as active TF100Web behavior until TF100Web either executes the exported page script or implements equivalent host-side handlers:
+The following legacy SCADA Builder V2 export capabilities are implemented and regression-covered on the exporter side, but are not proven as active TF100Web behavior until TF100Web either executes the relevant inline page script or implements equivalent host-side handlers:
 
 1. `window.scadaBuilderRuntime` lifecycle bridge.
-2. Exporter page-script `window.scadaBuilderSetTagValue` and `scada-builder-tag-value` bridge when relying on scripts outside the extracted root. TF100Web host-side mapping refresh/write now covers `.sb2` binding events resolved from `ValueBindings`.
-3. `window.tf100webScadaBuilder.writeTag` / `getTagValue` integration hooks from the exported page script.
-4. Popup fragment open, close, toggle, and host-region runtime behavior.
-5. Visibility, border, class/effect actions other than `Navigate`.
-6. Compound condition evaluation from exported actions.
+2. Popup fragment open, close, toggle, and host-region runtime behavior from legacy actions.
+3. Visibility, border, class/effect actions other than `Navigate` and the model-backed `StateConfig` effects.
+4. Compound condition evaluation from legacy exported actions; `StateConfig` AST evaluation is active.
 
 Until that integration is implemented, SCADA Builder V2 documentation must distinguish:
 
 1. Exporter contract: what `Ft100SceneExporter` writes.
-2. TF100Web intake contract: what `F:\Projet\Git\TF100Web` commit `3c795c2` validates, extracts, serves, and executes.
+2. TF100Web intake contract: what `F:\Projet\Git\TF100Web` commit `29ebd35` validates, extracts, serves, and executes.
 3. Parity gaps: exported runtime behavior not executed by the current TF100Web host.
 
 ## 8. Package Flow
@@ -233,6 +235,7 @@ flowchart TD
   Exporter --> RootManifest[root manifest.json]
   Exporter --> PageHtml[page-id/page-id.html]
   Exporter --> PageCss[page-id/css/page-id.css]
+  Exporter --> Runtime[scada-runtime.hash.js]
   Exporter --> Assets[page-id/images]
   RootManifest --> TF100Web[TF100Web intake]
   PageHtml --> RootFragment[div id ft100-page-id fragment]
@@ -241,7 +244,11 @@ flowchart TD
   Assets --> TF100Web
   Package --> Sb2[.sb2 zip archive]
   Sb2 --> TF100Web
-  PageHtml -. script outside extracted root not executed by current TF100Web intake .-> Gap[TF100Web runtime parity gap]
+  Runtime --> DeployRuntime[TF100Web static scada-runtime.js]
+  DeployRuntime --> TF100Web
+  TF100Web --> Init[Initialize composed fragments]
+  Init --> StateCommand[Shared StateEngine and CommandDispatcher]
+  PageHtml -. inline scripts outside extracted root remain excluded .-> Gap[Legacy action parity gap]
 ```
 
 ## 9. Related Decisions

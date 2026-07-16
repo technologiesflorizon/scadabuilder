@@ -1,21 +1,22 @@
 # Element+ State & Command Runtime Contract (V1)
 
-Date: 2026-07-07
-Status: Contract specification — NOT YET IMPLEMENTED by TF100Web
-Document version: `V2.1.2.0023`
-Owner: SCADA Builder V2 authoring team (this document). Implementation owner: TF100Web team (F:\Projet\Git\TF100Web), future iteration.
+Date: 2026-07-16
+Status: Active implemented runtime contract
+Document version: `V2.1.4.0043`
+Owner: SCADA Builder V2 authoring team. Runtime implementation owner: TF100Web team (`F:\Projet\Git\TF100Web`).
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0043` | `PENDING` | Contrat Etat/Commande confirme dans TF100Web : runtime partage deploye, mappings Etat/Commande collectes, boutons avec cible texte semantique et 56 toggles de degivrage configures. |
 | 2026-07-07 | `V2.1.2.0023` | `PENDING` | Creation du contrat runtime state/command V1 (specification, non implemente). |
 
 ## 1. Purpose
 
 Defines the serialized format and evaluation semantics that TF100Web must implement to
 render Element+ display-state rules and execute Element+ commands at runtime. SCADA
-Builder V2 authors and validates this data; TF100Web is the sole runtime consumer.
+Builder V2 authors and validates this data; TF100Web is the deployed runtime consumer.
 
 Design source: `docs/superpowers/specs/2026-07-07-element-plus-state-command-events-design.md`.
 
@@ -55,9 +56,13 @@ Design source: `docs/superpowers/specs/2026-07-07-element-plus-state-command-eve
 ```
 
 Effect block properties (`backgroundColor`, `borderColor`, `borderWidth`, `textColor`,
-`textContent`, `textVisible`, `elementVisible`, `opacity`, `rotation`, `animation`) are all
+`textContent`, `textVisible`, `elementVisible`, `opacity`, `rotation`, `animation`,
+`colorFilterColor`, `colorFilterOpacity`, `colorFilterHalo`, `colorFilterHaloColor`) are all
 optional; an absent/null property means "leave current appearance unchanged for this
 property" — TF100Web must not default it, only skip applying it.
+
+`textContent` targets a descendant marked `[data-scada-text]`. Text and button renderers
+use this same semantic target; TF100Web does not maintain a button-specific text branch.
 
 ## 3. Expression AST format
 
@@ -129,6 +134,14 @@ past is not null.
 
 ## 7. Implementation status
 
-Not implemented. This document specifies the contract for a future TF100Web-side
-implementation iteration. Do not mark any section of this contract "Implemented" until
-TF100Web code exists and is tested against it.
+Implemented by the shared package runtime deployed by TF100Web. The active chain is
+`ScadaTagCache -> TagBridge -> StateEngine / CommandDispatcher -> EffectApplier / writeTag`.
+TF100Web loads `static/scada/js/scada-runtime.js`, initializes each composed fragment and
+polls the mappings referenced by value bindings, `data-scada-state-config` and
+`data-scada-command-config`. State, command and binding ids are normalized and deduplicated
+before each snapshot request.
+
+`DEC-0044` validates the contract on 56 `win00012_modern_no_legacy` defrost buttons. Their
+true/false states drive green/red 70% filters and `ACTIF`/`ARRÊTÉ` labels from the confirmed
+PLC bit. Toggle writes continue through the existing TF100Web bridge and are reflected only
+after the shared snapshot reports the resulting value.

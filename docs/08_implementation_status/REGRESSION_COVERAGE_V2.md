@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active regression coverage map
-Document version: `V2.1.4.0042`
+Document version: `V2.1.4.0043`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0043` | `PENDING` | Ajout de la couverture `DEC-0044` pour les 56 toggles, le texte semantique exporte, les effets true/false et la collecte TF100Web des mappings de commande. |
 | 2026-07-16 | `V2.1.4.0042` | `9fd2a30` | Regression `page.properties` : ouverture, activation et selection de la page cible sans mutation, dirty state ni historique; suite complete 659/664 avec cinq echecs historiques inchanges. |
 | 2026-07-16 | `V2.1.4.0041` | `6afe427` | Couverture `DEC-0043` pour A1, provenance de selection, commande/dialogue unique, fallback Lire/Ecrire, double-clic, round-trip/export et smoke isole; suite complete 658/663 avec cinq echecs historiques inchanges. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | Couverture `DEC-0042` Domain/Application/WPF/rendu/export/validation et intake TF100Web; suite SCADA 645/650 avec cinq echecs historiques inchanges. |
@@ -124,6 +125,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Element+ disabled button runtime state | `Ft100SceneExporterTests.ExportWritesDisabledButtonRuntimeStateAndOmitsHoverCss` |
 | Element+ standard button activation runtime events | `Ft100SceneExporterTests.ExportWritesStandardButtonActivationRuntimeEvents` |
 | Element+ button preview/export metadata parity | `WebViewContextMenuScriptTests.ModernButtonRendersTextAndUsesPropertyText`, `Ft100SceneExporterTests.ExportWritesToggleButtonRuntimeStateOnWrapper`, `Ft100SceneExporterTests.ExportWritesDisabledButtonRuntimeStateAndOmitsHoverCss`, `Ft100SceneExporterTests.ExportWritesStandardButtonActivationRuntimeEvents` |
+| Stateful defrost Toggle buttons (`DEC-0044`) | `Win00012DefrostToggleConfigurationTests.ReferenceScene_ConfiguresAllDefrostTogglesFromTheirConfirmedCommandBit`, `Ft100SceneExporterTests.ExportAsync_WrapsButtonLabelInDataScadaTextSpan`, `tests/runtime-js/state-engine.test.mjs`, `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py::ScadaRuntimeInitContractTests` |
 | Element+ HMI button presets and `ButtonKind` export | `OfficialSceneDomainTests.ButtonElementHasDefaultHoverUnlessExplicitlyDisabled`, `WebViewContextMenuScriptTests.InsertRibbonExposesStandardShapesAndButtons`, `WebViewContextMenuScriptTests.ModernButtonRendersTextAndUsesPropertyText`, `ModernProjectStoreTests.SaveAndReloadPreservesPageManifestBackgroundAndObjectEvents`, `Ft100SceneExporterTests.ExportWritesDjangoManifestAndObjectOwnedClickNavigateAction` |
 | Element+ advanced style opacity and rotation | `OfficialSceneDomainTests.InputTextElementHasEditableStyleAndDataDefaults`, `WebViewContextMenuScriptTests.ElementPropertiesExposeAdvancedShapeStyleFields`, `ModernProjectStoreTests.SaveAndReloadPreservesPageManifestBackgroundAndObjectEvents`, `Ft100SceneExporterTests.ExportRendersStandardShapeElementAsScopedSvg` |
 | Element+ rotation handle and context menu presets | `WebViewContextMenuScriptTests.LegacyViewerMessageExposesRotationField`, `WebViewContextMenuScriptTests.MainWindowHandlesRotationMessageAndNormalizesAngle`, `WebViewContextMenuScriptTests.NeHandleIsRepurposedForRotationDrag`, `WebViewContextMenuScriptTests.RotationDragShowsLiveAngleBadge`, `WebViewContextMenuScriptTests.ContextMenuOffersRotationPresetsForSingleElementPlusSelection`, `WebViewContextMenuScriptTests.ContextMenuCustomRotationOpensValidatedInlineInput`, `WebViewContextMenuScriptTests.CustomRotationCleanupDetachesBlurListenerBeforeHidingInput` |

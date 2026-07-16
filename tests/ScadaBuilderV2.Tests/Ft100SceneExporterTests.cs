@@ -2552,6 +2552,56 @@ public sealed class Ft100SceneExporterTests
     }
 
     [TestMethod]
+    public async Task ExportAsync_WrapsButtonLabelInDataScadaTextSpan()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var sourceRoot = Path.Combine(root, "source");
+        var exportRoot = Path.Combine(root, "export");
+        Directory.CreateDirectory(sourceRoot);
+
+        var sourceHtmlPath = Path.Combine(sourceRoot, "button_text_span_test.html");
+        await File.WriteAllTextAsync(sourceHtmlPath, "<html><body><div class=\"page\"></div></body></html>");
+
+        var element = new ScadaElement(
+            "button_state_001",
+            "Defrost toggle",
+            ScadaElementKind.Button,
+            new SceneBounds(10, 20, 100, 30),
+            null,
+            ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultInput,
+            new ScadaElementData("ON & OFF", null, null, null, null, null, null, null, null, false),
+            StateConfig: new ScadaElementStateConfig(
+                ScadaElementStateConfig.Default.QualityFallback,
+                ScadaEffectBlock.Empty,
+                [new ScadaStateRule(
+                    "active",
+                    "Actif",
+                    true,
+                    ScadaExpression.FromSource("true"),
+                    new ScadaEffectBlock(TextContent: "ACTIF"))]));
+
+        var scene = ScadaScene.CreateEmpty("win_button", "Button", new(320, 200)).WithElement(element);
+
+        try
+        {
+            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+            var html = await File.ReadAllTextAsync(result.HtmlPath);
+
+            StringAssert.Contains(html, "<button type=\"button\"");
+            StringAssert.Contains(html, "<span data-scada-text>ON &amp; OFF</span></button>");
+            StringAssert.Contains(html, "data-scada-state-config=\"");
+        }
+        finally
+        {
+            if (Directory.Exists(root))
+            {
+                Directory.Delete(root, recursive: true);
+            }
+        }
+    }
+
+    [TestMethod]
     public async Task ExportAsync_IncludesReadVariableAndColorFilterInManifestAndHtml()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

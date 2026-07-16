@@ -1579,7 +1579,7 @@ public sealed partial class Ft100SceneExporter
         var disabled = element.EffectiveButtonBehavior.IsDisabled
             ? " disabled aria-disabled=\"true\""
             : "";
-        return $"""<button type="button" data-scada-button-kind="{buttonKind}"{disabled} style="width:100%;height:100%;box-sizing:border-box;font:inherit;color:inherit;background:transparent;border:0;">{label}</button>""";
+        return $"""<button type="button" data-scada-button-kind="{buttonKind}"{disabled} style="width:100%;height:100%;box-sizing:border-box;font:inherit;color:inherit;background:transparent;border:0;"><span data-scada-text>{label}</span></button>""";
     }
 
     private static string BuildInput(ScadaElement element, string type)
