@@ -2,13 +2,14 @@
 
 Date: 2026-07-16
 Status: Active implemented runtime contract
-Document version: `V2.1.4.0043`
+Document version: `V2.1.4.0046`
 Owner: SCADA Builder V2 authoring team. Runtime implementation owner: TF100Web team (`F:\Projet\Git\TF100Web`).
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0046` | `PENDING` | `DEC-0047` approuvee : couverture exhaustive de chaque trigger/kind/mode/expression/effet et migration des actions vers l'executeur partage unique. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Contrat Etat/Commande confirme dans TF100Web : runtime partage deploye, mappings Etat/Commande collectes, boutons avec cible texte semantique et 56 toggles de degivrage configures. |
 | 2026-07-07 | `V2.1.2.0023` | `PENDING` | Creation du contrat runtime state/command V1 (specification, non implemente). |
 
@@ -145,3 +146,5 @@ before each snapshot request.
 true/false states drive green/red 70% filters and `ACTIF`/`ARRÊTÉ` labels from the confirmed
 PLC bit. Toggle writes continue through the existing TF100Web bridge and are reflected only
 after the shared snapshot reports the resulting value.
+
+This implementation status is limited to the covered State/Toggle path. `DEC-0047` is the pending general conformance gate for every enum variant. In particular, all five triggers, seven command kinds, four write modes, all AST nodes/operators/functions and all effect fields require table-driven evidence. A variant without that evidence is not considered generally supported and must be blocked by manifest 2.3 negotiation.

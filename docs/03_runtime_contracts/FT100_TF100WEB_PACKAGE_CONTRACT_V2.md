@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active runtime package contract
-Document version: `V2.1.4.0045`
+Document version: `V2.1.4.0046`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0046` | `PENDING` | `DEC-0047` approuvee : cible manifest 2.3 avec capabilities requises, hash runtime et rejet strict des gaps; 2.2 demeure actif jusqu'a implementation. |
 | 2026-07-16 | `V2.1.4.0045` | `PENDING` | `DEC-0046` approuvee : contrat cible latest-wins et hydratation obligatoire; la course de `9d5d400` demeure un gap jusqu'a implementation. |
 | 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | `DEC-0045` : effets Etat reversibles, overlay sous le contenu, snapshot initial force et ValueBinding numerique commun pour Element+ et cellules Tableau. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Runtime Etat/Commande partage confirme : runtime package deploye, fragments initialises, mappings de commande collectes et texte de bouton cible via `[data-scada-text]`. |
@@ -145,6 +146,8 @@ The active TF100Web intake contract is:
 23. TF100Web exports tags to SCADA Builder V2 through the `tf100web-scada-tags-v1` JSON schema from `frontend/scada_tags.py`.
 24. `ScadaTagCache` collects and deduplicates mapping dependencies from canonical value-binding attributes, resolved `data-scada-mapping-id`/`data-scada-write-mapping-id` attributes, state configuration tag ids, and command `readTagId`/`writeTagId` fields before requesting snapshots. `TagBridge`, `StateEngine`, numeric ValueBindings and `CommandDispatcher` consume the same cache; all writes continue through the single `tf100webScadaBuilder.writeTag` bridge. The current `9d5d400` forced-first-snapshot implementation has a confirmed `pollInFlight` race and must not be treated as reliable navigation hydration.
 25. Approved target under `DEC-0046`, pending TF100Web implementation: body navigation is generation-owned and latest-wins. Stale page/snapshot results cannot mutate DOM, dimensions, history or loading state. Every accepted composed DOM awaits a forced hydration that recomputes current dependencies and notifies the shared runtime even when cached values are unchanged. A forced request made during an in-flight poll is queued or coalesced, never silently discarded.
+26. Approved target under `DEC-0047`, pending implementation: manifest 2.3 adds a root `RuntimeContract` with version, sorted `RequiredCapabilities` and packaged runtime SHA-256. TF100Web must reject unsupported requirements before activating the package. Manifest 2.2 remains the active emitted/deployed contract until the ordered TF100Web-first implementation completes.
+27. Under the 2.3 target, expression, state, effect, command, action and condition semantics execute only in the shared package runtime. TF100Web supplies host adapters for composition, navigation/history, popup mounting, snapshots/quality, permissions/write, URL policy and diagnostics. A host-side duplicate semantic engine is forbidden.
 
 ## 4. Element+ Style Transport Contract
 
@@ -254,6 +257,8 @@ flowchart TD
   Init -. current 9d5d400 pollInFlight race .-> HydrationGap[New DOM may miss forced hydration]
   HydrationGap -. DEC-0046 pending .-> NavigationEpoch[Latest-wins generation and hydration barrier]
   NavigationEpoch --> StateCommand
+  RootManifest -. DEC-0047 pending RuntimeContract .-> CapabilityGate[TF100Web capability and runtime hash gate]
+  CapabilityGate --> Init
   PageHtml -. inline scripts outside extracted root remain excluded .-> Gap[Legacy action parity gap]
 ```
 
@@ -279,6 +284,8 @@ flowchart TD
 18. `DEC-0028` - Nonblocking FT100 .sb2 Export Feedback.
 19. `DEC-0029` - TF100Web Host Intake For SCADA Builder Binding Events.
 20. `DEC-0030` - Element+ Data Tab Active Numeric Display Contract.
+21. `DEC-0046` - Latest Navigation Wins And Every Accepted DOM Is Hydrated.
+22. `DEC-0047` - Versioned Runtime Capabilities And One Semantic Executor.
 
 ## 10. Related Tests
 

@@ -1,13 +1,14 @@
 # Cycle de navigation TF100Web et performance des pages - Plan d'implementation
 
 Date: 2026-07-16
-Status: Draft implementation plan - pending execution approval
-Document version: `V2.1.4.0045`
+Status: Superseded implementation plan - folded into general runtime conformance plan
+Document version: `V2.1.4.0046`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0046` | `PENDING` | Plan remplace par `2026-07-16-scada-v2-tf100web-runtime-conformance.md`; les tasks navigation/performance y demeurent obligatoires. |
 | 2026-07-16 | `V2.1.4.0045` | `PENDING` | Plan cross-repository pour le cycle latest-wins, l'hydratation obligatoire, la performance serveur et l'acceptation exhaustive des quatre pages. |
 
 **Goal:** Eliminer definitivement les courses navigation/polling et garantir tous les comportements authorés de `win00003`, `win00004`, `win00008` et `win00012_modern_no_legacy` avec des temps de composition observables.
@@ -23,7 +24,7 @@ Document version: `V2.1.4.0045`
 - Repositories: SCADA Builder V2 pour contrats/package de reference; `F:\Projet\Git\TF100Web` pour l'implementation runtime et serveur.
 - Ne pas creer de second poller, dispatcher, bridge d'ecriture ou chemin Tableau.
 - Ne pas vider le cache de valeurs PLC par principe; invalider le travail, les dependances et le DOM obsoletes.
-- Ne pas fabriquer le mapping manquant `YL_E12_HDEG4`.
+- Traiter `YL_E12_HDEG4` absent par fallback qualite non bloquant; ne pas fabriquer de mapping.
 - Les tests d'ecriture industrielle sont bloques sans fenetre et valeurs de test explicitement autorisees.
 - Les changements projet utilisateur deja presents dans le worktree Builder ne sont pas stages.
 
@@ -44,7 +45,7 @@ Document version: `V2.1.4.0045`
 - [ ] Mesurer froid/chaud les endpoints page et snapshot pour les quatre pages.
 - [ ] Capturer la reproduction `08 -> 12 -> 08`, incluant DOM, overlays, valeurs, historique et requetes.
 - [ ] Auditer l'inventaire exact des commandes, etats, bindings et compositions contre le `.sb2`.
-- [ ] Confirmer que `YL_E12_HDEG4` est absent ou fournir le nouvel export officiel qui le contient.
+- [ ] Confirmer que `YL_E12_HDEG4` absent produit le fallback qualite et un diagnostic sans bloquer les autres comportements.
 - [ ] Definir avec l'exploitant la fenetre et les valeurs sans danger pour les tests d'ecriture PLC.
 
 **Gate:** Aucune ecriture industrielle avant autorisation. La correction client/serveur et les tests locaux peuvent avancer sans ce gate.
@@ -187,7 +188,7 @@ python manage.py check
 - [ ] Verifier les 8 etats, 2 lectures variables et 1 input lecture/ecriture de `win00008`.
 - [ ] Verifier les 56 Toggles, 56 etats, 56 heures et 70 consignes de `win00012_modern_no_legacy`.
 - [ ] Verifier que toutes les references de tags se resolvent dans l'export officiel.
-- [ ] Faire echouer explicitement le gate tant que `YL_E12_HDEG4` n'existe pas dans le catalogue officiel.
+- [ ] Verifier explicitement le fallback qualite et le diagnostic lorsque `YL_E12_HDEG4` est absent.
 - [ ] Verifier que le petit input temperature exterieure reste declare non lie, sans mapping implicite.
 
 **Validation:**
@@ -199,7 +200,7 @@ python manage.py test frontend.tests_scada_package
 
 **Commit Builder:** `test: lock reference scada page behavior contracts`
 
-### Task 8: Resoudre le gate catalogue et regenerer seulement si necessaire
+### Task 8: Valider le comportement mapping absent
 
 **Files:**
 - Input: nouvel export officiel `tf100web-scada-tags-v1`
@@ -208,13 +209,12 @@ python manage.py test frontend.tests_scada_package
 
 **Interfaces:** Le mapping vient de TF100Web/apres correction automate, puis est importe par le workflow catalogue normal.
 
-- [ ] Recevoir un export officiel contenant `YL_E12_HDEG4`.
-- [ ] Importer/dedupliquer le catalogue et confirmer access/datatype/mapping.
-- [ ] Corriger la reference du bouton E-12 periode 4 si l'id officiel differe de 615.
-- [ ] Exporter et valider le `.sb2`; comparer l'inventaire avant/apres.
-- [ ] Ne pas modifier d'autres bindings du projet par effet de bord.
+- [ ] Conserver l'absence officielle comme fixture de qualite degradee.
+- [ ] Verifier fallback visuel, diagnostic et absence d'ecriture pour cette seule commande.
+- [ ] Verifier que les 55 autres Toggles et 126 bindings continuent de fonctionner.
+- [ ] Si un futur export officiel ajoute le tag, l'importer par le workflow normal sans migration speciale.
 
-**Gate:** Sans tag officiel, la livraison peut corriger la course mais ne peut pas etre declaree « 100 % » pour les 56 Toggles.
+**Gate:** Aucun; le mapping absent est un cas de qualite attendu du contrat general.
 
 ## Phase 5 - Documentation, deploiement et acceptance
 
@@ -231,7 +231,7 @@ python manage.py test frontend.tests_scada_package
 - Modify if coverage changes: `docs/08_implementation_status/REGRESSION_COVERAGE_V2.md`
 
 - [ ] Remplacer les statuts pending uniquement apres tests et commits reels.
-- [ ] Inscrire hashes Builder/TF100Web, resultats, timings froid/chaud et gate catalogue.
+- [ ] Inscrire hashes Builder/TF100Web, resultats, timings froid/chaud et diagnostic du mapping absent.
 - [ ] Ne retirer le gap navigation qu'apres smoke aller-retour reussi.
 - [ ] Executer verification docs et `git diff --check` dans les deux repositories.
 
@@ -243,7 +243,7 @@ python manage.py test frontend.tests_scada_package
 2. Executer migration uniquement si le code en ajoute une; sinon aucune migration.
 3. Executer `collectstatic`, invalider les caches de composition et redemarrer `tf100web.service`.
 4. Verifier les hashes JS et la generation de package servis.
-5. Importer/deployer le nouveau `.sb2` seulement si le gate catalogue a necessite un nouvel export.
+5. Deployer un nouveau `.sb2` seulement lorsque son contenu projet change; le mapping absent seul ne force pas un export.
 6. Executer les smokes lecture/navigation, puis les ecritures dans la fenetre autorisee.
 
 **Production acceptance:**
@@ -251,7 +251,7 @@ python manage.py test frontend.tests_scada_package
 - [ ] `win00003`: 8/8 destinations et retour/avance.
 - [ ] `win00004`: composition complete et footer 8/8 apres aller-retour.
 - [ ] `win00008`: 8/8 etats, 2/2 lectures variables, 1/1 input lecture/ecriture apres chargement frais et retour de `win00012`.
-- [ ] `win00012_modern_no_legacy`: 56/56 Toggles, 56/56 heures et 70/70 consignes, avec readback confirme.
+- [ ] `win00012_modern_no_legacy`: 55 Toggles avec mapping et le Toggle absent en fallback qualite; 56/56 heures et 70/70 consignes avec readback autorise.
 - [ ] Sequences rapides et ordre inverse: seule la derniere page gagne.
 - [ ] Aucun handler duplique, aucune reponse stale, aucune zone blanche/fallback residuel.
 - [ ] Temps serveur conformes ou ecart documente par phase.
@@ -267,5 +267,5 @@ python manage.py test frontend.tests_scada_package
 - [ ] Aucune ancienne navigation ne peut muter DOM, historique ou loading.
 - [ ] Le chemin serveur n'est plus O(fragment x bindings).
 - [ ] Les caches sont invalides par deploiement et revision catalogue.
-- [ ] `YL_E12_HDEG4` est resolu par une source officielle.
+- [ ] `YL_E12_HDEG4` absent produit le fallback qualite non bloquant attendu.
 - [ ] Tous les comportements de la matrice passent dans l'environnement autorise.

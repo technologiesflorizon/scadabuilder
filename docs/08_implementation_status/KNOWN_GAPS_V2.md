@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active known gaps register
-Document version: `V2.1.4.0045`
+Document version: `V2.1.4.0046`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0046` | `PENDING` | `DEC-0047` enregistre le gap systemique : absence actuelle de negotiation de capabilities et de preuve exhaustive; mapping absent reclasse fallback non bloquant. |
 | 2026-07-16 | `V2.1.4.0045` | `PENDING` | Ajout du gap confirme navigation/poll de TF100Web `9d5d400`, de la latence de composition et du mapping officiel manquant `YL_E12_HDEG4`. |
 | 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | Retrait du gap de code polling/gestes des cellules : chemin partage implemente; validation mappings/permissions/feedback PLC reels demeure un gate industriel. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Retrait du gap Etat/Commande TF100Web : runtime package partage deploye et initialise, mappings de commande collectes; les anciennes actions popup/lifecycle restent distinctes. |
@@ -57,7 +58,9 @@ Document version: `V2.1.4.0045`
 14. `DEC-0040` code and automated slices are complete. Release measurements on the current machine record model/HTML initial rendering at 367,556 ms, selection inspection p95 at 12,403 ms and Domain resize p95 at 0,023 ms over 100 samples. The focused `DEC-0041` WPF/WebView2 smoke passed on an isolated copy; the separate 64 x 64 browser-composition performance gate remains pending, and automated values must not be presented as WebView2 timings.
 15. TF100Web `9d5d400` has a confirmed navigation/poll race: `poll(true)` returns when `pollInFlight` is set, then unchanged cached values do not notify the newly rendered DOM. `win00008 -> win00012_modern_no_legacy -> win00008` can therefore return without state overlays or readings. `DEC-0046` is approved but pending implementation; latest-wins navigation and mandatory hydration must not be claimed active yet.
 16. Remote page composition measured approximately 6.7 s for `win00008` and 14.2 s for `win00012_modern_no_legacy`, while a 426-mapping snapshot measured approximately 0.2 s. Binding injection currently rescans a full fragment per binding. These observations require server-side profiling, single-pass/indexed injection and safe cache invalidation; cellular latency remains a separate external factor.
-17. The official `tf100web-scada-tags (3).json` audit contains 425 tags but no `YL_E12_HDEG4` or mapping 615. All 56 `win00012_modern_no_legacy` Toggle behaviors cannot be accepted until a new authoritative TF100Web tag export resolves it. A local fabricated mapping is forbidden.
+17. The official `tf100web-scada-tags (3).json` audit contains 425 tags but no `YL_E12_HDEG4` or mapping 615. This is a non-blocking quality case: deterministic fallback and diagnostics are required while all other controls remain functional. A local fabricated mapping is forbidden.
+18. Runtime coverage is not yet general. There is no typed exhaustive capability registry, manifest negotiation, shared conformance `.sb2` or CI gate proving every page/binding/state/expression/effect/command/action variant. `DEC-0047` is approved but pending; current page-specific evidence must not be presented as full SCADA Builder V2 runtime conformance.
+19. Some portable behavior remains split between shared package modules, exporter inline scripts and TF100Web host branches. Until `DEC-0047` establishes one semantic owner and blocks unsupported capabilities, new behavior risks duplicate implementation or silent fragment-intake gaps.
 
 ## 2. Rule
 

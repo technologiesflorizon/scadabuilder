@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active authoritative decision register
-Document version: `V2.1.4.0045`
+Document version: `V2.1.4.0046`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0046` | `PENDING` | Ajout de `DEC-0047` : couverture runtime generale par capabilities, negotiation manifest 2.3 et executeur semantique unique. |
 | 2026-07-16 | `V2.1.4.0045` | `PENDING` | Ajout de `DEC-0046` : navigation TF100Web latest-wins, hydratation obligatoire et acceptation exhaustive des quatre pages de reference. |
 | 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | Ajout et implementation de `DEC-0045` : transitions Etat reversibles, filtre sous le contenu et ValueBinding numerique TF100Web commun. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Ajout et implementation de `DEC-0044` : boutons de degivrage sur le pipeline Etat/Commande partage, texte semantique et collecte des mappings de commande TF100Web. |
@@ -1382,7 +1383,7 @@ Consequences:
 
 No manifest, scene schema or alternate runtime path is introduced. Client cancellation cannot guarantee that already-started server CPU work stops, so stale responses are always discarded and server composition is optimized independently. The cache preserves responsiveness without allowing stale mappings or write permissions. Production write/readback tests remain gated by an authorized industrial window.
 
-The official 425-tag catalog audited for this decision does not contain `YL_E12_HDEG4`/mapping 615. The navigation correction may ship independently, but 56/56 Toggle acceptance cannot close until a new official TF100Web export resolves that tag; no fabricated mapping is allowed.
+The official 425-tag catalog audited for this decision does not contain `YL_E12_HDEG4`/mapping 615. This is a non-blocking missing-quality case: the affected control must show deterministic quality fallback and diagnostics while all other controls continue to operate. No fabricated mapping is allowed.
 
 Implementation status:
 
@@ -1391,3 +1392,39 @@ Approved and planned; no runtime code is claimed complete. The confirmed baselin
 Regression coverage:
 
 Required in TF100Web behavioral JavaScript tests, Django composition/package/deployment suites, SCADA Builder V2 reference-page contract tests, and an authorized browser smoke covering fresh load, round trip, rapid navigation, back/forward and safe PLC readback/write.
+
+### DEC-0047 - Versioned Runtime Capabilities And One Semantic Executor
+
+Status: Active - pending implementation
+Created: 2026-07-16 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/specs/2026-07-16-scada-v2-tf100web-runtime-conformance-design.md`
+
+Context:
+
+Page-specific regressions have repeatedly exposed missing parity between SCADA Builder V2 export, the shared package runtime and TF100Web fragment intake. The Builder model currently exposes four page types, bindings, expression/state/effect variants, five command triggers, seven command kinds, four write modes and nine object action kinds. The manifest does not declare which runtime capabilities a package requires, so an intake can accept behavior it does not execute. Fixing one page at a time cannot prove the complete product contract and encourages duplicate semantic branches.
+
+Decision:
+
+SCADA Builder V2 owns a typed, exhaustive runtime capability registry. Reflection/contract tests fail whenever an exportable enum value or persistent variant is not mapped. Manifest 2.3 publishes a root `RuntimeContract` containing its contract version, sorted `RequiredCapabilities` and the packaged runtime SHA-256. Builder derives this list from the export model and validates that every emitted feature is declared.
+
+TF100Web declares `SupportedCapabilities` and rejects a 2.3 package before activation when a required capability, version or runtime hash is unsupported. Existing 2.1/2.2 packages remain under an explicitly tested compatibility profile. No new 2.3 package may rely on silent best-effort behavior.
+
+The shared package runtime is the sole owner of portable semantics: expressions, state selection, effects, `CommandConfig`, object actions and conditions. TF100Web owns host services only: composition/lifecycle, navigation/history, fragment mounting, snapshots/quality, permissions/writes, URL policy and diagnostics. Historical actions are adapted once to the canonical runtime intent; they are not reimplemented family by family in the host. `DEC-0046` latest-wins navigation and mandatory hydration are required host invariants under this general contract.
+
+A deterministic conformance `.sb2` contains one fixture per capability and a machine-readable expectation index. Builder and TF100Web consume the same artifact by SHA. Every capability marked `Supported` requires Builder, runtime and TF100Web evidence; every remaining capability is blocked before deployment.
+
+Consequences:
+
+The default new export contract advances from manifest 2.2 to 2.3 only after TF100Web support is deployed. Capability additions become deliberate contract changes rather than page fixes. The four industrial pages are integration evidence, not the capability inventory. Missing project mappings are deterministic quality/fallback cases and do not invalidate general runtime conformance.
+
+Implementation status:
+
+Approved and planned. No manifest 2.3, capability registry or unified action runtime is claimed implemented yet. `DEC-0046` remains pending and is executed as one phase of this plan.
+
+Regression coverage:
+
+Required in a generated capability matrix, reflection completeness tests, table-driven shared-runtime tests, Builder exporter/validator tests, TF100Web package/deploy/host tests, a shared conformance `.sb2`, and the four industrial page smokes.

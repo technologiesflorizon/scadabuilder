@@ -1,13 +1,14 @@
 # Cycle de navigation TF100Web et performance des pages - Specification corrective
 
 Date: 2026-07-16
-Status: Approved design - pending implementation
-Document version: `V2.1.4.0045`
+Status: Approved subordinate design - execution governed by DEC-0047
+Document version: `V2.1.4.0046`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0046` | `PENDING` | Navigation latest-wins conservee comme invariant; execution integree au contrat general `DEC-0047`; mapping absent reclasse non bloquant. |
 | 2026-07-16 | `V2.1.4.0045` | `PENDING` | Specification du cycle latest-navigation-wins, de l'hydratation obligatoire et des gates exhaustifs pour `win00003`, `win00004`, `win00008` et `win00012_modern_no_legacy`. |
 
 ## 1. Probleme confirme
@@ -123,7 +124,7 @@ SCADA Builder V2 reste proprietaire du modele, du manifest 2.2 et du runtime par
 3. Les inputs ne sont pas remplaces pendant l'edition; `Enter`, `Escape`, `blur/change`, focus, format, datatype et permissions sont respectes.
 4. Un aller-retour avec `win00008`, `win00004` ou le bouton retour navigateur rehydrate tous les etats et toutes les valeurs, meme si les valeurs PLC n'ont pas change.
 5. Les 8 commandes du footer restent fonctionnelles.
-6. `YL_E12_HDEG4` doit exister dans l'export officiel TF100Web et se resoudre vers un mapping actif avant cloture. Le catalogue officiel audite contient 425 tags et ne contient actuellement ni le mapping 615 ni ce nom; ce gate ne peut pas etre simule ou contourne par un id fabrique.
+6. `YL_E12_HDEG4` est absent du catalogue officiel audite. Ce cas doit produire le fallback qualite et un diagnostic deterministe sans bloquer les 55 autres Toggles ni la conformite runtime; aucun id ne doit etre fabrique.
 
 ### 6.5 Sequences croisees
 
@@ -152,7 +153,7 @@ Dans cette specification, « 100 % fonctionnel » signifie que chaque `Navigate`
 
 ## 9. Livraison et rollback
 
-Le correctif runtime est livre dans TF100Web, suivi de `collectstatic` et du redemarrage du service. Aucun changement de schema ou de contrat `.sb2` n'est necessaire pour la course de navigation. Un nouvel export n'est requis que si le catalogue officiel/projet est modifie pour resoudre `YL_E12_HDEG4`.
+Le correctif runtime est livre dans TF100Web, suivi de `collectstatic` et du redemarrage du service. Son execution est integree au plan general `docs/superpowers/plans/2026-07-16-scada-v2-tf100web-runtime-conformance.md`. Le mapping absent demeure un cas de qualite non bloquant.
 
 Le rollback restaure le commit TF100Web precedent, relance `collectstatic` et le service, puis purge les caches de composition. Il ne modifie ni le projet Builder ni les valeurs PLC.
 
