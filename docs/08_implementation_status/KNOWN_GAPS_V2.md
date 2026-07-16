@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active known gaps register
-Document version: `V2.1.4.0043`
+Document version: `V2.1.4.0044`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | Retrait du gap de code polling/gestes des cellules : chemin partage implemente; validation mappings/permissions/feedback PLC reels demeure un gate industriel. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Retrait du gap Etat/Commande TF100Web : runtime package partage deploye et initialise, mappings de commande collectes; les anciennes actions popup/lifecycle restent distinctes. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | `DEC-0042` est implemente et valide localement; polling/ecriture/gestes et permissions sur mappings industriels reels restent un gate de livraison autorise. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Smoke correctif Tableau/verrou reussi sur copie isolee; le gate performance WebView2 64 x 64 plus large de `DEC-0040` demeure distinct. Baseline : 618 reussites et 5 echecs historiques non lies. |
@@ -50,9 +51,9 @@ Document version: `V2.1.4.0043`
 9. `.sb2` archive export validates import/package compatibility and transports the shared runtime. It does not make TF100Web execute inline page scripts that remain outside the extracted root fragment.
 10. Manual UI validation of the new Pages and Diagnostics surfaces on an isolated project copy remains pending; launching the current shell would open the protected real reference project. Automated WPF surface contracts and the temporary-project lifecycle test are green.
 11. Page folders, drag-and-drop ordering, reusable page templates beyond `Blank`, and role-based page permissions remain later slices. The command gate and stable identity model are extension points, not claims that these features are complete.
-12. The full test suite currently reports 661 passed and 5 pre-existing unrelated failures (`Ft100ExportPrefersReferenceHtmlSourceBeforeRawFallback`, `LegacyContextMenuExposesElementStudioCommand`, `ModernDoubleClickOpensWpfPropertiesDialog`, `ReadOnlyNumericElementsRenderDisplayFormatWhenValueIsMissing`, `ScadaBuilderLaunchesStudioFromProjectInDevelopmentToAvoidStaleBinaries`). The targeted `DEC-0044` suites are green.
-13. Numeric Table cell bindings are proven through generated 2.2 package intake and a 2.1 compatibility package in the dedicated local WSL configuration. Polling, POST feedback, focus/Enter/blur/Escape semantics and operator permissions still require an explicitly authorized TF100Web environment with real mappings before delivery closure.
-13. `DEC-0040` code and automated slices are complete. Release measurements on the current machine record model/HTML initial rendering at 367,556 ms, selection inspection p95 at 12,403 ms and Domain resize p95 at 0,023 ms over 100 samples. The focused `DEC-0041` WPF/WebView2 smoke passed on an isolated copy; the separate 64 x 64 browser-composition performance gate remains pending, and automated values must not be presented as WebView2 timings.
+12. The full test suite currently reports 661 passed and 5 pre-existing unrelated failures (`Ft100ExportPrefersReferenceHtmlSourceBeforeRawFallback`, `LegacyContextMenuExposesElementStudioCommand`, `ModernDoubleClickOpensWpfPropertiesDialog`, `ReadOnlyNumericElementsRenderDisplayFormatWhenValueIsMissing`, `ScadaBuilderLaunchesStudioFromProjectInDevelopmentToAvoidStaleBinaries`). The targeted `DEC-0044`/`DEC-0045` suites are green.
+13. Numeric Table cell polling, POST feedback, focus/Enter/blur/Escape semantics and permission guards now share the Element+ runtime path and are covered locally. Validation of real mappings, operator permissions and confirmed PLC readback still requires an explicitly authorized industrial TF100Web environment before delivery closure.
+14. `DEC-0040` code and automated slices are complete. Release measurements on the current machine record model/HTML initial rendering at 367,556 ms, selection inspection p95 at 12,403 ms and Domain resize p95 at 0,023 ms over 100 samples. The focused `DEC-0041` WPF/WebView2 smoke passed on an isolated copy; the separate 64 x 64 browser-composition performance gate remains pending, and automated values must not be presented as WebView2 timings.
 
 ## 2. Rule
 

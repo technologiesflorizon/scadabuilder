@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active authoritative decision register
-Document version: `V2.1.4.0043`
+Document version: `V2.1.4.0044`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | Ajout et implementation de `DEC-0045` : transitions Etat reversibles, filtre sous le contenu et ValueBinding numerique TF100Web commun. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Ajout et implementation de `DEC-0044` : boutons de degivrage sur le pipeline Etat/Commande partage, texte semantique et collecte des mappings de commande TF100Web. |
 | 2026-07-16 | `V2.1.4.0041` | `PENDING` | `DEC-0043` implementee : commande numerique unique, identite Tableau/A1 partagee, selection fraiche, double-clic cible et fallback Ecrire vers Lire valides. |
 | 2026-07-15 | `V2.1.4.0040` | `PENDING` | Ajout de `DEC-0043` pour simplifier l'authoring InputNumeric Tableau, fiabiliser l'identite A1 et initialiser Lire depuis Ecrire lorsque Lire est vide. |
@@ -1323,3 +1324,33 @@ Visual state follows the confirmed polled PLC value after writes; no optimistic 
 Regression coverage:
 
 `tests/ScadaBuilderV2.Tests/Win00012DefrostToggleConfigurationTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`, `tests/runtime-js/state-engine.test.mjs`, and `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py`.
+
+### DEC-0045 - Reversible State Effects And One Shared Numeric Binding Runtime
+
+Status: Active
+Created: 2026-07-16 00:00 America/Toronto
+Created in commit: `de37a35`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/specs/2026-07-16-shared-runtime-visual-and-table-binding-correction-design.md`
+
+Context:
+
+The state quality fallback modified opacity and borders cumulatively, so a confirmed green or red state remained washed out. The color-filter overlay also rendered above button text. Separately, manifest 2.2 Table-cell mappings were injected into composed fragments, but the modern TF100Web cache did not collect those resolved mapping attributes and the reusable numeric handler remained scoped to the historical diagram path.
+
+Decision:
+
+`EffectApplier` captures one runtime baseline per element, restores only properties controlled by the preceding effect, and places the color overlay below semantic text and interactive controls. TF100Web's single `ScadaTagCache` collects both canonical tag references and resolved read/write mapping attributes, forces an initial page snapshot, applies reads to existing numeric inputs, and binds one idempotent write handler through the existing `tf100webScadaBuilder.writeTag` bridge for standard Element+ and Table cells.
+
+Consequences:
+
+The manifest remains 2.2 and no scene migration, synthetic cell element, Table-specific poller, alternate dispatcher, or second write path is introduced. Confirmed state restores normal opacity and borders before applying green/red feedback; filtering no longer reduces text contrast. Numeric read/write permissions and mapping resolution remain owned by TF100Web.
+
+Implementation status:
+
+Implemented in SCADA Builder V2 commit `de37a35` and TF100Web commit `9d5d400`. Runtime JavaScript reports 22/22 passing tests; the targeted Builder suites report 93/93 and TF100Web's focused shared-runtime contract reports 13/13.
+
+Regression coverage:
+
+`tests/runtime-js/effect-applier.test.mjs`, `tests/runtime-js/state-engine.test.mjs`, `tests/ScadaBuilderV2.Tests/RuntimeJsModulesTests.cs`, `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`, and `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py::ScadaRuntimeInitContractTests`.

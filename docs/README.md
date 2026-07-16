@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0043`
+Document version: `V2.1.4.0044`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | `DEC-0045` implementee : effets Etat reversibles, filtre sous le contenu et bindings numeriques standards/Tableau reunis dans le cache et le bridge TF100Web partages. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | `DEC-0044` implementee : runtime Etat/Commande TF100Web partage, cible texte semantique et 56 boutons de degivrage relies au bit PLC confirme. |
 | 2026-07-16 | `V2.1.4.0042` | `9fd2a30` | Correction du routage `page.properties` : la page cible est ouverte et activee avant le chargement du panneau Page, avec regression dediee. |
 | 2026-07-16 | `V2.1.4.0041` | `PENDING` | `DEC-0043` implementee et validee : surface InputNumeric unique, identite A1 fiable, fallback Lire/Ecrire explicite et smoke isole reussi. |
@@ -207,6 +208,8 @@ Active specifications and implementation plans:
 12. `superpowers/plans/2026-07-15-table-numeric-cell-authoring-correction.md` - executed implementation record for the `DEC-0043` authoring correction, including automated coverage and an isolated `win00012_modern_no_legacy` smoke.
 13. `superpowers/specs/2026-07-16-stateful-defrost-toggle-buttons-design.md` - implemented `DEC-0044` contract for confirmed PLC state, shared dynamic text and command mapping dependencies on the 56 defrost Toggle buttons.
 14. `superpowers/plans/2026-07-16-stateful-defrost-toggle-buttons.md` - executed cross-repository implementation record for SCADA Builder V2 and TF100Web.
+15. `superpowers/specs/2026-07-16-shared-runtime-visual-and-table-binding-correction-design.md` - implemented `DEC-0045` correction for reversible state effects and one TF100Web numeric binding runtime shared by Element+ and Table cells.
+16. `superpowers/plans/2026-07-16-shared-runtime-visual-and-table-binding-correction.md` - executed cross-repository correction record and validation evidence.
 
 Generated documentation:
 
@@ -248,6 +251,7 @@ These guardrails are active decisions in `00_governance/DECISION_REGISTER_V2.md`
 25. Element+ `Donnees` authoring uses `Format affichage` as the active numeric display signal. Hash masks such as `##.#` and `###.#` are exported through `Objects[].Data.DisplayFormat` and interpreted by TF100Web against `RegisterMapping.DataType`: `FLOAT32` and `FLOAT64` round raw values directly, integer datatypes scale by mask decimals, and unknown datatypes fall back to direct rounding. `Mapping / Tag`, `Decimales`, and `Unite` are legacy model fields and are not active authoring controls. `Min` and `Max` are input constraints only for non-read-only numeric inputs.
 26. Standard and HMI Element+ shapes created from SCADA Builder V2 persist `ShapeKind` and render/export as Element+-owned SVG content. Standard authoring includes rectangle, ellipse, circle, triangle, star, line, and arrow; line and arrow persist explicit start/end coordinates captured by a two-point Insert workflow. They remain real scene objects; editor-only placement previews, selection overlays, handles, drag rectangles, workzone state, zoom, and pan must not be exported.
 27. Element+ state and command events share the deployed TF100Web tag cache and runtime. Button text effects use `[data-scada-text]`; command read/write mapping ids are collected and deduplicated with state and binding dependencies, and Toggle appearance follows the confirmed snapshot rather than an optimistic local state.
+28. State effects are non-cumulative transitions: runtime-managed properties are restored to their element baseline before the next effect, and color-filter overlays render below semantic text and controls. TF100Web collects resolved read/write mapping attributes, hydrates a new page with a forced snapshot, and applies one idempotent numeric ValueBinding handler to standard Element+ inputs and Table-cell inputs.
 
 ## 5. Decommissioned Legacy Documents
 
