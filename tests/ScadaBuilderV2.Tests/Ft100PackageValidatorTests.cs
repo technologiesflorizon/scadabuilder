@@ -38,6 +38,111 @@ public sealed class Ft100PackageValidatorTests
     }
 
     [TestMethod]
+    public void Manifest23AcceptsKnownSortedCapabilitiesAndMatchingRuntimeHash()
+    {
+        var (root, package) = CreatePackage(BuildManifest("2.3", includeBinding: false), UnboundHtml());
+        try
+        {
+            var result = Ft100PackageValidator.ValidatePackageDirectory(package);
+            Assert.IsTrue(result.IsValid, string.Join("; ", result.Errors.Select(issue => $"{issue.Code}: {issue.Message}")));
+        }
+        finally
+        {
+            Directory.Delete(root, true);
+        }
+    }
+
+    [TestMethod]
+    public void Manifest23RejectsUnknownDuplicateUnsortedAndBlockedCapabilities()
+    {
+        var manifest = BuildManifest("2.3", includeBinding: false);
+        manifest["RuntimeContract"] = new JsonObject
+        {
+            ["Version"] = "1.0",
+            ["RequiredCapabilities"] = new JsonArray("page.default", "action.show", "page.default", "aaa.unknown")
+        };
+        var (root, package) = CreatePackage(manifest, UnboundHtml());
+        try
+        {
+            var codes = Ft100PackageValidator.ValidatePackageDirectory(package).Errors
+                .Select(issue => issue.Code)
+                .ToHashSet(StringComparer.Ordinal);
+            CollectionAssert.IsSubsetOf(new[]
+            {
+                "runtime-contract.capability-duplicate",
+                "runtime-contract.capability-order",
+                "runtime-contract.capability-blocked",
+                "runtime-contract.capability-unknown"
+            }, codes.ToArray());
+        }
+        finally
+        {
+            Directory.Delete(root, true);
+        }
+    }
+
+    [TestMethod]
+    public void Manifest23RejectsUnsupportedRuntimeContractVersionAndMissingHash()
+    {
+        var manifest = BuildManifest("2.3", includeBinding: false);
+        manifest["RuntimeContract"] = new JsonObject
+        {
+            ["Version"] = "9.0",
+            ["RequiredCapabilities"] = new JsonArray("page.default")
+        };
+        var (root, package) = CreatePackage(manifest, UnboundHtml(), completeRuntimeContract: false);
+        try
+        {
+            var codes = Ft100PackageValidator.ValidatePackageDirectory(package).Errors
+                .Select(issue => issue.Code)
+                .ToHashSet(StringComparer.Ordinal);
+            Assert.IsTrue(codes.Contains("runtime-contract.version"));
+            Assert.IsTrue(codes.Contains("runtime-contract.hash"));
+        }
+        finally
+        {
+            Directory.Delete(root, true);
+        }
+    }
+
+    [TestMethod]
+    public void Manifest23RejectsMissingRuntimeContract()
+    {
+        var (root, package) = CreatePackage(
+            BuildManifest("2.3", includeBinding: false),
+            UnboundHtml(),
+            completeRuntimeContract: false);
+        try
+        {
+            var result = Ft100PackageValidator.ValidatePackageDirectory(package);
+            Assert.IsTrue(result.Errors.Any(issue => issue.Code == "runtime-contract.missing"));
+        }
+        finally
+        {
+            Directory.Delete(root, true);
+        }
+    }
+
+    [TestMethod]
+    public void Manifest23RejectsAlteredPackagedRuntime()
+    {
+        var (root, package) = CreatePackage(BuildManifest("2.3", includeBinding: false), UnboundHtml());
+        try
+        {
+            File.AppendAllText(Directory.GetFiles(package, "scada-runtime.*.js").Single(), "// tampered");
+            var codes = Ft100PackageValidator.ValidatePackageDirectory(package).Errors
+                .Select(issue => issue.Code)
+                .ToHashSet(StringComparer.Ordinal);
+            Assert.IsTrue(codes.Contains("runtime-contract.hash-mismatch"));
+            Assert.IsTrue(codes.Contains("runtime-contract.runtime-filename"));
+        }
+        finally
+        {
+            Directory.Delete(root, true);
+        }
+    }
+
+    [TestMethod]
     public void InvalidTableCellContractReportsStableBlockingDiagnostics()
     {
         var manifest = BuildManifest("2.1", includeBinding: true);
@@ -159,15 +264,36 @@ public sealed class Ft100PackageValidatorTests
         };
     }
 
-    private static (string Root, string Package) CreatePackage(JsonObject manifest, string html)
+    private static (string Root, string Package) CreatePackage(
+        JsonObject manifest,
+        string html,
+        bool completeRuntimeContract = true)
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
         var package = Path.Combine(root, Ft100SceneExporter.ProjectPackageDirectoryName);
         var page = Path.Combine(package, "page");
         Directory.CreateDirectory(page);
-        File.WriteAllText(Path.Combine(package, "manifest.json"), manifest.ToJsonString());
         File.WriteAllText(Path.Combine(page, "page.html"), html);
-        File.WriteAllText(Path.Combine(package, "scada-runtime.12345678.js"), "window.scadaRuntime = {};");
+        var runtimePath = Path.Combine(package, "scada-runtime.12345678.js");
+        File.WriteAllText(runtimePath, "window.scadaRuntime = {};");
+        if (completeRuntimeContract && string.Equals(manifest["ManifestVersion"]?.GetValue<string>(), "2.3", StringComparison.Ordinal))
+        {
+            var contract = manifest["RuntimeContract"] as JsonObject;
+            if (contract is null)
+            {
+                contract = new JsonObject
+                {
+                    ["Version"] = "1.0",
+                    ["RequiredCapabilities"] = new JsonArray("page.default")
+                };
+                manifest["RuntimeContract"] = contract;
+            }
+            contract["RuntimeSha256"] = Ft100SceneExporter.Sha256Hash(runtimePath);
+            var runtimeHash = contract["RuntimeSha256"]!.GetValue<string>();
+            var hashedRuntimePath = Path.Combine(package, $"scada-runtime.{runtimeHash[..8]}.js");
+            File.Move(runtimePath, hashedRuntimePath);
+        }
+        File.WriteAllText(Path.Combine(package, "manifest.json"), manifest.ToJsonString());
         return (root, package);
     }
 

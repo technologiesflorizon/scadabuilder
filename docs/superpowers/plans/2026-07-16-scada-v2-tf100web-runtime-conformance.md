@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Draft implementation plan - pending execution approval
-Document version: `V2.1.4.0048`
+Document version: `V2.1.4.0049`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0049` | `PENDING` | Task 3 completee cote Builder : manifest 2.3 strict, SHA-256 runtime, validation et profils de compatibilite explicites. |
 | 2026-07-16 | `V2.1.4.0048` | `PENDING` | Task 2 completee : matrice generee, verification stale, evidence typee et statut strict fail-closed. |
 | 2026-07-16 | `V2.1.4.0047` | `PENDING` | Task 1 completee : registre type, analyseur pur, statuts de gaps et 7 tests d'exhaustivite/analyse verts. |
 | 2026-07-16 | `V2.1.4.0046` | `PENDING` | Plan general remplacant l'execution page-centrique par un registre, une negotiation 2.3 et une suite de conformance partagee. |
@@ -109,11 +110,11 @@ Expected: tous les cas cibles passent; l'ajout artificiel d'une variante non map
 - Consumes: resultat de `ScadaRuntimeCapabilityAnalyzer`, hash du runtime package.
 - Produces: manifest 2.3 avec `RuntimeContract.Version`, `RequiredCapabilities`, `RuntimeSha256`.
 
-- [ ] Ajouter le modele serialise exact et l'ordre deterministe des capabilities.
-- [ ] Calculer le hash sur le runtime effectivement package.
-- [ ] Faire echouer l'export si une feature emise n'est pas declaree ou est `Blocked` pour la cible FT100Web stricte.
-- [ ] Garder une voie explicite de generation 2.1/2.2 uniquement pour fixtures de compatibilite; aucun nouvel export operateur ne l'utilise par defaut.
-- [ ] Valider unknown capability, doublon, version, hash absent/invalide et package altere.
+- [x] Ajouter le modele serialise exact et l'ordre deterministe des capabilities.
+- [x] Calculer le hash sur le runtime effectivement package.
+- [x] Faire echouer l'export si une feature emise n'est pas declaree ou est `Blocked` pour la cible FT100Web stricte.
+- [x] Garder une voie explicite de generation 2.1/2.2 uniquement pour fixtures de compatibilite; aucun nouvel export operateur ne l'utilise par defaut.
+- [x] Valider unknown capability, doublon, version, hash absent/invalide et package altere.
 
 **Validation:**
 

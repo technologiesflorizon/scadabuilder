@@ -6,12 +6,15 @@ using System.Reflection;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using ScadaBuilderV2.Application.RuntimeContracts;
 using ScadaBuilderV2.Domain.ElementEvents.Command;
 using ScadaBuilderV2.Domain.ElementEvents.Expressions;
 using ScadaBuilderV2.Domain.ElementEvents.State;
 using ScadaBuilderV2.Domain.Projects;
+using ScadaBuilderV2.Domain.RuntimeContracts;
 using ScadaBuilderV2.Domain.Scenes;
 
 namespace ScadaBuilderV2.Rendering;
@@ -52,7 +55,8 @@ public sealed partial class Ft100SceneExporter
         string exportDirectory,
         ScadaProject? project = null,
         CancellationToken cancellationToken = default,
-        string? runtimeHash = null)
+        string? runtimeHash = null,
+        Ft100ManifestProfile manifestProfile = Ft100ManifestProfile.Strict23)
     {
         ArgumentNullException.ThrowIfNull(scene);
         ArgumentException.ThrowIfNullOrWhiteSpace(exportDirectory);
@@ -63,6 +67,11 @@ public sealed partial class Ft100SceneExporter
             project = identityProjection.Project;
             scene = identityProjection.Scenes[0];
         }
+
+        var runtimeCapabilities = ScadaRuntimeCapabilityAnalyzer.Analyze(
+            project ?? ScadaProject.CreateDefault("Standalone FT100 export"),
+            [scene]);
+        EnsureRuntimeCapabilitiesExportable(runtimeCapabilities, manifestProfile);
 
         if (!scene.IncludeInBuild)
         {
@@ -94,6 +103,7 @@ public sealed partial class Ft100SceneExporter
         }
 
         runtimeHash ??= ExportSharedRuntime(exportDirectory);
+        var runtimeSha256 = Sha256Hash(Path.Combine(exportDirectory, $"scada-runtime.{runtimeHash}.js"));
 
         var sceneDirectory = Path.Combine(exportDirectory, scene.Id);
         var cssDirectory = Path.Combine(sceneDirectory, "css");
@@ -159,7 +169,7 @@ public sealed partial class Ft100SceneExporter
 
         await File.WriteAllTextAsync(
             manifestPath,
-            BuildManifest(scene, project, warnings),
+            BuildManifest(scene, project, warnings, runtimeCapabilities, runtimeSha256, manifestProfile),
             Encoding.UTF8,
             cancellationToken);
 
@@ -176,7 +186,8 @@ public sealed partial class Ft100SceneExporter
         ScadaProject project,
         IReadOnlyList<Ft100ProjectPageExportInput> pages,
         string exportDirectory,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        Ft100ManifestProfile manifestProfile = Ft100ManifestProfile.Strict23)
     {
         ArgumentNullException.ThrowIfNull(project);
         ArgumentNullException.ThrowIfNull(pages);
@@ -216,15 +227,27 @@ public sealed partial class Ft100SceneExporter
             throw new InvalidOperationException(errors[0].Message);
         }
 
+        var exportedScenes = pageInputsById.Values.Select(input => input.Scene).ToArray();
+        var runtimeCapabilities = ScadaRuntimeCapabilityAnalyzer.Analyze(project, exportedScenes);
+        EnsureRuntimeCapabilitiesExportable(runtimeCapabilities, manifestProfile);
+
         var packageDirectory = ResolveProjectPackageDirectory(exportDirectory);
         RecreateProjectPackageDirectory(exportDirectory, packageDirectory);
         var runtimeHash = ExportSharedRuntime(packageDirectory);
+        var runtimeSha256 = Sha256Hash(Path.Combine(packageDirectory, $"scada-runtime.{runtimeHash}.js"));
 
         var pageResults = new List<Ft100SceneExportResult>();
         foreach (var pageId in compiledPageIds.OrderBy(id => id, StringComparer.Ordinal))
         {
             var input = pageInputsById[pageId];
-            pageResults.Add(await ExportAsync(input.Scene, input.SourceHtmlPath, packageDirectory, project, cancellationToken, runtimeHash));
+            pageResults.Add(await ExportAsync(
+                input.Scene,
+                input.SourceHtmlPath,
+                packageDirectory,
+                project,
+                cancellationToken,
+                runtimeHash,
+                manifestProfile));
         }
 
         var manifestWarnings = pageResults
@@ -234,7 +257,7 @@ public sealed partial class Ft100SceneExporter
         var manifestPath = Path.Combine(packageDirectory, "manifest.json");
         await File.WriteAllTextAsync(
             manifestPath,
-            BuildProjectManifest(project, pageInputsById.Values.Select(input => input.Scene).ToArray(), manifestWarnings),
+            BuildProjectManifest(project, exportedScenes, manifestWarnings, runtimeCapabilities, runtimeSha256, manifestProfile),
             Encoding.UTF8,
             cancellationToken);
 
@@ -267,7 +290,8 @@ public sealed partial class Ft100SceneExporter
         ScadaProject project,
         IReadOnlyList<Ft100ProjectPageExportInput> pages,
         string archivePath,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        Ft100ManifestProfile manifestProfile = Ft100ManifestProfile.Strict23)
     {
         ArgumentNullException.ThrowIfNull(project);
         ArgumentNullException.ThrowIfNull(pages);
@@ -290,7 +314,7 @@ public sealed partial class Ft100SceneExporter
         try
         {
             Directory.CreateDirectory(stagingRoot);
-            var packageResult = await ExportProjectAsync(project, pages, stagingRoot, cancellationToken);
+            var packageResult = await ExportProjectAsync(project, pages, stagingRoot, cancellationToken, manifestProfile);
             var validation = Ft100PackageValidator.ValidatePackageDirectory(packageResult.ExportDirectory);
             if (!validation.IsValid)
             {
@@ -389,6 +413,13 @@ public sealed partial class Ft100SceneExporter
         var bytes = File.ReadAllBytes(filePath);
         var hash = sha.ComputeHash(bytes);
         return Convert.ToHexString(hash)[..8].ToLowerInvariant();
+    }
+
+    /// <summary>Computes the complete lowercase SHA-256 hash of a packaged artifact.</summary>
+    public static string Sha256Hash(string filePath)
+    {
+        var bytes = File.ReadAllBytes(filePath);
+        return Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes)).ToLowerInvariant();
     }
 
     /// <summary>
@@ -1872,24 +1903,36 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
 """;
     }
 
-    private static string BuildManifest(ScadaScene scene, ScadaProject? project, List<string> warnings)
+    private static string BuildManifest(
+        ScadaScene scene,
+        ScadaProject? project,
+        List<string> warnings,
+        ScadaRuntimeCapabilityAnalysis runtimeCapabilities,
+        string runtimeSha256,
+        Ft100ManifestProfile manifestProfile)
     {
         var tagCatalog = project?.TagCatalog;
         var homePageId = project?.EffectiveHomePageId;
         var manifest = new
         {
             Name = scene.Title,
-            ManifestVersion = "2.2",
+            ManifestVersion = ManifestVersion(manifestProfile),
             HomePageId = homePageId,
             Pages = new[] { BuildManifestPage(scene, homePageId, projectRelativePath: false, tagCatalog, warnings) },
             Actions = scene.ActionDefinitions.Select(BuildRuntimeAction).ToArray(),
             Tags = project?.TagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>()
         };
 
-        return JsonSerializer.Serialize(manifest, ManifestJsonOptions);
+        return SerializeManifest(manifest, BuildRuntimeContract(runtimeCapabilities, runtimeSha256, manifestProfile));
     }
 
-    private static string BuildProjectManifest(ScadaProject project, IReadOnlyList<ScadaScene> scenes, List<string> warnings)
+    private static string BuildProjectManifest(
+        ScadaProject project,
+        IReadOnlyList<ScadaScene> scenes,
+        List<string> warnings,
+        ScadaRuntimeCapabilityAnalysis runtimeCapabilities,
+        string runtimeSha256,
+        Ft100ManifestProfile manifestProfile)
     {
         var tagCatalog = project.TagCatalog;
         var homePageId = project.EffectiveHomePageId;
@@ -1907,7 +1950,7 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
         var manifest = new
         {
             Name = project.Name,
-            ManifestVersion = "2.2",
+            ManifestVersion = ManifestVersion(manifestProfile),
             HomePageId = homePageId,
             Pages = exportedScenes
                 .Select(scene => BuildManifestPage(scene, homePageId, projectRelativePath: true, tagCatalog, warnings))
@@ -1916,7 +1959,50 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
             Tags = project.TagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>()
         };
 
-        return JsonSerializer.Serialize(manifest, ManifestJsonOptions);
+        return SerializeManifest(manifest, BuildRuntimeContract(runtimeCapabilities, runtimeSha256, manifestProfile));
+    }
+
+    private static string SerializeManifest(object manifest, Ft100RuntimeContractManifest? runtimeContract)
+    {
+        var root = JsonSerializer.SerializeToNode(manifest, ManifestJsonOptions)?.AsObject()
+            ?? throw new InvalidOperationException("FT100 manifest serialization returned no JSON object.");
+        if (runtimeContract is not null)
+        {
+            root["RuntimeContract"] = JsonSerializer.SerializeToNode(runtimeContract, ManifestJsonOptions);
+        }
+        return root.ToJsonString(ManifestJsonOptions);
+    }
+
+    private static Ft100RuntimeContractManifest? BuildRuntimeContract(
+        ScadaRuntimeCapabilityAnalysis analysis,
+        string runtimeSha256,
+        Ft100ManifestProfile manifestProfile) =>
+        manifestProfile == Ft100ManifestProfile.Strict23
+            ? new Ft100RuntimeContractManifest(
+                ScadaRuntimeCapabilityCatalog.ContractVersion,
+                analysis.RequiredCapabilities.Select(capability => capability.Id).ToArray(),
+                runtimeSha256)
+            : null;
+
+    private static string ManifestVersion(Ft100ManifestProfile manifestProfile) => manifestProfile switch
+    {
+        Ft100ManifestProfile.Strict23 => "2.3",
+        Ft100ManifestProfile.Compatibility22 => "2.2",
+        Ft100ManifestProfile.Compatibility21 => "2.1",
+        _ => throw new ArgumentOutOfRangeException(nameof(manifestProfile), manifestProfile, "Unknown FT100 manifest profile.")
+    };
+
+    private static void EnsureRuntimeCapabilitiesExportable(
+        ScadaRuntimeCapabilityAnalysis analysis,
+        Ft100ManifestProfile manifestProfile)
+    {
+        if (manifestProfile != Ft100ManifestProfile.Strict23 || analysis.BlockedCapabilities.Count == 0)
+        {
+            return;
+        }
+
+        var blocked = string.Join(", ", analysis.BlockedCapabilities.Select(capability => capability.Id));
+        throw new InvalidOperationException($"Strict manifest 2.3 export is blocked by unsupported runtime capabilities: {blocked}.");
     }
 
     private static object BuildManifestPage(ScadaScene scene, string? homePageId, bool projectRelativePath,

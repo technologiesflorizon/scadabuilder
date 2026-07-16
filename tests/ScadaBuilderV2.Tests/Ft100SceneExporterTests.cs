@@ -14,7 +14,7 @@ namespace ScadaBuilderV2.Tests;
 public sealed class Ft100SceneExporterTests
 {
     [TestMethod]
-    public async Task ProjectManifest22ExportsBoundNumericTableAnchorsWithoutSyntheticObjects()
+    public async Task ProjectManifest23ExportsBoundNumericTableAnchorsWithoutSyntheticObjects()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
         var table = ScadaElement.CreateTable("table_001", "Tableau", 10, 20, 3, 3);
@@ -68,7 +68,23 @@ public sealed class Ft100SceneExporterTests
                 [new(first, null), new(second, null)],
                 root);
             using var manifest = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "manifest.json")));
-            Assert.AreEqual("2.2", manifest.RootElement.GetProperty("ManifestVersion").GetString());
+            Assert.AreEqual("2.3", manifest.RootElement.GetProperty("ManifestVersion").GetString());
+            var runtimeContract = manifest.RootElement.GetProperty("RuntimeContract");
+            Assert.AreEqual("1.0", runtimeContract.GetProperty("Version").GetString());
+            var requiredCapabilities = runtimeContract.GetProperty("RequiredCapabilities")
+                .EnumerateArray()
+                .Select(item => item.GetString()!)
+                .ToArray();
+            CollectionAssert.AreEqual(
+                requiredCapabilities.OrderBy(id => id, StringComparer.Ordinal).ToArray(),
+                requiredCapabilities,
+                "Manifest 2.3 capabilities must use deterministic ordinal ordering.");
+            Assert.AreEqual(requiredCapabilities.Length, requiredCapabilities.Distinct(StringComparer.Ordinal).Count());
+            CollectionAssert.IsSubsetOf(
+                new[] { "binding.table.distinct-write", "binding.table.read", "binding.table.write", "element.table", "table.cell.input-numeric" },
+                requiredCapabilities);
+            var runtimeFile = Directory.GetFiles(result.ExportDirectory, "scada-runtime.*.js").Single();
+            Assert.AreEqual(Ft100SceneExporter.Sha256Hash(runtimeFile), runtimeContract.GetProperty("RuntimeSha256").GetString());
             Assert.AreEqual(2, manifest.RootElement.GetProperty("Pages").GetArrayLength());
             var page = manifest.RootElement.GetProperty("Pages").EnumerateArray().Single(item => item.GetProperty("Id").GetString() == first.Id);
             var objects = page.GetProperty("Objects");
@@ -99,6 +115,70 @@ public sealed class Ft100SceneExporterTests
             Assert.IsFalse(html.Contains("tag.read", StringComparison.Ordinal));
             Assert.IsFalse(html.Contains("tag.write", StringComparison.Ordinal));
             Assert.IsFalse(html.Contains("CellAddress", StringComparison.Ordinal));
+        }
+        finally
+        {
+            if (Directory.Exists(root)) Directory.Delete(root, true);
+        }
+    }
+
+    [TestMethod]
+    public async Task StrictManifest23RejectsBlockedCapabilitiesBeforeCreatingPackage()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var scene = ScadaScene.CreateEmpty("blocked-page", "Blocked", new(640, 480))
+            .WithElement(ScadaElement.CreateText("source", "Source", 10, 10))
+            .WithElement(ScadaElement.CreateText("target", "Target", 20, 20))
+            .WithObjectVisibilityEvent("source", ScadaEventRegistry.ClickKey, ScadaActionKind.Show, "target");
+        var project = ScadaProject.CreateDefault("Blocked") with
+        {
+            HomePageId = scene.Id,
+            Scenes = [new ScadaSceneReference(scene.Id, scene.Title, $"scenes/{scene.Id}.scene.json")]
+        };
+
+        try
+        {
+            var error = await Assert.ThrowsExceptionAsync<InvalidOperationException>(() =>
+                new Ft100SceneExporter().ExportProjectAsync(project, [new(scene, null)], root));
+
+            StringAssert.Contains(error.Message, "action.show");
+            Assert.IsFalse(Directory.Exists(Path.Combine(root, Ft100SceneExporter.ProjectPackageDirectoryName)),
+                "Strict capability validation must run before replacing the package staging directory.");
+        }
+        finally
+        {
+            if (Directory.Exists(root)) Directory.Delete(root, true);
+        }
+    }
+
+    [TestMethod]
+    public async Task CompatibilityManifestProfilesAreExplicitAndOmitRuntimeContract()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var scene = ScadaScene.CreateEmpty("compat-page", "Compat", new(640, 480));
+        var project = ScadaProject.CreateDefault("Compat") with
+        {
+            HomePageId = scene.Id,
+            Scenes = [new ScadaSceneReference(scene.Id, scene.Title, $"scenes/{scene.Id}.scene.json")]
+        };
+
+        try
+        {
+            foreach (var (profile, expectedVersion, folder) in new[]
+                     {
+                         (Ft100ManifestProfile.Compatibility22, "2.2", "v22"),
+                         (Ft100ManifestProfile.Compatibility21, "2.1", "v21")
+                     })
+            {
+                var result = await new Ft100SceneExporter().ExportProjectAsync(
+                    project,
+                    [new(scene, null)],
+                    Path.Combine(root, folder),
+                    manifestProfile: profile);
+                using var manifest = JsonDocument.Parse(await File.ReadAllTextAsync(result.ManifestPath));
+                Assert.AreEqual(expectedVersion, manifest.RootElement.GetProperty("ManifestVersion").GetString());
+                Assert.IsFalse(manifest.RootElement.TryGetProperty("RuntimeContract", out _));
+            }
         }
         finally
         {
@@ -806,7 +886,7 @@ public sealed class Ft100SceneExporterTests
             AssertHtmlReferencesSharedRuntime(html, exportRoot);
 
             var manifest = await File.ReadAllTextAsync(manifestPath);
-            StringAssert.Contains(manifest, "\"ManifestVersion\": \"2.2\"");
+            StringAssert.Contains(manifest, "\"ManifestVersion\": \"2.3\"");
             StringAssert.Contains(manifest, "\"HomePageId\": \"win00008\"");
             StringAssert.Contains(manifest, "\"RelativePath\": \"win00008.html\"");
             StringAssert.Contains(manifest, "\"Type\": \"default\"");
@@ -1082,7 +1162,8 @@ public sealed class Ft100SceneExporterTests
 
         try
         {
-            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot, project);
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, exportRoot, project, manifestProfile: Ft100ManifestProfile.Compatibility22);
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
 
@@ -1143,7 +1224,8 @@ public sealed class Ft100SceneExporterTests
 
         try
         {
-            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot, project);
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, exportRoot, project, manifestProfile: Ft100ManifestProfile.Compatibility22);
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
 
@@ -1219,7 +1301,8 @@ public sealed class Ft100SceneExporterTests
 
         try
         {
-            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot, project);
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, exportRoot, project, manifestProfile: Ft100ManifestProfile.Compatibility22);
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
 
@@ -1265,7 +1348,8 @@ public sealed class Ft100SceneExporterTests
 
         try
         {
-            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot, project);
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, exportRoot, project, manifestProfile: Ft100ManifestProfile.Compatibility22);
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
 
@@ -1318,7 +1402,8 @@ public sealed class Ft100SceneExporterTests
 
         try
         {
-            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot, project);
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, exportRoot, project, manifestProfile: Ft100ManifestProfile.Compatibility22);
             var html = await File.ReadAllTextAsync(result.HtmlPath);
             var manifest = await File.ReadAllTextAsync(Path.Combine(Path.GetDirectoryName(result.HtmlPath)!, "manifest.json"));
 
@@ -2479,7 +2564,8 @@ public sealed class Ft100SceneExporterTests
 
         try
         {
-            var result = await new Ft100SceneExporter().ExportAsync(scene, sourceHtmlPath, exportRoot);
+            var result = await new Ft100SceneExporter().ExportAsync(
+                scene, sourceHtmlPath, exportRoot, manifestProfile: Ft100ManifestProfile.Compatibility22);
 
             var manifest = await File.ReadAllTextAsync(Path.Combine(result.ExportDirectory, "manifest.json"));
             StringAssert.Contains(manifest, "\"StateConfig\"");
@@ -3203,7 +3289,8 @@ public sealed class Ft100SceneExporterTests
             var exporter = new Ft100SceneExporter();
             var input = new Ft100ProjectPageExportInput(scene, sourceHtml);
             var archivePath = Path.Combine(tmpDir, "export.sb2");
-            var result = await exporter.ExportProjectArchiveAsync(project, new[] { input }, archivePath);
+            var result = await exporter.ExportProjectArchiveAsync(
+                project, new[] { input }, archivePath, manifestProfile: Ft100ManifestProfile.Compatibility22);
 
             Assert.IsTrue(result.Validation.IsValid, "Package must pass validation");
             Assert.IsTrue(File.Exists(result.ArchivePath), "Archive file must exist");

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using ScadaBuilderV2.Domain.RuntimeContracts;
 
 namespace ScadaBuilderV2.Rendering;
 
@@ -60,7 +61,7 @@ public sealed record Ft100PackageValidationResult(IReadOnlyList<Ft100PackageVali
 /// Validates SCADA Builder V2 FT100 packages against the audited TF100Web fragment intake contract.
 /// </summary>
 /// <remarks>
-/// Decisions: DEC-0003, DEC-0007, DEC-0026, DEC-0027, DEC-0042.
+/// Decisions: DEC-0003, DEC-0007, DEC-0026, DEC-0027, DEC-0042, DEC-0047.
 /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md.
 /// Reference intake: F:\Projet\Git\TF100Web frontend/scada_package.py at commit 7d57600.
 /// </remarks>
@@ -115,6 +116,7 @@ public static partial class Ft100PackageValidator
 
             ValidateNoInternalPageKeys(manifest.RootElement, issues);
             var manifestVersion = ValidateManifestVersion(manifest.RootElement, issues);
+            ValidateRuntimeContract(fullPackageDirectory, manifest.RootElement, manifestVersion, issues);
             var tags = ReadTags(manifest.RootElement);
 
             var pages = ReadCompiledPages(manifest.RootElement, issues);
@@ -456,11 +458,114 @@ public static partial class Ft100PackageValidator
             return "2.1";
         }
 
-        if (version is not "2.1" and not "2.2")
+        if (version is not "2.1" and not "2.2" and not "2.3")
         {
-            issues.Add(Error("manifest-version-unsupported", $"ManifestVersion '{version}' is unsupported; expected 2.1 or 2.2."));
+            issues.Add(Error("manifest-version-unsupported", $"ManifestVersion '{version}' is unsupported; expected 2.1, 2.2, or 2.3."));
         }
         return version;
+    }
+
+    private static void ValidateRuntimeContract(
+        string packageDirectory,
+        JsonElement root,
+        string manifestVersion,
+        ICollection<Ft100PackageValidationIssue> issues)
+    {
+        var hasContract = TryGetProperty(root, "RuntimeContract", out var contract);
+        if (manifestVersion != "2.3")
+        {
+            if (hasContract)
+            {
+                issues.Add(Error("runtime-contract.unexpected", $"RuntimeContract is only valid for ManifestVersion 2.3, not '{manifestVersion}'."));
+            }
+            return;
+        }
+
+        if (!hasContract || contract.ValueKind != JsonValueKind.Object)
+        {
+            issues.Add(Error("runtime-contract.missing", "ManifestVersion 2.3 requires a RuntimeContract object."));
+            return;
+        }
+
+        var version = ReadString(contract, "Version");
+        if (!string.Equals(version, ScadaRuntimeCapabilityCatalog.ContractVersion, StringComparison.Ordinal))
+        {
+            issues.Add(Error(
+                "runtime-contract.version",
+                $"RuntimeContract.Version '{version}' is unsupported; expected '{ScadaRuntimeCapabilityCatalog.ContractVersion}'."));
+        }
+
+        if (!TryGetProperty(contract, "RequiredCapabilities", out var required) || required.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(Error("runtime-contract.capabilities", "RuntimeContract.RequiredCapabilities must be an array."));
+        }
+        else
+        {
+            var ids = new List<string>();
+            foreach (var item in required.EnumerateArray())
+            {
+                if (item.ValueKind != JsonValueKind.String || string.IsNullOrWhiteSpace(item.GetString()))
+                {
+                    issues.Add(Error("runtime-contract.capability-id", "Every RequiredCapabilities entry must be a non-empty string."));
+                    continue;
+                }
+                ids.Add(item.GetString()!);
+            }
+
+            if (ids.Count == 0)
+            {
+                issues.Add(Error("runtime-contract.capabilities-empty", "RuntimeContract.RequiredCapabilities must declare at least one capability."));
+            }
+
+            foreach (var duplicate in ids.GroupBy(id => id, StringComparer.Ordinal).Where(group => group.Count() > 1))
+            {
+                issues.Add(Error("runtime-contract.capability-duplicate", $"Required capability '{duplicate.Key}' is duplicated."));
+            }
+
+            var sorted = ids.OrderBy(id => id, StringComparer.Ordinal).ToArray();
+            if (!ids.SequenceEqual(sorted, StringComparer.Ordinal))
+            {
+                issues.Add(Error("runtime-contract.capability-order", "RequiredCapabilities must use stable ordinal ordering."));
+            }
+
+            var known = ScadaRuntimeCapabilityCatalog.All.ToDictionary(capability => capability.Id, StringComparer.Ordinal);
+            foreach (var id in ids.Distinct(StringComparer.Ordinal))
+            {
+                if (!known.TryGetValue(id, out var capability))
+                {
+                    issues.Add(Error("runtime-contract.capability-unknown", $"Required capability '{id}' is unknown."));
+                }
+                else if (capability.Status != ScadaRuntimeCapabilityStatus.Supported)
+                {
+                    issues.Add(Error("runtime-contract.capability-blocked", $"Required capability '{id}' is not eligible for strict deployment."));
+                }
+            }
+        }
+
+        var expectedSha256 = ReadString(contract, "RuntimeSha256");
+        if (!Regex.IsMatch(expectedSha256, "^[0-9a-f]{64}$", RegexOptions.CultureInvariant))
+        {
+            issues.Add(Error("runtime-contract.hash", "RuntimeContract.RuntimeSha256 must be 64 lowercase hexadecimal characters."));
+            return;
+        }
+
+        var runtimeFiles = Directory.GetFiles(packageDirectory, "scada-runtime.*.js");
+        if (runtimeFiles.Length != 1)
+        {
+            return;
+        }
+
+        var actualSha256 = Ft100SceneExporter.Sha256Hash(runtimeFiles[0]);
+        if (!string.Equals(expectedSha256, actualSha256, StringComparison.Ordinal))
+        {
+            issues.Add(Error("runtime-contract.hash-mismatch", "RuntimeContract.RuntimeSha256 does not match the packaged runtime file."));
+        }
+
+        var expectedFileName = $"scada-runtime.{actualSha256[..8]}.js";
+        if (!string.Equals(Path.GetFileName(runtimeFiles[0]), expectedFileName, StringComparison.Ordinal))
+        {
+            issues.Add(Error("runtime-contract.runtime-filename", $"Packaged runtime filename must be '{expectedFileName}'."));
+        }
     }
 
     private static IReadOnlyDictionary<string, ValidatedTag> ReadTags(JsonElement root)
@@ -503,9 +608,9 @@ public static partial class Ft100PackageValidator
 
             var elementId = ReadString(element, "Id");
             var pathPrefix = $"Elements[{elementId}].Table.Cells";
-            if (manifestVersion != "2.2")
+            if (manifestVersion is not "2.2" and not "2.3")
             {
-                issues.Add(Error("table-cell.version", $"Page '{page.Id}' uses TableCellBindings but ManifestVersion is '{manifestVersion}', expected 2.2.", page.Id));
+                issues.Add(Error("table-cell.version", $"Page '{page.Id}' uses TableCellBindings but ManifestVersion is '{manifestVersion}', expected 2.2 or 2.3.", page.Id));
             }
             if (!string.Equals(ReadString(element, "Kind"), "Table", StringComparison.Ordinal))
             {

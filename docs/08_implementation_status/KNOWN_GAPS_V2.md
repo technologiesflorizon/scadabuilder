@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active known gaps register
-Document version: `V2.1.4.0048`
+Document version: `V2.1.4.0049`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0049` | `PENDING` | Builder 2.3 strict implemente; negotiation/rejet atomique TF100Web et fixture partagee restent gaps actifs. |
 | 2026-07-16 | `V2.1.4.0048` | `PENDING` | Matrice runtime generee et verifiee; gaps semantiques bloques et fixture end-to-end par capability encore pending. |
 | 2026-07-16 | `V2.1.4.0047` | `PENDING` | Registre/analyseur `DEC-0047` implementes; negotiation 2.3, matrice generee, fixture partagee et preuves end-to-end restent gaps actifs. |
 | 2026-07-16 | `V2.1.4.0046` | `PENDING` | `DEC-0047` enregistre le gap systemique : absence actuelle de negotiation de capabilities et de preuve exhaustive; mapping absent reclasse fallback non bloquant. |
@@ -61,7 +62,7 @@ Document version: `V2.1.4.0048`
 15. TF100Web `9d5d400` has a confirmed navigation/poll race: `poll(true)` returns when `pollInFlight` is set, then unchanged cached values do not notify the newly rendered DOM. `win00008 -> win00012_modern_no_legacy -> win00008` can therefore return without state overlays or readings. `DEC-0046` is approved but pending implementation; latest-wins navigation and mandatory hydration must not be claimed active yet.
 16. Remote page composition measured approximately 6.7 s for `win00008` and 14.2 s for `win00012_modern_no_legacy`, while a 426-mapping snapshot measured approximately 0.2 s. Binding injection currently rescans a full fragment per binding. These observations require server-side profiling, single-pass/indexed injection and safe cache invalidation; cellular latency remains a separate external factor.
 17. The official `tf100web-scada-tags (3).json` audit contains 425 tags but no `YL_E12_HDEG4` or mapping 615. This is a non-blocking quality case: deterministic fallback and diagnostics are required while all other controls remain functional. A local fabricated mapping is forbidden.
-18. Runtime coverage is not yet general. The typed capability registry, pure model analyzer and generated/stale-checked 162-entry matrix now exist. Baseline capabilities cite existing three-layer suites while known semantic gaps remain fail-closed `Blocked`; manifest negotiation, shared conformance `.sb2` and per-capability CI evidence remain pending. Current broad-suite or page-specific evidence must not be presented as full SCADA Builder V2 runtime conformance.
+18. Runtime coverage is not yet general. The typed capability registry, analyzer, generated matrix and Builder-side manifest 2.3/hash/strict validator now exist. Baseline capabilities cite existing three-layer suites while known semantic gaps remain fail-closed `Blocked`; TF100Web negotiation, shared conformance `.sb2` and per-capability CI evidence remain pending. Builder 2.3 output is therefore not yet deployable to current TF100Web `9d5d400`.
 19. Some portable behavior remains split between shared package modules, exporter inline scripts and TF100Web host branches. Until `DEC-0047` establishes one semantic owner and blocks unsupported capabilities, new behavior risks duplicate implementation or silent fragment-intake gaps.
 
 ## 2. Rule

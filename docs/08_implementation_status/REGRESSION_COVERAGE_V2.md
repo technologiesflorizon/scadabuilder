@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active regression coverage map
-Document version: `V2.1.4.0048`
+Document version: `V2.1.4.0049`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0049` | `PENDING` | 84 tests FT100 exporter/package verts : 2.3, requirements, hash, tamper, blocked et profils compatibles; suite complete 675/680, cinq echecs historiques. |
 | 2026-07-16 | `V2.1.4.0048` | `PENDING` | Matrice de 162 capabilities generee depuis le code; `verify-docs` rejette staleness et support sans preuves trilaterales. |
 | 2026-07-16 | `V2.1.4.0047` | `PENDING` | 7 regressions `RuntimeContracts` couvrent catalogue, exhaustivite enum/effet/AST, gaps bloques, analyse et deduplication. |
 | 2026-07-16 | `V2.1.4.0046` | `PENDING` | Plan `DEC-0047` : matrice generee, tests d'exhaustivite, fixture `.sb2` partagee et preuves end-to-end requises pour chaque capability. |
@@ -91,8 +92,8 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Contract area | Primary tests |
 | --- | --- |
 | Runtime capability completeness (`DEC-0047`, partial) | `RuntimeContracts/ScadaRuntimeCapabilityCatalogTests.cs` and `ScadaRuntimeCapabilityAnalyzerTests.cs` cover typed inventory, artifacts, reserved fixtures, three-layer evidence requirements and model analysis. `tools/docs/generate-runtime-capability-matrix.ps1` plus `verify-docs` enforce code/matrix parity. Baseline `Supported` entries cite existing broad suites; known gaps are `Blocked`. Manifest 2.3, deterministic per-capability `.sb2`, shared-runtime tables and TF100Web end-to-end fixture execution remain pending. |
-| FT100/TF100Web export | `Ft100SceneExporterTests.cs` |
-| FT100 `.sb2` archive and namespace validation | `Ft100PackageValidator`, `Ft100SceneExporterTests.ExportProjectArchiveWritesSb2RootAndScopesLegacyDomIds`, `Ft100SceneExporterTests.PackageValidatorAcceptsIndentedPageScopedCssIdSelectors` |
+| FT100/TF100Web export | `Ft100SceneExporterTests.cs`: manifest 2.3 default, sorted/deduplicated requirements, packaged runtime SHA-256, pre-staging blocked-capability rejection, and explicit 2.1/2.2 profiles. |
+| FT100 `.sb2` archive and namespace validation | `Ft100PackageValidator`, `Ft100PackageValidatorTests`: unknown/duplicate/unsorted/blocked capabilities, runtime contract version, missing/invalid/mismatched SHA-256, tampering and runtime filename; plus archive and page-scope regressions in `Ft100SceneExporterTests`. |
 | TF100Web package intake audit | `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py` |
 | TF100Web `.sb2` binding event intake | `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py` (`ValueBindings.ReadTagId` / `WriteTagId` -> host mapping attributes) |
 | TF100Web `DisplayFormat` hash-mask runtime | `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py`, `node --check static\asset\js\station\visualisation_import.js`, targeted Node validation of `formatValue(999, "##.#") -> "99.9"` |

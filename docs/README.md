@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0048`
+Document version: `V2.1.4.0049`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0049` | `PENDING` | Builder manifest 2.3 strict par defaut : capabilities triees, SHA-256 runtime, rejet des gaps et profils 2.1/2.2 explicites. |
 | 2026-07-16 | `V2.1.4.0048` | `PENDING` | Matrice runtime generee depuis le registre et gate stale branche dans `verify-docs`; promotion `Supported` interdite sans trois couches de preuves. |
 | 2026-07-16 | `V2.1.4.0047` | `PENDING` | Premiere tranche `DEC-0047` : registre type de plus de 100 capabilities, proprietaire/statut/version et analyseur pur avec exhaustivite enum/effet/AST. |
 | 2026-07-16 | `V2.1.4.0046` | `PENDING` | `DEC-0047` approuvee : registre exhaustif de capacites, manifest 2.3 negocie, runtime semantique unique et suite de conformance partagee Builder/TF100Web. |

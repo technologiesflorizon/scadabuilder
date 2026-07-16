@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation status
-Document version: `V2.1.4.0048`
+Document version: `V2.1.4.0049`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0049` | `PENDING` | `DEC-0047` tranche 3 Builder : manifest 2.3, requirements tries, SHA-256 runtime et validation stricte. |
 | 2026-07-16 | `V2.1.4.0048` | `PENDING` | `DEC-0047` tranche 2 : matrice code-generee, evidence typee et gate stale de documentation. |
 | 2026-07-16 | `V2.1.4.0047` | `PENDING` | `DEC-0047` tranche 1 : registre runtime type et analyseur de capabilities implemente avec tests d'exhaustivite. |
 | 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | `DEC-0045` implementee : transitions Etat non cumulatives, filtre lisible et runtime numerique partage pour Element+ et cellules Tableau. |
@@ -169,6 +170,7 @@ As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The f
 76. State effects restore runtime-managed baseline properties before every transition and render color overlays below semantic content. TF100Web now includes resolved mapping attributes in the shared snapshot, forces initial hydration, and uses one idempotent numeric read/write handler for standard Element+ and Table-cell inputs without replacing their existing DOM.
 77. `DEC-0047` slice 1 adds a typed runtime capability registry in Domain and a pure analyzer in Application. More than 100 stable capability ids cover page, element, shape, button, table, binding, state, expression, effect, command, action and popup variants with one owner, minimum version and strict-export status. Seven focused tests lock enum fingerprints, all effect properties, all AST node types, unique ids, known blocked gaps, model traversal, deduplication and excluded-page behavior. Manifest 2.3 and TF100Web negotiation are not yet implemented.
 78. `DEC-0047` slice 2 extends every registry entry with consumed artifacts, a reserved conformance fixture id and typed Builder/shared-runtime/TF100Web evidence. The generated `RUNTIME_CAPABILITY_MATRIX_V2.md` exposes all 162 entries and `verify-docs` rejects a stale artifact. Strict promotion is fail-closed: a `Supported` entry must cite all three executable evidence layers; known semantic gaps remain `Blocked`, and the per-capability shared fixture remains a later release gate.
+79. Builder manifest 2.3 is the default export profile. It serializes the analyzed capability ids in stable ordinal order and binds the package to the complete SHA-256 of its actual shared runtime. Strict export fails before staging replacement for a blocked capability. Validation covers unknown, duplicate, unsorted and blocked ids, unsupported runtime-contract versions, absent/invalid/mismatched hashes, tampering and runtime filename integrity. Manifest 2.1/2.2 generation remains available only through explicit compatibility profiles.
 
 ## 3. Source Of Truth
 
