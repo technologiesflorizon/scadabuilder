@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active known gaps register
-Document version: `V2.1.4.0054`
+Document version: `V2.1.4.0055`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0055` | TF100Web `cab2733` | HostAdapter unique complete sur branche; lifecycle latest-wins, fixture executee et promotion industrielle restent gates. |
 | 2026-07-16 | `V2.1.4.0054` | TF100Web `7d60c63` | Negotiation/hash/capabilities 2.3 completees sur branche; HostAdapter et deploiement restent gates. |
 | 2026-07-16 | `V2.1.4.0053` | `PENDING` | Actions objet portables completees; negotiation/HostAdapter TF100Web et preuves de promotion restent ouvertes. |
 | 2026-07-16 | `V2.1.4.0052` | `PENDING` | CommandConfig portable complete; host adapter TF100Web et promotion Momentary restent gates end-to-end. |
@@ -67,11 +68,11 @@ Document version: `V2.1.4.0054`
 15. TF100Web `9d5d400` has a confirmed navigation/poll race: `poll(true)` returns when `pollInFlight` is set, then unchanged cached values do not notify the newly rendered DOM. `win00008 -> win00012_modern_no_legacy -> win00008` can therefore return without state overlays or readings. `DEC-0046` is approved but pending implementation; latest-wins navigation and mandatory hydration must not be claimed active yet.
 16. Remote page composition measured approximately 6.7 s for `win00008` and 14.2 s for `win00012_modern_no_legacy`, while a 426-mapping snapshot measured approximately 0.2 s. Binding injection currently rescans a full fragment per binding. These observations require server-side profiling, single-pass/indexed injection and safe cache invalidation; cellular latency remains a separate external factor.
 17. The official `tf100web-scada-tags (3).json` audit contains 425 tags but no `YL_E12_HDEG4` or mapping 615. This is a non-blocking quality case: deterministic fallback and diagnostics are required while all other controls remain functional. A local fabricated mapping is forbidden.
-18. Runtime coverage is not yet general. The typed capability registry, analyzer, generated matrix, Builder-side manifest 2.3/hash/strict validator and deterministic shared `.sb2` now exist. TF100Web `7d60c63` negotiates version/capabilities/hash before replacement and vendors the exact fixture, but the single HostAdapter, execution assertions for each fixture case and industrial deployment remain pending. Builder 2.3 output is therefore still not deployable to the current server baseline `9d5d400`.
-19. Portable state, expression, effect, command and object-action semantics now have one shared-runtime owner. Current TF100Web still contains historical action/navigation intake branches that must be audited and decommissioned when the canonical HostAdapter lands; leaving both active would create duplicate dispatch. Exporter inline scripts are not a semantic fallback.
+18. Runtime coverage is not yet general. The typed capability registry, analyzer, generated matrix, Builder-side manifest 2.3/hash/strict validator and deterministic shared `.sb2` now exist. TF100Web `7d60c63` negotiates version/capabilities/hash before replacement and vendors the exact fixture; `cab2733` installs the single HostAdapter. Execution assertions for each fixture case, latest-wins lifecycle and industrial deployment remain pending. Builder 2.3 output is therefore not yet an operator promotion claim.
+19. Portable state, expression, effect, command and object-action semantics now have one shared-runtime owner. TF100Web `cab2733` removed the parallel new-host message action switch: canonical direct intents and 2.1/2.2 aliases converge into one adapter. The mutually exclusive legacy per-request diagram loader remains a compatibility surface to retire only with explicit migration evidence. Exporter inline scripts are not a semantic fallback.
 20. Shared State/Expression/Effect behavior is now complete and table-tested locally, including animation execution. The six `effect.animation*` contract entries intentionally remain `Blocked` until TF100Web runs the canonical fixture and supplies end-to-end evidence; this is a promotion gate, not a remaining shared-runtime implementation gap.
-21. Shared CommandConfig behavior is complete locally, including real Momentary cleanup and the canonical host-intent envelope. `command.write.momentary` remains `Blocked` until TF100Web installs the single HostAdapter, executes press/release through the canonical fixture and supplies permission/readback evidence. Current top-level intent aliases preserve 2.1/2.2 compatibility only; they are not the target 2.3 host API.
-22. Shared object-action behavior is complete locally for all nine current kinds, simple/compound conditions, ordering, propagation and page-scoped targets. Host-dependent action/popup capabilities and condition promotion remain `Blocked` until TF100Web negotiates manifest 2.3, installs the single HostAdapter and executes the canonical fixture by SHA. TF100Web must not add per-kind action or condition interpreters; only navigation/popup/write/URL/history services belong in the host.
+21. Shared CommandConfig behavior is complete locally, including real Momentary cleanup and the canonical host-intent envelope. TF100Web `cab2733` supplies the single protected write/intent adapter, but `command.write.momentary` remains `Blocked` until press/release executes through the canonical fixture with permission/readback evidence. Top-level aliases preserve 2.1/2.2 compatibility only; they normalize into the target 2.3 adapter.
+22. Shared object-action behavior is complete locally for all nine current kinds, simple/compound conditions, ordering, propagation and page-scoped targets. TF100Web now negotiates manifest 2.3 and owns only navigation/popup/write/URL/history services through `cab2733`; host-dependent capability promotion remains `Blocked` until the canonical fixture executes by SHA under the latest-wins lifecycle.
 
 ## 2. Rule
 
@@ -85,7 +86,7 @@ State/Command polling, AST evaluation, effects, Toggle reads and writes use the 
 
 1. Validate `ReadTag` production behavior on `win00007 / Element+ Text20 / tf100.mapping.180`.
 2. Identify a writeable production candidate for `WriteTag` / `Ecrire valeur` and verify `data-scada-write-mapping-id` when read and write mappings differ.
-3. Install the single TF100Web HostAdapter for canonical navigation, popup, write, URL and history intents; do not interpret action definitions or conditions in host code.
+3. Execute the canonical fixture through the single TF100Web HostAdapter under the latest-wins lifecycle; collect per-capability evidence without interpreting action definitions or conditions in host code.
 4. Add popup services for open, close, toggle, placement, focus, multi-instance and host-region behavior behind that adapter.
 5. Execute the committed conformance fixture by exact SHA and promote action/condition/popup capabilities only with three-layer evidence.
 6. Complete latest-wins lifecycle disposal, initialization, mandatory hydration and diagnostics under `DEC-0046`.

@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation plan - execution in progress
-Document version: `V2.1.4.0054`
+Document version: `V2.1.4.0055`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0055` | TF100Web `cab2733` | Task 9 completee : adaptateur host unique, compatibilite normalisee, securite intents/URL/ecriture et tests. |
 | 2026-07-16 | `V2.1.4.0054` | TF100Web `7d60c63` | Task 8 completee : negotiation 2.3, registry host, hash runtime et fixture exacte avant remplacement. |
 | 2026-07-16 | `V2.1.4.0053` | `PENDING` | Task 7 completee : 9 actions objet, conditions, ordre/propagation, page scope et lifecycle partage. |
 | 2026-07-16 | `V2.1.4.0052` | `PENDING` | Task 6 completee : CommandConfig canonique, Momentary press/release, intents 1.0, async et cleanup. |
@@ -252,12 +253,12 @@ python manage.py check
 
 **Interfaces:** Services `navigate`, `history`, `popup`, `writeTag`, `openUrl`, diagnostics; aucune semantique AST/effet/action.
 
-- [ ] Recevoir l'enveloppe d'intent canonique du runtime partage.
-- [ ] Mapper navigation/history/popup vers les services host.
-- [ ] Mapper ecriture vers l'unique endpoint/permission/CSRF existant.
-- [ ] Appliquer politique URL et page scope.
-- [ ] Supprimer/decommissionner les branches host qui interpretent la meme action en parallele.
-- [ ] Tester intents invalides, doublons, origine message, page stale et permissions.
+- [x] Recevoir l'enveloppe d'intent canonique du runtime partage.
+- [x] Mapper navigation/history/popup vers les services host.
+- [x] Mapper ecriture vers l'unique endpoint/permission/CSRF existant.
+- [x] Appliquer politique URL et page scope.
+- [x] Supprimer/decommissionner les branches host qui interpretent la meme action en parallele.
+- [x] Tester intents invalides, doublons, origine message, page stale et permissions.
 
 **Commit:** `refactor: use one scada runtime host adapter`
 

@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active authoritative decision register
-Document version: `V2.1.4.0054`
+Document version: `V2.1.4.0055`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0055` | Builder `PENDING`, TF100Web `cab2733` | `DEC-0047` tranche 9 : adaptateur host unique, services host securises et branche message unifiee. |
 | 2026-07-16 | `V2.1.4.0054` | Builder `PENDING`, TF100Web `7d60c63` | `DEC-0047` tranche 8 : negotiation TF100Web 2.3 fail-closed et fixture exacte vendoree. |
 | 2026-07-16 | `V2.1.4.0053` | `PENDING` | `DEC-0047` tranche 7 : actions objet adaptees au runtime partage avec conditions et page scope. |
 | 2026-07-16 | `V2.1.4.0052` | `PENDING` | `DEC-0047` tranche 6 : CommandConfig canonique, intents host 1.0 et Momentary reel avec cleanup. |
@@ -1431,7 +1432,7 @@ The default new export contract advances from manifest 2.2 to 2.3 only after TF1
 
 Implementation status:
 
-Implementation slices 1 through 8 are complete across the Builder and TF100Web branches: Domain owns stable capability ids, minimum contract version, execution owner, artifact contracts, fixture ids, strict-export status and typed evidence; Application derives sorted requirements; Rendering emits manifest 2.3 by default with `RuntimeContract.Version`, sorted unique `RequiredCapabilities` and the complete SHA-256 of the packaged runtime. The portable runtime owns State/Expression/Effect, all `CommandConfig` variants and the nine object-action kinds. TF100Web `7d60c63` now accepts 2.3 only when contract version, sorted unique required capabilities, exact runtime filename/content SHA and its explicit 118-capability registry all agree; rejection occurs before active static replacement. Compatibility 2.1/2.2 remains accepted. The exact Builder fixture and SHA are vendored and test-verified in TF100Web. The single HostAdapter, fixture execution semantics, `DEC-0046` lifecycle and industrial page validation remain pending; the branch is not yet an operator deployment claim.
+Implementation slices 1 through 9 are complete across the Builder and TF100Web branches: Domain owns stable capability ids, minimum contract version, execution owner, artifact contracts, fixture ids, strict-export status and typed evidence; Application derives sorted requirements; Rendering emits manifest 2.3 by default with `RuntimeContract.Version`, sorted unique `RequiredCapabilities` and the complete SHA-256 of the packaged runtime. The portable runtime owns State/Expression/Effect, all `CommandConfig` variants and the nine object-action kinds. TF100Web `7d60c63` negotiates 2.3 version/capabilities/runtime hash before replacement and vendors the exact fixture. TF100Web `cab2733` installs one Runtime 1.0 HostAdapter for navigation/history, popup, URL and protected tag-write services; the 2.1/2.2 message shape is normalized into that same adapter and no parallel message switch remains. Envelope/version/kind/page/origin/duplicate/stale-source/write-permission failures are fail-closed. Fixture execution semantics, `DEC-0046` lifecycle and industrial page validation remain pending; the branch is not yet an operator deployment claim.
 
 Regression coverage:
 
