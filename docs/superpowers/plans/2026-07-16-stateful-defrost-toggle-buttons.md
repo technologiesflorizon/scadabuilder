@@ -8,8 +8,8 @@ Document version: `V2.1.4.0043`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-16 | `V2.1.4.0043` | `PENDING` | Plan execute : TF100Web livre en premier, cible texte bouton et scene appliquees, regressions et documentation synchronisees. |
-| 2026-07-16 | `V2.1.4.0043` | `PENDING` | Plan cree depuis la specification approuvee de `DEC-0044`. |
+| 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Plan execute : TF100Web livre en premier, cible texte bouton et scene appliquees, regressions et documentation synchronisees. |
+| 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Plan cree depuis la specification approuvee de `DEC-0044`. |
 
 **Goal:** Configurer les 56 boutons On/Off de `win00012_modern_no_legacy` avec les etats PLC vert/rouge et le texte dynamique, sans dupliquer le runtime Etat/Commande.
 

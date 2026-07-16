@@ -8,7 +8,7 @@ Document version: `V2.1.4.0043`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-16 | `V2.1.4.0043` | `PENDING` | `DEC-0044` implementee : runtime Etat/Commande TF100Web partage, cible texte semantique et 56 boutons de degivrage relies au bit PLC confirme. |
+| 2026-07-16 | `V2.1.4.0043` | `8489dbd` | `DEC-0044` implementee : runtime Etat/Commande TF100Web partage, cible texte semantique et 56 boutons de degivrage relies au bit PLC confirme. |
 | 2026-07-16 | `V2.1.4.0042` | `9fd2a30` | Correction du routage `page.properties` : la page cible est ouverte et activee avant le chargement du panneau Page, avec regression dediee. |
 | 2026-07-16 | `V2.1.4.0041` | `PENDING` | `DEC-0043` implementee et validee : surface InputNumeric unique, identite A1 fiable, fallback Lire/Ecrire explicite et smoke isole reussi. |
 | 2026-07-15 | `V2.1.4.0040` | `PENDING` | Approbation de `DEC-0043` : commande unique pour les cellules InputNumeric, identite A1 fiable et fallback Ecrire vers Lire; specification et plan correctifs ajoutes. |

@@ -8,8 +8,8 @@ Document version: `V2.1.4.0043`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-16 | `V2.1.4.0043` | `PENDING` | Implementation validee dans les deux depots : 56 boutons configures, texte semantique, runtime true/false et collecte des mappings de commande. |
-| 2026-07-16 | `V2.1.4.0043` | `PENDING` | Specification approuvee pour relier les 56 boutons de degivrage au pipeline Etat/Commande partage et rendre leur texte dynamique. |
+| 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Implementation validee dans les deux depots : 56 boutons configures, texte semantique, runtime true/false et collecte des mappings de commande. |
+| 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Specification approuvee pour relier les 56 boutons de degivrage au pipeline Etat/Commande partage et rendre leur texte dynamique. |
 
 ## 1. Objet
 

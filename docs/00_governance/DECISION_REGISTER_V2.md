@@ -8,7 +8,7 @@ Document version: `V2.1.4.0043`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-16 | `V2.1.4.0043` | `PENDING` | Ajout et implementation de `DEC-0044` : boutons de degivrage sur le pipeline Etat/Commande partage, texte semantique et collecte des mappings de commande TF100Web. |
+| 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Ajout et implementation de `DEC-0044` : boutons de degivrage sur le pipeline Etat/Commande partage, texte semantique et collecte des mappings de commande TF100Web. |
 | 2026-07-16 | `V2.1.4.0041` | `PENDING` | `DEC-0043` implementee : commande numerique unique, identite Tableau/A1 partagee, selection fraiche, double-clic cible et fallback Ecrire vers Lire valides. |
 | 2026-07-15 | `V2.1.4.0040` | `PENDING` | Ajout de `DEC-0043` pour simplifier l'authoring InputNumeric Tableau, fiabiliser l'identite A1 et initialiser Lire depuis Ecrire lorsque Lire est vide. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | `DEC-0042` implemente dans les deux depots; preuves package 2.1/2.2 locales acquises, gate industriel et ordre de livraison maintenus ouverts. |
@@ -1302,7 +1302,7 @@ Covered by `TableCellAddressTests`, `TableNumericBindingAuthoringPolicyTests`, `
 
 Status: Active
 Created: 2026-07-16 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `8489dbd`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A

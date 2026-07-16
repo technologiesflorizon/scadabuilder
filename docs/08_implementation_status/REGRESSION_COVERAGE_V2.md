@@ -8,7 +8,7 @@ Document version: `V2.1.4.0043`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-16 | `V2.1.4.0043` | `PENDING` | Ajout de la couverture `DEC-0044` pour les 56 toggles, le texte semantique exporte, les effets true/false et la collecte TF100Web des mappings de commande. |
+| 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Ajout de la couverture `DEC-0044` pour les 56 toggles, le texte semantique exporte, les effets true/false et la collecte TF100Web des mappings de commande. |
 | 2026-07-16 | `V2.1.4.0042` | `9fd2a30` | Regression `page.properties` : ouverture, activation et selection de la page cible sans mutation, dirty state ni historique; suite complete 659/664 avec cinq echecs historiques inchanges. |
 | 2026-07-16 | `V2.1.4.0041` | `6afe427` | Couverture `DEC-0043` pour A1, provenance de selection, commande/dialogue unique, fallback Lire/Ecrire, double-clic, round-trip/export et smoke isole; suite complete 658/663 avec cinq echecs historiques inchanges. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | Couverture `DEC-0042` Domain/Application/WPF/rendu/export/validation et intake TF100Web; suite SCADA 645/650 avec cinq echecs historiques inchanges. |
