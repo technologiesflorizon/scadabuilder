@@ -1,0 +1,37 @@
+{
+  "Schema": "scada-v2-industrial-acceptance-v1",
+  "GeneratedUtc": "2026-07-16T17:59:48.4014046+00:00",
+  "BuilderVersion": "V2.1.4.0060",
+  "ManifestVersion": "2.3",
+  "RuntimeSha256": "0101ecaccd55013ebc6923f2aef87060e0b620ebc1158a9a198e153be94bec69",
+  "PackageSha256": "22f6a46835aae531841232553c51bd4622decf07e4be8ad0eb41e2ac3e655e98",
+  "ExportDurationMs": 79512.509,
+  "PageCount": 25,
+  "LiveWritesExecuted": false,
+  "Pages": {
+    "win00003": {
+      "Navigations": 8,
+      "LatestWinsBackForward": "covered-by-tf100web-lifecycle-suite"
+    },
+    "win00004": {
+      "Header": "win00002",
+      "Footer": "win00003",
+      "AssetsValidated": true
+    },
+    "win00008": {
+      "States": 8,
+      "ReadOnlyNumerics": 2,
+      "WritableNumerics": 1,
+      "RoundTrip": "covered-by-tf100web-lifecycle-suite"
+    },
+    "win00012_modern_no_legacy": {
+      "Buttons": 56,
+      "TableCells": 126,
+      "ExpectedMissingMapping": 615
+    }
+  },
+  "Diagnostics": [
+    "mapping 615 expected quality fallback; no fabricated mapping",
+    "no PLC write executed during automated acceptance"
+  ]
+}
