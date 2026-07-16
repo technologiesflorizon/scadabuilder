@@ -61,6 +61,25 @@ public sealed class PageCommandCoordinatorTests
     }
 
     [TestMethod]
+    public void ShowPropertiesOpensAndActivatesSelectedPageWithoutDirtyingWorkspace()
+    {
+        var active = Page(Guid.NewGuid(), "active", ScadaPageType.Default);
+        var selected = Page(Guid.NewGuid(), "selected", ScadaPageType.Default);
+        var snapshot = Snapshot(active, selected);
+        var ui = Ui(selected.PageKey, active.PageKey, [active.PageKey]);
+
+        var mutation = coordinator.Execute(snapshot, ui, new ShowPagePropertiesRequest(selected.PageKey));
+
+        Assert.IsFalse(mutation.Result.Changed);
+        Assert.AreEqual(selected.PageKey, mutation.Result.PageToSelectKey);
+        Assert.AreEqual(selected.PageKey, mutation.Result.PageToOpenKey);
+        Assert.AreEqual(selected.PageKey, mutation.AfterUi.SelectedPageKey);
+        Assert.AreEqual(selected.PageKey, mutation.AfterUi.ActivePageKey);
+        CollectionAssert.Contains(mutation.AfterUi.OpenPageKeys.ToArray(), selected.PageKey);
+        Assert.AreSame(snapshot, mutation.After);
+    }
+
+    [TestMethod]
     public void ChangeCodeSynchronizesCompatibilityIdsWithoutChangingLogicalTargets()
     {
         var target = Page(Guid.NewGuid(), "old_target", ScadaPageType.Default);

@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation status
-Document version: `V2.1.4.0041`
+Document version: `V2.1.4.0042`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0042` | `PENDING` | Correction du menu Pages > Proprietes : la page cible est ouverte et activee avant le panneau Page, sans dirty state ni historique artificiel. |
 | 2026-07-16 | `V2.1.4.0041` | `6afe427` | `DEC-0043` implementee : une commande InputNumeric, cible Tableau/A1 partagee, selection perimee refusee, double-clic exact et fallback Ecrire vers Lire explicite. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | `DEC-0042` implemente en code : inputs numeriques cellule lies, authoring dedie, manifest 2.2 et intake TF100Web 2.1/2.2; validation industrielle reelle encore gatee. |
 | 2026-07-15 | `V2.1.4.0035` | `740796e` | Selection cellule Tableau corrigee : clic unitaire stable, extension de plage liee a un drag explicite, reperes A/1 hors des cellules et scopes rangee/colonne visuellement synchronises. |
@@ -159,6 +160,7 @@ As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The f
 71. Anchored Table `InputNumeric` cells persist read/write bindings and display format, expose a dedicated ribbon/properties dialog, preserve binding safety across structural edits and clipboard operations, and render the same native numeric input through save/reload, preview and export.
 72. `.sb2` export now emits manifest 2.2 globally and `Objects[].TableCellBindings` only for valid bound numeric cells. TF100Web branch `codex/adding-table-cell-numeric-input` accepts 2.1/2.2, targets the page-scoped `<td>`, and reuses its existing numeric input and shared mapping runtime.
 73. Table `InputNumeric` authoring uses one `Configurer <A1>` command and a shared Table/A1 target across ribbon, properties and dialog. Stale cross-Table selections are rejected, numeric double-click opens the exact cell, and saving Write with an empty Read explicitly persists the same tag in both bindings while preserving distinct reads.
+74. `Projet > Pages > Proprietes` now routes the selected page into the active workspace before showing the Page panel. The page reference, scene snapshot and subsequent property commands therefore target the same page without creating a dirty state or history entry merely for opening the surface.
 
 ## 3. Source Of Truth
 

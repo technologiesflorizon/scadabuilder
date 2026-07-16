@@ -16,7 +16,12 @@ public sealed class OpenPageCommand(PageCommandCoordinator coordinator) : PageAp
     public override string DisplayName => "Ouvrir la page";
 }
 
-/// <summary>Routes the selected page to the shared properties surface.</summary>
+/// <summary>Opens the selected page and routes it to the shared properties surface.</summary>
+/// <remarks>
+/// Decisions: DEC-0038.
+/// Contracts: docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md.
+/// Tests: tests/ScadaBuilderV2.Tests/PageCommandCoordinatorTests.cs.
+/// </remarks>
 public sealed class ShowPagePropertiesCommand(PageCommandCoordinator coordinator) : PageApplicationCommandBase<ShowPagePropertiesRequest>(coordinator)
 {
     public override string Id => "page.properties";

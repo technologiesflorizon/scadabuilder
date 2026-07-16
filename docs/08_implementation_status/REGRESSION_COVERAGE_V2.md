@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active regression coverage map
-Document version: `V2.1.4.0041`
+Document version: `V2.1.4.0042`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0042` | `PENDING` | Regression `page.properties` : ouverture, activation et selection de la page cible sans mutation, dirty state ni historique; suite complete 659/664 avec cinq echecs historiques inchanges. |
 | 2026-07-16 | `V2.1.4.0041` | `6afe427` | Couverture `DEC-0043` pour A1, provenance de selection, commande/dialogue unique, fallback Lire/Ecrire, double-clic, round-trip/export et smoke isole; suite complete 658/663 avec cinq echecs historiques inchanges. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | Couverture `DEC-0042` Domain/Application/WPF/rendu/export/validation et intake TF100Web; suite SCADA 645/650 avec cinq echecs historiques inchanges. |
 | 2026-07-15 | `V2.1.4.0035` | `740796e` | Regression du hit-testing cellule Tableau : guides A/1 externes, drag primaire explicite, annulation pointeur, normalisation des plages et rendu commun des scopes rangee/colonne. |
@@ -77,7 +78,7 @@ Document version: `V2.1.4.0041`
 
 ```text
 dotnet test ScadaBuilderV2.sln --no-restore
-618 passed, 5 failed, 0 skipped
+659 passed, 5 failed, 0 skipped
 ```
 
 ## 2. Coverage Map
@@ -91,7 +92,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | TF100Web `DisplayFormat` hash-mask runtime | `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py`, `node --check static\asset\js\station\visualisation_import.js`, targeted Node validation of `formatValue(999, "##.#") -> "99.9"` |
 | Project save/reload | `ModernProjectStoreTests.cs` |
 | Modern page identity and Wonderware migration | `PageIdentityTests.cs`, `ModernProjectStoreTests.cs` |
-| Page command coordinator and shared application commands | `PageCommandCoordinatorTests.cs`, `PageApplicationCommandTests.cs` |
+| Page command coordinator and shared application commands | `PageCommandCoordinatorTests.cs` (`ShowPropertiesOpensAndActivatesSelectedPageWithoutDirtyingWorkspace`), `PageApplicationCommandTests.cs` |
 | Project-scoped page undo/redo | `ProjectWorkspaceHistoryTests.cs`, `PageLifecycleIntegrationTests.cs` |
 | Atomic project/scenes/deletions persistence | `ModernProjectAtomicSnapshotTests.cs`, `ModernProjectStoreTests.cs` |
 | Native page preview/export and `.sb2` identity projection | `NativePageDocumentTests.cs`, `Ft100SceneExporterTests.cs`, `PageLifecycleIntegrationTests.cs` |

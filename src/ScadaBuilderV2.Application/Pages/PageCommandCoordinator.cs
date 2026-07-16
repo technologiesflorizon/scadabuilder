@@ -34,7 +34,7 @@ public sealed class PageCommandCoordinator(PageDependencyAnalyzer? dependencyAna
             DuplicatePageRequest value => Duplicate(snapshot, ui, value),
             DeletePageRequest value => Delete(snapshot, ui, value),
             OpenPageRequest value => Route(snapshot, ui, value.PageKey, open: true, "Page ouverte."),
-            ShowPagePropertiesRequest value => Route(snapshot, ui, value.PageKey, open: false, "Propriétés de la page sélectionnées."),
+            ShowPagePropertiesRequest value => Route(snapshot, ui, value.PageKey, open: true, "Propriétés de la page sélectionnées."),
             SetPageBuildInclusionRequest value => SetBuildInclusion(snapshot, ui, value),
             SetHomePageRequest value => SetHome(snapshot, ui, value),
             SetPageTypeRequest value => SetType(snapshot, ui, value),
