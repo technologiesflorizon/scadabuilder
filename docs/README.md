@@ -2,28 +2,29 @@
 
 Date: 2026-07-16
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0061`
+Document version: `V2.1.4.0062`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0062` | `PENDING` | Contrats, matrice 162 capabilities et preuves Builder/runtime/TF100Web synchronises; promotion distante reservee a la livraison. |
 | 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | Package industriel 2.3 exporte et quatre pages gatees sans ecriture PLC. |
 | 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | Parite modele/preview/export/manifest/runtime deploye verrouillee par tests. |
-| 2026-07-16 | `V2.1.4.0059` | Builder `PENDING`, TF100Web `2fb46e6` | Fixture Builder executee dans TF100Web : 118 capabilities supportees et 44 bloquees gatees. |
-| 2026-07-16 | `V2.1.4.0058` | Builder `PENDING`, TF100Web `9e85844` | Composition lineaire instrumentee, caches generationnels et publication/rollback atomiques. |
-| 2026-07-16 | `V2.1.4.0057` | Builder `PENDING`, TF100Web `c304af3` | Bindings numeriques generiques completes : read/write combos, controles edit, formatage partage et fallback mapping. |
-| 2026-07-16 | `V2.1.4.0056` | Builder `PENDING`, TF100Web `1fc3ac4` | `DEC-0046` implemente : navigation latest-wins, hydration forcee coalescee et mutations stale rejetees. |
-| 2026-07-16 | `V2.1.4.0055` | Builder `PENDING`, TF100Web `cab2733` | HostAdapter Runtime 1.0 unique : navigation/history/popup/URL/ecriture, validation fail-closed et compatibilite 2.1/2.2. |
-| 2026-07-16 | `V2.1.4.0054` | Builder `PENDING`, TF100Web `7d60c63` | Intake TF100Web 2.3 negocie capabilities, contrat et hash avant remplacement actif; fixture Builder vendoree. |
-| 2026-07-16 | `V2.1.4.0053` | `PENDING` | Actions objet portables unifiees : 9 kinds, conditions, propagation, cibles page-scope et bindings DOM canoniques. |
-| 2026-07-16 | `V2.1.4.0052` | `PENDING` | CommandConfig partage complete : intents host 1.0, Momentary press/release, confirmations, concurrence et cleanup DOM. |
-| 2026-07-16 | `V2.1.4.0051` | `PENDING` | Runtime partage Etat/Expression/Effet complete : semantiques table-driven, transitions reversibles, animations, tokens et fallback qualite. |
-| 2026-07-16 | `V2.1.4.0050` | `PENDING` | Fixture de conformance `.sb2` deterministe : 162 capabilities indexees, 118 cas supportes, gaps bloques et SHA-256 partage. |
-| 2026-07-16 | `V2.1.4.0049` | `PENDING` | Builder manifest 2.3 strict par defaut : capabilities triees, SHA-256 runtime, rejet des gaps et profils 2.1/2.2 explicites. |
-| 2026-07-16 | `V2.1.4.0048` | `PENDING` | Matrice runtime generee depuis le registre et gate stale branche dans `verify-docs`; promotion `Supported` interdite sans trois couches de preuves. |
-| 2026-07-16 | `V2.1.4.0047` | `PENDING` | Premiere tranche `DEC-0047` : registre type de plus de 100 capabilities, proprietaire/statut/version et analyseur pur avec exhaustivite enum/effet/AST. |
-| 2026-07-16 | `V2.1.4.0046` | `PENDING` | `DEC-0047` approuvee : registre exhaustif de capacites, manifest 2.3 negocie, runtime semantique unique et suite de conformance partagee Builder/TF100Web. |
+| 2026-07-16 | `V2.1.4.0059` | Builder `90b70eb`, TF100Web `2fb46e6` | Fixture Builder executee dans TF100Web : 118 capabilities supportees et 44 bloquees gatees. |
+| 2026-07-16 | `V2.1.4.0058` | Builder `e4776c1`, TF100Web `9e85844` | Composition lineaire instrumentee, caches generationnels et publication/rollback atomiques. |
+| 2026-07-16 | `V2.1.4.0057` | Builder `d1270dd`, TF100Web `c304af3` | Bindings numeriques generiques completes : read/write combos, controles edit, formatage partage et fallback mapping. |
+| 2026-07-16 | `V2.1.4.0056` | Builder `2343bae`, TF100Web `1fc3ac4` | `DEC-0046` implemente : navigation latest-wins, hydration forcee coalescee et mutations stale rejetees. |
+| 2026-07-16 | `V2.1.4.0055` | Builder `e3dd656`, TF100Web `cab2733` | HostAdapter Runtime 1.0 unique : navigation/history/popup/URL/ecriture, validation fail-closed et compatibilite 2.1/2.2. |
+| 2026-07-16 | `V2.1.4.0054` | Builder `12a11c2`, TF100Web `7d60c63` | Intake TF100Web 2.3 negocie capabilities, contrat et hash avant remplacement actif; fixture Builder vendoree. |
+| 2026-07-16 | `V2.1.4.0053` | `bcec075` | Actions objet portables unifiees : 9 kinds, conditions, propagation, cibles page-scope et bindings DOM canoniques. |
+| 2026-07-16 | `V2.1.4.0052` | `a76e220` | CommandConfig partage complete : intents host 1.0, Momentary press/release, confirmations, concurrence et cleanup DOM. |
+| 2026-07-16 | `V2.1.4.0051` | `9878fb1` | Runtime partage Etat/Expression/Effet complete : semantiques table-driven, transitions reversibles, animations, tokens et fallback qualite. |
+| 2026-07-16 | `V2.1.4.0050` | `c626442` | Fixture de conformance `.sb2` deterministe : 162 capabilities indexees, 118 cas supportes, gaps bloques et SHA-256 partage. |
+| 2026-07-16 | `V2.1.4.0049` | `f9659ae` | Builder manifest 2.3 strict par defaut : capabilities triees, SHA-256 runtime, rejet des gaps et profils 2.1/2.2 explicites. |
+| 2026-07-16 | `V2.1.4.0048` | `684478e` | Matrice runtime generee depuis le registre et gate stale branche dans `verify-docs`; promotion `Supported` interdite sans trois couches de preuves. |
+| 2026-07-16 | `V2.1.4.0047` | `9a58d0c` | Premiere tranche `DEC-0047` : registre type de plus de 100 capabilities, proprietaire/statut/version et analyseur pur avec exhaustivite enum/effet/AST. |
+| 2026-07-16 | `V2.1.4.0046` | `b2e4f5f` | `DEC-0047` approuvee : registre exhaustif de capacites, manifest 2.3 negocie, runtime semantique unique et suite de conformance partagee Builder/TF100Web. |
 | 2026-07-16 | `V2.1.4.0045` | `PENDING` | `DEC-0046` approuvee : navigation TF100Web latest-wins, hydratation obligatoire et matrice exhaustive pour `win00003`, `win00004`, `win00008` et `win00012_modern_no_legacy`. |
 | 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | `DEC-0045` implementee : effets Etat reversibles, filtre sous le contenu et bindings numeriques standards/Tableau reunis dans le cache et le bridge TF100Web partages. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | `DEC-0044` implementee : runtime Etat/Commande TF100Web partage, cible texte semantique et 56 boutons de degivrage relies au bit PLC confirme. |

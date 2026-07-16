@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active known gaps register
-Document version: `V2.1.4.0061`
+Document version: `V2.1.4.0062`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0062` | `PENDING` | Gaps runtime reclasses depuis la matrice generee; seul le deploiement distant et les capabilities Blocked restent ouverts. |
 | 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | Gate industriel local ferme; promotion distante/restart et smoke operateur restent ouverts. |
 | 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | Gap parite automatisee ferme; integrations industrielles et promotion restent gatees. |
 | 2026-07-16 | `V2.1.4.0059` | TF100Web `2fb46e6` | Gate fixture general ferme; parity preview/export/host et integrations industrielles restent ouvertes. |
@@ -76,9 +77,9 @@ Document version: `V2.1.4.0061`
 17. The official `tf100web-scada-tags (3).json` audit contains 425 tags but no `YL_E12_HDEG4` or mapping 615. TF100Web `c304af3` now handles this as a non-blocking `data-scada-quality`/`---` diagnostic without fabricated mapping; industrial visual confirmation remains pending.
 18. General fixture execution, parity and automated four-page industrial acceptance are complete on the branches. The strict 2.3 industrial artifact passes TF100Web production negotiation and carries machine-readable evidence. Remote deployment/restart, served capability/hash checks and read-only operator smoke remain pending, so this is not yet a remote operator promotion claim.
 19. Portable state, expression, effect, command and object-action semantics now have one shared-runtime owner. TF100Web `cab2733` removed the parallel new-host message action switch: canonical direct intents and 2.1/2.2 aliases converge into one adapter. The mutually exclusive legacy per-request diagram loader remains a compatibility surface to retire only with explicit migration evidence. Exporter inline scripts are not a semantic fallback.
-20. Shared State/Expression/Effect behavior is now complete and table-tested locally, including animation execution. The six `effect.animation*` contract entries intentionally remain `Blocked` until TF100Web runs the canonical fixture and supplies end-to-end evidence; this is a promotion gate, not a remaining shared-runtime implementation gap.
-21. Shared CommandConfig behavior is complete locally, including real Momentary cleanup and the canonical host-intent envelope. TF100Web `cab2733` supplies the single protected write/intent adapter, but `command.write.momentary` remains `Blocked` until press/release executes through the canonical fixture with permission/readback evidence. Top-level aliases preserve 2.1/2.2 compatibility only; they normalize into the target 2.3 adapter.
-22. Shared object-action behavior is complete locally for all nine current kinds, simple/compound conditions, ordering, propagation and page-scoped targets. TF100Web now negotiates manifest 2.3, owns only navigation/popup/write/URL/history services and enforces latest-wins through `1fc3ac4`; host-dependent capability promotion remains `Blocked` until the canonical fixture executes by SHA.
+20. Shared State/Expression/Effect behavior is complete and table-tested locally, including animation execution. The six `effect.animation*` entries remain `Blocked` because the exact-SHA conformance suite currently proves their strict rejection, not active host rendering. Promotion requires a new three-layer active-rendering gate.
+21. Shared CommandConfig behavior is complete locally, including real Momentary cleanup and the canonical host-intent envelope. TF100Web `cab2733` supplies the single protected write/intent adapter, but `command.write.momentary` remains `Blocked` because no authorized press/release plus permission/readback gate promotes it. Top-level aliases preserve 2.1/2.2 compatibility only.
+22. Shared object-action behavior is complete locally for all nine current kinds, simple/compound conditions, ordering, propagation and page-scoped targets. TF100Web negotiates manifest 2.3, owns only navigation/popup/write/URL/history services and enforces latest-wins through `1fc3ac4`. Capabilities still listed `Blocked` are intentionally rejected by the exact-SHA suite; each requires an explicit active host-service proof before registry promotion.
 
 ## 2. Rule
 
@@ -90,9 +91,8 @@ The following items are the active correction backlog for TF100Web after the `.s
 
 State/Command polling, AST evaluation, effects, Toggle reads and writes use the implemented shared runtime and are no longer part of this backlog.
 
-1. Validate `ReadTag` production behavior on `win00007 / Element+ Text20 / tf100.mapping.180`.
-2. Identify a writeable production candidate for `WriteTag` / `Ecrire valeur` and verify `data-scada-write-mapping-id` when read and write mappings differ.
-3. Execute the canonical fixture through the single TF100Web HostAdapter under the latest-wins lifecycle; collect per-capability evidence without interpreting action definitions or conditions in host code.
-4. Add popup services for open, close, toggle, placement, focus, multi-instance and host-region behavior behind that adapter.
-5. Execute the committed conformance fixture by exact SHA and promote action/condition/popup capabilities only with three-layer evidence.
-6. Complete latest-wins lifecycle disposal, initialization, mandatory hydration and diagnostics under `DEC-0046`.
+1. Promote the TF100Web branch and manifest 2.3 package to the remote server in the documented order.
+2. Verify served capability registry, stable/hashed runtime SHA and latest-wins navigation with the read-only operator account.
+3. Add popup services for open, close, toggle, placement, focus, multi-instance and host-region behavior behind the existing adapter before promoting their blocked capabilities.
+4. Add authorized active-rendering/permission/readback gates before promoting animation, Momentary or host-dependent action capabilities.
+5. Preserve strict rejection and active-package rollback for every capability that remains `Blocked`.

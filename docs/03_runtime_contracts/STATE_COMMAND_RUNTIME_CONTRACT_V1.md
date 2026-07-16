@@ -2,24 +2,26 @@
 
 Date: 2026-07-16
 Status: Active implemented runtime contract
-Document version: `V2.1.4.0052`
+Document version: `V2.1.4.0062`
 Owner: SCADA Builder V2 authoring team and shared package runtime. TF100Web owns host services only (`F:\Projet\Git\TF100Web`).
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-16 | `V2.1.4.0052` | `PENDING` | CommandConfig complete : 5 triggers, 7 kinds, 4 modes, intent 1.0, Momentary reel, confirmations et cleanup. |
-| 2026-07-16 | `V2.1.4.0051` | `PENDING` | Semantiques Etat/Expression/Effet partagees completees et table-driven : fallback, erreurs, coercions, transitions, tokens, animations et re-init. |
-| 2026-07-16 | `V2.1.4.0046` | `PENDING` | `DEC-0047` approuvee : couverture exhaustive de chaque trigger/kind/mode/expression/effet et migration des actions vers l'executeur partage unique. |
+| 2026-07-16 | `V2.1.4.0062` | `PENDING` | Contrat synchronise avec le runtime partage, le HostAdapter unique, la fixture exacte et les statuts Supported/Blocked stricts. |
+| 2026-07-16 | `V2.1.4.0052` | `a76e220` | CommandConfig complete : 5 triggers, 7 kinds, 4 modes, intent 1.0, Momentary reel, confirmations et cleanup. |
+| 2026-07-16 | `V2.1.4.0051` | `9878fb1` | Semantiques Etat/Expression/Effet partagees completees et table-driven : fallback, erreurs, coercions, transitions, tokens, animations et re-init. |
+| 2026-07-16 | `V2.1.4.0046` | `b2e4f5f` | `DEC-0047` approuvee : couverture exhaustive de chaque trigger/kind/mode/expression/effet et migration des actions vers l'executeur partage unique. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Contrat Etat/Commande confirme dans TF100Web : runtime partage deploye, mappings Etat/Commande collectes, boutons avec cible texte semantique et 56 toggles de degivrage configures. |
 | 2026-07-07 | `V2.1.2.0023` | `PENDING` | Creation du contrat runtime state/command V1 (specification, non implemente). |
 
 ## 1. Purpose
 
-Defines the serialized format and evaluation semantics that TF100Web must implement to
-render Element+ display-state rules and execute Element+ commands at runtime. SCADA
-Builder V2 authors and validates this data; TF100Web is the deployed runtime consumer.
+Defines the serialized format and evaluation semantics implemented once by the shared
+package runtime. SCADA Builder V2 authors and validates this data; TF100Web negotiates the
+declared capabilities and supplies host services without reimplementing expressions,
+effects, commands or object actions.
 
 Design source: `docs/superpowers/specs/2026-07-07-element-plus-state-command-events-design.md`.
 
@@ -147,14 +149,23 @@ past is not null.
   1.0 envelope. Host behavior is provided by one adapter and is not duplicated in this
   module. Writes remain on the single TagBridge path.
 
-## 6. Non-goals for this contract version
+## 6. Strict capability status
+
+Manifest 2.3 exports are fail-closed. The generated capability matrix is authoritative:
+
+1. `Supported` means Builder/export evidence, shared-runtime execution evidence and TF100Web conformance evidence are all present.
+2. `Blocked` means the strict Builder exporter and TF100Web deployment validator reject the capability before the active package is replaced.
+3. Implemented portable code alone does not promote a capability. In particular, animations, Momentary commands and host-dependent action/popup variants remain blocked until their complete end-to-end evidence is promoted in the registry.
+4. Compatibility profiles 2.1/2.2 remain explicit legacy paths; they do not weaken the 2.3 gate.
+
+## 7. Non-goals for this contract version
 
 - No live simulator wire format — the Builder's static preview never calls this runtime.
 - No stale-timeout quality detection.
 - No functions beyond `ABS/MIN/MAX/BIT`.
 - No cumulative multi-animation composition beyond the single `animation` field.
 
-## 7. Implementation status
+## 8. Implementation status
 
 Implemented by the shared package runtime deployed by TF100Web. The active chain is
 `ScadaTagCache -> TagBridge -> StateEngine / CommandDispatcher -> EffectApplier / writeTag`.
@@ -168,4 +179,6 @@ true/false states drive green/red 70% filters and `ACTIF`/`ARRÊTÉ` labels from
 PLC bit. Toggle writes continue through the existing TF100Web bridge and are reflected only
 after the shared snapshot reports the resulting value.
 
-The shared State/Expression/Effect and CommandConfig paths now have executable table-driven evidence. Command coverage includes every trigger/kind/write mode, enabled/disabled, missing inputs, confirmation timing, asynchronous rejection, duplicate suppression, real Momentary release and page/input cleanup. Input locks are keyed by DOM identity, refresh inactivity on edits and restore from the declared read tag. Animation and Momentary capabilities remain blocked in the strict registry until the committed fixture is executed end-to-end by TF100Web. `DEC-0047` object-action completion, manifest 2.3 host negotiation/adapter and lifecycle conformance remain pending.
+The shared State/Expression/Effect, CommandConfig and object-action paths have executable table-driven evidence. Command coverage includes every trigger/kind/write mode, enabled/disabled, missing inputs, confirmation timing, asynchronous rejection, duplicate suppression, real Momentary release and page/input cleanup. Input locks are keyed by DOM identity, refresh inactivity on edits and restore from the declared read tag.
+
+Builder commits `9878fb1`, `a76e220` and `bcec075` own the portable semantics. TF100Web commits `7d60c63`, `cab2733`, `1fc3ac4` and `2fb46e6` negotiate manifest 2.3, expose one HostAdapter, enforce latest-wins lifecycle and execute the exact Builder fixture. The fixture gate proves all 118 `Supported` capabilities and rejects all 44 `Blocked` capabilities. The industrial package SHA-256 `22f6a46835aae531841232553c51bd4622decf07e4be8ad0eb41e2ac3e655e98` validates the deployed contract shape without performing PLC writes. Remote server promotion and operator smoke remain release operations, not missing runtime semantics.

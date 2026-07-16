@@ -1,13 +1,14 @@
 # Conformite runtime generale SCADA Builder V2 vers TF100Web - Plan d'implementation
 
 Date: 2026-07-16
-Status: Active implementation plan - execution in progress
-Document version: `V2.1.4.0061`
+Status: Active delivery plan - implementation complete, remote promotion pending
+Document version: `V2.1.4.0062`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0062` | `PENDING` | Task 16 completee : contrats, matrice et preuves synchronises; Task 17 reste la livraison distante ordonnee. |
 | 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | Task 15 completee en acceptance automatisee sure; promotion distante reservee Task 17. |
 | 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | Task 14 completee : parite modele/preview/export/host et runtime deploye exact. |
 | 2026-07-16 | `V2.1.4.0059` | TF100Web `2fb46e6` | Task 13 completee : fixture executee, SHA verrouille, Supported/Blocked gates exhaustifs. |
@@ -16,14 +17,14 @@ Document version: `V2.1.4.0061`
 | 2026-07-16 | `V2.1.4.0056` | TF100Web `1fc3ac4` | Task 10 completee : latest-wins, abort/stale gates, hydration coalescee, disposal et reprise. |
 | 2026-07-16 | `V2.1.4.0055` | TF100Web `cab2733` | Task 9 completee : adaptateur host unique, compatibilite normalisee, securite intents/URL/ecriture et tests. |
 | 2026-07-16 | `V2.1.4.0054` | TF100Web `7d60c63` | Task 8 completee : negotiation 2.3, registry host, hash runtime et fixture exacte avant remplacement. |
-| 2026-07-16 | `V2.1.4.0053` | `PENDING` | Task 7 completee : 9 actions objet, conditions, ordre/propagation, page scope et lifecycle partage. |
-| 2026-07-16 | `V2.1.4.0052` | `PENDING` | Task 6 completee : CommandConfig canonique, Momentary press/release, intents 1.0, async et cleanup. |
-| 2026-07-16 | `V2.1.4.0051` | `PENDING` | Task 5 completee : semantiques Etat/Expression/Effet table-driven, reversibles et deterministes. |
-| 2026-07-16 | `V2.1.4.0050` | `PENDING` | Task 4 completee : fixture `.sb2` deterministe, index exhaustif, sanitization et hash canonique. |
-| 2026-07-16 | `V2.1.4.0049` | `PENDING` | Task 3 completee cote Builder : manifest 2.3 strict, SHA-256 runtime, validation et profils de compatibilite explicites. |
-| 2026-07-16 | `V2.1.4.0048` | `PENDING` | Task 2 completee : matrice generee, verification stale, evidence typee et statut strict fail-closed. |
-| 2026-07-16 | `V2.1.4.0047` | `PENDING` | Task 1 completee : registre type, analyseur pur, statuts de gaps et 7 tests d'exhaustivite/analyse verts. |
-| 2026-07-16 | `V2.1.4.0046` | `PENDING` | Plan general remplacant l'execution page-centrique par un registre, une negotiation 2.3 et une suite de conformance partagee. |
+| 2026-07-16 | `V2.1.4.0053` | `bcec075` | Task 7 completee : 9 actions objet, conditions, ordre/propagation, page scope et lifecycle partage. |
+| 2026-07-16 | `V2.1.4.0052` | `a76e220` | Task 6 completee : CommandConfig canonique, Momentary press/release, intents 1.0, async et cleanup. |
+| 2026-07-16 | `V2.1.4.0051` | `9878fb1` | Task 5 completee : semantiques Etat/Expression/Effet table-driven, reversibles et deterministes. |
+| 2026-07-16 | `V2.1.4.0050` | `c626442` | Task 4 completee : fixture `.sb2` deterministe, index exhaustif, sanitization et hash canonique. |
+| 2026-07-16 | `V2.1.4.0049` | `f9659ae` | Task 3 completee cote Builder : manifest 2.3 strict, SHA-256 runtime, validation et profils de compatibilite explicites. |
+| 2026-07-16 | `V2.1.4.0048` | `684478e` | Task 2 completee : matrice generee, verification stale, evidence typee et statut strict fail-closed. |
+| 2026-07-16 | `V2.1.4.0047` | `9a58d0c` | Task 1 completee : registre type, analyseur pur, statuts de gaps et 7 tests d'exhaustivite/analyse verts. |
+| 2026-07-16 | `V2.1.4.0046` | `b2e4f5f` | Plan general remplacant l'execution page-centrique par un registre, une negotiation 2.3 et une suite de conformance partagee. |
 
 > **For agentic workers:** Execute this plan task-by-task. Preserve one coherent commit per task and do not start a later phase while an earlier contract gate is red.
 
@@ -379,10 +380,10 @@ python manage.py check
 - Modify: `docs/08_implementation_status/REGRESSION_COVERAGE_V2.md`
 - Modify: spec/plan et docs TF100Web
 
-- [ ] Remplacer pending seulement apres commits/tests reels.
-- [ ] Generer la matrice capability.
-- [ ] Marquer chaque capability `Supported` ou `Blocked` avec preuve.
-- [ ] Executer docs verification et `git diff --check`.
+- [x] Remplacer pending seulement apres commits/tests reels.
+- [x] Generer la matrice capability.
+- [x] Marquer chaque capability `Supported` ou `Blocked` avec preuve.
+- [x] Executer docs verification et `git diff --check`.
 
 ### Task 17: Livrer dans l'ordre et verifier rollback
 

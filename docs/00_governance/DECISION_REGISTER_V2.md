@@ -2,28 +2,29 @@
 
 Date: 2026-07-16
 Status: Active authoritative decision register
-Document version: `V2.1.4.0061`
+Document version: `V2.1.4.0062`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0062` | `PENDING` | `DEC-0047` tranche 16 : contrats et preuves Supported/Blocked synchronises; livraison distante reste gatee. |
 | 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | `DEC-0047` tranche 15 : integrations 03/04/08/12 et artefact industriel 2.3 preuves. |
 | 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | `DEC-0047` tranche 14 : parite preview/export/host et preuve obligatoire par capability. |
-| 2026-07-16 | `V2.1.4.0059` | Builder `PENDING`, TF100Web `2fb46e6` | `DEC-0047` tranche 13 : fixture package/runtime executee et matrice Supported/Blocked fermee automatiquement. |
-| 2026-07-16 | `V2.1.4.0058` | Builder `PENDING`, TF100Web `9e85844` | `DEC-0047` tranche 12 : composition O(tags), observabilite, caches revisionnes et deploiement atomique. |
-| 2026-07-16 | `V2.1.4.0057` | Builder `PENDING`, TF100Web `c304af3` | `DEC-0047` tranche 11 : politique binding, edition numerique, qualite mapping et formatage partages. |
-| 2026-07-16 | `V2.1.4.0056` | Builder `PENDING`, TF100Web `1fc3ac4` | `DEC-0046` et `DEC-0047` tranche 10 : generation latest-wins et hydration obligatoire implementees. |
-| 2026-07-16 | `V2.1.4.0055` | Builder `PENDING`, TF100Web `cab2733` | `DEC-0047` tranche 9 : adaptateur host unique, services host securises et branche message unifiee. |
-| 2026-07-16 | `V2.1.4.0054` | Builder `PENDING`, TF100Web `7d60c63` | `DEC-0047` tranche 8 : negotiation TF100Web 2.3 fail-closed et fixture exacte vendoree. |
-| 2026-07-16 | `V2.1.4.0053` | `PENDING` | `DEC-0047` tranche 7 : actions objet adaptees au runtime partage avec conditions et page scope. |
-| 2026-07-16 | `V2.1.4.0052` | `PENDING` | `DEC-0047` tranche 6 : CommandConfig canonique, intents host 1.0 et Momentary reel avec cleanup. |
-| 2026-07-16 | `V2.1.4.0051` | `PENDING` | `DEC-0047` tranche 5 : executeur partage Etat/Expression/Effet rendu deterministe et couvert par tables. |
-| 2026-07-16 | `V2.1.4.0050` | `PENDING` | `DEC-0047` tranche 4 Builder : package de conformance deterministe, index exhaustif et empreinte partagee. |
-| 2026-07-16 | `V2.1.4.0049` | `PENDING` | `DEC-0047` tranche 3 Builder : manifest 2.3 strict, hash runtime complet, validation fail-closed et compatibilite 2.1/2.2 explicite. |
-| 2026-07-16 | `V2.1.4.0048` | `PENDING` | `DEC-0047` tranche 2 : matrice code-generee, preuves typees et verification stale; les gaps sans preuves restent bloques. |
-| 2026-07-16 | `V2.1.4.0047` | `PENDING` | `DEC-0047` tranche 1 : registre Domain et analyseur Application implementes avec tests d'exhaustivite; negotiation 2.3 encore pending. |
-| 2026-07-16 | `V2.1.4.0046` | `PENDING` | Ajout de `DEC-0047` : couverture runtime generale par capabilities, negotiation manifest 2.3 et executeur semantique unique. |
+| 2026-07-16 | `V2.1.4.0059` | Builder `90b70eb`, TF100Web `2fb46e6` | `DEC-0047` tranche 13 : fixture package/runtime executee et matrice Supported/Blocked fermee automatiquement. |
+| 2026-07-16 | `V2.1.4.0058` | Builder `e4776c1`, TF100Web `9e85844` | `DEC-0047` tranche 12 : composition O(tags), observabilite, caches revisionnes et deploiement atomique. |
+| 2026-07-16 | `V2.1.4.0057` | Builder `d1270dd`, TF100Web `c304af3` | `DEC-0047` tranche 11 : politique binding, edition numerique, qualite mapping et formatage partages. |
+| 2026-07-16 | `V2.1.4.0056` | Builder `2343bae`, TF100Web `1fc3ac4` | `DEC-0046` et `DEC-0047` tranche 10 : generation latest-wins et hydration obligatoire implementees. |
+| 2026-07-16 | `V2.1.4.0055` | Builder `e3dd656`, TF100Web `cab2733` | `DEC-0047` tranche 9 : adaptateur host unique, services host securises et branche message unifiee. |
+| 2026-07-16 | `V2.1.4.0054` | Builder `12a11c2`, TF100Web `7d60c63` | `DEC-0047` tranche 8 : negotiation TF100Web 2.3 fail-closed et fixture exacte vendoree. |
+| 2026-07-16 | `V2.1.4.0053` | `bcec075` | `DEC-0047` tranche 7 : actions objet adaptees au runtime partage avec conditions et page scope. |
+| 2026-07-16 | `V2.1.4.0052` | `a76e220` | `DEC-0047` tranche 6 : CommandConfig canonique, intents host 1.0 et Momentary reel avec cleanup. |
+| 2026-07-16 | `V2.1.4.0051` | `9878fb1` | `DEC-0047` tranche 5 : executeur partage Etat/Expression/Effet rendu deterministe et couvert par tables. |
+| 2026-07-16 | `V2.1.4.0050` | `c626442` | `DEC-0047` tranche 4 Builder : package de conformance deterministe, index exhaustif et empreinte partagee. |
+| 2026-07-16 | `V2.1.4.0049` | `f9659ae` | `DEC-0047` tranche 3 Builder : manifest 2.3 strict, hash runtime complet, validation fail-closed et compatibilite 2.1/2.2 explicite. |
+| 2026-07-16 | `V2.1.4.0048` | `684478e` | `DEC-0047` tranche 2 : matrice code-generee, preuves typees et verification stale; les gaps sans preuves restent bloques. |
+| 2026-07-16 | `V2.1.4.0047` | `9a58d0c` | `DEC-0047` tranche 1 : registre Domain et analyseur Application implementes avec tests d'exhaustivite; negotiation 2.3 encore pending. |
+| 2026-07-16 | `V2.1.4.0046` | `b2e4f5f` | Ajout de `DEC-0047` : couverture runtime generale par capabilities, negotiation manifest 2.3 et executeur semantique unique. |
 | 2026-07-16 | `V2.1.4.0045` | `PENDING` | Ajout de `DEC-0046` : navigation TF100Web latest-wins, hydratation obligatoire et acceptation exhaustive des quatre pages de reference. |
 | 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | Ajout et implementation de `DEC-0045` : transitions Etat reversibles, filtre sous le contenu et ValueBinding numerique TF100Web commun. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Ajout et implementation de `DEC-0044` : boutons de degivrage sur le pipeline Etat/Commande partage, texte semantique et collecte des mappings de commande TF100Web. |

@@ -1,14 +1,15 @@
 # Conformite runtime generale SCADA Builder V2 vers TF100Web - Specification
 
 Date: 2026-07-16
-Status: Approved design - pending implementation
-Document version: `V2.1.4.0046`
+Status: Implemented on active branches - remote promotion pending
+Document version: `V2.1.4.0062`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-16 | `V2.1.4.0046` | `PENDING` | Extension de `DEC-0046` en architecture generale de capacites, runtime semantique unique et conformance end-to-end. |
+| 2026-07-16 | `V2.1.4.0062` | `PENDING` | Architecture implementee et prouvee sur les branches; promotion TF100Web distante et smoke operateur restent gates. |
+| 2026-07-16 | `V2.1.4.0046` | `b2e4f5f` | Extension de `DEC-0046` en architecture generale de capacites, runtime semantique unique et conformance end-to-end. |
 
 ## 1. Probleme
 

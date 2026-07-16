@@ -1,14 +1,16 @@
 # SCADA Builder V2 - Preview Build Export Contract
 
-Date: 2026-07-14
+Date: 2026-07-16
 Status: Active runtime contract
-Document version: `V2.1.4.0046`
+Document version: `V2.1.4.0062`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-16 | `V2.1.4.0046` | `PENDING` | `DEC-0047` approuvee : la parite inclura un registre de capacites derive, manifest 2.3 et package de conformance partage avec TF100Web. |
+| 2026-07-16 | `V2.1.4.0062` | `PENDING` | Parite modele/preview/export/runtime host verrouillee par fixture, capabilities, hash runtime et exclusion editor-only. |
+| 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | Tests de parite exacte ajoutes jusqu'au runtime stable et hashe deploye. |
+| 2026-07-16 | `V2.1.4.0046` | `b2e4f5f` | `DEC-0047` approuvee : la parite inclura un registre de capacites derive, manifest 2.3 et package de conformance partage avec TF100Web. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | Preview/build/export partagent les inputs numeriques cellule; le manifest global 2.2 publie `TableCellBindings` sans alterer le DOM Tableau. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Les tableaux exportent des rangées HTML valides, des `<th>/<td>` avec `rowspan`/`colspan` et des segments conservant style, couleur et épaisseur; le scénario 16 x 10 vérifie preview et `.sb2`. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Parite Tableau avancee : headers semantiques, wrap/line-height et segments de bordure; exclusion explicite du lock et des gouttieres editor-only. |
@@ -42,9 +44,11 @@ Editor-only artifacts are never runtime geometry:
 
 Le renderer commun emet les rangees d'en-tete Tableau en `<th>`, les autres ancres en `<td>`, resout les segments de bordure depuis le modele et conserve l'`<input type="number">` natif des cellules numeriques. Preview, build et export lisent le meme `ScadaTableCell` et produisent les memes contraintes, format, valeur initiale et etat readonly.
 
-Le manifest `.sb2` actif est globalement en version `2.2`. Un objet Tableau peut exposer `TableCellBindings` pour ses seules cellules ancres `InputNumeric` liees; la cible non scopee est derivee de l'id Tableau et de la coordonnee. TF100Web applique ensuite le scope de page au `<td>` correspondant et reutilise l'input enfant. Le verrouillage et toutes les gouttieres, selections et poignees d'authoring demeurent exclus du runtime.
+Le manifest `.sb2` strict actif est en version `2.3`. Un objet Tableau peut exposer `TableCellBindings` pour ses seules cellules ancres `InputNumeric` liees; la cible non scopee est derivee de l'id Tableau et de la coordonnee. TF100Web applique ensuite le scope de page au `<td>` correspondant et reutilise l'input enfant. Le verrouillage et toutes les gouttieres, selections et poignees d'authoring demeurent exclus du runtime.
 
-La cible approuvee `DEC-0047`, non implementee, est le manifest 2.3. Preview/build/export derivent alors le meme ensemble `RequiredCapabilities` du modele; le package publie aussi le SHA-256 du runtime partage. Aucun export operateur 2.3 ne commence avant le deploiement de l'intake TF100Web compatible.
+Sous `DEC-0047`, preview/build/export derivent le meme ensemble `RequiredCapabilities` du modele; le package publie aussi le SHA-256 du runtime partage. Le validateur refuse les capabilities inconnues, bloquees, dupliquees ou non triees ainsi que toute divergence du runtime. TF100Web applique la meme negotiation avant remplacement du package actif. Les profils 2.1/2.2 restent des chemins de compatibilite explicites.
+
+La fixture de conformance compare les objets du modele, le markup du preview natif et de l'export, les namespaces, l'absence d'artefacts editeur, les capabilities analysees/manifestees et le SHA runtime. TF100Web prouve ensuite que le runtime package est byte-identique aux fichiers stable et hashe servis et execute le fichier stable. Les preuves sont Builder `22c787f` et TF100Web `6fac468`.
 
 Element+ button hover behavior is FT100Web runtime metadata, not an editor overlay and not SCADA Builder V2 preview styling. Preview must preserve `ScadaButtonBehavior` without applying hover locally. FT100 export must preserve `ScadaButtonBehavior` in the manifest and may generate page-scoped CSS `:hover` rules from enabled hover metadata.
 
@@ -78,7 +82,7 @@ flowchart TD
   Validate --> Archive[.sb2 archive]
   Package --> Tests[Regression tests]
   Diff --> Tests
-  Model -. DEC-0047 pending capability analysis .-> Capabilities[RequiredCapabilities]
+  Model --> Capabilities[DEC-0047 capability analysis]
   Capabilities --> Validate
 ```
 
