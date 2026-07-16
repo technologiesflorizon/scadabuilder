@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active regression coverage map
-Document version: `V2.1.4.0060`
+Document version: `V2.1.4.0061`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | 1 export industriel long et 8 gates TF verts; 03/04/08/12, hashes et capabilities couverts. |
 | 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | 12 tests Builder cibles et 6 gates TF fixture verts; parite et runtime deploye exact verrouilles. |
 | 2026-07-16 | `V2.1.4.0059` | TF100Web `2fb46e6` | 5 gates fixture verts; 118 Supported executes, 44 Blocked rejetes, SHA/composition/runtime verifies. |
 | 2026-07-16 | `V2.1.4.0058` | TF100Web `9e85844` | 17 tests composition/deploiement/performance verts; single-pass, revisions, generation et rollback couverts. |
@@ -110,6 +111,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 | Linear composition and atomic cache lifecycle (`DEC-0047`) | TF100Web `frontend/tests_scada_performance.py` parameterizes 1/3 pages and 64/256/1,024 bindings per fragment, proves one tag pass and constant catalog resolver calls, and verifies generation-keyed structural invalidation. `DeployScadaBuilderManifestTests` covers generation rotation, timing metadata and failed-swap rollback. Seventeen focused composition/deployment/performance tests are green. |
 | End-to-end runtime conformance fixture (`DEC-0047`) | TF100Web `frontend.tests_runtime_conformance` verifies the exact Builder fixture SHA, production 2.3 negotiation, header/body/footer composition, packaged-runtime initialization/expression/effect/host/snapshot/disposal execution, sanitized content and per-capability evidence. All 118 `Supported` ids execute a gate and all 44 `Blocked` ids fail production validation. Five fixture tests are green. |
 | Preview/export/deployed-host parity (`DEC-0047`) | Builder `PreviewDocumentTests`, `Ft100SceneExporterTests` and `RuntimeConformancePackageTests` compare model objects, native preview/export markup, namespaces, editor-only exclusion, analyzer/manifest capabilities, evidence and runtime SHA. TF100Web executes the byte-identical stable deployed runtime and checks its hashed twin. Twelve focused Builder tests and six TF fixture gates are green. |
+| Industrial pages `03/04/08/12` (`DEC-0047`) | `IndustrialRuntimeIntegrationTests` exports the real reference project under strict 2.3, validates eight navigation commands, composition/assets, 8 state + 2 read-only + 1 writable numeric controls, 56 toggles, 126 table cells, readback structure and mapping-615 fallback, then records SHA/timing/version diagnostics with `LiveWritesExecuted=false`. TF100Web verifies the same package SHA, runtime and 46 required capabilities through production validation. One long Builder integration and eight TF conformance gates are green. |
 | TF100Web manifest 2.3 negotiation (`DEC-0047`, partial) | `frontend.tests_scada_deploy.DeployScadaBuilderManifestTests` and targeted package tests cover 2.1/2.2 compatibility, valid 2.3, missing/unknown versions, unsupported capability ids, contract version, runtime tampering, missing contract, pre-replacement preservation and exact vendored fixture SHA. Eleven focused tests and the local Django check pass under SQLite verification settings. |
 | FT100/TF100Web export | `Ft100SceneExporterTests.cs`: manifest 2.3 default, sorted/deduplicated requirements, packaged runtime SHA-256, pre-staging blocked-capability rejection, and explicit 2.1/2.2 profiles. |
 | FT100 `.sb2` archive and namespace validation | `Ft100PackageValidator`, `Ft100PackageValidatorTests`: unknown/duplicate/unsorted/blocked capabilities, runtime contract version, missing/invalid/mismatched SHA-256, tampering and runtime filename; plus archive and page-scope regressions in `Ft100SceneExporterTests`. |

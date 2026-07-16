@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active authoritative decision register
-Document version: `V2.1.4.0060`
+Document version: `V2.1.4.0061`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | `DEC-0047` tranche 15 : integrations 03/04/08/12 et artefact industriel 2.3 preuves. |
 | 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | `DEC-0047` tranche 14 : parite preview/export/host et preuve obligatoire par capability. |
 | 2026-07-16 | `V2.1.4.0059` | Builder `PENDING`, TF100Web `2fb46e6` | `DEC-0047` tranche 13 : fixture package/runtime executee et matrice Supported/Blocked fermee automatiquement. |
 | 2026-07-16 | `V2.1.4.0058` | Builder `PENDING`, TF100Web `9e85844` | `DEC-0047` tranche 12 : composition O(tags), observabilite, caches revisionnes et deploiement atomique. |
@@ -1437,7 +1438,7 @@ The default new export contract advances from manifest 2.2 to 2.3 only after TF1
 
 Implementation status:
 
-Implementation slices 1 through 14 are complete across the Builder and TF100Web branches. Builder `22c787f` proves the conformance model projects equivalent native-preview and export markup, locks page namespaces/editor-artifact exclusion, compares analyzer requirements to manifest declarations, verifies every exported capability has complete Builder/runtime/host evidence, and hashes the packaged runtime. TF100Web `6fac468` proves the exact manifested runtime is copied to both stable and hashed deployment paths and executes that deployed stable runtime through the host gate. Industrial page validation remains pending; the branch is not yet an operator deployment claim.
+Implementation slices 1 through 15 are complete across the Builder and TF100Web branches. The reference project exports deterministically as manifest 2.3 package SHA `22f6a468...e655e98`, runtime SHA `0101ecac...bec69`, and passes TF100Web production negotiation. Automated industrial evidence locks `win00003` eight navigations, `win00004` composition/assets, `win00008` eight states/two readings/one writable input, and `win00012_modern_no_legacy` 56 toggles/126 bound cells plus expected mapping-615 quality fallback. Permission/readback suites are reused and no live PLC write was executed. Remote promotion on the industrial server remains a separate delivery gate.
 
 Regression coverage:
 

@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active known gaps register
-Document version: `V2.1.4.0060`
+Document version: `V2.1.4.0061`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | Gate industriel local ferme; promotion distante/restart et smoke operateur restent ouverts. |
 | 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | Gap parite automatisee ferme; integrations industrielles et promotion restent gatees. |
 | 2026-07-16 | `V2.1.4.0059` | TF100Web `2fb46e6` | Gate fixture general ferme; parity preview/export/host et integrations industrielles restent ouvertes. |
 | 2026-07-16 | `V2.1.4.0058` | TF100Web `9e85844` | Gap algorithmique composition/cache ferme sur branche; mesure distante industrielle reste requise. |
@@ -73,7 +74,7 @@ Document version: `V2.1.4.0060`
 15. TF100Web `9d5d400` had the confirmed navigation/poll race observed on `win00008 -> win00012_modern_no_legacy -> win00008`. Branch commit `1fc3ac4` implements `DEC-0046` with abortable generations and mandatory coalesced hydration; an industrial browser smoke after deployment remains required before release closure.
 16. Remote page composition previously measured approximately 6.7 s for `win00008` and 14.2 s for `win00012_modern_no_legacy`, while a 426-mapping snapshot measured approximately 0.2 s. TF100Web `9e85844` closes the known algorithmic gap with single-pass injection, bulk catalog resolution, generation/revision caches, phase instrumentation and atomic invalidation. Remote post-deployment measurements on the industrial server remain required; cellular latency remains a separate external factor.
 17. The official `tf100web-scada-tags (3).json` audit contains 425 tags but no `YL_E12_HDEG4` or mapping 615. TF100Web `c304af3` now handles this as a non-blocking `data-scada-quality`/`---` diagnostic without fabricated mapping; industrial visual confirmation remains pending.
-18. General fixture execution and preview/build/export/host parity are complete on the branches. Builder `22c787f` and TF100Web `6fac468` ensure the tested runtime is the manifested and deployed runtime and forbid supported exports without complete evidence. The four industrial integrations remain pending, so Builder 2.3 output is not yet an operator promotion claim.
+18. General fixture execution, parity and automated four-page industrial acceptance are complete on the branches. The strict 2.3 industrial artifact passes TF100Web production negotiation and carries machine-readable evidence. Remote deployment/restart, served capability/hash checks and read-only operator smoke remain pending, so this is not yet a remote operator promotion claim.
 19. Portable state, expression, effect, command and object-action semantics now have one shared-runtime owner. TF100Web `cab2733` removed the parallel new-host message action switch: canonical direct intents and 2.1/2.2 aliases converge into one adapter. The mutually exclusive legacy per-request diagram loader remains a compatibility surface to retire only with explicit migration evidence. Exporter inline scripts are not a semantic fallback.
 20. Shared State/Expression/Effect behavior is now complete and table-tested locally, including animation execution. The six `effect.animation*` contract entries intentionally remain `Blocked` until TF100Web runs the canonical fixture and supplies end-to-end evidence; this is a promotion gate, not a remaining shared-runtime implementation gap.
 21. Shared CommandConfig behavior is complete locally, including real Momentary cleanup and the canonical host-intent envelope. TF100Web `cab2733` supplies the single protected write/intent adapter, but `command.write.momentary` remains `Blocked` until press/release executes through the canonical fixture with permission/readback evidence. Top-level aliases preserve 2.1/2.2 compatibility only; they normalize into the target 2.3 adapter.

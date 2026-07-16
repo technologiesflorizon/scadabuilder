@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active runtime package contract
-Document version: `V2.1.4.0060`
+Document version: `V2.1.4.0061`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | Artefact industriel 2.3 lie a 46 capabilities et accepte par le gate TF100Web. |
 | 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | Parite preview/export/manifest et identite runtime package/deploiement prouvees. |
 | 2026-07-16 | `V2.1.4.0059` | TF100Web `2fb46e6` | Fixture exacte executee : negotiation, composition, runtime, host, snapshot, securite et blocages. |
 | 2026-07-16 | `V2.1.4.0058` | TF100Web `9e85844` | Composition/caches bornes par generation et revisions; publication statique atomique avec rollback. |
@@ -171,6 +172,7 @@ The active TF100Web intake contract is:
 36. TF100Web `9e85844` composes each fragment with one tag pass and one bulk mapping-catalog resolution per response. Structural caches are keyed by the atomically published package generation; rendered-response caches additionally include catalog and override revisions. Package deployment validates and stages before an atomic active-directory swap, restores the previous generation if publication fails, and invalidates local structural caches only after success. `Server-Timing`, generation/cache headers and structured logs expose phase durations and cardinalities without PLC values.
 37. TF100Web `2fb46e6` vendors machine-readable expectations beside the exact Builder conformance package. Its production validator and composer load the fixture, while the packaged runtime is executed for initialization, expressions, effects, host intents, snapshots and disposal. Every supported manifest capability is assigned a successful evidence gate; every blocked capability is injected individually and must be rejected before deployment. SHA and sanitized-diagnostic assertions prevent fixture drift or client data leakage.
 38. Builder `22c787f` locks native preview and export to equivalent conformance markup after normalizing only the expected CSS hash/runtime-script transport differences. Analyzer output, manifest capabilities, complete evidence, page namespaces, model objects, editor-artifact exclusion and runtime SHA are compared in one fixture path. TF100Web `6fac468` then proves the packaged runtime bytes equal both deployed stable and hashed files and executes the stable deployed file, preventing tests from validating a different runtime than production serves.
+39. The industrial acceptance artifact exported at Builder `V2.1.4.0060` has manifest 2.3, package SHA-256 `22f6a46835aae531841232553c51bd4622decf07e4be8ad0eb41e2ac3e655e98`, runtime SHA-256 `0101ecaccd55013ebc6923f2aef87060e0b620ebc1158a9a198e153be94bec69`, 25 pages and 46 required capabilities. Builder evidence validates the four critical pages and TF100Web `33c5846` verifies exact artifact SHA, capability subset and production negotiation. Live PLC writes are explicitly excluded from this automated gate.
 
 ## 4. Element+ Style Transport Contract
 

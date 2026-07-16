@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active implementation plan - execution in progress
-Document version: `V2.1.4.0060`
+Document version: `V2.1.4.0061`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | Task 15 completee en acceptance automatisee sure; promotion distante reservee Task 17. |
 | 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | Task 14 completee : parite modele/preview/export/host et runtime deploye exact. |
 | 2026-07-16 | `V2.1.4.0059` | TF100Web `2fb46e6` | Task 13 completee : fixture executee, SHA verrouille, Supported/Blocked gates exhaustifs. |
 | 2026-07-16 | `V2.1.4.0058` | TF100Web `9e85844` | Task 12 completee : composition lineaire, caches revisionnes, observabilite et swap atomique. |
@@ -355,12 +356,12 @@ python manage.py check
 - Test artifact: export valide `AMR_REF_SCADA_V2.sb2`
 - No project mutation unless separately approved
 
-- [ ] `win00003`: 8 navigations, rapid/latest-wins, back/forward.
-- [ ] `win00004`: header/body/footer, assets, retour et footer.
-- [ ] `win00008`: 8 etats, 2 lectures, 1 input, aller-retour `08 -> 12 -> 08`.
-- [ ] `win00012_modern_no_legacy`: 56 boutons et 126 cellules; mapping absent = fallback qualite attendu, sans bloquer les autres.
-- [ ] Ecritures uniquement dans la fenetre autorisee et avec readback.
-- [ ] Conserver captures, timings, versions, hashes et diagnostics.
+- [x] `win00003`: 8 navigations, rapid/latest-wins, back/forward.
+- [x] `win00004`: header/body/footer, assets, retour et footer.
+- [x] `win00008`: 8 etats, 2 lectures, 1 input, aller-retour `08 -> 12 -> 08`.
+- [x] `win00012_modern_no_legacy`: 56 boutons et 126 cellules; mapping absent = fallback qualite attendu, sans bloquer les autres.
+- [x] Ecritures uniquement dans la fenetre autorisee et avec readback.
+- [x] Conserver captures, timings, versions, hashes et diagnostics.
 
 ---
 
