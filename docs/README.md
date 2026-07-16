@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0047`
+Document version: `V2.1.4.0048`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0048` | `PENDING` | Matrice runtime generee depuis le registre et gate stale branche dans `verify-docs`; promotion `Supported` interdite sans trois couches de preuves. |
 | 2026-07-16 | `V2.1.4.0047` | `PENDING` | Premiere tranche `DEC-0047` : registre type de plus de 100 capabilities, proprietaire/statut/version et analyseur pur avec exhaustivite enum/effet/AST. |
 | 2026-07-16 | `V2.1.4.0046` | `PENDING` | `DEC-0047` approuvee : registre exhaustif de capacites, manifest 2.3 negocie, runtime semantique unique et suite de conformance partagee Builder/TF100Web. |
 | 2026-07-16 | `V2.1.4.0045` | `PENDING` | `DEC-0046` approuvee : navigation TF100Web latest-wins, hydratation obligatoire et matrice exhaustive pour `win00003`, `win00004`, `win00008` et `win00012_modern_no_legacy`. |
@@ -226,6 +227,7 @@ Generated documentation:
 4. `10_generated/STATE_FLOW_DIAGRAM_V2.md` - state flow diagram.
 5. `10_generated/EXPORT_FLOW_DIAGRAM_V2.md` - export flow diagram.
 6. `10_generated/STUDIO_ELEMENT_PLUS_FLOW_DIAGRAM_V2.md` - Studio Element+ flow diagram.
+7. `10_generated/RUNTIME_CAPABILITY_MATRIX_V2.md` - generated strict 2.3 capability, artifact, fixture, and executable-evidence matrix.
 
 ## 4. Current Contract Guardrails
 

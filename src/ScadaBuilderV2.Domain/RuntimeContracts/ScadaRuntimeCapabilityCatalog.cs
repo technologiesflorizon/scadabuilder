@@ -18,6 +18,11 @@ namespace ScadaBuilderV2.Domain.RuntimeContracts;
 /// </remarks>
 public static class ScadaRuntimeCapabilityCatalog
 {
+    private static readonly ScadaRuntimeCapabilityEvidence BaselineEvidence = new(
+        ["tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs"],
+        ["tests/ScadaBuilderV2.Tests/Runtime/RuntimeJsModulesTests.cs"],
+        ["F:/Projet/Git/TF100Web/frontend/tests_scada_package.py"]);
+
     /// <summary>Gets the capability catalog contract version.</summary>
     public const string ContractVersion = "1.0";
 
@@ -253,8 +258,18 @@ public static class ScadaRuntimeCapabilityCatalog
     private static ScadaRuntimeCapability Capability(
         string id,
         ScadaRuntimeCapabilityOwner owner,
-        ScadaRuntimeCapabilityStatus status = ScadaRuntimeCapabilityStatus.Supported) =>
-        new(id, ContractVersion, owner, status);
+        ScadaRuntimeCapabilityStatus status = ScadaRuntimeCapabilityStatus.Supported,
+        ScadaRuntimeCapabilityEvidence? evidence = null) =>
+        new(
+            id,
+            ContractVersion,
+            owner,
+            status,
+            ArtifactsFor(id),
+            $"planned:{id}",
+            evidence ?? (status == ScadaRuntimeCapabilityStatus.Supported
+                ? BaselineEvidence
+                : ScadaRuntimeCapabilityEvidence.Pending));
 
     private static ScadaRuntimeCapability Blocked(string id, ScadaRuntimeCapabilityOwner owner) =>
         Capability(id, owner, ScadaRuntimeCapabilityStatus.Blocked);
@@ -268,6 +283,38 @@ public static class ScadaRuntimeCapabilityCatalog
         ScadaRuntimeCapabilityOwner owner,
         ScadaRuntimeCapabilityStatus status = ScadaRuntimeCapabilityStatus.Supported) where T : struct, Enum =>
         Enum.GetValues<T>().ToDictionary(value => value, value => Capability(idFactory(value), owner, status));
+
+    private static IReadOnlyList<string> ArtifactsFor(string id)
+    {
+        if (id.StartsWith("page.", StringComparison.Ordinal))
+        {
+            return ["manifest.json:Pages", "<page-id>/<page-id>.html"];
+        }
+        if (id.StartsWith("element.", StringComparison.Ordinal) ||
+            id.StartsWith("shape.", StringComparison.Ordinal) ||
+            id.StartsWith("button.", StringComparison.Ordinal) ||
+            id.StartsWith("table.", StringComparison.Ordinal))
+        {
+            return ["<page-id>/<page-id>.html:DOM/CSS"];
+        }
+        if (id.StartsWith("binding.", StringComparison.Ordinal))
+        {
+            return ["<page-id>/<page-id>.html:data-scada-*", "scada-runtime.<hash>.js"];
+        }
+        if (id.StartsWith("state.", StringComparison.Ordinal) ||
+            id.StartsWith("expression.", StringComparison.Ordinal) ||
+            id.StartsWith("effect.", StringComparison.Ordinal) ||
+            id.StartsWith("command.", StringComparison.Ordinal))
+        {
+            return ["<page-id>/<page-id>.html:data-scada-*", "scada-runtime.<hash>.js"];
+        }
+        if (id.StartsWith("action.", StringComparison.Ordinal) ||
+            id.StartsWith("popup.", StringComparison.Ordinal))
+        {
+            return ["<page-id>/<page-id>.html:action-registry", "scada-runtime.<hash>.js"];
+        }
+        return ["manifest.json"];
+    }
 
     private static string ToKebabCase(string value)
     {

@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active regression coverage map
-Document version: `V2.1.4.0047`
+Document version: `V2.1.4.0048`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0048` | `PENDING` | Matrice de 162 capabilities generee depuis le code; `verify-docs` rejette staleness et support sans preuves trilaterales. |
 | 2026-07-16 | `V2.1.4.0047` | `PENDING` | 7 regressions `RuntimeContracts` couvrent catalogue, exhaustivite enum/effet/AST, gaps bloques, analyse et deduplication. |
 | 2026-07-16 | `V2.1.4.0046` | `PENDING` | Plan `DEC-0047` : matrice generee, tests d'exhaustivite, fixture `.sb2` partagee et preuves end-to-end requises pour chaque capability. |
 | 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | Couverture `DEC-0045` : restauration fallback, overlay sous contenu, collecte mappings resolus, snapshot force et binding numerique commun idempotent. |
@@ -89,7 +90,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 
 | Contract area | Primary tests |
 | --- | --- |
-| Runtime capability completeness (`DEC-0047`, partial) | `RuntimeContracts/ScadaRuntimeCapabilityCatalogTests.cs` and `ScadaRuntimeCapabilityAnalyzerTests.cs` cover the typed inventory and model analysis. Generated matrix, manifest 2.3, deterministic conformance `.sb2`, shared-runtime tables and TF100Web end-to-end execution remain pending. |
+| Runtime capability completeness (`DEC-0047`, partial) | `RuntimeContracts/ScadaRuntimeCapabilityCatalogTests.cs` and `ScadaRuntimeCapabilityAnalyzerTests.cs` cover typed inventory, artifacts, reserved fixtures, three-layer evidence requirements and model analysis. `tools/docs/generate-runtime-capability-matrix.ps1` plus `verify-docs` enforce code/matrix parity. Baseline `Supported` entries cite existing broad suites; known gaps are `Blocked`. Manifest 2.3, deterministic per-capability `.sb2`, shared-runtime tables and TF100Web end-to-end fixture execution remain pending. |
 | FT100/TF100Web export | `Ft100SceneExporterTests.cs` |
 | FT100 `.sb2` archive and namespace validation | `Ft100PackageValidator`, `Ft100SceneExporterTests.ExportProjectArchiveWritesSb2RootAndScopesLegacyDomIds`, `Ft100SceneExporterTests.PackageValidatorAcceptsIndentedPageScopedCssIdSelectors` |
 | TF100Web package intake audit | `F:\Projet\Git\TF100Web\frontend\tests_scada_package.py` |

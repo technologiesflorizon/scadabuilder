@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active authoritative decision register
-Document version: `V2.1.4.0047`
+Document version: `V2.1.4.0048`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0048` | `PENDING` | `DEC-0047` tranche 2 : matrice code-generee, preuves typees et verification stale; les gaps sans preuves restent bloques. |
 | 2026-07-16 | `V2.1.4.0047` | `PENDING` | `DEC-0047` tranche 1 : registre Domain et analyseur Application implementes avec tests d'exhaustivite; negotiation 2.3 encore pending. |
 | 2026-07-16 | `V2.1.4.0046` | `PENDING` | Ajout de `DEC-0047` : couverture runtime generale par capabilities, negotiation manifest 2.3 et executeur semantique unique. |
 | 2026-07-16 | `V2.1.4.0045` | `PENDING` | Ajout de `DEC-0046` : navigation TF100Web latest-wins, hydratation obligatoire et acceptation exhaustive des quatre pages de reference. |
@@ -1424,7 +1425,7 @@ The default new export contract advances from manifest 2.2 to 2.3 only after TF1
 
 Implementation status:
 
-Implementation slice 1 is complete: Domain owns stable capability ids, minimum contract version, execution owner and strict-export status; Application derives a sorted deduplicated requirement set from compiled pages and scenes without UI or I/O. Reflection/fingerprint tests cover persistent enums, every `ScadaEffectBlock` property and every AST node type. Manifest 2.3, generated documentation, the conformance package, unified action runtime and TF100Web negotiation remain pending. `DEC-0046` also remains pending.
+Implementation slices 1 and 2 are complete: Domain owns stable capability ids, minimum contract version, execution owner, artifact contracts, reserved fixture ids, strict-export status and typed evidence; Application derives a sorted deduplicated requirement set from compiled pages and scenes without UI or I/O. Reflection/fingerprint tests cover persistent enums, every `ScadaEffectBlock` property and every AST node type. `RUNTIME_CAPABILITY_MATRIX_V2.md` is generated from code and `verify-docs` rejects staleness. Baseline capabilities cite executable Builder/shared-runtime/TF100Web suites; known semantic gaps remain `Blocked` without evidence. The per-capability shared fixture is still required before final conformance. Manifest 2.3, the conformance package, unified action runtime and TF100Web negotiation remain pending. `DEC-0046` also remains pending.
 
 Regression coverage:
 

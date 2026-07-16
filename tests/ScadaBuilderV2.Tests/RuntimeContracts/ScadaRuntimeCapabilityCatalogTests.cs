@@ -100,15 +100,24 @@ public sealed class ScadaRuntimeCapabilityCatalogTests
         Assert.IsTrue(all.Count > 100, "The general contract should inventory the complete runtime surface, not a page-specific subset.");
         Assert.IsTrue(all.All(capability => Regex.IsMatch(capability.Id, "^[a-z0-9]+(?:[.-][a-z0-9]+)*$")));
         Assert.IsTrue(all.All(capability => capability.MinimumContractVersion == ScadaRuntimeCapabilityCatalog.ContractVersion));
+        Assert.IsTrue(all.All(capability => capability.Artifacts.Count > 0));
+        Assert.IsTrue(all.All(capability => capability.FixtureId == $"planned:{capability.Id}"));
     }
 
     [TestMethod]
-    public void KnownParityGapsRemainBlockedUntilConformanceExists()
+    public void StrictSupportRequiresCompleteBuilderRuntimeAndTf100WebEvidence()
     {
+        Assert.IsTrue(ScadaRuntimeCapabilityCatalog.All
+            .Where(capability => capability.Status == ScadaRuntimeCapabilityStatus.Supported)
+            .All(capability => capability.Evidence.IsComplete));
+
         Assert.AreEqual(ScadaRuntimeCapabilityStatus.Supported, ScadaRuntimeCapabilityCatalog.ActionKinds[ScadaActionKind.Navigate].Status);
         Assert.AreEqual(ScadaRuntimeCapabilityStatus.Blocked, ScadaRuntimeCapabilityCatalog.ActionKinds[ScadaActionKind.Show].Status);
         Assert.AreEqual(ScadaRuntimeCapabilityStatus.Blocked, ScadaRuntimeCapabilityCatalog.WriteModes[ScadaWriteMode.Momentary].Status);
         Assert.IsTrue(ScadaRuntimeCapabilityCatalog.Animations.Values.All(value => value.Status == ScadaRuntimeCapabilityStatus.Blocked));
+        Assert.IsTrue(ScadaRuntimeCapabilityCatalog.All
+            .Where(value => value.Status == ScadaRuntimeCapabilityStatus.Blocked)
+            .All(value => !value.Evidence.IsComplete));
     }
 
     private static void AssertComplete<T>(IEnumerable<T> mapped) where T : struct, Enum

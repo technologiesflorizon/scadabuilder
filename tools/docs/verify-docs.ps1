@@ -145,7 +145,8 @@ function Test-GeneratedDocs {
         "10_generated\COMMAND_FLOW_DIAGRAM_V2.md",
         "10_generated\STATE_FLOW_DIAGRAM_V2.md",
         "10_generated\EXPORT_FLOW_DIAGRAM_V2.md",
-        "10_generated\STUDIO_ELEMENT_PLUS_FLOW_DIAGRAM_V2.md"
+        "10_generated\STUDIO_ELEMENT_PLUS_FLOW_DIAGRAM_V2.md",
+        "10_generated\RUNTIME_CAPABILITY_MATRIX_V2.md"
     )
 
     foreach ($relativePath in $required) {
@@ -153,6 +154,17 @@ function Test-GeneratedDocs {
         if (-not (Test-Path -LiteralPath $path)) {
             Add-ErrorMessage "Missing generated documentation file: docs/$relativePath"
         }
+    }
+
+    $matrixGenerator = Join-Path $PSScriptRoot "generate-runtime-capability-matrix.ps1"
+    if (-not (Test-Path -LiteralPath $matrixGenerator)) {
+        Add-ErrorMessage "Missing runtime capability matrix generator: $matrixGenerator"
+        return
+    }
+
+    $matrixCheck = & powershell -NoProfile -ExecutionPolicy Bypass -File $matrixGenerator -Check 2>&1
+    if ($LASTEXITCODE -ne 0) {
+        Add-ErrorMessage "Runtime capability matrix verification failed: $($matrixCheck -join ' ')"
     }
 }
 

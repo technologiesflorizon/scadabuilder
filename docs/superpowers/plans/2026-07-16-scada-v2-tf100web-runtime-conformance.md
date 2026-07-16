@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Draft implementation plan - pending execution approval
-Document version: `V2.1.4.0047`
+Document version: `V2.1.4.0048`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-16 | `V2.1.4.0048` | `PENDING` | Task 2 completee : matrice generee, verification stale, evidence typee et statut strict fail-closed. |
 | 2026-07-16 | `V2.1.4.0047` | `PENDING` | Task 1 completee : registre type, analyseur pur, statuts de gaps et 7 tests d'exhaustivite/analyse verts. |
 | 2026-07-16 | `V2.1.4.0046` | `PENDING` | Plan general remplacant l'execution page-centrique par un registre, une negotiation 2.3 et une suite de conformance partagee. |
 
@@ -85,10 +86,10 @@ Expected: tous les cas cibles passent; l'ajout artificiel d'une variante non map
 
 **Interfaces:** Le registre code est la source; Markdown est un artefact verifie.
 
-- [ ] Generer id, version, owner, statut, artefacts et tests.
-- [ ] Faire echouer `verify-docs` si la matrice est stale.
-- [ ] Interdire une ligne `Supported` sans preuve Builder/runtime/TF100Web.
-- [ ] Documenter les capacites bloquees sans les presenter comme comportement actif.
+- [x] Generer id, version, owner, statut, artefacts et tests.
+- [x] Faire echouer `verify-docs` si la matrice est stale.
+- [x] Interdire une ligne `Supported` sans preuve Builder/runtime/TF100Web.
+- [x] Documenter les capacites bloquees sans les presenter comme comportement actif.
 
 **Commit:** `docs: generate runtime capability coverage matrix`
 
