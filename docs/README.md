@@ -8,7 +8,7 @@ Document version: `V2.1.4.0064`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-17 | `V2.1.4.0064` | `PENDING` | `win00012_modern_no_legacy` ajoute les rangees Depart Manuel et Etat du degivrage, avec 14 boutons et 14 voyants rectangulaires sans mapping. |
+| 2026-07-17 | `V2.1.4.0064` | `f73b3e3` | `win00012_modern_no_legacy` ajoute les rangees Depart Manuel et Etat du degivrage, avec 14 boutons et 14 voyants rectangulaires sans mapping. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Les 118 capabilities Supported possedent maintenant un probe TF100Web exact, independant et mutation-teste; les operateurs AST lower-camel exportes sont executes par le runtime partage. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | Contrats, matrice 162 capabilities et preuves Builder/runtime/TF100Web synchronises; promotion distante reservee a la livraison. |
 | 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | Package industriel 2.3 exporte et quatre pages gatees sans ecriture PLC. |

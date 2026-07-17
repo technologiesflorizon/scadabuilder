@@ -9,7 +9,7 @@ Owner: SCADA Builder V2 authoring team and shared package runtime. TF100Web owns
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-17 | `V2.1.4.0064` | `PENDING` | Artefact industriel regenere apres ajout de commandes/voyants non mappes; aucune semantique runtime Etat/Commande n'est modifiee. |
+| 2026-07-17 | `V2.1.4.0064` | `f73b3e3` | Artefact industriel regenere apres ajout de commandes/voyants non mappes; aucune semantique runtime Etat/Commande n'est modifiee. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Casing AST ferme : lower-camel canonique exporte execute directement, PascalCase historique accepte, probes exacts pour chaque operateur. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | Contrat synchronise avec le runtime partage, le HostAdapter unique, la fixture exacte et les statuts Supported/Blocked stricts. |
 | 2026-07-16 | `V2.1.4.0052` | `a76e220` | CommandConfig complete : 5 triggers, 7 kinds, 4 modes, intent 1.0, Momentary reel, confirmations et cleanup. |

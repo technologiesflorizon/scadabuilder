@@ -8,7 +8,7 @@ Document version: `V2.1.4.0064`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-17 | `V2.1.4.0064` | `PENDING` | Deux rangees Element+ ajoutees a `win00012_modern_no_legacy` : 14 commandes de depart manuel et 14 voyants d'etat rectangulaires, volontairement sans mapping. |
+| 2026-07-17 | `V2.1.4.0064` | `f73b3e3` | Deux rangees Element+ ajoutees a `win00012_modern_no_legacy` : 14 commandes de depart manuel et 14 voyants d'etat rectangulaires, volontairement sans mapping. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Validation runtime exacte 118/118, mutation isolee, index `probe:<id>` et compatibilite AST lower-camel/Pascal verrouilles. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | Contrats, matrice et statuts de livraison `DEC-0047` synchronises. |
 | 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | Acceptance industrielle automatisee et artefact 2.3 auditable sans ecriture PLC. |
