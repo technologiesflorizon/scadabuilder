@@ -2,12 +2,13 @@
 
 Date: 2026-07-17
 Status: Active authoritative decision register
-Document version: `V2.1.4.0065`
+Document version: `V2.1.4.0066`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-17 | `V2.1.4.0066` | `PENDING` | Ajout de `DEC-0048` : la modernisation visuelle des controles d'ecran est gouvernee par une direction artistique versionnee et verifiable. |
 | 2026-07-17 | `V2.1.4.0065` | `PENDING` | `DEC-0045` clarifiee : le filtre Etat est au-dessus des geometries SVG/image/canvas/table opaques, sous le contenu semantique, sans modifier l'ordre auteur des objets. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | `DEC-0047` corrige : 118 probes exacts remplacent les gates agreges; mutation independante et AST lower-camel sont verrouilles. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | `DEC-0047` tranche 16 : contrats et preuves Supported/Blocked synchronises; livraison distante reste gatee. |
@@ -104,6 +105,32 @@ Regression coverage:
 ```
 
 ## 3. Active Decisions
+
+### DEC-0048 - Direction artistique versionnee pour modernisation d'ecran
+
+Status: Active
+Created: 2026-07-17 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/07_legacy_migration/SCREEN_MODERNIZATION_ART_DIRECTION_V2.md`
+
+Context:
+
+Une conversion Element+ peut etre techniquement correcte tout en laissant des cadres legacy, des champs trop etroits, une typographie incoherente ou des unites invisibles. Ces defauts deviennent plus couteux lorsqu'un pattern est reproduit page par page.
+
+Decision:
+
+Toute modernisation de controles d'ecran applique la direction artistique versionnee : un controle est un groupe visuel complet (cadre, valeur/consigne, unite et libelle), les dimensions minimales protegent la lisibilite, et les liaisons PT-16, Etats et Commandes existantes sont preservees. La reference artistique initiale est `win00008`; les sources et liaisons restent celles de la page cible.
+
+Consequences:
+
+Une passe de modernisation commence par une sauvegarde, conserve `LegacySource`, retire durablement les sources remplacees avec `RemovedSourceElementIds`, et exige une revue visuelle humaine avant propagation. Une conversion structurelle seule ne satisfait pas ce contrat.
+
+Regression coverage:
+
+Validation JSON de scene, `Ft100SceneExporterTests`, build cible et revue visuelle humaine.
 
 ### DEC-0001 - Enterprise Documentation Architecture
 

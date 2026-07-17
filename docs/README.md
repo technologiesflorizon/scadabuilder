@@ -2,12 +2,13 @@
 
 Date: 2026-07-17
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0065`
+Document version: `V2.1.4.0066`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-17 | `V2.1.4.0066` | `PENDING` | Ajout du contrat de direction artistique versionnee pour la modernisation des ecrans. |
 | 2026-07-17 | `V2.1.4.0065` | `PENDING` | Correction du filtre Etat sur SVG opaque : geometrie visuelle sous l'overlay, texte/controles au-dessus et ordre auteur entre objets inchange. |
 | 2026-07-17 | `V2.1.4.0064` | `f73b3e3` | `win00012_modern_no_legacy` ajoute les rangees Depart Manuel et Etat du degivrage, avec 14 boutons et 14 voyants rectangulaires sans mapping. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Les 118 capabilities Supported possedent maintenant un probe TF100Web exact, independant et mutation-teste; les operateurs AST lower-camel exportes sont executes par le runtime partage. |
@@ -206,6 +207,7 @@ Legacy migration:
 2. `07_legacy_migration/REFERENCE_PROJECT_NOTES_V2.md` - reference project notes.
 3. `07_legacy_migration/MODERNIZATION_WORKFLOW_V2.md` - modernization workflow.
 4. `07_legacy_migration/SCADA_2026_ICON_STYLE_GUIDE_V2.md` - icon visual style guide and junction-point contract for Element+ modernization.
+5. `07_legacy_migration/SCREEN_MODERNIZATION_ART_DIRECTION_V2.md` - mandatory versioned visual rules for modernized screen controls, based on the approved `win00008` pattern.
 
 Implementation status:
 
