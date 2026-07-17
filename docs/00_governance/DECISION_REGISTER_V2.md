@@ -1,14 +1,15 @@
 # SCADA Builder V2 - Decision Register
 
-Date: 2026-07-16
+Date: 2026-07-17
 Status: Active authoritative decision register
-Document version: `V2.1.4.0062`
+Document version: `V2.1.4.0063`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-16 | `V2.1.4.0062` | `PENDING` | `DEC-0047` tranche 16 : contrats et preuves Supported/Blocked synchronises; livraison distante reste gatee. |
+| 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | `DEC-0047` corrige : 118 probes exacts remplacent les gates agreges; mutation independante et AST lower-camel sont verrouilles. |
+| 2026-07-16 | `V2.1.4.0062` | `370641d` | `DEC-0047` tranche 16 : contrats et preuves Supported/Blocked synchronises; livraison distante reste gatee. |
 | 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | `DEC-0047` tranche 15 : integrations 03/04/08/12 et artefact industriel 2.3 preuves. |
 | 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | `DEC-0047` tranche 14 : parite preview/export/host et preuve obligatoire par capability. |
 | 2026-07-16 | `V2.1.4.0059` | Builder `90b70eb`, TF100Web `2fb46e6` | `DEC-0047` tranche 13 : fixture package/runtime executee et matrice Supported/Blocked fermee automatiquement. |
@@ -1375,7 +1376,7 @@ Regression coverage:
 
 ### DEC-0046 - Latest Navigation Wins And Every Accepted DOM Is Hydrated
 
-Status: Active - pending implementation
+Status: Active
 Created: 2026-07-16 00:00 America/Toronto
 Created in commit: `PENDING`
 Deprecated: N/A
@@ -1403,7 +1404,7 @@ The official 425-tag catalog audited for this decision does not contain `YL_E12_
 
 Implementation status:
 
-Approved and planned; no runtime code is claimed complete. The confirmed baseline is SCADA Builder V2 `de37a35` and TF100Web `9d5d400`.
+Implemented on the active TF100Web branch through abortable navigation generations, stale-result rejection, coalesced forced hydration, page-root disposal, linear composition and generation/revision cache invalidation. Automated lifecycle, hydration, deployment and performance suites are green. Remote industrial promotion and operator smoke remain delivery gates, not missing code.
 
 Regression coverage:
 
@@ -1411,9 +1412,9 @@ Required in TF100Web behavioral JavaScript tests, Django composition/package/dep
 
 ### DEC-0047 - Versioned Runtime Capabilities And One Semantic Executor
 
-Status: Active - pending implementation
+Status: Active
 Created: 2026-07-16 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `b2e4f5f`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -1439,7 +1440,7 @@ The default new export contract advances from manifest 2.2 to 2.3 only after TF1
 
 Implementation status:
 
-Implementation slices 1 through 15 are complete across the Builder and TF100Web branches. The reference project exports deterministically as manifest 2.3 package SHA `22f6a468...e655e98`, runtime SHA `0101ecac...bec69`, and passes TF100Web production negotiation. Automated industrial evidence locks `win00003` eight navigations, `win00004` composition/assets, `win00008` eight states/two readings/one writable input, and `win00012_modern_no_legacy` 56 toggles/126 bound cells plus expected mapping-615 quality fallback. Permission/readback suites are reused and no live PLC write was executed. Remote promotion on the industrial server remains a separate delivery gate.
+Implementation slices 1 through 16 are complete across the Builder and TF100Web branches. The shared fixture now exposes 118 unique `probe:<capability-id>` expectations and TF100Web executes an exact evaluator for every Supported id; a targeted manifest mutation proves that only the affected capability fails. Serialized lower-camel AST operators are accepted by the shared runtime alongside legacy Pascal-case operators. The reference project remains covered by strict manifest 2.3 industrial evidence for `win00003`, `win00004`, `win00008` and `win00012_modern_no_legacy`; no live PLC write was executed. Remote promotion on the industrial server remains a separate delivery gate.
 
 Regression coverage:
 

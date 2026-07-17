@@ -1,14 +1,15 @@
 # Conformite runtime generale SCADA Builder V2 vers TF100Web - Specification
 
-Date: 2026-07-16
+Date: 2026-07-17
 Status: Implemented on active branches - remote promotion pending
-Document version: `V2.1.4.0062`
+Document version: `V2.1.4.0063`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-16 | `V2.1.4.0062` | `PENDING` | Architecture implementee et prouvee sur les branches; promotion TF100Web distante et smoke operateur restent gates. |
+| 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Critere Supported durci : un probe exact par id, resultat unique, evidence concrete et test de mutation independante. |
+| 2026-07-16 | `V2.1.4.0062` | `370641d` | Architecture implementee et prouvee sur les branches; promotion TF100Web distante et smoke operateur restent gates. |
 | 2026-07-16 | `V2.1.4.0046` | `b2e4f5f` | Extension de `DEC-0046` en architecture generale de capacites, runtime semantique unique et conformance end-to-end. |
 
 ## 1. Probleme
@@ -174,7 +175,7 @@ Les tests couvrent echappement HTML/JSON/attributs, URLs autorisees/interdites, 
 
 ## 5. Suite de conformance partagee
 
-Builder genere un petit package `.sb2` de conformance deterministe contenant une page/fixture par capacite et un index des attentes. Le meme artefact, identifie par SHA-256, est consomme par les tests TF100Web. Le SHA attendu est versionne des deux cotes; une divergence bloque la CI.
+Builder genere un petit package `.sb2` de conformance deterministe contenant toutes les variantes supportees et un index qui reserve un resultat unique `probe:<capability-id>` a chacune. Le meme artefact, identifie par SHA-256, est consomme par les tests TF100Web. Le harness execute un evaluateur exact par id et retourne evidence/diagnostic pour chaque capability; aucun boolean agrege de famille ne vaut preuve pour plusieurs ids. Un test de mutation doit demontrer qu'une variante alteree fait echouer son probe seulement. Le SHA attendu est versionne des deux cotes; une divergence bloque la CI.
 
 La pyramide de tests est :
 

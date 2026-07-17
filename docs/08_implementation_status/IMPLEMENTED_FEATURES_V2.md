@@ -1,13 +1,15 @@
 # SCADA Builder V2 - Implemented Features
 
-Date: 2026-07-16
+Date: 2026-07-17
 Status: Active implementation status
-Document version: `V2.1.4.0061`
+Document version: `V2.1.4.0063`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Validation runtime exacte 118/118, mutation isolee, index `probe:<id>` et compatibilite AST lower-camel/Pascal verrouilles. |
+| 2026-07-16 | `V2.1.4.0062` | `370641d` | Contrats, matrice et statuts de livraison `DEC-0047` synchronises. |
 | 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | Acceptance industrielle automatisee et artefact 2.3 auditable sans ecriture PLC. |
 | 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | Gate parite preview/export/host, namespace, artefacts editeur et runtime deploye exact. |
 | 2026-07-16 | `V2.1.4.0059` | TF100Web `2fb46e6` | Harness end-to-end de fixture, preuves par capability et rejet exhaustif des capabilities bloquees. |
@@ -195,6 +197,7 @@ As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The f
 89. TF100Web `2fb46e6` executes the byte-exact Builder conformance package through production manifest negotiation, atomic deployment composition and the packaged Runtime 1.0. Machine-readable gates cover composition, expression/effect execution, host intents, snapshots, disposal and security. All 118 supported capabilities require executed evidence, while each of 44 blocked capabilities is individually rejected by the production deployment validator.
 90. Builder `22c787f` and TF100Web `6fac468` close conformance parity across model, native preview, exported markup, manifest requirements and deployed host runtime. Tests lock namespaced object transport, editor-only exclusion, complete evidence for every exported capability, runtime filename/full SHA, stable/hashed deployed-byte equality and execution of the exact stable runtime served by TF100Web.
 91. Builder `c56c5af`/`3fc1fc8` exports and validates the 25-page AMR reference package under strict manifest 2.3 and commits machine-readable timings/hashes/page cardinalities. TF100Web `33c5846` binds the same package SHA and 46-capability set to production intake. Critical evidence covers eight footer navigations, header/body/footer assets, eight `win00008` states with 2+1 numeric bindings, 56 `win00012` toggles, 126 table bindings and expected missing mapping 615 fallback; no live PLC write occurs.
+92. Runtime conformance now produces one exact, machine-readable result for each of the 118 Supported capabilities instead of mapping capability families to aggregate booleans. The vendored full expectation index requires unique `probe:<capability-id>` outcomes; static package contracts and actual packaged-runtime execution cover every page, element, shape, button, table cell, binding, expression, effect, state, command and action id. A targeted manifest mutation proves that `shape.rectangle` fails independently. The expression evaluator also normalizes canonical lower-camel serialized operators while retaining the historical Pascal-case spelling through the same code path.
 
 ## 3. Source Of Truth
 

@@ -1,15 +1,16 @@
 # Element+ State & Command Runtime Contract (V1)
 
-Date: 2026-07-16
+Date: 2026-07-17
 Status: Active implemented runtime contract
-Document version: `V2.1.4.0062`
+Document version: `V2.1.4.0063`
 Owner: SCADA Builder V2 authoring team and shared package runtime. TF100Web owns host services only (`F:\Projet\Git\TF100Web`).
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-16 | `V2.1.4.0062` | `PENDING` | Contrat synchronise avec le runtime partage, le HostAdapter unique, la fixture exacte et les statuts Supported/Blocked stricts. |
+| 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Casing AST ferme : lower-camel canonique exporte execute directement, PascalCase historique accepte, probes exacts pour chaque operateur. |
+| 2026-07-16 | `V2.1.4.0062` | `370641d` | Contrat synchronise avec le runtime partage, le HostAdapter unique, la fixture exacte et les statuts Supported/Blocked stricts. |
 | 2026-07-16 | `V2.1.4.0052` | `a76e220` | CommandConfig complete : 5 triggers, 7 kinds, 4 modes, intent 1.0, Momentary reel, confirmations et cleanup. |
 | 2026-07-16 | `V2.1.4.0051` | `9878fb1` | Semantiques Etat/Expression/Effet partagees completees et table-driven : fallback, erreurs, coercions, transitions, tokens, animations et re-init. |
 | 2026-07-16 | `V2.1.4.0046` | `b2e4f5f` | `DEC-0047` approuvee : couverture exhaustive de chaque trigger/kind/mode/expression/effet et migration des actions vers l'executeur partage unique. |
@@ -78,10 +79,14 @@ The AST, not `expression.source`, is authoritative at runtime. Node shapes:
 { "type": "literalBool", "value": true }
 { "type": "literalString", "value": "text" }
 { "type": "tagRef", "tagName": "Temp" }
-{ "type": "unary", "op": "Not" | "Negate", "operand": { "...": "node" } }
-{ "type": "binary", "op": "Add|Subtract|Multiply|Divide|Modulo|Equal|NotEqual|LessThan|LessThanOrEqual|GreaterThan|GreaterThanOrEqual|And|Or", "left": {}, "right": {} }
+{ "type": "unary", "op": "not" | "negate", "operand": { "...": "node" } }
+{ "type": "binary", "op": "add|subtract|multiply|divide|modulo|equal|notEqual|lessThan|lessThanOrEqual|greaterThan|greaterThanOrEqual|and|or", "left": {}, "right": {} }
 { "type": "func", "name": "ABS|MIN|MAX|BIT", "args": [ { "...": "node" } ] }
 ```
+
+The package serializer's canonical operator spelling is lower camel case. The runtime
+normalizes the first character so historical Pascal-case ASTs remain compatible without
+creating a second evaluation path.
 
 `BIT(tag, n)` returns the boolean value of bit `n` (0-indexed, least significant bit) of
 the integer value of `tag`; `n` must be an integer from 0 through 31. Arithmetic and
@@ -181,4 +186,4 @@ after the shared snapshot reports the resulting value.
 
 The shared State/Expression/Effect, CommandConfig and object-action paths have executable table-driven evidence. Command coverage includes every trigger/kind/write mode, enabled/disabled, missing inputs, confirmation timing, asynchronous rejection, duplicate suppression, real Momentary release and page/input cleanup. Input locks are keyed by DOM identity, refresh inactivity on edits and restore from the declared read tag.
 
-Builder commits `9878fb1`, `a76e220` and `bcec075` own the portable semantics. TF100Web commits `7d60c63`, `cab2733`, `1fc3ac4` and `2fb46e6` negotiate manifest 2.3, expose one HostAdapter, enforce latest-wins lifecycle and execute the exact Builder fixture. The fixture gate proves all 118 `Supported` capabilities and rejects all 44 `Blocked` capabilities. The industrial package SHA-256 `22f6a46835aae531841232553c51bd4622decf07e4be8ad0eb41e2ac3e655e98` validates the deployed contract shape without performing PLC writes. Remote server promotion and operator smoke remain release operations, not missing runtime semantics.
+Builder commits `9878fb1`, `a76e220` and `bcec075` own the portable semantics. TF100Web commits `7d60c63`, `cab2733`, `1fc3ac4` and `2fb46e6` negotiate manifest 2.3, expose one HostAdapter, enforce latest-wins lifecycle and execute the exact Builder fixture. The fixture gate proves all 118 `Supported` capabilities and rejects all 44 `Blocked` capabilities. The V2.1.4.0063 industrial package SHA-256 `4bdaa0338746be1ac440f2adeae6a5c3e6f8c80946dc208167b9edfbeec7dc88` validates the deployed contract shape without performing PLC writes. Remote server promotion and operator smoke remain release operations, not missing runtime semantics.

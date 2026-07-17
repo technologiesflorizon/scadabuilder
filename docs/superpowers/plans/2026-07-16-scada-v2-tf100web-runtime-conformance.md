@@ -1,14 +1,15 @@
 # Conformite runtime generale SCADA Builder V2 vers TF100Web - Plan d'implementation
 
-Date: 2026-07-16
+Date: 2026-07-17
 Status: Active delivery plan - implementation complete, remote promotion pending
-Document version: `V2.1.4.0062`
+Document version: `V2.1.4.0063`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-16 | `V2.1.4.0062` | `PENDING` | Task 16 completee : contrats, matrice et preuves synchronises; Task 17 reste la livraison distante ordonnee. |
+| 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Tasks 13/16 corrigees : 118 probes point par point, mutation independante et AST serialise execute; Task 17 reste distante. |
+| 2026-07-16 | `V2.1.4.0062` | `370641d` | Task 16 completee : contrats, matrice et preuves synchronises; Task 17 reste la livraison distante ordonnee. |
 | 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | Task 15 completee en acceptance automatisee sure; promotion distante reservee Task 17. |
 | 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | Task 14 completee : parite modele/preview/export/host et runtime deploye exact. |
 | 2026-07-16 | `V2.1.4.0059` | TF100Web `2fb46e6` | Task 13 completee : fixture executee, SHA verrouille, Supported/Blocked gates exhaustifs. |
@@ -329,6 +330,8 @@ python manage.py check
 - Modify: CI/test documentation TF100Web
 
 - [x] Charger chaque fixture capability et comparer l'attendu machine-readable.
+- [x] Produire exactement 118 resultats `probe:<capability-id>` avec evidence/diagnostic, sans fallback de famille.
+- [x] Mutation-tester une capability et prouver que son echec ne valide ni n'invalide artificiellement les autres.
 - [x] Couvrir composition, runtime, intents host, snapshots, erreurs et securite.
 - [x] Faire echouer toute capability `Supported` sans test execute.
 - [x] Faire echouer toute capability `Blocked` acceptee au deploiement.
@@ -384,6 +387,7 @@ python manage.py check
 - [x] Generer la matrice capability.
 - [x] Marquer chaque capability `Supported` ou `Blocked` avec preuve.
 - [x] Executer docs verification et `git diff --check`.
+- [x] Synchroniser l'index complet Builder dans TF100Web et verrouiller son schema V2.
 
 ### Task 17: Livrer dans l'ordre et verifier rollback
 
@@ -396,13 +400,13 @@ python manage.py check
 
 ## Validation Checklist
 
-- [ ] Chaque enum/champ exportable est mappe par reflection.
-- [ ] Chaque capability `Supported` a preuves Builder, runtime et TF100Web.
-- [ ] Chaque capability non supportee est bloquee avant operation.
-- [ ] Manifest 2.3 negocie version, capabilities et hash.
-- [ ] Un seul runtime interprete expressions, effets, commandes et actions.
-- [ ] TF100Web reste adaptateur host, pas second moteur semantique.
-- [ ] Toutes les pages/types/compositions/bindings/etats/commandes/actions sont couverts.
-- [ ] Concurrence, offline, erreurs, permissions et securite sont couvertes.
-- [ ] Les quatre pages industrielles passent; mapping absent traite en fallback non bloquant.
-- [ ] Performance et invalidation cache passent leurs budgets.
+- [x] Chaque enum/champ exportable est mappe par reflection.
+- [x] Chaque capability `Supported` a preuves Builder, runtime et TF100Web.
+- [x] Chaque capability non supportee est bloquee avant operation.
+- [x] Manifest 2.3 negocie version, capabilities et hash.
+- [x] Un seul runtime interprete expressions, effets, commandes et actions.
+- [x] TF100Web reste adaptateur host, pas second moteur semantique.
+- [x] Toutes les pages/types/compositions/bindings/etats/commandes/actions sont couverts.
+- [x] Concurrence, offline, erreurs, permissions et securite sont couvertes.
+- [x] Les quatre pages industrielles passent; mapping absent traite en fallback non bloquant.
+- [x] Performance et invalidation cache passent leurs budgets.
