@@ -596,13 +596,13 @@
         "BlendMode": "normal"
       },
       "IncludeInBuild": true,
-      "HeaderPageId": null,
+      "HeaderPageId": "win00002",
       "FooterPageId": "win00003",
       "PageKey": "8c1d7699-cd16-487a-b80f-0ebba77bfbf5",
       "PageCode": "win00012_modern_no_legacy",
       "Origin": "Native",
       "ImportProvenance": null,
-      "HeaderPageKey": null,
+      "HeaderPageKey": "03cfb85b-ac44-578d-bbfc-240e3d6ed01c",
       "FooterPageKey": "3679ddd3-579a-5f28-9464-dd7646ab49ca",
       "EffectiveCanvasSize": {
         "Width": 1280,

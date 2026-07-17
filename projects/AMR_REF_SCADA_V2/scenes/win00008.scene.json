@@ -29,7 +29,7 @@
         "BorderColor": "#2090A0",
         "BorderWidth": 1,
         "BorderStyle": "Inset",
-        "ShadowPreset": "None",
+        "ShadowPreset": "Inset",
         "AdvancedCss": null,
         "Opacity": 1,
         "Rotation": 0,
@@ -3037,9 +3037,9 @@
       "IsLocked": false
     },
     {
-      "Id": "legacy_791",
-      "DisplayName": "Text26",
-      "Kind": "LegacyStatic",
+      "Id": "elementplus_text_791",
+      "DisplayName": "Element+ Text26",
+      "Kind": "Text",
       "Bounds": {
         "X": 52,
         "Y": 211,
@@ -3081,7 +3081,7 @@
         "BorderRadius": null
       },
       "Data": {
-        "Text": "PT-16 (r\u00C3\u00A9elle)",
+        "Text": "PT-16 (r\u00E9elle)",
         "Placeholder": null,
         "Value": null,
         "Minimum": null,
@@ -3099,17 +3099,7 @@
         "ShapeEndY": null
       },
       "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Text",
-        "Text": "PT-16 (r\u00C3\u00A9elle)",
-        "IsTextLike": true,
-        "FontFamily": "Arial, Arial, sans-serif",
-        "FontSize": 12,
-        "Foreground": "rgb(0, 0, 0)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
+      "LegacyPayload": null,
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
@@ -3120,9 +3110,9 @@
       "IsLocked": false
     },
     {
-      "Id": "legacy_794",
-      "DisplayName": "Text28",
-      "Kind": "LegacyStatic",
+      "Id": "elementplus_text_794",
+      "DisplayName": "Element+ Text28",
+      "Kind": "Text",
       "Bounds": {
         "X": 130,
         "Y": 178,
@@ -3182,17 +3172,7 @@
         "ShapeEndY": null
       },
       "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Text",
-        "Text": "Psig",
-        "IsTextLike": true,
-        "FontFamily": "Arial, Arial, sans-serif",
-        "FontSize": 16,
-        "Foreground": "rgb(0, 0, 0)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
+      "LegacyPayload": null,
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
@@ -3203,9 +3183,9 @@
       "IsLocked": false
     },
     {
-      "Id": "legacy_795",
-      "DisplayName": "Text29",
-      "Kind": "LegacyStatic",
+      "Id": "elementplus_text_795",
+      "DisplayName": "Element+ Text29",
+      "Kind": "Text",
       "Bounds": {
         "X": 47,
         "Y": 152,
@@ -3265,17 +3245,7 @@
         "ShapeEndY": null
       },
       "Children": null,
-      "LegacyPayload": {
-        "LegacyType": "Text",
-        "Text": "Consigne",
-        "IsTextLike": true,
-        "FontFamily": "Arial, Arial, sans-serif",
-        "FontSize": 14,
-        "Foreground": "rgb(0, 0, 0)",
-        "Background": "rgba(0, 0, 0, 0)",
-        "LegacyMarkup": null,
-        "RawMetadataJson": null
-      },
+      "LegacyPayload": null,
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": null,
@@ -4060,8 +4030,8 @@
         "Background": "Transparent",
         "BorderColor": "#8AA0A6",
         "BorderWidth": 1,
-        "BorderStyle": "Solid",
-        "ShadowPreset": "None",
+        "BorderStyle": "Inset",
+        "ShadowPreset": "Inset",
         "AdvancedCss": null,
         "Opacity": 1,
         "Rotation": 0,
@@ -4154,8 +4124,8 @@
         "Background": "Transparent",
         "BorderColor": "#8AA0A6",
         "BorderWidth": 1,
-        "BorderStyle": "Solid",
-        "ShadowPreset": "None",
+        "BorderStyle": "Inset",
+        "ShadowPreset": "Inset",
         "AdvancedCss": null,
         "Opacity": 1,
         "Rotation": 0,

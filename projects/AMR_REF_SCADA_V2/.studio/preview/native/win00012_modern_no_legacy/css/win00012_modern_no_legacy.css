@@ -14,6 +14,9 @@
 #ft100-win00012_modern_no_legacy .ft100-element--Button, #ft100-win00012_modern_no_legacy [data-scada-command-config] { cursor: pointer; }
 #ft100-win00012_modern_no_legacy .ft100-element--Button *, #ft100-win00012_modern_no_legacy [data-scada-command-config] * { cursor: pointer; }
 #ft100-win00012_modern_no_legacy .ft100-element--Button:active, #ft100-win00012_modern_no_legacy [data-scada-command-config]:active { cursor: pointer; }
+#ft100-win00012_modern_no_legacy [data-scada-action-bindings] { cursor: pointer; }
+#ft100-win00012_modern_no_legacy [data-scada-action-bindings] * { cursor: pointer; }
+#ft100-win00012_modern_no_legacy [data-scada-action-bindings]:active { cursor: pointer; }
 #ft100-win00012_modern_no_legacy .ft100-element--Button[data-scada-disabled="true"], #ft100-win00012_modern_no_legacy .ft100-element--Button[data-scada-disabled="true"] * { cursor: not-allowed; opacity: 0.62; }
 #ft100-win00012_modern_no_legacy .ft100-element svg { display: block; width: 100%; height: 100%; overflow: visible; }
 #ft100-win00012_modern_no_legacy .ft100-element input { width: 100%; height: 100%; box-sizing: border-box; }
@@ -85,7 +88,7 @@
   left: 13px;
   top: 109px;
   width: 1254px;
-  height: 500px;
+  height: 564px;
   color: #0F2A30;
   background: Transparent;
   font-family: Segoe UI;
@@ -2117,6 +2120,818 @@
   background: #0B2A3D;
   color: #FFFFFF;
   border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e1 {
+  left: 259px;
+  top: 611px;
+  width: 60.429px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e1:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e1:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e1[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e2 {
+  left: 331.429px;
+  top: 611px;
+  width: 60.429px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e2:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e2:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e2[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e3 {
+  left: 403.857px;
+  top: 611px;
+  width: 60.429px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e3:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e3:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e3[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e4 {
+  left: 476.286px;
+  top: 611px;
+  width: 60.429px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e4:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e4:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e4[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e5 {
+  left: 548.714px;
+  top: 611px;
+  width: 60.429px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e5:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e5:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e5[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e6 {
+  left: 621.143px;
+  top: 611px;
+  width: 60.429px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e6:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e6:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e6[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e7 {
+  left: 693.571px;
+  top: 611px;
+  width: 60.429px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e7:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e7:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e7[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e8 {
+  left: 766px;
+  top: 611px;
+  width: 60.429px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e8:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e8:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e8[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e9 {
+  left: 838.429px;
+  top: 611px;
+  width: 60.429px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e9:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e9:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e9[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e10 {
+  left: 910.857px;
+  top: 611px;
+  width: 60.429px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e10:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e10:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e10[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e11 {
+  left: 983.286px;
+  top: 611px;
+  width: 60.429px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e11:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e11:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e11[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e12 {
+  left: 1055.714px;
+  top: 611px;
+  width: 60.429px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e12:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e12:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e12[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e13 {
+  left: 1128.143px;
+  top: 611px;
+  width: 60.429px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e13:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e13:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e13[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e14 {
+  left: 1200.571px;
+  top: 611px;
+  width: 60.429px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e14:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e14:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e14[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e1 {
+  left: 259px;
+  top: 649px;
+  width: 60.429px;
+  height: 16px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e2 {
+  left: 331.429px;
+  top: 649px;
+  width: 60.429px;
+  height: 16px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e3 {
+  left: 403.857px;
+  top: 649px;
+  width: 60.429px;
+  height: 16px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e4 {
+  left: 476.286px;
+  top: 649px;
+  width: 60.429px;
+  height: 16px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e5 {
+  left: 548.714px;
+  top: 649px;
+  width: 60.429px;
+  height: 16px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e6 {
+  left: 621.143px;
+  top: 649px;
+  width: 60.429px;
+  height: 16px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e7 {
+  left: 693.571px;
+  top: 649px;
+  width: 60.429px;
+  height: 16px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e8 {
+  left: 766px;
+  top: 649px;
+  width: 60.429px;
+  height: 16px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e9 {
+  left: 838.429px;
+  top: 649px;
+  width: 60.429px;
+  height: 16px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e10 {
+  left: 910.857px;
+  top: 649px;
+  width: 60.429px;
+  height: 16px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e11 {
+  left: 983.286px;
+  top: 649px;
+  width: 60.429px;
+  height: 16px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e12 {
+  left: 1055.714px;
+  top: 649px;
+  width: 60.429px;
+  height: 16px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e13 {
+  left: 1128.143px;
+  top: 649px;
+  width: 60.429px;
+  height: 16px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e14 {
+  left: 1200.571px;
+  top: 649px;
+  width: 60.429px;
+  height: 16px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
 }
 
 @keyframes ft100-win00012_modern_no_legacy---scada-blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
