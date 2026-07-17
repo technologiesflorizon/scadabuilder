@@ -87,6 +87,26 @@ test('walk() covers every binary operator with deterministic numeric coercion', 
   }
 });
 
+test('walk() executes the lower-camel operators emitted by the package serializer', () => {
+  const evaluator = loadRuntime(['expression-evaluator.js']).ScadaRuntime.ExpressionEvaluator;
+  const number = (value) => ({ type: 'literalNumber', value });
+  const bool = (value) => ({ type: 'literalBool', value });
+  const cases = [
+    [{ type: 'unary', op: 'not', operand: bool(false) }, true],
+    [{ type: 'unary', op: 'negate', operand: number(2) }, -2],
+    [{ type: 'binary', op: 'add', left: number(8), right: number(2) }, 10],
+    [{ type: 'binary', op: 'notEqual', left: number(8), right: number(2) }, true],
+    [{ type: 'binary', op: 'greaterThanOrEqual', left: number(8), right: number(2) }, true],
+    [{ type: 'binary', op: 'and', left: bool(true), right: bool(false) }, false],
+  ];
+
+  for (const [ast, expected] of cases) {
+    evaluator.resetError();
+    assert.equal(evaluator.walk(ast, {}), expected, ast.op);
+    assert.equal(evaluator.hasError(), false, ast.op);
+  }
+});
+
 test('walk() covers every canonical function and validates arity and BIT index', () => {
   const evaluator = loadRuntime(['expression-evaluator.js']).ScadaRuntime.ExpressionEvaluator;
   const literal = (value) => ({ type: 'literalNumber', value });

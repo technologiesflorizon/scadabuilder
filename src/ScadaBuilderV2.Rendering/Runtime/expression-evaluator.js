@@ -51,6 +51,14 @@
     return Number.isFinite(result) ? result : null;
   }
 
+  // Exported AST enums use lower camel case (for example `greaterThan`),
+  // while older projects can still contain the original Pascal-case spelling.
+  // Normalize both representations at the runtime boundary.
+  function _canonicalOperator(value) {
+    var text = String(value || '');
+    return text ? text.charAt(0).toUpperCase() + text.slice(1) : '';
+  }
+
   // ── internal walk (no error-reset) ──────────────────────────────────────
 
   function walkNode(node, tagValues) {
@@ -89,10 +97,11 @@
         if (operand === null) {
           return null;
         }
-        if (node.op === 'Not') {
+        var unaryOperator = _canonicalOperator(node.op);
+        if (unaryOperator === 'Not') {
           return !operand;
         }
-        if (node.op === 'Negate') {
+        if (unaryOperator === 'Negate') {
           var negated = _number(operand, 'Unary operand');
           return negated === null ? null : -negated;
         }
@@ -101,7 +110,8 @@
       }
 
       case 'binary': {
-        if (node.op === 'And') {
+        var binaryOperator = _canonicalOperator(node.op);
+        if (binaryOperator === 'And') {
           var andLeft = walkNode(node.left, tagValues);
           if (andLeft === null) {
             return null;
@@ -113,7 +123,7 @@
           return andRight === null ? null : Boolean(andRight);
         }
 
-        if (node.op === 'Or') {
+        if (binaryOperator === 'Or') {
           var orLeft = walkNode(node.left, tagValues);
           if (orLeft !== null && Boolean(orLeft)) {
             return true;
@@ -129,7 +139,7 @@
           return null;
         }
 
-        switch (node.op) {
+        switch (binaryOperator) {
           case 'Add': {
             var addLeft = _number(left, 'Left operand');
             var addRight = _number(right, 'Right operand');
@@ -147,25 +157,25 @@
             var nLeft = _number(left, 'Left operand');
             var nRight = _number(right, 'Right operand');
             if (nLeft === null || nRight === null) return null;
-            if (node.op === 'Subtract') return nLeft - nRight;
-            if (node.op === 'Multiply') return nLeft * nRight;
-            if (node.op === 'Divide') {
+            if (binaryOperator === 'Subtract') return nLeft - nRight;
+            if (binaryOperator === 'Multiply') return nLeft * nRight;
+            if (binaryOperator === 'Divide') {
               if (nRight === 0) {
                 _flagError('Division by zero');
                 return null;
               }
               return nLeft / nRight;
             }
-            if (node.op === 'Modulo') {
+            if (binaryOperator === 'Modulo') {
               if (nRight === 0) {
                 _flagError('Modulo by zero');
                 return null;
               }
               return nLeft % nRight;
             }
-            if (node.op === 'LessThan') return nLeft < nRight;
-            if (node.op === 'LessThanOrEqual') return nLeft <= nRight;
-            if (node.op === 'GreaterThan') return nLeft > nRight;
+            if (binaryOperator === 'LessThan') return nLeft < nRight;
+            if (binaryOperator === 'LessThanOrEqual') return nLeft <= nRight;
+            if (binaryOperator === 'GreaterThan') return nLeft > nRight;
             return nLeft >= nRight;
           }
           case 'Equal': {

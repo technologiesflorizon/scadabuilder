@@ -19,9 +19,9 @@ namespace ScadaBuilderV2.Domain.RuntimeContracts;
 public static class ScadaRuntimeCapabilityCatalog
 {
     private static readonly ScadaRuntimeCapabilityEvidence BaselineEvidence = new(
-        ["tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs"],
-        ["tests/ScadaBuilderV2.Tests/Runtime/RuntimeJsModulesTests.cs"],
-        ["F:/Projet/Git/TF100Web/frontend/tests_scada_package.py"]);
+        ["tests/ScadaBuilderV2.Tests/RuntimeContracts/RuntimeConformancePackageTests.cs"],
+        ["tests/runtime-js", "tests/ScadaBuilderV2.Tests/Runtime/RuntimeJsModulesTests.cs"],
+        ["F:/Projet/Git/TF100Web/frontend/tests_runtime_conformance.py"]);
 
     /// <summary>Gets the capability catalog contract version.</summary>
     public const string ContractVersion = "1.0";

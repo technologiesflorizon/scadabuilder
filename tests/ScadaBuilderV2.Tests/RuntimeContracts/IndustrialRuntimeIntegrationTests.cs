@@ -3,6 +3,7 @@ using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using ScadaBuilderV2.Application.Pages;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
@@ -102,9 +103,10 @@ public sealed class IndustrialRuntimeIntegrationTests
                              "LiveWritesExecuted", "Pages", "Diagnostics"
                          })
                 {
-                    Assert.AreEqual(
-                        expected.RootElement.GetProperty(property).GetRawText(),
-                        actual.RootElement.GetProperty(property).GetRawText(),
+                    Assert.IsTrue(
+                        JsonNode.DeepEquals(
+                            JsonNode.Parse(expected.RootElement.GetProperty(property).GetRawText()),
+                            JsonNode.Parse(actual.RootElement.GetProperty(property).GetRawText())),
                         $"Industrial evidence drifted for '{property}'. Regenerate deliberately after review.");
                 }
             }

@@ -81,12 +81,25 @@ public sealed class RuntimeConformancePackageTests
         var indexPath = Path.Combine(FindRepositoryRoot(), "tests", "conformance", "expected-runtime-capabilities.json");
         using var document = JsonDocument.Parse(File.ReadAllText(indexPath));
         var root = document.RootElement;
-        Assert.AreEqual("scada-v2-runtime-conformance-v1", root.GetProperty("Schema").GetString());
+        Assert.AreEqual("scada-v2-runtime-conformance-v2", root.GetProperty("Schema").GetString());
         var fixtures = root.GetProperty("Fixtures").EnumerateArray().ToArray();
         CollectionAssert.AreEqual(
             ScadaRuntimeCapabilityCatalog.All.Select(capability => capability.Id).ToArray(),
             fixtures.Select(fixture => fixture.GetProperty("CapabilityId").GetString()).ToArray());
         Assert.AreEqual(fixtures.Length, fixtures.Select(fixture => fixture.GetProperty("FixtureId").GetString()).Distinct().Count());
+        var supportedFixtures = fixtures
+            .Where(fixture => fixture.GetProperty("Status").GetString() == nameof(ScadaRuntimeCapabilityStatus.Supported))
+            .ToArray();
+        Assert.AreEqual(118, supportedFixtures.Length);
+        Assert.AreEqual(
+            supportedFixtures.Length,
+            supportedFixtures.Select(fixture => fixture.GetProperty("ExpectedResult").GetString()).Distinct().Count(),
+            "Every supported capability must have its own point-by-point expected result.");
+        foreach (var fixture in supportedFixtures)
+        {
+            var capabilityId = fixture.GetProperty("CapabilityId").GetString();
+            Assert.AreEqual($"probe:{capabilityId}", fixture.GetProperty("ExpectedResult").GetString(), capabilityId);
+        }
 
         var text = File.ReadAllText(indexPath);
         foreach (var forbidden in new[] { "AMR_REF", "win000", "Consigne_", "YL_", "KIC_", "C:\\Users", "F:\\Projet" })
@@ -117,7 +130,7 @@ public sealed class RuntimeConformancePackageTests
                 Assert.IsTrue(capability!.Evidence.BuilderTests.Count > 0, capabilityId);
                 Assert.IsTrue(capability.Evidence.SharedRuntimeTests.Count > 0, capabilityId);
                 Assert.IsTrue(capability.Evidence.Tf100WebTests.Count > 0, capabilityId);
-                Assert.AreEqual("manifest-declared-and-runtime-initialized", fixture.GetProperty("ExpectedResult").GetString());
+                Assert.AreEqual($"probe:{capabilityId}", fixture.GetProperty("ExpectedResult").GetString());
             }
             else
             {
@@ -187,13 +200,13 @@ public sealed class RuntimeConformancePackageTests
                 : null,
             Gesture = GestureFor(capability.Id),
             ExpectedResult = capability.Status == ScadaRuntimeCapabilityStatus.Supported
-                ? "manifest-declared-and-runtime-initialized"
+                ? $"probe:{capability.Id}"
                 : "strict-export-rejected",
             ExpectedDiagnostic = capability.Status == ScadaRuntimeCapabilityStatus.Blocked ? capability.Id : null
         }).ToArray();
         var index = new
         {
-            Schema = "scada-v2-runtime-conformance-v1",
+            Schema = "scada-v2-runtime-conformance-v2",
             ContractVersion = ScadaRuntimeCapabilityCatalog.ContractVersion,
             PackageFile = ArtifactName,
             PackageSha256 = packageSha256,
