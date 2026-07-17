@@ -2,12 +2,13 @@
 
 Date: 2026-07-17
 Status: Active implementation status
-Document version: `V2.1.4.0063`
+Document version: `V2.1.4.0064`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-17 | `V2.1.4.0064` | `PENDING` | Deux rangees Element+ ajoutees a `win00012_modern_no_legacy` : 14 commandes de depart manuel et 14 voyants d'etat rectangulaires, volontairement sans mapping. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Validation runtime exacte 118/118, mutation isolee, index `probe:<id>` et compatibilite AST lower-camel/Pascal verrouilles. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | Contrats, matrice et statuts de livraison `DEC-0047` synchronises. |
 | 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | Acceptance industrielle automatisee et artefact 2.3 auditable sans ecriture PLC. |
@@ -198,6 +199,7 @@ As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The f
 90. Builder `22c787f` and TF100Web `6fac468` close conformance parity across model, native preview, exported markup, manifest requirements and deployed host runtime. Tests lock namespaced object transport, editor-only exclusion, complete evidence for every exported capability, runtime filename/full SHA, stable/hashed deployed-byte equality and execution of the exact stable runtime served by TF100Web.
 91. Builder `c56c5af`/`3fc1fc8` exports and validates the 25-page AMR reference package under strict manifest 2.3 and commits machine-readable timings/hashes/page cardinalities. TF100Web `33c5846` binds the same package SHA and 46-capability set to production intake. Critical evidence covers eight footer navigations, header/body/footer assets, eight `win00008` states with 2+1 numeric bindings, 56 `win00012` toggles, 126 table bindings and expected missing mapping 615 fallback; no live PLC write occurs.
 92. Runtime conformance now produces one exact, machine-readable result for each of the 118 Supported capabilities instead of mapping capability families to aggregate booleans. The vendored full expectation index requires unique `probe:<capability-id>` outcomes; static package contracts and actual packaged-runtime execution cover every page, element, shape, button, table cell, binding, expression, effect, state, command and action id. A targeted manifest mutation proves that `shape.rectangle` fails independently. The expression evaluator also normalizes canonical lower-camel serialized operators while retaining the historical Pascal-case spelling through the same code path.
+93. `win00012_modern_no_legacy` preserves the blank spacer below pre-cooling and adds two 32-pixel rows. `Depart Manuel` owns one unmapped `Command` button per evaporator; `Etat du degivrage` owns one rectangular Element+ status shape per evaporator. The 28 controls intentionally have no state, command, read or write mapping until the PLC tags are supplied, and their durable layout/export is protected by `Win00012DefrostToggleConfigurationTests` plus industrial package acceptance.
 
 ## 3. Source Of Truth
 

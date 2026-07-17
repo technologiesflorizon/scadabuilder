@@ -2,13 +2,14 @@
 
 Date: 2026-07-17
 Status: Active implemented runtime contract
-Document version: `V2.1.4.0063`
+Document version: `V2.1.4.0064`
 Owner: SCADA Builder V2 authoring team and shared package runtime. TF100Web owns host services only (`F:\Projet\Git\TF100Web`).
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-17 | `V2.1.4.0064` | `PENDING` | Artefact industriel regenere apres ajout de commandes/voyants non mappes; aucune semantique runtime Etat/Commande n'est modifiee. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Casing AST ferme : lower-camel canonique exporte execute directement, PascalCase historique accepte, probes exacts pour chaque operateur. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | Contrat synchronise avec le runtime partage, le HostAdapter unique, la fixture exacte et les statuts Supported/Blocked stricts. |
 | 2026-07-16 | `V2.1.4.0052` | `a76e220` | CommandConfig complete : 5 triggers, 7 kinds, 4 modes, intent 1.0, Momentary reel, confirmations et cleanup. |
@@ -186,4 +187,4 @@ after the shared snapshot reports the resulting value.
 
 The shared State/Expression/Effect, CommandConfig and object-action paths have executable table-driven evidence. Command coverage includes every trigger/kind/write mode, enabled/disabled, missing inputs, confirmation timing, asynchronous rejection, duplicate suppression, real Momentary release and page/input cleanup. Input locks are keyed by DOM identity, refresh inactivity on edits and restore from the declared read tag.
 
-Builder commits `9878fb1`, `a76e220` and `bcec075` own the portable semantics. TF100Web commits `7d60c63`, `cab2733`, `1fc3ac4` and `2fb46e6` negotiate manifest 2.3, expose one HostAdapter, enforce latest-wins lifecycle and execute the exact Builder fixture. The fixture gate proves all 118 `Supported` capabilities and rejects all 44 `Blocked` capabilities. The V2.1.4.0063 industrial package SHA-256 `4bdaa0338746be1ac440f2adeae6a5c3e6f8c80946dc208167b9edfbeec7dc88` validates the deployed contract shape without performing PLC writes. Remote server promotion and operator smoke remain release operations, not missing runtime semantics.
+Builder commits `9878fb1`, `a76e220` and `bcec075` own the portable semantics. TF100Web commits `7d60c63`, `cab2733`, `1fc3ac4` and `2fb46e6` negotiate manifest 2.3, expose one HostAdapter, enforce latest-wins lifecycle and execute the exact Builder fixture. The fixture gate proves all 118 `Supported` capabilities and rejects all 44 `Blocked` capabilities. The V2.1.4.0064 industrial package SHA-256 `1050107bb16d6497ca3b01148001e5b657de6e4523ec216c417ede526fec6d18` validates the deployed contract shape without performing PLC writes. Remote server promotion and operator smoke remain release operations, not missing runtime semantics.

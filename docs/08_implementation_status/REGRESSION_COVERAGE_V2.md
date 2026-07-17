@@ -2,12 +2,13 @@
 
 Date: 2026-07-17
 Status: Active regression coverage map
-Document version: `V2.1.4.0063`
+Document version: `V2.1.4.0064`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-17 | `V2.1.4.0064` | `PENDING` | Regression `win00012` couvrant 18 rangees, l'espacement conserve, 14 boutons manuels, 14 voyants Rectangle et l'absence volontaire de mappings. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Couverture 118/118 rendue point par point : resultat unique, evaluateur exact, mutation isolee et operateurs AST serialises executes. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | Carte synchronisee avec les gates exact-SHA, parite, rollback et acceptance industrielle sans ecriture PLC. |
 | 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | 1 export industriel long et 8 gates TF verts; 03/04/08/12, hashes et capabilities couverts. |

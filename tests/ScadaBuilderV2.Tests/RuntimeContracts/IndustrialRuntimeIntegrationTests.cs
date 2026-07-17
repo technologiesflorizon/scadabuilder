@@ -82,7 +82,14 @@ public sealed class IndustrialRuntimeIntegrationTests
                     ["win00003"] = new { Navigations = 8, LatestWinsBackForward = "covered-by-tf100web-lifecycle-suite" },
                     ["win00004"] = new { Header = "win00002", Footer = "win00003", AssetsValidated = true },
                     ["win00008"] = new { States = 8, ReadOnlyNumerics = 2, WritableNumerics = 1, RoundTrip = "covered-by-tf100web-lifecycle-suite" },
-                    ["win00012_modern_no_legacy"] = new { Buttons = 56, TableCells = 126, ExpectedMissingMapping = 615 }
+                    ["win00012_modern_no_legacy"] = new
+                    {
+                        DefrostToggles = 56,
+                        ManualDepartureButtons = 14,
+                        DefrostStatusIndicators = 14,
+                        TableCells = 126,
+                        ExpectedMissingMapping = 615
+                    }
                 },
                 Diagnostics = new[] { "mapping 615 expected quality fallback; no fabricated mapping", "no PLC write executed during automated acceptance" }
             };
@@ -166,6 +173,21 @@ public sealed class IndustrialRuntimeIntegrationTests
         Assert.AreEqual(56, buttons.Length);
         Assert.AreEqual(56, buttons.Count(element => element.GetProperty("StateConfig").ValueKind == JsonValueKind.Object));
         Assert.AreEqual(56, buttons.Count(element => element.GetProperty("CommandConfig").ValueKind == JsonValueKind.Object));
+        var manualButtons = objects.Where(element =>
+            element.GetProperty("Kind").GetString() == "Button" &&
+            element.GetProperty("Id").GetString()!.StartsWith("manual_defrost_", StringComparison.Ordinal)).ToArray();
+        Assert.AreEqual(14, manualButtons.Length);
+        Assert.IsTrue(manualButtons.All(element => element.GetProperty("StateConfig").ValueKind == JsonValueKind.Null));
+        Assert.IsTrue(manualButtons.All(element => element.GetProperty("CommandConfig").ValueKind == JsonValueKind.Null));
+
+        var statusIndicators = objects.Where(element =>
+            element.GetProperty("Kind").GetString() == "Shape" &&
+            element.GetProperty("ShapeKind").GetString() == "Rectangle" &&
+            element.GetProperty("Id").GetString()!.StartsWith("defrost_status_", StringComparison.Ordinal)).ToArray();
+        Assert.AreEqual(14, statusIndicators.Length);
+        Assert.IsTrue(statusIndicators.All(element => element.GetProperty("StateConfig").ValueKind == JsonValueKind.Null));
+        Assert.IsTrue(statusIndicators.All(element => element.GetProperty("CommandConfig").ValueKind == JsonValueKind.Null));
+
         var table = objects.Single(element => element.GetProperty("Id").GetString() == "table_defrost_upper");
         Assert.AreEqual(126, table.GetProperty("TableCellBindings").GetArrayLength());
 

@@ -12,6 +12,14 @@ public sealed class Win00012DefrostToggleConfigurationTests
         "^toggle_defrost_p(?<period>[1-4])_e(?<evaporator>[1-9]|1[0-4])$",
         RegexOptions.CultureInvariant);
 
+    private static readonly Regex ManualDepartureIdPattern = new(
+        "^manual_defrost_e(?<evaporator>[1-9]|1[0-4])$",
+        RegexOptions.CultureInvariant);
+
+    private static readonly Regex DefrostStatusIdPattern = new(
+        "^defrost_status_e(?<evaporator>[1-9]|1[0-4])$",
+        RegexOptions.CultureInvariant);
+
     [TestMethod]
     public async Task ReferenceScene_ConfiguresAllDefrostTogglesFromTheirConfirmedCommandBit()
     {
@@ -94,6 +102,88 @@ public sealed class Win00012DefrostToggleConfigurationTests
             .ToArray();
         Assert.AreEqual(56, loadedButtons.Length, "The durable scene must deserialize through the production store.");
         Assert.IsTrue(loadedButtons.All(element => element.EffectiveStateConfig.States.Count == 2));
+    }
+
+    [TestMethod]
+    public async Task ReferenceScene_AddsUnmappedManualDepartureAndDefrostStatusRows()
+    {
+        var root = FindRepositoryRoot();
+        var scenePath = Path.Combine(
+            root,
+            "projects",
+            "AMR_REF_SCADA_V2",
+            "scenes",
+            "win00012_modern_no_legacy.scene.json");
+
+        using var document = JsonDocument.Parse(File.ReadAllText(scenePath));
+        var elements = document.RootElement.GetProperty("Elements").EnumerateArray().ToArray();
+        var table = elements.Single(element => element.GetProperty("Id").GetString() == "table_defrost_upper");
+        Assert.AreEqual(564d, table.GetProperty("Bounds").GetProperty("Height").GetDouble(), 0.0001);
+
+        var rows = table.GetProperty("Table").GetProperty("Rows").EnumerateArray().ToArray();
+        Assert.AreEqual(18, rows.Length);
+        Assert.AreEqual(20d, rows[15].GetProperty("Height").GetDouble(), 0.0001, "The existing spacer row must remain between setpoints and manual controls.");
+        Assert.AreEqual(32d, rows[16].GetProperty("Height").GetDouble(), 0.0001);
+        Assert.AreEqual(32d, rows[17].GetProperty("Height").GetDouble(), 0.0001);
+
+        var addedCells = table.GetProperty("Table").GetProperty("Cells").EnumerateArray()
+            .Where(cell => cell.GetProperty("Row").GetInt32() >= 16)
+            .ToArray();
+        Assert.AreEqual(30, addedCells.Length, "Each added row must have one label cell and fourteen evaporator cells.");
+        Assert.AreEqual(
+            "Départ Manuel",
+            addedCells.Single(cell => cell.GetProperty("Row").GetInt32() == 16 && cell.GetProperty("Column").GetInt32() == 0)
+                .GetProperty("Content").GetProperty("Text").GetString());
+        Assert.AreEqual(
+            "État du dégivrage",
+            addedCells.Single(cell => cell.GetProperty("Row").GetInt32() == 17 && cell.GetProperty("Column").GetInt32() == 0)
+                .GetProperty("Content").GetProperty("Text").GetString());
+
+        var manualButtons = elements
+            .Where(element => ManualDepartureIdPattern.IsMatch(element.GetProperty("Id").GetString() ?? string.Empty))
+            .OrderBy(element => int.Parse(ManualDepartureIdPattern.Match(element.GetProperty("Id").GetString()!).Groups["evaporator"].Value))
+            .ToArray();
+        var statusIndicators = elements
+            .Where(element => DefrostStatusIdPattern.IsMatch(element.GetProperty("Id").GetString() ?? string.Empty))
+            .OrderBy(element => int.Parse(DefrostStatusIdPattern.Match(element.GetProperty("Id").GetString()!).Groups["evaporator"].Value))
+            .ToArray();
+        Assert.AreEqual(14, manualButtons.Length);
+        Assert.AreEqual(14, statusIndicators.Length);
+
+        for (var index = 0; index < 14; index++)
+        {
+            var expectedX = 259d + (72.42857142857143d * index);
+            var button = manualButtons[index];
+            Assert.AreEqual("Button", button.GetProperty("Kind").GetString());
+            Assert.AreEqual("Command", button.GetProperty("ButtonKind").GetString());
+            Assert.AreEqual("DÉPART", button.GetProperty("Data").GetProperty("Text").GetString());
+            Assert.AreEqual(JsonValueKind.Null, button.GetProperty("Data").GetProperty("ReadTagId").ValueKind);
+            Assert.AreEqual(JsonValueKind.Null, button.GetProperty("Data").GetProperty("WriteTagId").ValueKind);
+            Assert.AreEqual(JsonValueKind.Null, button.GetProperty("StateConfig").ValueKind);
+            Assert.AreEqual(JsonValueKind.Null, button.GetProperty("CommandConfig").ValueKind);
+            Assert.AreEqual(expectedX, button.GetProperty("Bounds").GetProperty("X").GetDouble(), 0.0001);
+            Assert.AreEqual(611d, button.GetProperty("Bounds").GetProperty("Y").GetDouble(), 0.0001);
+
+            var indicator = statusIndicators[index];
+            Assert.AreEqual("Shape", indicator.GetProperty("Kind").GetString());
+            Assert.AreEqual("Rectangle", indicator.GetProperty("ShapeKind").GetString());
+            Assert.AreEqual(JsonValueKind.Null, indicator.GetProperty("Data").ValueKind);
+            Assert.AreEqual(JsonValueKind.Null, indicator.GetProperty("StateConfig").ValueKind);
+            Assert.AreEqual(JsonValueKind.Null, indicator.GetProperty("CommandConfig").ValueKind);
+            Assert.AreEqual(expectedX, indicator.GetProperty("Bounds").GetProperty("X").GetDouble(), 0.0001);
+            Assert.AreEqual(649d, indicator.GetProperty("Bounds").GetProperty("Y").GetDouble(), 0.0001);
+        }
+
+        var loadedScene = await new ModernProjectStore().LoadOrCreateSceneAsync(
+            Directory.GetParent(root)!.FullName,
+            "win00012_modern_no_legacy",
+            "Degivrage",
+            CanvasSize.DefaultDesktop);
+        Assert.AreEqual(14, loadedScene.Elements.Count(element => ManualDepartureIdPattern.IsMatch(element.Id)));
+        Assert.AreEqual(14, loadedScene.Elements.Count(element => DefrostStatusIdPattern.IsMatch(element.Id)));
+        var loadedTable = loadedScene.Elements.Single(element => element.Id == "table_defrost_upper").Table;
+        Assert.IsNotNull(loadedTable);
+        Assert.AreEqual(18, loadedTable!.EffectiveRows.Count);
     }
 
     private static void AssertState(
