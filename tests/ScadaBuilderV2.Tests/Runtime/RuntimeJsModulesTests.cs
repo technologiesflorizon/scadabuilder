@@ -130,6 +130,27 @@ public sealed class RuntimeJsModulesTests
     }
 
     /// <summary>
+    /// Color-filter effects must tint opaque SVG geometry without changing the authored
+    /// stacking order between scene objects or covering semantic controls and text.
+    /// </summary>
+    [TestMethod]
+    public void EffectApplier_LayersColorFilterBetweenVisualAndSemanticContent()
+    {
+        var source = ReadEmbeddedResource("effect-applier.js");
+
+        StringAssert.Contains(source, "VISUAL_BASE_SELECTOR");
+        StringAssert.Contains(source, "SEMANTIC_FOREGROUND_SELECTOR");
+        StringAssert.Contains(source, "overlay.style.zIndex = '1';");
+        StringAssert.Contains(source, "_containsSemanticForeground");
+        StringAssert.Contains(source, "? 'auto' : '0';");
+        StringAssert.Contains(source, "semanticLayers[j].style.zIndex = '2';");
+        StringAssert.Contains(source, "overlay.style.pointerEvents = 'none';");
+        Assert.IsFalse(
+            source.Contains("_placeOverlayBehindContent", StringComparison.Ordinal),
+            "Opaque SVG geometry must not remain above the state tint overlay.");
+    }
+
+    /// <summary>
     /// The state-engine.js module must be embedded in the Rendering assembly.
     /// </summary>
     [TestMethod]

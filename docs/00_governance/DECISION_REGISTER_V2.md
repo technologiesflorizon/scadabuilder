@@ -2,12 +2,13 @@
 
 Date: 2026-07-17
 Status: Active authoritative decision register
-Document version: `V2.1.4.0063`
+Document version: `V2.1.4.0065`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-17 | `V2.1.4.0065` | `PENDING` | `DEC-0045` clarifiee : le filtre Etat est au-dessus des geometries SVG/image/canvas/table opaques, sous le contenu semantique, sans modifier l'ordre auteur des objets. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | `DEC-0047` corrige : 118 probes exacts remplacent les gates agreges; mutation independante et AST lower-camel sont verrouilles. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | `DEC-0047` tranche 16 : contrats et preuves Supported/Blocked synchronises; livraison distante reste gatee. |
 | 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | `DEC-0047` tranche 15 : integrations 03/04/08/12 et artefact industriel 2.3 preuves. |
@@ -1360,11 +1361,11 @@ The state quality fallback modified opacity and borders cumulatively, so a confi
 
 Decision:
 
-`EffectApplier` captures one runtime baseline per element, restores only properties controlled by the preceding effect, and places the color overlay below semantic text and interactive controls. TF100Web's single `ScadaTagCache` collects both canonical tag references and resolved read/write mapping attributes, forces an initial page snapshot, applies reads to existing numeric inputs, and binds one idempotent write handler through the existing `tf100webScadaBuilder.writeTag` bridge for standard Element+ and Table cells.
+`EffectApplier` captures one runtime baseline per element, restores only properties controlled by the preceding effect, and owns an isolated three-layer stack inside the Element+ wrapper: opaque visual geometry (`svg`, `canvas`, `img`, `table`) below the color overlay, then semantic text and interactive controls above it. The wrapper's authored z-index among sibling scene objects is immutable. TF100Web's single `ScadaTagCache` collects both canonical tag references and resolved read/write mapping attributes, forces an initial page snapshot, applies reads to existing numeric inputs, and binds one idempotent write handler through the existing `tf100webScadaBuilder.writeTag` bridge for standard Element+ and Table cells.
 
 Consequences:
 
-The manifest remains 2.2 and no scene migration, synthetic cell element, Table-specific poller, alternate dispatcher, or second write path is introduced. Confirmed state restores normal opacity and borders before applying green/red feedback; filtering no longer reduces text contrast. Numeric read/write permissions and mapping resolution remain owned by TF100Web.
+The manifest remains compatible and no scene migration, synthetic cell element, Table-specific poller, alternate dispatcher, or second write path is introduced. Confirmed state restores normal opacity and borders before applying green/red feedback; opaque SVG geometry receives visible filtering while semantic controls stay readable and clickable. Numeric read/write permissions and mapping resolution remain owned by TF100Web.
 
 Implementation status:
 

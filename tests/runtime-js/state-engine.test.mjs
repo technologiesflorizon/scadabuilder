@@ -239,7 +239,7 @@ test('evaluate() restores the button baseline after quality fallback resolves', 
     }],
   };
 
-  const label = { textContent: 'ON/OFF', hidden: false };
+  const label = { textContent: 'ON/OFF', hidden: false, style: {} };
   const contentLayer = { style: {} };
   const children = [];
   const element = {
@@ -255,7 +255,12 @@ test('evaluate() restores the button baseline after quality fallback resolves', 
       if (selector.startsWith('button, svg')) return contentLayer;
       return null;
     },
-    querySelectorAll(selector) { return selector === '[data-scada-text]' ? [label] : []; },
+    querySelectorAll(selector) {
+      if (selector === '[data-scada-text]') return [label];
+      if (selector === 'svg, canvas, img, table') return [];
+      if (selector === 'button, input, textarea, select, [data-scada-text]') return [contentLayer, label];
+      return [];
+    },
     appendChild(node) { children.push(node); return node; },
     removeChild(node) { children.splice(children.indexOf(node), 1); },
   };
@@ -270,8 +275,9 @@ test('evaluate() restores the button baseline after quality fallback resolves', 
   assert.equal(element.style.borderColor, '#49A9B8');
   assert.equal(element.style.borderWidth, '1px');
   assert.equal(label.textContent, 'ACTIF');
-  assert.equal(children[0].style.zIndex, '0');
-  assert.equal(contentLayer.style.zIndex, '1');
+  assert.equal(children[0].style.zIndex, '1');
+  assert.equal(contentLayer.style.zIndex, '2');
+  assert.equal(label.style.zIndex, '2');
 });
 
 test('initPage only resets pause/cache state for elements within its own container, not the whole page', () => {

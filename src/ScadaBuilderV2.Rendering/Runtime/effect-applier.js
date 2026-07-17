@@ -29,8 +29,59 @@
   var _baselines = new WeakMap();
   var _previousEffects = new WeakMap();
 
+  var VISUAL_BASE_SELECTOR = 'svg, canvas, img, table';
+  var SEMANTIC_FOREGROUND_SELECTOR = 'button, input, textarea, select, [data-scada-text]';
+
   function _styleValue(style, name) {
     return style && style[name] != null ? style[name] : '';
+  }
+
+  function _queryLayers(element, selector) {
+    if (!element) {
+      return [];
+    }
+    if (typeof element.querySelectorAll === 'function') {
+      return Array.prototype.slice.call(element.querySelectorAll(selector));
+    }
+    if (typeof element.querySelector === 'function') {
+      var match = element.querySelector(selector);
+      return match ? [match] : [];
+    }
+    return [];
+  }
+
+  function _captureLayerStyles(element) {
+    var layers = _queryLayers(element, VISUAL_BASE_SELECTOR)
+      .concat(_queryLayers(element, SEMANTIC_FOREGROUND_SELECTOR));
+    var uniqueLayers = [];
+    for (var i = 0; i < layers.length; i++) {
+      if (layers[i] && uniqueLayers.indexOf(layers[i]) < 0) {
+        uniqueLayers.push(layers[i]);
+      }
+    }
+    return uniqueLayers.map(function (layer) {
+      return {
+        layer: layer,
+        position: _styleValue(layer.style, 'position'),
+        zIndex: _styleValue(layer.style, 'zIndex')
+      };
+    });
+  }
+
+  function _restoreLayerStyles(layerStyles) {
+    for (var i = 0; i < layerStyles.length; i++) {
+      var snapshot = layerStyles[i];
+      if (!snapshot.layer || !snapshot.layer.style) {
+        continue;
+      }
+      snapshot.layer.style.position = snapshot.position;
+      snapshot.layer.style.zIndex = snapshot.zIndex;
+    }
+  }
+
+  function _containsSemanticForeground(layer) {
+    return !!(layer && typeof layer.querySelector === 'function' &&
+      layer.querySelector(SEMANTIC_FOREGROUND_SELECTOR));
   }
 
   function _baselineFor(element) {
@@ -39,9 +90,6 @@
       return baseline;
     }
     var textTarget = element.querySelector('[data-scada-text]');
-    var contentLayer = element.querySelector(
-      'button, svg, canvas, img, table, input, textarea, select, [data-scada-text]'
-    );
     baseline = {
       backgroundColor: _styleValue(element.style, 'backgroundColor'),
       borderColor: _styleValue(element.style, 'borderColor'),
@@ -54,9 +102,7 @@
       hidden: !!element.hidden,
       textHidden: textTarget ? !!textTarget.hidden : false,
       textContent: textTarget ? textTarget.textContent : '',
-      contentLayer: contentLayer,
-      contentPosition: contentLayer ? _styleValue(contentLayer.style, 'position') : '',
-      contentZIndex: contentLayer ? _styleValue(contentLayer.style, 'zIndex') : ''
+      layerStyles: _captureLayerStyles(element)
     };
     _baselines.set(element, baseline);
     return baseline;
@@ -109,26 +155,35 @@
       else if (overlay) element.removeChild(overlay);
       element.style.position = baseline.position;
       element.style.isolation = baseline.isolation;
-      if (baseline.contentLayer && baseline.contentLayer.style) {
-        baseline.contentLayer.style.position = baseline.contentPosition;
-        baseline.contentLayer.style.zIndex = baseline.contentZIndex;
-      }
+      _restoreLayerStyles(baseline.layerStyles || []);
     }
   }
 
-  function _placeOverlayBehindContent(element, overlay) {
-    overlay.style.zIndex = '0';
+  function _placeColorFilterLayer(element, overlay) {
+    // Keep the element wrapper as the isolated stacking owner so this runtime-only
+    // effect never changes the authored order between sibling scene objects.
+    // Opaque SVG/image/canvas/table geometry stays below the tint, while semantic
+    // text and interactive controls remain above it and fully usable.
+    overlay.style.zIndex = '1';
     overlay.style.borderRadius = 'inherit';
     element.style.isolation = 'isolate';
     if (!element.style.position) {
       element.style.position = 'relative';
     }
-    var contentLayer = element.querySelector(
-      'button, svg, canvas, img, table, input, textarea, select, [data-scada-text]'
-    );
-    if (contentLayer && contentLayer.style) {
-      if (!contentLayer.style.position) contentLayer.style.position = 'relative';
-      contentLayer.style.zIndex = '1';
+
+    var visualLayers = _queryLayers(element, VISUAL_BASE_SELECTOR);
+    for (var i = 0; i < visualLayers.length; i++) {
+      if (!visualLayers[i].style.position) visualLayers[i].style.position = 'relative';
+      // A visual container such as a table may own an input. `z-index: 0` would
+      // create a nested stacking context and trap that input below the overlay,
+      // so keep such containers at the automatic base layer.
+      visualLayers[i].style.zIndex = _containsSemanticForeground(visualLayers[i]) ? 'auto' : '0';
+    }
+
+    var semanticLayers = _queryLayers(element, SEMANTIC_FOREGROUND_SELECTOR);
+    for (var j = 0; j < semanticLayers.length; j++) {
+      if (!semanticLayers[j].style.position) semanticLayers[j].style.position = 'relative';
+      semanticLayers[j].style.zIndex = '2';
     }
   }
 
@@ -215,7 +270,7 @@
         overlay.style.pointerEvents = 'none';
         element.appendChild(overlay);
       }
-      _placeOverlayBehindContent(element, overlay);
+      _placeColorFilterLayer(element, overlay);
       overlay.style.backgroundColor = effect.colorFilterColor;
       overlay.style.opacity = effect.colorFilterOpacity != null ? effect.colorFilterOpacity : 1;
       if (effect.colorFilterHalo) {

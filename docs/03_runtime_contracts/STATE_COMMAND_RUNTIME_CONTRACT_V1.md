@@ -2,13 +2,14 @@
 
 Date: 2026-07-17
 Status: Active implemented runtime contract
-Document version: `V2.1.4.0064`
+Document version: `V2.1.4.0065`
 Owner: SCADA Builder V2 authoring team and shared package runtime. TF100Web owns host services only (`F:\Projet\Git\TF100Web`).
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-17 | `V2.1.4.0065` | `PENDING` | Filtre Etat SVG corrige : overlay visible au-dessus des geometries opaques, contenu semantique preserve et ordre auteur entre objets inchange. |
 | 2026-07-17 | `V2.1.4.0064` | `f73b3e3` | Artefact industriel regenere apres ajout de commandes/voyants non mappes; aucune semantique runtime Etat/Commande n'est modifiee. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Casing AST ferme : lower-camel canonique exporte execute directement, PascalCase historique accepte, probes exacts pour chaque operateur. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | Contrat synchronise avec le runtime partage, le HostAdapter unique, la fixture exacte et les statuts Supported/Blocked stricts. |
@@ -70,6 +71,14 @@ property" — TF100Web must not default it, only skip applying it.
 
 `textContent` targets a descendant marked `[data-scada-text]`. Text and button renderers
 use this same semantic target; TF100Web does not maintain a button-specific text branch.
+
+`colorFilterColor` owns an isolated runtime-only stack inside the existing Element+ wrapper:
+opaque visual geometry (`svg`, `canvas`, `img`, `table`) uses layer 0, the non-interactive
+filter overlay uses layer 1, and semantic text plus controls use layer 2. The runtime may
+temporarily position those descendants but must restore their authored styles when the
+effect is removed. A visual container that owns semantic descendants remains at automatic
+z-index so it cannot trap those descendants below the overlay. The runtime must never change
+the wrapper z-index or reorder sibling scene objects.
 
 ## 3. Expression AST format
 
@@ -187,4 +196,4 @@ after the shared snapshot reports the resulting value.
 
 The shared State/Expression/Effect, CommandConfig and object-action paths have executable table-driven evidence. Command coverage includes every trigger/kind/write mode, enabled/disabled, missing inputs, confirmation timing, asynchronous rejection, duplicate suppression, real Momentary release and page/input cleanup. Input locks are keyed by DOM identity, refresh inactivity on edits and restore from the declared read tag.
 
-Builder commits `9878fb1`, `a76e220` and `bcec075` own the portable semantics. TF100Web commits `7d60c63`, `cab2733`, `1fc3ac4` and `2fb46e6` negotiate manifest 2.3, expose one HostAdapter, enforce latest-wins lifecycle and execute the exact Builder fixture. The fixture gate proves all 118 `Supported` capabilities and rejects all 44 `Blocked` capabilities. The V2.1.4.0064 industrial package SHA-256 `1050107bb16d6497ca3b01148001e5b657de6e4523ec216c417ede526fec6d18` validates the deployed contract shape without performing PLC writes. Remote server promotion and operator smoke remain release operations, not missing runtime semantics.
+Builder commits `9878fb1`, `a76e220` and `bcec075` own the portable semantics. TF100Web commits `7d60c63`, `cab2733`, `1fc3ac4` and `2fb46e6` negotiate manifest 2.3, expose one HostAdapter, enforce latest-wins lifecycle and execute the exact Builder fixture. The fixture gate proves all 118 `Supported` capabilities and rejects all 44 `Blocked` capabilities. V2.1.4.0065 adds the SVG filter-layer regression without changing manifest shape or capability ids. The industrial package validates the deployed contract shape without performing PLC writes. Remote server promotion and operator smoke remain release operations, not missing runtime semantics.

@@ -2,12 +2,13 @@
 
 Date: 2026-07-17
 Status: Active implementation status
-Document version: `V2.1.4.0064`
+Document version: `V2.1.4.0065`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-17 | `V2.1.4.0065` | `PENDING` | Correction runtime des filtres Etat SVG : couche visuelle 0, overlay 1, contenu semantique 2, avec restauration complete et ordre scene preserve. |
 | 2026-07-17 | `V2.1.4.0064` | `f73b3e3` | Deux rangees Element+ ajoutees a `win00012_modern_no_legacy` : 14 commandes de depart manuel et 14 voyants d'etat rectangulaires, volontairement sans mapping. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Validation runtime exacte 118/118, mutation isolee, index `probe:<id>` et compatibilite AST lower-camel/Pascal verrouilles. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | Contrats, matrice et statuts de livraison `DEC-0047` synchronises. |

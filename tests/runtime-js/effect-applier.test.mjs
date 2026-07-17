@@ -37,16 +37,27 @@ function makeFakeOverlayNode() {
   };
 }
 
-function makeFakeElement() {
+function makeFakeElement({ withSvg = false, withButton = false, semanticNestedInVisual = false } = {}) {
   const style = {};
   const children = [];
-  const contentLayer = { style: {} };
+  const controlLayer = withButton ? { style: {}, tagName: 'button' } : null;
+  const textTarget = { textContent: '', style: {}, dataset: { scadaText: '' } };
+  const visualLayer = withSvg ? {
+    style: {},
+    tagName: 'svg',
+    querySelector(selector) {
+      return semanticNestedInVisual && selector === 'button, input, textarea, select, [data-scada-text]'
+        ? textTarget
+        : null;
+    },
+  } : null;
   return {
     style,
     classList: makeClassList(),
     hidden: false,
-    _textTarget: { textContent: '' },
-    _contentLayer: contentLayer,
+    _textTarget: textTarget,
+    _visualLayer: visualLayer,
+    _controlLayer: controlLayer,
     _children: children,
     appendChild(node) { children.push(node); return node; },
     removeChild(node) {
@@ -58,8 +69,16 @@ function makeFakeElement() {
       if (selector === '[data-scada-color-filter-overlay]') {
         return children.find((c) => c.dataset && c.dataset['scada-color-filter-overlay']) || null;
       }
-      if (selector.startsWith('button, svg')) return this._contentLayer;
+      const matches = this.querySelectorAll(selector);
+      if (matches.length) return matches[0];
       return null;
+    },
+    querySelectorAll(selector) {
+      if (selector === 'svg, canvas, img, table') return visualLayer ? [visualLayer] : [];
+      if (selector === 'button, input, textarea, select, [data-scada-text]') {
+        return [controlLayer, textTarget].filter(Boolean);
+      }
+      return [];
     },
   };
 }
@@ -96,20 +115,37 @@ test('apply() leaves plain textContent (no tokens) unchanged', () => {
   assert.equal(element._textTarget.textContent, 'Arret');
 });
 
-test('apply() creates a translucent overlay for colorFilterColor', () => {
+test('apply() layers an SVG tint above opaque geometry and below semantic UI', () => {
   const window = loadRuntime(['tag-bridge.js', 'effect-applier.js']);
   window.document = { createElement: () => makeFakeOverlayNode() };
 
-  const element = makeFakeElement();
+  const element = makeFakeElement({ withSvg: true, withButton: true });
+  element.style.zIndex = '27';
   window.ScadaRuntime.EffectApplier.apply(element, { colorFilterColor: '#E53935', colorFilterOpacity: 0.35 });
 
   const overlay = element.querySelector('[data-scada-color-filter-overlay]');
   assert.ok(overlay, 'expected an overlay element to be created');
   assert.equal(overlay.style.backgroundColor, '#E53935');
   assert.equal(overlay.style.opacity, 0.35);
-  assert.equal(overlay.style.zIndex, '0');
-  assert.equal(element._contentLayer.style.zIndex, '1');
+  assert.equal(overlay.style.pointerEvents, 'none');
+  assert.equal(overlay.style.zIndex, '1');
+  assert.equal(element._visualLayer.style.zIndex, '0');
+  assert.equal(element._controlLayer.style.zIndex, '2');
+  assert.equal(element._textTarget.style.zIndex, '2');
   assert.equal(element.style.isolation, 'isolate');
+  assert.equal(element.style.zIndex, '27', 'the authored order between scene objects must remain unchanged');
+});
+
+test('apply() does not trap semantic UI inside a visual container below the tint', () => {
+  const window = loadRuntime(['tag-bridge.js', 'effect-applier.js']);
+  window.document = { createElement: () => makeFakeOverlayNode() };
+
+  const element = makeFakeElement({ withSvg: true, semanticNestedInVisual: true });
+  window.ScadaRuntime.EffectApplier.apply(element, { colorFilterColor: '#12B729' });
+
+  assert.equal(element._visualLayer.style.zIndex, 'auto');
+  assert.equal(element._textTarget.style.zIndex, '2');
+  assert.equal(element.querySelector('[data-scada-color-filter-overlay]').style.zIndex, '1');
 });
 
 test('apply() reuses the same overlay node across repeated calls', () => {
@@ -199,8 +235,8 @@ test('apply() covers every effect field and reset() restores the complete baseli
   element.hidden = false;
   element._textTarget.textContent = 'BASE';
   element._textTarget.hidden = false;
-  element._contentLayer.style.position = 'static';
-  element._contentLayer.style.zIndex = '4';
+  element._textTarget.style.position = 'static';
+  element._textTarget.style.zIndex = '4';
 
   window.ScadaRuntime.EffectApplier.apply(element, {
     backgroundColor: '#AABBCC', borderColor: '#BBCCDD', borderWidth: 3,
@@ -235,8 +271,8 @@ test('apply() covers every effect field and reset() restores the complete baseli
   assert.equal(element.style.transform, 'scale(1.1)');
   assert.equal(element.style.position, 'absolute');
   assert.equal(element.style.isolation, 'auto');
-  assert.equal(element._contentLayer.style.position, 'static');
-  assert.equal(element._contentLayer.style.zIndex, '4');
+  assert.equal(element._textTarget.style.position, 'static');
+  assert.equal(element._textTarget.style.zIndex, '4');
   assert.equal(element.classList.contains('scada-anim-blink'), false);
   assert.equal(element.querySelector('[data-scada-color-filter-overlay]'), null);
 });

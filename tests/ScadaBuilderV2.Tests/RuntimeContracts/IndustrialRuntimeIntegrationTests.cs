@@ -81,7 +81,14 @@ public sealed class IndustrialRuntimeIntegrationTests
                 {
                     ["win00003"] = new { Navigations = 8, LatestWinsBackForward = "covered-by-tf100web-lifecycle-suite" },
                     ["win00004"] = new { Header = "win00002", Footer = "win00003", AssetsValidated = true },
-                    ["win00008"] = new { States = 8, ReadOnlyNumerics = 2, WritableNumerics = 1, RoundTrip = "covered-by-tf100web-lifecycle-suite" },
+                    ["win00008"] = new
+                    {
+                        States = 8,
+                        ReadOnlyNumerics = 2,
+                        WritableNumerics = 1,
+                        SvgColorFilterStacking = "covered-by-runtime-js",
+                        RoundTrip = "covered-by-tf100web-lifecycle-suite"
+                    },
                     ["win00012_modern_no_legacy"] = new
                     {
                         DefrostToggles = 56,
