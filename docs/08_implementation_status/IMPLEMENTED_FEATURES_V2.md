@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Implemented Features
 
-Date: 2026-07-17
+Date: 2026-07-18
 Status: Active implementation status
-Document version: `V2.1.4.0065`
+Document version: `V2.1.4.0067`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-18 | `V2.1.4.0067` | `PENDING` | Correction Builder des lectures numeriques : authoring et migration alignent `ValueBindings.ReadTagId` sur `StateConfig.ReadVariable`, avec gate de build et acceptance globale. |
 | 2026-07-17 | `V2.1.4.0065` | `PENDING` | Correction runtime des filtres Etat SVG : couche visuelle 0, overlay 1, contenu semantique 2, avec restauration complete et ordre scene preserve. |
 | 2026-07-17 | `V2.1.4.0064` | `f73b3e3` | Deux rangees Element+ ajoutees a `win00012_modern_no_legacy` : 14 commandes de depart manuel et 14 voyants d'etat rectangulaires, volontairement sans mapping. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Validation runtime exacte 118/118, mutation isolee, index `probe:<id>` et compatibilite AST lower-camel/Pascal verrouilles. |
@@ -201,6 +202,7 @@ As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The f
 91. Builder `c56c5af`/`3fc1fc8` exports and validates the 25-page AMR reference package under strict manifest 2.3 and commits machine-readable timings/hashes/page cardinalities. TF100Web `33c5846` binds the same package SHA and 46-capability set to production intake. Critical evidence covers eight footer navigations, header/body/footer assets, eight `win00008` states with 2+1 numeric bindings, 56 `win00012` toggles, 126 table bindings and expected missing mapping 615 fallback; no live PLC write occurs.
 92. Runtime conformance now produces one exact, machine-readable result for each of the 118 Supported capabilities instead of mapping capability families to aggregate booleans. The vendored full expectation index requires unique `probe:<capability-id>` outcomes; static package contracts and actual packaged-runtime execution cover every page, element, shape, button, table cell, binding, expression, effect, state, command and action id. A targeted manifest mutation proves that `shape.rectangle` fails independently. The expression evaluator also normalizes canonical lower-camel serialized operators while retaining the historical Pascal-case spelling through the same code path.
 93. `win00012_modern_no_legacy` preserves the blank spacer below pre-cooling and adds two 32-pixel rows. `Depart Manuel` owns one unmapped `Command` button per evaporator; `Etat du degivrage` owns one rectangular Element+ status shape per evaporator. The 28 controls intentionally have no state, command, read or write mapping until the PLC tags are supplied, and their durable layout/export is protected by `Win00012DefrostToggleConfigurationTests` plus industrial package acceptance.
+94. Builder keeps numeric runtime reads coherent at three boundaries: `WithElementStateConfig` synchronizes new authoring, `ModernProjectMigration` repairs existing scenes recursively on load/snapshot/save, and build/export validation rejects any remaining `InputNumeric` divergence between `ValueBindings.ReadTagId` and `StateConfig.ReadVariable.TagId`. Reference-project acceptance scans every compiled page and locks `win00017` to `TE_EXT`, `PE_95`, and `PE_96` rather than the duplicated `PE_16` binding.
 
 ## 3. Source Of Truth
 

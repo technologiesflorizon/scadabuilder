@@ -194,6 +194,41 @@ public sealed class ModernProjectStoreTests
     }
 
     [TestMethod]
+    public void SceneMigrationRepairsPersistedNumericReadBindingMismatch()
+    {
+        var numeric = ScadaElement.CreateInputNumeric("numeric-1", "Temperature", 10, 20, isReadOnly: true) with
+        {
+            Data = ScadaElement.CreateInputNumeric("template", "Template", 0, 0, isReadOnly: true).Data! with
+            {
+                ReadTagId = "tf100.mapping.stale"
+            },
+            StateConfig = ScadaElementStateConfig.Default with
+            {
+                ReadVariable = new ScadaReadVariableRule("tf100.mapping.temperature")
+            }
+        };
+        var scene = ScadaScene.CreateEmpty("win-test", "Test scene", new(1280, 873)) with
+        {
+            Elements = [numeric]
+        };
+        var project = ScadaProject.CreateDefault("Migration") with
+        {
+            Scenes = [new ScadaSceneReference("win-test", "Test scene", "scenes/win-test.scene.json")]
+        };
+
+        var migrated = ModernProjectMigration.MigrateScene(scene, project);
+        var migratedAgain = ModernProjectMigration.MigrateScene(migrated, project);
+
+        Assert.AreEqual("tf100.mapping.temperature", migrated.FindElementRecursive(numeric.Id)?.Data?.ReadTagId);
+        Assert.AreEqual(
+            migrated.FindElementRecursive(numeric.Id)?.Data?.ReadTagId,
+            migratedAgain.FindElementRecursive(numeric.Id)?.Data?.ReadTagId);
+        Assert.AreEqual(
+            migrated.FindElementRecursive(numeric.Id)?.EffectiveStateConfig.ReadVariable?.TagId,
+            migratedAgain.FindElementRecursive(numeric.Id)?.EffectiveStateConfig.ReadVariable?.TagId);
+    }
+
+    [TestMethod]
     public async Task SaveAndLoadScenePreservesConditionalObjectVisibilityAction()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

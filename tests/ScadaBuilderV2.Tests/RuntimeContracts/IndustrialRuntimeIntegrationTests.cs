@@ -18,6 +18,50 @@ public sealed class IndustrialRuntimeIntegrationTests
     private static readonly JsonSerializerOptions ReportOptions = new() { WriteIndented = true };
 
     [TestMethod]
+    public async Task ReferenceProjectNormalizesEveryCompiledNumericReadBindingAndExportsWin00017Mappings()
+    {
+        var repositoryRoot = FindRepositoryRoot();
+        var store = new ModernProjectStore();
+        var project = await store.LoadProjectAsync(repositoryRoot)
+            ?? throw new InvalidOperationException("AMR_REF_SCADA_V2 project was not found.");
+        var snapshot = await store.ReadWorkspaceSnapshotAsync(repositoryRoot, new PageWorkspaceReadContext(ProjectOverride: project));
+        var compiledPages = project.Scenes.Where(page => page.IncludeInBuild).ToArray();
+        var mismatches = compiledPages
+            .SelectMany(page => FlattenElements(snapshot.Scenes[page.PageKey].Elements)
+                .Where(element => element.Kind == ScadaElementKind.InputNumeric)
+                .Where(element => element.StateConfig?.ReadVariable is not null)
+                .Where(element => !string.Equals(
+                    element.Data?.ReadTagId,
+                    element.StateConfig!.ReadVariable!.TagId,
+                    StringComparison.Ordinal))
+                .Select(element => $"{page.EffectivePageCode}/{element.Id}"))
+            .ToArray();
+
+        Assert.AreEqual(0, mismatches.Length, $"Numeric read binding mismatches: {string.Join(", ", mismatches)}");
+
+        var win00017Page = compiledPages.Single(page => page.EffectivePageCode == "win00017");
+        var win00017Scene = Synchronize(snapshot.Scenes[win00017Page.PageKey], win00017Page);
+        var tempRoot = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Industrial", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(tempRoot);
+        try
+        {
+            var export = await new Ft100SceneExporter().ExportAsync(
+                win00017Scene,
+                ResolveSourcePath(repositoryRoot, win00017Page),
+                tempRoot,
+                project);
+            using var manifest = JsonDocument.Parse(await File.ReadAllTextAsync(Path.Combine(export.ExportDirectory, "manifest.json")));
+            var exportedPage = manifest.RootElement.GetProperty("Pages")[0];
+            ValidateWin00017(exportedPage);
+            ValidateNumericReadBindingCoherence([exportedPage]);
+        }
+        finally
+        {
+            if (Directory.Exists(tempRoot)) Directory.Delete(tempRoot, true);
+        }
+    }
+
+    [TestMethod]
     public async Task ReferenceProjectExportsStrict23AndLocksFourIndustrialIntegrations()
     {
         var repositoryRoot = FindRepositoryRoot();
@@ -54,6 +98,8 @@ public sealed class IndustrialRuntimeIntegrationTests
             ValidateWin00004(archive, pages["win00004"]);
             ValidateWin00008(pages["win00008"]);
             ValidateWin00012(pages["win00012_modern_no_legacy"]);
+            ValidateWin00017(pages["win00017"]);
+            ValidateNumericReadBindingCoherence(pages.Values);
 
             var runtimeContract = manifest.RootElement.GetProperty("RuntimeContract");
             var runtimeSha = runtimeContract.GetProperty("RuntimeSha256").GetString()!;
@@ -212,7 +258,44 @@ public sealed class IndustrialRuntimeIntegrationTests
         Assert.AreEqual(0.4, fallback.GetProperty("Opacity").GetDouble(), 0.0001);
     }
 
+    private static void ValidateWin00017(JsonElement page)
+    {
+        var objects = Objects(page).ToDictionary(element => element.GetProperty("Id").GetString()!, StringComparer.Ordinal);
+        Assert.AreEqual("tf100.mapping.165", ReadTagId(objects["7faa09c82bbe4974b0fb320f8739d8b7"]));
+        Assert.AreEqual("tf100.mapping.162", ReadTagId(objects["25f9f3aa3fd9433ba9c622a22b42d52c"]));
+        Assert.AreEqual("tf100.mapping.163", ReadTagId(objects["d0ed6e496f1f471f8c8839348a7b7d77"]));
+    }
+
+    private static void ValidateNumericReadBindingCoherence(IEnumerable<JsonElement> pages)
+    {
+        var mismatches = pages
+            .SelectMany(page => Objects(page).Select(element => (Page: page, Element: element)))
+            .Where(item => item.Element.GetProperty("Kind").GetString() == "InputNumeric")
+            .Where(item => item.Element.GetProperty("StateConfig").ValueKind == JsonValueKind.Object)
+            .Where(item => item.Element.GetProperty("StateConfig").GetProperty("ReadVariable").ValueKind == JsonValueKind.Object)
+            .Where(item => !string.Equals(
+                ReadTagId(item.Element),
+                item.Element.GetProperty("StateConfig").GetProperty("ReadVariable").GetProperty("TagId").GetString(),
+                StringComparison.Ordinal))
+            .Select(item => $"{item.Page.GetProperty("Id").GetString()}/{item.Element.GetProperty("Id").GetString()}")
+            .ToArray();
+
+        Assert.AreEqual(0, mismatches.Length, $"Numeric read binding mismatches: {string.Join(", ", mismatches)}");
+    }
+
+    private static string? ReadTagId(JsonElement element) =>
+        element.GetProperty("ValueBindings").GetProperty("ReadTagId").GetString();
+
     private static JsonElement[] Objects(JsonElement page) => page.GetProperty("Objects").EnumerateArray().ToArray();
+
+    private static IEnumerable<ScadaElement> FlattenElements(IEnumerable<ScadaElement> elements)
+    {
+        foreach (var element in elements)
+        {
+            yield return element;
+            foreach (var child in FlattenElements(element.ChildElements)) yield return child;
+        }
+    }
 
     private static JsonDocument ReadJson(ZipArchive archive, string entryName)
     {

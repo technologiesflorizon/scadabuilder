@@ -446,6 +446,22 @@ public static class ScadaProjectBuildValidator
         foreach (var element in FlattenElements(scene.Elements))
         {
             var readTagId = element.Data?.ReadTagId;
+            var stateReadTagId = element.StateConfig?.ReadVariable?.TagId;
+            if (element.Kind == ScadaElementKind.InputNumeric &&
+                !string.IsNullOrWhiteSpace(stateReadTagId) &&
+                !string.Equals(readTagId, stateReadTagId, StringComparison.Ordinal))
+            {
+                issues.Add(new ScadaBuildValidationIssue(
+                    ScadaBuildValidationSeverity.Error,
+                    "tag.numeric-read-binding-mismatch",
+                    $"Numeric element '{element.Id}' reads '{readTagId ?? "<none>"}' through ValueBindings but '{stateReadTagId}' through StateConfig.ReadVariable.",
+                    scene.Id,
+                    scene.PageKey,
+                    ElementId: element.Id,
+                    PropertyPath: $"Elements[{element.Id}].Data.ReadTagId",
+                    SuggestedFix: "Reopen the numeric element properties and save its read variable so Builder synchronizes the canonical value binding."));
+            }
+
             if (!string.IsNullOrWhiteSpace(readTagId) && !tagsById.ContainsKey(readTagId))
             {
                 issues.Add(new ScadaBuildValidationIssue(

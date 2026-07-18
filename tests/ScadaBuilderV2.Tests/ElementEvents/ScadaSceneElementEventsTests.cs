@@ -39,6 +39,32 @@ public sealed class ScadaSceneElementEventsTests
     }
 
     [TestMethod]
+    public void WithElementStateConfigSynchronizesNumericReadVariableWithCanonicalValueBinding()
+    {
+        var numeric = ScadaElement.CreateInputNumeric("numeric-1", "Pression", 10, 20, isReadOnly: true) with
+        {
+            Data = ScadaElement.CreateInputNumeric("template", "Template", 0, 0, isReadOnly: true).Data! with
+            {
+                ReadTagId = "tf100.mapping.stale"
+            }
+        };
+        var scene = ScadaScene.CreateEmpty("scene-1", "Main", new CanvasSize(800, 600)) with
+        {
+            Elements = [numeric]
+        };
+        var config = ScadaElementStateConfig.Default with
+        {
+            ReadVariable = new ScadaReadVariableRule("tf100.mapping.pressure")
+        };
+
+        var updated = scene.WithElementStateConfig(numeric.Id, config).FindElementRecursive(numeric.Id);
+
+        Assert.IsNotNull(updated);
+        Assert.AreEqual("tf100.mapping.pressure", updated.Data?.ReadTagId);
+        Assert.AreEqual("tf100.mapping.pressure", updated.EffectiveStateConfig.ReadVariable?.TagId);
+    }
+
+    [TestMethod]
     public void WithElementCommandConfigReplacesConfigOnMatchingElement()
     {
         var scene = ScadaScene.CreateEmpty("scene-1", "Main", new CanvasSize(800, 600));

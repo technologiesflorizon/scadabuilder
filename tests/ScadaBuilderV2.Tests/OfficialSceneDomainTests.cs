@@ -1,4 +1,5 @@
 using ScadaBuilderV2.Domain.Legacy;
+using ScadaBuilderV2.Domain.ElementEvents.State;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
 
@@ -444,6 +445,43 @@ public sealed class OfficialSceneDomainTests
         Assert.IsTrue(issues.Any(issue => issue.Code == "tag.write-readonly-element"));
         Assert.IsTrue(issues.Any(issue => issue.Code == "tag.write-readonly-tag"));
         Assert.IsTrue(issues.Any(issue => issue.Code == "tag.read-missing"));
+    }
+
+    [TestMethod]
+    public void BuildValidationRejectsNumericReadVariableValueBindingMismatch()
+    {
+        var numeric = ScadaElement.CreateInputNumeric("input_pressure", "Pression", 10, 20, isReadOnly: true) with
+        {
+            Data = ScadaElement.CreateInputNumeric("template", "Template", 0, 0, isReadOnly: true).Data! with
+            {
+                ReadTagId = "tf100.mapping.161"
+            },
+            StateConfig = ScadaElementStateConfig.Default with
+            {
+                ReadVariable = new ScadaReadVariableRule("tf100.mapping.162")
+            }
+        };
+        var scene = ScadaScene.CreateEmpty("win00017", "win00017", new CanvasSize(1280, 873)) with
+        {
+            Elements = [numeric]
+        };
+        var project = ScadaProject.CreateDefault("Validation") with
+        {
+            Scenes = [new ScadaSceneReference("win00017", "win00017", "scenes/win00017.scene.json")],
+            TagCatalog = new ScadaTagCatalog(
+                "tf100web-scada-tags-v1",
+                [
+                    new ScadaTagDefinition("tf100.mapping.161", "PE_16"),
+                    new ScadaTagDefinition("tf100.mapping.162", "PE_95")
+                ])
+        };
+
+        var issue = ScadaProjectBuildValidator.Validate(project, [scene])
+            .Single(item => item.Code == "tag.numeric-read-binding-mismatch");
+
+        Assert.AreEqual(ScadaBuildValidationSeverity.Error, issue.Severity);
+        Assert.AreEqual("win00017", issue.PageId);
+        Assert.AreEqual(numeric.Id, issue.ElementId);
     }
 
     [TestMethod]

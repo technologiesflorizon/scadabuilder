@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Regression Coverage
 
-Date: 2026-07-17
+Date: 2026-07-18
 Status: Active regression coverage map
-Document version: `V2.1.4.0065`
+Document version: `V2.1.4.0067`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-18 | `V2.1.4.0067` | `PENDING` | Regressions de coherence numerique : authoring, migration idempotente, validation bloquante, audit des 26 pages compilees et export cible `win00017`; suite complete observee a 689/697 avec huit echecs hors tranche. |
 | 2026-07-17 | `V2.1.4.0065` | `PENDING` | Regression `win00008` : filtre visible sur SVG opaque, texte/controles directs ou imbriques au-dessus, `pointer-events:none`, z-index du wrapper inchange et styles descendants restaures. |
 | 2026-07-17 | `V2.1.4.0064` | `f73b3e3` | Regression `win00012` couvrant 18 rangees, l'espacement conserve, 14 boutons manuels, 14 voyants Rectangle et l'absence volontaire de mappings. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Couverture 118/118 rendue point par point : resultat unique, evaluateur exact, mutation isolee et operateurs AST serialises executes. |
@@ -100,13 +101,14 @@ Document version: `V2.1.4.0065`
 
 ```text
 dotnet test ScadaBuilderV2.sln --no-restore
-679 passed, 5 failed, 0 skipped
+689 passed, 8 failed, 0 skipped
 ```
 
 ## 2. Coverage Map
 
 | Contract area | Primary tests |
 | --- | --- |
+| Numeric `StateConfig.ReadVariable` / `ValueBindings.ReadTagId` coherence | `ScadaSceneElementEventsTests.WithElementStateConfigSynchronizesNumericReadVariableWithCanonicalValueBinding`, `ModernProjectStoreTests.SceneMigrationRepairsPersistedNumericReadBindingMismatch`, `OfficialSceneDomainTests.BuildValidationRejectsNumericReadVariableValueBindingMismatch`, and `IndustrialRuntimeIntegrationTests.ReferenceProjectNormalizesEveryCompiledNumericReadBindingAndExportsWin00017Mappings` cover authoring, migration, fail-closed validation, all compiled reference pages and exact `win00017` export mappings. |
 | Runtime capability completeness (`DEC-0047`) | `RuntimeContracts/ScadaRuntimeCapabilityCatalogTests.cs` and `ScadaRuntimeCapabilityAnalyzerTests.cs` cover typed inventory, artifacts, fixture ids, three-layer evidence requirements and model analysis. `RuntimeConformancePackageTests.cs` proves exact 118-capability factory coverage, 118 unique `probe:<capability-id>` results, byte-identical package regeneration, canonical SHA `bf41c4c3d8defa31b22a276a649516c3bc6349a346d909946b29e65bc9102cc4`, archive/manifest/DOM/CSS/runtime integrity, sanitization and an exhaustive 162-entry expectation index. Runtime JS suites add table-driven AST/state/effect/command/action semantics, including the lower-camel operators actually emitted. TF100Web `frontend.tests_runtime_conformance` executes and reports every exact Supported probe, mutation-tests independent failure, and rejects every Blocked id. `tools/docs/generate-runtime-capability-matrix.ps1` plus `verify-docs` enforce code/matrix parity. |
 | Shared command and input semantics (`DEC-0047`, partial) | Builder `tests/runtime-js/command-dispatcher.test.mjs` covers all five triggers, seven kinds, Toggle/SetFixed/SetFromInput and real Momentary phases, confirmation ordering, disabled/missing values, canonical intents, HostAdapter precedence, async rejection and duplicate suppression. TF100Web `frontend/tests_runtime_js/host-adapter.test.mjs` covers canonical service mapping, invalid input, duplicate delivery, origin, stale declared page and protected writes. End-to-end Momentary/readback promotion remains pending. |
 | Shared object-action semantics (`DEC-0047`) | Builder `tests/runtime-js/action-dispatcher.test.mjs` covers all nine kinds, every condition operator, All/Any, both missing policies, binding order, prevent/stop propagation, disabled sources, disposal and duplicate ids across composed page roots. `Ft100SceneExporterTests.cs` locks canonical registries/bindings and scope. TF100Web `cab2733` removes the parallel message switch and routes action-owned host intents into one adapter; the exact-SHA suite enforces Supported execution and Blocked rejection. |

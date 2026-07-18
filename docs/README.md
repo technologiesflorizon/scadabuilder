@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Documentation Index
 
-Date: 2026-07-17
+Date: 2026-07-18
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0066`
+Document version: `V2.1.4.0067`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-18 | `V2.1.4.0067` | `PENDING` | Correction Builder des bindings numeriques divergents : normalisation StateConfig/ValueBindings, validation fail-closed et audit de toutes les pages compilees. |
 | 2026-07-17 | `V2.1.4.0066` | `PENDING` | Ajout du contrat de direction artistique versionnee pour la modernisation des ecrans. |
 | 2026-07-17 | `V2.1.4.0065` | `PENDING` | Correction du filtre Etat sur SVG opaque : geometrie visuelle sous l'overlay, texte/controles au-dessus et ordre auteur entre objets inchange. |
 | 2026-07-17 | `V2.1.4.0064` | `f73b3e3` | `win00012_modern_no_legacy` ajoute les rangees Depart Manuel et Etat du degivrage, avec 14 boutons et 14 voyants rectangulaires sans mapping. |

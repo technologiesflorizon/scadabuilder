@@ -4,10 +4,10 @@ using ScadaBuilderV2.Domain.Scenes;
 
 namespace ScadaBuilderV2.Infrastructure.ModernProjects;
 
-/// <summary>Migrates legacy page ids to the modern key/code/provenance model.</summary>
+/// <summary>Migrates legacy page ids and normalizes persisted runtime binding coherence.</summary>
 /// <remarks>
-/// Decisions: DEC-0038.
-/// Contracts: docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md.
+/// Decisions: DEC-0016, DEC-0038, DEC-0045.
+/// Contracts: docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md, docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md.
 /// Tests: tests/ScadaBuilderV2.Tests/PageIdentityTests.cs, tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs.
 /// </remarks>
 public static class ModernProjectMigration
@@ -141,12 +141,32 @@ public static class ModernProjectMigration
                     TargetPageKey = ResolveTargetKey(command.TargetPageKey, command.TargetPageId, byCode)
                 })
                 .ToArray());
-        return element with
+        var migrated = element with
         {
             Children = element.Children is null
                 ? null
                 : element.ChildElements.Select(child => MigrateElement(child, byCode)).ToArray(),
             CommandConfig = commandConfig
+        };
+
+        return NormalizeNumericReadBinding(migrated);
+    }
+
+    // Read-only numeric displays are hydrated through ValueBindings.ReadTagId. Existing scenes
+    // authored through StateConfig.ReadVariable are migrated to that canonical binding on load.
+    private static ScadaElement NormalizeNumericReadBinding(ScadaElement element)
+    {
+        var stateReadTagId = element.StateConfig?.ReadVariable?.TagId;
+        if (element.Kind != ScadaElementKind.InputNumeric ||
+            element.Data is null ||
+            string.IsNullOrWhiteSpace(stateReadTagId))
+        {
+            return element;
+        }
+
+        return element with
+        {
+            Data = element.Data with { ReadTagId = stateReadTagId.Trim() }
         };
     }
 

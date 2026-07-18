@@ -1374,8 +1374,8 @@ public sealed record ScadaScene(
     /// Replaces the display-state configuration of one Element+ object.
     /// </summary>
     /// <remarks>
-    /// Decisions: DEC-0036.
-    /// Contracts: docs/superpowers/specs/2026-07-07-element-plus-state-command-events-design.md.
+    /// Decisions: DEC-0016, DEC-0036, DEC-0045.
+    /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md.
     /// Tests: tests/ScadaBuilderV2.Tests/ElementEvents/ScadaSceneElementEventsTests.cs.
     /// </remarks>
     public ScadaScene WithElementStateConfig(string elementId, ScadaElementStateConfig config)
@@ -1389,7 +1389,16 @@ public sealed record ScadaScene(
             return this;
         }
 
-        return WithReplacedElementRecursive(element with { StateConfig = config });
+        var updated = element with { StateConfig = config };
+        if (element.Kind == ScadaElementKind.InputNumeric &&
+            config.ReadVariable is { TagId: var tagId } &&
+            !string.IsNullOrWhiteSpace(tagId))
+        {
+            var data = element.Data ?? CreateDefaultElementData(element);
+            updated = updated with { Data = data with { ReadTagId = tagId.Trim() } };
+        }
+
+        return WithReplacedElementRecursive(updated);
     }
 
     /// <summary>

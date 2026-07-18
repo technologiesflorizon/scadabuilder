@@ -1,13 +1,14 @@
 # SCADA Builder V2 - FT100 TF100Web Package Contract
 
-Date: 2026-07-17
+Date: 2026-07-18
 Status: Active runtime package contract
-Document version: `V2.1.4.0065`
+Document version: `V2.1.4.0067`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-18 | `V2.1.4.0067` | `PENDING` | Builder normalise les lectures `InputNumeric` vers le tag canonique de `StateConfig.ReadVariable`, bloque toute divergence residuelle et couvre toutes les pages compilees. |
 | 2026-07-17 | `V2.1.4.0065` | `PENDING` | Runtime Etat corrige pour rendre les filtres visibles sur SVG opaques sans modifier l'ordre auteur des objets ni couvrir les controles semantiques. |
 | 2026-07-17 | `V2.1.4.0064` | `f73b3e3` | Acceptance industrielle regeneree avec les 14 boutons de depart manuel et 14 voyants sans mapping de `win00012`; runtime et 46 capabilities inchanges. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Gate 2.3 renforce : un resultat et un evaluateur exact par capability Supported, mutation independante et fixture SHA `bf41c4c3...02cc4`. |
@@ -122,6 +123,7 @@ SCADA Builder V2 packages this folder as a `.sb2` archive for direct FT100 uploa
 35. Legacy source fragment ids must be rewritten during export under `ft100-<page-id>__legacy-*` before validation. Duplicate legacy source ids receive deterministic occurrence suffixes so the final fragment contains no duplicate DOM id.
 36. Generated CSS must not emit package-global `:root`, `html`, `body`, raw `[data-id="..."]`, raw `.ft100-*`, or raw `#Button1`-style selectors. Selectors must remain rooted under `#ft100-<page-id>` for TF100Web header/body/footer composition. Leading whitespace before a page-scoped id selector is formatting only and must not make a valid scoped selector fail `.sb2` validation.
 37. The WPF `.sb2` export command must show bottom status-bar progress while export is running and must run archive generation asynchronously enough to keep the editor shell responsive.
+38. For an `InputNumeric` carrying `StateConfig.ReadVariable`, SCADA Builder V2 must normalize `ValueBindings.ReadTagId` to the same canonical tag before build/export. Build validation rejects any residual mismatch, and reference-project acceptance scans every compiled page before locking the `win00017` mappings `TE-EXT -> tf100.mapping.165`, `PT-95 -> tf100.mapping.162`, and `PT-96 -> tf100.mapping.163`.
 
 ## 3. Current TF100Web Intake Contract
 
