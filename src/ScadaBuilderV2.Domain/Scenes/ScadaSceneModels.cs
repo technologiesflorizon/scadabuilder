@@ -897,11 +897,18 @@ public sealed record ScadaScene(
     public ScadaScene WithCommittedElementPlusConversion(ScadaElement element)
     {
         var convertedSourceElementIds = GetLegacySourceElementIds(element);
+        var replacementIndexes = Elements
+            .Select((existing, index) => new { existing, index })
+            .Where(item => item.existing.Id == element.Id ||
+                GetLegacySourceElementIds(item.existing).Overlaps(convertedSourceElementIds))
+            .Select(item => item.index)
+            .ToArray();
+        var insertionIndex = replacementIndexes.FirstOrDefault(Elements.Count);
         var elements = Elements
             .Where(existing => existing.Id != element.Id)
             .Where(existing => !GetLegacySourceElementIds(existing).Overlaps(convertedSourceElementIds))
-            .Append(element)
-            .ToArray();
+            .ToList();
+        elements.Insert(Math.Min(insertionIndex, elements.Count), element);
 
         var converted = this with { Elements = elements };
         return convertedSourceElementIds.Count == 0

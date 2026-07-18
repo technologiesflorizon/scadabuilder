@@ -36,6 +36,43 @@ public sealed class ModernProjectStoreTests
     }
 
     [TestMethod]
+    public async Task SaveAndReloadPreservesDisplayOrderAfterElementPlusConversion()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var store = new ModernProjectStore();
+        var source = new LegacySourceTrace("Wonderware", "page", "source-002", "Middle", null);
+        var legacy = ScadaElement.CreateLegacyStatic(
+            "legacy-002",
+            "Middle",
+            new SceneBounds(100, 100, 120, 28),
+            source,
+            new LegacyElementPayload("text", "Middle", true, "Segoe UI", 12, "#000000", "Transparent", null, null));
+        var scene = ScadaScene
+            .CreateEmpty("order-store", "Order", new(1280, 873))
+            .WithElement(ScadaElement.CreateText("before", "Before", 10, 10))
+            .WithElement(legacy)
+            .WithElement(ScadaElement.CreateText("after", "After", 200, 10));
+        var converted = ScadaElement.CreateText("elementplus-002", "Middle", 100, 100) with
+        {
+            LegacySource = source
+        };
+
+        try
+        {
+            await store.SaveSceneAsync(root, scene.WithCommittedElementPlusConversion(converted));
+            var reopened = await store.LoadOrCreateSceneAsync(root, "order-store", "Order", new(1280, 873));
+
+            CollectionAssert.AreEqual(
+                new[] { "before", "elementplus-002", "after" },
+                reopened.Elements.Select(element => element.Id).ToArray());
+        }
+        finally
+        {
+            if (Directory.Exists(root)) Directory.Delete(root, true);
+        }
+    }
+
+    [TestMethod]
     public async Task SaveAndLoadScenePreservesModernTableTracksMergesInputsAndStyles()
     {
         var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));

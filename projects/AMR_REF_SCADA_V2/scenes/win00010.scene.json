@@ -1,6 +1,6 @@
 {
   "Id": "win00010",
-  "Title": "win00010",
+  "Title": "Temperature_Pression",
   "CanvasSize": {
     "Width": 1280,
     "Height": 873
@@ -3216,16 +3216,26 @@
       "IsLocked": false
     }
   ],
-  "BackgroundColor": "#ADADAD",
+  "BackgroundColor": "#E4E4E4",
   "LegacyTextOverrides": [],
   "LegacyElementsMaterialized": true,
   "RemovedSourceElementIds": [
     "29"
   ],
   "PageType": "Default",
-  "Background": null,
+  "Background": {
+    "Color": "#E4E4E4",
+    "Image": null,
+    "Size": "cover",
+    "Repeat": "no-repeat",
+    "Position": "center center",
+    "Attachment": "scroll",
+    "Origin": "padding-box",
+    "Clip": "border-box",
+    "BlendMode": "normal"
+  },
   "Actions": [],
-  "IncludeInBuild": false,
+  "IncludeInBuild": true,
   "HeaderPageId": "win00002",
   "FooterPageId": "win00003",
   "PageKey": "b19eb8af-92b8-5c78-be5f-6acfa09cfb86",

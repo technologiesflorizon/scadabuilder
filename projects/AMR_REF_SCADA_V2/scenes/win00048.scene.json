@@ -1,9 +1,9 @@
 {
   "Id": "win00048",
-  "Title": "win00048",
+  "Title": "popup_compressor",
   "CanvasSize": {
-    "Width": 1280,
-    "Height": 873
+    "Width": 512,
+    "Height": 539
   },
   "Elements": [
     {

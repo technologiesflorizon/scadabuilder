@@ -1654,93 +1654,107 @@ public partial class MainWindow : Window, IPageWorkspaceHost
 
     private async void OnApplyBackgroundColorClick(object sender, RoutedEventArgs e)
     {
-        var color = BackgroundColorTextBox.Text.Trim();
-        if (string.IsNullOrWhiteSpace(color))
+        try
         {
-            SetStatus("Couleur de fond vide.");
-            return;
-        }
+            var color = BackgroundColorTextBox.Text.Trim();
+            if (string.IsNullOrWhiteSpace(color))
+            {
+                SetStatus("Couleur de fond vide.");
+                return;
+            }
 
-        if (!TryParseCssColor(color, out var parsedColor))
-        {
-            SetStatus($"Couleur CSS non reconnue: {color}");
-            return;
-        }
+            if (!TryParseCssColor(color, out var parsedColor))
+            {
+                SetStatus($"Couleur CSS non reconnue: {color}");
+                return;
+            }
 
-        color = ToCssHex(parsedColor);
-        SetBackgroundColorControls(color);
-        if (_activeScene is null || _activeSceneTab is null)
-        {
-            SetStatus("Aucune page active.");
-            return;
-        }
+            color = ToCssHex(parsedColor);
+            SetBackgroundColorControls(color);
+            if (_activeScene is null || _activeSceneTab is null)
+            {
+                SetStatus("Aucune page active.");
+                return;
+            }
 
-        var background = _activeScene.EffectiveBackground with { Color = color };
-        var result = await ExecutePagePropertyCommandAsync(
-            "page.set-background",
-            new SetPageBackgroundRequest(_activeSceneTab.PageKey, background));
-        if (result.Status == CommandResultStatus.Succeeded)
+            var background = _activeScene.EffectiveBackground with { Color = color };
+            var result = await ExecutePagePropertyCommandAsync(
+                "page.set-background",
+                new SetPageBackgroundRequest(_activeSceneTab.PageKey, background));
+            if (result.Status == CommandResultStatus.Succeeded)
+            {
+                await ApplySceneBackgroundColorAsync(color);
+            }
+        }
+        catch (Exception ex)
         {
-            await ApplySceneBackgroundColorAsync(color);
+            SetStatus($"Erreur application couleur de fond: {ex.Message}");
         }
     }
 
     private async void OnApplyPagePropertiesClick(object sender, RoutedEventArgs e)
     {
-        if (_activeScene is null || _activeSceneTab is null)
+        try
         {
-            SetStatus("Aucune page active.");
-            return;
+            if (_activeScene is null || _activeSceneTab is null)
+            {
+                SetStatus("Aucune page active.");
+                return;
+            }
+
+            if (!TryReadPageDimensions(out var width, out var height))
+            {
+                SetStatus("Dimensions de page invalides. Largeur et hauteur doivent etre au moins 160x120.");
+                return;
+            }
+
+            var color = BackgroundColorTextBox.Text.Trim();
+            if (!TryParseCssColor(color, out var parsedColor))
+            {
+                SetStatus($"Couleur CSS non reconnue: {color}");
+                return;
+            }
+
+            var background = new SceneBackgroundStyle(
+                ToCssHex(parsedColor),
+                string.IsNullOrWhiteSpace(BackgroundImageTextBox.Text) ? null : BackgroundImageTextBox.Text.Trim(),
+                string.IsNullOrWhiteSpace(BackgroundSizeTextBox.Text) ? "cover" : BackgroundSizeTextBox.Text.Trim(),
+                GetComboBoxText(BackgroundRepeatComboBox, "no-repeat"),
+                string.IsNullOrWhiteSpace(BackgroundPositionTextBox.Text) ? "center center" : BackgroundPositionTextBox.Text.Trim(),
+                GetComboBoxText(BackgroundAttachmentComboBox, "scroll"),
+                GetComboBoxText(BackgroundOriginComboBox, "padding-box"),
+                GetComboBoxText(BackgroundClipComboBox, "border-box"),
+                GetComboBoxText(BackgroundBlendModeComboBox, "normal"));
+            var pageKey = _activeSceneTab.PageKey;
+            var pageType = GetSelectedPageType();
+            var headerKey = pageType == ScadaPageType.Default ? GetSelectedCompositionPageKey(HeaderPageComboBox) : null;
+            var footerKey = pageType == ScadaPageType.Default ? GetSelectedCompositionPageKey(FooterPageComboBox) : null;
+            var requests = new (string Id, PageCommandRequest Request)[]
+            {
+                ("page.change-code", new ChangePageCodeRequest(pageKey, PageNameTextBox.Text.Trim())),
+                ("page.rename", new RenamePageRequest(pageKey, PageTitleTextBox.Text.Trim())),
+                ("page.set-type", new SetPageTypeRequest(pageKey, pageType)),
+                ("page.set-build-inclusion", new SetPageBuildInclusionRequest(pageKey, IncludeInBuildCheckBox.IsChecked == true)),
+                ("page.set-composition", new SetPageCompositionRequest(pageKey, headerKey, footerKey)),
+                ("page.set-canvas", new SetPageCanvasRequest(pageKey, new CanvasSize(width, height))),
+                ("page.set-background", new SetPageBackgroundRequest(pageKey, background))
+            };
+
+            foreach (var (commandId, request) in requests)
+            {
+                if (commandId == "page.set-composition" && pageType != ScadaPageType.Default) continue;
+                var result = await ExecutePagePropertyCommandAsync(commandId, request);
+                if (result.Status is CommandResultStatus.Blocked or CommandResultStatus.Failed) return;
+            }
+
+            await ApplySceneBackgroundColorAsync(background.Color, updateStatus: false);
+            await ApplySceneCanvasSizeAsync(new CanvasSize(width, height));
+            SetStatus($"Proprietes page appliquees: {width}x{height}. Sauvegarde requise.");
         }
-
-        if (!TryReadPageDimensions(out var width, out var height))
+        catch (Exception ex)
         {
-            SetStatus("Dimensions de page invalides. Largeur et hauteur doivent etre au moins 160x120.");
-            return;
+            SetStatus($"Erreur application proprietes de page: {ex.Message}");
         }
-
-        var color = BackgroundColorTextBox.Text.Trim();
-        if (!TryParseCssColor(color, out var parsedColor))
-        {
-            SetStatus($"Couleur CSS non reconnue: {color}");
-            return;
-        }
-
-        var background = new SceneBackgroundStyle(
-            ToCssHex(parsedColor),
-            string.IsNullOrWhiteSpace(BackgroundImageTextBox.Text) ? null : BackgroundImageTextBox.Text.Trim(),
-            string.IsNullOrWhiteSpace(BackgroundSizeTextBox.Text) ? "cover" : BackgroundSizeTextBox.Text.Trim(),
-            GetComboBoxText(BackgroundRepeatComboBox, "no-repeat"),
-            string.IsNullOrWhiteSpace(BackgroundPositionTextBox.Text) ? "center center" : BackgroundPositionTextBox.Text.Trim(),
-            GetComboBoxText(BackgroundAttachmentComboBox, "scroll"),
-            GetComboBoxText(BackgroundOriginComboBox, "padding-box"),
-            GetComboBoxText(BackgroundClipComboBox, "border-box"),
-            GetComboBoxText(BackgroundBlendModeComboBox, "normal"));
-        var pageKey = _activeSceneTab.PageKey;
-        var pageType = GetSelectedPageType();
-        var headerKey = pageType == ScadaPageType.Default ? GetSelectedCompositionPageKey(HeaderPageComboBox) : null;
-        var footerKey = pageType == ScadaPageType.Default ? GetSelectedCompositionPageKey(FooterPageComboBox) : null;
-        var requests = new (string Id, PageCommandRequest Request)[]
-        {
-            ("page.change-code", new ChangePageCodeRequest(pageKey, PageNameTextBox.Text.Trim())),
-            ("page.rename", new RenamePageRequest(pageKey, PageTitleTextBox.Text.Trim())),
-            ("page.set-type", new SetPageTypeRequest(pageKey, pageType)),
-            ("page.set-build-inclusion", new SetPageBuildInclusionRequest(pageKey, IncludeInBuildCheckBox.IsChecked == true)),
-            ("page.set-composition", new SetPageCompositionRequest(pageKey, headerKey, footerKey)),
-            ("page.set-canvas", new SetPageCanvasRequest(pageKey, new CanvasSize(width, height))),
-            ("page.set-background", new SetPageBackgroundRequest(pageKey, background))
-        };
-
-        foreach (var (commandId, request) in requests)
-        {
-            if (commandId == "page.set-composition" && pageType != ScadaPageType.Default) continue;
-            var result = await ExecutePagePropertyCommandAsync(commandId, request);
-            if (result.Status is CommandResultStatus.Blocked or CommandResultStatus.Failed) return;
-        }
-
-        await ApplySceneBackgroundColorAsync(background.Color, updateStatus: false);
-        await ApplySceneCanvasSizeAsync(new CanvasSize(width, height));
-        SetStatus($"Proprietes page appliquees: {width}x{height}. Sauvegarde requise.");
     }
 
     private async Task ResizeActiveSceneCanvasFromPreviewAsync(LegacyViewerMessage message)

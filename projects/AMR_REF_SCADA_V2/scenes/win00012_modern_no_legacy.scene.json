@@ -7,328 +7,6 @@
   },
   "Elements": [
     {
-      "Id": "table_outdoor_temperature",
-      "DisplayName": "Temp\u00E9rature ext\u00E9rieure",
-      "Kind": "Table",
-      "Bounds": {
-        "X": 11,
-        "Y": 9,
-        "Width": 218,
-        "Height": 91
-      },
-      "LegacySource": null,
-      "Layout": {
-        "PositionMode": "Absolute",
-        "RelativeToElementId": null
-      },
-      "Style": {
-        "FontFamily": "Segoe UI",
-        "FontSize": 16,
-        "Foreground": "#0F2A30",
-        "Background": "Transparent",
-        "BorderColor": "Transparent",
-        "BorderWidth": 0,
-        "BorderStyle": "None",
-        "ShadowPreset": "None",
-        "AdvancedCss": null,
-        "Opacity": 1,
-        "Rotation": 0,
-        "FlipHorizontally": false,
-        "FlipVertically": false,
-        "FontWeight": "Normal",
-        "FontStyle": "Normal",
-        "TextDecoration": null,
-        "TextAlign": "Left",
-        "TextTransform": "None",
-        "LetterSpacing": 0,
-        "LineHeight": 0,
-        "BorderRadius": null
-      },
-      "Data": null,
-      "Children": null,
-      "LegacyPayload": null,
-      "Events": null,
-      "ButtonBehavior": null,
-      "ShapeKind": null,
-      "ButtonKind": null,
-      "StateConfig": null,
-      "CommandConfig": null,
-      "Table": {
-        "Columns": [
-          {
-            "Width": 50,
-            "Style": null
-          },
-          {
-            "Width": 119,
-            "Style": null
-          },
-          {
-            "Width": 49,
-            "Style": null
-          }
-        ],
-        "Rows": [
-          {
-            "Height": 40,
-            "Style": null,
-            "IsHeader": false
-          },
-          {
-            "Height": 51,
-            "Style": null,
-            "IsHeader": false
-          }
-        ],
-        "Cells": [
-          {
-            "Row": 0,
-            "Column": 0,
-            "RowSpan": 1,
-            "ColumnSpan": 3,
-            "Content": {
-              "Kind": "Text",
-              "Text": "T\u00B0 Ext\u00E9rieure",
-              "Placeholder": "",
-              "NumericValue": null,
-              "Minimum": null,
-              "Maximum": null,
-              "Step": null,
-              "IsReadOnly": false,
-              "DisplayFormat": null
-            },
-            "Style": {
-              "Background": null,
-              "Foreground": null,
-              "GridColor": null,
-              "GridWidth": null,
-              "GridStyle": null,
-              "HorizontalAlignment": "Left",
-              "VerticalAlignment": "Top",
-              "Padding": null,
-              "FontFamily": null,
-              "FontSize": null,
-              "FontWeight": "SemiBold",
-              "FontStyle": null,
-              "TextWrap": null,
-              "LineHeight": null
-            },
-            "ValueBindings": null
-          },
-          {
-            "Row": 1,
-            "Column": 0,
-            "RowSpan": 1,
-            "ColumnSpan": 1,
-            "Content": {
-              "Kind": "Text",
-              "Text": "",
-              "Placeholder": "",
-              "NumericValue": null,
-              "Minimum": null,
-              "Maximum": null,
-              "Step": null,
-              "IsReadOnly": false,
-              "DisplayFormat": null
-            },
-            "Style": null,
-            "ValueBindings": null
-          },
-          {
-            "Row": 1,
-            "Column": 1,
-            "RowSpan": 1,
-            "ColumnSpan": 1,
-            "Content": {
-              "Kind": "InputNumeric",
-              "Text": "",
-              "Placeholder": "###.0",
-              "NumericValue": null,
-              "Minimum": 0,
-              "Maximum": null,
-              "Step": 1,
-              "IsReadOnly": false,
-              "DisplayFormat": null
-            },
-            "Style": {
-              "Background": "#F4F8FA",
-              "Foreground": "#19343D",
-              "GridColor": "#2B596B",
-              "GridWidth": 1,
-              "GridStyle": "Solid",
-              "HorizontalAlignment": "Center",
-              "VerticalAlignment": "Middle",
-              "Padding": 2,
-              "FontFamily": "Segoe UI",
-              "FontSize": 16,
-              "FontWeight": "SemiBold",
-              "FontStyle": null,
-              "TextWrap": null,
-              "LineHeight": null
-            },
-            "ValueBindings": null
-          },
-          {
-            "Row": 1,
-            "Column": 2,
-            "RowSpan": 1,
-            "ColumnSpan": 1,
-            "Content": {
-              "Kind": "Text",
-              "Text": "\u00B0C",
-              "Placeholder": "",
-              "NumericValue": null,
-              "Minimum": null,
-              "Maximum": null,
-              "Step": null,
-              "IsReadOnly": false,
-              "DisplayFormat": null
-            },
-            "Style": {
-              "Background": null,
-              "Foreground": null,
-              "GridColor": null,
-              "GridWidth": null,
-              "GridStyle": null,
-              "HorizontalAlignment": "Left",
-              "VerticalAlignment": null,
-              "Padding": null,
-              "FontFamily": null,
-              "FontSize": 15,
-              "FontWeight": "SemiBold",
-              "FontStyle": null,
-              "TextWrap": null,
-              "LineHeight": null
-            },
-            "ValueBindings": null
-          }
-        ],
-        "Style": {
-          "Base": {
-            "Background": "#061018",
-            "Foreground": "#EAF8FF",
-            "GridColor": "transparent",
-            "GridWidth": 0,
-            "GridStyle": "None",
-            "HorizontalAlignment": "Center",
-            "VerticalAlignment": "Middle",
-            "Padding": 4,
-            "FontFamily": "Segoe UI",
-            "FontSize": 14,
-            "FontWeight": null,
-            "FontStyle": null,
-            "TextWrap": null,
-            "LineHeight": null
-          },
-          "Header": null,
-          "AlternatingRows": null
-        },
-        "BorderOverrides": [
-          {
-            "Orientation": "Horizontal",
-            "GridLine": 0,
-            "Segment": 0,
-            "Border": {
-              "Style": "Solid",
-              "Color": "#91B7C7",
-              "Width": 2
-            }
-          },
-          {
-            "Orientation": "Horizontal",
-            "GridLine": 0,
-            "Segment": 1,
-            "Border": {
-              "Style": "Solid",
-              "Color": "#91B7C7",
-              "Width": 2
-            }
-          },
-          {
-            "Orientation": "Horizontal",
-            "GridLine": 0,
-            "Segment": 2,
-            "Border": {
-              "Style": "Solid",
-              "Color": "#91B7C7",
-              "Width": 2
-            }
-          },
-          {
-            "Orientation": "Horizontal",
-            "GridLine": 2,
-            "Segment": 0,
-            "Border": {
-              "Style": "Solid",
-              "Color": "#91B7C7",
-              "Width": 2
-            }
-          },
-          {
-            "Orientation": "Horizontal",
-            "GridLine": 2,
-            "Segment": 1,
-            "Border": {
-              "Style": "Solid",
-              "Color": "#91B7C7",
-              "Width": 2
-            }
-          },
-          {
-            "Orientation": "Horizontal",
-            "GridLine": 2,
-            "Segment": 2,
-            "Border": {
-              "Style": "Solid",
-              "Color": "#91B7C7",
-              "Width": 2
-            }
-          },
-          {
-            "Orientation": "Vertical",
-            "GridLine": 0,
-            "Segment": 0,
-            "Border": {
-              "Style": "Solid",
-              "Color": "#91B7C7",
-              "Width": 2
-            }
-          },
-          {
-            "Orientation": "Vertical",
-            "GridLine": 0,
-            "Segment": 1,
-            "Border": {
-              "Style": "Solid",
-              "Color": "#91B7C7",
-              "Width": 2
-            }
-          },
-          {
-            "Orientation": "Vertical",
-            "GridLine": 3,
-            "Segment": 0,
-            "Border": {
-              "Style": "Solid",
-              "Color": "#91B7C7",
-              "Width": 2
-            }
-          },
-          {
-            "Orientation": "Vertical",
-            "GridLine": 3,
-            "Segment": 1,
-            "Border": {
-              "Style": "Solid",
-              "Color": "#91B7C7",
-              "Width": 2
-            }
-          }
-        ]
-      },
-      "IsLocked": false
-    },
-    {
       "Id": "button_pressure_setpoints",
       "DisplayName": "Consignes pression et temp\u00E9rature",
       "Kind": "Button",
@@ -357,13 +35,13 @@
         "Rotation": 0,
         "FlipHorizontally": false,
         "FlipVertically": false,
-        "FontWeight": "SemiBold",
+        "FontWeight": "Normal",
         "FontStyle": "Normal",
         "TextDecoration": null,
-        "TextAlign": "Center",
+        "TextAlign": "Left",
         "TextTransform": "None",
         "LetterSpacing": 0,
-        "LineHeight": 0,
+        "LineHeight": 2,
         "BorderRadius": {
           "TopLeft": 6,
           "TopRight": 6,
@@ -422,7 +100,28 @@
       "ShapeKind": null,
       "ButtonKind": "Command",
       "StateConfig": null,
-      "CommandConfig": null,
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "ca0bb50662d949cabde67d2db8b023f4",
+            "Name": "GoTempPressure",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "Navigate",
+            "Confirmation": null,
+            "WriteTagId": null,
+            "ReadTagId": null,
+            "WriteMode": null,
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": "win00010",
+            "Url": null,
+            "NewTab": false,
+            "TargetPageKey": "b19eb8af-92b8-5c78-be5f-6acfa09cfb86"
+          }
+        ]
+      },
       "Table": null,
       "IsLocked": false
     },
@@ -433,8 +132,8 @@
       "Bounds": {
         "X": 13,
         "Y": 109,
-        "Width": 1253.9999999999998,
-        "Height": 564
+        "Width": 1254,
+        "Height": 566
       },
       "LegacySource": null,
       "Layout": {
@@ -476,210 +175,210 @@
       "Table": {
         "Columns": [
           {
-            "Width": 240,
+            "Width": 240.00000000000006,
             "Style": null
           },
           {
-            "Width": 36,
+            "Width": 36.00000000000001,
             "Style": null
           },
           {
-            "Width": 36.42857142857143,
+            "Width": 36.42857142857144,
             "Style": null
           },
           {
-            "Width": 36,
+            "Width": 36.00000000000001,
             "Style": null
           },
           {
-            "Width": 36.42857142857143,
+            "Width": 36.42857142857144,
             "Style": null
           },
           {
-            "Width": 36,
+            "Width": 36.00000000000001,
             "Style": null
           },
           {
-            "Width": 36.42857142857143,
+            "Width": 36.42857142857144,
             "Style": null
           },
           {
-            "Width": 36,
+            "Width": 36.00000000000001,
             "Style": null
           },
           {
-            "Width": 36.42857142857143,
+            "Width": 36.42857142857144,
             "Style": null
           },
           {
-            "Width": 36,
+            "Width": 36.00000000000001,
             "Style": null
           },
           {
-            "Width": 36.42857142857143,
+            "Width": 36.42857142857144,
             "Style": null
           },
           {
-            "Width": 36,
+            "Width": 36.00000000000001,
             "Style": null
           },
           {
-            "Width": 36.42857142857143,
+            "Width": 36.42857142857144,
             "Style": null
           },
           {
-            "Width": 36,
+            "Width": 36.00000000000001,
             "Style": null
           },
           {
-            "Width": 36.42857142857143,
+            "Width": 36.42857142857144,
             "Style": null
           },
           {
-            "Width": 36,
+            "Width": 36.00000000000001,
             "Style": null
           },
           {
-            "Width": 36.42857142857143,
+            "Width": 36.42857142857144,
             "Style": null
           },
           {
-            "Width": 36,
+            "Width": 36.00000000000001,
             "Style": null
           },
           {
-            "Width": 36.42857142857143,
+            "Width": 36.42857142857144,
             "Style": null
           },
           {
-            "Width": 36,
+            "Width": 36.00000000000001,
             "Style": null
           },
           {
-            "Width": 36.42857142857143,
+            "Width": 36.42857142857144,
             "Style": null
           },
           {
-            "Width": 36,
+            "Width": 36.00000000000001,
             "Style": null
           },
           {
-            "Width": 36.42857142857143,
+            "Width": 36.42857142857144,
             "Style": null
           },
           {
-            "Width": 36,
+            "Width": 36.00000000000001,
             "Style": null
           },
           {
-            "Width": 36.42857142857143,
+            "Width": 36.42857142857144,
             "Style": null
           },
           {
-            "Width": 36,
+            "Width": 36.00000000000001,
             "Style": null
           },
           {
-            "Width": 36.42857142857143,
+            "Width": 36.42857142857144,
             "Style": null
           },
           {
-            "Width": 36,
+            "Width": 36.00000000000001,
             "Style": null
           },
           {
-            "Width": 36.42857142857143,
+            "Width": 36.42857142857156,
             "Style": null
           }
         ],
         "Rows": [
           {
-            "Height": 32,
+            "Height": 32.11347517730496,
             "Style": null,
             "IsHeader": true
           },
           {
-            "Height": 32,
+            "Height": 32.11347517730496,
             "Style": null,
             "IsHeader": true
           },
           {
-            "Height": 32,
+            "Height": 32.11347517730496,
             "Style": null,
             "IsHeader": false
           },
           {
-            "Height": 32,
+            "Height": 32.11347517730496,
             "Style": null,
             "IsHeader": false
           },
           {
-            "Height": 32,
+            "Height": 32.11347517730496,
             "Style": null,
             "IsHeader": false
           },
           {
-            "Height": 32,
+            "Height": 32.11347517730496,
             "Style": null,
             "IsHeader": false
           },
           {
-            "Height": 32,
+            "Height": 32.11347517730496,
             "Style": null,
             "IsHeader": false
           },
           {
-            "Height": 32,
+            "Height": 32.11347517730496,
             "Style": null,
             "IsHeader": false
           },
           {
-            "Height": 32,
+            "Height": 32.11347517730496,
             "Style": null,
             "IsHeader": false
           },
           {
-            "Height": 32,
+            "Height": 32.11347517730496,
             "Style": null,
             "IsHeader": false
           },
           {
-            "Height": 32,
+            "Height": 32.11347517730496,
             "Style": null,
             "IsHeader": false
           },
           {
-            "Height": 32,
+            "Height": 32.11347517730496,
             "Style": null,
             "IsHeader": false
           },
           {
-            "Height": 32,
+            "Height": 32.11347517730496,
             "Style": null,
             "IsHeader": false
           },
           {
-            "Height": 32,
+            "Height": 32.11347517730496,
             "Style": null,
             "IsHeader": false
           },
           {
-            "Height": 32,
+            "Height": 32.11347517730496,
             "Style": null,
             "IsHeader": false
           },
           {
-            "Height": 20,
+            "Height": 20.070921985815602,
             "Style": null,
             "IsHeader": false
           },
           {
-            "Height": 32,
+            "Height": 32.11347517730496,
             "Style": null,
             "IsHeader": false
           },
           {
-            "Height": 32,
+            "Height": 32.11347517730496,
             "Style": null,
             "IsHeader": false
           }
@@ -24627,13 +24326,13 @@
       "IsLocked": true
     }
   ],
-  "BackgroundColor": "#061018",
+  "BackgroundColor": "#E4E4E4",
   "LegacyTextOverrides": [],
   "LegacyElementsMaterialized": false,
   "RemovedSourceElementIds": [],
   "PageType": "Default",
   "Background": {
-    "Color": "#061018",
+    "Color": "#E4E4E4",
     "Image": null,
     "Size": "cover",
     "Repeat": "no-repeat",

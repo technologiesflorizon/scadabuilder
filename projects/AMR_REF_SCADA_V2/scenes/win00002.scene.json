@@ -528,7 +528,7 @@
       "Style": {
         "FontFamily": "Segoe UI",
         "FontSize": 22,
-        "Foreground": "rgb(255, 255, 255)",
+        "Foreground": "#000000",
         "Background": "Transparent",
         "BorderColor": "Transparent",
         "BorderWidth": 0,
@@ -601,7 +601,7 @@
       "Style": {
         "FontFamily": "Arial, Arial, sans-serif",
         "FontSize": 16,
-        "Foreground": "rgb(255, 255, 255)",
+        "Foreground": "#000000",
         "Background": "Transparent",
         "BorderColor": "Transparent",
         "BorderWidth": 0,
@@ -712,7 +712,45 @@
       "ButtonBehavior": null,
       "ShapeKind": null,
       "ButtonKind": null,
-      "StateConfig": null,
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [],
+        "ReadVariable": {
+          "TagId": "tf100.mapping.165",
+          "DisplayFormat": null
+        }
+      },
       "CommandConfig": null,
       "Table": null,
       "IsLocked": false
@@ -785,7 +823,7 @@
       "IsLocked": false
     }
   ],
-  "BackgroundColor": "#ADADAD",
+  "BackgroundColor": "#E4E4E4",
   "LegacyTextOverrides": [],
   "LegacyElementsMaterialized": true,
   "RemovedSourceElementIds": [
@@ -796,7 +834,17 @@
     "5"
   ],
   "PageType": "Header",
-  "Background": null,
+  "Background": {
+    "Color": "#E4E4E4",
+    "Image": null,
+    "Size": "cover",
+    "Repeat": "no-repeat",
+    "Position": "center center",
+    "Attachment": "scroll",
+    "Origin": "padding-box",
+    "Clip": "border-box",
+    "BlendMode": "normal"
+  },
   "Actions": [],
   "IncludeInBuild": true,
   "HeaderPageId": null,

@@ -781,6 +781,20 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
+    public void SceneBackgroundApplyHandlersContainAsyncExceptionBoundary()
+    {
+        var source = ReadMainWindowSource();
+
+        var colorHandler = ExtractMethod(source, "private async void OnApplyBackgroundColorClick");
+        var pageHandler = ExtractMethod(source, "private async void OnApplyPagePropertiesClick");
+
+        StringAssert.Contains(colorHandler, "catch (Exception ex)");
+        StringAssert.Contains(colorHandler, "Erreur application couleur de fond");
+        StringAssert.Contains(pageHandler, "catch (Exception ex)");
+        StringAssert.Contains(pageHandler, "Erreur application proprietes de page");
+    }
+
+    [TestMethod]
     public void SceneCanvasSizeIsReappliedDuringPreviewRefresh()
     {
         var source = ReadMainWindowSource();
