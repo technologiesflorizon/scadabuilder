@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active editor state contract
-Document version: `V2.1.4.0034`
+Document version: `V2.1.5.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-29 | `V2.1.5.0000` | `PENDING` | Une fenêtre possède zéro ou une session projet active; fermer réinitialise tout état projet. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Snapshot editor-only atomique du mode Tableau, de la visibilite effective A/1 et de l'id actif; refresh du meme Tableau preserve le mode Cellules. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Ajout de `IsLocked` persistant, de l'agregation de multiselection, du guard de translation et de la session d'authoring Tableau hors modele de scene. |
 | 2026-07-14 | `V2.1.4.0012` | `PENDING` | Historique projet, restauration des onglets et snapshot atomique projet/scènes désormais implémentés. |

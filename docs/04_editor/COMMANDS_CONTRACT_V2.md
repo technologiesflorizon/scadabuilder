@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active editor command contract
-Document version: `V2.1.4.0030`
+Document version: `V2.1.5.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-29 | `V2.1.5.0000` | `PENDING` | Activation des commandes `project.new`, `project.open`, `project.reopen-last`, `project.save` et `project.close`. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | `table.merge-toggle` remplace les deux choix visibles Fusionner/Defusionner et derive son action de la plage selectionnee. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Ajout des requêtes typées de propriétés/dimensions, reset d'une propriété, distribution proportionnelle et marquage/démarquage des en-têtes; les dialogues ne remplacent plus directement la définition Tableau. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | `object.lock` rendu persistant et commandes `table.*` avancees routees par session, coordinateur et operations Domain. |
@@ -26,6 +27,8 @@ Document version: `V2.1.4.0030`
 ## 1. Contract
 
 Commands are explicit application operations. A command id is the stable bridge between UI surfaces, context menus, command registry, tests, and behavior.
+
+Les commandes `project.*` passent par `ProjectLifecycleCoordinator`. Elles sont non réentrantes et appliquent un contrat commun de remplacement/fermeture de session; le retrait d’un récent ne supprime jamais les fichiers du projet.
 
 ## 2. Rules
 

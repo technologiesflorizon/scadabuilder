@@ -2,12 +2,13 @@
 
 Date: 2026-07-29
 Status: Active authoritative decision register
-Document version: `V2.1.4.0068`
+Document version: `V2.1.5.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-29 | `V2.1.5.0000` | `PENDING` | `DEC-0049` livrée dans le shell WPF et la persistance projet générale; validation automatisée ajoutée. |
 | 2026-07-29 | `V2.1.4.0068` | `PENDING` | Ajout de `DEC-0049` : cycle de vie projet autonome, racine choisie, accueil sans projet, transitions sûres et projets récents. |
 | 2026-07-17 | `V2.1.4.0066` | `PENDING` | Ajout de `DEC-0048` : la modernisation visuelle des controles d'ecran est gouvernee par une direction artistique versionnee et verifiable. |
 | 2026-07-17 | `V2.1.4.0065` | `PENDING` | `DEC-0045` clarifiee : le filtre Etat est au-dessus des geometries SVG/image/canvas/table opaques, sous le contenu semantique, sans modifier l'ordre auteur des objets. |
@@ -133,7 +134,7 @@ La racine du logiciel ne choisit plus le projet actif. Scènes, librairie, impor
 
 Regression coverage:
 
-Requise dans `ProjectCreationPolicyTests`, `ProjectCreationIntegrationTests`, `ProjectOpenValidatorTests`, `ProjectOpenIntegrationTests`, `RecentProjectStoreTests`, `ProjectLifecycleCoordinatorTests`, `ProjectSessionControllerTests`, `ProjectLifecycleIntegrationTests`, `RibbonCommandCatalogTests`, `ModernProjectStoreTests`, `ModernProjectAtomicSnapshotTests` et `Ft100SceneExporterTests`, plus un smoke WPF isolé.
+Implémentée dans `ProjectLifecycleInfrastructureTests`, `ProjectLifecycleCoordinatorTests`, `RibbonCommandCatalogTests` et les contrats d’extraction WPF. Le build solution et les tests ciblés sont verts; le smoke interactif WPF reste une validation manuelle.
 
 ### DEC-0048 - Direction artistique versionnee pour modernisation d'ecran
 

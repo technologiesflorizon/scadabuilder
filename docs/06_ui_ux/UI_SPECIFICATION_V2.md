@@ -2,18 +2,27 @@
 
 Date: 2026-07-16
 Status: Active UI specification pointer
-Document version: `V2.1.4.0041`
+Document version: `V2.1.5.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-29 | `V2.1.5.0000` | `PENDING` | Spécification synchronisée avec l’accueil projet et le dialogue de création `DEC-0049`. |
 | 2026-07-16 | `V2.1.4.0041` | `PENDING` | Authoring InputNumeric Tableau fiabilise par une commande unique, une cible Tableau/A1 visible, une selection fraiche et l'alignement Lire depuis Ecrire. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Mode Objet initial et reselection deterministe; verrou de position immediat sans bloquer cellules/pistes; A/1 aligne sur la visibilite effective. |
 | 2026-07-15 | `V2.1.4.0031` | `e127190` | Ruban secondaire sans scrollbar native, navigation d'overflow par chevrons et hauteur anti-clipping. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Interactions Tableau corriges : cellules et pistes prioritaires, reperes A/1 masquables, fusion toggle et origine du format explicite. |
 | 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Ruban secondaire modernise en boutons horizontaux compacts sur deux rangees, avec icones, galerie et espacement reduits. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Spécification UI synchronisée avec le ruban Tableau contextuel, l'inspecteur Hérité/Personnalisé/Mixte, les dimensions exactes, color pickers, bordures, distribution et en-têtes. |
+
+## Project lifecycle surfaces
+
+1. Le démarrage n’ouvre aucun projet automatiquement.
+2. Nouveau choisit un parent, un nom de dossier, une page initiale, ses dimensions et son mode responsive.
+3. Ouvrir sélectionne explicitement `project.json`; Rouvrir utilise le récent disponible le plus récent.
+4. Fermer ou remplacer une session dirty propose Enregistrer, Ne pas enregistrer ou Annuler.
+5. Retirer un récent modifie seulement les préférences utilisateur.
 
 ## Table Authoring Surface
 

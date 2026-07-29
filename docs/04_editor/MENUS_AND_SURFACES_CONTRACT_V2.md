@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active editor menu and surface contract
-Document version: `V2.1.4.0042`
+Document version: `V2.1.5.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-29 | `V2.1.5.0000` | `PENDING` | Accueil projet, dialogue Nouveau, sélecteur `project.json`, récents et commandes de fermeture livrés. |
 | 2026-07-16 | `V2.1.4.0042` | `9fd2a30` | `page.properties` ouvre et active maintenant la page selectionnee avant d'afficher le panneau Page afin de charger le bon snapshot de proprietes. |
 | 2026-07-16 | `V2.1.4.0041` | `PENDING` | Le groupe Input numerique est reduit a `Configurer <A1>` et partage une cible Tableau/cellule fraiche avec le panneau, le dialogue et le double-clic. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | Le ruban contextuel Tableau expose le groupe Input numerique et route ses editions liees vers le controleur/dialogue dedies. |

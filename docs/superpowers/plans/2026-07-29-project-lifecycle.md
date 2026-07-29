@@ -1,13 +1,14 @@
 # Cycle de vie moderne des projets — Plan d’implémentation
 
 Date: 2026-07-29
-Status: Draft implementation plan — pending execution approval
-Document version: `V2.1.4.0068`
+Status: Implemented — interactive WPF smoke pending
+Document version: `V2.1.5.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-29 | `V2.1.5.0000` | `PENDING` | Exécution livrée : racine projet générale, création transactionnelle, transitions Application, accueil WPF et récents; smoke interactif à confirmer. |
 | 2026-07-29 | `V2.1.4.0068` | `PENDING` | Création du plan exécutable dérivé de la spécification approuvée `DEC-0049`. |
 
 > Ce plan est dérivé de `docs/superpowers/specs/2026-07-29-project-lifecycle-design.md` (`DEC-0049`, D1–D16). Aucune décision produit n’y reste ouverte.

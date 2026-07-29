@@ -1,8 +1,8 @@
 # Spécification — Cycle de vie moderne des projets
 
 Date: 2026-07-29
-Status: Approved — ready for implementation planning
-Document version: `V2.1.4.0068`
+Status: Implemented — automated validation complete, interactive WPF smoke pending
+Document version: `V2.1.5.0000`
 Portée: SCADA Builder V2 — création, ouverture, fermeture et projets récents
 Dépendances: `docs/02_architecture/APPLICATION_FLOW_V2.md`, `docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md`, `docs/04_editor/COMMANDS_CONTRACT_V2.md`, `docs/04_editor/STATE_MANAGEMENT_CONTRACT_V2.md`, `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md`, `docs/06_ui_ux/UI_ARCHITECTURE_V2.md`
 
@@ -10,6 +10,7 @@ Dépendances: `docs/02_architecture/APPLICATION_FLOW_V2.md`, `docs/03_runtime_co
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-29 | `V2.1.5.0000` | `PENDING` | Implémentation de `DEC-0049` dans Application, Infrastructure et le shell WPF; validation automatisée complétée. |
 | 2026-07-29 | `V2.1.4.0068` | `PENDING` | Audit du cycle de vie actuel et approbation de l’architecture pour créer, ouvrir, fermer et retrouver des projets V2 arbitraires. |
 
 ---

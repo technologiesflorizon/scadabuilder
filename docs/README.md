@@ -2,12 +2,13 @@
 
 Date: 2026-07-29
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0068`
+Document version: `V2.1.5.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-29 | `V2.1.5.0000` | `PENDING` | `DEC-0049` implémentée : accueil sans projet, création et ouverture à racine choisie, sauvegarde/fermeture sûres et projets récents. |
 | 2026-07-29 | `V2.1.4.0068` | `PENDING` | Ajout de la spécification approuvée `DEC-0049` et du plan d’implémentation du cycle de vie autonome des projets. |
 | 2026-07-18 | `V2.1.4.0067` | `PENDING` | Correction Builder des bindings numeriques divergents : normalisation StateConfig/ValueBindings, validation fail-closed et audit de toutes les pages compilees. |
 | 2026-07-17 | `V2.1.4.0066` | `PENDING` | Ajout du contrat de direction artistique versionnee pour la modernisation des ecrans. |

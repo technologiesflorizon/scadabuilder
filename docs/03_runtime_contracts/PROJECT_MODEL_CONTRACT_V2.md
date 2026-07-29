@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active project model contract
-Document version: `V2.1.4.0039`
+Document version: `V2.1.5.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-29 | `V2.1.5.0000` | `PENDING` | La persistance accepte une racine projet exacte choisie par l’utilisateur; `.sb2` demeure un artefact runtime. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | Les cellules ancres `InputNumeric` peuvent porter `DisplayFormat` et des bindings lecture/ecriture persistants, proteges par les operations structurelles et exclus du clipboard. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Validation end-to-end d'une table 16 x 10 avec contenus mixtes, deux en-têtes, fusion, styles par portée, pistes non uniformes, bordures physiques et `IsLocked`, sans modifier le schéma `.sb2`. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Extension Tableau par retour a la ligne, hauteur typographique et bordures physiques; ajout de `ScadaElement.IsLocked` comme metadata d'authoring. |
@@ -25,6 +26,8 @@ Document version: `V2.1.4.0039`
 The V2 project model is the source of truth for preview, save/reload, Studio exchange, and FT100/TF100Web export.
 
 Legacy source paths and source ids are trace metadata unless explicitly converted or approved by a sanitized-source decision.
+
+Un projet éditable est identifié par sa racine exacte et son `project.json`. Les scènes, assets, bibliothèques, imports, exports et données `.studio` restent sous cette racine. La compatibilité des sources importées historiques est confinée à un adaptateur de résolution distinct.
 
 ## 2. Ownership
 

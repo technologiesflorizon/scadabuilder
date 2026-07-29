@@ -2,18 +2,21 @@
 
 Date: 2026-07-14
 Status: Active flow contract
-Document version: `V2.1.1.0040`
+Document version: `V2.1.5.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-29 | `V2.1.5.0000` | `PENDING` | Ajout du flux `DEC-0049` de création, ouverture, sauvegarde, fermeture et récents. |
 | 2026-07-14 | `V2.1.1.0040` | `PENDING` | Ajout du flux partagé des commandes de page, de l'historique projet, de la sauvegarde atomique et des diagnostics. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du flow applicatif global pour relier import, edition, preview, Studio Element+, export et validation. |
 
 ## 1. Flow Contract
 
 Application behavior flows from user intent or imported input into the V2 project model, then to preview, Studio Element+, export, and validation.
+
+Le cycle de vie projet suit `surface WPF -> ProjectLifecycleCoordinator -> IProjectWorkspaceRepository/IRecentProjectStore -> host de session -> PageWorkspaceController`. La cible est préparée et validée avant activation; les transitions dirty partagent `Save`, `Discard`, `Cancel`.
 
 ```mermaid
 flowchart LR

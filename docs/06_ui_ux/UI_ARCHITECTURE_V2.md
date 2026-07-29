@@ -2,12 +2,13 @@
 
 Date: 2026-07-05
 Status: Active UI architecture contract
-Document version: `V2.1.4.0027`
+Document version: `V2.1.5.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-29 | `V2.1.5.0000` | `PENDING` | Le shell démarre vide et projette une session préparée par Application; WPF conserve seulement dialogues et rendu. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Ajout des view models Tableau dédiés, diagnostics de bridge, inspecteur d'état, color pickers, distribution/en-têtes et auto-fit proportionnel mesuré en lot. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Ajout de `TableAuthoringSession`, du ruban Tableau contextuel, du bridge type, des headers editor-only et du view model de verrouillage partage. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Ajout du ruban Inserer famille/outils et des surfaces Tableau dediees (panneau, dialogues, WebView, menu type tableur). |
@@ -17,6 +18,8 @@ Document version: `V2.1.4.0027`
 ## 1. Contract
 
 The UI collects user intent, displays state, and routes actions through commands or application services. It must not own project behavior.
+
+Sans session active, le document Canvas affiche l’accueil Nouveau/Ouvrir/Rouvrir et la liste des récents. Le dialogue de création propose Documents comme parent initial, affiche le chemin final et collecte la première page et le canevas.
 
 Le ruban Inserer rend un premier niveau de huit familles et un second niveau d'outils issu du catalogue Application. La famille active reste stable pendant la session. L'editeur Tableau utilise `TableEditorController`, `TableWebViewScript` et des dialogues dedies; les regles de grille ne sont pas codees dans le shell.
 

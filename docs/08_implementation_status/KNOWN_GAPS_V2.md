@@ -87,6 +87,8 @@ Document version: `V2.1.4.0063`
 
 Known gaps must not be documented as implemented behavior.
 
+24. `DEC-0049` est implémentée et validée par build et tests ciblés. Le parcours interactif WPF complet (créer, modifier, changer de projet avec les trois choix dirty, fermer et rouvrir un récent) reste à exécuter sur une copie isolée avant promotion opérateur.
+
 ## 3. TF100Web Event Parity Backlog
 
 The following items are the active correction backlog for TF100Web after the `.sb2` binding-event intake slice:
