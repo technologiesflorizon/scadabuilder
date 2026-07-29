@@ -90,8 +90,26 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(repositoryRoot);
+        return await LoadOrCreateSceneFromProjectRootAsync(
+            GetReferenceModernProjectRoot(repositoryRoot),
+            page,
+            cancellationToken);
+    }
+
+    /// <summary>Loads one scene from an exact project root without applying reference-project path conventions.</summary>
+    /// <remarks>
+    /// Decisions: DEC-0049.
+    /// Contracts: docs/superpowers/specs/2026-07-29-project-lifecycle-design.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/ProjectLifecycleIntegrationTests.cs.
+    /// </remarks>
+    public async Task<ScadaScene> LoadOrCreateSceneFromProjectRootAsync(
+        string projectRoot,
+        ScadaSceneReference page,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectRoot);
         ArgumentNullException.ThrowIfNull(page);
-        var projectRoot = GetReferenceModernProjectRoot(repositoryRoot);
+        projectRoot = Path.GetFullPath(projectRoot);
         await RecoverIncompleteTransactionsAsync(projectRoot, cancellationToken);
         var path = ResolveContainedScenePath(projectRoot, page.RelativePath);
         if (File.Exists(path))
@@ -100,7 +118,7 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
             var scene = await JsonSerializer.DeserializeAsync<ScadaScene>(stream, JsonOptions, cancellationToken);
             if (scene is not null)
             {
-                var project = await LoadProjectAsync(repositoryRoot);
+                var project = await LoadProjectFromRootAsync(projectRoot, cancellationToken);
                 return project is null
                     ? scene.WithoutConvertedLegacyTextOverrides()
                     : ModernProjectMigration.MigrateScene(scene.WithoutConvertedLegacyTextOverrides(), project);
@@ -142,11 +160,20 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
 
     public async Task<ScadaProject?> LoadProjectAsync(string repositoryRoot)
     {
-        var projectRoot = GetReferenceModernProjectRoot(repositoryRoot);
+        return await LoadProjectFromRootAsync(GetReferenceModernProjectRoot(repositoryRoot));
+    }
+
+    /// <summary>Loads a project manifest from an exact project root.</summary>
+    public async Task<ScadaProject?> LoadProjectFromRootAsync(
+        string projectRoot,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectRoot);
+        projectRoot = Path.GetFullPath(projectRoot);
         await RecoverIncompleteTransactionsAsync(projectRoot);
         var projectPath = Path.Combine(projectRoot, "project.json");
         var project = File.Exists(projectPath)
-            ? await LoadProjectFileAsync(projectPath)
+            ? await LoadProjectFileAsync(projectPath, cancellationToken)
             : null;
         return project is null ? null : ModernProjectMigration.MigrateProject(project);
     }
@@ -158,7 +185,21 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(repositoryRoot);
-        var project = context?.ProjectOverride ?? await LoadProjectAsync(repositoryRoot)
+        return await ReadWorkspaceSnapshotFromProjectRootAsync(
+            GetReferenceModernProjectRoot(repositoryRoot),
+            context,
+            cancellationToken);
+    }
+
+    /// <summary>Reads a coherent workspace snapshot from an exact project root.</summary>
+    public async Task<PageWorkspaceSnapshot> ReadWorkspaceSnapshotFromProjectRootAsync(
+        string projectRoot,
+        PageWorkspaceReadContext? context = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectRoot);
+        projectRoot = Path.GetFullPath(projectRoot);
+        var project = context?.ProjectOverride ?? await LoadProjectFromRootAsync(projectRoot, cancellationToken)
             ?? throw new InvalidOperationException("No modern SCADA project exists at the requested repository root.");
         project = ModernProjectMigration.MigrateProject(project);
         var overrides = context?.OpenOrDirtyScenes ?? new Dictionary<Guid, ScadaScene>();
@@ -169,7 +210,7 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
             cancellationToken.ThrowIfCancellationRequested();
             var scene = overrides.TryGetValue(page.PageKey, out var openOrDirtyScene)
                 ? openOrDirtyScene
-                : await LoadOrCreateSceneAsync(repositoryRoot, page, cancellationToken);
+                : await LoadOrCreateSceneFromProjectRootAsync(projectRoot, page, cancellationToken);
             scenes[page.PageKey] = ModernProjectMigration.MigrateScene(scene, project);
         }
 
@@ -182,9 +223,20 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
 
     public async Task SaveProjectAsync(string repositoryRoot, ScadaProject project)
     {
-        var projectPath = Path.Combine(GetReferenceModernProjectRoot(repositoryRoot), "project.json");
+        await SaveProjectToRootAsync(GetReferenceModernProjectRoot(repositoryRoot), project);
+    }
+
+    /// <summary>Saves a project manifest under an exact project root.</summary>
+    public async Task SaveProjectToRootAsync(
+        string projectRoot,
+        ScadaProject project,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectRoot);
+        ArgumentNullException.ThrowIfNull(project);
+        var projectPath = Path.Combine(Path.GetFullPath(projectRoot), "project.json");
         Directory.CreateDirectory(Path.GetDirectoryName(projectPath)!);
-        await SaveJsonAsync(projectPath, ModernProjectMigration.MigrateProject(project));
+        await SaveJsonAsync(projectPath, ModernProjectMigration.MigrateProject(project), cancellationToken);
     }
 
     /// <inheritdoc />
@@ -194,9 +246,22 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(repositoryRoot);
+        await SaveWorkspaceSnapshotToProjectRootAsync(
+            GetReferenceModernProjectRoot(repositoryRoot),
+            snapshot,
+            cancellationToken);
+    }
+
+    /// <summary>Atomically saves a workspace snapshot under an exact project root.</summary>
+    public async Task SaveWorkspaceSnapshotToProjectRootAsync(
+        string projectRoot,
+        PageWorkspaceSnapshot snapshot,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectRoot);
         ArgumentNullException.ThrowIfNull(snapshot);
 
-        var projectRoot = GetReferenceModernProjectRoot(repositoryRoot);
+        projectRoot = Path.GetFullPath(projectRoot);
         Directory.CreateDirectory(projectRoot);
         await using var workspaceLock = await AcquireWorkspaceLockAsync(projectRoot, cancellationToken);
         await RecoverIncompleteTransactionsAsync(projectRoot, cancellationToken, lockAlreadyHeld: true);
@@ -656,6 +721,13 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         return Path.Combine(GetReferenceModernProjectRoot(repositoryRoot), "imports", "tags");
     }
 
+    /// <summary>Gets the tag import directory under an exact project root.</summary>
+    public static string GetTagImportDirectoryFromProjectRoot(string projectRoot)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectRoot);
+        return Path.Combine(Path.GetFullPath(projectRoot), "imports", "tags");
+    }
+
     private static string GetScenePath(string repositoryRoot, string sceneId)
     {
         return Path.Combine(GetReferenceModernProjectRoot(repositoryRoot), "scenes", $"{sceneId}.scene.json");
@@ -667,10 +739,12 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         await JsonSerializer.SerializeAsync(write, value, JsonOptions, cancellationToken);
     }
 
-    private static async Task<ScadaProject?> LoadProjectFileAsync(string projectPath)
+    private static async Task<ScadaProject?> LoadProjectFileAsync(
+        string projectPath,
+        CancellationToken cancellationToken = default)
     {
         await using var read = File.OpenRead(projectPath);
-        return await JsonSerializer.DeserializeAsync<ScadaProject>(read, JsonOptions);
+        return await JsonSerializer.DeserializeAsync<ScadaProject>(read, JsonOptions, cancellationToken);
     }
 
     private static IReadOnlyList<ScadaSceneReference> MergeSceneReferences(
