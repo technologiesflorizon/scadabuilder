@@ -1,4 +1,4 @@
-﻿{
+{
   "Id": "win00012_modern_no_legacy",
   "Title": "Tableau de d\u00E9givrage \u2014 Moderne",
   "CanvasSize": {
@@ -22685,27 +22685,27 @@
       "ShapeKind": null,
       "ButtonKind": "Command",
       "StateConfig": null,
-      "CommandConfig":       {
-          "Commands":  [
-                           {
-                               "Id":  "command-manual-defrost-e1",
-                               "Name":  "Départ manuel E-1",
-                               "Enabled":  true,
-                               "Trigger":  "OnClick",
-                               "Kind":  "WriteTag",
-                               "Confirmation":  null,
-                               "WriteTagId":  "tf100.mapping.629",
-                               "ReadTagId":  "tf100.mapping.629",
-                               "WriteMode":  "Toggle",
-                               "OnValue":  null,
-                               "OffValue":  null,
-                               "FixedValue":  null,
-                               "TargetPageId":  null,
-                               "Url":  null,
-                               "NewTab":  false,
-                               "TargetPageKey":  null
-                           }
-                       ]
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "command-manual-defrost-e1",
+            "Name": "D\u00E9part manuel E-1",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "WriteTag",
+            "Confirmation": null,
+            "WriteTagId": "tf100.mapping.629",
+            "ReadTagId": "tf100.mapping.629",
+            "WriteMode": "Toggle",
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": null,
+            "Url": null,
+            "NewTab": false,
+            "TargetPageKey": null
+          }
+        ]
       },
       "Table": null,
       "IsLocked": true
@@ -22778,27 +22778,27 @@
       "ShapeKind": null,
       "ButtonKind": "Command",
       "StateConfig": null,
-      "CommandConfig":       {
-          "Commands":  [
-                           {
-                               "Id":  "command-manual-defrost-e2",
-                               "Name":  "Départ manuel E-2",
-                               "Enabled":  true,
-                               "Trigger":  "OnClick",
-                               "Kind":  "WriteTag",
-                               "Confirmation":  null,
-                               "WriteTagId":  "tf100.mapping.630",
-                               "ReadTagId":  "tf100.mapping.630",
-                               "WriteMode":  "Toggle",
-                               "OnValue":  null,
-                               "OffValue":  null,
-                               "FixedValue":  null,
-                               "TargetPageId":  null,
-                               "Url":  null,
-                               "NewTab":  false,
-                               "TargetPageKey":  null
-                           }
-                       ]
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "command-manual-defrost-e2",
+            "Name": "D\u00E9part manuel E-2",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "WriteTag",
+            "Confirmation": null,
+            "WriteTagId": "tf100.mapping.630",
+            "ReadTagId": "tf100.mapping.630",
+            "WriteMode": "Toggle",
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": null,
+            "Url": null,
+            "NewTab": false,
+            "TargetPageKey": null
+          }
+        ]
       },
       "Table": null,
       "IsLocked": true
@@ -22871,27 +22871,27 @@
       "ShapeKind": null,
       "ButtonKind": "Command",
       "StateConfig": null,
-      "CommandConfig":       {
-          "Commands":  [
-                           {
-                               "Id":  "command-manual-defrost-e3",
-                               "Name":  "Départ manuel E-3",
-                               "Enabled":  true,
-                               "Trigger":  "OnClick",
-                               "Kind":  "WriteTag",
-                               "Confirmation":  null,
-                               "WriteTagId":  "tf100.mapping.631",
-                               "ReadTagId":  "tf100.mapping.631",
-                               "WriteMode":  "Toggle",
-                               "OnValue":  null,
-                               "OffValue":  null,
-                               "FixedValue":  null,
-                               "TargetPageId":  null,
-                               "Url":  null,
-                               "NewTab":  false,
-                               "TargetPageKey":  null
-                           }
-                       ]
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "command-manual-defrost-e3",
+            "Name": "D\u00E9part manuel E-3",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "WriteTag",
+            "Confirmation": null,
+            "WriteTagId": "tf100.mapping.631",
+            "ReadTagId": "tf100.mapping.631",
+            "WriteMode": "Toggle",
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": null,
+            "Url": null,
+            "NewTab": false,
+            "TargetPageKey": null
+          }
+        ]
       },
       "Table": null,
       "IsLocked": true
@@ -22964,27 +22964,27 @@
       "ShapeKind": null,
       "ButtonKind": "Command",
       "StateConfig": null,
-      "CommandConfig":       {
-          "Commands":  [
-                           {
-                               "Id":  "command-manual-defrost-e4",
-                               "Name":  "Départ manuel E-4",
-                               "Enabled":  true,
-                               "Trigger":  "OnClick",
-                               "Kind":  "WriteTag",
-                               "Confirmation":  null,
-                               "WriteTagId":  "tf100.mapping.632",
-                               "ReadTagId":  "tf100.mapping.632",
-                               "WriteMode":  "Toggle",
-                               "OnValue":  null,
-                               "OffValue":  null,
-                               "FixedValue":  null,
-                               "TargetPageId":  null,
-                               "Url":  null,
-                               "NewTab":  false,
-                               "TargetPageKey":  null
-                           }
-                       ]
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "command-manual-defrost-e4",
+            "Name": "D\u00E9part manuel E-4",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "WriteTag",
+            "Confirmation": null,
+            "WriteTagId": "tf100.mapping.632",
+            "ReadTagId": "tf100.mapping.632",
+            "WriteMode": "Toggle",
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": null,
+            "Url": null,
+            "NewTab": false,
+            "TargetPageKey": null
+          }
+        ]
       },
       "Table": null,
       "IsLocked": true
@@ -23057,27 +23057,27 @@
       "ShapeKind": null,
       "ButtonKind": "Command",
       "StateConfig": null,
-      "CommandConfig":       {
-          "Commands":  [
-                           {
-                               "Id":  "command-manual-defrost-e5",
-                               "Name":  "Départ manuel E-5",
-                               "Enabled":  true,
-                               "Trigger":  "OnClick",
-                               "Kind":  "WriteTag",
-                               "Confirmation":  null,
-                               "WriteTagId":  "tf100.mapping.633",
-                               "ReadTagId":  "tf100.mapping.633",
-                               "WriteMode":  "Toggle",
-                               "OnValue":  null,
-                               "OffValue":  null,
-                               "FixedValue":  null,
-                               "TargetPageId":  null,
-                               "Url":  null,
-                               "NewTab":  false,
-                               "TargetPageKey":  null
-                           }
-                       ]
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "command-manual-defrost-e5",
+            "Name": "D\u00E9part manuel E-5",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "WriteTag",
+            "Confirmation": null,
+            "WriteTagId": "tf100.mapping.633",
+            "ReadTagId": "tf100.mapping.633",
+            "WriteMode": "Toggle",
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": null,
+            "Url": null,
+            "NewTab": false,
+            "TargetPageKey": null
+          }
+        ]
       },
       "Table": null,
       "IsLocked": true
@@ -23150,27 +23150,27 @@
       "ShapeKind": null,
       "ButtonKind": "Command",
       "StateConfig": null,
-      "CommandConfig":       {
-          "Commands":  [
-                           {
-                               "Id":  "command-manual-defrost-e6",
-                               "Name":  "Départ manuel E-6",
-                               "Enabled":  true,
-                               "Trigger":  "OnClick",
-                               "Kind":  "WriteTag",
-                               "Confirmation":  null,
-                               "WriteTagId":  "tf100.mapping.634",
-                               "ReadTagId":  "tf100.mapping.634",
-                               "WriteMode":  "Toggle",
-                               "OnValue":  null,
-                               "OffValue":  null,
-                               "FixedValue":  null,
-                               "TargetPageId":  null,
-                               "Url":  null,
-                               "NewTab":  false,
-                               "TargetPageKey":  null
-                           }
-                       ]
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "command-manual-defrost-e6",
+            "Name": "D\u00E9part manuel E-6",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "WriteTag",
+            "Confirmation": null,
+            "WriteTagId": "tf100.mapping.634",
+            "ReadTagId": "tf100.mapping.634",
+            "WriteMode": "Toggle",
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": null,
+            "Url": null,
+            "NewTab": false,
+            "TargetPageKey": null
+          }
+        ]
       },
       "Table": null,
       "IsLocked": true
@@ -23243,27 +23243,27 @@
       "ShapeKind": null,
       "ButtonKind": "Command",
       "StateConfig": null,
-      "CommandConfig":       {
-          "Commands":  [
-                           {
-                               "Id":  "command-manual-defrost-e7",
-                               "Name":  "Départ manuel E-7",
-                               "Enabled":  true,
-                               "Trigger":  "OnClick",
-                               "Kind":  "WriteTag",
-                               "Confirmation":  null,
-                               "WriteTagId":  "tf100.mapping.635",
-                               "ReadTagId":  "tf100.mapping.635",
-                               "WriteMode":  "Toggle",
-                               "OnValue":  null,
-                               "OffValue":  null,
-                               "FixedValue":  null,
-                               "TargetPageId":  null,
-                               "Url":  null,
-                               "NewTab":  false,
-                               "TargetPageKey":  null
-                           }
-                       ]
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "command-manual-defrost-e7",
+            "Name": "D\u00E9part manuel E-7",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "WriteTag",
+            "Confirmation": null,
+            "WriteTagId": "tf100.mapping.635",
+            "ReadTagId": "tf100.mapping.635",
+            "WriteMode": "Toggle",
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": null,
+            "Url": null,
+            "NewTab": false,
+            "TargetPageKey": null
+          }
+        ]
       },
       "Table": null,
       "IsLocked": true
@@ -23336,27 +23336,27 @@
       "ShapeKind": null,
       "ButtonKind": "Command",
       "StateConfig": null,
-      "CommandConfig":       {
-          "Commands":  [
-                           {
-                               "Id":  "command-manual-defrost-e8",
-                               "Name":  "Départ manuel E-8",
-                               "Enabled":  true,
-                               "Trigger":  "OnClick",
-                               "Kind":  "WriteTag",
-                               "Confirmation":  null,
-                               "WriteTagId":  "tf100.mapping.636",
-                               "ReadTagId":  "tf100.mapping.636",
-                               "WriteMode":  "Toggle",
-                               "OnValue":  null,
-                               "OffValue":  null,
-                               "FixedValue":  null,
-                               "TargetPageId":  null,
-                               "Url":  null,
-                               "NewTab":  false,
-                               "TargetPageKey":  null
-                           }
-                       ]
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "command-manual-defrost-e8",
+            "Name": "D\u00E9part manuel E-8",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "WriteTag",
+            "Confirmation": null,
+            "WriteTagId": "tf100.mapping.636",
+            "ReadTagId": "tf100.mapping.636",
+            "WriteMode": "Toggle",
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": null,
+            "Url": null,
+            "NewTab": false,
+            "TargetPageKey": null
+          }
+        ]
       },
       "Table": null,
       "IsLocked": true
@@ -23429,27 +23429,27 @@
       "ShapeKind": null,
       "ButtonKind": "Command",
       "StateConfig": null,
-      "CommandConfig":       {
-          "Commands":  [
-                           {
-                               "Id":  "command-manual-defrost-e9",
-                               "Name":  "Départ manuel E-9",
-                               "Enabled":  true,
-                               "Trigger":  "OnClick",
-                               "Kind":  "WriteTag",
-                               "Confirmation":  null,
-                               "WriteTagId":  "tf100.mapping.637",
-                               "ReadTagId":  "tf100.mapping.637",
-                               "WriteMode":  "Toggle",
-                               "OnValue":  null,
-                               "OffValue":  null,
-                               "FixedValue":  null,
-                               "TargetPageId":  null,
-                               "Url":  null,
-                               "NewTab":  false,
-                               "TargetPageKey":  null
-                           }
-                       ]
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "command-manual-defrost-e9",
+            "Name": "D\u00E9part manuel E-9",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "WriteTag",
+            "Confirmation": null,
+            "WriteTagId": "tf100.mapping.637",
+            "ReadTagId": "tf100.mapping.637",
+            "WriteMode": "Toggle",
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": null,
+            "Url": null,
+            "NewTab": false,
+            "TargetPageKey": null
+          }
+        ]
       },
       "Table": null,
       "IsLocked": true
@@ -23522,27 +23522,27 @@
       "ShapeKind": null,
       "ButtonKind": "Command",
       "StateConfig": null,
-      "CommandConfig":       {
-          "Commands":  [
-                           {
-                               "Id":  "command-manual-defrost-e10",
-                               "Name":  "Départ manuel E-10",
-                               "Enabled":  true,
-                               "Trigger":  "OnClick",
-                               "Kind":  "WriteTag",
-                               "Confirmation":  null,
-                               "WriteTagId":  "tf100.mapping.638",
-                               "ReadTagId":  "tf100.mapping.638",
-                               "WriteMode":  "Toggle",
-                               "OnValue":  null,
-                               "OffValue":  null,
-                               "FixedValue":  null,
-                               "TargetPageId":  null,
-                               "Url":  null,
-                               "NewTab":  false,
-                               "TargetPageKey":  null
-                           }
-                       ]
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "command-manual-defrost-e10",
+            "Name": "D\u00E9part manuel E-10",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "WriteTag",
+            "Confirmation": null,
+            "WriteTagId": "tf100.mapping.638",
+            "ReadTagId": "tf100.mapping.638",
+            "WriteMode": "Toggle",
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": null,
+            "Url": null,
+            "NewTab": false,
+            "TargetPageKey": null
+          }
+        ]
       },
       "Table": null,
       "IsLocked": true
@@ -23615,27 +23615,27 @@
       "ShapeKind": null,
       "ButtonKind": "Command",
       "StateConfig": null,
-      "CommandConfig":       {
-          "Commands":  [
-                           {
-                               "Id":  "command-manual-defrost-e11",
-                               "Name":  "Départ manuel E-11",
-                               "Enabled":  true,
-                               "Trigger":  "OnClick",
-                               "Kind":  "WriteTag",
-                               "Confirmation":  null,
-                               "WriteTagId":  "tf100.mapping.639",
-                               "ReadTagId":  "tf100.mapping.639",
-                               "WriteMode":  "Toggle",
-                               "OnValue":  null,
-                               "OffValue":  null,
-                               "FixedValue":  null,
-                               "TargetPageId":  null,
-                               "Url":  null,
-                               "NewTab":  false,
-                               "TargetPageKey":  null
-                           }
-                       ]
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "command-manual-defrost-e11",
+            "Name": "D\u00E9part manuel E-11",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "WriteTag",
+            "Confirmation": null,
+            "WriteTagId": "tf100.mapping.639",
+            "ReadTagId": "tf100.mapping.639",
+            "WriteMode": "Toggle",
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": null,
+            "Url": null,
+            "NewTab": false,
+            "TargetPageKey": null
+          }
+        ]
       },
       "Table": null,
       "IsLocked": true
@@ -23708,27 +23708,27 @@
       "ShapeKind": null,
       "ButtonKind": "Command",
       "StateConfig": null,
-      "CommandConfig":       {
-          "Commands":  [
-                           {
-                               "Id":  "command-manual-defrost-e12",
-                               "Name":  "Départ manuel E-12",
-                               "Enabled":  true,
-                               "Trigger":  "OnClick",
-                               "Kind":  "WriteTag",
-                               "Confirmation":  null,
-                               "WriteTagId":  "tf100.mapping.640",
-                               "ReadTagId":  "tf100.mapping.640",
-                               "WriteMode":  "Toggle",
-                               "OnValue":  null,
-                               "OffValue":  null,
-                               "FixedValue":  null,
-                               "TargetPageId":  null,
-                               "Url":  null,
-                               "NewTab":  false,
-                               "TargetPageKey":  null
-                           }
-                       ]
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "command-manual-defrost-e12",
+            "Name": "D\u00E9part manuel E-12",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "WriteTag",
+            "Confirmation": null,
+            "WriteTagId": "tf100.mapping.640",
+            "ReadTagId": "tf100.mapping.640",
+            "WriteMode": "Toggle",
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": null,
+            "Url": null,
+            "NewTab": false,
+            "TargetPageKey": null
+          }
+        ]
       },
       "Table": null,
       "IsLocked": true
@@ -23801,27 +23801,27 @@
       "ShapeKind": null,
       "ButtonKind": "Command",
       "StateConfig": null,
-      "CommandConfig":       {
-          "Commands":  [
-                           {
-                               "Id":  "command-manual-defrost-e13",
-                               "Name":  "Départ manuel E-13",
-                               "Enabled":  true,
-                               "Trigger":  "OnClick",
-                               "Kind":  "WriteTag",
-                               "Confirmation":  null,
-                               "WriteTagId":  "tf100.mapping.641",
-                               "ReadTagId":  "tf100.mapping.641",
-                               "WriteMode":  "Toggle",
-                               "OnValue":  null,
-                               "OffValue":  null,
-                               "FixedValue":  null,
-                               "TargetPageId":  null,
-                               "Url":  null,
-                               "NewTab":  false,
-                               "TargetPageKey":  null
-                           }
-                       ]
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "command-manual-defrost-e13",
+            "Name": "D\u00E9part manuel E-13",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "WriteTag",
+            "Confirmation": null,
+            "WriteTagId": "tf100.mapping.641",
+            "ReadTagId": "tf100.mapping.641",
+            "WriteMode": "Toggle",
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": null,
+            "Url": null,
+            "NewTab": false,
+            "TargetPageKey": null
+          }
+        ]
       },
       "Table": null,
       "IsLocked": true
@@ -23894,27 +23894,27 @@
       "ShapeKind": null,
       "ButtonKind": "Command",
       "StateConfig": null,
-      "CommandConfig":       {
-          "Commands":  [
-                           {
-                               "Id":  "command-manual-defrost-e14",
-                               "Name":  "Départ manuel E-14",
-                               "Enabled":  true,
-                               "Trigger":  "OnClick",
-                               "Kind":  "WriteTag",
-                               "Confirmation":  null,
-                               "WriteTagId":  "tf100.mapping.642",
-                               "ReadTagId":  "tf100.mapping.642",
-                               "WriteMode":  "Toggle",
-                               "OnValue":  null,
-                               "OffValue":  null,
-                               "FixedValue":  null,
-                               "TargetPageId":  null,
-                               "Url":  null,
-                               "NewTab":  false,
-                               "TargetPageKey":  null
-                           }
-                       ]
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "command-manual-defrost-e14",
+            "Name": "D\u00E9part manuel E-14",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "WriteTag",
+            "Confirmation": null,
+            "WriteTagId": "tf100.mapping.642",
+            "ReadTagId": "tf100.mapping.642",
+            "WriteMode": "Toggle",
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": null,
+            "Url": null,
+            "NewTab": false,
+            "TargetPageKey": null
+          }
+        ]
       },
       "Table": null,
       "IsLocked": true
@@ -23926,7 +23926,7 @@
       "Bounds": {
         "X": 259,
         "Y": 647,
-        "Width": 60.42857142857143,
+        "Width": 60.43,
         "Height": 20
       },
       "LegacySource": null,
@@ -23957,128 +23957,146 @@
         "LineHeight": 0,
         "BorderRadius": null
       },
-      "Data": null,
+      "Data": {
+        "Text": null,
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": null,
+        "TagBinding": null,
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
+      },
       "Children": null,
       "LegacyPayload": null,
       "Events": null,
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
       "ButtonKind": null,
-      "StateConfig":       {
-          "QualityFallback":  {
-                                  "BackgroundColor":  null,
-                                  "BorderColor":  "#000000",
-                                  "BorderWidth":  2,
-                                  "TextColor":  null,
-                                  "TextContent":  null,
-                                  "TextVisible":  null,
-                                  "ElementVisible":  null,
-                                  "Opacity":  0.4,
-                                  "Rotation":  null,
-                                  "Animation":  null,
-                                  "ColorFilterColor":  null,
-                                  "ColorFilterOpacity":  null,
-                                  "ColorFilterHalo":  null,
-                                  "ColorFilterHaloColor":  null
-                              },
-          "DefaultEffect":  {
-                                "BackgroundColor":  null,
-                                "BorderColor":  null,
-                                "BorderWidth":  null,
-                                "TextColor":  null,
-                                "TextContent":  null,
-                                "TextVisible":  null,
-                                "ElementVisible":  null,
-                                "Opacity":  null,
-                                "Rotation":  null,
-                                "Animation":  null,
-                                "ColorFilterColor":  null,
-                                "ColorFilterOpacity":  null,
-                                "ColorFilterHalo":  null,
-                                "ColorFilterHaloColor":  null
-                            },
-          "States":  [
-                         {
-                             "Id":  "state-defrost-status-e1-active",
-                             "Name":  "Actif",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap1_defrostActif} == true",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.615"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap1_defrostActif",
-                                                                         "TagId":  "tf100.mapping.615"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  true
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#12B729",
-                                            "BorderColor":  "#12B729",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         },
-                         {
-                             "Id":  "state-defrost-status-e1-stopped",
-                             "Name":  "Arrêté",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap1_defrostActif} == false",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.615"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap1_defrostActif",
-                                                                         "TagId":  "tf100.mapping.615"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  false
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#E53935",
-                                            "BorderColor":  "#E53935",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         }
-                     ]
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [
+          {
+            "Id": "state-defrost-status-e1-active",
+            "Name": "Actif",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap1_defrostActif} == true",
+              "referencedTags": [
+                "tf100.mapping.615"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap1_defrostActif",
+                  "TagId": "tf100.mapping.615"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": true
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#12B729",
+              "BorderColor": "#12B729",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          },
+          {
+            "Id": "state-defrost-status-e1-stopped",
+            "Name": "Arr\u00EAt\u00E9",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap1_defrostActif} == false",
+              "referencedTags": [
+                "tf100.mapping.615"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap1_defrostActif",
+                  "TagId": "tf100.mapping.615"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#E53935",
+              "BorderColor": "#E53935",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          }
+        ],
+        "ReadVariable": null
       },
       "CommandConfig": null,
       "Table": null,
@@ -24129,121 +24147,122 @@
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
       "ButtonKind": null,
-      "StateConfig":       {
-          "QualityFallback":  {
-                                  "BackgroundColor":  null,
-                                  "BorderColor":  "#000000",
-                                  "BorderWidth":  2,
-                                  "TextColor":  null,
-                                  "TextContent":  null,
-                                  "TextVisible":  null,
-                                  "ElementVisible":  null,
-                                  "Opacity":  0.4,
-                                  "Rotation":  null,
-                                  "Animation":  null,
-                                  "ColorFilterColor":  null,
-                                  "ColorFilterOpacity":  null,
-                                  "ColorFilterHalo":  null,
-                                  "ColorFilterHaloColor":  null
-                              },
-          "DefaultEffect":  {
-                                "BackgroundColor":  null,
-                                "BorderColor":  null,
-                                "BorderWidth":  null,
-                                "TextColor":  null,
-                                "TextContent":  null,
-                                "TextVisible":  null,
-                                "ElementVisible":  null,
-                                "Opacity":  null,
-                                "Rotation":  null,
-                                "Animation":  null,
-                                "ColorFilterColor":  null,
-                                "ColorFilterOpacity":  null,
-                                "ColorFilterHalo":  null,
-                                "ColorFilterHaloColor":  null
-                            },
-          "States":  [
-                         {
-                             "Id":  "state-defrost-status-e2-active",
-                             "Name":  "Actif",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap2_defrostActif} == true",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.616"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap2_defrostActif",
-                                                                         "TagId":  "tf100.mapping.616"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  true
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#12B729",
-                                            "BorderColor":  "#12B729",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         },
-                         {
-                             "Id":  "state-defrost-status-e2-stopped",
-                             "Name":  "Arrêté",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap2_defrostActif} == false",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.616"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap2_defrostActif",
-                                                                         "TagId":  "tf100.mapping.616"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  false
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#E53935",
-                                            "BorderColor":  "#E53935",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         }
-                     ]
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [
+          {
+            "Id": "state-defrost-status-e2-active",
+            "Name": "Actif",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap2_defrostActif} == true",
+              "referencedTags": [
+                "tf100.mapping.616"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap2_defrostActif",
+                  "TagId": "tf100.mapping.616"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": true
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#12B729",
+              "BorderColor": "#12B729",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          },
+          {
+            "Id": "state-defrost-status-e2-stopped",
+            "Name": "Arr\u00EAt\u00E9",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap2_defrostActif} == false",
+              "referencedTags": [
+                "tf100.mapping.616"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap2_defrostActif",
+                  "TagId": "tf100.mapping.616"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#E53935",
+              "BorderColor": "#E53935",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          }
+        ],
+        "ReadVariable": null
       },
       "CommandConfig": null,
       "Table": null,
@@ -24294,121 +24313,122 @@
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
       "ButtonKind": null,
-      "StateConfig":       {
-          "QualityFallback":  {
-                                  "BackgroundColor":  null,
-                                  "BorderColor":  "#000000",
-                                  "BorderWidth":  2,
-                                  "TextColor":  null,
-                                  "TextContent":  null,
-                                  "TextVisible":  null,
-                                  "ElementVisible":  null,
-                                  "Opacity":  0.4,
-                                  "Rotation":  null,
-                                  "Animation":  null,
-                                  "ColorFilterColor":  null,
-                                  "ColorFilterOpacity":  null,
-                                  "ColorFilterHalo":  null,
-                                  "ColorFilterHaloColor":  null
-                              },
-          "DefaultEffect":  {
-                                "BackgroundColor":  null,
-                                "BorderColor":  null,
-                                "BorderWidth":  null,
-                                "TextColor":  null,
-                                "TextContent":  null,
-                                "TextVisible":  null,
-                                "ElementVisible":  null,
-                                "Opacity":  null,
-                                "Rotation":  null,
-                                "Animation":  null,
-                                "ColorFilterColor":  null,
-                                "ColorFilterOpacity":  null,
-                                "ColorFilterHalo":  null,
-                                "ColorFilterHaloColor":  null
-                            },
-          "States":  [
-                         {
-                             "Id":  "state-defrost-status-e3-active",
-                             "Name":  "Actif",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap3_defrostActif} == true",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.617"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap3_defrostActif",
-                                                                         "TagId":  "tf100.mapping.617"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  true
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#12B729",
-                                            "BorderColor":  "#12B729",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         },
-                         {
-                             "Id":  "state-defrost-status-e3-stopped",
-                             "Name":  "Arrêté",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap3_defrostActif} == false",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.617"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap3_defrostActif",
-                                                                         "TagId":  "tf100.mapping.617"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  false
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#E53935",
-                                            "BorderColor":  "#E53935",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         }
-                     ]
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [
+          {
+            "Id": "state-defrost-status-e3-active",
+            "Name": "Actif",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap3_defrostActif} == true",
+              "referencedTags": [
+                "tf100.mapping.617"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap3_defrostActif",
+                  "TagId": "tf100.mapping.617"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": true
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#12B729",
+              "BorderColor": "#12B729",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          },
+          {
+            "Id": "state-defrost-status-e3-stopped",
+            "Name": "Arr\u00EAt\u00E9",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap3_defrostActif} == false",
+              "referencedTags": [
+                "tf100.mapping.617"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap3_defrostActif",
+                  "TagId": "tf100.mapping.617"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#E53935",
+              "BorderColor": "#E53935",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          }
+        ],
+        "ReadVariable": null
       },
       "CommandConfig": null,
       "Table": null,
@@ -24459,121 +24479,122 @@
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
       "ButtonKind": null,
-      "StateConfig":       {
-          "QualityFallback":  {
-                                  "BackgroundColor":  null,
-                                  "BorderColor":  "#000000",
-                                  "BorderWidth":  2,
-                                  "TextColor":  null,
-                                  "TextContent":  null,
-                                  "TextVisible":  null,
-                                  "ElementVisible":  null,
-                                  "Opacity":  0.4,
-                                  "Rotation":  null,
-                                  "Animation":  null,
-                                  "ColorFilterColor":  null,
-                                  "ColorFilterOpacity":  null,
-                                  "ColorFilterHalo":  null,
-                                  "ColorFilterHaloColor":  null
-                              },
-          "DefaultEffect":  {
-                                "BackgroundColor":  null,
-                                "BorderColor":  null,
-                                "BorderWidth":  null,
-                                "TextColor":  null,
-                                "TextContent":  null,
-                                "TextVisible":  null,
-                                "ElementVisible":  null,
-                                "Opacity":  null,
-                                "Rotation":  null,
-                                "Animation":  null,
-                                "ColorFilterColor":  null,
-                                "ColorFilterOpacity":  null,
-                                "ColorFilterHalo":  null,
-                                "ColorFilterHaloColor":  null
-                            },
-          "States":  [
-                         {
-                             "Id":  "state-defrost-status-e4-active",
-                             "Name":  "Actif",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap4_defrostActif} == true",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.618"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap4_defrostActif",
-                                                                         "TagId":  "tf100.mapping.618"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  true
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#12B729",
-                                            "BorderColor":  "#12B729",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         },
-                         {
-                             "Id":  "state-defrost-status-e4-stopped",
-                             "Name":  "Arrêté",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap4_defrostActif} == false",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.618"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap4_defrostActif",
-                                                                         "TagId":  "tf100.mapping.618"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  false
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#E53935",
-                                            "BorderColor":  "#E53935",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         }
-                     ]
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [
+          {
+            "Id": "state-defrost-status-e4-active",
+            "Name": "Actif",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap4_defrostActif} == true",
+              "referencedTags": [
+                "tf100.mapping.618"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap4_defrostActif",
+                  "TagId": "tf100.mapping.618"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": true
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#12B729",
+              "BorderColor": "#12B729",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          },
+          {
+            "Id": "state-defrost-status-e4-stopped",
+            "Name": "Arr\u00EAt\u00E9",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap4_defrostActif} == false",
+              "referencedTags": [
+                "tf100.mapping.618"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap4_defrostActif",
+                  "TagId": "tf100.mapping.618"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#E53935",
+              "BorderColor": "#E53935",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          }
+        ],
+        "ReadVariable": null
       },
       "CommandConfig": null,
       "Table": null,
@@ -24624,121 +24645,122 @@
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
       "ButtonKind": null,
-      "StateConfig":       {
-          "QualityFallback":  {
-                                  "BackgroundColor":  null,
-                                  "BorderColor":  "#000000",
-                                  "BorderWidth":  2,
-                                  "TextColor":  null,
-                                  "TextContent":  null,
-                                  "TextVisible":  null,
-                                  "ElementVisible":  null,
-                                  "Opacity":  0.4,
-                                  "Rotation":  null,
-                                  "Animation":  null,
-                                  "ColorFilterColor":  null,
-                                  "ColorFilterOpacity":  null,
-                                  "ColorFilterHalo":  null,
-                                  "ColorFilterHaloColor":  null
-                              },
-          "DefaultEffect":  {
-                                "BackgroundColor":  null,
-                                "BorderColor":  null,
-                                "BorderWidth":  null,
-                                "TextColor":  null,
-                                "TextContent":  null,
-                                "TextVisible":  null,
-                                "ElementVisible":  null,
-                                "Opacity":  null,
-                                "Rotation":  null,
-                                "Animation":  null,
-                                "ColorFilterColor":  null,
-                                "ColorFilterOpacity":  null,
-                                "ColorFilterHalo":  null,
-                                "ColorFilterHaloColor":  null
-                            },
-          "States":  [
-                         {
-                             "Id":  "state-defrost-status-e5-active",
-                             "Name":  "Actif",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap5_defrostActif} == true",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.619"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap5_defrostActif",
-                                                                         "TagId":  "tf100.mapping.619"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  true
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#12B729",
-                                            "BorderColor":  "#12B729",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         },
-                         {
-                             "Id":  "state-defrost-status-e5-stopped",
-                             "Name":  "Arrêté",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap5_defrostActif} == false",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.619"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap5_defrostActif",
-                                                                         "TagId":  "tf100.mapping.619"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  false
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#E53935",
-                                            "BorderColor":  "#E53935",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         }
-                     ]
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [
+          {
+            "Id": "state-defrost-status-e5-active",
+            "Name": "Actif",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap5_defrostActif} == true",
+              "referencedTags": [
+                "tf100.mapping.619"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap5_defrostActif",
+                  "TagId": "tf100.mapping.619"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": true
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#12B729",
+              "BorderColor": "#12B729",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          },
+          {
+            "Id": "state-defrost-status-e5-stopped",
+            "Name": "Arr\u00EAt\u00E9",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap5_defrostActif} == false",
+              "referencedTags": [
+                "tf100.mapping.619"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap5_defrostActif",
+                  "TagId": "tf100.mapping.619"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#E53935",
+              "BorderColor": "#E53935",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          }
+        ],
+        "ReadVariable": null
       },
       "CommandConfig": null,
       "Table": null,
@@ -24789,121 +24811,122 @@
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
       "ButtonKind": null,
-      "StateConfig":       {
-          "QualityFallback":  {
-                                  "BackgroundColor":  null,
-                                  "BorderColor":  "#000000",
-                                  "BorderWidth":  2,
-                                  "TextColor":  null,
-                                  "TextContent":  null,
-                                  "TextVisible":  null,
-                                  "ElementVisible":  null,
-                                  "Opacity":  0.4,
-                                  "Rotation":  null,
-                                  "Animation":  null,
-                                  "ColorFilterColor":  null,
-                                  "ColorFilterOpacity":  null,
-                                  "ColorFilterHalo":  null,
-                                  "ColorFilterHaloColor":  null
-                              },
-          "DefaultEffect":  {
-                                "BackgroundColor":  null,
-                                "BorderColor":  null,
-                                "BorderWidth":  null,
-                                "TextColor":  null,
-                                "TextContent":  null,
-                                "TextVisible":  null,
-                                "ElementVisible":  null,
-                                "Opacity":  null,
-                                "Rotation":  null,
-                                "Animation":  null,
-                                "ColorFilterColor":  null,
-                                "ColorFilterOpacity":  null,
-                                "ColorFilterHalo":  null,
-                                "ColorFilterHaloColor":  null
-                            },
-          "States":  [
-                         {
-                             "Id":  "state-defrost-status-e6-active",
-                             "Name":  "Actif",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap6_defrostActif} == true",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.620"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap6_defrostActif",
-                                                                         "TagId":  "tf100.mapping.620"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  true
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#12B729",
-                                            "BorderColor":  "#12B729",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         },
-                         {
-                             "Id":  "state-defrost-status-e6-stopped",
-                             "Name":  "Arrêté",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap6_defrostActif} == false",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.620"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap6_defrostActif",
-                                                                         "TagId":  "tf100.mapping.620"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  false
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#E53935",
-                                            "BorderColor":  "#E53935",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         }
-                     ]
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [
+          {
+            "Id": "state-defrost-status-e6-active",
+            "Name": "Actif",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap6_defrostActif} == true",
+              "referencedTags": [
+                "tf100.mapping.620"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap6_defrostActif",
+                  "TagId": "tf100.mapping.620"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": true
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#12B729",
+              "BorderColor": "#12B729",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          },
+          {
+            "Id": "state-defrost-status-e6-stopped",
+            "Name": "Arr\u00EAt\u00E9",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap6_defrostActif} == false",
+              "referencedTags": [
+                "tf100.mapping.620"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap6_defrostActif",
+                  "TagId": "tf100.mapping.620"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#E53935",
+              "BorderColor": "#E53935",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          }
+        ],
+        "ReadVariable": null
       },
       "CommandConfig": null,
       "Table": null,
@@ -24954,121 +24977,122 @@
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
       "ButtonKind": null,
-      "StateConfig":       {
-          "QualityFallback":  {
-                                  "BackgroundColor":  null,
-                                  "BorderColor":  "#000000",
-                                  "BorderWidth":  2,
-                                  "TextColor":  null,
-                                  "TextContent":  null,
-                                  "TextVisible":  null,
-                                  "ElementVisible":  null,
-                                  "Opacity":  0.4,
-                                  "Rotation":  null,
-                                  "Animation":  null,
-                                  "ColorFilterColor":  null,
-                                  "ColorFilterOpacity":  null,
-                                  "ColorFilterHalo":  null,
-                                  "ColorFilterHaloColor":  null
-                              },
-          "DefaultEffect":  {
-                                "BackgroundColor":  null,
-                                "BorderColor":  null,
-                                "BorderWidth":  null,
-                                "TextColor":  null,
-                                "TextContent":  null,
-                                "TextVisible":  null,
-                                "ElementVisible":  null,
-                                "Opacity":  null,
-                                "Rotation":  null,
-                                "Animation":  null,
-                                "ColorFilterColor":  null,
-                                "ColorFilterOpacity":  null,
-                                "ColorFilterHalo":  null,
-                                "ColorFilterHaloColor":  null
-                            },
-          "States":  [
-                         {
-                             "Id":  "state-defrost-status-e7-active",
-                             "Name":  "Actif",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap7_defrostActif} == true",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.621"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap7_defrostActif",
-                                                                         "TagId":  "tf100.mapping.621"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  true
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#12B729",
-                                            "BorderColor":  "#12B729",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         },
-                         {
-                             "Id":  "state-defrost-status-e7-stopped",
-                             "Name":  "Arrêté",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap7_defrostActif} == false",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.621"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap7_defrostActif",
-                                                                         "TagId":  "tf100.mapping.621"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  false
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#E53935",
-                                            "BorderColor":  "#E53935",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         }
-                     ]
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [
+          {
+            "Id": "state-defrost-status-e7-active",
+            "Name": "Actif",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap7_defrostActif} == true",
+              "referencedTags": [
+                "tf100.mapping.621"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap7_defrostActif",
+                  "TagId": "tf100.mapping.621"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": true
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#12B729",
+              "BorderColor": "#12B729",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          },
+          {
+            "Id": "state-defrost-status-e7-stopped",
+            "Name": "Arr\u00EAt\u00E9",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap7_defrostActif} == false",
+              "referencedTags": [
+                "tf100.mapping.621"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap7_defrostActif",
+                  "TagId": "tf100.mapping.621"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#E53935",
+              "BorderColor": "#E53935",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          }
+        ],
+        "ReadVariable": null
       },
       "CommandConfig": null,
       "Table": null,
@@ -25119,121 +25143,122 @@
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
       "ButtonKind": null,
-      "StateConfig":       {
-          "QualityFallback":  {
-                                  "BackgroundColor":  null,
-                                  "BorderColor":  "#000000",
-                                  "BorderWidth":  2,
-                                  "TextColor":  null,
-                                  "TextContent":  null,
-                                  "TextVisible":  null,
-                                  "ElementVisible":  null,
-                                  "Opacity":  0.4,
-                                  "Rotation":  null,
-                                  "Animation":  null,
-                                  "ColorFilterColor":  null,
-                                  "ColorFilterOpacity":  null,
-                                  "ColorFilterHalo":  null,
-                                  "ColorFilterHaloColor":  null
-                              },
-          "DefaultEffect":  {
-                                "BackgroundColor":  null,
-                                "BorderColor":  null,
-                                "BorderWidth":  null,
-                                "TextColor":  null,
-                                "TextContent":  null,
-                                "TextVisible":  null,
-                                "ElementVisible":  null,
-                                "Opacity":  null,
-                                "Rotation":  null,
-                                "Animation":  null,
-                                "ColorFilterColor":  null,
-                                "ColorFilterOpacity":  null,
-                                "ColorFilterHalo":  null,
-                                "ColorFilterHaloColor":  null
-                            },
-          "States":  [
-                         {
-                             "Id":  "state-defrost-status-e8-active",
-                             "Name":  "Actif",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap8_defrostActif} == true",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.622"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap8_defrostActif",
-                                                                         "TagId":  "tf100.mapping.622"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  true
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#12B729",
-                                            "BorderColor":  "#12B729",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         },
-                         {
-                             "Id":  "state-defrost-status-e8-stopped",
-                             "Name":  "Arrêté",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap8_defrostActif} == false",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.622"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap8_defrostActif",
-                                                                         "TagId":  "tf100.mapping.622"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  false
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#E53935",
-                                            "BorderColor":  "#E53935",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         }
-                     ]
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [
+          {
+            "Id": "state-defrost-status-e8-active",
+            "Name": "Actif",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap8_defrostActif} == true",
+              "referencedTags": [
+                "tf100.mapping.622"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap8_defrostActif",
+                  "TagId": "tf100.mapping.622"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": true
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#12B729",
+              "BorderColor": "#12B729",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          },
+          {
+            "Id": "state-defrost-status-e8-stopped",
+            "Name": "Arr\u00EAt\u00E9",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap8_defrostActif} == false",
+              "referencedTags": [
+                "tf100.mapping.622"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap8_defrostActif",
+                  "TagId": "tf100.mapping.622"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#E53935",
+              "BorderColor": "#E53935",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          }
+        ],
+        "ReadVariable": null
       },
       "CommandConfig": null,
       "Table": null,
@@ -25284,121 +25309,122 @@
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
       "ButtonKind": null,
-      "StateConfig":       {
-          "QualityFallback":  {
-                                  "BackgroundColor":  null,
-                                  "BorderColor":  "#000000",
-                                  "BorderWidth":  2,
-                                  "TextColor":  null,
-                                  "TextContent":  null,
-                                  "TextVisible":  null,
-                                  "ElementVisible":  null,
-                                  "Opacity":  0.4,
-                                  "Rotation":  null,
-                                  "Animation":  null,
-                                  "ColorFilterColor":  null,
-                                  "ColorFilterOpacity":  null,
-                                  "ColorFilterHalo":  null,
-                                  "ColorFilterHaloColor":  null
-                              },
-          "DefaultEffect":  {
-                                "BackgroundColor":  null,
-                                "BorderColor":  null,
-                                "BorderWidth":  null,
-                                "TextColor":  null,
-                                "TextContent":  null,
-                                "TextVisible":  null,
-                                "ElementVisible":  null,
-                                "Opacity":  null,
-                                "Rotation":  null,
-                                "Animation":  null,
-                                "ColorFilterColor":  null,
-                                "ColorFilterOpacity":  null,
-                                "ColorFilterHalo":  null,
-                                "ColorFilterHaloColor":  null
-                            },
-          "States":  [
-                         {
-                             "Id":  "state-defrost-status-e9-active",
-                             "Name":  "Actif",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap9_defrostActif} == true",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.623"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap9_defrostActif",
-                                                                         "TagId":  "tf100.mapping.623"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  true
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#12B729",
-                                            "BorderColor":  "#12B729",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         },
-                         {
-                             "Id":  "state-defrost-status-e9-stopped",
-                             "Name":  "Arrêté",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap9_defrostActif} == false",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.623"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap9_defrostActif",
-                                                                         "TagId":  "tf100.mapping.623"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  false
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#E53935",
-                                            "BorderColor":  "#E53935",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         }
-                     ]
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [
+          {
+            "Id": "state-defrost-status-e9-active",
+            "Name": "Actif",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap9_defrostActif} == true",
+              "referencedTags": [
+                "tf100.mapping.623"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap9_defrostActif",
+                  "TagId": "tf100.mapping.623"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": true
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#12B729",
+              "BorderColor": "#12B729",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          },
+          {
+            "Id": "state-defrost-status-e9-stopped",
+            "Name": "Arr\u00EAt\u00E9",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap9_defrostActif} == false",
+              "referencedTags": [
+                "tf100.mapping.623"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap9_defrostActif",
+                  "TagId": "tf100.mapping.623"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#E53935",
+              "BorderColor": "#E53935",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          }
+        ],
+        "ReadVariable": null
       },
       "CommandConfig": null,
       "Table": null,
@@ -25449,121 +25475,122 @@
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
       "ButtonKind": null,
-      "StateConfig":       {
-          "QualityFallback":  {
-                                  "BackgroundColor":  null,
-                                  "BorderColor":  "#000000",
-                                  "BorderWidth":  2,
-                                  "TextColor":  null,
-                                  "TextContent":  null,
-                                  "TextVisible":  null,
-                                  "ElementVisible":  null,
-                                  "Opacity":  0.4,
-                                  "Rotation":  null,
-                                  "Animation":  null,
-                                  "ColorFilterColor":  null,
-                                  "ColorFilterOpacity":  null,
-                                  "ColorFilterHalo":  null,
-                                  "ColorFilterHaloColor":  null
-                              },
-          "DefaultEffect":  {
-                                "BackgroundColor":  null,
-                                "BorderColor":  null,
-                                "BorderWidth":  null,
-                                "TextColor":  null,
-                                "TextContent":  null,
-                                "TextVisible":  null,
-                                "ElementVisible":  null,
-                                "Opacity":  null,
-                                "Rotation":  null,
-                                "Animation":  null,
-                                "ColorFilterColor":  null,
-                                "ColorFilterOpacity":  null,
-                                "ColorFilterHalo":  null,
-                                "ColorFilterHaloColor":  null
-                            },
-          "States":  [
-                         {
-                             "Id":  "state-defrost-status-e10-active",
-                             "Name":  "Actif",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap10_defrostActif} == true",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.624"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap10_defrostActif",
-                                                                         "TagId":  "tf100.mapping.624"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  true
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#12B729",
-                                            "BorderColor":  "#12B729",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         },
-                         {
-                             "Id":  "state-defrost-status-e10-stopped",
-                             "Name":  "Arrêté",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap10_defrostActif} == false",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.624"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap10_defrostActif",
-                                                                         "TagId":  "tf100.mapping.624"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  false
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#E53935",
-                                            "BorderColor":  "#E53935",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         }
-                     ]
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [
+          {
+            "Id": "state-defrost-status-e10-active",
+            "Name": "Actif",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap10_defrostActif} == true",
+              "referencedTags": [
+                "tf100.mapping.624"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap10_defrostActif",
+                  "TagId": "tf100.mapping.624"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": true
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#12B729",
+              "BorderColor": "#12B729",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          },
+          {
+            "Id": "state-defrost-status-e10-stopped",
+            "Name": "Arr\u00EAt\u00E9",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap10_defrostActif} == false",
+              "referencedTags": [
+                "tf100.mapping.624"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap10_defrostActif",
+                  "TagId": "tf100.mapping.624"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#E53935",
+              "BorderColor": "#E53935",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          }
+        ],
+        "ReadVariable": null
       },
       "CommandConfig": null,
       "Table": null,
@@ -25614,121 +25641,122 @@
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
       "ButtonKind": null,
-      "StateConfig":       {
-          "QualityFallback":  {
-                                  "BackgroundColor":  null,
-                                  "BorderColor":  "#000000",
-                                  "BorderWidth":  2,
-                                  "TextColor":  null,
-                                  "TextContent":  null,
-                                  "TextVisible":  null,
-                                  "ElementVisible":  null,
-                                  "Opacity":  0.4,
-                                  "Rotation":  null,
-                                  "Animation":  null,
-                                  "ColorFilterColor":  null,
-                                  "ColorFilterOpacity":  null,
-                                  "ColorFilterHalo":  null,
-                                  "ColorFilterHaloColor":  null
-                              },
-          "DefaultEffect":  {
-                                "BackgroundColor":  null,
-                                "BorderColor":  null,
-                                "BorderWidth":  null,
-                                "TextColor":  null,
-                                "TextContent":  null,
-                                "TextVisible":  null,
-                                "ElementVisible":  null,
-                                "Opacity":  null,
-                                "Rotation":  null,
-                                "Animation":  null,
-                                "ColorFilterColor":  null,
-                                "ColorFilterOpacity":  null,
-                                "ColorFilterHalo":  null,
-                                "ColorFilterHaloColor":  null
-                            },
-          "States":  [
-                         {
-                             "Id":  "state-defrost-status-e11-active",
-                             "Name":  "Actif",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap11_defrostActif} == true",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.625"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap11_defrostActif",
-                                                                         "TagId":  "tf100.mapping.625"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  true
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#12B729",
-                                            "BorderColor":  "#12B729",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         },
-                         {
-                             "Id":  "state-defrost-status-e11-stopped",
-                             "Name":  "Arrêté",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap11_defrostActif} == false",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.625"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap11_defrostActif",
-                                                                         "TagId":  "tf100.mapping.625"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  false
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#E53935",
-                                            "BorderColor":  "#E53935",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         }
-                     ]
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [
+          {
+            "Id": "state-defrost-status-e11-active",
+            "Name": "Actif",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap11_defrostActif} == true",
+              "referencedTags": [
+                "tf100.mapping.625"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap11_defrostActif",
+                  "TagId": "tf100.mapping.625"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": true
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#12B729",
+              "BorderColor": "#12B729",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          },
+          {
+            "Id": "state-defrost-status-e11-stopped",
+            "Name": "Arr\u00EAt\u00E9",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap11_defrostActif} == false",
+              "referencedTags": [
+                "tf100.mapping.625"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap11_defrostActif",
+                  "TagId": "tf100.mapping.625"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#E53935",
+              "BorderColor": "#E53935",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          }
+        ],
+        "ReadVariable": null
       },
       "CommandConfig": null,
       "Table": null,
@@ -25779,121 +25807,122 @@
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
       "ButtonKind": null,
-      "StateConfig":       {
-          "QualityFallback":  {
-                                  "BackgroundColor":  null,
-                                  "BorderColor":  "#000000",
-                                  "BorderWidth":  2,
-                                  "TextColor":  null,
-                                  "TextContent":  null,
-                                  "TextVisible":  null,
-                                  "ElementVisible":  null,
-                                  "Opacity":  0.4,
-                                  "Rotation":  null,
-                                  "Animation":  null,
-                                  "ColorFilterColor":  null,
-                                  "ColorFilterOpacity":  null,
-                                  "ColorFilterHalo":  null,
-                                  "ColorFilterHaloColor":  null
-                              },
-          "DefaultEffect":  {
-                                "BackgroundColor":  null,
-                                "BorderColor":  null,
-                                "BorderWidth":  null,
-                                "TextColor":  null,
-                                "TextContent":  null,
-                                "TextVisible":  null,
-                                "ElementVisible":  null,
-                                "Opacity":  null,
-                                "Rotation":  null,
-                                "Animation":  null,
-                                "ColorFilterColor":  null,
-                                "ColorFilterOpacity":  null,
-                                "ColorFilterHalo":  null,
-                                "ColorFilterHaloColor":  null
-                            },
-          "States":  [
-                         {
-                             "Id":  "state-defrost-status-e12-active",
-                             "Name":  "Actif",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap12_defrostActif} == true",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.626"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap12_defrostActif",
-                                                                         "TagId":  "tf100.mapping.626"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  true
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#12B729",
-                                            "BorderColor":  "#12B729",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         },
-                         {
-                             "Id":  "state-defrost-status-e12-stopped",
-                             "Name":  "Arrêté",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap12_defrostActif} == false",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.626"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap12_defrostActif",
-                                                                         "TagId":  "tf100.mapping.626"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  false
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#E53935",
-                                            "BorderColor":  "#E53935",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         }
-                     ]
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [
+          {
+            "Id": "state-defrost-status-e12-active",
+            "Name": "Actif",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap12_defrostActif} == true",
+              "referencedTags": [
+                "tf100.mapping.626"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap12_defrostActif",
+                  "TagId": "tf100.mapping.626"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": true
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#12B729",
+              "BorderColor": "#12B729",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          },
+          {
+            "Id": "state-defrost-status-e12-stopped",
+            "Name": "Arr\u00EAt\u00E9",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap12_defrostActif} == false",
+              "referencedTags": [
+                "tf100.mapping.626"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap12_defrostActif",
+                  "TagId": "tf100.mapping.626"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#E53935",
+              "BorderColor": "#E53935",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          }
+        ],
+        "ReadVariable": null
       },
       "CommandConfig": null,
       "Table": null,
@@ -25944,121 +25973,122 @@
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
       "ButtonKind": null,
-      "StateConfig":       {
-          "QualityFallback":  {
-                                  "BackgroundColor":  null,
-                                  "BorderColor":  "#000000",
-                                  "BorderWidth":  2,
-                                  "TextColor":  null,
-                                  "TextContent":  null,
-                                  "TextVisible":  null,
-                                  "ElementVisible":  null,
-                                  "Opacity":  0.4,
-                                  "Rotation":  null,
-                                  "Animation":  null,
-                                  "ColorFilterColor":  null,
-                                  "ColorFilterOpacity":  null,
-                                  "ColorFilterHalo":  null,
-                                  "ColorFilterHaloColor":  null
-                              },
-          "DefaultEffect":  {
-                                "BackgroundColor":  null,
-                                "BorderColor":  null,
-                                "BorderWidth":  null,
-                                "TextColor":  null,
-                                "TextContent":  null,
-                                "TextVisible":  null,
-                                "ElementVisible":  null,
-                                "Opacity":  null,
-                                "Rotation":  null,
-                                "Animation":  null,
-                                "ColorFilterColor":  null,
-                                "ColorFilterOpacity":  null,
-                                "ColorFilterHalo":  null,
-                                "ColorFilterHaloColor":  null
-                            },
-          "States":  [
-                         {
-                             "Id":  "state-defrost-status-e13-active",
-                             "Name":  "Actif",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap13_defrostActif} == true",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.627"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap13_defrostActif",
-                                                                         "TagId":  "tf100.mapping.627"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  true
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#12B729",
-                                            "BorderColor":  "#12B729",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         },
-                         {
-                             "Id":  "state-defrost-status-e13-stopped",
-                             "Name":  "Arrêté",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap13_defrostActif} == false",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.627"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap13_defrostActif",
-                                                                         "TagId":  "tf100.mapping.627"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  false
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#E53935",
-                                            "BorderColor":  "#E53935",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         }
-                     ]
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [
+          {
+            "Id": "state-defrost-status-e13-active",
+            "Name": "Actif",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap13_defrostActif} == true",
+              "referencedTags": [
+                "tf100.mapping.627"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap13_defrostActif",
+                  "TagId": "tf100.mapping.627"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": true
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#12B729",
+              "BorderColor": "#12B729",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          },
+          {
+            "Id": "state-defrost-status-e13-stopped",
+            "Name": "Arr\u00EAt\u00E9",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap13_defrostActif} == false",
+              "referencedTags": [
+                "tf100.mapping.627"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap13_defrostActif",
+                  "TagId": "tf100.mapping.627"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#E53935",
+              "BorderColor": "#E53935",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          }
+        ],
+        "ReadVariable": null
       },
       "CommandConfig": null,
       "Table": null,
@@ -26109,121 +26139,122 @@
       "ButtonBehavior": null,
       "ShapeKind": "Rectangle",
       "ButtonKind": null,
-      "StateConfig":       {
-          "QualityFallback":  {
-                                  "BackgroundColor":  null,
-                                  "BorderColor":  "#000000",
-                                  "BorderWidth":  2,
-                                  "TextColor":  null,
-                                  "TextContent":  null,
-                                  "TextVisible":  null,
-                                  "ElementVisible":  null,
-                                  "Opacity":  0.4,
-                                  "Rotation":  null,
-                                  "Animation":  null,
-                                  "ColorFilterColor":  null,
-                                  "ColorFilterOpacity":  null,
-                                  "ColorFilterHalo":  null,
-                                  "ColorFilterHaloColor":  null
-                              },
-          "DefaultEffect":  {
-                                "BackgroundColor":  null,
-                                "BorderColor":  null,
-                                "BorderWidth":  null,
-                                "TextColor":  null,
-                                "TextContent":  null,
-                                "TextVisible":  null,
-                                "ElementVisible":  null,
-                                "Opacity":  null,
-                                "Rotation":  null,
-                                "Animation":  null,
-                                "ColorFilterColor":  null,
-                                "ColorFilterOpacity":  null,
-                                "ColorFilterHalo":  null,
-                                "ColorFilterHaloColor":  null
-                            },
-          "States":  [
-                         {
-                             "Id":  "state-defrost-status-e14-active",
-                             "Name":  "Actif",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap14_defrostActif} == true",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.628"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap14_defrostActif",
-                                                                         "TagId":  "tf100.mapping.628"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  true
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#12B729",
-                                            "BorderColor":  "#12B729",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         },
-                         {
-                             "Id":  "state-defrost-status-e14-stopped",
-                             "Name":  "Arrêté",
-                             "Enabled":  true,
-                             "Expression":  {
-                                                "source":  "{Evap14_defrostActif} == false",
-                                                "referencedTags":  [
-                                                                       "tf100.mapping.628"
-                                                                   ],
-                                                "ast":  {
-                                                            "type":  "binary",
-                                                            "Op":  "Equal",
-                                                            "Left":  {
-                                                                         "type":  "tagRef",
-                                                                         "TagName":  "Evap14_defrostActif",
-                                                                         "TagId":  "tf100.mapping.628"
-                                                                     },
-                                                            "Right":  {
-                                                                          "type":  "literalBool",
-                                                                          "Value":  false
-                                                                      }
-                                                        }
-                                            },
-                             "Effect":  {
-                                            "BackgroundColor":  "#E53935",
-                                            "BorderColor":  "#E53935",
-                                            "BorderWidth":  1,
-                                            "TextColor":  null,
-                                            "TextContent":  null,
-                                            "TextVisible":  null,
-                                            "ElementVisible":  null,
-                                            "Opacity":  null,
-                                            "Rotation":  null,
-                                            "Animation":  null,
-                                            "ColorFilterColor":  null,
-                                            "ColorFilterOpacity":  null,
-                                            "ColorFilterHalo":  null,
-                                            "ColorFilterHaloColor":  null
-                                        }
-                         }
-                     ]
+      "StateConfig": {
+        "QualityFallback": {
+          "BackgroundColor": null,
+          "BorderColor": "#000000",
+          "BorderWidth": 2,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": 0.4,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "DefaultEffect": {
+          "BackgroundColor": null,
+          "BorderColor": null,
+          "BorderWidth": null,
+          "TextColor": null,
+          "TextContent": null,
+          "TextVisible": null,
+          "ElementVisible": null,
+          "Opacity": null,
+          "Rotation": null,
+          "Animation": null,
+          "ColorFilterColor": null,
+          "ColorFilterOpacity": null,
+          "ColorFilterHalo": null,
+          "ColorFilterHaloColor": null
+        },
+        "States": [
+          {
+            "Id": "state-defrost-status-e14-active",
+            "Name": "Actif",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap14_defrostActif} == true",
+              "referencedTags": [
+                "tf100.mapping.628"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap14_defrostActif",
+                  "TagId": "tf100.mapping.628"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": true
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#12B729",
+              "BorderColor": "#12B729",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          },
+          {
+            "Id": "state-defrost-status-e14-stopped",
+            "Name": "Arr\u00EAt\u00E9",
+            "Enabled": true,
+            "Expression": {
+              "source": "{Evap14_defrostActif} == false",
+              "referencedTags": [
+                "tf100.mapping.628"
+              ],
+              "ast": {
+                "type": "binary",
+                "Op": "Equal",
+                "Left": {
+                  "type": "tagRef",
+                  "TagName": "Evap14_defrostActif",
+                  "TagId": "tf100.mapping.628"
+                },
+                "Right": {
+                  "type": "literalBool",
+                  "Value": false
+                }
+              }
+            },
+            "Effect": {
+              "BackgroundColor": "#E53935",
+              "BorderColor": "#E53935",
+              "BorderWidth": 1,
+              "TextColor": null,
+              "TextContent": null,
+              "TextVisible": null,
+              "ElementVisible": null,
+              "Opacity": null,
+              "Rotation": null,
+              "Animation": null,
+              "ColorFilterColor": null,
+              "ColorFilterOpacity": null,
+              "ColorFilterHalo": null,
+              "ColorFilterHaloColor": null
+            }
+          }
+        ],
+        "ReadVariable": null
       },
       "CommandConfig": null,
       "Table": null,
