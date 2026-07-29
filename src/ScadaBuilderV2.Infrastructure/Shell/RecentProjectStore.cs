@@ -16,6 +16,9 @@ public sealed class RecentProjectStore(string? settingsRoot = null) : IRecentPro
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
         "ScadaBuilderV2");
 
+    /// <inheritdoc />
+    public bool IsInitialized => File.Exists(Path.Combine(root, "recent-projects.json"));
+
     public async Task<IReadOnlyList<RecentProjectEntry>> ReadAsync(CancellationToken cancellationToken = default)
     {
         var path = Path.Combine(root, "recent-projects.json");

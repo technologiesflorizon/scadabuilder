@@ -122,6 +122,7 @@ public sealed class ProjectLifecycleCoordinatorTests
     private sealed class StubRecentStore : IRecentProjectStore
     {
         public int RecordCount { get; private set; }
+        public bool IsInitialized => false;
 
         public Task<IReadOnlyList<RecentProjectEntry>> ReadAsync(CancellationToken cancellationToken = default) =>
             Task.FromResult<IReadOnlyList<RecentProjectEntry>>([]);

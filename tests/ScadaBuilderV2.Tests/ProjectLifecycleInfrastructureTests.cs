@@ -121,7 +121,9 @@ public sealed class ProjectLifecycleInfrastructureTests
             var store = new RecentProjectStore(settingsRoot);
             var location = new ProjectWorkspaceLocation(projectRoot, manifest);
 
+            Assert.IsFalse(store.IsInitialized);
             await store.RecordAsync(location, "Premier nom");
+            Assert.IsTrue(store.IsInitialized);
             await store.RecordAsync(location, "Nom courant");
             var entries = await store.ReadAsync();
 
@@ -133,6 +135,38 @@ public sealed class ProjectLifecycleInfrastructureTests
 
             Assert.AreEqual(0, (await store.ReadAsync()).Count);
             Assert.IsTrue(File.Exists(manifest), "Removing a recent entry must never delete project data.");
+        }
+        finally
+        {
+            DeleteTemporaryDirectory(root);
+        }
+    }
+
+    [TestMethod]
+    public void ExistingProjectDiscovery_FindsProjectManifestsUnderNearestProjectsRoot()
+    {
+        var root = CreateTemporaryDirectory();
+        try
+        {
+            var appDirectory = Path.Combine(root, "src", "App", "bin");
+            var firstProject = Path.Combine(root, "projects", "First");
+            var secondProject = Path.Combine(root, "projects", "Second");
+            Directory.CreateDirectory(appDirectory);
+            Directory.CreateDirectory(firstProject);
+            Directory.CreateDirectory(secondProject);
+            File.WriteAllText(Path.Combine(firstProject, "project.json"), "{}");
+            File.WriteAllText(Path.Combine(secondProject, "project.json"), "{}");
+            Directory.CreateDirectory(Path.Combine(root, "projects", "Incomplete"));
+
+            var manifests = new ExistingProjectDiscovery().Discover(appDirectory);
+
+            CollectionAssert.AreEqual(
+                new[]
+                {
+                    Path.Combine(firstProject, "project.json"),
+                    Path.Combine(secondProject, "project.json")
+                },
+                manifests.ToArray());
         }
         finally
         {

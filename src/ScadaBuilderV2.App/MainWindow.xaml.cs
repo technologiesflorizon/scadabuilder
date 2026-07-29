@@ -58,6 +58,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
     private readonly ModernProjectStore _modernProjectStore = new();
     private readonly ProjectWorkspaceRepository _projectWorkspaceRepository;
     private readonly RecentProjectStore _recentProjectStore = new();
+    private readonly ExistingProjectDiscovery _existingProjectDiscovery = new();
     private readonly ProjectLifecycleCoordinator _projectLifecycleCoordinator;
     private readonly PageSourceProjectionResolver _pageSourceProjectionResolver = new();
     private readonly PageWorkspaceController _pageWorkspaceController;
@@ -228,6 +229,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
     {
         try
         {
+            await RegisterDiscoveredProjectsAsync();
             await RefreshRecentProjectsAsync();
             ShowProjectWelcome();
             if (!_diagnosticsPanel.HasIssues) DiagnosticsAnchorable.Hide();
@@ -384,6 +386,48 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
             RecentProjects.Add(entry);
         }
         ReopenLastProjectButton.IsEnabled = RecentProjects.Any(entry => entry.IsAvailable);
+    }
+
+    private async Task RegisterDiscoveredProjectsAsync()
+    {
+        if (_recentProjectStore.IsInitialized)
+        {
+            return;
+        }
+
+        var existingRecents = await _recentProjectStore.ReadAsync();
+        var knownPaths = existingRecents
+            .Select(entry => Path.GetFullPath(entry.ProjectFilePath))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        foreach (var manifestPath in _existingProjectDiscovery.Discover(
+                     AppContext.BaseDirectory,
+                     Directory.GetCurrentDirectory()))
+        {
+            if (!knownPaths.Add(manifestPath))
+            {
+                continue;
+            }
+
+            var projectRoot = Path.GetDirectoryName(manifestPath)!;
+            var displayName = Path.GetFileName(projectRoot);
+            try
+            {
+                var project = await _modernProjectStore.LoadProjectFromRootAsync(projectRoot);
+                if (!string.IsNullOrWhiteSpace(project?.Name))
+                {
+                    displayName = project.Name;
+                }
+            }
+            catch (Exception exception) when (
+                exception is IOException or UnauthorizedAccessException or InvalidDataException or JsonException)
+            {
+                // A discoverable but unreadable manifest remains visible and will fail closed when opened.
+            }
+
+            await _recentProjectStore.RecordAsync(
+                new ProjectWorkspaceLocation(projectRoot, manifestPath),
+                displayName);
+        }
     }
 
     private void ShowProjectWelcome()

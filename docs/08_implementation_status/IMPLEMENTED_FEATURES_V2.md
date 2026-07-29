@@ -2,12 +2,13 @@
 
 Date: 2026-07-18
 Status: Active implementation status
-Document version: `V2.1.5.0000`
+Document version: `V2.1.5.0001`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-29 | `V2.1.5.0001` | `PENDING` | Découverte initiale contrôlée du plus proche répertoire `projects/` : les manifestes existants apparaissent dans les récents sans réouverture automatique ni réajout après retrait. |
 | 2026-07-29 | `V2.1.5.0000` | `PENDING` | `DEC-0049` : démarrage sans projet, dialogue de création à emplacement choisi, ouverture `project.json`, sauvegarde/fermeture dirty-safe, changement de projet et récents utilisateur. |
 | 2026-07-18 | `V2.1.4.0067` | `PENDING` | Correction Builder des lectures numeriques : authoring et migration alignent `ValueBindings.ReadTagId` sur `StateConfig.ReadVariable`, avec gate de build et acceptance globale. |
 | 2026-07-17 | `V2.1.4.0065` | `PENDING` | Correction runtime des filtres Etat SVG : couche visuelle 0, overlay 1, contenu semantique 2, avec restauration complete et ordre scene preserve. |
