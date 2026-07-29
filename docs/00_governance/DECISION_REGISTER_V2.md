@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Decision Register
 
-Date: 2026-07-17
+Date: 2026-07-29
 Status: Active authoritative decision register
-Document version: `V2.1.4.0066`
+Document version: `V2.1.4.0068`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-29 | `V2.1.4.0068` | `PENDING` | Ajout de `DEC-0049` : cycle de vie projet autonome, racine choisie, accueil sans projet, transitions sûres et projets récents. |
 | 2026-07-17 | `V2.1.4.0066` | `PENDING` | Ajout de `DEC-0048` : la modernisation visuelle des controles d'ecran est gouvernee par une direction artistique versionnee et verifiable. |
 | 2026-07-17 | `V2.1.4.0065` | `PENDING` | `DEC-0045` clarifiee : le filtre Etat est au-dessus des geometries SVG/image/canvas/table opaques, sous le contenu semantique, sans modifier l'ordre auteur des objets. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | `DEC-0047` corrige : 118 probes exacts remplacent les gates agreges; mutation independante et AST lower-camel sont verrouilles. |
@@ -105,6 +106,34 @@ Regression coverage:
 ```
 
 ## 3. Active Decisions
+
+### DEC-0049 - Cycle de vie autonome des projets V2
+
+Status: Active
+Created: 2026-07-29 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/specs/2026-07-29-project-lifecycle-design.md`
+
+Context:
+
+Le shell affiche les commandes Nouveau et Ouvrir, mais elles sont désactivées. Au démarrage, `MainWindow` localise le dépôt et ouvre automatiquement `AMR_REF_SCADA_V2`; `ModernProjectStore` reconstruit systématiquement ce même chemin depuis un `repositoryRoot`. L’application ne peut donc ni créer un projet dans un emplacement utilisateur, ni ouvrir/fermer proprement un projet V2 arbitraire, ni fonctionner dans un état vide.
+
+Decision:
+
+Une fenêtre possède zéro ou une session projet active. Le démarrage présente un accueil sans ouverture automatique, avec Nouveau, Ouvrir, Rouvrir le dernier projet et une liste de récents. La création utilise un dialogue complet, propose Documents par défaut, crée une première page native `win00001` et committe transactionnellement un dossier projet choisi par l’utilisateur. L’ouverture sélectionne un `project.json`, prépare et valide fail-closed un snapshot candidat avant de remplacer la session active, et ne persiste pas automatiquement les migrations.
+
+Les commandes `project.new`, `project.open`, `project.save`, `project.close`, `project.reopen-last` et `project.recent.remove` sont possédées par Application. Toutes les transitions partagent `Enregistrer`, `Ne pas enregistrer`, `Annuler`; une annulation ou un échec conserve la session précédente. Infrastructure reçoit une racine projet exacte, persiste les récents sous `%AppData%` et isole la compatibilité legacy AMR. WPF possède seulement les dialogues, pickers et projections de session.
+
+Consequences:
+
+La racine du logiciel ne choisit plus le projet actif. Scènes, librairie, imports, previews et exports sont résolus sous la racine projet. `AMR_REF_SCADA_V2` reste ouvrable avec un adaptateur de provenance legacy confiné. `.sb2` reste exclusivement runtime; association Windows, double-clic et archive projet compressée sont une tranche distincte. Le mode lecture seule, la réparation interactive, le multi-projet et le multi-fenêtre restent hors périmètre.
+
+Regression coverage:
+
+Requise dans `ProjectCreationPolicyTests`, `ProjectCreationIntegrationTests`, `ProjectOpenValidatorTests`, `ProjectOpenIntegrationTests`, `RecentProjectStoreTests`, `ProjectLifecycleCoordinatorTests`, `ProjectSessionControllerTests`, `ProjectLifecycleIntegrationTests`, `RibbonCommandCatalogTests`, `ModernProjectStoreTests`, `ModernProjectAtomicSnapshotTests` et `Ft100SceneExporterTests`, plus un smoke WPF isolé.
 
 ### DEC-0048 - Direction artistique versionnee pour modernisation d'ecran
 

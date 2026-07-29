@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Documentation Index
 
-Date: 2026-07-18
+Date: 2026-07-29
 Status: Active enterprise documentation map
-Document version: `V2.1.4.0067`
+Document version: `V2.1.4.0068`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-29 | `V2.1.4.0068` | `PENDING` | Ajout de la spécification approuvée `DEC-0049` et du plan d’implémentation du cycle de vie autonome des projets. |
 | 2026-07-18 | `V2.1.4.0067` | `PENDING` | Correction Builder des bindings numeriques divergents : normalisation StateConfig/ValueBindings, validation fail-closed et audit de toutes les pages compilees. |
 | 2026-07-17 | `V2.1.4.0066` | `PENDING` | Ajout du contrat de direction artistique versionnee pour la modernisation des ecrans. |
 | 2026-07-17 | `V2.1.4.0065` | `PENDING` | Correction du filtre Etat sur SVG opaque : geometrie visuelle sous l'overlay, texte/controles au-dessus et ordre auteur entre objets inchange. |
@@ -238,6 +239,8 @@ Active specifications and implementation plans:
 18. `superpowers/plans/2026-07-16-tf100web-navigation-lifecycle-and-page-performance.md` - superseded execution plan; navigation and performance tasks are folded into the general conformance plan.
 19. `superpowers/specs/2026-07-16-scada-v2-tf100web-runtime-conformance-design.md` - approved `DEC-0047` architecture for exhaustive capabilities, manifest 2.3 negotiation and one shared semantic runtime.
 20. `superpowers/plans/2026-07-16-scada-v2-tf100web-runtime-conformance.md` - active pending implementation plan covering every currently authorable/exportable runtime family plus the four industrial integration pages.
+21. `superpowers/specs/2026-07-29-project-lifecycle-design.md` - approved `DEC-0049` architecture for project creation, fail-closed opening, safe closing, empty-shell startup and recent projects.
+22. `superpowers/plans/2026-07-29-project-lifecycle.md` - draft executable implementation plan for generalizing project roots, lifecycle commands, WPF session transitions and compatibility validation.
 
 Generated documentation:
 
