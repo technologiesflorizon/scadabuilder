@@ -13,10 +13,13 @@ namespace ScadaBuilderV2.App.Pages;
 public sealed class PageSourceProjectionResolver
 {
     /// <summary>Returns no projection for native pages and a confined HTML projection for imported pages.</summary>
-    public PageSourceProjection? Resolve(ScadaSceneReference page, string repositoryRoot)
+    public PageSourceProjection? Resolve(
+        ScadaSceneReference page,
+        string projectRoot,
+        string? importedSourceBaseRoot = null)
     {
         ArgumentNullException.ThrowIfNull(page);
-        ArgumentException.ThrowIfNullOrWhiteSpace(repositoryRoot);
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectRoot);
         if (page.EffectiveOrigin == PageOrigin.Native)
         {
             return null;
@@ -28,26 +31,26 @@ public sealed class PageSourceProjectionResolver
             throw new InvalidOperationException($"Imported page '{page.EffectivePageCode}' has no persisted source projection path.");
         }
 
-        var fullRepositoryRoot = Path.GetFullPath(repositoryRoot);
-        var fullSourcePath = Path.IsPathRooted(sourcePath)
-            ? Path.GetFullPath(sourcePath)
-            : Path.GetFullPath(Path.Combine(fullRepositoryRoot, sourcePath));
-        var repositoryPrefix = fullRepositoryRoot.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
-        if (!fullSourcePath.StartsWith(repositoryPrefix, StringComparison.OrdinalIgnoreCase))
+        foreach (var root in new[] { projectRoot, importedSourceBaseRoot }
+                     .Where(root => !string.IsNullOrWhiteSpace(root))
+                     .Cast<string>())
         {
-            throw new InvalidOperationException($"Imported projection for '{page.EffectivePageCode}' escapes the repository root.");
+            var fullRoot = Path.GetFullPath(root).TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            var fullSourcePath = Path.IsPathRooted(sourcePath)
+                ? Path.GetFullPath(sourcePath)
+                : Path.GetFullPath(Path.Combine(fullRoot, sourcePath));
+            var rootPrefix = fullRoot + Path.DirectorySeparatorChar;
+            if (fullSourcePath.StartsWith(rootPrefix, StringComparison.OrdinalIgnoreCase) && File.Exists(fullSourcePath))
+            {
+                var sourceRoot = Path.GetDirectoryName(fullSourcePath)
+                    ?? throw new InvalidOperationException("Imported projection path has no parent directory.");
+                return new PageSourceProjection(
+                    sourceRoot,
+                    Path.GetFileName(fullSourcePath),
+                    page.ImportProvenance?.SourceSystem ?? "Imported");
+            }
         }
 
-        if (!File.Exists(fullSourcePath))
-        {
-            throw new FileNotFoundException($"Imported projection for '{page.EffectivePageCode}' was not found.", fullSourcePath);
-        }
-
-        var sourceRoot = Path.GetDirectoryName(fullSourcePath)
-            ?? throw new InvalidOperationException("Imported projection path has no parent directory.");
-        return new PageSourceProjection(
-            sourceRoot,
-            Path.GetFileName(fullSourcePath),
-            page.ImportProvenance?.SourceSystem ?? "Imported");
+        throw new FileNotFoundException($"Imported projection for '{page.EffectivePageCode}' was not found in an approved source root.");
     }
 }

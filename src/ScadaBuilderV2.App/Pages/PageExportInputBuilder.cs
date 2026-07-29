@@ -18,6 +18,7 @@ public sealed class PageExportInputBuilder(
         IEnumerable<SceneWorkspaceTab> openTabs,
         SceneWorkspaceTab? activeTab,
         ScadaScene? activeScene,
+        string? importedSourceBaseRoot = null,
         CancellationToken cancellationToken = default)
     {
         var overrides = openTabs.ToDictionary(
@@ -30,7 +31,7 @@ public sealed class PageExportInputBuilder(
         var inputs = new List<Ft100ProjectPageExportInput>();
         foreach (var page in project.Scenes.Where(page => page.IncludeInBuild).OrderBy(page => page.EffectivePageCode, StringComparer.Ordinal))
         {
-            var source = projectionResolver.Resolve(page, repositoryRoot);
+            var source = projectionResolver.Resolve(page, repositoryRoot, importedSourceBaseRoot);
             inputs.Add(new Ft100ProjectPageExportInput(
                 Synchronize(snapshot.Scenes[page.PageKey], page),
                 source?.GetSourcePath(),

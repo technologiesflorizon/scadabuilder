@@ -703,6 +703,7 @@
 
                     <avalonDock:LayoutDocumentPane>
                         <avalonDock:LayoutDocument Title="Canvas" ContentId="Canvas" CanClose="False" CanFloat="False">
+                <Grid>
                 <DockPanel>
                     <TabControl x:Name="SceneTabs"
                                 DockPanel.Dock="Top"
@@ -750,6 +751,86 @@
                         </Grid>
                     </Border>
                 </DockPanel>
+                    <Border x:Name="WelcomePanel"
+                            Background="#F4F8F6"
+                            BorderBrush="{StaticResource BorderBrushSoft}"
+                            BorderThickness="1"
+                            Padding="28">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel MaxWidth="760" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock Text="SCADA Builder V2"
+                                           FontSize="30"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource InkBrush}"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="Créez ou ouvrez un projet pour commencer l’authoring SCADA/HMI."
+                                           FontSize="14"
+                                           Foreground="{StaticResource MutedBrush}"
+                                           TextAlignment="Center"
+                                           Margin="0,8,0,24"/>
+                                <UniformGrid Columns="3" Margin="0,0,0,24">
+                                    <Button Content="Nouveau projet"
+                                            MinHeight="52"
+                                            Margin="6"
+                                            Click="OnWelcomeNewProjectClick"/>
+                                    <Button Content="Ouvrir un projet"
+                                            MinHeight="52"
+                                            Margin="6"
+                                            Click="OnWelcomeOpenProjectClick"/>
+                                    <Button x:Name="ReopenLastProjectButton"
+                                            Content="Rouvrir le dernier"
+                                            MinHeight="52"
+                                            Margin="6"
+                                            Click="OnWelcomeReopenLastClick"/>
+                                </UniformGrid>
+                                <TextBlock Text="Projets récents"
+                                           FontSize="17"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource InkBrush}"
+                                           Margin="6,0,6,8"/>
+                                <ItemsControl ItemsSource="{Binding RecentProjects}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border Background="White"
+                                                    BorderBrush="{StaticResource BorderBrushSoft}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="4"
+                                                    Margin="6,3"
+                                                    Padding="10">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                        <ColumnDefinition Width="Auto"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <StackPanel>
+                                                        <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold"/>
+                                                        <TextBlock Text="{Binding ProjectFilePath}"
+                                                                   Foreground="{StaticResource MutedBrush}"
+                                                                   FontSize="11"
+                                                                   TextTrimming="CharacterEllipsis"
+                                                                   ToolTip="{Binding ProjectFilePath}"/>
+                                                    </StackPanel>
+                                                    <Button Grid.Column="1"
+                                                            Content="Ouvrir"
+                                                            MinWidth="76"
+                                                            Tag="{Binding}"
+                                                            IsEnabled="{Binding IsAvailable}"
+                                                            Click="OnRecentProjectOpenClick"/>
+                                                    <Button Grid.Column="2"
+                                                            Content="Retirer"
+                                                            MinWidth="72"
+                                                            Tag="{Binding}"
+                                                            Click="OnRecentProjectRemoveClick"/>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
                         </avalonDock:LayoutDocument>
                     </avalonDock:LayoutDocumentPane>
 

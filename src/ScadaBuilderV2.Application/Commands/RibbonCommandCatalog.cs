@@ -33,9 +33,11 @@ public static class RibbonCommandCatalog
             ["File"] =
             [
                 Group("Projet",
-                    Disabled("project.new", "Nouveau", "Icon.Project.New", "Creation de projet a venir"),
-                    Disabled("project.open", "Ouvrir", "Icon.Project.Open", "Ouverture de projet a venir"),
-                    Enabled("project.save", "Enregistrer", "Icon.Project.Save", "Enregistrer la scene active")),
+                    Enabled("project.new", "Nouveau", "Icon.Project.New", "Créer un projet dans un dossier choisi"),
+                    Enabled("project.open", "Ouvrir", "Icon.Project.Open", "Ouvrir un fichier project.json"),
+                    Enabled("project.reopen-last", "Rouvrir", "Icon.Project.Open", "Rouvrir le dernier projet disponible"),
+                    Enabled("project.save", "Enregistrer", "Icon.Project.Save", "Enregistrer le projet et toutes ses scènes"),
+                    Enabled("project.close", "Fermer", "Icon.Project.Close", "Fermer le projet actif")),
                 Group("Import",
                     Disabled("import.legacy", "Legacy", "Icon.Import.Legacy", "Import legacy dedie a venir"),
                     Enabled("import.tags", "Tags", "Icon.Import.Tags", "Importer les tags SCADA")),

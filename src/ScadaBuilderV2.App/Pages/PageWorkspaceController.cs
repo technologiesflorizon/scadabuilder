@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using ScadaBuilderV2.App.Workspace;
 using ScadaBuilderV2.Application.History;
 using ScadaBuilderV2.Application.Pages;
@@ -13,7 +14,7 @@ public sealed class PageWorkspaceController(
     ModernProjectStore store,
     IPageWorkspaceHost host)
 {
-    private string? repositoryRoot;
+    private string? projectRoot;
     private ScadaProject? project;
     private IReadOnlyList<PendingPageDeletion> pendingDeletions = Array.Empty<PendingPageDeletion>();
     private readonly Dictionary<Guid, ScadaScene> historyScenes = [];
@@ -30,8 +31,27 @@ public sealed class PageWorkspaceController(
 
     public void Initialize(string root, ScadaProject modernProject)
     {
-        repositoryRoot = string.IsNullOrWhiteSpace(root) ? throw new ArgumentException("Repository root is required.", nameof(root)) : root;
+        projectRoot = string.IsNullOrWhiteSpace(root) ? throw new ArgumentException("Project root is required.", nameof(root)) : Path.GetFullPath(root);
         project = modernProject ?? throw new ArgumentNullException(nameof(modernProject));
+    }
+
+    /// <summary>Clears every project-scoped tab, history entry and pending mutation.</summary>
+    public void Reset()
+    {
+        foreach (var tab in OpenTabs)
+        {
+            tab.History.Clear();
+        }
+        OpenTabs.Clear();
+        History.Clear();
+        ActiveTab = null;
+        project = null;
+        projectRoot = null;
+        pendingDeletions = [];
+        historyScenes.Clear();
+        historyActivePageKey = null;
+        historySelectedPageKey = null;
+        IsProjectDirty = false;
     }
 
     public void ReplaceProject(ScadaProject modernProject, bool markDirty = false)
@@ -139,7 +159,7 @@ public sealed class PageWorkspaceController(
 
         var page = project!.Scenes.SingleOrDefault(item => item.PageKey == pageKey)
             ?? throw new InvalidOperationException("The requested page does not exist in the modern project.");
-        var scene = await store.LoadOrCreateSceneAsync(repositoryRoot!, page, cancellationToken);
+        var scene = await store.LoadOrCreateSceneFromProjectRootAsync(projectRoot!, page, cancellationToken);
         var tab = new SceneWorkspaceTab(new PageWorkspaceEntry(page), scene);
         OpenTabs.Add(tab);
         await ActivateAsync(tab);
@@ -186,8 +206,8 @@ public sealed class PageWorkspaceController(
         var overrides = OpenTabs.ToDictionary(
             tab => tab.PageKey,
             tab => tab.Scene);
-        return await store.ReadWorkspaceSnapshotAsync(
-            repositoryRoot!,
+        return await store.ReadWorkspaceSnapshotFromProjectRootAsync(
+            projectRoot!,
             new PageWorkspaceReadContext(
                 overrides,
                 OpenTabs.Select(tab => tab.PageKey).ToArray(),
@@ -199,7 +219,7 @@ public sealed class PageWorkspaceController(
     public async Task SaveAsync(CancellationToken cancellationToken = default)
     {
         var snapshot = await CaptureSnapshotAsync(cancellationToken);
-        await store.SaveWorkspaceSnapshotAsync(repositoryRoot!, snapshot, cancellationToken);
+        await store.SaveWorkspaceSnapshotToProjectRootAsync(projectRoot!, snapshot, cancellationToken);
         project = snapshot.Project;
         foreach (var tab in OpenTabs) tab.IsDirty = false;
         IsProjectDirty = false;
@@ -282,6 +302,6 @@ public sealed class PageWorkspaceController(
 
     private void EnsureInitialized()
     {
-        if (repositoryRoot is null || project is null) throw new InvalidOperationException("The page workspace is not initialized.");
+        if (projectRoot is null || project is null) throw new InvalidOperationException("The page workspace is not initialized.");
     }
 }

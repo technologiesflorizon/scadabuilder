@@ -19,8 +19,8 @@ public sealed class PageWorkspaceExtractionContractTests
         StringAssert.Contains(shell, "PagesListBox.ItemsSource = _pagesPanel.View");
         StringAssert.Contains(shell, "_pageWorkspaceController.OpenAsync");
         StringAssert.Contains(shell, "_pageExportInputBuilder.BuildAsync");
-        StringAssert.Contains(controller, "ReadWorkspaceSnapshotAsync");
-        StringAssert.Contains(controller, "SaveWorkspaceSnapshotAsync");
+        StringAssert.Contains(controller, "ReadWorkspaceSnapshotFromProjectRootAsync");
+        StringAssert.Contains(controller, "SaveWorkspaceSnapshotToProjectRootAsync");
         Assert.IsFalse(controller.Contains("ReconcileProjectFromOpenScenes", StringComparison.Ordinal));
         Assert.IsFalse(shell.Contains("UpdateModernProjectFromActiveScene", StringComparison.Ordinal));
         Assert.IsFalse(shell.Contains("EnsureHomePageStillValid", StringComparison.Ordinal));

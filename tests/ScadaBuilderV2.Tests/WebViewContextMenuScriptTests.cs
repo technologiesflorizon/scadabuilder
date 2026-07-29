@@ -534,7 +534,7 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "OpenSelectedLegacyInElementStudioAsync");
         StringAssert.Contains(source, "CaptureSelectedLegacyElementsForStudioAsync");
         StringAssert.Contains(source, "CreateElementStudioImportPackage(selectedLegacy)");
-        StringAssert.Contains(source, "WriteToProjectAsync(package, projectsRoot)");
+        StringAssert.Contains(source, "WriteElementStudioPackageToActiveProjectAsync(package)");
         StringAssert.Contains(source, "TryLaunchElementStudioAsync(packagePath)");
         StringAssert.Contains(source, "AppendElementStudioLaunchLog(packagePath, launch)");
         StringAssert.Contains(source, "startInfo.ArgumentList.Add(packagePath);");

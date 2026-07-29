@@ -26,7 +26,11 @@ public sealed class RibbonCommandCatalogTests
             .ToArray();
 
         Assert.AreEqual(0, duplicateIds.Length, $"Duplicate ribbon command ids: {string.Join(", ", duplicateIds)}");
+        CollectionAssert.Contains(commands.Select(command => command.Id).ToArray(), "project.new");
+        CollectionAssert.Contains(commands.Select(command => command.Id).ToArray(), "project.open");
+        CollectionAssert.Contains(commands.Select(command => command.Id).ToArray(), "project.reopen-last");
         CollectionAssert.Contains(commands.Select(command => command.Id).ToArray(), "project.save");
+        CollectionAssert.Contains(commands.Select(command => command.Id).ToArray(), "project.close");
         CollectionAssert.Contains(commands.Select(command => command.Id).ToArray(), "page.new");
         CollectionAssert.Contains(commands.Select(command => command.Id).ToArray(), "page.validate");
         CollectionAssert.Contains(commands.Select(command => command.Id).ToArray(), "export.ft100.sb2");

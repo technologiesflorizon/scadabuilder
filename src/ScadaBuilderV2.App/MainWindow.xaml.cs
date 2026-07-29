@@ -39,10 +39,13 @@ using ScadaBuilderV2.App.TableEditor;
 using ScadaBuilderV2.App.Ribbon;
 using ScadaBuilderV2.App.EditorBridge;
 using ScadaBuilderV2.Application.Tables;
+using ScadaBuilderV2.Application.Projects;
+using ScadaBuilderV2.Infrastructure.Shell;
+using ScadaBuilderV2.App.Projects;
 
 namespace ScadaBuilderV2.App;
 
-public partial class MainWindow : Window, IPageWorkspaceHost
+public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleHost
 {
     public static readonly RoutedCommand UndoSceneCommand = new(nameof(UndoSceneCommand), typeof(MainWindow));
     public static readonly RoutedCommand RedoSceneCommand = new(nameof(RedoSceneCommand), typeof(MainWindow));
@@ -52,8 +55,10 @@ public partial class MainWindow : Window, IPageWorkspaceHost
     private const string TagCatalogAllDatatypesFilter = "Tous les types";
     private const string TagCatalogAllAccessFilter = "Tous les acces";
     private const string TagCatalogAllStatesFilter = "Tous les etats";
-    private readonly IReferenceScadaProjectReader _referenceReader = new ReferenceScadaProjectReader();
     private readonly ModernProjectStore _modernProjectStore = new();
+    private readonly ProjectWorkspaceRepository _projectWorkspaceRepository;
+    private readonly RecentProjectStore _recentProjectStore = new();
+    private readonly ProjectLifecycleCoordinator _projectLifecycleCoordinator;
     private readonly PageSourceProjectionResolver _pageSourceProjectionResolver = new();
     private readonly PageWorkspaceController _pageWorkspaceController;
     private readonly PageExportInputBuilder _pageExportInputBuilder;
@@ -96,11 +101,12 @@ public partial class MainWindow : Window, IPageWorkspaceHost
     {
         PropertyNameCaseInsensitive = true
     };
-    private ReferenceScadaProjectManifest? _referenceProject;
     private ScadaProject? _modernProject;
     private ScadaScene? _activeScene;
     private SceneWorkspaceTab? _activeSceneTab;
     private string? _repositoryRoot;
+    private ProjectWorkspaceLocation? _activeProjectLocation;
+    private string? _importedSourceBaseRoot;
     private int _extractedCandidateCount;
     private bool _webMessageHooked;
     private bool _isUpdatingBackgroundColorControls;
@@ -144,6 +150,8 @@ public partial class MainWindow : Window, IPageWorkspaceHost
 
     public ObservableCollection<RibbonFamilyViewModel> InsertFamilies { get; } = [];
 
+    public ObservableCollection<RecentProjectEntry> RecentProjects { get; } = [];
+
     public PagesPanelViewModel PagesPanel => _pagesPanel;
 
     public PagePropertiesViewModel PageProperties => _pageProperties;
@@ -152,6 +160,13 @@ public partial class MainWindow : Window, IPageWorkspaceHost
 
     public MainWindow()
     {
+        _projectWorkspaceRepository = new ProjectWorkspaceRepository(
+            _modernProjectStore,
+            new ReferenceProjectCompatibilityLocator());
+        _projectLifecycleCoordinator = new ProjectLifecycleCoordinator(
+            _projectWorkspaceRepository,
+            _recentProjectStore,
+            this);
         _tableRibbonViewModel = new TableRibbonViewModel(_tableAuthoringSession);
         _tableEditorController = new TableEditorController(
             this,
@@ -159,7 +174,9 @@ public partial class MainWindow : Window, IPageWorkspaceHost
             CanCommitTableTransform,
             () => _modernProject?.TagCatalog);
         _pageWorkspaceController = new PageWorkspaceController(_modernProjectStore, this);
-        _pageExportInputBuilder = new PageExportInputBuilder(_modernProjectStore, _pageSourceProjectionResolver);
+        _pageExportInputBuilder = new PageExportInputBuilder(
+            new ProjectRootWorkspaceStore(_modernProjectStore),
+            _pageSourceProjectionResolver);
         RegisterPageApplicationCommands();
         _pageCommandController = new PageCommandController(
             this,
@@ -211,43 +228,85 @@ public partial class MainWindow : Window, IPageWorkspaceHost
     {
         try
         {
-            await LoadReferenceProjectAsync();
+            await RefreshRecentProjectsAsync();
+            ShowProjectWelcome();
             if (!_diagnosticsPanel.HasIssues) DiagnosticsAnchorable.Hide();
         }
         catch (Exception ex)
         {
-            SetStatus($"Erreur chargement source legacy: {ex.Message}");
+            SetStatus($"Initialisation de l'accueil impossible: {ex.Message}");
         }
     }
 
-    private async Task LoadReferenceProjectAsync()
+    bool IProjectLifecycleHost.HasActiveProject => _activeProjectLocation is not null && _modernProject is not null;
+
+    bool IProjectLifecycleHost.HasUnsavedChanges
     {
-        _diagnosticsPanel.Clear();
-        _repositoryRoot = ResolveRepositoryRoot();
-        _referenceProject = await _referenceReader.LoadAmrReferenceAsync(_repositoryRoot);
-        var importedPages = new List<ImportedPageDescriptor>();
-        foreach (var page in _referenceProject.Pages)
+        get
         {
-            var source = await ResolveLegacyViewerSourceAsync(page.AbsolutePath, page.Id);
-            var sourcePath = source is null
-                ? null
-                : Path.GetRelativePath(
-                    _repositoryRoot,
-                    Path.Combine(source.RootPath, source.RelativeHtmlSource));
-            importedPages.Add(new ImportedPageDescriptor(page.Id, page.Title, sourcePath));
+            SaveActiveTabTransientState();
+            return _activeSceneDirty ||
+                   _pageWorkspaceController.IsProjectDirty ||
+                   _pageWorkspaceController.OpenTabs.Any(tab => tab.IsDirty);
         }
-        var sceneReferences = PageWorkspaceController.CreateImportedPageReferences("AMR_REF_SCADA_V2", importedPages);
-        _modernProject = await _modernProjectStore.EnsureReferenceModernProjectAsync(_repositoryRoot, sceneReferences);
-        _pageWorkspaceController.Initialize(_repositoryRoot, _modernProject);
+    }
+
+    async Task<ProjectCloseDecision> IProjectLifecycleHost.RequestCloseDecisionAsync(CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        var result = MessageBox.Show(
+            this,
+            $"Le projet « {_modernProject?.Name ?? "Projet"} » contient des modifications non sauvegardées.{Environment.NewLine}{Environment.NewLine}Voulez-vous les enregistrer?",
+            "Modifications non sauvegardées",
+            MessageBoxButton.YesNoCancel,
+            MessageBoxImage.Warning);
+        return await Task.FromResult(result switch
+        {
+            MessageBoxResult.Yes => ProjectCloseDecision.Save,
+            MessageBoxResult.No => ProjectCloseDecision.Discard,
+            _ => ProjectCloseDecision.Cancel
+        });
+    }
+
+    async Task IProjectLifecycleHost.SaveActiveProjectAsync(CancellationToken cancellationToken)
+    {
+        if (_modernProject is null || _activeProjectLocation is null)
+        {
+            throw new InvalidOperationException("Aucun projet actif à sauvegarder.");
+        }
+        SaveActiveTabTransientState();
+        _pageWorkspaceController.ReplaceProject(_modernProject);
+        await _pageWorkspaceController.SaveAsync(cancellationToken);
+        _modernProject = _pageWorkspaceController.Project ?? _modernProject;
+        _activeSceneDirty = false;
+        SetStatus($"Projet sauvegardé: {_modernProject.Name}");
+    }
+
+    async Task IProjectLifecycleHost.ActivateProjectAsync(
+        ProjectLoadCandidate candidate,
+        CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(candidate);
+        cancellationToken.ThrowIfCancellationRequested();
+        await CloseActiveProjectCoreAsync();
+
+        _activeProjectLocation = candidate.Location;
+        _repositoryRoot = candidate.Location.ProjectRoot;
+        _importedSourceBaseRoot = candidate.Location.ImportedSourceBaseRoot;
+        _modernProject = candidate.Snapshot.Project;
+        _pageWorkspaceController.Initialize(candidate.Location.ProjectRoot, _modernProject);
+
+        ProjectNameText.Text = $"{_modernProject.Name} ({_modernProject.Scenes.Count} pages)";
+        _pagesPanel.Load(_modernProject, candidate.Diagnostics);
+        PagesListBox.ItemsSource = _pagesPanel.View;
+        RefreshProjectTagSummary();
         await RefreshLibrarySelectorAsync();
 
-        ProjectNameText.Text = $"{_referenceProject.Name} ({_referenceProject.Pages.Count} pages)";
-        RefreshProjectTagSummary();
-        _pagesPanel.Load(_modernProject);
-        PagesListBox.ItemsSource = _pagesPanel.View;
+        WelcomePanel.Visibility = Visibility.Collapsed;
+        SceneTabs.Visibility = Visibility.Visible;
+        RefreshActiveRibbonCommandStates();
 
         var preferredPage = _modernProject.Scenes.FirstOrDefault(page => page.PageKey == _modernProject.EffectiveHomePageKey)
-            ?? _modernProject.Scenes.FirstOrDefault(page => page.EffectivePageCode == "win00008")
             ?? _modernProject.Scenes.FirstOrDefault();
         if (preferredPage is not null)
         {
@@ -260,11 +319,88 @@ public partial class MainWindow : Window, IPageWorkspaceHost
             {
                 _isUpdatingPageSelection = false;
             }
-
-            await _pageWorkspaceController.OpenAsync(preferredPage.PageKey);
+            await _pageWorkspaceController.OpenAsync(preferredPage.PageKey, cancellationToken);
+        }
+        else
+        {
+            SetPreviewPlaceholder("Projet ouvert sans page.");
         }
 
-        SetStatus($"Source legacy chargee en lecture seule: {_referenceProject.Name}");
+        await RefreshRecentProjectsAsync();
+        SetStatus($"Projet ouvert: {_modernProject.Name}");
+    }
+
+    async Task IProjectLifecycleHost.CloseActiveProjectAsync(CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        await CloseActiveProjectCoreAsync();
+        await RefreshRecentProjectsAsync();
+        ShowProjectWelcome();
+    }
+
+    private Task CloseActiveProjectCoreAsync()
+    {
+        StopElementLibraryWatcher();
+        foreach (var tab in _pageWorkspaceController.OpenTabs)
+        {
+            tab.History.Clear();
+        }
+        _pageWorkspaceController.Reset();
+        _activeProjectLocation = null;
+        _repositoryRoot = null;
+        _importedSourceBaseRoot = null;
+        _modernProject = null;
+        _activeScene = null;
+        _activeSceneTab = null;
+        _activeSceneDirty = false;
+        _selectedSceneObject = null;
+        _selectedSceneObjectIds.Clear();
+        _selectedSourceObjectIds.Clear();
+        _hiddenSourceObjectIds.Clear();
+        _sourceObjects.Clear();
+        _elementLibraryItems.Clear();
+        _tagCatalogItems.Clear();
+        _libraryEntries = [];
+        _selectedLibraryEntry = null;
+        LibrarySelectorComboBox.ItemsSource = null;
+        PagesListBox.ItemsSource = null;
+        ProjectNameText.Text = "Aucun projet actif";
+        ProjectTagsSummaryText.Text = "Aucun catalogue importé";
+        ActivePageText.Text = "-";
+        PreviewSourceText.Text = "-";
+        _diagnosticsPanel.Clear();
+        RefreshSelectionUi();
+        RefreshModernSceneUi();
+        SetPreviewPlaceholder("Aucun projet ouvert.");
+        RefreshActiveRibbonCommandStates();
+        return Task.CompletedTask;
+    }
+
+    private async Task RefreshRecentProjectsAsync()
+    {
+        RecentProjects.Clear();
+        foreach (var entry in await _recentProjectStore.ReadAsync())
+        {
+            RecentProjects.Add(entry);
+        }
+        ReopenLastProjectButton.IsEnabled = RecentProjects.Any(entry => entry.IsAvailable);
+    }
+
+    private void ShowProjectWelcome()
+    {
+        WelcomePanel.Visibility = Visibility.Visible;
+        SceneTabs.Visibility = Visibility.Collapsed;
+        SetPreviewPlaceholder("Créez ou ouvrez un projet pour commencer.");
+        RefreshActiveRibbonCommandStates();
+    }
+
+    private void PresentProjectRepositoryFailure(ProjectRepositoryResult result)
+    {
+        var message = result.Diagnostics.Count == 0
+            ? "L'opération projet n'a pas pu être terminée."
+            : string.Join(Environment.NewLine, result.Diagnostics.Select(issue => $"• {issue.Message}"));
+        MessageBox.Show(this, message, "SCADA Builder V2", MessageBoxButton.OK, MessageBoxImage.Error);
+        SetStatus(result.Diagnostics.FirstOrDefault()?.Message ?? message);
     }
 
     private void OnPageSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -330,14 +466,17 @@ public partial class MainWindow : Window, IPageWorkspaceHost
         }
 
         var pageReference = _activeSceneTab.Page;
-        var source = _pageSourceProjectionResolver.Resolve(pageReference, _repositoryRoot);
+        var source = _pageSourceProjectionResolver.Resolve(
+            pageReference,
+            _repositoryRoot,
+            _importedSourceBaseRoot);
         PreviewDocument preview;
         string sourceKind;
         string previewRoot;
         if (source is null)
         {
             previewRoot = Path.Combine(
-                ModernProjectStore.GetReferenceModernProjectRoot(_repositoryRoot),
+                _repositoryRoot,
                 ".studio",
                 "preview");
             preview = await PreviewDocument.MaterializeNativeAsync(
@@ -522,14 +661,10 @@ public partial class MainWindow : Window, IPageWorkspaceHost
 
         e.Cancel = true;
         SaveActiveTabTransientState();
-
-        foreach (var tab in _pageWorkspaceController.OpenTabs.Where(tab => tab.IsDirty).ToArray())
+        if (!await _projectLifecycleCoordinator.CloseAsync())
         {
-            if (!await ConfirmCloseDirtyPageAsync(tab))
-            {
-                SetStatus("Fermeture annulee: sauvegarde des scenes non terminee.");
-                return;
-            }
+            SetStatus("Fermeture annulée: le projet actif demeure ouvert.");
+            return;
         }
 
         await SaveDockLayoutAsync();
@@ -703,105 +838,6 @@ public partial class MainWindow : Window, IPageWorkspaceHost
         _hiddenSourceObjectIds.Clear();
         CacheConvertedLegacyIdsFromActiveScene();
         _sourceObjects.Clear();
-    }
-
-    private static async Task<string> ReadLegacyHtmlSourceAsync(string pageJsonPath)
-    {
-        await using var stream = File.OpenRead(pageJsonPath);
-        using var document = await JsonDocument.ParseAsync(stream);
-
-        if (document.RootElement.TryGetProperty("legacy", out var legacy) &&
-            legacy.TryGetProperty("source_html", out var sourceHtml))
-        {
-            return sourceHtml.GetString()?.Trim() ?? "";
-        }
-
-        if (document.RootElement.TryGetProperty("layers", out var layers) &&
-            layers.ValueKind == JsonValueKind.Array)
-        {
-            foreach (var layer in layers.EnumerateArray())
-            {
-                if (layer.TryGetProperty("type", out var type) &&
-                    string.Equals(type.GetString(), "legacy_embed", StringComparison.OrdinalIgnoreCase) &&
-                    layer.TryGetProperty("src", out var src))
-                {
-                    return src.GetString()?.Trim().TrimStart('.', '/', '\\') ?? "";
-                }
-            }
-        }
-
-        return "";
-    }
-
-    private async Task<LegacyViewerSource?> ResolveLegacyViewerSourceAsync(string pageManifestPath, string pageCode)
-    {
-        if (_referenceProject is null)
-        {
-            return null;
-        }
-
-        var relativeHtmlSource = await ReadLegacyHtmlSourceAsync(pageManifestPath);
-        if (!string.IsNullOrWhiteSpace(relativeHtmlSource))
-        {
-            var referenceSource = new LegacyViewerSource(_referenceProject.ProjectDirectory, relativeHtmlSource, "reference-html");
-            if (File.Exists(Path.Combine(referenceSource.RootPath, referenceSource.RelativeHtmlSource)))
-            {
-                return referenceSource;
-            }
-        }
-
-        if (_repositoryRoot is not null)
-        {
-            var rawLegacyHtml = FindRawLegacyHtml(_repositoryRoot, pageCode);
-            if (rawLegacyHtml is not null)
-            {
-                return rawLegacyHtml;
-            }
-        }
-
-        return string.IsNullOrWhiteSpace(relativeHtmlSource)
-            ? null
-            : new LegacyViewerSource(_referenceProject.ProjectDirectory, relativeHtmlSource, "reference-html-missing");
-    }
-
-    private static LegacyViewerSource? FindRawLegacyHtml(string repositoryRoot, string pageId)
-    {
-        var rawHtmlRoot = Path.Combine(repositoryRoot, "03_web_legacy", "html_pages");
-        if (!Directory.Exists(rawHtmlRoot))
-        {
-            return null;
-        }
-
-        var rawFile = Directory
-            .EnumerateFiles(rawHtmlRoot, $"{pageId}_*.html", SearchOption.TopDirectoryOnly)
-            .Where(path => !Path.GetFileName(path).Contains("_updated", StringComparison.OrdinalIgnoreCase))
-            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
-            .FirstOrDefault();
-
-        if (rawFile is null)
-        {
-            return null;
-        }
-
-        var relativePath = Path.GetRelativePath(repositoryRoot, rawFile);
-        return new LegacyViewerSource(repositoryRoot, relativePath, "raw-html");
-    }
-
-    private static string ResolveRepositoryRoot()
-    {
-        var current = new DirectoryInfo(Directory.GetCurrentDirectory());
-        while (current is not null)
-        {
-            if (Directory.Exists(Path.Combine(current.FullName, "SCADA_BUILDER")) &&
-                Directory.Exists(Path.Combine(current.FullName, "SCADA_BUILDER_V2")))
-            {
-                return current.FullName;
-            }
-
-            current = current.Parent;
-        }
-
-        throw new DirectoryNotFoundException("Unable to resolve SCADA_AMR_GROUP repository root.");
     }
 
     private void SetStatus(string text)
@@ -1054,7 +1090,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
         }
 
         var libraryRoot = Path.Combine(
-            ModernProjectStore.GetReferenceModernProjectRoot(_repositoryRoot),
+            _repositoryRoot,
             "library",
             "elements");
 
@@ -1161,9 +1197,6 @@ public partial class MainWindow : Window, IPageWorkspaceHost
 
         return Path.Combine(
             _repositoryRoot,
-            "SCADA_BUILDER_V2",
-            "projects",
-            "AMR_REF_SCADA_V2",
             ".studio",
             "logs",
             "element-studio-launch.log");
@@ -2401,8 +2434,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
         try
         {
             var package = CreateElementStudioImportPackage(selectedLegacy);
-            var projectsRoot = Path.Combine(_repositoryRoot, "SCADA_BUILDER_V2", "projects");
-            var packagePath = await _elementStudioPackageWriter.WriteToProjectAsync(package, projectsRoot);
+            var packagePath = await WriteElementStudioPackageToActiveProjectAsync(package);
             var launch = await TryLaunchElementStudioAsync(packagePath);
             AppendElementStudioLaunchLog(packagePath, launch);
             SetStatus(launch.Launched
@@ -2445,8 +2477,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost
             var sepPackage = await _elementStudioComponentPackageStore.ReadFromPathAsync(sepFilePath);
             var version = LoadVersionText();
             var editPackage = ElementStudioComponentToImportPackageMapper.ToEditablePackage(sepPackage, sepFilePath, version);
-            var projectsRoot = Path.Combine(_repositoryRoot, "SCADA_BUILDER_V2", "projects");
-            var packagePath = await _elementStudioPackageWriter.WriteToProjectAsync(editPackage, projectsRoot);
+            var packagePath = await WriteElementStudioPackageToActiveProjectAsync(editPackage);
             var launch = await TryLaunchElementStudioAsync(packagePath);
             AppendElementStudioLaunchLog(packagePath, launch);
             SetStatus(launch.Launched
@@ -2472,6 +2503,21 @@ public partial class MainWindow : Window, IPageWorkspaceHost
         }
 
         return null;
+    }
+
+    private Task<string> WriteElementStudioPackageToActiveProjectAsync(ElementStudioImportPackage package)
+    {
+        if (_repositoryRoot is null)
+        {
+            throw new InvalidOperationException("Aucun projet actif.");
+        }
+
+        var packagePath = Path.Combine(
+            _repositoryRoot,
+            ".studio",
+            "imports",
+            $"{SanitizeFileName(package.PackageId)}{ElementStudioImportPackageWriter.FileExtension}");
+        return _elementStudioPackageWriter.WriteToPathAsync(package, packagePath);
     }
 
     private async Task OpenElementStudioFromToolPaletteAsync()
@@ -2606,7 +2652,10 @@ public partial class MainWindow : Window, IPageWorkspaceHost
             return null;
         }
 
-        return _pageSourceProjectionResolver.Resolve(_activeSceneTab.Page, _repositoryRoot)?.GetSourcePath();
+        return _pageSourceProjectionResolver.Resolve(
+            _activeSceneTab.Page,
+            _repositoryRoot,
+            _importedSourceBaseRoot)?.GetSourcePath();
     }
 
     private void AppendElementStudioLaunchLog(string packagePath, ElementStudioLaunchResult launch)
@@ -2906,22 +2955,8 @@ public partial class MainWindow : Window, IPageWorkspaceHost
 
     private string? ResolveElementStudioExecutablePath()
     {
-        var candidates = new List<string>
-        {
-            Path.Combine(AppContext.BaseDirectory, "ScadaBuilderV2.ElementStudio.App.exe"),
-        };
-
-        var sourceRoot = ResolveElementStudioSourceRoot();
-        if (sourceRoot is not null)
-        {
-            candidates.Add(Path.Combine(sourceRoot, "bin", "Release", "net8.0-windows", "ScadaBuilderV2.ElementStudio.App.exe"));
-            candidates.Add(Path.Combine(sourceRoot, "bin", "Debug", "net8.0-windows", "ScadaBuilderV2.ElementStudio.App.exe"));
-        }
-
-        return candidates
-            .Where(File.Exists)
-            .OrderByDescending(File.GetLastWriteTimeUtc)
-            .FirstOrDefault();
+        var packagedExecutable = Path.Combine(AppContext.BaseDirectory, "ScadaBuilderV2.ElementStudio.App.exe");
+        return File.Exists(packagedExecutable) ? packagedExecutable : null;
     }
 
     private string? ResolveElementStudioProjectPath()
@@ -2938,16 +2973,18 @@ public partial class MainWindow : Window, IPageWorkspaceHost
 
     private string? ResolveElementStudioSourceRoot()
     {
-        if (_repositoryRoot is not null)
+        foreach (var startPath in new[] { AppContext.BaseDirectory, Directory.GetCurrentDirectory() })
         {
-            var fromRepositoryRoot = Path.Combine(
-                _repositoryRoot,
-                "SCADA_BUILDER_V2",
-                "src",
-                "ScadaBuilderV2.ElementStudio.App");
-            if (Directory.Exists(fromRepositoryRoot))
+            var current = new DirectoryInfo(startPath);
+            while (current is not null)
             {
-                return fromRepositoryRoot;
+                var candidate = Path.Combine(current.FullName, "src", "ScadaBuilderV2.ElementStudio.App");
+                if (File.Exists(Path.Combine(candidate, "ScadaBuilderV2.ElementStudio.App.csproj")))
+                {
+                    return candidate;
+                }
+
+                current = current.Parent;
             }
         }
 
@@ -4176,7 +4213,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         try
         {
-            var importDirectory = ModernProjectStore.GetTagImportDirectory(_repositoryRoot);
+            var importDirectory = ModernProjectStore.GetTagImportDirectoryFromProjectRoot(_repositoryRoot);
             Directory.CreateDirectory(importDirectory);
             var dialog = new Microsoft.Win32.OpenFileDialog
             {
@@ -4199,7 +4236,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             File.Copy(dialog.FileName, snapshotPath, overwrite: true);
 
             _modernProject = _modernProject with { TagCatalog = catalog with { SourceFileName = Path.GetFileName(snapshotPath) } };
-            await _modernProjectStore.SaveProjectAsync(_repositoryRoot, _modernProject);
+            await _modernProjectStore.SaveProjectToRootAsync(_repositoryRoot, _modernProject);
             RefreshProjectTagSummary();
             SetStatus($"Tags SCADA importes: {_modernProject.TagCatalog.Count} tag(s).");
         }
@@ -4220,7 +4257,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         try
         {
             var defaultExportRoot = Path.Combine(
-                ModernProjectStore.GetReferenceModernProjectRoot(_repositoryRoot),
+                _repositoryRoot,
                 "exports");
             Directory.CreateDirectory(defaultExportRoot);
 
@@ -4281,7 +4318,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         {
             SetStatus("Export FT100 .sb2: choix du fichier de destination...");
             var defaultExportRoot = Path.Combine(
-                ModernProjectStore.GetReferenceModernProjectRoot(_repositoryRoot),
+                _repositoryRoot,
                 "exports");
             Directory.CreateDirectory(defaultExportRoot);
 
@@ -4393,7 +4430,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             project,
             _pageWorkspaceController.OpenTabs,
             _activeSceneTab,
-            _activeScene);
+            _activeScene,
+            _importedSourceBaseRoot);
     }
 
     private void OnInsertInputTextClick(object sender, RoutedEventArgs e)
@@ -6753,11 +6791,28 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private static string LoadVersionText()
     {
-        var repositoryRoot = ResolveRepositoryRoot();
-        var versionPath = Path.Combine(repositoryRoot, "SCADA_BUILDER_V2", "VERSION");
-        return File.Exists(versionPath)
-            ? File.ReadAllText(versionPath).Trim()
-            : "V2.0.0.0000";
+        foreach (var startPath in new[] { AppContext.BaseDirectory, Directory.GetCurrentDirectory() })
+        {
+            var current = new DirectoryInfo(startPath);
+            while (current is not null)
+            {
+                foreach (var versionPath in new[]
+                {
+                    Path.Combine(current.FullName, "VERSION"),
+                    Path.Combine(current.FullName, "SCADA_BUILDER_V2", "VERSION")
+                })
+                {
+                    if (File.Exists(versionPath))
+                    {
+                        return File.ReadAllText(versionPath).Trim();
+                    }
+                }
+
+                current = current.Parent;
+            }
+        }
+
+        return typeof(MainWindow).Assembly.GetName().Version?.ToString() ?? "V2.0.0.0000";
     }
 
     private void InitializeRibbonCommandRegistry()
@@ -6767,6 +6822,91 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         {
             _ribbonTabs[tabKey] = groups;
         }
+    }
+
+    private async Task CreateProjectInteractiveAsync()
+    {
+        var initialParent = await _recentProjectStore.ReadCreationParentAsync();
+        var dialog = new CreateProjectDialog(initialParent) { Owner = this };
+        if (dialog.ShowDialog() != true || dialog.Result is null)
+        {
+            SetStatus("Création de projet annulée.");
+            return;
+        }
+
+        var result = await _projectLifecycleCoordinator.CreateAsync(dialog.Result);
+        if (!result.IsSuccess &&
+            !result.Diagnostics.Any(issue => issue.Code == "project.transition-cancelled"))
+        {
+            PresentProjectRepositoryFailure(result);
+        }
+    }
+
+    private async Task OpenProjectInteractiveAsync()
+    {
+        var dialog = new Microsoft.Win32.OpenFileDialog
+        {
+            Title = "Ouvrir un projet SCADA Builder V2",
+            Filter = "Projet SCADA Builder V2 (project.json)|project.json|Fichier JSON (*.json)|*.json",
+            Multiselect = false,
+            CheckFileExists = true
+        };
+        if (dialog.ShowDialog(this) != true)
+        {
+            SetStatus("Ouverture de projet annulée.");
+            return;
+        }
+
+        await OpenProjectPathAsync(dialog.FileName);
+    }
+
+    private async Task OpenProjectPathAsync(string projectFilePath)
+    {
+        var result = await _projectLifecycleCoordinator.OpenAsync(projectFilePath);
+        if (!result.IsSuccess &&
+            !result.Diagnostics.Any(issue => issue.Code == "project.transition-cancelled"))
+        {
+            PresentProjectRepositoryFailure(result);
+        }
+    }
+
+    private async Task ReopenLastProjectAsync()
+    {
+        var entry = RecentProjects.FirstOrDefault(item => item.IsAvailable);
+        if (entry is null)
+        {
+            SetStatus("Aucun projet récent disponible.");
+            return;
+        }
+        await OpenProjectPathAsync(entry.ProjectFilePath);
+    }
+
+    private async void OnWelcomeNewProjectClick(object sender, RoutedEventArgs e) =>
+        await CreateProjectInteractiveAsync();
+
+    private async void OnWelcomeOpenProjectClick(object sender, RoutedEventArgs e) =>
+        await OpenProjectInteractiveAsync();
+
+    private async void OnWelcomeReopenLastClick(object sender, RoutedEventArgs e) =>
+        await ReopenLastProjectAsync();
+
+    private async void OnRecentProjectOpenClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { Tag: RecentProjectEntry entry } && entry.IsAvailable)
+        {
+            await OpenProjectPathAsync(entry.ProjectFilePath);
+        }
+    }
+
+    private async void OnRecentProjectRemoveClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { Tag: RecentProjectEntry entry })
+        {
+            return;
+        }
+        await _recentProjectStore.RemoveAsync(entry.ProjectFilePath);
+        await RefreshRecentProjectsAsync();
+        SetStatus($"Projet retiré des récents: {entry.DisplayName}");
     }
 
     private void RegisterPageApplicationCommands()
@@ -6948,13 +7088,31 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             "page.duplicate" or
             "page.delete" or
             "page.properties";
+        var requiresProject = definition.Id is
+            "project.save" or
+            "project.close" or
+            "page.new" or
+            "page.validate" or
+            "import.tags" or
+            "export.ft100.folder" or
+            "export.ft100.sb2";
+        var requiresRecentProject = definition.Id == "project.reopen-last";
+        var hasProject = _activeProjectLocation is not null && _modernProject is not null;
         var hasPageSelection = GetSelectedModernPage() is not null;
         var hasRequiredElementSelection = !isElementLockCommand || ElementLockState.IsEnabled;
-        var isEnabled = definition.IsEnabled && (!requiresPageSelection || hasPageSelection) && hasRequiredElementSelection;
+        var isEnabled = definition.IsEnabled &&
+                        (!requiresPageSelection || hasPageSelection) &&
+                        (!requiresProject || hasProject) &&
+                        (!requiresRecentProject || RecentProjects.Any(entry => entry.IsAvailable)) &&
+                        hasRequiredElementSelection;
         var disabledReason = !definition.IsEnabled
             ? definition.DisabledReason
             : requiresPageSelection && !hasPageSelection
                 ? "Selectionnez une page dans le panneau Projet > Pages."
+                : requiresProject && !hasProject
+                    ? "Créez ou ouvrez un projet."
+                : requiresRecentProject && !RecentProjects.Any(entry => entry.IsAvailable)
+                    ? "Aucun projet récent disponible."
                 : isElementLockCommand && !ElementLockState.IsEnabled
                     ? "Selectionnez au moins un Element+."
                 : null;
@@ -7082,6 +7240,18 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         switch (commandId)
         {
+            case "project.new":
+                await CreateProjectInteractiveAsync();
+                break;
+            case "project.open":
+                await OpenProjectInteractiveAsync();
+                break;
+            case "project.close":
+                await _projectLifecycleCoordinator.CloseAsync();
+                break;
+            case "project.reopen-last":
+                await ReopenLastProjectAsync();
+                break;
             case "page.new":
             case "page.rename":
             case "page.duplicate":
@@ -7091,7 +7261,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 await ExecutePageSurfaceCommandAsync(commandId);
                 break;
             case "project.save":
-                OnSaveSceneClick(this, new RoutedEventArgs());
+                await _projectLifecycleCoordinator.SaveAsync();
                 break;
             case "import.tags":
                 OnImportTagsClick(this, new RoutedEventArgs());

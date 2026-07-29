@@ -73,9 +73,8 @@ public sealed class RecentProjectStore(string? settingsRoot = null) : IRecentPro
         await WriteRecordsAsync(entries, cancellationToken);
     }
 
-    public string GetDefaultCreationParent() => Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
-        "SCADA Builder V2 Projects");
+    public string GetDefaultCreationParent() =>
+        Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
 
     public async Task<string> ReadCreationParentAsync(CancellationToken cancellationToken = default)
     {

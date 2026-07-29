@@ -38,6 +38,15 @@
         </DrawingImage.Drawing>
     </DrawingImage>
 
+    <DrawingImage x:Key="Icon.Project.Close">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <GeometryDrawing Pen="{StaticResource Icon.OutlinePen}" Geometry="M5,4 L17,4 L20,7 L20,20 L5,20 Z"/>
+                <GeometryDrawing Pen="{StaticResource Icon.OutlinePen}" Geometry="M9,10 L16,17 M16,10 L9,17"/>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+
     <DrawingImage x:Key="Icon.Import.Legacy">
         <DrawingImage.Drawing>
             <DrawingGroup>
