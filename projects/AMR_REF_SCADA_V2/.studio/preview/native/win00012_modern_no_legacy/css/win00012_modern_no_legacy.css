@@ -37,7 +37,7 @@
   font-size: 11px;
   font-weight:normal;
   font-style:normal;
-  text-align:left;
+  text-align:center;
   text-transform:none;
   letter-spacing:0px;
   line-height:2px;
@@ -2102,7 +2102,7 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e1 {
   left: 259px;
-  top: 611px;
+  top: 605px;
   width: 60.429px;
   height: 28px;
   color: #F5FBFF;
@@ -2138,7 +2138,7 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e2 {
   left: 331.429px;
-  top: 611px;
+  top: 605px;
   width: 60.429px;
   height: 28px;
   color: #F5FBFF;
@@ -2174,7 +2174,7 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e3 {
   left: 403.857px;
-  top: 611px;
+  top: 605px;
   width: 60.429px;
   height: 28px;
   color: #F5FBFF;
@@ -2210,7 +2210,7 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e4 {
   left: 476.286px;
-  top: 611px;
+  top: 605px;
   width: 60.429px;
   height: 28px;
   color: #F5FBFF;
@@ -2246,7 +2246,7 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e5 {
   left: 548.714px;
-  top: 611px;
+  top: 605px;
   width: 60.429px;
   height: 28px;
   color: #F5FBFF;
@@ -2282,7 +2282,7 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e6 {
   left: 621.143px;
-  top: 611px;
+  top: 605px;
   width: 60.429px;
   height: 28px;
   color: #F5FBFF;
@@ -2318,7 +2318,7 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e7 {
   left: 693.571px;
-  top: 611px;
+  top: 605px;
   width: 60.429px;
   height: 28px;
   color: #F5FBFF;
@@ -2354,7 +2354,7 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e8 {
   left: 766px;
-  top: 611px;
+  top: 605px;
   width: 60.429px;
   height: 28px;
   color: #F5FBFF;
@@ -2390,7 +2390,7 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e9 {
   left: 838.429px;
-  top: 611px;
+  top: 605px;
   width: 60.429px;
   height: 28px;
   color: #F5FBFF;
@@ -2426,7 +2426,7 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e10 {
   left: 910.857px;
-  top: 611px;
+  top: 605px;
   width: 60.429px;
   height: 28px;
   color: #F5FBFF;
@@ -2462,7 +2462,7 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e11 {
   left: 983.286px;
-  top: 611px;
+  top: 605px;
   width: 60.429px;
   height: 28px;
   color: #F5FBFF;
@@ -2498,7 +2498,7 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e12 {
   left: 1055.714px;
-  top: 611px;
+  top: 605px;
   width: 60.429px;
   height: 28px;
   color: #F5FBFF;
@@ -2534,7 +2534,7 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e13 {
   left: 1128.143px;
-  top: 611px;
+  top: 605px;
   width: 60.429px;
   height: 28px;
   color: #F5FBFF;
@@ -2570,7 +2570,7 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__manual_defrost_e14 {
   left: 1200.571px;
-  top: 611px;
+  top: 605px;
   width: 60.429px;
   height: 28px;
   color: #F5FBFF;
@@ -2606,9 +2606,9 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e1 {
   left: 259px;
-  top: 649px;
+  top: 647px;
   width: 60.429px;
-  height: 16px;
+  height: 20px;
   color: #0F2A30;
   background: transparent;
   font-family: Segoe UI;
@@ -2628,9 +2628,9 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e2 {
   left: 331.429px;
-  top: 649px;
+  top: 647px;
   width: 60.429px;
-  height: 16px;
+  height: 20px;
   color: #0F2A30;
   background: transparent;
   font-family: Segoe UI;
@@ -2650,9 +2650,9 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e3 {
   left: 403.857px;
-  top: 649px;
+  top: 647px;
   width: 60.429px;
-  height: 16px;
+  height: 20px;
   color: #0F2A30;
   background: transparent;
   font-family: Segoe UI;
@@ -2672,9 +2672,9 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e4 {
   left: 476.286px;
-  top: 649px;
+  top: 647px;
   width: 60.429px;
-  height: 16px;
+  height: 20px;
   color: #0F2A30;
   background: transparent;
   font-family: Segoe UI;
@@ -2694,9 +2694,9 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e5 {
   left: 548.714px;
-  top: 649px;
+  top: 647px;
   width: 60.429px;
-  height: 16px;
+  height: 20px;
   color: #0F2A30;
   background: transparent;
   font-family: Segoe UI;
@@ -2716,9 +2716,9 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e6 {
   left: 621.143px;
-  top: 649px;
+  top: 647px;
   width: 60.429px;
-  height: 16px;
+  height: 20px;
   color: #0F2A30;
   background: transparent;
   font-family: Segoe UI;
@@ -2738,9 +2738,9 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e7 {
   left: 693.571px;
-  top: 649px;
+  top: 647px;
   width: 60.429px;
-  height: 16px;
+  height: 20px;
   color: #0F2A30;
   background: transparent;
   font-family: Segoe UI;
@@ -2760,9 +2760,9 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e8 {
   left: 766px;
-  top: 649px;
+  top: 647px;
   width: 60.429px;
-  height: 16px;
+  height: 20px;
   color: #0F2A30;
   background: transparent;
   font-family: Segoe UI;
@@ -2782,9 +2782,9 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e9 {
   left: 838.429px;
-  top: 649px;
+  top: 647px;
   width: 60.429px;
-  height: 16px;
+  height: 20px;
   color: #0F2A30;
   background: transparent;
   font-family: Segoe UI;
@@ -2804,9 +2804,9 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e10 {
   left: 910.857px;
-  top: 649px;
+  top: 647px;
   width: 60.429px;
-  height: 16px;
+  height: 20px;
   color: #0F2A30;
   background: transparent;
   font-family: Segoe UI;
@@ -2826,9 +2826,9 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e11 {
   left: 983.286px;
-  top: 649px;
+  top: 647px;
   width: 60.429px;
-  height: 16px;
+  height: 20px;
   color: #0F2A30;
   background: transparent;
   font-family: Segoe UI;
@@ -2848,9 +2848,9 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e12 {
   left: 1055.714px;
-  top: 649px;
+  top: 647px;
   width: 60.429px;
-  height: 16px;
+  height: 20px;
   color: #0F2A30;
   background: transparent;
   font-family: Segoe UI;
@@ -2870,9 +2870,9 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e13 {
   left: 1128.143px;
-  top: 649px;
+  top: 647px;
   width: 60.429px;
-  height: 16px;
+  height: 20px;
   color: #0F2A30;
   background: transparent;
   font-family: Segoe UI;
@@ -2892,9 +2892,9 @@
 
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e14 {
   left: 1200.571px;
-  top: 649px;
+  top: 647px;
   width: 60.429px;
-  height: 16px;
+  height: 20px;
   color: #0F2A30;
   background: transparent;
   font-family: Segoe UI;

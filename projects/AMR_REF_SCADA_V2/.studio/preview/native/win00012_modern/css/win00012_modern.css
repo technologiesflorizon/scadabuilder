@@ -14,6 +14,9 @@
 #ft100-win00012_modern .ft100-element--Button, #ft100-win00012_modern [data-scada-command-config] { cursor: pointer; }
 #ft100-win00012_modern .ft100-element--Button *, #ft100-win00012_modern [data-scada-command-config] * { cursor: pointer; }
 #ft100-win00012_modern .ft100-element--Button:active, #ft100-win00012_modern [data-scada-command-config]:active { cursor: pointer; }
+#ft100-win00012_modern [data-scada-action-bindings] { cursor: pointer; }
+#ft100-win00012_modern [data-scada-action-bindings] * { cursor: pointer; }
+#ft100-win00012_modern [data-scada-action-bindings]:active { cursor: pointer; }
 #ft100-win00012_modern .ft100-element--Button[data-scada-disabled="true"], #ft100-win00012_modern .ft100-element--Button[data-scada-disabled="true"] * { cursor: not-allowed; opacity: 0.62; }
 #ft100-win00012_modern .ft100-element svg { display: block; width: 100%; height: 100%; overflow: visible; }
 #ft100-win00012_modern .ft100-element input { width: 100%; height: 100%; box-sizing: border-box; }

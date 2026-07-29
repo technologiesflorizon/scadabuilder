@@ -105,7 +105,7 @@ public sealed class Win00012DefrostToggleConfigurationTests
     }
 
     [TestMethod]
-    public async Task ReferenceScene_AddsUnmappedManualDepartureAndDefrostStatusRows()
+    public async Task ReferenceScene_ConfiguresManualDepartureTogglesAndDefrostStatusRows()
     {
         var root = FindRepositoryRoot();
         var scenePath = Path.Combine(
@@ -114,17 +114,24 @@ public sealed class Win00012DefrostToggleConfigurationTests
             "AMR_REF_SCADA_V2",
             "scenes",
             "win00012_modern_no_legacy.scene.json");
+        var projectPath = Path.Combine(root, "projects", "AMR_REF_SCADA_V2", "project.json");
 
         using var document = JsonDocument.Parse(File.ReadAllText(scenePath));
+        using var projectDocument = JsonDocument.Parse(File.ReadAllText(projectPath));
+        var catalog = projectDocument.RootElement
+            .GetProperty("TagCatalog")
+            .GetProperty("Tags")
+            .EnumerateArray()
+            .ToDictionary(tag => tag.GetProperty("Id").GetString()!, StringComparer.Ordinal);
         var elements = document.RootElement.GetProperty("Elements").EnumerateArray().ToArray();
         var table = elements.Single(element => element.GetProperty("Id").GetString() == "table_defrost_upper");
-        Assert.AreEqual(564d, table.GetProperty("Bounds").GetProperty("Height").GetDouble(), 0.0001);
+        Assert.AreEqual(566d, table.GetProperty("Bounds").GetProperty("Height").GetDouble(), 0.0001);
 
         var rows = table.GetProperty("Table").GetProperty("Rows").EnumerateArray().ToArray();
         Assert.AreEqual(18, rows.Length);
-        Assert.AreEqual(20d, rows[15].GetProperty("Height").GetDouble(), 0.0001, "The existing spacer row must remain between setpoints and manual controls.");
-        Assert.AreEqual(32d, rows[16].GetProperty("Height").GetDouble(), 0.0001);
-        Assert.AreEqual(32d, rows[17].GetProperty("Height").GetDouble(), 0.0001);
+        Assert.AreEqual(8d, rows[15].GetProperty("Height").GetDouble(), 0.0001, "The spacer row must remain intentionally compact.");
+        Assert.AreEqual(40d, rows[16].GetProperty("Height").GetDouble(), 0.0001);
+        Assert.AreEqual(36.2978723404256d, rows[17].GetProperty("Height").GetDouble(), 0.0001);
 
         var addedCells = table.GetProperty("Table").GetProperty("Cells").EnumerateArray()
             .Where(cell => cell.GetProperty("Row").GetInt32() >= 16)
@@ -159,19 +166,33 @@ public sealed class Win00012DefrostToggleConfigurationTests
             Assert.AreEqual("DÉPART", button.GetProperty("Data").GetProperty("Text").GetString());
             Assert.AreEqual(JsonValueKind.Null, button.GetProperty("Data").GetProperty("ReadTagId").ValueKind);
             Assert.AreEqual(JsonValueKind.Null, button.GetProperty("Data").GetProperty("WriteTagId").ValueKind);
-            Assert.AreEqual(JsonValueKind.Null, button.GetProperty("StateConfig").ValueKind);
-            Assert.AreEqual(JsonValueKind.Null, button.GetProperty("CommandConfig").ValueKind);
+            var command = button.GetProperty("CommandConfig").GetProperty("Commands").EnumerateArray().Single();
+            var expectedCommandTagId = $"tf100.mapping.{629 + index}";
+            Assert.AreEqual("WriteTag", command.GetProperty("Kind").GetString(), button.GetProperty("Id").GetString());
+            Assert.AreEqual("Toggle", command.GetProperty("WriteMode").GetString(), button.GetProperty("Id").GetString());
+            Assert.AreEqual(expectedCommandTagId, command.GetProperty("ReadTagId").GetString(), button.GetProperty("Id").GetString());
+            Assert.AreEqual(expectedCommandTagId, command.GetProperty("WriteTagId").GetString(), button.GetProperty("Id").GetString());
+            Assert.IsTrue(catalog.TryGetValue(expectedCommandTagId, out var commandTag), button.GetProperty("Id").GetString());
+            Assert.IsTrue(commandTag.GetProperty("Writeable").GetBoolean(), button.GetProperty("Id").GetString());
             Assert.AreEqual(expectedX, button.GetProperty("Bounds").GetProperty("X").GetDouble(), 0.0001);
-            Assert.AreEqual(611d, button.GetProperty("Bounds").GetProperty("Y").GetDouble(), 0.0001);
+            Assert.AreEqual(605d, button.GetProperty("Bounds").GetProperty("Y").GetDouble(), 0.0001);
 
             var indicator = statusIndicators[index];
+            var indicatorId = indicator.GetProperty("Id").GetString()!;
             Assert.AreEqual("Shape", indicator.GetProperty("Kind").GetString());
             Assert.AreEqual("Rectangle", indicator.GetProperty("ShapeKind").GetString());
             Assert.AreEqual(JsonValueKind.Null, indicator.GetProperty("Data").ValueKind);
-            Assert.AreEqual(JsonValueKind.Null, indicator.GetProperty("StateConfig").ValueKind);
             Assert.AreEqual(JsonValueKind.Null, indicator.GetProperty("CommandConfig").ValueKind);
+            var expectedStatusTagId = $"tf100.mapping.{615 + index}";
+            Assert.IsTrue(catalog.TryGetValue(expectedStatusTagId, out var statusTag), indicatorId);
+            Assert.IsFalse(statusTag.GetProperty("Writeable").GetBoolean(), indicatorId);
+            var statusStates = indicator.GetProperty("StateConfig").GetProperty("States").EnumerateArray().ToArray();
+            Assert.AreEqual(2, statusStates.Length, indicatorId);
+            AssertStatusState(statusStates[0], expectedStatusTagId, true, "#12B729", indicatorId);
+            AssertStatusState(statusStates[1], expectedStatusTagId, false, "#E53935", indicatorId);
             Assert.AreEqual(expectedX, indicator.GetProperty("Bounds").GetProperty("X").GetDouble(), 0.0001);
-            Assert.AreEqual(649d, indicator.GetProperty("Bounds").GetProperty("Y").GetDouble(), 0.0001);
+            Assert.AreEqual(647d, indicator.GetProperty("Bounds").GetProperty("Y").GetDouble(), 0.0001);
+            Assert.AreEqual(20d, indicator.GetProperty("Bounds").GetProperty("Height").GetDouble(), 0.0001);
         }
 
         var loadedScene = await new ModernProjectStore().LoadOrCreateSceneAsync(
@@ -184,6 +205,22 @@ public sealed class Win00012DefrostToggleConfigurationTests
         var loadedTable = loadedScene.Elements.Single(element => element.Id == "table_defrost_upper").Table;
         Assert.IsNotNull(loadedTable);
         Assert.AreEqual(18, loadedTable!.EffectiveRows.Count);
+    }
+
+    private static void AssertStatusState(
+        JsonElement state,
+        string expectedTagId,
+        bool expectedValue,
+        string expectedBackground,
+        string elementId)
+    {
+        var expression = state.GetProperty("Expression");
+        Assert.AreEqual(expectedTagId, expression.GetProperty("referencedTags").EnumerateArray().Single().GetString(), elementId);
+        var ast = expression.GetProperty("ast");
+        Assert.AreEqual("Equal", ast.GetProperty("Op").GetString(), elementId);
+        Assert.AreEqual(expectedTagId, ast.GetProperty("Left").GetProperty("TagId").GetString(), elementId);
+        Assert.AreEqual(expectedValue, ast.GetProperty("Right").GetProperty("Value").GetBoolean(), elementId);
+        Assert.AreEqual(expectedBackground, state.GetProperty("Effect").GetProperty("BackgroundColor").GetString(), elementId);
     }
 
     private static void AssertState(
