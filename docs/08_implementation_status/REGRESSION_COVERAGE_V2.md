@@ -8,7 +8,7 @@ Document version: `V2.1.5.0000`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-29 | `V2.1.5.0000` | `PENDING` | Cycle projet couvert par 8 tests infrastructure/coordinator et 3 contrats ciblés WPF/ruban; build solution vert. Suite complète observée à 697/705 avec huit échecs préexistants ou hors tranche. |
+| 2026-07-29 | `V2.1.5.0000` | `PENDING` | Cycle projet couvert par 8 tests infrastructure/coordinator et contrats ciblés WPF/ruban; build solution vert. Après synchronisation des contrats de test, les cinq échecs historiques hors tranche demeurent. |
 | 2026-07-18 | `V2.1.4.0067` | `PENDING` | Regressions de coherence numerique : authoring, migration idempotente, validation bloquante, audit des 26 pages compilees et export cible `win00017`; suite complete observee a 689/697 avec huit echecs hors tranche. |
 | 2026-07-17 | `V2.1.4.0065` | `PENDING` | Regression `win00008` : filtre visible sur SVG opaque, texte/controles directs ou imbriques au-dessus, `pointer-events:none`, z-index du wrapper inchange et styles descendants restaures. |
 | 2026-07-17 | `V2.1.4.0064` | `f73b3e3` | Regression `win00012` couvrant 18 rangees, l'espacement conserve, 14 boutons manuels, 14 voyants Rectangle et l'absence volontaire de mappings. |

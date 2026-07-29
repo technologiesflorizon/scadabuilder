@@ -236,19 +236,16 @@ public sealed class WebViewContextMenuScriptTests
     }
 
     [TestMethod]
-    public void Ft100ExportPrefersReferenceHtmlSourceBeforeRawFallback()
+    public void Ft100ExportUsesConfinedImportedSourceProjection()
     {
-        var source = ReadMainWindowSource();
-        var referenceIndex = source.IndexOf("var referenceSource = new LegacyViewerSource", StringComparison.Ordinal);
-        var rawIndex = source.IndexOf("FindRawLegacyHtml(_repositoryRoot, page.Id)", StringComparison.Ordinal);
+        var source = ReadMainWindowFile(Path.Combine("Pages", "PageSourceProjectionResolver.cs"));
+        var exportBuilder = ReadMainWindowFile(Path.Combine("Pages", "PageExportInputBuilder.cs"));
 
-        Assert.IsTrue(referenceIndex >= 0, "Reference page source must be resolved explicitly.");
-        Assert.IsTrue(rawIndex >= 0, "Raw legacy fallback must remain available.");
-        Assert.IsTrue(
-            referenceIndex < rawIndex,
-            "FT100 export must prefer the reference page HTML source before falling back to raw 03_web_legacy HTML.");
-        StringAssert.Contains(source, "\"reference-html\"");
-        StringAssert.Contains(source, "\"reference-html-missing\"");
+        StringAssert.Contains(source, "importedSourceBaseRoot");
+        StringAssert.Contains(source, "fullSourcePath.StartsWith(rootPrefix");
+        StringAssert.Contains(source, "File.Exists(fullSourcePath)");
+        StringAssert.Contains(exportBuilder, "projectionResolver.Resolve(page, repositoryRoot, importedSourceBaseRoot)");
+        Assert.IsFalse(source.Contains("03_web_legacy", StringComparison.Ordinal));
     }
 
     [TestMethod]
