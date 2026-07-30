@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Implemented Features
 
-Date: 2026-07-18
+Date: 2026-07-30
 Status: Active implementation status
-Document version: `V2.1.5.0001`
+Document version: `V2.1.5.0002`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-30 | `V2.1.5.0002` | `PENDING` | Les effets Etat de fond/bordure recolorent la géométrie SVG visible des formes de base en preview et export, avec restauration et repli compatibles. |
 | 2026-07-29 | `V2.1.5.0001` | `PENDING` | Découverte initiale contrôlée du plus proche répertoire `projects/` : les manifestes existants apparaissent dans les récents sans réouverture automatique ni réajout après retrait. |
 | 2026-07-29 | `V2.1.5.0000` | `PENDING` | `DEC-0049` : démarrage sans projet, dialogue de création à emplacement choisi, ouverture `project.json`, sauvegarde/fermeture dirty-safe, changement de projet et récents utilisateur. |
 | 2026-07-18 | `V2.1.4.0067` | `PENDING` | Correction Builder des lectures numeriques : authoring et migration alignent `ValueBindings.ReadTagId` sur `StateConfig.ReadVariable`, avec gate de build et acceptance globale. |
@@ -205,6 +206,7 @@ As of 2026-07-15, the automated build and targeted `DEC-0040` suites pass. The f
 92. Runtime conformance now produces one exact, machine-readable result for each of the 118 Supported capabilities instead of mapping capability families to aggregate booleans. The vendored full expectation index requires unique `probe:<capability-id>` outcomes; static package contracts and actual packaged-runtime execution cover every page, element, shape, button, table cell, binding, expression, effect, state, command and action id. A targeted manifest mutation proves that `shape.rectangle` fails independently. The expression evaluator also normalizes canonical lower-camel serialized operators while retaining the historical Pascal-case spelling through the same code path.
 93. `win00012_modern_no_legacy` preserves the blank spacer below pre-cooling and adds two 32-pixel rows. `Depart Manuel` owns one unmapped `Command` button per evaporator; `Etat du degivrage` owns one rectangular Element+ status shape per evaporator. The 28 controls intentionally have no state, command, read or write mapping until the PLC tags are supplied, and their durable layout/export is protected by `Win00012DefrostToggleConfigurationTests` plus industrial package acceptance.
 94. Builder keeps numeric runtime reads coherent at three boundaries: `WithElementStateConfig` synchronizes new authoring, `ModernProjectMigration` repairs existing scenes recursively on load/snapshot/save, and build/export validation rejects any remaining `InputNumeric` divergence between `ValueBindings.ReadTagId` and `StateConfig.ReadVariable.TagId`. Reference-project acceptance scans every compiled page and locks `win00017` to `TE_EXT`, `PE_95`, and `PE_96` rather than the duplicated `PE_16` binding.
+95. Generated Rectangle, RoundedRectangle, Circle, Ellipse, Triangle and Star geometry identifies its visible SVG fill and stroke as semantic State-effect targets in both editor preview and `.sb2` export. The shared `EffectApplier` applies and restores background/border effects on those targets, while older or custom markup continues through the wrapper fallback. This makes the `win00012_modern_no_legacy` defrost status rectangles visibly red/green without changing their mappings or requiring TF100Web source changes.
 
 ## 3. Source Of Truth
 

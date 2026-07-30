@@ -31,6 +31,8 @@
 
   var VISUAL_BASE_SELECTOR = 'svg, canvas, img, table';
   var SEMANTIC_FOREGROUND_SELECTOR = 'button, input, textarea, select, [data-scada-text]';
+  var BACKGROUND_EFFECT_TARGET_SELECTOR = '[data-scada-effect-background-target]';
+  var BORDER_EFFECT_TARGET_SELECTOR = '[data-scada-effect-border-target]';
 
   function _styleValue(style, name) {
     return style && style[name] != null ? style[name] : '';
@@ -68,6 +70,35 @@
     });
   }
 
+  function _captureEffectTargetStyles(element) {
+    var backgroundTargets = _queryLayers(element, BACKGROUND_EFFECT_TARGET_SELECTOR);
+    var borderTargets = _queryLayers(element, BORDER_EFFECT_TARGET_SELECTOR);
+    var snapshots = [];
+    var targets = backgroundTargets.concat(borderTargets);
+    for (var i = 0; i < targets.length; i++) {
+      var target = targets[i];
+      if (!target || !target.style || snapshots.some(function (item) { return item.target === target; })) {
+        continue;
+      }
+      snapshots.push({
+        target: target,
+        fill: _styleValue(target.style, 'fill'),
+        stroke: _styleValue(target.style, 'stroke'),
+        strokeWidth: _styleValue(target.style, 'strokeWidth')
+      });
+    }
+    return snapshots;
+  }
+
+  function _restoreEffectTargetStyles(targetStyles, property) {
+    for (var i = 0; i < targetStyles.length; i++) {
+      var snapshot = targetStyles[i];
+      if (snapshot.target && snapshot.target.style) {
+        snapshot.target.style[property] = snapshot[property];
+      }
+    }
+  }
+
   function _restoreLayerStyles(layerStyles) {
     for (var i = 0; i < layerStyles.length; i++) {
       var snapshot = layerStyles[i];
@@ -102,7 +133,8 @@
       hidden: !!element.hidden,
       textHidden: textTarget ? !!textTarget.hidden : false,
       textContent: textTarget ? textTarget.textContent : '',
-      layerStyles: _captureLayerStyles(element)
+      layerStyles: _captureLayerStyles(element),
+      effectTargetStyles: _captureEffectTargetStyles(element)
     };
     _baselines.set(element, baseline);
     return baseline;
@@ -129,9 +161,21 @@
       return;
     }
     var baseline = _baselineFor(element);
-    if (previous.backgroundColor != null) element.style.backgroundColor = baseline.backgroundColor;
-    if (previous.borderColor != null) element.style.borderColor = baseline.borderColor;
-    if (previous.borderWidth != null) element.style.borderWidth = baseline.borderWidth;
+    if (previous.backgroundColor != null) {
+      var backgroundTargets = _queryLayers(element, BACKGROUND_EFFECT_TARGET_SELECTOR);
+      if (backgroundTargets.length) _restoreEffectTargetStyles(baseline.effectTargetStyles || [], 'fill');
+      else element.style.backgroundColor = baseline.backgroundColor;
+    }
+    if (previous.borderColor != null) {
+      var borderColorTargets = _queryLayers(element, BORDER_EFFECT_TARGET_SELECTOR);
+      if (borderColorTargets.length) _restoreEffectTargetStyles(baseline.effectTargetStyles || [], 'stroke');
+      else element.style.borderColor = baseline.borderColor;
+    }
+    if (previous.borderWidth != null) {
+      var borderWidthTargets = _queryLayers(element, BORDER_EFFECT_TARGET_SELECTOR);
+      if (borderWidthTargets.length) _restoreEffectTargetStyles(baseline.effectTargetStyles || [], 'strokeWidth');
+      else element.style.borderWidth = baseline.borderWidth;
+    }
     if (previous.textColor != null) element.style.color = baseline.color;
     if (previous.opacity != null) element.style.opacity = baseline.opacity;
     if (previous.rotation != null) element.style.transform = baseline.transform;
@@ -197,17 +241,38 @@
 
     // ── background color ────────────────────────────────────────────────
     if (effect.backgroundColor != null) {
-      element.style.backgroundColor = effect.backgroundColor;
+      var backgroundTargets = _queryLayers(element, BACKGROUND_EFFECT_TARGET_SELECTOR);
+      if (backgroundTargets.length) {
+        for (var backgroundIndex = 0; backgroundIndex < backgroundTargets.length; backgroundIndex++) {
+          backgroundTargets[backgroundIndex].style.fill = effect.backgroundColor;
+        }
+      } else {
+        element.style.backgroundColor = effect.backgroundColor;
+      }
     }
 
     // ── border color ─────────────────────────────────────────────────────
     if (effect.borderColor != null) {
-      element.style.borderColor = effect.borderColor;
+      var borderColorTargets = _queryLayers(element, BORDER_EFFECT_TARGET_SELECTOR);
+      if (borderColorTargets.length) {
+        for (var borderColorIndex = 0; borderColorIndex < borderColorTargets.length; borderColorIndex++) {
+          borderColorTargets[borderColorIndex].style.stroke = effect.borderColor;
+        }
+      } else {
+        element.style.borderColor = effect.borderColor;
+      }
     }
 
     // ── border width ─────────────────────────────────────────────────────
     if (effect.borderWidth != null) {
-      element.style.borderWidth = effect.borderWidth + 'px';
+      var borderWidthTargets = _queryLayers(element, BORDER_EFFECT_TARGET_SELECTOR);
+      if (borderWidthTargets.length) {
+        for (var borderWidthIndex = 0; borderWidthIndex < borderWidthTargets.length; borderWidthIndex++) {
+          borderWidthTargets[borderWidthIndex].style.strokeWidth = effect.borderWidth + 'px';
+        }
+      } else {
+        element.style.borderWidth = effect.borderWidth + 'px';
+      }
     }
 
     // ── text color ───────────────────────────────────────────────────────

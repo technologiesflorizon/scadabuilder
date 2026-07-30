@@ -1303,12 +1303,18 @@ public partial class MainWindow
     svg.style.pointerEvents = 'none';
 
     const setStroke = node => {
+      node.setAttribute('data-scada-effect-border-target', '1');
       node.setAttribute('stroke', stroke);
       node.setAttribute('stroke-width', `${strokeWidth}`);
       if (dashArray) {
         node.setAttribute('stroke-dasharray', dashArray);
       }
       node.setAttribute('vector-effect', 'non-scaling-stroke');
+    };
+
+    const setEffectFill = (node, value) => {
+      node.setAttribute('data-scada-effect-background-target', '1');
+      node.setAttribute('fill', value);
     };
 
     const clampPercent = value => {
@@ -1754,7 +1760,7 @@ public partial class MainWindow
       circle.setAttribute('cx', `${element.Width / 2}`);
       circle.setAttribute('cy', `${element.Height / 2}`);
       circle.setAttribute('r', `${Math.max(0, Math.min(element.Width, element.Height) / 2 - halfStroke)}`);
-      circle.setAttribute('fill', fill);
+      setEffectFill(circle, fill);
       setStroke(circle);
       svg.appendChild(circle);
       return svg;
@@ -1766,7 +1772,7 @@ public partial class MainWindow
       ellipse.setAttribute('cy', `${element.Height / 2}`);
       ellipse.setAttribute('rx', `${Math.max(0, (element.Width / 2) - halfStroke)}`);
       ellipse.setAttribute('ry', `${Math.max(0, (element.Height / 2) - halfStroke)}`);
-      ellipse.setAttribute('fill', fill);
+      setEffectFill(ellipse, fill);
       setStroke(ellipse);
       svg.appendChild(ellipse);
       return svg;
@@ -1775,7 +1781,7 @@ public partial class MainWindow
     if (shapeKind === 'triangle') {
       const triangle = document.createElementNS(svg.namespaceURI, 'polygon');
       triangle.setAttribute('points', `${element.Width / 2},${halfStroke} ${Math.max(halfStroke, element.Width - halfStroke)},${Math.max(halfStroke, element.Height - halfStroke)} ${halfStroke},${Math.max(halfStroke, element.Height - halfStroke)}`);
-      triangle.setAttribute('fill', fill);
+      setEffectFill(triangle, fill);
       setStroke(triangle);
       svg.appendChild(triangle);
       return svg;
@@ -1793,7 +1799,7 @@ public partial class MainWindow
       }).join(' ');
       const star = document.createElementNS(svg.namespaceURI, 'polygon');
       star.setAttribute('points', points);
-      star.setAttribute('fill', fill);
+      setEffectFill(star, fill);
       setStroke(star);
       svg.appendChild(star);
       return svg;
@@ -1842,7 +1848,7 @@ public partial class MainWindow
       rect.setAttribute('rx', `${Math.min(element.Width, element.Height) * 0.12}`);
       rect.setAttribute('ry', `${Math.min(element.Width, element.Height) * 0.12}`);
     }
-    rect.setAttribute('fill', fill);
+    setEffectFill(rect, fill);
     setStroke(rect);
     svg.appendChild(rect);
     return svg;

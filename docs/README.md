@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Documentation Index
 
-Date: 2026-07-29
+Date: 2026-07-30
 Status: Active enterprise documentation map
-Document version: `V2.1.5.0001`
+Document version: `V2.1.5.0002`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-30 | `V2.1.5.0002` | `PENDING` | Les effets Etat de fond et de bordure ciblent désormais explicitement la géométrie SVG visible des formes exportées, avec repli compatible sur le wrapper HTML. |
 | 2026-07-29 | `V2.1.5.0001` | `PENDING` | À l’initialisation du registre, les projets existants sous le répertoire produit `projects/` sont inscrits dans les récents sans ouverture automatique; un retrait reste persistant. |
 | 2026-07-29 | `V2.1.5.0000` | `PENDING` | `DEC-0049` implémentée : accueil sans projet, création et ouverture à racine choisie, sauvegarde/fermeture sûres et projets récents. |
 | 2026-07-29 | `V2.1.4.0068` | `PENDING` | Ajout de la spécification approuvée `DEC-0049` et du plan d’implémentation du cycle de vie autonome des projets. |
@@ -285,7 +286,7 @@ These guardrails are active decisions in `00_governance/DECISION_REGISTER_V2.md`
 25. Element+ `Donnees` authoring uses `Format affichage` as the active numeric display signal. Hash masks such as `##.#` and `###.#` are exported through `Objects[].Data.DisplayFormat` and interpreted by TF100Web against `RegisterMapping.DataType`: `FLOAT32` and `FLOAT64` round raw values directly, integer datatypes scale by mask decimals, and unknown datatypes fall back to direct rounding. `Mapping / Tag`, `Decimales`, and `Unite` are legacy model fields and are not active authoring controls. `Min` and `Max` are input constraints only for non-read-only numeric inputs.
 26. Standard and HMI Element+ shapes created from SCADA Builder V2 persist `ShapeKind` and render/export as Element+-owned SVG content. Standard authoring includes rectangle, ellipse, circle, triangle, star, line, and arrow; line and arrow persist explicit start/end coordinates captured by a two-point Insert workflow. They remain real scene objects; editor-only placement previews, selection overlays, handles, drag rectangles, workzone state, zoom, and pan must not be exported.
 27. Element+ state and command events share the deployed TF100Web tag cache and runtime. Button text effects use `[data-scada-text]`; command read/write mapping ids are collected and deduplicated with state and binding dependencies, and Toggle appearance follows the confirmed snapshot rather than an optimistic local state.
-28. State effects are non-cumulative transitions: runtime-managed properties are restored to their element baseline before the next effect. Color-filter stacking is isolated inside each Element+ wrapper as visual geometry (`z=0`), runtime overlay (`z=1`), then semantic text and controls (`z=2`); the wrapper's authored sibling order is never changed. TF100Web collects resolved read/write mapping attributes, hydrates a new page with a forced snapshot, and applies one idempotent numeric ValueBinding handler to standard Element+ inputs and Table-cell inputs.
+28. State effects are non-cumulative transitions: runtime-managed properties are restored to their element baseline before the next effect. Exported basic Shape geometry marks its visible SVG fill and stroke as explicit effect targets, while older/custom markup retains the wrapper-style fallback. Color-filter stacking is isolated inside each Element+ wrapper as visual geometry (`z=0`), runtime overlay (`z=1`), then semantic text and controls (`z=2`); the wrapper's authored sibling order is never changed. TF100Web collects resolved read/write mapping attributes, hydrates a new page with a forced snapshot, and applies one idempotent numeric ValueBinding handler to standard Element+ inputs and Table-cell inputs.
 29. `DEC-0046` is the approved pending correction for a confirmed navigation/poll race in TF100Web commit `9d5d400`: body navigation is latest-wins, stale page/snapshot work is invalidated, and the accepted DOM must cross an awaitable hydration barrier even when cached values are unchanged. This target must not be documented as implemented until its behavioral tests and production round-trip smoke pass.
 30. `DEC-0047` generalizes runtime delivery: every authorable/exportable capability is registered, declared by manifest 2.3 and either proven end-to-end or blocked before deployment. Portable semantics belong to the shared package runtime; TF100Web supplies host services and must not reimplement a second expression/effect/action engine.
 

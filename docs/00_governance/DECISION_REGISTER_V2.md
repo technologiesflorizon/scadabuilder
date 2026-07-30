@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Decision Register
 
-Date: 2026-07-29
+Date: 2026-07-30
 Status: Active authoritative decision register
-Document version: `V2.1.5.0000`
+Document version: `V2.1.5.0002`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-07-30 | `V2.1.5.0002` | `PENDING` | `DEC-0045` clarifiée : les couleurs Etat de fond et de bordure ciblent la géométrie SVG marquée, puis reviennent au wrapper en compatibilité. |
 | 2026-07-29 | `V2.1.5.0000` | `PENDING` | `DEC-0049` livrée dans le shell WPF et la persistance projet générale; validation automatisée ajoutée. |
 | 2026-07-29 | `V2.1.4.0068` | `PENDING` | Ajout de `DEC-0049` : cycle de vie projet autonome, racine choisie, accueil sans projet, transitions sûres et projets récents. |
 | 2026-07-17 | `V2.1.4.0066` | `PENDING` | Ajout de `DEC-0048` : la modernisation visuelle des controles d'ecran est gouvernee par une direction artistique versionnee et verifiable. |
@@ -1418,15 +1419,15 @@ The state quality fallback modified opacity and borders cumulatively, so a confi
 
 Decision:
 
-`EffectApplier` captures one runtime baseline per element, restores only properties controlled by the preceding effect, and owns an isolated three-layer stack inside the Element+ wrapper: opaque visual geometry (`svg`, `canvas`, `img`, `table`) below the color overlay, then semantic text and interactive controls above it. The wrapper's authored z-index among sibling scene objects is immutable. TF100Web's single `ScadaTagCache` collects both canonical tag references and resolved read/write mapping attributes, forces an initial page snapshot, applies reads to existing numeric inputs, and binds one idempotent write handler through the existing `tf100webScadaBuilder.writeTag` bridge for standard Element+ and Table cells.
+`EffectApplier` captures one runtime baseline per element, restores only properties controlled by the preceding effect, and owns an isolated three-layer stack inside the Element+ wrapper: opaque visual geometry (`svg`, `canvas`, `img`, `table`) below the color overlay, then semantic text and interactive controls above it. For generated Shape geometry, `data-scada-effect-background-target` maps `BackgroundColor` to SVG `fill`, while `data-scada-effect-border-target` maps `BorderColor` and `BorderWidth` to SVG `stroke` and `stroke-width`. Markup without these explicit semantic targets retains the historical wrapper-style fallback. The wrapper's authored z-index among sibling scene objects is immutable. TF100Web's single `ScadaTagCache` collects both canonical tag references and resolved read/write mapping attributes, forces an initial page snapshot, applies reads to existing numeric inputs, and binds one idempotent write handler through the existing `tf100webScadaBuilder.writeTag` bridge for standard Element+ and Table cells.
 
 Consequences:
 
-The manifest remains compatible and no scene migration, synthetic cell element, Table-specific poller, alternate dispatcher, or second write path is introduced. Confirmed state restores normal opacity and borders before applying green/red feedback; opaque SVG geometry receives visible filtering while semantic controls stay readable and clickable. Numeric read/write permissions and mapping resolution remain owned by TF100Web.
+The manifest remains compatible and no scene migration, synthetic cell element, Table-specific poller, alternate dispatcher, or second write path is introduced. Confirmed state restores normal opacity and borders before applying green/red feedback; basic opaque SVG forms receive their actual fill/stroke colors without recoloring arbitrary SVG descendants, while semantic controls stay readable and clickable. Numeric read/write permissions and mapping resolution remain owned by TF100Web.
 
 Implementation status:
 
-Implemented in SCADA Builder V2 commit `de37a35` and TF100Web commit `9d5d400`. Runtime JavaScript reports 22/22 passing tests; the targeted Builder suites report 93/93 and TF100Web's focused shared-runtime contract reports 13/13.
+Implemented initially in SCADA Builder V2 commit `de37a35` and TF100Web commit `9d5d400`; explicit SVG effect targeting is implemented in SCADA Builder V2 `V2.1.5.0002` (`PENDING`) without a TF100Web code change.
 
 Regression coverage:
 

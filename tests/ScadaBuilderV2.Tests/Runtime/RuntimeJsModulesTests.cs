@@ -140,6 +140,8 @@ public sealed class RuntimeJsModulesTests
 
         StringAssert.Contains(source, "VISUAL_BASE_SELECTOR");
         StringAssert.Contains(source, "SEMANTIC_FOREGROUND_SELECTOR");
+        StringAssert.Contains(source, "BACKGROUND_EFFECT_TARGET_SELECTOR");
+        StringAssert.Contains(source, "BORDER_EFFECT_TARGET_SELECTOR");
         StringAssert.Contains(source, "overlay.style.zIndex = '1';");
         StringAssert.Contains(source, "_containsSemanticForeground");
         StringAssert.Contains(source, "? 'auto' : '0';");

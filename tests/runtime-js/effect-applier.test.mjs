@@ -37,11 +37,23 @@ function makeFakeOverlayNode() {
   };
 }
 
-function makeFakeElement({ withSvg = false, withButton = false, semanticNestedInVisual = false } = {}) {
+function makeFakeElement({
+  withSvg = false,
+  withButton = false,
+  semanticNestedInVisual = false,
+  withEffectTargets = false,
+} = {}) {
   const style = {};
   const children = [];
   const controlLayer = withButton ? { style: {}, tagName: 'button' } : null;
   const textTarget = { textContent: '', style: {}, dataset: { scadaText: '' } };
+  const effectTarget = withEffectTargets ? {
+    style: {},
+    dataset: {
+      scadaEffectBackgroundTarget: '1',
+      scadaEffectBorderTarget: '1',
+    },
+  } : null;
   const visualLayer = withSvg ? {
     style: {},
     tagName: 'svg',
@@ -58,6 +70,7 @@ function makeFakeElement({ withSvg = false, withButton = false, semanticNestedIn
     _textTarget: textTarget,
     _visualLayer: visualLayer,
     _controlLayer: controlLayer,
+    _effectTarget: effectTarget,
     _children: children,
     appendChild(node) { children.push(node); return node; },
     removeChild(node) {
@@ -78,6 +91,8 @@ function makeFakeElement({ withSvg = false, withButton = false, semanticNestedIn
       if (selector === 'button, input, textarea, select, [data-scada-text]') {
         return [controlLayer, textTarget].filter(Boolean);
       }
+      if (selector === '[data-scada-effect-background-target]') return effectTarget ? [effectTarget] : [];
+      if (selector === '[data-scada-effect-border-target]') return effectTarget ? [effectTarget] : [];
       return [];
     },
   };
@@ -216,6 +231,43 @@ test('apply() restores fallback opacity and border before a confirmed state', ()
   assert.equal(element.style.borderColor, '#49A9B8');
   assert.equal(element.style.borderWidth, '1px');
   assert.equal(element._textTarget.textContent, 'ACTIF');
+});
+
+test('apply() targets and restores explicit SVG fill and stroke geometry', () => {
+  const window = loadRuntime(['effect-applier.js']);
+  const element = makeFakeElement({ withSvg: true, withEffectTargets: true });
+  element.style.backgroundColor = 'transparent';
+  element.style.borderColor = 'transparent';
+  element.style.borderWidth = '0px';
+
+  window.ScadaRuntime.EffectApplier.apply(element, {
+    backgroundColor: '#E53935',
+    borderColor: '#E53935',
+    borderWidth: 1,
+  });
+
+  assert.equal(element._effectTarget.style.fill, '#E53935');
+  assert.equal(element._effectTarget.style.stroke, '#E53935');
+  assert.equal(element._effectTarget.style.strokeWidth, '1px');
+  assert.equal(element.style.backgroundColor, 'transparent');
+  assert.equal(element.style.borderColor, 'transparent');
+  assert.equal(element.style.borderWidth, '0px');
+
+  window.ScadaRuntime.EffectApplier.apply(element, {
+    backgroundColor: '#12B729',
+    borderColor: '#12B729',
+    borderWidth: 2,
+  });
+
+  assert.equal(element._effectTarget.style.fill, '#12B729');
+  assert.equal(element._effectTarget.style.stroke, '#12B729');
+  assert.equal(element._effectTarget.style.strokeWidth, '2px');
+
+  window.ScadaRuntime.EffectApplier.reset(element);
+
+  assert.equal(element._effectTarget.style.fill, '');
+  assert.equal(element._effectTarget.style.stroke, '');
+  assert.equal(element._effectTarget.style.strokeWidth, '');
 });
 
 test('apply() covers every effect field and reset() restores the complete baseline', () => {

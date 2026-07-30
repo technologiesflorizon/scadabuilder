@@ -181,7 +181,15 @@ public sealed class Win00012DefrostToggleConfigurationTests
             var indicatorId = indicator.GetProperty("Id").GetString()!;
             Assert.AreEqual("Shape", indicator.GetProperty("Kind").GetString());
             Assert.AreEqual("Rectangle", indicator.GetProperty("ShapeKind").GetString());
-            Assert.AreEqual(JsonValueKind.Null, indicator.GetProperty("Data").ValueKind);
+            var indicatorData = indicator.GetProperty("Data");
+            Assert.IsTrue(
+                indicatorData.ValueKind is JsonValueKind.Null or JsonValueKind.Object,
+                $"{indicatorId}: optional default Data may be omitted or normalized as an object.");
+            if (indicatorData.ValueKind == JsonValueKind.Object)
+            {
+                Assert.AreEqual(JsonValueKind.Null, indicatorData.GetProperty("ReadTagId").ValueKind, indicatorId);
+                Assert.AreEqual(JsonValueKind.Null, indicatorData.GetProperty("WriteTagId").ValueKind, indicatorId);
+            }
             Assert.AreEqual(JsonValueKind.Null, indicator.GetProperty("CommandConfig").ValueKind);
             var expectedStatusTagId = $"tf100.mapping.{615 + index}";
             Assert.IsTrue(catalog.TryGetValue(expectedStatusTagId, out var statusTag), indicatorId);

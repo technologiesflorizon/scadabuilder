@@ -1754,6 +1754,8 @@ public sealed class Ft100SceneExporterTests
             StringAssert.Contains(html, "transform:rotate(17deg) scaleX(1) scaleY(1);");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_circle_001\"");
             StringAssert.Contains(html, "<svg id=\"ft100-win00008__shape_circle_001__shape\"");
+            StringAssert.Contains(html, "data-scada-effect-background-target=\"1\"");
+            StringAssert.Contains(html, "data-scada-effect-border-target=\"1\"");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_triangle_001\"");
             StringAssert.Contains(html, "<svg id=\"ft100-win00008__shape_triangle_001__shape\"");
             StringAssert.Contains(html, "id=\"ft100-win00008__shape_star_001\"");

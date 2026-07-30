@@ -1028,6 +1028,8 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "function renderShapeElement(element, style)");
         StringAssert.Contains(source, "String(element.ShapeKind || element.shapeKind || 'Rectangle').toLowerCase()");
         StringAssert.Contains(source, "document.createElementNS('http://www.w3.org/2000/svg', 'svg')");
+        StringAssert.Contains(source, "data-scada-effect-background-target");
+        StringAssert.Contains(source, "data-scada-effect-border-target");
         StringAssert.Contains(source, "shapeKind === 'circle'");
         StringAssert.Contains(source, "shapeKind === 'ellipse'");
         StringAssert.Contains(source, "shapeKind === 'triangle'");

@@ -1304,7 +1304,7 @@ public sealed partial class Ft100SceneExporter
         var svgId = HtmlEncoder.Default.Encode($"{scope.ElementDomId(element.Id)}__shape");
         var markerId = HtmlEncoder.Default.Encode($"{scope.ElementDomId(element.Id)}__arrow");
         var gradientId = HtmlEncoder.Default.Encode($"{scope.ElementDomId(element.Id)}__lamp-gradient");
-        var common = $"stroke=\"{stroke}\" stroke-width=\"{Format(strokeWidth)}\"{dashAttribute} vector-effect=\"non-scaling-stroke\"";
+        var common = $"data-scada-effect-border-target=\"1\" stroke=\"{stroke}\" stroke-width=\"{Format(strokeWidth)}\"{dashAttribute} vector-effect=\"non-scaling-stroke\"";
         var body = element.EffectiveShapeKind switch
         {
             ScadaShapeKind.IndicatorLamp =>
@@ -1340,24 +1340,31 @@ public sealed partial class Ft100SceneExporter
             ScadaShapeKind.AlarmBeacon =>
                 BuildAlarmBeaconShape(width, height, strokeWidth, stroke, fill, common),
             ScadaShapeKind.Circle =>
-                $"""<circle cx="{Format(width / 2)}" cy="{Format(height / 2)}" r="{Format(Math.Max(0, Math.Min(width, height) / 2 - halfStroke))}" fill="{fill}" {common}/>""",
+                $"""<circle cx="{Format(width / 2)}" cy="{Format(height / 2)}" r="{Format(Math.Max(0, Math.Min(width, height) / 2 - halfStroke))}" {BuildShapeEffectFill(fill)} {common}/>""",
             ScadaShapeKind.Ellipse =>
-                $"""<ellipse cx="{Format(width / 2)}" cy="{Format(height / 2)}" rx="{Format(Math.Max(0, (width / 2) - halfStroke))}" ry="{Format(Math.Max(0, (height / 2) - halfStroke))}" fill="{fill}" {common}/>""",
+                $"""<ellipse cx="{Format(width / 2)}" cy="{Format(height / 2)}" rx="{Format(Math.Max(0, (width / 2) - halfStroke))}" ry="{Format(Math.Max(0, (height / 2) - halfStroke))}" {BuildShapeEffectFill(fill)} {common}/>""",
             ScadaShapeKind.Triangle =>
-                $"""<polygon points="{Format(width / 2)},{Format(halfStroke)} {Format(Math.Max(halfStroke, width - halfStroke))},{Format(Math.Max(halfStroke, height - halfStroke))} {Format(halfStroke)},{Format(Math.Max(halfStroke, height - halfStroke))}" fill="{fill}" {common}/>""",
+                $"""<polygon points="{Format(width / 2)},{Format(halfStroke)} {Format(Math.Max(halfStroke, width - halfStroke))},{Format(Math.Max(halfStroke, height - halfStroke))} {Format(halfStroke)},{Format(Math.Max(halfStroke, height - halfStroke))}" {BuildShapeEffectFill(fill)} {common}/>""",
             ScadaShapeKind.Star =>
-                $"""<polygon points="{BuildStarPoints(width, height, halfStroke)}" fill="{fill}" {common}/>""",
+                $"""<polygon points="{BuildStarPoints(width, height, halfStroke)}" {BuildShapeEffectFill(fill)} {common}/>""",
             ScadaShapeKind.Line =>
                 $"""<line x1="{Format(data.ShapeStartX ?? halfStroke)}" y1="{Format(data.ShapeStartY ?? height / 2)}" x2="{Format(data.ShapeEndX ?? Math.Max(halfStroke, width - halfStroke))}" y2="{Format(data.ShapeEndY ?? height / 2)}" {common}/>""",
             ScadaShapeKind.Arrow =>
                 $"""<defs><marker id="{markerId}" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="{stroke}"/></marker></defs><line x1="{Format(data.ShapeStartX ?? halfStroke)}" y1="{Format(data.ShapeStartY ?? height / 2)}" x2="{Format(data.ShapeEndX ?? Math.Max(halfStroke, width - halfStroke - 7))}" y2="{Format(data.ShapeEndY ?? height / 2)}" marker-end="url(#{markerId})" {common}/>""",
             ScadaShapeKind.RoundedRectangle =>
-                $"""<rect x="{Format(halfStroke)}" y="{Format(halfStroke)}" width="{Format(Math.Max(0, width - strokeWidth))}" height="{Format(Math.Max(0, height - strokeWidth))}" rx="{Format(Math.Min(width, height) * 0.12)}" ry="{Format(Math.Min(width, height) * 0.12)}" fill="{fill}" {common}/>""",
+                $"""<rect x="{Format(halfStroke)}" y="{Format(halfStroke)}" width="{Format(Math.Max(0, width - strokeWidth))}" height="{Format(Math.Max(0, height - strokeWidth))}" rx="{Format(Math.Min(width, height) * 0.12)}" ry="{Format(Math.Min(width, height) * 0.12)}" {BuildShapeEffectFill(fill)} {common}/>""",
             _ =>
-                $"""<rect x="{Format(halfStroke)}" y="{Format(halfStroke)}" width="{Format(Math.Max(0, width - strokeWidth))}" height="{Format(Math.Max(0, height - strokeWidth))}" fill="{fill}" {common}/>"""
+                $"""<rect x="{Format(halfStroke)}" y="{Format(halfStroke)}" width="{Format(Math.Max(0, width - strokeWidth))}" height="{Format(Math.Max(0, height - strokeWidth))}" {BuildShapeEffectFill(fill)} {common}/>"""
         };
 
         return $"""<svg id="{svgId}" viewBox="0 0 {Format(width)} {Format(height)}" width="100%" height="100%" preserveAspectRatio="none" style="display:block;pointer-events:none;">{body}</svg>""";
+    }
+
+    // State background effects target authored-color SVG geometry instead of the
+    // transparent HTML wrapper that sits behind it.
+    private static string BuildShapeEffectFill(string fill)
+    {
+        return $"data-scada-effect-background-target=\"1\" fill=\"{fill}\"";
     }
 
     private static string BuildStarPoints(double width, double height, double halfStroke)
