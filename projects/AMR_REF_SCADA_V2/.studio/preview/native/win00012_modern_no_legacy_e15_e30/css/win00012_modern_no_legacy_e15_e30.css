@@ -1,0 +1,3327 @@
+#ft100-win00012_modern_no_legacy_e15_e30.ft100-scada-scene {
+  position: relative;
+  width: 1280px;
+  height: 873px;
+  background-color: #E4E4E4;
+  overflow: hidden;
+  isolation: isolate;
+}
+#ft100-win00012_modern_no_legacy_e15_e30 .ft100-source-layer, #ft100-win00012_modern_no_legacy_e15_e30 .ft100-legacy-layer, #ft100-win00012_modern_no_legacy_e15_e30 .ft100-elementplus-layer { position: absolute; inset: 0; }
+#ft100-win00012_modern_no_legacy_e15_e30 .ft100-elementplus-layer { pointer-events: none; }
+#ft100-win00012_modern_no_legacy_e15_e30 .ft100-source-layer .shape-layer, #ft100-win00012_modern_no_legacy_e15_e30 .ft100-legacy-layer .shape-layer { position: absolute; left: 0; top: 0; pointer-events: none; }
+#ft100-win00012_modern_no_legacy_e15_e30 .ft100-source-layer .layer, #ft100-win00012_modern_no_legacy_e15_e30 .ft100-legacy-layer .layer { position: absolute; margin: 0; }
+#ft100-win00012_modern_no_legacy_e15_e30 .ft100-element { position: absolute; box-sizing: border-box; overflow: visible; pointer-events: auto; }
+#ft100-win00012_modern_no_legacy_e15_e30 .ft100-element--Button, #ft100-win00012_modern_no_legacy_e15_e30 [data-scada-command-config] { cursor: pointer; }
+#ft100-win00012_modern_no_legacy_e15_e30 .ft100-element--Button *, #ft100-win00012_modern_no_legacy_e15_e30 [data-scada-command-config] * { cursor: pointer; }
+#ft100-win00012_modern_no_legacy_e15_e30 .ft100-element--Button:active, #ft100-win00012_modern_no_legacy_e15_e30 [data-scada-command-config]:active { cursor: pointer; }
+#ft100-win00012_modern_no_legacy_e15_e30 [data-scada-action-bindings] { cursor: pointer; }
+#ft100-win00012_modern_no_legacy_e15_e30 [data-scada-action-bindings] * { cursor: pointer; }
+#ft100-win00012_modern_no_legacy_e15_e30 [data-scada-action-bindings]:active { cursor: pointer; }
+#ft100-win00012_modern_no_legacy_e15_e30 .ft100-element--Button[data-scada-disabled="true"], #ft100-win00012_modern_no_legacy_e15_e30 .ft100-element--Button[data-scada-disabled="true"] * { cursor: not-allowed; opacity: 0.62; }
+#ft100-win00012_modern_no_legacy_e15_e30 .ft100-element svg { display: block; width: 100%; height: 100%; overflow: visible; }
+#ft100-win00012_modern_no_legacy_e15_e30 .ft100-element input { width: 100%; height: 100%; box-sizing: border-box; }
+#ft100-win00012_modern_no_legacy_e15_e30 .ft100-element button { width: 100%; height: 100%; box-sizing: border-box; font: inherit; color: inherit; }
+#ft100-win00012_modern_no_legacy_e15_e30 .scada-modern-table { display: grid; width: 100%; height: 100%; overflow: hidden; }
+#ft100-win00012_modern_no_legacy_e15_e30 .scada-modern-table__cell { display: flex; box-sizing: border-box; min-width: 0; min-height: 0; overflow: hidden; }
+#ft100-win00012_modern_no_legacy_e15_e30 .scada-modern-table__cell input { width: 100%; height: 100%; min-width: 0; border: 0; padding: 0; background: transparent; color: inherit; font: inherit; }
+#ft100-win00012_modern_no_legacy_e15_e30 .scada-modern-table > tbody { display: contents; }
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__button_pressure_setpoints {
+  left: 1090px;
+  top: 32px;
+  width: 180px;
+  height: 53px;
+  color: #EAF8FF;
+  background: #123D57;
+  font-family: Segoe UI;
+  font-size: 11px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:2px;
+  border-radius:6px 6px 6px 6px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1.5px solid #2B8193;
+  box-shadow: 0 12px 26px rgba(15,42,48,.24);
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__button_pressure_setpoints:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__button_pressure_setpoints:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__button_pressure_setpoints[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__table_defrost_upper {
+  left: 13px;
+  top: 109px;
+  width: 1254px;
+  height: 533.887px;
+  color: #0F2A30;
+  background: Transparent;
+  font-family: Segoe UI;
+  font-size: 16px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0px none Transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e15 {
+  left: 259px;
+  top: 175px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e15:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e15:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e15[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e16 {
+  left: 322.375px;
+  top: 175px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e16:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e16:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e16[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e17 {
+  left: 385.75px;
+  top: 175px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e17:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e17:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e17[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e18 {
+  left: 449.125px;
+  top: 175px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e18:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e18:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e18[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e19 {
+  left: 512.5px;
+  top: 175px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e19:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e19:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e19[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e20 {
+  left: 575.875px;
+  top: 175px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e20:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e20:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e20[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e21 {
+  left: 639.25px;
+  top: 175px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e21:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e21:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e21[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e22 {
+  left: 702.625px;
+  top: 175px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e22:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e22:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e22[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e23 {
+  left: 766px;
+  top: 175px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e23:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e23:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e23[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e24 {
+  left: 829.375px;
+  top: 175px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e24:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e24:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e24[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e25 {
+  left: 892.75px;
+  top: 175px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e25:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e25:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e25[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e26 {
+  left: 956.125px;
+  top: 175px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e26:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e26:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e26[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e27 {
+  left: 1019.5px;
+  top: 175px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e27:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e27:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e27[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e28 {
+  left: 1082.875px;
+  top: 175px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e28:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e28:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e28[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e29 {
+  left: 1146.25px;
+  top: 175px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e29:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e29:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e29[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e30 {
+  left: 1209.625px;
+  top: 175px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e30:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e30:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p1_e30[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e15 {
+  left: 259px;
+  top: 239px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e15:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e15:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e15[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e16 {
+  left: 322.375px;
+  top: 239px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e16:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e16:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e16[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e17 {
+  left: 385.75px;
+  top: 239px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e17:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e17:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e17[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e18 {
+  left: 449.125px;
+  top: 239px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e18:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e18:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e18[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e19 {
+  left: 512.5px;
+  top: 239px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e19:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e19:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e19[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e20 {
+  left: 575.875px;
+  top: 239px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e20:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e20:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e20[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e21 {
+  left: 639.25px;
+  top: 239px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e21:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e21:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e21[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e22 {
+  left: 702.625px;
+  top: 239px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e22:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e22:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e22[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e23 {
+  left: 766px;
+  top: 239px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e23:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e23:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e23[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e24 {
+  left: 829.375px;
+  top: 239px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e24:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e24:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e24[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e25 {
+  left: 892.75px;
+  top: 239px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e25:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e25:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e25[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e26 {
+  left: 956.125px;
+  top: 239px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e26:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e26:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e26[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e27 {
+  left: 1019.5px;
+  top: 239px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e27:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e27:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e27[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e28 {
+  left: 1082.875px;
+  top: 239px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e28:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e28:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e28[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e29 {
+  left: 1146.25px;
+  top: 239px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e29:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e29:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e29[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e30 {
+  left: 1209.625px;
+  top: 239px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e30:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e30:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p2_e30[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e15 {
+  left: 259px;
+  top: 303px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e15:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e15:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e15[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e16 {
+  left: 322.375px;
+  top: 303px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e16:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e16:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e16[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e17 {
+  left: 385.75px;
+  top: 303px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e17:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e17:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e17[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e18 {
+  left: 449.125px;
+  top: 303px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e18:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e18:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e18[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e19 {
+  left: 512.5px;
+  top: 303px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e19:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e19:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e19[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e20 {
+  left: 575.875px;
+  top: 303px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e20:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e20:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e20[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e21 {
+  left: 639.25px;
+  top: 303px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e21:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e21:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e21[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e22 {
+  left: 702.625px;
+  top: 303px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e22:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e22:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e22[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e23 {
+  left: 766px;
+  top: 303px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e23:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e23:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e23[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e24 {
+  left: 829.375px;
+  top: 303px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e24:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e24:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e24[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e25 {
+  left: 892.75px;
+  top: 303px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e25:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e25:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e25[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e26 {
+  left: 956.125px;
+  top: 303px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e26:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e26:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e26[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e27 {
+  left: 1019.5px;
+  top: 303px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e27:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e27:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e27[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e28 {
+  left: 1082.875px;
+  top: 303px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e28:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e28:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e28[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e29 {
+  left: 1146.25px;
+  top: 303px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e29:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e29:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e29[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e30 {
+  left: 1209.625px;
+  top: 303px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e30:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e30:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p3_e30[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e15 {
+  left: 259px;
+  top: 367px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e15:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e15:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e15[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e16 {
+  left: 322.375px;
+  top: 367px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e16:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e16:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e16[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e17 {
+  left: 385.75px;
+  top: 367px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e17:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e17:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e17[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e18 {
+  left: 449.125px;
+  top: 367px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e18:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e18:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e18[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e19 {
+  left: 512.5px;
+  top: 367px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e19:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e19:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e19[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e20 {
+  left: 575.875px;
+  top: 367px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e20:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e20:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e20[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e21 {
+  left: 639.25px;
+  top: 367px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e21:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e21:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e21[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e22 {
+  left: 702.625px;
+  top: 367px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e22:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e22:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e22[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e23 {
+  left: 766px;
+  top: 367px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e23:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e23:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e23[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e24 {
+  left: 829.375px;
+  top: 367px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e24:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e24:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e24[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e25 {
+  left: 892.75px;
+  top: 367px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e25:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e25:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e25[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e26 {
+  left: 956.125px;
+  top: 367px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e26:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e26:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e26[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e27 {
+  left: 1019.5px;
+  top: 367px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e27:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e27:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e27[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e28 {
+  left: 1082.875px;
+  top: 367px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e28:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e28:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e28[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e29 {
+  left: 1146.25px;
+  top: 367px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e29:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e29:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e29[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e30 {
+  left: 1209.625px;
+  top: 367px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e30:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e30:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__toggle_defrost_p4_e30[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e15 {
+  left: 259px;
+  top: 572.887px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e15:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e15:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e15[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e16 {
+  left: 322.375px;
+  top: 572.887px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e16:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e16:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e16[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e17 {
+  left: 385.75px;
+  top: 572.887px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e17:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e17:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e17[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e18 {
+  left: 449.125px;
+  top: 572.887px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e18:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e18:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e18[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e19 {
+  left: 512.5px;
+  top: 572.887px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e19:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e19:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e19[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e20 {
+  left: 575.875px;
+  top: 572.887px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e20:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e20:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e20[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e21 {
+  left: 639.25px;
+  top: 572.887px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e21:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e21:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e21[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e22 {
+  left: 702.625px;
+  top: 572.887px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e22:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e22:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e22[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e23 {
+  left: 766px;
+  top: 572.887px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e23:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e23:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e23[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e24 {
+  left: 829.375px;
+  top: 572.887px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e24:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e24:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e24[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e25 {
+  left: 892.75px;
+  top: 572.887px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e25:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e25:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e25[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e26 {
+  left: 956.125px;
+  top: 572.887px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e26:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e26:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e26[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e27 {
+  left: 1019.5px;
+  top: 572.887px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e27:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e27:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e27[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e28 {
+  left: 1082.875px;
+  top: 572.887px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e28:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e28:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e28[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e29 {
+  left: 1146.25px;
+  top: 572.887px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e29:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e29:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e29[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e30 {
+  left: 1209.625px;
+  top: 572.887px;
+  width: 51.375px;
+  height: 28px;
+  color: #F5FBFF;
+  background: #315566;
+  font-family: Segoe UI;
+  font-size: 8px;
+  font-weight:semibold;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  border-radius:4px 4px 4px 4px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1px solid #49A9B8;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e30:hover {
+  background: #EAF5F7;
+  color: #0F2A30;
+  border-color: #2090A0;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e30:active,
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__manual_defrost_e30[data-scada-toggle-state="on"] {
+  background: #0F7280;
+  color: #FFFFFF;
+  border-color: #0F2A30;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__defrost_status_e15 {
+  left: 259px;
+  top: 614.887px;
+  width: 51.375px;
+  height: 20px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__defrost_status_e16 {
+  left: 322.375px;
+  top: 614.887px;
+  width: 51.375px;
+  height: 20px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__defrost_status_e17 {
+  left: 385.75px;
+  top: 614.887px;
+  width: 51.375px;
+  height: 20px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__defrost_status_e18 {
+  left: 449.125px;
+  top: 614.887px;
+  width: 51.375px;
+  height: 20px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__defrost_status_e19 {
+  left: 512.5px;
+  top: 614.887px;
+  width: 51.375px;
+  height: 20px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__defrost_status_e20 {
+  left: 575.875px;
+  top: 614.887px;
+  width: 51.375px;
+  height: 20px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__defrost_status_e21 {
+  left: 639.25px;
+  top: 614.887px;
+  width: 51.375px;
+  height: 20px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__defrost_status_e22 {
+  left: 702.625px;
+  top: 614.887px;
+  width: 51.375px;
+  height: 20px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__defrost_status_e23 {
+  left: 766px;
+  top: 614.887px;
+  width: 51.375px;
+  height: 20px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__defrost_status_e24 {
+  left: 829.375px;
+  top: 614.887px;
+  width: 51.375px;
+  height: 20px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__defrost_status_e25 {
+  left: 892.75px;
+  top: 614.887px;
+  width: 51.375px;
+  height: 20px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__defrost_status_e26 {
+  left: 956.125px;
+  top: 614.887px;
+  width: 51.375px;
+  height: 20px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__defrost_status_e27 {
+  left: 1019.5px;
+  top: 614.887px;
+  width: 51.375px;
+  height: 20px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__defrost_status_e28 {
+  left: 1082.875px;
+  top: 614.887px;
+  width: 51.375px;
+  height: 20px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__defrost_status_e29 {
+  left: 1146.25px;
+  top: 614.887px;
+  width: 51.375px;
+  height: 20px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy_e15_e30 #ft100-win00012_modern_no_legacy_e15_e30__defrost_status_e30 {
+  left: 1209.625px;
+  top: 614.887px;
+  width: 51.375px;
+  height: 20px;
+  color: #0F2A30;
+  background: transparent;
+  font-family: Segoe UI;
+  font-size: 14px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:left;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:normal;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 0 none transparent;
+  box-shadow: none;
+}
+
+@keyframes ft100-win00012_modern_no_legacy_e15_e30---scada-blink { 0%,100%{opacity:1} 50%{opacity:0.15} }
+@keyframes ft100-win00012_modern_no_legacy_e15_e30---scada-pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+@keyframes ft100-win00012_modern_no_legacy_e15_e30---scada-halo { 0%,100%{box-shadow:0 0 2px currentColor} 50%{box-shadow:0 0 14px currentColor} }
+@keyframes ft100-win00012_modern_no_legacy_e15_e30---scada-spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+
+.scada-anim-blink { animation: ft100-win00012_modern_no_legacy_e15_e30---scada-blink 0.6s step-end infinite; }
+.scada-anim-pulse { animation: ft100-win00012_modern_no_legacy_e15_e30---scada-pulse 1s ease-in-out infinite; }
+.scada-anim-halo  { animation: ft100-win00012_modern_no_legacy_e15_e30---scada-halo 1.8s ease-in-out infinite; }
+.scada-anim-spin  { animation: ft100-win00012_modern_no_legacy_e15_e30---scada-spin 1.2s linear infinite; }

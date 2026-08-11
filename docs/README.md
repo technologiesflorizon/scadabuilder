@@ -1,13 +1,31 @@
 # SCADA Builder V2 - Documentation Index
 
-Date: 2026-07-30
+Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.5.0002`
+Document version: `V2.1.5.0020`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-11 | `V2.1.5.0020` | `PENDING` | Phase 1 livrée : modèle QuickWindow (VisualContent, PresentationDefaults, SinglePerDefinition), invocations typées avec anti-injection, retrait fail-closed des kinds popup, persistance atomique quick-windows/ et handshake contractuel Builder→TF100Web. |
+| 2026-08-10 | `V2.1.5.0019` | `PENDING` | Revue renforcée du plan `DEC-0050` : audit popup mesurable, prototype itératif hashé, rollback inter-phase, export sans bypass, handshakes précoces, races/SLA, WebView2 qualifié, canary TF100Web et versioning explicite. |
+| 2026-08-10 | `V2.1.5.0018` | `PENDING` | Ajout du plan d’implémentation `DEC-0050`; sa phase 0 constitue le gate absolu du prototype d’isolation DOM/CSS dans WebView2 et TF100Web avant tout développement de production. |
+| 2026-08-10 | `V2.1.5.0017` | `PENDING` | `DEC-0050` approuve la spécification Fenêtre rapide et supersède les décisions popup Fragment historiques `DEC-0019`, `DEC-0020` et `DEC-0022`; le plan peut maintenant être rédigé avec un gate d’isolation en phase 0. |
+| 2026-08-10 | `V2.1.5.0016` | `PENDING` | La première tranche Fenêtre rapide est une verticale `win00054` complète, de l’authoring au runtime TF100Web, éprouvant deux invocations moteur aux mappings indépendants. |
+| 2026-08-10 | `V2.1.5.0015` | `PENDING` | Le modèle Fenêtre rapide n’ajoute aucun `InstanceKey` distinct : définition, invocation persistante et montage runtime possèdent chacun leur clé canonique. |
+| 2026-08-10 | `V2.1.5.0014` | `PENDING` | Le plan Fenêtre rapide devra être écrit avant le prototype; ce dernier devient sa phase 0 bloquante avant toute modification de production. |
+| 2026-08-10 | `V2.1.5.0013` | `PENDING` | Les kinds `OpenPopup`, `TogglePopup` et `ClosePopup`, jamais complétés bout en bout, seront retirés; les Fenêtres rapides introduisent seulement `OpenQuickWindow`, `CloseQuickWindow` et une référence d’invocation typée. |
+| 2026-08-10 | `V2.1.5.0012` | `PENDING` | Les actions popup legacy et `ScadaPopupOptions` sont explicitement phased-out et exclus de la migration Fenêtre rapide; le choix restant concerne uniquement les commandes modernes `ScadaCommandBinding`. |
+| 2026-08-10 | `V2.1.5.0011` | `PENDING` | La V1 des Fenêtres rapides retire le Toggle moderne : ouverture et fermeture sont explicites; `TogglePopup` reste limité à la compatibilité des Fragments legacy. |
+| 2026-08-10 | `V2.1.5.0010` | `PENDING` | La V1 des Fenêtres rapides conserve des liaisons explicites par invocation; leur copie est une aide d’authoring autonome et undoable, sans preset persistant ni contexte d’équipement. |
+| 2026-08-10 | `V2.1.5.0009` | `PENDING` | Les Fenêtres rapides étendent le manifest 2.3 par capacités granulaires, sans repli 2.1/2.2; TF100Web doit être capable et déployé avant l’activation de leur export Builder. |
+| 2026-08-10 | `V2.1.5.0008` | `PENDING` | L’isolation des Fenêtres rapides modernes utilise une racine DOM scoppée et un namespace stable par définition; l’`iframe` reste limité à l’adaptation legacy opaque et un prototype cross-runtime demeure requis. |
+| 2026-08-10 | `V2.1.5.0007` | `PENDING` | La composition visuelle des Fenêtres rapides est arrêtée : pages et Fenêtres rapides possèdent un `VisualContent` commun borné, sans héritage de domaine ni mélange de leurs responsabilités propres. |
+| 2026-08-10 | `V2.1.5.0006` | `PENDING` | Résolution du contrat de ports requis des Fenêtres rapides : optionnels par défaut, `Required` explicite et build/export bloqué seulement lorsque requis. |
+| 2026-08-05 | `V2.1.5.0005` | `PENDING` | Approbation et consignation des 22 décisions UI Fenêtre rapide couvrant le cadre runtime, le backdrop, la réouverture, l’arborescence, l’Interface locale, les Liaisons, le preview et les suppressions référentielles. |
+| 2026-08-05 | `V2.1.5.0004` | `PENDING` | Consolidation du registre de décisions Fenêtre rapide : entité distincte, Interface locale typée, liaisons par invocation, ports optionnels, instance unique, imbrication bornée, backdrop et choix visuels encore ouverts. |
+| 2026-08-04 | `V2.1.5.0003` | `PENDING` | Ajout du premier brouillon exploratoire sur les popups paramétrés et les mappings typés; l’hypothèse multi-instance a ensuite été écartée pour la première version par `V2.1.5.0004`. |
 | 2026-07-30 | `V2.1.5.0002` | `PENDING` | Les effets Etat de fond et de bordure ciblent désormais explicitement la géométrie SVG visible des formes exportées, avec repli compatible sur le wrapper HTML. |
 | 2026-07-29 | `V2.1.5.0001` | `PENDING` | À l’initialisation du registre, les projets existants sous le répertoire produit `projects/` sont inscrits dans les récents sans ouverture automatique; un retrait reste persistant. |
 | 2026-07-29 | `V2.1.5.0000` | `PENDING` | `DEC-0049` implémentée : accueil sans projet, création et ouverture à racine choisie, sauvegarde/fermeture sûres et projets récents. |
@@ -244,6 +262,8 @@ Active specifications and implementation plans:
 20. `superpowers/plans/2026-07-16-scada-v2-tf100web-runtime-conformance.md` - active pending implementation plan covering every currently authorable/exportable runtime family plus the four industrial integration pages.
 21. `superpowers/specs/2026-07-29-project-lifecycle-design.md` - approved `DEC-0049` architecture for project creation, fail-closed opening, safe closing, empty-shell startup and recent projects.
 22. `superpowers/plans/2026-07-29-project-lifecycle.md` - draft executable implementation plan for generalizing project roots, lifecycle commands, WPF session transitions and compatibility validation.
+23. `superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md` - spécification approuvée `DEC-0050` des Fenêtres rapides : entité distincte, Interface locale typée, liaisons d’invocation, instance unique, présentation, cycle de vie, manifest 2.3 et hosting TF100Web.
+24. `superpowers/plans/2026-08-10-parameterized-quick-window-management.md` - plan cross-repository dérivé de `DEC-0050`; aucune phase de production ne peut commencer avant le `PASS` documenté du prototype DOM/CSS de phase 0 dans WebView2 et TF100Web.
 
 Generated documentation:
 
@@ -271,7 +291,7 @@ These guardrails are active decisions in `00_governance/DECISION_REGISTER_V2.md`
 10. Imported TF100Web tags are project-level catalog data; Element+ value bindings use all enabled tags for `Lire valeur`, require writeable tags for `Ecrire valeur`, and export through the FT100/TF100Web manifest/runtime bridge. The editor `Catalogue Tags` panel exposes search, device, datatype, access, and state filters plus a filtered summary.
 11. Element+ object visibility actions may be conditioned by imported tag values with deterministic operators; boolean `Vrai/Faux` conditions require boolean tags.
 12. Runtime TF100Web can push tag values into read-bound Element+ objects through `window.scadaBuilderSetTagValue(tagId, value, meta)` or the `scada-builder-tag-value` browser event.
-13. Popup actions `Ouvrir popup`, `Fermer popup`, and `Basculer popup` target compiled `Fragment` pages only; build/export validation rejects missing, non-fragment, excluded popup targets, and missing host regions for host-region popups.
+13. `DEC-0050` remplace le modèle popup Fragment par des Fenêtres rapides distinctes et typées. Les actions legacy `MountFragment`, `ClosePopup`, `TogglePopup` et `ScadaPopupOptions` sont phased-out, ne prouvent aucune capacité Fenêtre rapide et ne sont pas migrées silencieusement. Les capacités `quick-window.*` restent bloquées jusqu’aux preuves Builder, runtime partagé et TF100Web exigées par `DEC-0047`.
 14. Runtime border actions `Afficher bordure`, `Masquer bordure`, and `Basculer bordure` target Element+ objects through the standard page-scoped `scada-runtime-border-highlight` CSS class.
 15. Runtime action conditions support optional compound groups with `All` or `Any` mode and explicit missing-tag policy.
 16. Exported pages expose `window.scadaBuilderRuntime` and lifecycle events for page ready, action executed, and runtime errors.

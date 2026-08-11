@@ -1,0 +1,173 @@
+{
+  "schema": "scada-v2-legacy-popup-allowlist-v1",
+  "generated": "2026-08-11",
+  "decision": "DEC-0050",
+  "note": "Legacy popup residues allowlisted after DEC-0050. None may reach QuickWindowDefinition/InvocationKey nor serve as QuickWindow proof.",
+  "residues": [
+    {
+      "symbol": "ScadaActionKind.MountFragment",
+      "file": "src/ScadaBuilderV2.Domain/Scenes/ScadaSceneModels.cs",
+      "family": "legacy-action",
+      "surface": "persistence/model",
+      "decision": "legacy-allowlisted",
+      "owner": "Domain",
+      "reason": "Historical fragment mount action retained for reading old projects and fail-closed diagnostics; never migrated to QuickWindow.",
+      "test": "tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs:SaveAndLoadScenePreservesOpenPopupAction"
+    },
+    {
+      "symbol": "ScadaActionKind.ClosePopup",
+      "file": "src/ScadaBuilderV2.Domain/Scenes/ScadaSceneModels.cs",
+      "family": "legacy-action",
+      "surface": "persistence/model",
+      "decision": "legacy-allowlisted",
+      "owner": "Domain",
+      "reason": "Historical close popup action retained for reading old projects; isolated from QuickWindow.",
+      "test": "tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs:SaveAndLoadScenePreservesCloseAndTogglePopupActions"
+    },
+    {
+      "symbol": "ScadaActionKind.TogglePopup",
+      "file": "src/ScadaBuilderV2.Domain/Scenes/ScadaSceneModels.cs",
+      "family": "legacy-action",
+      "surface": "persistence/model",
+      "decision": "legacy-allowlisted",
+      "owner": "Domain",
+      "reason": "Historical toggle popup action retained for reading old projects; not a QuickWindow Toggle.",
+      "test": "tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs:SaveAndLoadScenePreservesCloseAndTogglePopupActions"
+    },
+    {
+      "symbol": "ScadaPopupOptions",
+      "file": "src/ScadaBuilderV2.Domain/Scenes/ScadaSceneModels.cs",
+      "family": "legacy-action",
+      "surface": "persistence/model",
+      "decision": "legacy-allowlisted",
+      "owner": "Domain",
+      "reason": "Legacy popup placement options phased-out; not extended to QuickWindow PresentationDefaults.",
+      "test": "tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs:SaveAndLoadScenePreservesAdvancedPopupOptions"
+    },
+    {
+      "symbol": "ScadaPopupPosition",
+      "file": "src/ScadaBuilderV2.Domain/Scenes/ScadaSceneModels.cs",
+      "family": "legacy-action",
+      "surface": "persistence/model",
+      "decision": "legacy-allowlisted",
+      "owner": "Domain",
+      "reason": "Position enum for legacy fragment popups; QuickWindow uses QuickWindowPosition Center only.",
+      "test": "tests/ScadaBuilderV2.Tests/RuntimeContracts/ScadaRuntimeCapabilityCatalogTests.cs"
+    },
+    {
+      "symbol": "ScadaPopupSizePreset",
+      "file": "src/ScadaBuilderV2.Domain/Scenes/ScadaSceneModels.cs",
+      "family": "legacy-action",
+      "surface": "persistence/model",
+      "decision": "legacy-allowlisted",
+      "owner": "Domain",
+      "reason": "Size preset for legacy popups; QuickWindow uses CanvasSize from VisualContent.",
+      "test": "tests/ScadaBuilderV2.Tests/RuntimeContracts/ScadaRuntimeCapabilityCatalogTests.cs"
+    },
+    {
+      "symbol": "ScadaRuntimeCapabilityCatalog.ActionKinds[MountFragment/ClosePopup/TogglePopup]",
+      "file": "src/ScadaBuilderV2.Domain/RuntimeContracts/ScadaRuntimeCapabilityCatalog.cs",
+      "family": "capability",
+      "surface": "capability/blocked",
+      "decision": "legacy-allowlisted",
+      "owner": "Domain",
+      "reason": "Legacy action capabilities remain Blocked and never promoted; quick-window proof uses command.open-quick-window etc.",
+      "test": "tests/ScadaBuilderV2.Tests/RuntimeContracts/ScadaRuntimeCapabilityCatalogTests.cs"
+    },
+    {
+      "symbol": "ScadaRuntimeCapabilityCatalog.PopupPositions/PopupSizes/PopupOptions",
+      "file": "src/ScadaBuilderV2.Domain/RuntimeContracts/ScadaRuntimeCapabilityCatalog.cs",
+      "family": "capability",
+      "surface": "capability/blocked",
+      "decision": "legacy-allowlisted",
+      "owner": "Domain",
+      "reason": "Legacy popup position/size/options capabilities remain Blocked; QuickWindow uses distinct presentation model.",
+      "test": "tests/ScadaBuilderV2.Tests/RuntimeContracts/ScadaRuntimeCapabilityCatalogTests.cs"
+    },
+    {
+      "symbol": "ScadaEventRegistry.OpenPopupFunction/ClosePopupFunction/TogglePopupFunction",
+      "file": "src/ScadaBuilderV2.Domain/Scenes/ScadaEventRegistry.cs",
+      "family": "legacy-action",
+      "surface": "registry",
+      "decision": "legacy-allowlisted",
+      "owner": "Domain",
+      "reason": "Legacy French trigger labels retained for diagnosing old EventBindings; not used for QuickWindow authoring.",
+      "test": "tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs:EventRegistryDefinesFrenchTriggerLabelsAndChangePageContract"
+    },
+    {
+      "symbol": "PageDependencyAnalyzer ActionPopup",
+      "file": "src/ScadaBuilderV2.Application/Pages/PageDependencyAnalyzer.cs",
+      "family": "legacy-action",
+      "surface": "dependency-analysis",
+      "decision": "legacy-allowlisted",
+      "owner": "Application",
+      "reason": "Preserves legacy action popup page dependencies for old projects; QuickWindow commands do not create page dependencies.",
+      "test": "tests/ScadaBuilderV2.Tests/PageDependencyAnalyzerTests.cs"
+    },
+    {
+      "symbol": "ModernProjectMigration TargetPageKey migration for popup actions",
+      "file": "src/ScadaBuilderV2.Infrastructure/ModernProjects/ModernProjectMigration.cs",
+      "family": "legacy-action",
+      "surface": "migration",
+      "decision": "legacy-allowlisted",
+      "owner": "Infrastructure",
+      "reason": "Migrates old popup TargetPageKey for diagnostic reads only; never creates QuickWindow.",
+      "test": "tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs"
+    },
+    {
+      "symbol": "ElementEventDialog OpenPopup handling",
+      "file": "src/ScadaBuilderV2.App/ElementEventDialog.xaml.cs",
+      "family": "legacy-action",
+      "surface": "WPF legacy dialog",
+      "decision": "legacy-allowlisted",
+      "owner": "App",
+      "reason": "Dialog still reads legacy popup actions for old scenes but does not author QuickWindow; QuickWindow authoring is in QuickWindows panels (Phase 3).",
+      "test": "Manual review: no migration path to QuickWindowDefinition"
+    },
+    {
+      "symbol": "MainWindow WithOpenPopupEvent/Close/Toggle",
+      "file": "src/ScadaBuilderV2.App/MainWindow.xaml.cs",
+      "family": "legacy-action",
+      "surface": "WPF legacy event wiring",
+      "decision": "legacy-allowlisted",
+      "owner": "App",
+      "reason": "Legacy wiring for old EventBindings; QuickWindow uses QuickWindowInvocation and Preview host adapter.",
+      "test": "tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs"
+    },
+    {
+      "symbol": "ScadaSceneModels.WithOpenPopupEvent/WithClosePopupEvent/WithTogglePopupEvent",
+      "file": "src/ScadaBuilderV2.Domain/Scenes/ScadaSceneModels.cs",
+      "family": "legacy-action",
+      "surface": "domain helper",
+      "decision": "legacy-allowlisted",
+      "owner": "Domain",
+      "reason": "Helpers retained for tests that verify old projects reject gracefully and do not migrate.",
+      "test": "tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs:SceneCanAttachOpenPopupEvent"
+    },
+    {
+      "symbol": "docs/09_archive popup history",
+      "file": "docs/09_archive/**/*",
+      "family": "documentation",
+      "surface": "archive",
+      "decision": "historical",
+      "owner": "Docs",
+      "reason": "Historical popup specifications remain in archive; not active contract.",
+      "test": "docs/README.md §5"
+    },
+    {
+      "symbol": "tests/runtime-js/command-dispatcher.test.mjs popup legacy",
+      "file": "tests/runtime-js/command-dispatcher.test.mjs",
+      "family": "runtime-test",
+      "surface": "JS fixture",
+      "decision": "legacy-allowlisted",
+      "owner": "Rendering",
+      "reason": "Legacy JS dispatcher branches for popup retained as fixture to prove they are not used as QuickWindow proof.",
+      "test": "tests/runtime-js/command-dispatcher.test.mjs"
+    }
+  ],
+  "forbidden": {
+    "notInAllowlist": "Any occurrence of OpenPopup/TogglePopup/ClosePopup/MountFragment/ScadaPopupOptions outside this allowlist must fail the build.",
+    "mustNotReachQuickWindow": "No allowlisted symbol may be reachable from QuickWindowDefinition, QuickWindowInvocation, QuickWindowBinding, VisualContent or EffectiveQuickWindows.",
+    "mustNotServeAsProof": "No legacy capability (action.*-popup, popup.*) may be used as evidence for quick-window.* or command.*-quick-window."
+  }
+}

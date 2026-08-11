@@ -2607,7 +2607,7 @@
 #ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__defrost_status_e1 {
   left: 259px;
   top: 647px;
-  width: 60.429px;
+  width: 60.43px;
   height: 20px;
   color: #0F2A30;
   background: transparent;
@@ -2910,6 +2910,42 @@
   transform:rotate(0deg) scaleX(1) scaleY(1);
   border: 0 none transparent;
   box-shadow: none;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__button_evap_15_30 {
+  left: 890px;
+  top: 32px;
+  width: 180px;
+  height: 53px;
+  color: #EAF8FF;
+  background: #123D57;
+  font-family: Segoe UI;
+  font-size: 11px;
+  font-weight:normal;
+  font-style:normal;
+  text-align:center;
+  text-transform:none;
+  letter-spacing:0px;
+  line-height:2px;
+  border-radius:6px 6px 6px 6px;
+  opacity:1;
+  transform-origin:center center;
+  transform:rotate(0deg) scaleX(1) scaleY(1);
+  border: 1.5px solid #2B8193;
+  box-shadow: 0 12px 26px rgba(15,42,48,.24);
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__button_evap_15_30:hover {
+  background: #19536E;
+  color: #FFFFFF;
+  border-color: #48A6B8;
+}
+
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__button_evap_15_30:active,
+#ft100-win00012_modern_no_legacy #ft100-win00012_modern_no_legacy__button_evap_15_30[data-scada-toggle-state="on"] {
+  background: #0B2A3D;
+  color: #FFFFFF;
+  border-color: #48A6B8;
 }
 
 @keyframes ft100-win00012_modern_no_legacy---scada-blink { 0%,100%{opacity:1} 50%{opacity:0.15} }

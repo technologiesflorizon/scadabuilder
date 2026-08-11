@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://scada-builder-v2/quick-window-dom-css-isolation/evidence.schema.json",
+  "title": "QuickWindow DOM/CSS Isolation Evidence",
+  "description": "Machine-readable evidence for Phase 0 prototype gate FR-020/FR-026. Every gate run must emit this schema version and a single PrototypeRevision.",
+  "type": "object",
+  "required": ["schemaVersion", "prototypeRevision", "prototypeHash", "generatedUtc", "versions", "invariants", "assertions", "metrics"],
+  "properties": {
+    "schemaVersion": { "type": "string", "const": "1.0.0" },
+    "prototypeRevision": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "prototypeHash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "generatedUtc": { "type": "string", "format": "date-time" },
+    "commit": {
+      "type": "object",
+      "properties": {
+        "builderHead": { "type": "string" },
+        "builderBranch": { "type": "string" },
+        "tf100WebHead": { "type": "string" },
+        "tf100WebBranch": { "type": "string" }
+      }
+    },
+    "versions": {
+      "type": "object",
+      "required": ["node", "nvmrc", "enginesNode", "os", "webView2Sdk", "webView2Runtime"],
+      "properties": {
+        "node": { "type": "string" },
+        "nvmrc": { "type": "string" },
+        "enginesNode": { "type": "string" },
+        "os": { "type": "string" },
+        "webView2Sdk": { "type": ["string", "null"] },
+        "webView2Runtime": { "type": ["string", "null"] },
+        "dotnet": { "type": "string" }
+      }
+    },
+    "invariants": {
+      "type": "object",
+      "properties": {
+        "fr020": { "type": "string" },
+        "fr026": { "type": "string" }
+      }
+    },
+    "assertions": {
+      "type": "object",
+      "required": ["core", "hostExtensions"],
+      "properties": {
+        "core": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "description", "status"],
+            "properties": {
+              "id": { "type": "string" },
+              "description": { "type": "string" },
+              "status": { "type": "string", "enum": ["PASS", "FAIL"] },
+              "detail": { "type": "string" }
+            }
+          }
+        },
+        "hostExtensions": {
+          "type": "object",
+          "properties": {
+            "builderWebView2": {
+              "type": "array",
+              "items": { "type": "object" }
+            },
+            "tf100Web": {
+              "type": "array",
+              "items": { "type": "object" }
+            }
+          }
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "cycles": { "type": "integer" },
+        "p50HotMs": { "type": "number" },
+        "p95HotMs": { "type": "number" },
+        "p50ColdMs": { "type": "number" },
+        "p95ColdMs": { "type": "number" },
+        "listenerBaseline": { "type": "integer" },
+        "listenerAfterDispose": { "type": "integer" },
+        "pollerCount": { "type": "integer" }
+      }
+    },
+    "overall": { "type": "string", "enum": ["PASS", "FAIL"] }
+  }
+}

@@ -1,21 +1,24 @@
 # SCADA Builder V2 - Actions Events Contract
 
-Date: 2026-07-16
+Date: 2026-08-10
 Status: Active editor/runtime actions contract
-Document version: `V2.1.4.0053`
+Document version: `V2.1.5.0017`
 
 > **DEPRECATED (2026-07-07):** `SetClass`/`RemoveClass`/`ToggleClass`/`WriteTag` (legacy)
 > action kinds and the border/visual-effect authoring described in §3, §8, §9 have been
 > removed from the domain model. Element+ display-state and command authoring is now
 > specified in `docs/superpowers/specs/2026-07-07-element-plus-state-command-events-design.md`
 > and `docs/03_runtime_contracts/STATE_COMMAND_RUNTIME_CONTRACT_V1.md`. `Navigate`,
-> `Show`/`Hide`/`ToggleVisibility`, `MountFragment`/`ClosePopup`/`TogglePopup`, and
-> `ReadValue`/`WriteValue` remain valid until fully absorbed by the new Etat/Commande tabs.
+> `Show`/`Hide`/`ToggleVisibility` and `ReadValue`/`WriteValue` remain valid until fully
+> absorbed by the new Etat/Commande tabs. `MountFragment`/`ClosePopup`/`TogglePopup`
+> and `ScadaPopupOptions` are phased-out implementation residues superseded by
+> `DEC-0050`; they are not the contract of the new Fenêtre rapide module.
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-10 | `V2.1.5.0017` | `PENDING` | `DEC-0050` supersède le contrat popup Fragment de `DEC-0019`, `DEC-0020` et `DEC-0022`; les actions et options restantes deviennent des résidus de décommissionnement, sans migration vers les Fenêtres rapides. |
 | 2026-07-16 | `V2.1.4.0053` | `PENDING` | `DEC-0047` : les 9 actions objet utilisent ActionDispatcher, conditions partagees, ordre/propagation et page scope. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | `DEC-0044` applique le modele Etat/Commande qui remplace les anciennes actions visuelles : 56 boutons Toggle, filtres PLC et texte dynamique via cible semantique partagee. |
 | 2026-06-17 | `V2.1.2.0022` | `PENDING` | Clarification que `Lire valeur` et `Ecrire valeur` sont des events de binding runtime sans trigger utilisateur. |
@@ -56,7 +59,7 @@ Le baseline ci-dessous decrit le contrat historique encore valide pour ses famil
 9. `Lire valeur` and `Ecrire valeur` are binding events. They persist tag ids as Element+ data bindings instead of triggered scene actions. `Ecrire valeur` writes the operator-entered runtime value and never stores a literal design-time value.
 10. The nine current object-action kinds may use one deterministic tag condition and/or one compound condition group; conditions are evaluated by the shared runtime before execution.
 11. Exported runtime applies values pushed by TF100Web to every Element+ using the matching `Lire valeur` tag binding.
-12. `Ouvrir popup`, `Fermer popup`, and `Basculer popup` are authorable against compiled `Fragment` pages, persist optional advanced runtime options and normalize to canonical host intents.
+12. Le code historique peut encore contenir `MountFragment`, `ClosePopup`, `TogglePopup` et `ScadaPopupOptions`; `DEC-0050` les classe comme résidus phased-out à retirer explicitement. Ils ne constituent plus une surface produit approuvée, ne ciblent jamais une `QuickWindowDefinition` et ne prouvent aucune capacité Fenêtre rapide.
 13. Legacy border/class actions are deprecated and removed from the active domain. Model-backed `StateConfig` owns visual effects.
 15. Model-backed display states are evaluated continuously by the shared runtime and may combine color-filter effects with `TextContent`; generated text and button labels expose the same `[data-scada-text]` target.
 16. Model-backed commands execute through the shared `CommandDispatcher`. Toggle reads `ReadTagId` (or `WriteTagId`) from the shared TF100Web snapshot and writes through the existing bridge; appearance follows the confirmed subsequent snapshot.
@@ -78,9 +81,9 @@ Runtime function contracts are centralized in `ScadaEventRegistry`:
 | Function | French label | Persisted action kind | Required arguments | Status |
 | --- | --- | --- | --- | --- |
 | `ChangePage` | `Changer de page` | `Navigate` | `TargetPageId` | Implemented |
-| `OpenPopup` | `Ouvrir popup` | `MountFragment` | `TargetPageId` fragment | Implemented |
-| `ClosePopup` | `Fermer popup` | `ClosePopup` | `TargetPageId` fragment | Implemented |
-| `TogglePopup` | `Basculer popup` | `TogglePopup` | `TargetPageId` fragment | Implemented |
+| `OpenPopup` | `Ouvrir popup` | `MountFragment` | `TargetPageId` fragment | Superseded by `DEC-0050`; removal pending |
+| `ClosePopup` | `Fermer popup` | `ClosePopup` | `TargetPageId` fragment | Superseded by `DEC-0050`; removal pending |
+| `TogglePopup` | `Basculer popup` | `TogglePopup` | `TargetPageId` fragment | Superseded by `DEC-0050`; removal pending |
 | `Show` | `Afficher objet` | `Show` | `TargetElementId`, optional `Condition` | Implemented |
 | `Hide` | `Masquer objet` | `Hide` | `TargetElementId`, optional `Condition` | Implemented |
 | `ToggleVisibility` | `Basculer visibilite` | `ToggleVisibility` | `TargetElementId`, optional `Condition` | Implemented |
@@ -146,19 +149,15 @@ The current implemented tag slice covers:
 
 The current slice does not yet implement expression authoring, local tag creation, or project protocol import. Local tag creation requires a future protocol import revision.
 
-## 7. Popup Authoring Boundary
+## 7. Legacy Popup Decommissioning Boundary
 
-The current implemented popup slice covers:
+Le modèle et le runtime historiques peuvent encore contenir :
 
-1. Selecting `Ouvrir popup`, `Fermer popup`, or `Basculer popup` in the Element+ event dialog.
-2. Selecting only pages marked `Fragment` and included in build.
-3. Persisting the actions as `ScadaActionKind.MountFragment`, `ClosePopup`, or `TogglePopup` with `TargetPageId`.
-4. Persisting optional `ScadaPopupOptions`: `Position`, `SizePreset`, `AllowMultiple`, `ResetOnOpen`, and `HostRegionId`.
-5. Validating missing, non-fragment, excluded popup targets, and missing host-region Element+ targets before build/export.
-6. Exporting canonical popup intents with model-backed position, size, multi-instance, reset and host-region options transported unchanged.
-7. Opening, closing, toggling, focus and fragment lifecycle are host services supplied by the single TF100Web adapter.
+1. `ScadaActionKind.MountFragment`, `ClosePopup` et `TogglePopup` avec `TargetPageId`;
+2. `ScadaPopupOptions` avec `Position`, `SizePreset`, `AllowMultiple`, `ResetOnOpen` et `HostRegionId`;
+3. leurs validations, intentions host et branches de montage de Fragment.
 
-The current slice does not yet implement a visual placement editor or a separate named host-region registry. Host-region popups target an existing Element+ id.
+Ces éléments sont des résidus d’implémentation à décommissionner selon `DEC-0050`. Ils ne doivent recevoir aucune nouvelle option, correction fonctionnelle ou surface d’authoring, ne sont pas convertis en Fenêtres rapides et ne peuvent être comptés comme preuve de conformance. Le propriétaire du nouveau contrat est `docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md`. Leur retrait physique doit préserver le JSON original en cas de diagnostic et rester couvert par un chantier explicite du plan.
 
 ## 8. Visual Runtime Action Boundary
 
@@ -176,7 +175,7 @@ The following are roadmap items until implemented and covered by tests:
 
 1. The page root owns a camelCase `data-scada-action-registry`; each source object owns ordered `data-scada-action-bindings` with trigger, action id, `StopPropagation`, and `PreventDefault`.
 2. `ScadaRuntime.initPage` binds the five trigger contracts idempotently; `disposePage` removes those listeners before page replacement.
-3. `Navigate`, `MountFragment`, `ClosePopup`, and `TogglePopup` reuse the same versioned host-intent transport as `CommandDispatcher`. `Show`, `Hide`, `ToggleVisibility`, `ReadValue`, and `WriteValue` stay portable.
+3. `Navigate` reuse le transport host versionné de `CommandDispatcher`. Tant qu’ils ne sont pas physiquement retirés, `MountFragment`, `ClosePopup` et `TogglePopup` restent des branches legacy isolées et ne sont jamais assimilés aux commandes `OpenQuickWindow`/`CloseQuickWindow`. `Show`, `Hide`, `ToggleVisibility`, `ReadValue` et `WriteValue` restent portables.
 4. Element targets are resolved exclusively by exact `data-scada-element-id` inside the initialized page root. A duplicate id in another composed root cannot be selected.
 5. Read/write actions use `TagBridge`; condition comparisons use `ExpressionEvaluator`. A missing definition, target, single-condition tag, input value, unknown trigger/operator, disabled source, or unsupported kind fails closed.
 6. Bindings execute in persisted order. `PreventDefault` and `StopPropagation` apply to their browser event without silently reordering or suppressing later bindings on the same source.

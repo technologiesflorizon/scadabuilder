@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QuickWindow DOM/CSS Isolation Prototype — FR-020 Gate</title>
+  <link rel="stylesheet" href="prototype.css" />
+  <style>
+    body { margin:0; font-family: Segoe UI, sans-serif; }
+    #evidence { white-space: pre-wrap; font-family: Consolas, monospace; background:#111; color:#0f0; padding:12px; max-height: 40vh; overflow:auto; }
+    #page-open-a, #page-open-b { margin: 4px; }
+    .gate-badge { display:inline-block; padding: 6px 10px; border-radius:6px; font-weight:700; }
+    .gate-pass { background:#0a6; color:#fff; } .gate-fail { background:#c00; color:#fff; }
+  </style>
+</head>
+<body>
+  <!-- Page sentinel container -->
+  <div id="page-root" data-page-root="true">
+    <h1>SCADA Page (sentinelle)</h1>
+    <div class="sentinel shared-class" id="sensorValue">Page sensorValue (doit rester #0b4da2, jamais affecté par quick-window)</div>
+    <div class="sentinel shared-class" style="margin:6px 0;">Classe partagée page</div>
+    <div class="animated" style="width:80px;height:12px;background:#0b4da2;margin:6px 0;"></div>
+    <table class="sentinel-table"><tr><td>Page cell</td><td>Page cell 2</td></tr></table>
+    <svg width="40" height="20"><defs><linearGradient id="page-gradient"><stop offset="0%" stop-color="#0b4da2"/></linearGradient></defs><rect class="svg-sentinel" width="40" height="20"/></svg>
+    <p>
+      <button id="page-open-a">Ouvrir A (M101)</button>
+      <button id="page-open-a-m102">Ouvrir A (M102)</button>
+      <button id="page-open-b">Ouvrir B enfant</button>
+    </p>
+    <p id="status">Gate: en attente</p>
+    <p>Gate absolu FR-020/FR-026 — aucune fuite DOM/CSS, un seul poller, 100 cycles, races, focus, cascade.</p>
+  </div>
+
+  <!-- Host root where quick-windows mount (separate from page-root to prove isolation) -->
+  <div id="qw-host-root"></div>
+
+  <!-- Evidence output -->
+  <pre id="evidence">Chargement...</pre>
+  <div id="capture" style="display:none;"></div>
+
+  <script type="module">
+    import * as P from './prototype.js';
+    import * as A from './assertions.js';
+
+    const doc = document;
+    const hostRoot = document.getElementById('qw-host-root');
+    const pageRoot = document.getElementById('page-root');
+    const statusEl = document.getElementById('status');
+    const evidenceEl = document.getElementById('evidence');
+
+    // expose for WebView2 harness
+    window.QuickWindowPrototype = window.QuickWindowPrototype || {};
+    Object.assign(window.QuickWindowPrototype, P);
+
+    async function runGate() {
+      const manager = new P.QuickWindowPrototype.QuickWindowManager(doc);
+      manager.setHostRoot(hostRoot);
+      manager.setPageRoot(pageRoot);
+      P.QuickWindowPrototype.Instrument.captureBaseline();
+      P.QuickWindowPrototype.TagCache.reset();
+
+      // wire page buttons for focus return proof
+      document.getElementById('page-open-a').addEventListener('click', () => manager.open(P.QuickWindowPrototype.DefinitionKeys.A, P.QuickWindowPrototype.InvocationKeys.A_M101).catch(()=>{}));
+      document.getElementById('page-open-a-m102').addEventListener('click', () => manager.open(P.QuickWindowPrototype.DefinitionKeys.A, P.QuickWindowPrototype.InvocationKeys.A_M102).catch(()=>{}));
+      document.getElementById('page-open-b').addEventListener('click', () => manager.open(P.QuickWindowPrototype.DefinitionKeys.B, P.QuickWindowPrototype.InvocationKeys.B_CHILD, P.QuickWindowPrototype.DefinitionKeys.A).catch(()=>{}));
+
+      const ctx = { doc, manager, pageRoot, hostRoot };
+      const core = await A.QuickWindowAssertions.runCoreAssertions(ctx);
+      const perf = await A.QuickWindowAssertions.runPerformance(ctx);
+
+      const assertions = { core: [...core, ...perf.assertions], hostExtensions: { builderWebView2: [], tf100Web: [] } };
+      const overall = assertions.core.every(a => a.status === 'PASS') ? 'PASS' : 'FAIL';
+
+      // Build evidence per schema
+      const evidence = {
+        schemaVersion: '1.0.0',
+        prototypeRevision: P.QuickWindowPrototype.PrototypeRevision,
+        prototypeHash: 'pending-computed-by-harness', // replaced by hash file
+        generatedUtc: new Date().toISOString(),
+        commit: { builderHead: 'local', builderBranch: 'codex/GestionFenetreRapide', tf100WebHead: 'local', tf100WebBranch: 'local' },
+        versions: {
+          node: navigator.userAgent,
+          nvmrc: '20.18.1',
+          enginesNode: '20.18.x',
+          os: navigator.platform,
+          webView2Sdk: null,
+          webView2Runtime: null,
+          dotnet: '8.0'
+        },
+        invariants: { fr020: 'FR-020 racine scoppée + namespace stable', fr026: 'FR-026 gate bloquant' },
+        assertions,
+        metrics: perf.metrics,
+        overall
+      };
+
+      evidenceEl.textContent = JSON.stringify(evidence, null, 2);
+      statusEl.innerHTML = `Gate: <span class="gate-badge ${overall==='PASS'?'gate-pass':'gate-fail'}">${overall}</span> — ${core.length + perf.assertions.length} assertions — PrototypeRevision ${evidence.prototypeRevision}`;
+      // signal for WebView2 harness
+      window.__quickWindowIsolationEvidence = evidence;
+      window.dispatchEvent(new CustomEvent('quick-window-isolation-done', { detail: evidence }));
+      // also emit for Node harness
+      if (overall === 'FAIL') console.error('QuickWindow isolation FAIL', evidence);
+      return evidence;
+    }
+
+    // auto-run unless ?norun
+    if (!location.search.includes('norun')) runGate().catch(e => { evidenceEl.textContent = 'ERROR ' + e.stack; statusEl.textContent = 'Gate ERROR'; window.__quickWindowIsolationError = e.message; });
+    window.runQuickWindowGate = runGate;
+  </script>
+  <script src="prototype.js"></script>
+  <script src="assertions.js"></script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ScadaBuilderV2.Domain.ElementEvents.State;
+using ScadaBuilderV2.Domain.QuickWindows;
 using ScadaBuilderV2.Domain.Versioning;
 using ScadaBuilderV2.Domain.Scenes;
 using System.Text.Json.Serialization;
@@ -87,7 +88,9 @@ public sealed record ScadaProject(
     string ManifestVersion = "2.0",
     string? HomePageId = null,
     ScadaTagCatalog? TagCatalog = null,
-    Guid? HomePageKey = null)
+    Guid? HomePageKey = null,
+    IReadOnlyList<QuickWindowDefinition>? QuickWindows = null,
+    IReadOnlyList<QuickWindowInvocation>? QuickWindowInvocations = null)
 {
     [JsonIgnore]
     public IReadOnlyList<ScadaSceneReference> Pages => Scenes;
@@ -96,6 +99,14 @@ public sealed record ScadaProject(
     public string? EffectiveHomePageId => ResolveHomePageId(Scenes, HomePageId);
 
     /// <summary>Gets the stable logical key of the effective compiled home page.</summary>
+    /// <summary>Gets the effective quick window definitions, empty when not persisted.</summary>
+    [JsonIgnore]
+    public IReadOnlyList<QuickWindowDefinition> EffectiveQuickWindows => QuickWindows ?? Array.Empty<QuickWindowDefinition>();
+
+    /// <summary>Gets the effective quick window invocations, empty when not persisted.</summary>
+    [JsonIgnore]
+    public IReadOnlyList<QuickWindowInvocation> EffectiveQuickWindowInvocations => QuickWindowInvocations ?? Array.Empty<QuickWindowInvocation>();
+
     [JsonIgnore]
     public Guid? EffectiveHomePageKey => ResolveHomePageKey(Scenes, HomePageKey, HomePageId);
 
@@ -263,8 +274,10 @@ public static class ScadaProjectBuildValidator
             ValidateSceneValueBindings(issues, scene, tagsById);
             ValidateSceneActions(issues, scene, tagsById, pagesById, pagesByKey);
             AuditOrphanedEventBindings(issues, scene);
-            ValidateSceneCommandBindings(issues, scene, project.TagCatalog, pagesById, pagesByKey);
+            ValidateSceneCommandBindings(issues, scene, project.TagCatalog, pagesById, pagesByKey, project);
         }
+
+        ValidateQuickWindows(issues, project, tagsById);
 
         return issues;
     }
@@ -884,7 +897,8 @@ public static class ScadaProjectBuildValidator
         ScadaScene scene,
         ScadaTagCatalog? catalog,
         IReadOnlyDictionary<string, ScadaSceneReference> pagesById,
-        IReadOnlyDictionary<Guid, ScadaSceneReference> pagesByKey)
+        IReadOnlyDictionary<Guid, ScadaSceneReference> pagesByKey,
+        ScadaProject? project = null)
     {
         foreach (var element in FlattenElements(scene.Elements))
         {
@@ -897,11 +911,38 @@ public static class ScadaProjectBuildValidator
                 {
                     ValidateCommandPageTarget(issues, scene, element, cmd, ScadaPageType.Default, "navigation", pagesById, pagesByKey);
                 }
-                else if (cmd.Kind is ElementEvents.Command.ScadaCommandKind.OpenPopup or
-                         ElementEvents.Command.ScadaCommandKind.TogglePopup or
-                         ElementEvents.Command.ScadaCommandKind.ClosePopup)
+                else if (cmd.Kind == ElementEvents.Command.ScadaCommandKind.OpenQuickWindow)
                 {
-                    ValidateCommandPageTarget(issues, scene, element, cmd, ScadaPageType.Fragment, "popup", pagesById, pagesByKey);
+                    ValidateQuickWindowCommand(issues, scene, element, cmd, project);
+                }
+                else if (cmd.Kind == ElementEvents.Command.ScadaCommandKind.CloseQuickWindow)
+                {
+                    // CloseQuickWindow targets Self implicitly; must be inside a quick window content or at least not require page target.
+                    // Validate that it has no page target and no invocation key.
+                    if (cmd.TargetPageKey is not null || !string.IsNullOrWhiteSpace(cmd.TargetPageId))
+                    {
+                        issues.Add(new ScadaBuildValidationIssue(
+                            ScadaBuildValidationSeverity.Error,
+                            "command.close-quick-window-target",
+                            $"CloseQuickWindow command '{cmd.Id}' must target Self and not a page.",
+                            scene.EffectivePageCode,
+                            scene.PageKey,
+                            element.Id,
+                            cmd.Id,
+                            $"Scene.Elements[{element.Id}].CommandConfig.Commands[{cmd.Id}].TargetPageKey"));
+                    }
+                    if (cmd.QuickWindowInvocationKey is not null)
+                    {
+                        issues.Add(new ScadaBuildValidationIssue(
+                            ScadaBuildValidationSeverity.Error,
+                            "command.close-quick-window-invocation",
+                            $"CloseQuickWindow command '{cmd.Id}' must not have a QuickWindowInvocationKey.",
+                            scene.EffectivePageCode,
+                            scene.PageKey,
+                            element.Id,
+                            cmd.Id,
+                            $"Scene.Elements[{element.Id}].CommandConfig.Commands[{cmd.Id}].QuickWindowInvocationKey"));
+                    }
                 }
 
                 if (catalog is not null)
@@ -924,6 +965,133 @@ public static class ScadaProjectBuildValidator
                 }
             }
         }
+    }
+
+    private static void ValidateQuickWindowCommand(
+        List<ScadaBuildValidationIssue> issues,
+        ScadaScene scene,
+        ScadaElement element,
+        ElementEvents.Command.ScadaCommandBinding command,
+        ScadaProject? project)
+    {
+        if (command.QuickWindowInvocationKey is null || command.QuickWindowInvocationKey == Guid.Empty)
+        {
+            issues.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                "command.open-quick-window-missing-invocation",
+                $"OpenQuickWindow command '{command.Id}' requires a QuickWindowInvocationKey.",
+                scene.EffectivePageCode,
+                scene.PageKey,
+                element.Id,
+                command.Id,
+                $"Scene.Elements[{element.Id}].CommandConfig.Commands[{command.Id}].QuickWindowInvocationKey"));
+            return;
+        }
+
+        if (project is null)
+            return;
+
+        var inv = project.EffectiveQuickWindowInvocations.FirstOrDefault(i => i.InvocationKey == command.QuickWindowInvocationKey);
+        if (inv is null)
+        {
+            issues.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                "command.open-quick-window-invocation-missing",
+                $"OpenQuickWindow command '{command.Id}' references missing invocation '{command.QuickWindowInvocationKey}'.",
+                scene.EffectivePageCode,
+                scene.PageKey,
+                element.Id,
+                command.Id,
+                $"Scene.Elements[{element.Id}].CommandConfig.Commands[{command.Id}].QuickWindowInvocationKey",
+                command.QuickWindowInvocationKey));
+            return;
+        }
+
+        var def = project.EffectiveQuickWindows.FirstOrDefault(d => d.DefinitionKey == inv.DefinitionKey);
+        if (def is null)
+        {
+            issues.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                "command.open-quick-window-definition-missing",
+                $"Invocation '{inv.InvocationKey}' references missing definition '{inv.DefinitionKey}'.",
+                scene.EffectivePageCode,
+                scene.PageKey,
+                element.Id,
+                command.Id,
+                $"Scene.Elements[{element.Id}].CommandConfig.Commands[{command.Id}].QuickWindowInvocationKey",
+                inv.DefinitionKey));
+            return;
+        }
+
+        var bindingIssues = QuickWindows.QuickWindowBindingValidator.ValidateInvocation(inv, def, project.TagCatalog);
+        foreach (var bi in bindingIssues.Where(r => !r.IsValid))
+        {
+            var category = bi.Category == "injection-rejected" ? "injection-rejected" : "binding";
+            issues.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                $"quick-window.{category}",
+                $"Invocation '{inv.InvocationKey}' binding error: {bi.Message}",
+                scene.EffectivePageCode,
+                scene.PageKey,
+                element.Id,
+                command.Id,
+                $"Scene.Elements[{element.Id}].CommandConfig.Commands[{command.Id}].QuickWindowInvocationKey"));
+        }
+    }
+
+    private static void ValidateQuickWindows(
+        List<ScadaBuildValidationIssue> issues,
+        ScadaProject project,
+        IReadOnlyDictionary<string, ScadaTagDefinition> tagsById)
+    {
+        var defs = project.EffectiveQuickWindows;
+        var invs = project.EffectiveQuickWindowInvocations;
+
+        // Validate each definition
+        var seenKeys = new HashSet<Guid>();
+        var seenCodes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var def in defs)
+        {
+            if (!seenKeys.Add(def.DefinitionKey))
+                issues.Add(new ScadaBuildValidationIssue(ScadaBuildValidationSeverity.Error, "quick-window.duplicate-key", $"Duplicate QuickWindow DefinitionKey '{def.DefinitionKey}'.", PropertyPath: "Project.QuickWindows"));
+
+            if (!seenCodes.Add(def.Code))
+                issues.Add(new ScadaBuildValidationIssue(ScadaBuildValidationSeverity.Error, "quick-window.duplicate-code", $"Duplicate QuickWindow code '{def.Code}'.", PropertyPath: "Project.QuickWindows"));
+
+            var defIssues = QuickWindows.QuickWindowValidation.ValidateDefinition(def, seenCodes, def.Code);
+            // Avoid duplicate code error double count: filter
+            foreach (var di in defIssues.Where(m => !m.Contains("Code:")))
+            {
+                issues.Add(new ScadaBuildValidationIssue(ScadaBuildValidationSeverity.Error, "quick-window.definition-invalid", di, PropertyPath: $"Project.QuickWindows[{def.Code}]"));
+            }
+            // Also validate member Required vs catalog etc. handled via invocation validation below
+        }
+
+        // Validate each invocation
+        var seenInvKeys = new HashSet<Guid>();
+        foreach (var inv in invs)
+        {
+            if (!seenInvKeys.Add(inv.InvocationKey))
+                issues.Add(new ScadaBuildValidationIssue(ScadaBuildValidationSeverity.Error, "quick-window.duplicate-invocation", $"Duplicate InvocationKey '{inv.InvocationKey}'.", PropertyPath: "Project.QuickWindowInvocations"));
+
+            var def = defs.FirstOrDefault(d => d.DefinitionKey == inv.DefinitionKey);
+            if (def is null)
+            {
+                issues.Add(new ScadaBuildValidationIssue(ScadaBuildValidationSeverity.Error, "quick-window.invocation-definition-missing", $"Invocation '{inv.InvocationKey}' references missing definition '{inv.DefinitionKey}'.", PropertyPath: $"Project.QuickWindowInvocations[{inv.InvocationKey}]", TargetKey: inv.DefinitionKey));
+                continue;
+            }
+
+            var bindingResults = QuickWindows.QuickWindowBindingValidator.ValidateInvocation(inv, def, project.TagCatalog);
+            foreach (var br in bindingResults.Where(r => !r.IsValid))
+            {
+                var sev = br.ErrorCode == "injection-rejected" || br.Category == "injection-rejected" ? ScadaBuildValidationSeverity.Error : ScadaBuildValidationSeverity.Error;
+                var code = br.ErrorCode == "injection-rejected" ? "quick-window.injection-rejected" : br.ErrorCode == "binding.required-missing" ? "quick-window.required-missing" : "quick-window.binding-invalid";
+                issues.Add(new ScadaBuildValidationIssue(sev, code, br.Message ?? "Binding invalid", PropertyPath: $"Project.QuickWindowInvocations[{inv.InvocationKey}]"));
+            }
+        }
+
+        // Depth/cycle validation placeholder: Page->A->B allowed, Page->A->B->C and cycles rejected via dedicated analyzer (Task 2.1)
+        // For now, ensure no invocation references parent port outside known definitions (basic check done via validator)
     }
 
     private static void ValidateCommandPageTarget(

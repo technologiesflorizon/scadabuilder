@@ -6,7 +6,10 @@ namespace ScadaBuilderV2.Domain.ElementEvents.Command;
 public enum ScadaCommandTrigger { OnClick, OnRelease, OnHover, OnHoverEnter, OnHoverExit }
 
 /// <summary>Kind of runtime action performed by one Element+ command.</summary>
-public enum ScadaCommandKind { WriteTag, Navigate, OpenPopup, TogglePopup, ClosePopup, OpenUrl, Back }
+/// <remarks>
+/// Decisions: DEC-0050 removes OpenPopup/TogglePopup/ClosePopup (never completed end-to-end) and adds OpenQuickWindow/CloseQuickWindow. Legacy popup actions remain as ScadaActionKind phased-out residues, never as modern command proofs.
+/// </remarks>
+public enum ScadaCommandKind { WriteTag, Navigate, OpenQuickWindow, CloseQuickWindow, OpenUrl, Back }
 
 /// <summary>Write behavior for a <see cref="ScadaCommandKind.WriteTag"/> command.</summary>
 public enum ScadaWriteMode { Momentary, Toggle, SetFixed, SetFromInput }
@@ -39,7 +42,8 @@ public sealed record ScadaCommandBinding(
     string? TargetPageId = null,
     string? Url = null,
     bool NewTab = false,
-    Guid? TargetPageKey = null)
+    Guid? TargetPageKey = null,
+    Guid? QuickWindowInvocationKey = null)
 {
     /// <summary>
     /// Gets the tag id read for <see cref="ScadaWriteMode.Toggle"/>: <see cref="ReadTagId"/>
@@ -47,4 +51,12 @@ public sealed record ScadaCommandBinding(
     /// </summary>
     [JsonIgnore]
     public string EffectiveReadTagId => ReadTagId ?? WriteTagId ?? string.Empty;
+
+    /// <summary>Gets whether this command is a quick-window command.</summary>
+    [JsonIgnore]
+    public bool IsQuickWindowCommand => Kind is ScadaCommandKind.OpenQuickWindow or ScadaCommandKind.CloseQuickWindow;
+
+    /// <summary>Gets whether this command requires a QuickWindowInvocationKey.</summary>
+    [JsonIgnore]
+    public bool RequiresInvocationKey => Kind == ScadaCommandKind.OpenQuickWindow;
 }

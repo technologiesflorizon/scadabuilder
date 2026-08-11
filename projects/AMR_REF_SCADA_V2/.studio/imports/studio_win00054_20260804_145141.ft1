@@ -1,0 +1,54 @@
+{
+  "Metadata": {
+    "Schema": "scada-builder-v2.element-studio.import",
+    "SchemaVersion": 1,
+    "Format": "json.ft1",
+    "CreatedByVersion": "V2.1.5.0003"
+  },
+  "PackageId": "studio_win00054_20260804_145141",
+  "SourceProjectId": "AMR_REF_SCADA_V2",
+  "SourceSceneId": "win00054",
+  "SourcePagePath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER\\AMR_SCADA\\AMR_REF_SCADA\\08_web_modernized\\html_pages\\win00054_updated.html",
+  "TargetLibraryPath": "F:\\Groupe AMR\\SCADA_AMR_GROUP\\SCADA_BUILDER_V2\\projects\\AMR_REF_SCADA_V2\\library\\elements",
+  "Bounds": {
+    "X": 83,
+    "Y": 142,
+    "Width": 108,
+    "Height": 35
+  },
+  "Items": [
+    {
+      "SourceElementId": "2",
+      "SourceName": "Button1",
+      "LegacyType": "Button",
+      "BoundsAbsolute": {
+        "X": 83,
+        "Y": 142,
+        "Width": 108,
+        "Height": 35
+      },
+      "BoundsRelativeToPackage": {
+        "X": 0,
+        "Y": 0,
+        "Width": 108,
+        "Height": 35
+      },
+      "Geometry": null,
+      "LegacyMarkup": "\u003Cbutton data-type=\u0022Button\u0022 data-name=\u0022Button1\u0022 data-id=\u00222\u0022 style=\u0022background-color: rgb(211, 211, 211); background-image: none; color: rgb(211, 211, 211); display: flex; fill: rgb(0, 0, 0); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \u0026quot;Microsoft Sans Serif\u0026quot;, Arial, sans-serif; font-size: 10px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: none; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: center; text-decoration: none; text-transform: none; visibility: visible; position: absolute; left: 82px; top: 141px; width: 108px; height: 35px; box-sizing: border-box; display: flex; justify-content: center; align-items: center; font-family: \u0026quot;Microsoft Sans Serif\u0026quot;, Arial, sans-serif; font-size: 10px; font-weight: normal; font-style: normal; color: rgb(211, 211, 211); text-align: center; white-space: nowrap; overflow: hidden; background: rgb(211, 211, 211); border: 1px solid rgba(0, 0, 0, 0.25); border-radius: 4px; text-decoration: none; padding: 0px 2px;\u0022 data-scada-was-disabled=\u0022true\u0022 aria-disabled=\u0022true\u0022\u003EFermer\u003C/button\u003E",
+      "Text": "Fermer",
+      "Style": {
+        "FontFamily": "\u0022Microsoft Sans Serif\u0022, Arial, sans-serif",
+        "FontSize": 10,
+        "Foreground": "rgb(211, 211, 211)",
+        "Background": "rgb(211, 211, 211)",
+        "BorderColor": "rgb(211, 211, 211)",
+        "BorderWidth": 0,
+        "BorderStyle": "None",
+        "Opacity": 1
+      },
+      "ZIndex": 22,
+      "RawMetadataJson": "{\u0022tagName\u0022:\u0022button\u0022,\u0022computedStyleText\u0022:\u0022background-color: rgb(211, 211, 211); background-image: none; color: rgb(211, 211, 211); display: flex; fill: rgb(0, 0, 0); fill-opacity: 1; fill-rule: nonzero; filter: drop-shadow(rgba(32, 144, 160, 0.55) 0px 0px 5px); font-family: \\\u0022Microsoft Sans Serif\\\u0022, Arial, sans-serif; font-size: 10px; font-style: normal; font-weight: 400; letter-spacing: normal; opacity: 1; stroke: none; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-opacity: 1; stroke-width: 1px; text-align: center; text-decoration: none; text-transform: none; visibility: visible;\u0022,\u0022transform\u0022:\u0022none\u0022,\u0022opacity\u0022:\u00221\u0022,\u0022display\u0022:\u0022flex\u0022,\u0022position\u0022:\u0022absolute\u0022,\u0022left\u0022:\u002282px\u0022,\u0022top\u0022:\u0022141px\u0022,\u0022fill\u0022:\u0022rgb(0, 0, 0)\u0022,\u0022stroke\u0022:\u0022none\u0022,\u0022strokeWidth\u0022:\u00221px\u0022,\u0022zIndex\u0022:\u0022auto\u0022}"
+    }
+  ],
+  "ComponentName": null
+}

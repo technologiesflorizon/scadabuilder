@@ -86,7 +86,8 @@ public sealed class PageDependencyAnalyzer
                     var kind = command.Kind switch
                     {
                         ScadaCommandKind.Navigate => PageDependencyKind.CommandNavigate,
-                        ScadaCommandKind.OpenPopup or ScadaCommandKind.TogglePopup or ScadaCommandKind.ClosePopup => PageDependencyKind.CommandPopup,
+                        // QuickWindow commands reference invocations, not pages; no page dependency.
+                        // Legacy popup command kinds were retired (DEC-0050).
                         _ => (PageDependencyKind?)null
                     };
                     if (kind is not null)

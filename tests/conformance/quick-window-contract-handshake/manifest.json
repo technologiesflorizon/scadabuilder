@@ -1,0 +1,165 @@
+{
+  "schema": "scada-builder-v2-quick-window-contract-handshake-v1",
+  "manifestVersion": "2.3",
+  "contractVersion": "1.0",
+  "prototypeRevision": "1.0.0",
+  "prototypeHash": "5a8fcc8895f889c56289c0e40639c58d2ff5652d06154b54c3459f775dc4ebb1",
+  "project": "Handshake",
+  "generatedFrom": "ScadaBuilderV2.Domain.QuickWindows records",
+  "generatedAt": "2026-08-11T00:00:00Z",
+  "quickWindows": [
+    {
+      "DefinitionKey": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+      "Code": "qw_motor",
+      "DisplayName": "Moteur Faceplate",
+      "InterfaceVersion": 1,
+      "Content": {
+        "CanvasSize": {
+          "Width": 400,
+          "Height": 300
+        },
+        "Background": {
+          "Color": "#000000"
+        },
+        "Elements": []
+      },
+      "InterfaceMembers": [
+        {
+          "MemberKey": "11111111-1111-1111-1111-111111111111",
+          "Name": "RunFeedback",
+          "Family": 0,
+          "DataType": 0,
+          "Access": 0,
+          "Required": false,
+          "DefaultValue": null,
+          "Description": null
+        },
+        {
+          "MemberKey": "22222222-2222-2222-2222-222222222222",
+          "Name": "StartCommand",
+          "Family": 1,
+          "DataType": 0,
+          "Access": 1,
+          "Required": true,
+          "DefaultValue": null,
+          "Description": null
+        },
+        {
+          "MemberKey": "33333333-3333-3333-3333-333333333333",
+          "Name": "MotorName",
+          "Family": 2,
+          "DataType": 3,
+          "Access": 0,
+          "Required": false,
+          "DefaultValue": null,
+          "Description": null
+        },
+        {
+          "MemberKey": "44444444-4444-4444-4444-444444444444",
+          "Name": "LocalCount",
+          "Family": 3,
+          "DataType": 1,
+          "Access": 3,
+          "Required": false,
+          "DefaultValue": null,
+          "Description": null
+        }
+      ],
+      "PresentationDefaults": {
+        "Title": null,
+        "Position": 0,
+        "Backdrop": true,
+        "Chrome": null,
+        "IsDraggable": true,
+        "IsResizable": false,
+        "IsViewportConstrained": true
+      }
+    }
+  ],
+  "quickWindowInvocations": [
+    {
+      "InvocationKey": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+      "DefinitionKey": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+      "Bindings": [
+        {
+          "MemberKey": "11111111-1111-1111-1111-111111111111",
+          "SourceKind": 1,
+          "TagId": "tf100.mapping.210",
+          "LiteralValue": null,
+          "Expression": null,
+          "ParentMemberKey": null
+        },
+        {
+          "MemberKey": "22222222-2222-2222-2222-222222222222",
+          "SourceKind": 1,
+          "TagId": "tf100.mapping.211",
+          "LiteralValue": null,
+          "Expression": null,
+          "ParentMemberKey": null
+        },
+        {
+          "MemberKey": "33333333-3333-3333-3333-333333333333",
+          "SourceKind": 2,
+          "TagId": null,
+          "LiteralValue": "Moteur M101",
+          "Expression": null,
+          "ParentMemberKey": null
+        },
+        {
+          "MemberKey": "44444444-4444-4444-4444-444444444444",
+          "SourceKind": 0,
+          "TagId": null,
+          "LiteralValue": null,
+          "Expression": null,
+          "ParentMemberKey": null
+        }
+      ],
+      "TitleOverride": "M101"
+    },
+    {
+      "InvocationKey": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+      "DefinitionKey": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+      "Bindings": [
+        {
+          "MemberKey": "11111111-1111-1111-1111-111111111111",
+          "SourceKind": 1,
+          "TagId": "tf100.mapping.310",
+          "LiteralValue": null,
+          "Expression": null,
+          "ParentMemberKey": null
+        },
+        {
+          "MemberKey": "22222222-2222-2222-2222-222222222222",
+          "SourceKind": 1,
+          "TagId": "tf100.mapping.311",
+          "LiteralValue": null,
+          "Expression": null,
+          "ParentMemberKey": null
+        },
+        {
+          "MemberKey": "33333333-3333-3333-3333-333333333333",
+          "SourceKind": 2,
+          "TagId": null,
+          "LiteralValue": "Moteur M102",
+          "Expression": null,
+          "ParentMemberKey": null
+        },
+        {
+          "MemberKey": "44444444-4444-4444-4444-444444444444",
+          "SourceKind": 0,
+          "TagId": null,
+          "LiteralValue": null,
+          "Expression": null,
+          "ParentMemberKey": null
+        }
+      ],
+      "TitleOverride": "M102"
+    }
+  ],
+  "capabilities": [
+    "command.close-quick-window",
+    "command.open-quick-window"
+  ],
+  "profile": "2.3",
+  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}

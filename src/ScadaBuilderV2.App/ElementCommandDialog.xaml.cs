@@ -78,10 +78,11 @@ public partial class ElementCommandDialog : Window
     {
         var kind = (ScadaCommandKind?)KindComboBox.SelectedItem ?? ScadaCommandKind.WriteTag;
         WriteTagPanel.Visibility = kind == ScadaCommandKind.WriteTag ? Visibility.Visible : Visibility.Collapsed;
-        PagePanel.Visibility = kind is ScadaCommandKind.Navigate or ScadaCommandKind.OpenPopup or ScadaCommandKind.TogglePopup or ScadaCommandKind.ClosePopup
+        PagePanel.Visibility = kind is ScadaCommandKind.Navigate
             ? Visibility.Visible
             : Visibility.Collapsed;
         UrlPanel.Visibility = kind == ScadaCommandKind.OpenUrl ? Visibility.Visible : Visibility.Collapsed;
+        // QuickWindow kinds (OpenQuickWindow/CloseQuickWindow) use invocation bindings handled in Phase 3; no page/url panel.
     }
 
     private void UpdateWriteModePanels()

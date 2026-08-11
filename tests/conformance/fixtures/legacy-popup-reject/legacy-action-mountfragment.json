@@ -1,0 +1,33 @@
+{
+  "Id": "legacy-action-fixture",
+  "Title": "Legacy action MountFragment - allowlisted, not migrated",
+  "CanvasSize": { "Width": 1280, "Height": 873 },
+  "Elements": [
+    {
+      "Id": "btn_action",
+      "DisplayName": "ActionBtn",
+      "Kind": "Text",
+      "Bounds": { "X": 10, "Y": 20, "Width": 120, "Height": 32 },
+      "Events": [
+        { "Trigger": "click", "ActionId": "action_mount" }
+      ]
+    }
+  ],
+  "Actions": [
+    {
+      "Id": "action_mount",
+      "Kind": "MountFragment",
+      "TargetPageId": "fragment_legacy",
+      "PopupOptions": {
+        "Position": "Center",
+        "SizePreset": "Large",
+        "AllowMultiple": false,
+        "ResetOnOpen": true
+      }
+    }
+  ],
+  "PageType": "Default",
+  "IncludeInBuild": false,
+  "PageKey": "22222222-2222-2222-2222-222222222222",
+  "PageCode": "legacy-action-mountfragment"
+}

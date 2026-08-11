@@ -19,7 +19,7 @@ public sealed class PageDependencyAnalyzerTests
         var fragmentKey = Guid.NewGuid();
         var nestedCommand = new ScadaCommandBinding(
             "open-details", "Details", true, ScadaCommandTrigger.OnClick,
-            ScadaCommandKind.OpenPopup, TargetPageKey: fragmentKey);
+            ScadaCommandKind.Navigate, TargetPageKey: defaultKey);
         var child = ScadaElement.CreateText("child", "Child", 0, 0) with
         {
             CommandConfig = new ScadaElementCommandConfig([nestedCommand])
@@ -52,12 +52,12 @@ public sealed class PageDependencyAnalyzerTests
                 PageDependencyKind.Header,
                 PageDependencyKind.Footer,
                 PageDependencyKind.ActionNavigate,
-                PageDependencyKind.CommandPopup,
+                PageDependencyKind.CommandNavigate,
                 PageDependencyKind.OpenWorkspaceTab
             },
             analysis.Dependencies.Select(item => item.Kind).ToArray());
         Assert.IsTrue(analysis.Dependencies.Any(item =>
-            item.Kind == PageDependencyKind.CommandPopup && item.ElementId == "child" && item.CommandId == "open-details"));
+            item.Kind == PageDependencyKind.CommandNavigate && item.ElementId == "child" && item.CommandId == "open-details"));
         Assert.AreEqual(0, analysis.Diagnostics.Count);
     }
 

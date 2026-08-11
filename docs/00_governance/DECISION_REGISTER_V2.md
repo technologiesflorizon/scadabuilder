@@ -1,13 +1,15 @@
 # SCADA Builder V2 - Decision Register
 
-Date: 2026-07-30
+Date: 2026-08-10
 Status: Active authoritative decision register
-Document version: `V2.1.5.0002`
+Document version: `V2.1.5.0018`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-10 | `V2.1.5.0018` | `PENDING` | Le plan d’implémentation de `DEC-0050` est créé; sa phase 0 d’isolation DOM/CSS est un gate absolu avant toute modification de production. |
+| 2026-08-10 | `V2.1.5.0017` | `PENDING` | Ajout de `DEC-0050` : les Fenêtres rapides deviennent des entités typées distinctes avec liaisons par invocation; `DEC-0019`, `DEC-0020` et `DEC-0022` sont supersédées. |
 | 2026-07-30 | `V2.1.5.0002` | `PENDING` | `DEC-0045` clarifiée : les couleurs Etat de fond et de bordure ciblent la géométrie SVG marquée, puis reviennent au wrapper en compatibilité. |
 | 2026-07-29 | `V2.1.5.0000` | `PENDING` | `DEC-0049` livrée dans le shell WPF et la persistance projet générale; validation automatisée ajoutée. |
 | 2026-07-29 | `V2.1.4.0068` | `PENDING` | Ajout de `DEC-0049` : cycle de vie projet autonome, racine choisie, accueil sans projet, transitions sûres et projets récents. |
@@ -108,6 +110,42 @@ Regression coverage:
 ```
 
 ## 3. Active Decisions
+
+### DEC-0050 - Fenêtres rapides paramétrées comme entités typées distinctes
+
+Status: Active
+Created: 2026-08-10 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md`
+
+Context:
+
+Les actions popup historiques basées sur des pages `Fragment` ne fournissent ni définition visuelle réutilisable distincte d’une page, ni Interface locale typée, ni liaisons concrètes propres à chaque appel. Elles mélangent en outre des options de montage legacy avec un besoin de faceplate moderne qui doit partager le runtime, le cache de tags, le poller et le pont d’écriture de TF100Web sans créer de chemin parallèle.
+
+Decision:
+
+Une Fenêtre rapide est une entité de projet `QuickWindowDefinition` distincte d’une page et compose un `VisualContent` commun borné. Sa définition possède une Interface locale typée; chaque commande `OpenQuickWindow` référence une `QuickWindowInvocationKey` persistante qui possède ses liaisons concrètes. `CloseQuickWindow` cible uniquement `Self`. Les ports publics sont optionnels par défaut et peuvent être déclarés `Required`; une liaison absente ou incompatible échoue selon les règles fail-closed de la spécification.
+
+Le runtime monte le contenu moderne dans une racine DOM scoppée, possède le cycle de vie et partage les services de tags et d’écriture existants. Une même définition ne possède qu’une instance active; une autre invocation de cette définition remplace proprement l’instance courante. Les cycles sont interdits et l’imbrication est limitée à deux Fenêtres rapides. Le cadre host fournit le titre, `X`, `Escape`, le confinement et un backdrop configurable.
+
+Le manifest 2.3 transporte des registres déterministes de définitions et d’invocations ainsi que des capacités granulaires initialement `Blocked`, promues seulement avec les preuves Builder, package/runtime partagé et TF100Web exigées par `DEC-0047`. Les profils 2.1/2.2 refusent les Fenêtres rapides. Le plan d’implémentation doit commencer par un prototype d’isolation DOM/CSS bloquant avant toute modification de production.
+
+Le système popup `ScadaActionDefinition` (`MountFragment`, `ClosePopup`, `TogglePopup`, `ScadaPopupOptions`) est phased-out et n’est ni étendu ni migré vers les Fenêtres rapides. Les valeurs `ScadaCommandKind.OpenPopup`, `TogglePopup` et `ClosePopup`, qui n’ont jamais constitué un flux accepté complet, sont retirées sans conversion silencieuse. `DEC-0019`, `DEC-0020` et `DEC-0022` sont supersédées par la présente décision.
+
+Consequences:
+
+La première tranche est une verticale `win00054` couvrant modèle, persistance, authoring, Interface locale, Liaisons, undo/redo, preview, package 2.3, runtime partagé et TF100Web. Deux invocations moteur doivent prouver des mappings indépendants sans coexistence simultanée ni écriture croisée. L’imbrication de production, la conversion de Fragment, l’adaptateur `iframe`, la copie de liaisons et la personnalisation avancée sont reportés. Les anciens enregistrements décisionnels demeurent dans le registre; le retrait physique de leurs résidus code/JSON appartient au chantier de décommissionnement et doit échouer avec un diagnostic précis sans réécrire les projets.
+
+Implementation status:
+
+Spécification approuvée et plan d’implémentation créé dans `docs/superpowers/plans/2026-08-10-parameterized-quick-window-management.md`. La phase 0 d’isolation DOM/CSS reste à exécuter et bloque toute modification de production. Toutes les nouvelles capacités Fenêtre rapide demeurent `Blocked` et aucun comportement n’est déclaré implémenté.
+
+Regression coverage:
+
+À créer conformément aux sections 14 et 15 de la spécification propriétaire, avec preuves Domain/Application/Infrastructure/WPF, preview/export déterministe, runtime partagé, intake TF100Web et tests de non-fuite entre invocations.
 
 ### DEC-0049 - Cycle de vie autonome des projets V2
 
@@ -581,12 +619,12 @@ Regression coverage:
 
 ### DEC-0019 - Fragment Popup Runtime Action
 
-Status: Active
+Status: Superseded
 Created: 2026-06-17 00:00 America/Toronto
 Created in commit: `PENDING`
-Deprecated: N/A
-Deprecated in commit: N/A
-Superseded by: N/A
+Deprecated: 2026-08-10 00:00 America/Toronto
+Deprecated in commit: `PENDING`
+Superseded by: DEC-0050
 Owner document: `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
 
 Context:
@@ -607,12 +645,12 @@ Regression coverage:
 
 ### DEC-0020 - Popup Close And Toggle Runtime Actions
 
-Status: Active
+Status: Superseded
 Created: 2026-06-17 00:00 America/Toronto
 Created in commit: `PENDING`
-Deprecated: N/A
-Deprecated in commit: N/A
-Superseded by: N/A
+Deprecated: 2026-08-10 00:00 America/Toronto
+Deprecated in commit: `PENDING`
+Superseded by: DEC-0050
 Owner document: `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
 
 Context:
@@ -893,12 +931,12 @@ Regression coverage:
 
 ### DEC-0022 - Advanced Fragment Popup Runtime Options
 
-Status: Active
+Status: Superseded
 Created: 2026-06-17 00:00 America/Toronto
 Created in commit: `PENDING`
-Deprecated: N/A
-Deprecated in commit: N/A
-Superseded by: N/A
+Deprecated: 2026-08-10 00:00 America/Toronto
+Deprecated in commit: `PENDING`
+Superseded by: DEC-0050
 Owner document: `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
 
 Context:

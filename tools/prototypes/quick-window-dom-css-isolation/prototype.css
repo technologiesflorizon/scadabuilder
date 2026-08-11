@@ -1,0 +1,51 @@
+/* PrototypeRevision: 1.0.0 | FR-020 isolation gate | host-agnostic sentinels
+   Every rule below is intentionally duplicated between page and quick-window to prove namespace isolation.
+   Page-scoped selectors must use #page-root; quick-window selectors must use the per-instance root attribute.
+*/
+
+/* --- PAGE baseline --- */
+#page-root { font-family: "Segoe UI", sans-serif; background: #f3f6f9; padding: 16px; }
+#page-root .sentinel { color: #0b4da2; border: 2px solid #0b4da2; }
+#page-root .shared-class { background: #d0e7ff; }
+#page-root #sensorValue { color: #0b4da2; }
+
+/* page keyframes intentionally same name as quick-window to prove isolation */
+@keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+#page-root .animated { animation: pulse 1s infinite; }
+
+/* svg ref via url(#...) sentinel */
+#page-root .svg-sentinel { fill: url(#page-gradient); }
+
+/* form/table sentinel */
+#page-root table.sentinel-table { border-collapse: collapse; }
+#page-root table.sentinel-table td { border: 1px solid #0b4da2; }
+
+/* --- QUICK-WINDOW namespace proof --- */
+/* Each instance root is [data-qw-def][data-qw-inv][data-qw-inst] and children are queried only via that root.
+   CSS is namespaced by attribute prefix [data-qw-def="qw-<key>"] to prove no leakage to #page-root.
+   Two definitions A/B intentionally reuse the same author ids/classes; the prefix makes them distinct.
+*/
+[data-qw-def] { position: relative; }
+[data-qw-def="qw-a1b2c3d4"] .sentinel { color: #8a1d1d; border-color: #8a1d1d; }
+[data-qw-def="qw-a1b2c3d4"] .shared-class { background: #ffd0d0; }
+[data-qw-def="qw-a1b2c3d4"] #qw-a1b2c3d4__sensorValue { color: #8a1d1d; }
+[data-qw-def="qw-a1b2c3d4"] .svg-sentinel { fill: url(#qw-a1b2c3d4__page-gradient); }
+@keyframes qw-a1b2c3d4__pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+[data-qw-def="qw-a1b2c3d4"] .animated { animation: qw-a1b2c3d4__pulse 1s infinite; }
+
+[data-qw-def="qw-e5f6a7b8"] .sentinel { color: #145a1a; border-color: #145a1a; }
+[data-qw-def="qw-e5f6a7b8"] .shared-class { background: #d0ffd6; }
+[data-qw-def="qw-e5f6a7b8"] #qw-e5f6a7b8__sensorValue { color: #145a1a; }
+[data-qw-def="qw-e5f6a7b8"] .svg-sentinel { fill: url(#qw-e5f6a7b8__page-gradient); }
+@keyframes qw-e5f6a7b8__pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
+[data-qw-def="qw-e5f6a7b8"] .animated { animation: qw-e5f6a7b8__pulse 1s infinite; }
+
+/* Modal/chrome sentinel - must not affect page */
+.qw-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.35); }
+.qw-frame { position: fixed; inset: 12% 18% auto 18%; background: white; border: 1px solid #333; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-height: 76vh; overflow: auto; }
+.qw-titlebar { display:flex; align-items:center; justify-content:space-between; height: 40px; padding: 0 12px; border-bottom: 1px solid #ddd; background: #0f3556; color: white; }
+.qw-titlebar button { appearance: none; border: 1px solid #ccc; background:#fff; color:#222; width:28px; height:28px; }
+.qw-content { padding: 12px; }
+
+/* Focus trap proof: focused element outline */
+[data-qw-def] :focus { outline: 3px solid #ffb000; }

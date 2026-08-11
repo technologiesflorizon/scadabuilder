@@ -2,7 +2,7 @@
   "Schema": "scada-v2-runtime-conformance-v2",
   "ContractVersion": "1.0",
   "PackageFile": "scada-v2-runtime-conformance.sb2",
-  "PackageSha256": "b5e4ea7fe32a928fd27b4ac1531d6940b887804662585892628340e2d6b1cf48",
+  "PackageSha256": "d58b73f66b493639b7318f13212567eadf02bda73cdda9996035678a5044ca42",
   "Fixtures": [
     {
       "CapabilityId": "action.close-popup",
@@ -433,17 +433,14 @@
       "ExpectedDiagnostic": null
     },
     {
-      "CapabilityId": "command.close-popup",
-      "FixtureId": "conformance:command.close-popup",
-      "Status": "Supported",
-      "PageId": "conformance-main",
-      "InitialValues": {
-        "conformance.tag.bool": false,
-        "conformance.tag.number": 12.5
-      },
+      "CapabilityId": "command.close-quick-window",
+      "FixtureId": "blocked:command.close-quick-window",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
       "Gesture": "dispatch-command",
-      "ExpectedResult": "probe:command.close-popup",
-      "ExpectedDiagnostic": null
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "command.close-quick-window"
     },
     {
       "CapabilityId": "command.confirmation",
@@ -472,17 +469,14 @@
       "ExpectedDiagnostic": null
     },
     {
-      "CapabilityId": "command.open-popup",
-      "FixtureId": "conformance:command.open-popup",
-      "Status": "Supported",
-      "PageId": "conformance-main",
-      "InitialValues": {
-        "conformance.tag.bool": false,
-        "conformance.tag.number": 12.5
-      },
+      "CapabilityId": "command.open-quick-window",
+      "FixtureId": "blocked:command.open-quick-window",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
       "Gesture": "dispatch-command",
-      "ExpectedResult": "probe:command.open-popup",
-      "ExpectedDiagnostic": null
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "command.open-quick-window"
     },
     {
       "CapabilityId": "command.open-url",
@@ -495,19 +489,6 @@
       },
       "Gesture": "dispatch-command",
       "ExpectedResult": "probe:command.open-url",
-      "ExpectedDiagnostic": null
-    },
-    {
-      "CapabilityId": "command.toggle-popup",
-      "FixtureId": "conformance:command.toggle-popup",
-      "Status": "Supported",
-      "PageId": "conformance-main",
-      "InitialValues": {
-        "conformance.tag.bool": false,
-        "conformance.tag.number": 12.5
-      },
-      "Gesture": "dispatch-command",
-      "ExpectedResult": "probe:command.toggle-popup",
       "ExpectedDiagnostic": null
     },
     {

@@ -102,12 +102,12 @@ public static class ScadaRuntimeCapabilityCatalog
         EnumCapabilities<ScadaCommandTrigger>(value => $"command.trigger.{ToKebabCase(value.ToString())}", ScadaRuntimeCapabilityOwner.SharedRuntime);
 
     /// <summary>Gets capabilities keyed by command kind.</summary>
+    /// <remarks>DEC-0050 retires popup kinds; new quick-window kinds start Blocked until Phase 6 promotion.</remarks>
     public static IReadOnlyDictionary<ScadaCommandKind, ScadaRuntimeCapability> CommandKinds { get; } = Map(
         (ScadaCommandKind.WriteTag, Capability("command.write-tag", ScadaRuntimeCapabilityOwner.SharedRuntime)),
         (ScadaCommandKind.Navigate, Capability("command.navigate", ScadaRuntimeCapabilityOwner.SharedRuntime)),
-        (ScadaCommandKind.OpenPopup, Capability("command.open-popup", ScadaRuntimeCapabilityOwner.SharedRuntime)),
-        (ScadaCommandKind.TogglePopup, Capability("command.toggle-popup", ScadaRuntimeCapabilityOwner.SharedRuntime)),
-        (ScadaCommandKind.ClosePopup, Capability("command.close-popup", ScadaRuntimeCapabilityOwner.SharedRuntime)),
+        (ScadaCommandKind.OpenQuickWindow, Blocked("command.open-quick-window", ScadaRuntimeCapabilityOwner.SharedRuntime)),
+        (ScadaCommandKind.CloseQuickWindow, Blocked("command.close-quick-window", ScadaRuntimeCapabilityOwner.SharedRuntime)),
         (ScadaCommandKind.OpenUrl, Capability("command.open-url", ScadaRuntimeCapabilityOwner.SharedRuntime)),
         (ScadaCommandKind.Back, Capability("command.back", ScadaRuntimeCapabilityOwner.SharedRuntime)));
 

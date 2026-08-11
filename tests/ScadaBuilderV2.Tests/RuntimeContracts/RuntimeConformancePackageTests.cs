@@ -90,7 +90,7 @@ public sealed class RuntimeConformancePackageTests
         var supportedFixtures = fixtures
             .Where(fixture => fixture.GetProperty("Status").GetString() == nameof(ScadaRuntimeCapabilityStatus.Supported))
             .ToArray();
-        Assert.AreEqual(118, supportedFixtures.Length);
+        Assert.AreEqual(115, supportedFixtures.Length);
         Assert.AreEqual(
             supportedFixtures.Length,
             supportedFixtures.Select(fixture => fixture.GetProperty("ExpectedResult").GetString()).Distinct().Count(),

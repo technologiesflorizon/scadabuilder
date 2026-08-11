@@ -1,0 +1,29 @@
+{
+  "Id": "legacy-command-fixture",
+  "Title": "Legacy command OpenPopup - must be rejected",
+  "CanvasSize": { "Width": 1280, "Height": 873 },
+  "Elements": [
+    {
+      "Id": "btn_legacy",
+      "DisplayName": "LegacyBtn",
+      "Kind": "Button",
+      "Bounds": { "X": 10, "Y": 20, "Width": 120, "Height": 40 },
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "cmd_legacy_open",
+            "Name": "LegacyOpen",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "OpenPopup",
+            "TargetPageId": "popup_legacy"
+          }
+        ]
+      }
+    }
+  ],
+  "PageType": "Default",
+  "IncludeInBuild": true,
+  "PageKey": "11111111-1111-1111-1111-111111111111",
+  "PageCode": "legacy-command-openpopup"
+}

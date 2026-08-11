@@ -2702,6 +2702,51 @@
         "Clip": "border-box",
         "BlendMode": "normal"
       }
+    },
+    {
+      "Id": "win00012_modern_no_legacy_e15_e30",
+      "Title": "Tableau de d\u00E9givrage \u2014 \u00C9vaporateurs E-15 \u00E0 E-30",
+      "RelativePath": "scenes/win00012_modern_no_legacy_e15_e30.scene.json",
+      "Type": "Default",
+      "CanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "Background": {
+        "Color": "#E4E4E4",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "IncludeInBuild": true,
+      "HeaderPageId": "win00002",
+      "FooterPageId": "win00003",
+      "PageKey": "e4bd671b-6aec-4c99-bc35-cc089fd87771",
+      "PageCode": "win00012_modern_no_legacy_e15_e30",
+      "Origin": "Native",
+      "ImportProvenance": null,
+      "HeaderPageKey": "03cfb85b-ac44-578d-bbfc-240e3d6ed01c",
+      "FooterPageKey": "3679ddd3-579a-5f28-9464-dd7646ab49ca",
+      "EffectiveCanvasSize": {
+        "Width": 1280,
+        "Height": 873
+      },
+      "EffectiveBackground": {
+        "Color": "#E4E4E4",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      }
     }
   ],
   "ManifestVersion": "2.0",

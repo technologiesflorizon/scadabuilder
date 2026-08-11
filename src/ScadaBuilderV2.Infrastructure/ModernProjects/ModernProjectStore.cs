@@ -70,7 +70,9 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         var path = GetScenePath(repositoryRoot, sceneId);
         if (File.Exists(path))
         {
-            await using var read = File.OpenRead(path);
+            var json = await File.ReadAllTextAsync(path);
+            ThrowIfRetiredPopupCommandKind(json, $"scene '{sceneId}'");
+            await using var read = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(json));
             var scene = await JsonSerializer.DeserializeAsync<ScadaScene>(read, JsonOptions);
             if (scene is not null)
             {
@@ -114,7 +116,9 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         var path = ResolveContainedScenePath(projectRoot, page.RelativePath);
         if (File.Exists(path))
         {
-            await using var stream = File.OpenRead(path);
+            var json = await File.ReadAllTextAsync(path, cancellationToken);
+            ThrowIfRetiredPopupCommandKind(json, $"scene '{page.EffectivePageCode}' ({page.RelativePath})");
+            await using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(json));
             var scene = await JsonSerializer.DeserializeAsync<ScadaScene>(stream, JsonOptions, cancellationToken);
             if (scene is not null)
             {
@@ -175,7 +179,21 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         var project = File.Exists(projectPath)
             ? await LoadProjectFileAsync(projectPath, cancellationToken)
             : null;
-        return project is null ? null : ModernProjectMigration.MigrateProject(project);
+        if (project is null)
+            return null;
+        project = ModernProjectMigration.MigrateProject(project);
+        // QuickWindow authoritative files under quick-windows/: if present, they override inline project.QuickWindows
+        var qwStore = new QuickWindowStore();
+        var qwFromFiles = await qwStore.LoadAllAsync(projectRoot, cancellationToken);
+        if (qwFromFiles.Count > 0)
+        {
+            project = project with { QuickWindows = qwFromFiles };
+        }
+        else if (project.EffectiveQuickWindows.Count > 0)
+        {
+            // Fallback: inline definitions without files (legacy or test) - keep as is
+        }
+        return ModernProjectMigration.MigrateProject(project);
     }
 
     /// <inheritdoc />
@@ -290,6 +308,13 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
                     cancellationToken));
             }
 
+            // Stage quick window definitions deterministically
+            foreach (var qw in normalized.Project.EffectiveQuickWindows.OrderBy(qw => qw.Code, StringComparer.Ordinal).ThenBy(qw => qw.DefinitionKey))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                entries.Add(await QuickWindowStore.StageJsonAsync(projectRoot, transactionRoot, qw, cancellationToken));
+            }
+
             entries.Add(await StageJsonAsync(
                 projectRoot,
                 transactionRoot,
@@ -299,12 +324,27 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
             await ValidateStagedSnapshotAsync(transactionRoot, entries, normalized.Project, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
 
+            // Compute quick-window deletions: any file under quick-windows/ not in normalized project
+            var existingQwRelative = new List<string>();
+            var qwDir = Path.Combine(projectRoot, "quick-windows");
+            if (Directory.Exists(qwDir))
+            {
+                foreach (var file in Directory.GetFiles(qwDir, "*.quick-window.json", SearchOption.TopDirectoryOnly))
+                {
+                    var rel = Path.GetRelativePath(projectRoot, file).Replace('\\', '/');
+                    existingQwRelative.Add(rel);
+                }
+            }
+            var normalizedQwRelative = normalized.Project.EffectiveQuickWindows.Select(qw => QuickWindowStore.GetRelativePath(qw.DefinitionKey)).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            var qwDeletions = existingQwRelative.Where(rel => !normalizedQwRelative.Contains(rel)).ToArray();
+            var allDeletions = normalized.PendingDeletions.Select(item => NormalizeRelativePath(item.RelativePath)).Concat(qwDeletions).ToArray();
+
             journal = new WorkspaceSaveJournal(
                 transactionId,
                 normalized.Version,
                 WorkspaceSavePhase.Prepared,
                 entries,
-                normalized.PendingDeletions.Select(item => NormalizeRelativePath(item.RelativePath)).ToArray());
+                allDeletions);
             await SaveJournalAsync(transactionRoot, journal);
 
             journal = journal with { Phase = WorkspaceSavePhase.WritingScenes };
@@ -450,6 +490,55 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
             throw new InvalidOperationException("Pending workspace deletions contain duplicate scene paths.");
         }
 
+        // Validate quick windows definitions
+        var quickWindows = project.EffectiveQuickWindows;
+        if (quickWindows.Count > 0)
+        {
+            var qwKeys = new HashSet<Guid>();
+            var qwCodes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var qw in quickWindows)
+            {
+                if (qw.DefinitionKey == Guid.Empty)
+                    throw new InvalidOperationException("QuickWindow DefinitionKey must be non-empty.");
+                if (!qwKeys.Add(qw.DefinitionKey))
+                    throw new InvalidOperationException($"Duplicate QuickWindow DefinitionKey '{qw.DefinitionKey}'.");
+                if (!qwCodes.Add(qw.Code))
+                    throw new InvalidOperationException($"Duplicate QuickWindow code '{qw.Code}'.");
+                var codeValidation = PageCodePolicy.Validate(qw.Code);
+                if (!codeValidation.IsValid)
+                    throw new InvalidOperationException(codeValidation.Errors[0]);
+                var relative = QuickWindowStore.GetRelativePath(qw.DefinitionKey);
+                _ = QuickWindowStore.ResolveContainedQuickWindowPath(projectRoot, relative);
+                var issues = ScadaBuilderV2.Domain.QuickWindows.QuickWindowValidation.ValidateDefinition(qw);
+                if (issues.Count > 0)
+                    throw new InvalidOperationException($"QuickWindow '{qw.Code}' invalid: {string.Join("; ", issues)}");
+            }
+            // Deterministic order
+            var ordered = quickWindows.OrderBy(qw => qw.Code, StringComparer.Ordinal).ThenBy(qw => qw.DefinitionKey).ToArray();
+            project = project with { QuickWindows = ordered };
+            // Also validate invocations
+            var invs = project.EffectiveQuickWindowInvocations;
+            var invKeys = new HashSet<Guid>();
+            var qwKeySet = qwKeys;
+            foreach (var inv in invs)
+            {
+                if (inv.InvocationKey == Guid.Empty)
+                    throw new InvalidOperationException("QuickWindow InvocationKey must be non-empty.");
+                if (!invKeys.Add(inv.InvocationKey))
+                    throw new InvalidOperationException($"Duplicate InvocationKey '{inv.InvocationKey}'.");
+                if (!qwKeySet.Contains(inv.DefinitionKey))
+                    throw new InvalidOperationException($"Invocation '{inv.InvocationKey}' references missing QuickWindow '{inv.DefinitionKey}'.");
+                // Validate binding member keys exist
+                var def = ordered.First(d => d.DefinitionKey == inv.DefinitionKey);
+                var memberKeys = def.InterfaceMembers.Select(m => m.MemberKey).ToHashSet();
+                foreach (var b in inv.Bindings)
+                {
+                    if (!memberKeys.Contains(b.MemberKey))
+                        throw new InvalidOperationException($"Invocation '{inv.InvocationKey}' references unknown member '{b.MemberKey}'.");
+                }
+            }
+        }
+
         return new PageWorkspaceSnapshot(snapshot.Version, project, scenes, pendingDeletions);
     }
 
@@ -486,13 +575,23 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         {
             cancellationToken.ThrowIfCancellationRequested();
             var stagedPath = ResolveContainedPath(transactionRoot, entry.StagedRelativePath);
-            await using var stream = File.OpenRead(stagedPath);
+            var stagedJson = await File.ReadAllTextAsync(stagedPath, cancellationToken);
+            ThrowIfRetiredPopupCommandKind(stagedJson, $"staged {entry.TargetRelativePath}");
+            await using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(stagedJson));
             if (string.Equals(entry.TargetRelativePath, "project.json", StringComparison.OrdinalIgnoreCase))
             {
                 var project = await JsonSerializer.DeserializeAsync<ScadaProject>(stream, JsonOptions, cancellationToken);
                 if (project is null || project.Scenes.Count != expectedProject.Scenes.Count)
                 {
                     throw new InvalidDataException("Staged project.json did not pass workspace validation.");
+                }
+            }
+            else if (entry.TargetRelativePath.StartsWith("quick-windows/", StringComparison.OrdinalIgnoreCase))
+            {
+                var qw = await JsonSerializer.DeserializeAsync<ScadaBuilderV2.Domain.QuickWindows.QuickWindowDefinition>(stream, JsonOptions, cancellationToken);
+                if (qw is null || qw.DefinitionKey == Guid.Empty)
+                {
+                    throw new InvalidDataException($"Staged quick-window '{entry.TargetRelativePath}' did not pass validation.");
                 }
             }
             else
@@ -557,7 +656,22 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
     {
         foreach (var relativePath in relativePaths)
         {
-            var path = ResolveContainedScenePath(projectRoot, relativePath);
+            string path;
+            try
+            {
+                path = ResolveContainedScenePath(projectRoot, relativePath);
+            }
+            catch
+            {
+                try
+                {
+                    path = QuickWindowStore.ResolveContainedQuickWindowPath(projectRoot, relativePath);
+                }
+                catch
+                {
+                    path = ResolveContainedPath(projectRoot, relativePath);
+                }
+            }
             if (File.Exists(path))
             {
                 File.Delete(path);
@@ -755,5 +869,60 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         var existingCodes = existing.Select(scene => scene.EffectivePageCode).ToHashSet(StringComparer.OrdinalIgnoreCase);
         merged.AddRange(incoming.Where(scene => !existingCodes.Contains(scene.EffectivePageCode)));
         return merged;
+    }
+
+    /// <summary>Throws if the json contains a retired popup command kind without migration.</summary>
+    /// <remarks>DEC-0050: OpenPopup/TogglePopup/ClosePopup are retired modern command kinds. Any persisted occurrence must be diagnosed with project/scene/element/command location and refuse to save without overwriting the original bytes.</remarks>
+    private static void ThrowIfRetiredPopupCommandKind(string json, string context)
+    {
+        if (string.IsNullOrWhiteSpace(json) || !json.Contains("CommandConfig", StringComparison.Ordinal))
+            return;
+
+        // Precise detection of retired ScadaCommandKind values inside CommandConfig.Commands.
+        // Legacy ScadaActionKind values (MountFragment etc. inside Actions) are allowlisted and ignored.
+        try
+        {
+            using var doc = System.Text.Json.JsonDocument.Parse(json);
+            if (doc.RootElement.TryGetProperty("Elements", out var elements) && elements.ValueKind == System.Text.Json.JsonValueKind.Array)
+            {
+                var retired = new HashSet<string>(StringComparer.Ordinal) { "OpenPopup", "TogglePopup", "ClosePopup" };
+                void CheckElements(System.Text.Json.JsonElement arr)
+                {
+                    foreach (var el in arr.EnumerateArray())
+                    {
+                        if (el.TryGetProperty("CommandConfig", out var cmdCfg) && cmdCfg.ValueKind == System.Text.Json.JsonValueKind.Object)
+                        {
+                            if (cmdCfg.TryGetProperty("Commands", out var cmds) && cmds.ValueKind == System.Text.Json.JsonValueKind.Array)
+                            {
+                                foreach (var cmd in cmds.EnumerateArray())
+                                {
+                                    if (cmd.TryGetProperty("Kind", out var kindProp) && kindProp.ValueKind == System.Text.Json.JsonValueKind.String)
+                                    {
+                                        var kindStr = kindProp.GetString();
+                                        if (kindStr != null && retired.Contains(kindStr))
+                                            throw new InvalidDataException($"Retired popup command kind \"{kindStr}\" detected in {context}. DEC-0050: ScadaCommandKind {kindStr} was never completed end-to-end and is refused fail-closed. File remains unchanged; no migration to QuickWindow is performed.");
+                                    }
+                                }
+                            }
+                        }
+                        if (el.TryGetProperty("Children", out var children) && children.ValueKind == System.Text.Json.JsonValueKind.Array)
+                            CheckElements(children);
+                        if (el.TryGetProperty("ChildElements", out var child2) && child2.ValueKind == System.Text.Json.JsonValueKind.Array)
+                            CheckElements(child2);
+                    }
+                }
+                CheckElements(elements);
+            }
+        }
+        catch (System.Text.Json.JsonException)
+        {
+            // If not valid JSON or not a scene, fall back to simple string check only for CommandConfig
+            if (json.Contains("\"CommandConfig\"", StringComparison.Ordinal) && (json.Contains("\"OpenPopup\"", StringComparison.Ordinal) || json.Contains("\"TogglePopup\"", StringComparison.Ordinal) || json.Contains("\"ClosePopup\"", StringComparison.Ordinal)))
+            {
+                // Check if it's likely a command (contains Commands)
+                if (json.Contains("\"Commands\"", StringComparison.Ordinal))
+                    throw new InvalidDataException($"Retired popup command kind detected in {context} (fallback). DEC-0050 refused fail-closed.");
+            }
+        }
     }
 }

@@ -26259,6 +26259,125 @@
       "CommandConfig": null,
       "Table": null,
       "IsLocked": true
+    },
+    {
+      "Id": "button_evap_15_30",
+      "DisplayName": "\u00C9vaporateurs E-15 \u00E0 E-30",
+      "Kind": "Button",
+      "Bounds": {
+        "X": 890,
+        "Y": 32,
+        "Width": 180,
+        "Height": 53
+      },
+      "LegacySource": null,
+      "Layout": {
+        "PositionMode": "Absolute",
+        "RelativeToElementId": null
+      },
+      "Style": {
+        "FontFamily": "Segoe UI",
+        "FontSize": 11,
+        "Foreground": "#EAF8FF",
+        "Background": "#123D57",
+        "BorderColor": "#2B8193",
+        "BorderWidth": 1.5,
+        "BorderStyle": "Solid",
+        "ShadowPreset": "Raised",
+        "AdvancedCss": null,
+        "Opacity": 1,
+        "Rotation": 0,
+        "FlipHorizontally": false,
+        "FlipVertically": false,
+        "FontWeight": "Normal",
+        "FontStyle": "Normal",
+        "TextDecoration": null,
+        "TextAlign": "Center",
+        "TextTransform": "None",
+        "LetterSpacing": 0,
+        "LineHeight": 2,
+        "BorderRadius": {
+          "TopLeft": 6,
+          "TopRight": 6,
+          "BottomRight": 6,
+          "BottomLeft": 6
+        }
+      },
+      "Data": {
+        "Text": "EVAP E15-30",
+        "Placeholder": null,
+        "Value": null,
+        "Minimum": null,
+        "Maximum": null,
+        "Decimals": null,
+        "Unit": null,
+        "DisplayFormat": "Command",
+        "TagBinding": null,
+        "IsReadOnly": false,
+        "ReadTagId": null,
+        "WriteTagId": null,
+        "ShapeStartX": null,
+        "ShapeStartY": null,
+        "ShapeEndX": null,
+        "ShapeEndY": null
+      },
+      "Children": null,
+      "LegacyPayload": null,
+      "Events": null,
+      "ButtonBehavior": {
+        "IsDisabled": false,
+        "Hover": {
+          "Enabled": true,
+          "Background": "#19536E",
+          "Foreground": "#FFFFFF",
+          "BorderColor": "#48A6B8"
+        },
+        "Pressed": {
+          "Enabled": true,
+          "Background": "#0B2A3D",
+          "Foreground": "#FFFFFF",
+          "BorderColor": "#48A6B8"
+        },
+        "EffectiveHover": {
+          "Enabled": true,
+          "Background": "#19536E",
+          "Foreground": "#FFFFFF",
+          "BorderColor": "#48A6B8"
+        },
+        "EffectivePressed": {
+          "Enabled": true,
+          "Background": "#0B2A3D",
+          "Foreground": "#FFFFFF",
+          "BorderColor": "#48A6B8"
+        }
+      },
+      "ShapeKind": null,
+      "ButtonKind": "Command",
+      "StateConfig": null,
+      "CommandConfig": {
+        "Commands": [
+          {
+            "Id": "navigate-evap-e15-e30",
+            "Name": "GoEvapE15E30",
+            "Enabled": true,
+            "Trigger": "OnClick",
+            "Kind": "Navigate",
+            "Confirmation": null,
+            "WriteTagId": null,
+            "ReadTagId": null,
+            "WriteMode": null,
+            "OnValue": null,
+            "OffValue": null,
+            "FixedValue": null,
+            "TargetPageId": "win00012_modern_no_legacy_e15_e30",
+            "Url": null,
+            "NewTab": false,
+            "TargetPageKey": "e4bd671b-6aec-4c99-bc35-cc089fd87771"
+          }
+        ]
+      },
+      "Table": null,
+      "IsLocked": false
     }
   ],
   "BackgroundColor": "#E4E4E4",

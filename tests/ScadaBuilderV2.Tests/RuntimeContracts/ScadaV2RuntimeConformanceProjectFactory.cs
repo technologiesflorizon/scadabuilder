@@ -2,6 +2,7 @@ using ScadaBuilderV2.Domain.ElementEvents.Command;
 using ScadaBuilderV2.Domain.ElementEvents.Expressions;
 using ScadaBuilderV2.Domain.ElementEvents.State;
 using ScadaBuilderV2.Domain.Projects;
+using ScadaBuilderV2.Domain.QuickWindows;
 using ScadaBuilderV2.Domain.RuntimeContracts;
 using ScadaBuilderV2.Domain.Scenes;
 using ScadaBuilderV2.Rendering;
@@ -219,12 +220,6 @@ internal static class ScadaV2RuntimeConformanceProjectFactory
         [
             new ScadaCommandBinding("kind-navigate", "Navigate", true, ScadaCommandTrigger.OnClick,
                 ScadaCommandKind.Navigate, TargetPageId: MainPageId),
-            new ScadaCommandBinding("kind-open-popup", "Open popup", true, ScadaCommandTrigger.OnClick,
-                ScadaCommandKind.OpenPopup, TargetPageId: FragmentPageId),
-            new ScadaCommandBinding("kind-toggle-popup", "Toggle popup", true, ScadaCommandTrigger.OnClick,
-                ScadaCommandKind.TogglePopup, TargetPageId: FragmentPageId),
-            new ScadaCommandBinding("kind-close-popup", "Close popup", true, ScadaCommandTrigger.OnClick,
-                ScadaCommandKind.ClosePopup, TargetPageId: FragmentPageId),
             new ScadaCommandBinding("kind-open-url", "Open URL", true, ScadaCommandTrigger.OnClick,
                 ScadaCommandKind.OpenUrl, Url: "https://example.invalid/conformance"),
             new ScadaCommandBinding("write-toggle", "Toggle", true, ScadaCommandTrigger.OnClick,
