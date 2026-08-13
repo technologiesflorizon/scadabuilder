@@ -1,12 +1,19 @@
 # Audit legacy popup — Inventaire avant retrait (Task 1.3)
 
-Date: 2026-08-11
+Date: 2026-08-13
 Status: PASS — inventaire 100% classé, zéro command kind popup moderne en surface active
-Document version: `V2.1.5.0020`
+Document version: `V2.1.5.0021`
 Décision: DEC-0050 (supersède DEC-0019/0020/0022)
 Plan: docs/superpowers/plans/2026-08-10-parameterized-quick-window-management.md Task 1.3
 Allowlist: tests/conformance/legacy-popup-residue-allowlist.json
 Commit: PENDING
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0021` | `PENDING` | Métadonnées de gouvernance ajoutées et statut reconfirmé par les tests ciblés de l’audit correctif Phases 0/1. |
+| 2026-08-11 | `V2.1.5.0020` | `PENDING` | Inventaire initial, retrait des command kinds popup modernes et allowlist des résidus legacy. |
 
 ## 1. Commandes de scan
 
@@ -108,4 +115,3 @@ Aucune migration `MountFragment`/`ClosePopup`/`TogglePopup`/`ScadaPopupOptions` 
 - [x] Docs actives ne les décrivent plus comme contrat courant (archives peuvent conserver l’historique)
 
 **Résultat: PASS** — Task 1.3 peut committer `refactor: fail closed on retired popup contracts`.
-

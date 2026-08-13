@@ -73,7 +73,9 @@ public sealed class QuickWindowStore
             InterfaceMembers = definition.InterfaceMembers.OrderBy(m => m.Name, StringComparer.Ordinal).ThenBy(m => m.MemberKey).ToArray(),
             Content = definition.Content with
             {
-                Elements = definition.Content.EffectiveElements.OrderBy(e => e.Id, StringComparer.Ordinal).ToArray()
+                Elements = definition.Content.EffectiveElements.OrderBy(e => e.Id, StringComparer.Ordinal).ToArray(),
+                StyleSheets = definition.Content.EffectiveStyleSheets.OrderBy(item => item, StringComparer.Ordinal).ToArray(),
+                AssetReferences = definition.Content.EffectiveAssetReferences.OrderBy(item => item, StringComparer.Ordinal).ToArray()
             }
         };
         await SaveJsonAsync(path, deterministic, cancellationToken);
@@ -87,7 +89,9 @@ public sealed class QuickWindowStore
         if (!File.Exists(path))
             return null;
         await using var stream = File.OpenRead(path);
-        return await JsonSerializer.DeserializeAsync<QuickWindowDefinition>(stream, JsonOptions, cancellationToken);
+        var definition = await JsonSerializer.DeserializeAsync<QuickWindowDefinition>(stream, JsonOptions, cancellationToken);
+        ValidateLoadedDefinition(path, definitionKey, definition);
+        return definition;
     }
 
     /// <summary>Loads all quick window definitions under projectRoot.</summary>
@@ -108,8 +112,12 @@ public sealed class QuickWindowStore
             _ = ResolveContainedQuickWindowPath(projectRoot, relative);
             await using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(json));
             var def = await JsonSerializer.DeserializeAsync<QuickWindowDefinition>(stream, JsonOptions, cancellationToken);
-            if (def is not null)
-                result.Add(def);
+            var fileName = Path.GetFileName(file);
+            var keyText = fileName[..^".quick-window.json".Length];
+            if (!Guid.TryParseExact(keyText, "N", out var expectedKey))
+                throw new InvalidDataException($"QuickWindow file name is not a canonical DefinitionKey: {fileName}");
+            ValidateLoadedDefinition(file, expectedKey, def);
+            result.Add(def!);
         }
         return result.OrderBy(d => d.Code, StringComparer.Ordinal).ThenBy(d => d.DefinitionKey).ToArray();
     }
@@ -138,7 +146,9 @@ public sealed class QuickWindowStore
             InterfaceMembers = definition.InterfaceMembers.OrderBy(m => m.Name, StringComparer.Ordinal).ThenBy(m => m.MemberKey).ToArray(),
             Content = definition.Content with
             {
-                Elements = definition.Content.EffectiveElements.OrderBy(e => e.Id, StringComparer.Ordinal).ToArray()
+                Elements = definition.Content.EffectiveElements.OrderBy(e => e.Id, StringComparer.Ordinal).ToArray(),
+                StyleSheets = definition.Content.EffectiveStyleSheets.OrderBy(item => item, StringComparer.Ordinal).ToArray(),
+                AssetReferences = definition.Content.EffectiveAssetReferences.OrderBy(item => item, StringComparer.Ordinal).ToArray()
             }
         };
         await SaveJsonAsync(stagedPath, deterministic, cancellationToken);
@@ -147,7 +157,32 @@ public sealed class QuickWindowStore
 
     private static async Task SaveJsonAsync<T>(string path, T value, CancellationToken cancellationToken = default)
     {
-        await using var write = File.Create(path);
-        await JsonSerializer.SerializeAsync(write, value, JsonOptions, cancellationToken);
+        var tempPath = $"{path}.{Guid.NewGuid():N}.tmp";
+        try
+        {
+            await using (var write = new FileStream(tempPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096, FileOptions.WriteThrough))
+            {
+                await JsonSerializer.SerializeAsync(write, value, JsonOptions, cancellationToken);
+                await write.FlushAsync(cancellationToken);
+                write.Flush(flushToDisk: true);
+            }
+            File.Move(tempPath, path, overwrite: true);
+        }
+        finally
+        {
+            if (File.Exists(tempPath))
+                File.Delete(tempPath);
+        }
+    }
+
+    private static void ValidateLoadedDefinition(string path, Guid expectedKey, QuickWindowDefinition? definition)
+    {
+        if (definition is null)
+            throw new InvalidDataException($"QuickWindow file '{path}' is empty or invalid.");
+        if (definition.DefinitionKey != expectedKey)
+            throw new InvalidDataException($"QuickWindow file '{path}' contains DefinitionKey '{definition.DefinitionKey}' instead of '{expectedKey}'.");
+        var issues = QuickWindowValidation.ValidateDefinition(definition);
+        if (issues.Count > 0)
+            throw new InvalidDataException($"QuickWindow file '{path}' failed validation: {string.Join("; ", issues)}");
     }
 }

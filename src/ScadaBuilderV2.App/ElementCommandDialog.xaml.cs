@@ -29,7 +29,10 @@ public partial class ElementCommandDialog : Window
         _usedKinds = usedKinds;
 
         TriggerComboBox.ItemsSource = Enum.GetValues<ScadaCommandTrigger>();
-        KindComboBox.ItemsSource = Enum.GetValues<ScadaCommandKind>().Where(kind => !usedKinds.Contains(kind)).ToArray();
+        KindComboBox.ItemsSource = Enum.GetValues<ScadaCommandKind>()
+            .Where(kind => kind is not ScadaCommandKind.OpenQuickWindow and not ScadaCommandKind.CloseQuickWindow)
+            .Where(kind => !usedKinds.Contains(kind))
+            .ToArray();
         WriteModeComboBox.ItemsSource = Enum.GetValues<ScadaWriteMode>();
         TargetPageComboBox.ItemsSource = pageReferences;
 
@@ -82,7 +85,7 @@ public partial class ElementCommandDialog : Window
             ? Visibility.Visible
             : Visibility.Collapsed;
         UrlPanel.Visibility = kind == ScadaCommandKind.OpenUrl ? Visibility.Visible : Visibility.Collapsed;
-        // QuickWindow kinds (OpenQuickWindow/CloseQuickWindow) use invocation bindings handled in Phase 3; no page/url panel.
+        // QuickWindow authoring remains blocked until its dedicated Phase 3 surface supplies invocation context.
     }
 
     private void UpdateWriteModePanels()

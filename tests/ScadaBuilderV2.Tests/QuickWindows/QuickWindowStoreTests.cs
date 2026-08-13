@@ -44,8 +44,11 @@ public sealed class QuickWindowStoreTests
             Assert.IsTrue(File.Exists(qwPath), $"QuickWindow file should exist at {qwPath}");
             var json = await File.ReadAllTextAsync(qwPath);
             Assert.IsTrue(json.Contains("\"Code\": \"qw_test\""));
-            // Verify deterministic order: members ordered by Name
-            Assert.IsTrue(json.IndexOf("MotorName", StringComparison.Ordinal) < json.IndexOf("RunFeedback", StringComparison.Ordinal) || json.IndexOf("MotorName", StringComparison.Ordinal) > 0);
+            using var definitionDocument = System.Text.Json.JsonDocument.Parse(json);
+            var memberNames = definitionDocument.RootElement.GetProperty("InterfaceMembers").EnumerateArray().Select(item => item.GetProperty("Name").GetString()).ToArray();
+            CollectionAssert.AreEqual(new[] { "MotorName", "RunFeedback" }, memberNames);
+            var projectJson = await File.ReadAllTextAsync(Path.Combine(root, "proj", "project.json"));
+            Assert.IsFalse(projectJson.Contains("qw_test", StringComparison.Ordinal), "project.json must not duplicate full QuickWindow definitions.");
         }
         finally
         {
@@ -142,12 +145,11 @@ public sealed class QuickWindowStoreTests
             var qwDir = Path.Combine(root, "proj", "quick-windows");
             Assert.IsFalse(Directory.Exists(qwDir) && Directory.GetFiles(qwDir).Length > 0, "No quick-windows directory should be created for project without QuickWindows");
 
-            // Save again same content with version bump but same data - should not create quick-windows
-            var snap2 = new PageWorkspaceSnapshot(2, project, new Dictionary<Guid, ScadaScene> { [project.Scenes[0].PageKey] = scene }, Array.Empty<PendingPageDeletion>());
-            await store.SaveWorkspaceSnapshotToProjectRootAsync(Path.Combine(root, "proj"), snap2);
+            var reopened = await store.LoadProjectFromRootAsync(Path.Combine(root, "proj"));
+            Assert.IsNotNull(reopened);
             Assert.IsFalse(Directory.Exists(qwDir) && Directory.GetFiles(qwDir).Length > 0);
-            // Project file may be rewritten due to version bump, but quick-window files still absent
-            Assert.IsTrue(File.Exists(projPath));
+            var bytesAfterOpen = await File.ReadAllBytesAsync(projPath);
+            CollectionAssert.AreEqual(bytesBefore, bytesAfterOpen, "Opening a project without QuickWindows must preserve project.json byte-for-byte.");
         }
         finally
         {
@@ -209,10 +211,32 @@ public sealed class QuickWindowStoreTests
                 });
             await store.SaveAsync(Path.Combine(root, "proj"), qw);
             var json = await File.ReadAllTextAsync(Path.Combine(root, "proj", "quick-windows", $"{qw.DefinitionKey:N}.quick-window.json"));
-            // Members should be ordered by Name (Alpha before Zeta)
-            Assert.IsTrue(json.IndexOf("Alpha", StringComparison.Ordinal) < json.IndexOf("Zeta", StringComparison.Ordinal), "Members must be ordered deterministically");
-            // Elements ordered by Id (a before b)
-            Assert.IsTrue(json.IndexOf("\"a\"", StringComparison.Ordinal) < json.IndexOf("\"b\"", StringComparison.Ordinal), "Elements must be ordered deterministically");
+            using var document = System.Text.Json.JsonDocument.Parse(json);
+            var memberNames = document.RootElement.GetProperty("InterfaceMembers").EnumerateArray().Select(item => item.GetProperty("Name").GetString()).ToArray();
+            CollectionAssert.AreEqual(new[] { "Alpha", "Zeta" }, memberNames);
+            var elementIds = document.RootElement.GetProperty("Content").GetProperty("Elements").EnumerateArray().Select(item => item.GetProperty("Id").GetString()).ToArray();
+            CollectionAssert.AreEqual(new[] { "a", "b" }, elementIds);
+        }
+        finally
+        {
+            if (Directory.Exists(root)) Directory.Delete(root, true);
+        }
+    }
+
+    [TestMethod]
+    public async Task LoadRejectsDefinitionKeyThatDoesNotMatchFileName()
+    {
+        var root = Path.Combine(Path.GetTempPath(), "ScadaBuilderV2Tests", Guid.NewGuid().ToString("N"));
+        var store = new QuickWindowStore();
+        try
+        {
+            var projectRoot = Path.Combine(root, "proj");
+            var definition = QuickWindowDefinition.CreateEmpty("qw_key", "Key");
+            await store.SaveAsync(projectRoot, definition);
+            var original = Path.Combine(projectRoot, "quick-windows", $"{definition.DefinitionKey:N}.quick-window.json");
+            var wrong = Path.Combine(projectRoot, "quick-windows", $"{Guid.NewGuid():N}.quick-window.json");
+            File.Move(original, wrong);
+            await Assert.ThrowsExceptionAsync<InvalidDataException>(() => store.LoadAllAsync(projectRoot));
         }
         finally
         {

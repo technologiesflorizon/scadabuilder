@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Regression Coverage
 
-Date: 2026-07-30
+Date: 2026-08-13
 Status: Active regression coverage map
-Document version: `V2.1.5.0002`
+Document version: `V2.1.5.0021`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0021` | `PENDING` | Couverture Phases 0/1 QuickWindow : DOM réel, WebView2/Edge, validations Domain, persistance atomique, retrait popup et handshake muté dans les deux dépôts. |
 | 2026-07-30 | `V2.1.5.0002` | `PENDING` | Régression effets SVG : cibles preview/export, application fill/stroke, transition, reset de baseline, repli wrapper et fixture conformance régénérée. |
 | 2026-07-29 | `V2.1.5.0001` | `PENDING` | Régression de découverte : seuls les enfants immédiats contenant `project.json` sont inscrits; build solution et 9 tests cycle projet verts. |
 | 2026-07-29 | `V2.1.5.0000` | `PENDING` | Cycle projet couvert par 8 tests infrastructure/coordinator et contrats ciblés WPF/ruban; build solution vert. Après synchronisation des contrats de test, les cinq échecs historiques hors tranche demeurent. |
@@ -104,13 +105,17 @@ Document version: `V2.1.5.0002`
 
 ```text
 dotnet test ScadaBuilderV2.sln --no-restore
-689 passed, 8 failed, 0 skipped
+754 passed, 5 failed, 0 skipped
 ```
+
+Les 53 tests QuickWindow/legacy-popup ciblés, les 4 tests de fixture conformance et les gates Phase 0 cross-repository sont verts. Les cinq échecs de suite complète sont hors tranche: quatre contrats historiques WPF/runtime déjà recensés et l’acceptance industrielle `win00003` dont la fixture de référence expose 7 navigations au lieu des 8 attendues.
 
 ## 2. Coverage Map
 
 | Contract area | Primary tests |
 | --- | --- |
+| Fenêtres rapides Phase 0 — isolation (`DEC-0050`) | `tests/runtime-js/quick-window-dom-css-isolation.test.mjs` verrouille Node `20.18.x`, révision/hash et 100 cycles; `QuickWindowIsolationPrototypeContractTests` exige une capture WebView2 réelle. TF100Web exécute la même fixture/hash avec son test Node et `tests_scada_quick_window_isolation_prototype.py` dans Edge headless. |
+| Fenêtres rapides Phase 1 — contrats et handshake (`DEC-0050`) | `QuickWindowDomainTests`, `QuickWindowBindingTests`, `QuickWindowStoreTests` et `QuickWindowContractHandshakeTests` couvrent familles/type/accès, anti-injection, version/profil, fermeture contextuelle, persistance déterministe/atomique et SHA canonique. TF100Web `tests_scada_quick_window_contract_handshake.py` parse le manifest et exécute les mutations clés/type/ordre/profil/required/legacy. |
 | Numeric `StateConfig.ReadVariable` / `ValueBindings.ReadTagId` coherence | `ScadaSceneElementEventsTests.WithElementStateConfigSynchronizesNumericReadVariableWithCanonicalValueBinding`, `ModernProjectStoreTests.SceneMigrationRepairsPersistedNumericReadBindingMismatch`, `OfficialSceneDomainTests.BuildValidationRejectsNumericReadVariableValueBindingMismatch`, and `IndustrialRuntimeIntegrationTests.ReferenceProjectNormalizesEveryCompiledNumericReadBindingAndExportsWin00017Mappings` cover authoring, migration, fail-closed validation, all compiled reference pages and exact `win00017` export mappings. |
 | Runtime capability completeness (`DEC-0047`) | `RuntimeContracts/ScadaRuntimeCapabilityCatalogTests.cs` and `ScadaRuntimeCapabilityAnalyzerTests.cs` cover typed inventory, artifacts, fixture ids, three-layer evidence requirements and model analysis. `RuntimeConformancePackageTests.cs` proves exact 118-capability factory coverage, 118 unique `probe:<capability-id>` results, byte-identical package regeneration, canonical SHA `b5e4ea7fe32a928fd27b4ac1531d6940b887804662585892628340e2d6b1cf48`, archive/manifest/DOM/CSS/runtime integrity, sanitization and an exhaustive 162-entry expectation index. Runtime JS suites add table-driven AST/state/effect/command/action semantics, including the lower-camel operators actually emitted. TF100Web `frontend.tests_runtime_conformance` executes and reports every exact Supported probe, mutation-tests independent failure, and rejects every Blocked id. `tools/docs/generate-runtime-capability-matrix.ps1` plus `verify-docs` enforce code/matrix parity. |
 | Shared command and input semantics (`DEC-0047`, partial) | Builder `tests/runtime-js/command-dispatcher.test.mjs` covers all five triggers, seven kinds, Toggle/SetFixed/SetFromInput and real Momentary phases, confirmation ordering, disabled/missing values, canonical intents, HostAdapter precedence, async rejection and duplicate suppression. TF100Web `frontend/tests_runtime_js/host-adapter.test.mjs` covers canonical service mapping, invalid input, duplicate delivery, origin, stale declared page and protected writes. End-to-end Momentary/readback promotion remains pending. |

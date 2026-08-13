@@ -1,4 +1,7 @@
 using ScadaBuilderV2.Domain.Projects;
+using ScadaBuilderV2.Domain.ElementEvents.Command;
+using ScadaBuilderV2.Domain.Scenes;
+using System.Text.RegularExpressions;
 
 namespace ScadaBuilderV2.Domain.QuickWindows;
 
@@ -39,6 +42,7 @@ public static class QuickWindowValidation
         ValidatePresentation(definition.PresentationDefaults, issues);
 
         ValidateMembers(definition.InterfaceMembers, issues);
+        ValidateQuickWindowCommands(definition.Content?.EffectiveElements ?? Array.Empty<ScadaElement>(), issues);
 
         // Ensure no fourth identifier is introduced.
         // DefinitionKey, InvocationKey and RuntimeInstanceId are the only identities.
@@ -66,6 +70,9 @@ public static class QuickWindowValidation
         else if (content.CanvasSize.Width <= 0 || content.CanvasSize.Height <= 0)
             issues.Add("VisualContent.CanvasSize must have positive dimensions.");
 
+        ValidateReferences(content.EffectiveStyleSheets, "StyleSheets", issues);
+        ValidateReferences(content.EffectiveAssetReferences, "AssetReferences", issues);
+
         // VisualContent must be bounded: only canvas, background, elements, styles, assets.
         // No navigation, route, header/footer, interface, presentation, lifecycle.
         // This is ensured by type composition: VisualContent has no such properties.
@@ -88,14 +95,25 @@ public static class QuickWindowValidation
         if (!presentation.IsViewportConstrained)
             issues.Add("IsViewportConstrained must be true in V1 (FR-UI-06).");
 
-        // Chrome is bounded: only TitleBarColor, BorderColor, Shadow. X/geometry/behaviors/backdrop remain theme/host.
-        // No validation of colors here; host validates format later.
+        if (presentation.Title is { Length: > 256 })
+            issues.Add("Presentation title must not exceed 256 characters.");
+
+        if (presentation.Chrome is { } chrome)
+        {
+            ValidateColor(chrome.TitleBarColor, "Chrome.TitleBarColor", issues);
+            ValidateColor(chrome.BorderColor, "Chrome.BorderColor", issues);
+            if (chrome.Shadow is { Length: > 256 } || (chrome.Shadow is not null && ContainsUnsafeTransportValue(chrome.Shadow)))
+                issues.Add("Chrome.Shadow contains an invalid or unsafe value.");
+        }
     }
 
     private static void ValidateMembers(IReadOnlyList<QuickWindowInterfaceMember>? members, List<string> issues)
     {
         if (members is null)
+        {
+            issues.Add("InterfaceMembers is required and must be an array.");
             return;
+        }
 
         var seenKeys = new HashSet<Guid>();
         var seenNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -115,18 +133,23 @@ public static class QuickWindowValidation
             if (member.IsPrivate && member.Required)
                 issues.Add($"Private member '{member.Name}' cannot be Required.");
 
-            // Access validation: ReadState expects Read, WriteCommand expects Write etc. Allow flexible but ensure coherence.
-            if (member.Family == QuickWindowInterfaceFamily.ReadState && member.Access != QuickWindowMemberAccess.Read && member.Access != QuickWindowMemberAccess.ReadWrite)
-                issues.Add($"ReadState member '{member.Name}' must have Read or ReadWrite access.");
+            if (member.Family == QuickWindowInterfaceFamily.ReadState && member.Access != QuickWindowMemberAccess.Read)
+                issues.Add($"ReadState member '{member.Name}' must have Read access.");
 
-            if (member.Family == QuickWindowInterfaceFamily.WriteCommand && member.Access != QuickWindowMemberAccess.Write && member.Access != QuickWindowMemberAccess.ReadWrite)
-                issues.Add($"WriteCommand member '{member.Name}' must have Write or ReadWrite access.");
+            if (member.Family == QuickWindowInterfaceFamily.WriteCommand && member.Access != QuickWindowMemberAccess.Write)
+                issues.Add($"WriteCommand member '{member.Name}' must have Write access.");
 
-            if (member.Family == QuickWindowInterfaceFamily.PrivateConstant && !string.IsNullOrWhiteSpace(member.DefaultValue) == false)
-            {
-                // Private constants are fixed by definition; they may have DefaultValue but are not bound by caller.
-                // No extra validation here.
-            }
+            if (member.Family == QuickWindowInterfaceFamily.PublicParameter && member.Access is not QuickWindowMemberAccess.Read and not QuickWindowMemberAccess.ReadWrite)
+                issues.Add($"PublicParameter member '{member.Name}' must have Read or ReadWrite access.");
+
+            if (member.IsPrivate && member.Access != QuickWindowMemberAccess.Internal)
+                issues.Add($"Private member '{member.Name}' must have Internal access.");
+
+            if (member.Family == QuickWindowInterfaceFamily.PrivateConstant && string.IsNullOrWhiteSpace(member.DefaultValue))
+                issues.Add($"PrivateConstant member '{member.Name}' requires a fixed DefaultValue.");
+
+            if (member.DefaultValue is not null && !IsLiteralCompatible(member.DefaultValue, member.DataType))
+                issues.Add($"DefaultValue for member '{member.Name}' is not compatible with {member.DataType}.");
         }
     }
 
@@ -134,7 +157,9 @@ public static class QuickWindowValidation
     public static bool HasFourthIdentifierViolation()
     {
         var forbidden = new[] { "InstanceKey", "WindowInstanceKey", "QuickWindowInstanceKey" };
-        var types = new[] { typeof(QuickWindowDefinition) };
+        var types = typeof(QuickWindowDefinition).Assembly.GetTypes()
+            .Where(type => string.Equals(type.Namespace, typeof(QuickWindowDefinition).Namespace, StringComparison.Ordinal))
+            .ToArray();
         foreach (var t in types)
         {
             foreach (var prop in t.GetProperties())
@@ -143,16 +168,70 @@ public static class QuickWindowValidation
                     return true;
             }
         }
-        // Also check invocation if loaded
-        var invocationType = Type.GetType("ScadaBuilderV2.Domain.QuickWindows.QuickWindowInvocation, ScadaBuilderV2.Domain");
-        if (invocationType != null)
+        return false;
+    }
+
+    private static void ValidateQuickWindowCommands(IEnumerable<ScadaElement> elements, List<string> issues)
+    {
+        foreach (var element in FlattenElements(elements))
         {
-            foreach (var prop in invocationType.GetProperties())
+            foreach (var command in element.EffectiveCommandConfig.Commands.Where(command => command.Kind == ScadaCommandKind.CloseQuickWindow))
             {
-                if (forbidden.Any(f => string.Equals(f, prop.Name, StringComparison.OrdinalIgnoreCase)))
-                    return true;
+                if (command.TargetPageKey is not null || !string.IsNullOrWhiteSpace(command.TargetPageId) || command.QuickWindowInvocationKey is not null)
+                    issues.Add($"CloseQuickWindow command '{command.Id}' inside quick-window content must target Self implicitly and carry no page or invocation target.");
             }
         }
-        return false;
+    }
+
+    private static IEnumerable<ScadaElement> FlattenElements(IEnumerable<ScadaElement> elements)
+    {
+        foreach (var element in elements)
+        {
+            yield return element;
+            foreach (var child in FlattenElements(element.ChildElements))
+                yield return child;
+        }
+    }
+
+    private static void ValidateReferences(IEnumerable<string> references, string property, List<string> issues)
+    {
+        foreach (var reference in references)
+        {
+            if (string.IsNullOrWhiteSpace(reference)
+                || Path.IsPathRooted(reference)
+                || reference.Contains("..", StringComparison.Ordinal)
+                || reference.Contains(':', StringComparison.Ordinal)
+                || ContainsUnsafeTransportValue(reference))
+            {
+                issues.Add($"VisualContent.{property} contains an invalid project-relative reference '{reference}'.");
+            }
+        }
+    }
+
+    private static void ValidateColor(string? color, string property, List<string> issues)
+    {
+        if (color is not null && !Regex.IsMatch(color, "^#[0-9a-fA-F]{6}([0-9a-fA-F]{2})?$", RegexOptions.CultureInvariant))
+            issues.Add($"{property} must be #RRGGBB or #RRGGBBAA.");
+    }
+
+    private static bool ContainsUnsafeTransportValue(string value) =>
+        value.Contains("<script", StringComparison.OrdinalIgnoreCase)
+        || value.Contains("javascript:", StringComparison.OrdinalIgnoreCase)
+        || value.Contains("url(", StringComparison.OrdinalIgnoreCase)
+        || value.Contains("{{", StringComparison.Ordinal)
+        || value.Contains("${", StringComparison.Ordinal);
+
+    private static bool IsLiteralCompatible(string literal, QuickWindowDataType type)
+    {
+        var trimmed = literal.Trim();
+        return type switch
+        {
+            QuickWindowDataType.Boolean => bool.TryParse(trimmed, out _) || trimmed is "0" or "1",
+            QuickWindowDataType.Integer => long.TryParse(trimmed, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture, out _),
+            QuickWindowDataType.Decimal => double.TryParse(trimmed, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var value) && double.IsFinite(value),
+            QuickWindowDataType.String => !ContainsUnsafeTransportValue(literal),
+            QuickWindowDataType.Enum => !string.IsNullOrWhiteSpace(trimmed),
+            _ => false
+        };
     }
 }

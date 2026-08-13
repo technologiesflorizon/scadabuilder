@@ -1,4 +1,5 @@
 using System.Text.RegularExpressions;
+using ScadaBuilderV2.Domain.ElementEvents.Expressions;
 using ScadaBuilderV2.Domain.Projects;
 
 namespace ScadaBuilderV2.Domain.QuickWindows;
@@ -59,12 +60,28 @@ public static class QuickWindowBindingValidator
         if (binding.MemberKey != member.MemberKey)
             return BindingValidationResult.Invalid("binding.member-mismatch", $"Binding member key {binding.MemberKey} does not match member {member.MemberKey}.");
 
+        if (definitionInterfaceVersion <= 0)
+            return BindingValidationResult.Invalid("binding.interface-version-invalid", "Definition interface version must be greater than zero.", "interface-version");
+
+        var shapeIssue = ValidateBindingShape(binding);
+        if (shapeIssue is not null)
+            return shapeIssue;
+
         if (binding.SourceKind == QuickWindowBindingSourceKind.None)
         {
             if (member.Required)
                 return BindingValidationResult.Invalid("binding.required-missing", $"Required member '{member.Name}' has no binding.", "required");
             // Optional absent is neutral: no subscription nor write.
             return BindingValidationResult.Valid;
+        }
+
+        if (member.IsPrivate)
+            return BindingValidationResult.Invalid("binding.private-member", $"Private member '{member.Name}' cannot be bound by an invocation.", "access");
+
+        if (member.Family == QuickWindowInterfaceFamily.WriteCommand
+            && binding.SourceKind is not QuickWindowBindingSourceKind.Tag and not QuickWindowBindingSourceKind.ParentPort)
+        {
+            return BindingValidationResult.Invalid("binding.write-source", $"WriteCommand member '{member.Name}' must bind to a Tag or ParentPort.", "access");
         }
 
         // Required members must have a concrete binding.
@@ -91,14 +108,36 @@ public static class QuickWindowBindingValidator
 
         var results = new List<BindingValidationResult>();
 
+        if (invocation.InvocationKey == Guid.Empty)
+            results.Add(BindingValidationResult.Invalid("invocation.key-empty", "InvocationKey must be a non-empty GUID."));
+
         if (invocation.DefinitionKey != definition.DefinitionKey)
             results.Add(BindingValidationResult.Invalid("invocation.definition-mismatch", "Invocation definition key does not match definition."));
 
-        var membersByKey = definition.InterfaceMembers.ToDictionary(m => m.MemberKey);
+        if (invocation.InterfaceVersion != definition.InterfaceVersion)
+            results.Add(BindingValidationResult.Invalid("invocation.interface-version-mismatch", $"Invocation interface version {invocation.InterfaceVersion} does not match definition version {definition.InterfaceVersion}.", "interface-version"));
+
+        if (invocation.TitleOverride is { Length: > 256 })
+            results.Add(BindingValidationResult.Invalid("invocation.title-too-long", "TitleOverride must not exceed 256 characters."));
+        else if (!string.IsNullOrWhiteSpace(invocation.TitleOverride))
+        {
+            var titleInjection = CheckInjection(invocation.TitleOverride);
+            if (titleInjection is not null)
+                results.Add(titleInjection with { ErrorCode = "invocation.title-injection" });
+        }
+
+        if (invocation.Bindings is null)
+        {
+            results.Add(BindingValidationResult.Invalid("invocation.bindings-null", "Bindings must be an array, even when empty."));
+            return results;
+        }
+
+        var members = definition.InterfaceMembers ?? Array.Empty<QuickWindowInterfaceMember>();
+        var membersByKey = members.GroupBy(member => member.MemberKey).ToDictionary(group => group.Key, group => group.First());
         var bindingsByMember = invocation.Bindings.GroupBy(b => b.MemberKey).ToDictionary(g => g.Key, g => g.First());
 
         // Validate each member has at most one binding and required handling
-        foreach (var member in definition.InterfaceMembers)
+        foreach (var member in members)
         {
             bindingsByMember.TryGetValue(member.MemberKey, out var binding);
             binding ??= QuickWindowBinding.Absent(member.MemberKey);
@@ -185,20 +224,19 @@ public static class QuickWindowBindingValidator
         if (SelectorHashRegex.IsMatch(expr) || SelectorDotRegex.IsMatch(expr))
             return BindingValidationResult.InjectionRejected($"Expression '{expr}' contains selector-like pattern.");
 
-        // Expression must be parseable and reference only catalog tags? Simplify: use existing validator if available
-        // For now, check it does not contain injection and looks like expression (contains operator or tag ref)
-        // Real validator would use ScadaExpressionParser.
+        var parsed = ScadaExpressionParser.Parse(expr);
+        if (parsed.Root is null)
+            return BindingValidationResult.Invalid("binding.expression-syntax", $"Expression for '{member.Name}' is invalid: {string.Join("; ", parsed.Errors)}.", "syntax");
 
-        // Basic deny for injection patterns already done.
-        // If catalog provided, ensure referenced tag ids exist? Extract tf100.mapping.* tokens.
-        if (catalog is not null)
+        var expression = ScadaExpression.FromSource(expr);
+        if (catalog is null || catalog.Tags.Count == 0)
+            return BindingValidationResult.Invalid("binding.catalog-missing", $"Expression for '{member.Name}' cannot be validated without a tag catalog.");
+
+        foreach (var tagRef in expression.ReferencedTags)
         {
-            var tagRefs = ExtractTagRefs(expr);
-            foreach (var tagRef in tagRefs)
-            {
-                if (!catalog.Tags.Any(t => t.Id == tagRef))
-                    return BindingValidationResult.Invalid("binding.expression-tag-missing", $"Expression references missing tag '{tagRef}'.");
-            }
+            var resolved = ScadaExpressionValidator.TryResolveTagReference(tagRef, catalog);
+            if (resolved.Status != TagResolveStatus.Resolved)
+                return BindingValidationResult.Invalid("binding.expression-tag-missing", $"Expression references missing or ambiguous tag '{tagRef}'.");
         }
 
         return BindingValidationResult.Valid;
@@ -237,7 +275,7 @@ public static class QuickWindowBindingValidator
     private static bool IsTagDatatypeCompatible(string? tagDatatype, QuickWindowDataType memberType)
     {
         if (string.IsNullOrWhiteSpace(tagDatatype))
-            return true; // unknown, allow
+            return false;
 
         var dt = tagDatatype.Trim().ToLowerInvariant();
         return memberType switch
@@ -246,8 +284,8 @@ public static class QuickWindowBindingValidator
             QuickWindowDataType.Integer => dt is "int" or "int16" or "int32" or "int64" or "integer" or "dint" or "word",
             QuickWindowDataType.Decimal => dt is "float" or "float32" or "float64" or "double" or "decimal" or "real" or "analog",
             QuickWindowDataType.String => dt is "string" or "text" or "char",
-            QuickWindowDataType.Enum => true, // enums can map to int/string
-            _ => true
+            QuickWindowDataType.Enum => dt is "int" or "int16" or "int32" or "int64" or "integer" or "dint" or "word" or "string" or "text",
+            _ => false
         };
     }
 
@@ -261,14 +299,34 @@ public static class QuickWindowBindingValidator
             QuickWindowDataType.Decimal => double.TryParse(trimmed, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out var d) && double.IsFinite(d),
             QuickWindowDataType.String => true, // any string allowed after injection check; escaped downstream
             QuickWindowDataType.Enum => !string.IsNullOrWhiteSpace(trimmed),
-            _ => true
+            _ => false
         };
     }
 
-    private static IReadOnlyList<string> ExtractTagRefs(string expression)
+    private static BindingValidationResult? ValidateBindingShape(QuickWindowBinding binding)
     {
-        // Simple extraction of tf100.mapping.* tokens
-        var matches = Regex.Matches(expression, @"tf100\.mapping\.[a-zA-Z0-9_\-]+");
-        return matches.Select(m => m.Value).Distinct(StringComparer.Ordinal).ToArray();
+        var populated = new[]
+        {
+            binding.TagId is not null,
+            binding.LiteralValue is not null,
+            binding.Expression is not null,
+            binding.ParentMemberKey is not null
+        };
+        var expectedIndex = binding.SourceKind switch
+        {
+            QuickWindowBindingSourceKind.Tag => 0,
+            QuickWindowBindingSourceKind.Literal => 1,
+            QuickWindowBindingSourceKind.Expression => 2,
+            QuickWindowBindingSourceKind.ParentPort => 3,
+            QuickWindowBindingSourceKind.None => -1,
+            _ => -2
+        };
+        if (expectedIndex == -2)
+            return BindingValidationResult.Invalid("binding.unknown-source", $"Unknown source kind {binding.SourceKind}.");
+        if (expectedIndex == -1 && populated.Any(value => value))
+            return BindingValidationResult.Invalid("binding.ambiguous-payload", "An absent binding must not carry source data.", "shape");
+        if (expectedIndex >= 0 && populated.Where((value, index) => value && index != expectedIndex).Any())
+            return BindingValidationResult.Invalid("binding.ambiguous-payload", $"Binding source {binding.SourceKind} carries fields for another source kind.", "shape");
+        return null;
     }
 }

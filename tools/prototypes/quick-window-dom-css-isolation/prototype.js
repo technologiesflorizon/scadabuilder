@@ -1,16 +1,16 @@
-/* QuickWindow DOM/CSS isolation prototype | PrototypeRevision 1.0.0 | FR-020 gate
+/* QuickWindow DOM/CSS isolation prototype | PrototypeRevision 1.0.2 | FR-020 gate
  * Host-agnostic. No src/ modification. Runs in browser (WebView2) and Node vm.
  * Exposes window.QuickWindowPrototype for browser and ES module exports for Node.
  * Implements:
  *  - Page -> A -> B deterministic nesting (depth 2 valid, depth 3 rejected, cycles rejected)
  *  - Stable namespace derived from QuickWindowDefinitionKey: qw-<first8>
  *  - SinglePerDefinition, generation monotonic, stale hydration rejection
- *  - Root-scoped queries, attribute triple, simulated TagCache/Poller/Bridge instrumentation
+ *  - Root-scoped queries, attribute triple, shared TagCache/Poller/Bridge instrumentation
  */
 (function (global) {
   'use strict';
 
-  const PrototypeRevision = '1.0.0';
+  const PrototypeRevision = '1.0.2';
 
   // Canonical identities as per FR-027 (no fourth identifier)
   const DefinitionKeys = {
@@ -86,9 +86,20 @@
     return el;
   }
 
+  function bindingFor(definitionKey, invocationKey) {
+    if (definitionKey === DefinitionKeys.A && invocationKey === InvocationKeys.A_M101)
+      return { readTagId: 'tf100.mapping.210', writeTagId: 'tf100.mapping.211' };
+    if (definitionKey === DefinitionKeys.A && invocationKey === InvocationKeys.A_M102)
+      return { readTagId: 'tf100.mapping.310', writeTagId: 'tf100.mapping.311' };
+    if (definitionKey === DefinitionKeys.B)
+      return { readTagId: 'tf100.mapping.410', writeTagId: 'tf100.mapping.411' };
+    return { readTagId: 'tf100.mapping.510', writeTagId: 'tf100.mapping.511' };
+  }
+
   // Build content fragment for a definition with intentionally colliding author ids
-  function buildVisualContent(doc, definitionKey) {
+  function buildVisualContent(doc, definitionKey, invocationKey) {
     const ns = namespaceFor(definitionKey);
+    const binding = bindingFor(definitionKey, invocationKey);
     const frag = doc.createDocumentFragment();
     // id, for, aria-*, href, url(#...), class, animation, table, input, state/command targets all present
     const label = createElement(doc, 'label', { for: ns + '__sensorValue', text: 'Sensor ' + ns });
@@ -96,11 +107,11 @@
     // original author id would have been "sensorValue" – namespaced version proves isolation
     input.setAttribute('data-author-id', 'sensorValue');
     input.setAttribute('data-scada-role', 'sensor-input');
-    input.setAttribute('data-scada-mapping-id', definitionKey === DefinitionKeys.A ? 'tf100.mapping.210' : 'tf100.mapping.310');
+    input.setAttribute('data-scada-mapping-id', binding.readTagId);
 
     const button = createElement(doc, 'button', { id: ns + '__actionButton', text: 'Action', 'aria-controls': ns + '__statusLabel', class: 'sentinel shared-class' });
     button.setAttribute('data-author-id', 'actionButton');
-    button.setAttribute('data-scada-command-config', JSON.stringify({ commands: [{ kind: 'writeTag', writeTagId: 'tf100.mapping.211' }] }));
+    button.setAttribute('data-scada-command-config', JSON.stringify({ commands: [{ kind: 'writeTag', writeTagId: binding.writeTagId }] }));
 
     const status = createElement(doc, 'div', { id: ns + '__statusLabel', class: 'sentinel shared-class', text: 'Status —' });
     status.setAttribute('data-author-id', 'statusLabel');
@@ -231,7 +242,7 @@
       const closeBtn = createElement(this.doc, 'button', { text: 'X', 'aria-label': 'Fermer', class: 'qw-close', type: 'button' });
       titleBar.appendChild(title); titleBar.appendChild(closeBtn);
       const content = createElement(this.doc, 'div', { class: 'qw-content' });
-      content.appendChild(buildVisualContent(this.doc, definitionKey));
+      content.appendChild(buildVisualContent(this.doc, definitionKey, invocationKey));
       const frame = createElement(this.doc, 'div', { class: 'qw-frame', role: 'dialog', 'aria-modal': 'true', tabindex: '-1' });
       frame.appendChild(titleBar); frame.appendChild(content);
       root.appendChild(frame);
@@ -256,14 +267,45 @@
       // Instrument: listeners, observer, timers, subscriptions, cache deps
       const onClose = () => this.close(definitionKey);
       closeBtn.addEventListener('click', onClose); Instrument.listeners++; instance.listeners.push({ target: closeBtn, event: 'click', handler: onClose });
-      const onKeyDown = (e) => { if (e.key === 'Escape') this.close(definitionKey); };
+      const onKeyDown = (e) => {
+        if (e.key === 'Escape') {
+          this.close(definitionKey);
+          return;
+        }
+        if (e.key !== 'Tab') return;
+        const focusable = [...frame.querySelectorAll('button,input,a[href]')];
+        if (focusable.length === 0) {
+          e.preventDefault?.();
+          frame.focus();
+          return;
+        }
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey && this.doc.activeElement === first) {
+          e.preventDefault?.();
+          last.focus();
+        } else if (!e.shiftKey && this.doc.activeElement === last) {
+          e.preventDefault?.();
+          first.focus();
+        }
+      };
       frame.addEventListener('keydown', onKeyDown); Instrument.listeners++; instance.listeners.push({ target: frame, event: 'keydown', handler: onKeyDown });
-      // focus trap simulation
-      Instrument.observers++; instance.observer = { disconnect() { Instrument.observers--; } };
+      const actionButton = root.querySelector('[data-scada-command-config]');
+      const binding = bindingFor(definitionKey, invocationKey);
+      const onWrite = () => TagCache.write(binding.writeTagId, true, runtimeInstanceId);
+      actionButton.addEventListener('click', onWrite); Instrument.listeners++; instance.listeners.push({ target: actionButton, event: 'click', handler: onWrite });
+      // The real browser path owns a real observer; the Node harness uses the same lifecycle counter contract.
+      Instrument.observers++;
+      if (typeof global.MutationObserver === 'function') {
+        const observer = new global.MutationObserver(() => {});
+        observer.observe(root, { attributes: true, childList: true, subtree: true });
+        instance.observer = { disconnect() { observer.disconnect(); Instrument.observers--; } };
+      } else {
+        instance.observer = { disconnect() { Instrument.observers--; } };
+      }
       // cache subscription
-      const mappingId = definitionKey === DefinitionKeys.A ? 'tf100.mapping.210' : 'tf100.mapping.310';
-      TagCache.subscribe(mappingId, runtimeInstanceId);
-      TagCache.subscribe(definitionKey === DefinitionKeys.A ? 'tf100.mapping.211' : 'tf100.mapping.311', runtimeInstanceId);
+      TagCache.subscribe(binding.readTagId, runtimeInstanceId);
+      TagCache.subscribe(binding.writeTagId, runtimeInstanceId);
       // timer sentinel
       const t = setTimeout(() => {}, 10000); Instrument.timers++; instance.timers.push(t);
 
@@ -311,23 +353,26 @@
     }
 
     async _disposeInstance(instance) {
-      if (!instance || instance.disposed) return;
+      if (!instance) return;
+      if (instance.disposePromise) return instance.disposePromise;
       instance.state = 'Closing';
       instance.disposed = true;
-      // await a tick to simulate Closing
-      await new Promise(r => setTimeout(r, 5));
-      this._cleanupInstance(instance);
-      this._active.delete(instance.definitionKey);
-      this._stack = this._stack.filter(e => e.runtimeInstanceId !== instance.runtimeInstanceId);
-      // backdrop only removed when stack empty (shared) - listeners already cleaned in _cleanupInstance
-      if (this._stack.length === 0 && this._backdrop) {
-        if (this._backdrop.parentNode) this._backdrop.parentNode.removeChild(this._backdrop);
-        this._backdrop = null;
-        // backdrop listener was part of first instance's listeners and already decremented; do not double-decrement
-      }
-      // focus return
-      try { instance.focusReturn?.focus?.(); } catch (e) {}
-      instance.state = 'Disposed';
+      instance.disposePromise = (async () => {
+        // await a tick to expose the Closing race deterministically
+        await new Promise(r => setTimeout(r, 5));
+        this._cleanupInstance(instance);
+        if (this._active.get(instance.definitionKey) === instance)
+          this._active.delete(instance.definitionKey);
+        this._stack = this._stack.filter(e => e.runtimeInstanceId !== instance.runtimeInstanceId);
+        // backdrop only removed when stack empty (shared) - listeners already cleaned in _cleanupInstance
+        if (this._stack.length === 0 && this._backdrop) {
+          if (this._backdrop.parentNode) this._backdrop.parentNode.removeChild(this._backdrop);
+          this._backdrop = null;
+        }
+        try { instance.focusReturn?.focus?.(); } catch (e) {}
+        instance.state = 'Disposed';
+      })();
+      return instance.disposePromise;
     }
 
     _cleanupInstance(instance) {
@@ -405,6 +450,7 @@
     Instrument,
     QuickWindowManager,
     buildVisualContent,
+    bindingFor,
     measurePerformance,
     createElement
   };

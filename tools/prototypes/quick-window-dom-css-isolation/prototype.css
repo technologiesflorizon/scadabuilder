@@ -1,4 +1,4 @@
-/* PrototypeRevision: 1.0.0 | FR-020 isolation gate | host-agnostic sentinels
+/* PrototypeRevision: 1.0.2 | FR-020 isolation gate | host-agnostic sentinels
    Every rule below is intentionally duplicated between page and quick-window to prove namespace isolation.
    Page-scoped selectors must use #page-root; quick-window selectors must use the per-instance root attribute.
 */

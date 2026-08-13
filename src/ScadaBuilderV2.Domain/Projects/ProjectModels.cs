@@ -917,8 +917,16 @@ public static class ScadaProjectBuildValidator
                 }
                 else if (cmd.Kind == ElementEvents.Command.ScadaCommandKind.CloseQuickWindow)
                 {
-                    // CloseQuickWindow targets Self implicitly; must be inside a quick window content or at least not require page target.
-                    // Validate that it has no page target and no invocation key.
+                    issues.Add(new ScadaBuildValidationIssue(
+                        ScadaBuildValidationSeverity.Error,
+                        "command.close-quick-window-outside-content",
+                        $"CloseQuickWindow command '{cmd.Id}' is only valid inside QuickWindowDefinition.Content.",
+                        scene.EffectivePageCode,
+                        scene.PageKey,
+                        element.Id,
+                        cmd.Id,
+                        $"Scene.Elements[{element.Id}].CommandConfig.Commands[{cmd.Id}]"));
+
                     if (cmd.TargetPageKey is not null || !string.IsNullOrWhiteSpace(cmd.TargetPageId))
                     {
                         issues.Add(new ScadaBuildValidationIssue(

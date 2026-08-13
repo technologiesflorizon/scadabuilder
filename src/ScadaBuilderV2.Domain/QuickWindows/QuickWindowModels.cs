@@ -17,7 +17,9 @@ namespace ScadaBuilderV2.Domain.QuickWindows;
 public sealed record VisualContent(
     CanvasSize CanvasSize,
     SceneBackgroundStyle? Background = null,
-    IReadOnlyList<ScadaElement>? Elements = null)
+    IReadOnlyList<ScadaElement>? Elements = null,
+    IReadOnlyList<string>? StyleSheets = null,
+    IReadOnlyList<string>? AssetReferences = null)
 {
     /// <summary>Gets the effective canvas size, falling back to desktop default.</summary>
     [JsonIgnore]
@@ -30,6 +32,14 @@ public sealed record VisualContent(
     /// <summary>Gets the effective element list, empty when not set.</summary>
     [JsonIgnore]
     public IReadOnlyList<ScadaElement> EffectiveElements => Elements ?? Array.Empty<ScadaElement>();
+
+    /// <summary>Gets the definition-scoped stylesheet references required by this content.</summary>
+    [JsonIgnore]
+    public IReadOnlyList<string> EffectiveStyleSheets => StyleSheets ?? Array.Empty<string>();
+
+    /// <summary>Gets the project-relative asset references required by this content.</summary>
+    [JsonIgnore]
+    public IReadOnlyList<string> EffectiveAssetReferences => AssetReferences ?? Array.Empty<string>();
 
     /// <summary>Creates a VisualContent snapshot from a scene.</summary>
     public static VisualContent FromScene(ScadaScene scene)
@@ -196,6 +206,10 @@ public sealed record QuickWindowDefinition(
     /// <summary>Gets effective presentation defaults.</summary>
     [JsonIgnore]
     public QuickWindowPresentationDefaults EffectivePresentation => QuickWindowPresentationDefaults.EffectiveOrDefault(PresentationDefaults);
+
+    /// <summary>Gets interface members, empty when malformed input omitted the array.</summary>
+    [JsonIgnore]
+    public IReadOnlyList<QuickWindowInterfaceMember> EffectiveInterfaceMembers => InterfaceMembers ?? Array.Empty<QuickWindowInterfaceMember>();
 
     /// <summary>Gets the effective visual content with defaults.</summary>
     [JsonIgnore]

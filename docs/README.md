@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.5.0020`
+Document version: `V2.1.5.0021`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0021` | `PENDING` | Audit correctif Fenêtres rapides : Phase 0 validée sur DOM/WebView2/Edge réels; contrats, persistance et handshake de Phase 1 alignés; capacités toujours `Blocked`. |
 | 2026-08-11 | `V2.1.5.0020` | `PENDING` | Phase 1 livrée : modèle QuickWindow (VisualContent, PresentationDefaults, SinglePerDefinition), invocations typées avec anti-injection, retrait fail-closed des kinds popup, persistance atomique quick-windows/ et handshake contractuel Builder→TF100Web. |
 | 2026-08-10 | `V2.1.5.0019` | `PENDING` | Revue renforcée du plan `DEC-0050` : audit popup mesurable, prototype itératif hashé, rollback inter-phase, export sans bypass, handshakes précoces, races/SLA, WebView2 qualifié, canary TF100Web et versioning explicite. |
 | 2026-08-10 | `V2.1.5.0018` | `PENDING` | Ajout du plan d’implémentation `DEC-0050`; sa phase 0 constitue le gate absolu du prototype d’isolation DOM/CSS dans WebView2 et TF100Web avant tout développement de production. |
@@ -263,7 +264,9 @@ Active specifications and implementation plans:
 21. `superpowers/specs/2026-07-29-project-lifecycle-design.md` - approved `DEC-0049` architecture for project creation, fail-closed opening, safe closing, empty-shell startup and recent projects.
 22. `superpowers/plans/2026-07-29-project-lifecycle.md` - draft executable implementation plan for generalizing project roots, lifecycle commands, WPF session transitions and compatibility validation.
 23. `superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md` - spécification approuvée `DEC-0050` des Fenêtres rapides : entité distincte, Interface locale typée, liaisons d’invocation, instance unique, présentation, cycle de vie, manifest 2.3 et hosting TF100Web.
-24. `superpowers/plans/2026-08-10-parameterized-quick-window-management.md` - plan cross-repository dérivé de `DEC-0050`; aucune phase de production ne peut commencer avant le `PASS` documenté du prototype DOM/CSS de phase 0 dans WebView2 et TF100Web.
+24. `superpowers/plans/2026-08-10-parameterized-quick-window-management.md` - plan cross-repository dérivé de `DEC-0050`; Phases 0 et 1 validées après audit correctif, Phase 2 en attente et capacités toujours `Blocked`.
+25. `superpowers/reports/2026-08-10-quick-window-dom-css-isolation-prototype.md` - preuve de gate Phase 0 corrigée, exécutée dans WebView2 et Edge réels avec fixture gelée `1.0.2`.
+26. `superpowers/reports/2026-08-13-quick-window-phase-0-1-implementation-audit.md` - audit des écarts Phases 0/1, corrections appliquées et limites restantes.
 
 Generated documentation:
 

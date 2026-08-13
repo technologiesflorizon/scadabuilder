@@ -38,35 +38,32 @@
   <pre id="evidence">Chargement...</pre>
   <div id="capture" style="display:none;"></div>
 
-  <script type="module">
-    import * as P from './prototype.js';
-    import * as A from './assertions.js';
-
+  <script src="prototype.js"></script>
+  <script src="assertions.js"></script>
+  <script>
+    const P = window.QuickWindowPrototype;
+    const A = window.QuickWindowAssertions;
     const doc = document;
     const hostRoot = document.getElementById('qw-host-root');
     const pageRoot = document.getElementById('page-root');
     const statusEl = document.getElementById('status');
     const evidenceEl = document.getElementById('evidence');
 
-    // expose for WebView2 harness
-    window.QuickWindowPrototype = window.QuickWindowPrototype || {};
-    Object.assign(window.QuickWindowPrototype, P);
-
     async function runGate() {
-      const manager = new P.QuickWindowPrototype.QuickWindowManager(doc);
+      const manager = new P.QuickWindowManager(doc);
       manager.setHostRoot(hostRoot);
       manager.setPageRoot(pageRoot);
-      P.QuickWindowPrototype.Instrument.captureBaseline();
-      P.QuickWindowPrototype.TagCache.reset();
+      P.Instrument.captureBaseline();
+      P.TagCache.reset();
 
       // wire page buttons for focus return proof
-      document.getElementById('page-open-a').addEventListener('click', () => manager.open(P.QuickWindowPrototype.DefinitionKeys.A, P.QuickWindowPrototype.InvocationKeys.A_M101).catch(()=>{}));
-      document.getElementById('page-open-a-m102').addEventListener('click', () => manager.open(P.QuickWindowPrototype.DefinitionKeys.A, P.QuickWindowPrototype.InvocationKeys.A_M102).catch(()=>{}));
-      document.getElementById('page-open-b').addEventListener('click', () => manager.open(P.QuickWindowPrototype.DefinitionKeys.B, P.QuickWindowPrototype.InvocationKeys.B_CHILD, P.QuickWindowPrototype.DefinitionKeys.A).catch(()=>{}));
+      document.getElementById('page-open-a').addEventListener('click', () => manager.open(P.DefinitionKeys.A, P.InvocationKeys.A_M101).catch(()=>{}));
+      document.getElementById('page-open-a-m102').addEventListener('click', () => manager.open(P.DefinitionKeys.A, P.InvocationKeys.A_M102).catch(()=>{}));
+      document.getElementById('page-open-b').addEventListener('click', () => manager.open(P.DefinitionKeys.B, P.InvocationKeys.B_CHILD, P.DefinitionKeys.A).catch(()=>{}));
 
       const ctx = { doc, manager, pageRoot, hostRoot };
-      const core = await A.QuickWindowAssertions.runCoreAssertions(ctx);
-      const perf = await A.QuickWindowAssertions.runPerformance(ctx);
+      const core = await A.runCoreAssertions(ctx);
+      const perf = await A.runPerformance(ctx);
 
       const assertions = { core: [...core, ...perf.assertions], hostExtensions: { builderWebView2: [], tf100Web: [] } };
       const overall = assertions.core.every(a => a.status === 'PASS') ? 'PASS' : 'FAIL';
@@ -74,7 +71,7 @@
       // Build evidence per schema
       const evidence = {
         schemaVersion: '1.0.0',
-        prototypeRevision: P.QuickWindowPrototype.PrototypeRevision,
+        prototypeRevision: P.PrototypeRevision,
         prototypeHash: 'pending-computed-by-harness', // replaced by hash file
         generatedUtc: new Date().toISOString(),
         commit: { builderHead: 'local', builderBranch: 'codex/GestionFenetreRapide', tf100WebHead: 'local', tf100WebBranch: 'local' },
@@ -107,7 +104,5 @@
     if (!location.search.includes('norun')) runGate().catch(e => { evidenceEl.textContent = 'ERROR ' + e.stack; statusEl.textContent = 'Gate ERROR'; window.__quickWindowIsolationError = e.message; });
     window.runQuickWindowGate = runGate;
   </script>
-  <script src="prototype.js"></script>
-  <script src="assertions.js"></script>
 </body>
 </html>

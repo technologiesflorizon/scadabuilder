@@ -66,7 +66,9 @@ public sealed class RuntimeConformancePackageTests
 
             Assert.IsTrue(File.Exists(committedArtifact), "Run with SCADA_UPDATE_CONFORMANCE=1 to create the committed fixture.");
             CollectionAssert.AreEqual(firstBytes, await File.ReadAllBytesAsync(committedArtifact));
-            Assert.AreEqual($"{packageSha256}  {ArtifactName}\n", await File.ReadAllTextAsync(committedSha));
+            Assert.AreEqual(
+                $"{packageSha256}  {ArtifactName}\n",
+                (await File.ReadAllTextAsync(committedSha)).Replace("\r\n", "\n", StringComparison.Ordinal));
             Assert.AreEqual(expectedIndex, (await File.ReadAllTextAsync(committedIndex)).Replace("\r\n", "\n", StringComparison.Ordinal));
         }
         finally

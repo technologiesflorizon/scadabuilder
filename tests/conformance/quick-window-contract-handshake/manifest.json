@@ -2,11 +2,10 @@
   "schema": "scada-builder-v2-quick-window-contract-handshake-v1",
   "manifestVersion": "2.3",
   "contractVersion": "1.0",
-  "prototypeRevision": "1.0.0",
-  "prototypeHash": "5a8fcc8895f889c56289c0e40639c58d2ff5652d06154b54c3459f775dc4ebb1",
+  "prototypeRevision": "1.0.2",
+  "prototypeHash": "be4db555a46e20d74cf0a60be38ea6919eb51235c2668158b9e2abda1b10cde9",
   "project": "Handshake",
   "generatedFrom": "ScadaBuilderV2.Domain.QuickWindows records",
-  "generatedAt": "2026-08-11T00:00:00Z",
   "quickWindows": [
     {
       "DefinitionKey": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
@@ -19,47 +18,67 @@
           "Height": 300
         },
         "Background": {
-          "Color": "#000000"
+          "Color": "#000000",
+          "Image": null,
+          "Size": "cover",
+          "Repeat": "no-repeat",
+          "Position": "center center",
+          "Attachment": "scroll",
+          "Origin": "padding-box",
+          "Clip": "border-box",
+          "BlendMode": "normal"
         },
-        "Elements": []
+        "Elements": [],
+        "StyleSheets": [],
+        "AssetReferences": []
       },
       "InterfaceMembers": [
         {
           "MemberKey": "11111111-1111-1111-1111-111111111111",
-          "Name": "RunFeedback",
-          "Family": 0,
-          "DataType": 0,
-          "Access": 0,
+          "Name": "LocalCount",
+          "Family": "PrivateVariable",
+          "DataType": "Integer",
+          "Access": "Internal",
           "Required": false,
           "DefaultValue": null,
           "Description": null
         },
         {
           "MemberKey": "22222222-2222-2222-2222-222222222222",
-          "Name": "StartCommand",
-          "Family": 1,
-          "DataType": 0,
-          "Access": 1,
-          "Required": true,
+          "Name": "MotorName",
+          "Family": "PublicParameter",
+          "DataType": "String",
+          "Access": "Read",
+          "Required": false,
           "DefaultValue": null,
           "Description": null
         },
         {
           "MemberKey": "33333333-3333-3333-3333-333333333333",
-          "Name": "MotorName",
-          "Family": 2,
-          "DataType": 3,
-          "Access": 0,
+          "Name": "RunFeedback",
+          "Family": "ReadState",
+          "DataType": "Boolean",
+          "Access": "Read",
           "Required": false,
           "DefaultValue": null,
           "Description": null
         },
         {
           "MemberKey": "44444444-4444-4444-4444-444444444444",
-          "Name": "LocalCount",
-          "Family": 3,
-          "DataType": 1,
-          "Access": 3,
+          "Name": "StartCommand",
+          "Family": "WriteCommand",
+          "DataType": "Boolean",
+          "Access": "Write",
+          "Required": true,
+          "DefaultValue": null,
+          "Description": null
+        },
+        {
+          "MemberKey": "55555555-5555-5555-5555-555555555555",
+          "Name": "Threshold",
+          "Family": "PublicParameter",
+          "DataType": "Integer",
+          "Access": "Read",
           "Required": false,
           "DefaultValue": null,
           "Description": null
@@ -67,7 +86,7 @@
       ],
       "PresentationDefaults": {
         "Title": null,
-        "Position": 0,
+        "Position": "Center",
         "Backdrop": true,
         "Chrome": null,
         "IsDraggable": true,
@@ -82,78 +101,86 @@
       "DefinitionKey": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
       "Bindings": [
         {
-          "MemberKey": "11111111-1111-1111-1111-111111111111",
-          "SourceKind": 1,
-          "TagId": "tf100.mapping.210",
-          "LiteralValue": null,
-          "Expression": null,
-          "ParentMemberKey": null
-        },
-        {
           "MemberKey": "22222222-2222-2222-2222-222222222222",
-          "SourceKind": 1,
-          "TagId": "tf100.mapping.211",
-          "LiteralValue": null,
-          "Expression": null,
-          "ParentMemberKey": null
-        },
-        {
-          "MemberKey": "33333333-3333-3333-3333-333333333333",
-          "SourceKind": 2,
+          "SourceKind": "Literal",
           "TagId": null,
           "LiteralValue": "Moteur M101",
           "Expression": null,
           "ParentMemberKey": null
         },
         {
+          "MemberKey": "33333333-3333-3333-3333-333333333333",
+          "SourceKind": "Tag",
+          "TagId": "tf100.mapping.210",
+          "LiteralValue": null,
+          "Expression": null,
+          "ParentMemberKey": null
+        },
+        {
           "MemberKey": "44444444-4444-4444-4444-444444444444",
-          "SourceKind": 0,
+          "SourceKind": "Tag",
+          "TagId": "tf100.mapping.211",
+          "LiteralValue": null,
+          "Expression": null,
+          "ParentMemberKey": null
+        },
+        {
+          "MemberKey": "55555555-5555-5555-5555-555555555555",
+          "SourceKind": "None",
           "TagId": null,
           "LiteralValue": null,
           "Expression": null,
           "ParentMemberKey": null
         }
       ],
-      "TitleOverride": "M101"
+      "TitleOverride": "M101",
+      "InterfaceVersion": 1,
+      "OwnerPageKey": "99999999-9999-4999-8999-999999999999",
+      "OwnerElementId": "open-m101",
+      "OwnerCommandId": "cmd-m101"
     },
     {
       "InvocationKey": "cccccccc-cccc-cccc-cccc-cccccccccccc",
       "DefinitionKey": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
       "Bindings": [
         {
-          "MemberKey": "11111111-1111-1111-1111-111111111111",
-          "SourceKind": 1,
-          "TagId": "tf100.mapping.310",
-          "LiteralValue": null,
-          "Expression": null,
-          "ParentMemberKey": null
-        },
-        {
           "MemberKey": "22222222-2222-2222-2222-222222222222",
-          "SourceKind": 1,
-          "TagId": "tf100.mapping.311",
-          "LiteralValue": null,
-          "Expression": null,
-          "ParentMemberKey": null
-        },
-        {
-          "MemberKey": "33333333-3333-3333-3333-333333333333",
-          "SourceKind": 2,
+          "SourceKind": "Literal",
           "TagId": null,
           "LiteralValue": "Moteur M102",
           "Expression": null,
           "ParentMemberKey": null
         },
         {
+          "MemberKey": "33333333-3333-3333-3333-333333333333",
+          "SourceKind": "Tag",
+          "TagId": "tf100.mapping.310",
+          "LiteralValue": null,
+          "Expression": null,
+          "ParentMemberKey": null
+        },
+        {
           "MemberKey": "44444444-4444-4444-4444-444444444444",
-          "SourceKind": 0,
+          "SourceKind": "Tag",
+          "TagId": "tf100.mapping.311",
+          "LiteralValue": null,
+          "Expression": null,
+          "ParentMemberKey": null
+        },
+        {
+          "MemberKey": "55555555-5555-5555-5555-555555555555",
+          "SourceKind": "None",
           "TagId": null,
           "LiteralValue": null,
           "Expression": null,
           "ParentMemberKey": null
         }
       ],
-      "TitleOverride": "M102"
+      "TitleOverride": "M102",
+      "InterfaceVersion": 1,
+      "OwnerPageKey": "99999999-9999-4999-8999-999999999999",
+      "OwnerElementId": "open-m102",
+      "OwnerCommandId": "cmd-m102"
     }
   ],
   "capabilities": [
@@ -161,5 +188,5 @@
     "command.open-quick-window"
   ],
   "profile": "2.3",
-  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  "sha256": "f17d150f8d9f428fbf2451fe08106380c656bc20fb5f74f294f20bcfc85c9131"
 }

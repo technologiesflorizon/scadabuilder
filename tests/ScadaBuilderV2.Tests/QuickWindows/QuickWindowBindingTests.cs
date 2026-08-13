@@ -13,11 +13,12 @@ public sealed class QuickWindowBindingTests
         var readMember = new QuickWindowInterfaceMember(Guid.NewGuid(), "RunFeedback", QuickWindowInterfaceFamily.ReadState, QuickWindowDataType.Boolean, QuickWindowMemberAccess.Read, Required: false);
         var writeMember = new QuickWindowInterfaceMember(Guid.NewGuid(), "StartCommand", QuickWindowInterfaceFamily.WriteCommand, QuickWindowDataType.Boolean, QuickWindowMemberAccess.Write, Required: true);
         var paramMember = new QuickWindowInterfaceMember(Guid.NewGuid(), "MotorName", QuickWindowInterfaceFamily.PublicParameter, QuickWindowDataType.String, QuickWindowMemberAccess.Read, Required: false);
+        var thresholdMember = new QuickWindowInterfaceMember(Guid.NewGuid(), "Threshold", QuickWindowInterfaceFamily.PublicParameter, QuickWindowDataType.Integer, QuickWindowMemberAccess.Read, Required: false);
         var privateVar = new QuickWindowInterfaceMember(Guid.NewGuid(), "LocalCount", QuickWindowInterfaceFamily.PrivateVariable, QuickWindowDataType.Integer, QuickWindowMemberAccess.Internal, Required: false);
         var constant = new QuickWindowInterfaceMember(Guid.NewGuid(), "Precision", QuickWindowInterfaceFamily.PrivateConstant, QuickWindowDataType.Decimal, QuickWindowMemberAccess.Internal, Required: false, DefaultValue: "2");
 
         var content = new VisualContent(CanvasSize.DefaultDesktop);
-        return new QuickWindowDefinition(Guid.NewGuid(), "qw_motor", "Moteur Faceplate", 1, content, new[] { readMember, writeMember, paramMember, privateVar, constant });
+        return new QuickWindowDefinition(Guid.NewGuid(), "qw_motor", "Moteur Faceplate", 1, content, new[] { readMember, writeMember, paramMember, thresholdMember, privateVar, constant });
     }
 
     private static ScadaTagCatalog CreateCatalog()
@@ -29,6 +30,7 @@ public sealed class QuickWindowBindingTests
             new ScadaTagDefinition("tf100.mapping.310", "RunFeedback M102", Datatype: "Bool", Writeable: false, Enabled: true),
             new ScadaTagDefinition("tf100.mapping.311", "StartCommand M102", Datatype: "Bool", Writeable: true, Enabled: true),
             new ScadaTagDefinition("tf100.mapping.999", "ReadonlyTag", Datatype: "Bool", Writeable: false, Enabled: true),
+            new ScadaTagDefinition("tf100.mapping.220", "Threshold M101", Datatype: "Int32", Writeable: false, Enabled: true),
         });
     }
 
@@ -65,7 +67,7 @@ public sealed class QuickWindowBindingTests
             .WithElement(ScadaElement.CreateText("btn", "Btn", 10, 20) with { CommandConfig = new ScadaElementCommandConfig(new[] { invalidWithInv }) });
         var project = ScadaProject.CreateDefault("P") with { Scenes = new[] { new ScadaSceneReference("win00001", "Page", "scenes/win00001.scene.json") } };
 
-        Assert.AreEqual(0, ScadaProjectBuildValidator.Validate(project, new[] { sceneValid }).Count(i => i.Code.Contains("close-quick-window")));
+        Assert.IsTrue(ScadaProjectBuildValidator.Validate(project, new[] { sceneValid }).Any(i => i.Code == "command.close-quick-window-outside-content"));
         Assert.IsTrue(ScadaProjectBuildValidator.Validate(project, new[] { sceneInvalidPage }).Any(i => i.Code == "command.close-quick-window-target"));
         Assert.IsTrue(ScadaProjectBuildValidator.Validate(project, new[] { sceneInvalidInv }).Any(i => i.Code == "command.close-quick-window-invocation"));
     }
@@ -108,6 +110,7 @@ public sealed class QuickWindowBindingTests
         var paramMember = def.InterfaceMembers.First(m => m.Name == "MotorName");
         var boolTagForString = QuickWindowBinding.FromTag(paramMember.MemberKey, "tf100.mapping.210");
         var r3 = QuickWindowBindingValidator.ValidateBinding(boolTagForString, paramMember, catalog, def.InterfaceVersion);
+        Assert.IsFalse(r3.IsValid);
         // String member with bool tag: our compatibility allows bool -> string? Actually IsTagDatatypeCompatible returns false for mismatch. Let's assert it is invalid if we tighten, but currently enum type string vs bool tag may be considered incompatible.
         // Instead test required: writeMember required missing should be invalid when absent
         var absentForRequired = QuickWindowBinding.Absent(writeMember.MemberKey);
@@ -202,7 +205,7 @@ public sealed class QuickWindowBindingTests
     public void AntiInjectionExpressionIsRejectedBlocked()
     {
         var def = CreateDefinitionWithMembers();
-        var intMember = def.InterfaceMembers.First(m => m.Family == QuickWindowInterfaceFamily.PrivateVariable); // Integer
+        var intMember = def.InterfaceMembers.First(m => m.Name == "Threshold");
         var catalog = CreateCatalog();
 
         var injectionsExpr = new[]
@@ -228,12 +231,10 @@ public sealed class QuickWindowBindingTests
         }
 
         // Valid expression
-        var validExpr = QuickWindowBinding.FromExpression(intMember.MemberKey, "tf100.mapping.210 > 10");
+        var validExpr = QuickWindowBinding.FromExpression(intMember.MemberKey, "{tf100.mapping.220} + 10");
         var validRes = QuickWindowBindingValidator.ValidateBinding(validExpr, intMember, catalog, def.InterfaceVersion);
-        // This references existing tag and should be valid (if tag in catalog)
-        Assert.IsTrue(validRes.IsValid || validRes.ErrorCode == "binding.expression-tag-missing"); // depending on catalog, but injection not triggered
-        // Let's use a known tag
-        var validExpr2 = QuickWindowBinding.FromExpression(intMember.MemberKey, "tf100.mapping.210");
+        Assert.IsTrue(validRes.IsValid, validRes.Message);
+        var validExpr2 = QuickWindowBinding.FromExpression(intMember.MemberKey, "{tf100.mapping.220}");
         var validRes2 = QuickWindowBindingValidator.ValidateBinding(validExpr2, intMember, catalog, def.InterfaceVersion);
         Assert.IsTrue(validRes2.IsValid);
     }
@@ -263,16 +264,19 @@ public sealed class QuickWindowBindingTests
     }
 
     [TestMethod]
-    public void CloseQuickWindowOutsideDefinitionIsAllowedButValidatedAsSelf()
+    public void CloseQuickWindowIsRejectedOutsideDefinitionAndAllowedInsideDefinition()
     {
-        // CloseQuickWindow is a command that targets Self implicitly; it does not require definition context beyond being inside a window.
-        // The test ensures that a CloseQuickWindow command does not need invocation key and is valid anywhere.
-        // However, the spec says CloseQuickWindow only inside quick window content proposes Close Self without free target.
-        // We'll just verify that CloseQuickWindow with invocation key is rejected (tested earlier), and without is not.
         var close = new ScadaCommandBinding("close1", "Fermer", true, ScadaCommandTrigger.OnClick, ScadaCommandKind.CloseQuickWindow);
-        Assert.AreEqual(ScadaCommandKind.CloseQuickWindow, close.Kind);
-        Assert.IsNull(close.QuickWindowInvocationKey);
-        Assert.IsFalse(close.RequiresInvocationKey);
+        var element = ScadaElement.CreateText("close", "Close", 0, 0) with { CommandConfig = new ScadaElementCommandConfig(new[] { close }) };
+        var scene = ScadaScene.CreateEmpty("win00001", "Page", CanvasSize.DefaultDesktop).WithElement(element);
+        var project = ScadaProject.CreateDefault("P") with { Scenes = new[] { new ScadaSceneReference("win00001", "Page", "scenes/win00001.scene.json") } };
+        Assert.IsTrue(ScadaProjectBuildValidator.Validate(project, new[] { scene }).Any(issue => issue.Code == "command.close-quick-window-outside-content"));
+
+        var definition = QuickWindowDefinition.CreateEmpty("qw_close", "Close") with
+        {
+            Content = new VisualContent(CanvasSize.DefaultDesktop, Elements: new[] { element })
+        };
+        Assert.IsFalse(QuickWindowValidation.ValidateDefinition(definition).Any(issue => issue.Contains("CloseQuickWindow", StringComparison.Ordinal)));
     }
 
     [TestMethod]
@@ -291,14 +295,46 @@ public sealed class QuickWindowBindingTests
     [TestMethod]
     public void LiteralValidRemainsTypedAndEscaped()
     {
-        // Valid integer literal for PrivateVariable Integer type
+        // Valid integer literal for a public Integer parameter.
         var def = CreateDefinitionWithMembers();
-        var intMember = def.InterfaceMembers.First(m => m.Family == QuickWindowInterfaceFamily.PrivateVariable);
+        var intMember = def.InterfaceMembers.First(m => m.Name == "Threshold");
         var catalog = CreateCatalog();
         var lit = QuickWindowBinding.FromLiteral(intMember.MemberKey, "42");
         var res = QuickWindowBindingValidator.ValidateBinding(lit, intMember, catalog, def.InterfaceVersion);
         Assert.IsTrue(res.IsValid, "Integer literal 42 should be valid for Integer member.");
         // Simulate escaping: literal stored as typed, not raw selector
         Assert.AreEqual("42", lit.LiteralValue);
+    }
+
+    [TestMethod]
+    public void InvocationVersionMustMatchDefinitionVersion()
+    {
+        var definition = CreateDefinitionWithMembers() with { InterfaceVersion = 2 };
+        var invocation = new QuickWindowInvocation(Guid.NewGuid(), definition.DefinitionKey, Array.Empty<QuickWindowBinding>(), InterfaceVersion: 1);
+        var results = QuickWindowBindingValidator.ValidateInvocation(invocation, definition, CreateCatalog());
+        Assert.IsTrue(results.Any(result => result.ErrorCode == "invocation.interface-version-mismatch"));
+    }
+
+    [TestMethod]
+    public void PrivateMemberAndAmbiguousPayloadAreRejected()
+    {
+        var definition = CreateDefinitionWithMembers();
+        var privateMember = definition.InterfaceMembers.First(member => member.Family == QuickWindowInterfaceFamily.PrivateVariable);
+        var privateBinding = QuickWindowBinding.FromLiteral(privateMember.MemberKey, "1");
+        Assert.AreEqual("binding.private-member", QuickWindowBindingValidator.ValidateBinding(privateBinding, privateMember, CreateCatalog(), 1).ErrorCode);
+
+        var publicMember = definition.InterfaceMembers.First(member => member.Name == "MotorName");
+        var ambiguous = new QuickWindowBinding(publicMember.MemberKey, QuickWindowBindingSourceKind.Tag, TagId: "tf100.mapping.210", LiteralValue: "unexpected");
+        Assert.AreEqual("binding.ambiguous-payload", QuickWindowBindingValidator.ValidateBinding(ambiguous, publicMember, CreateCatalog(), 1).ErrorCode);
+    }
+
+    [TestMethod]
+    public void MalformedExpressionIsRejectedFailClosed()
+    {
+        var definition = CreateDefinitionWithMembers();
+        var member = definition.InterfaceMembers.First(item => item.Name == "Threshold");
+        var malformed = QuickWindowBinding.FromExpression(member.MemberKey, "({tf100.mapping.220} +");
+        var result = QuickWindowBindingValidator.ValidateBinding(malformed, member, CreateCatalog(), definition.InterfaceVersion);
+        Assert.AreEqual("binding.expression-syntax", result.ErrorCode);
     }
 }

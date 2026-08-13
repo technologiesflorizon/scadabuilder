@@ -1,200 +1,239 @@
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.QuickWindows;
+using ScadaBuilderV2.Domain.Scenes;
 
 namespace ScadaBuilderV2.Tests.QuickWindows;
 
 [TestClass]
 public sealed class QuickWindowContractHandshakeTests
 {
-    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true, PropertyNameCaseInsensitive = true, Converters = { new System.Text.Json.Serialization.JsonStringEnumConverter() } };
+    private static readonly JsonSerializerOptions RecordOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        Converters = { new JsonStringEnumConverter() }
+    };
+
+    private static readonly Guid DefinitionKey = Guid.Parse("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+    private static readonly Guid LocalCountKey = Guid.Parse("11111111-1111-1111-1111-111111111111");
+    private static readonly Guid MotorNameKey = Guid.Parse("22222222-2222-2222-2222-222222222222");
+    private static readonly Guid RunFeedbackKey = Guid.Parse("33333333-3333-3333-3333-333333333333");
+    private static readonly Guid StartCommandKey = Guid.Parse("44444444-4444-4444-4444-444444444444");
+    private static readonly Guid ThresholdKey = Guid.Parse("55555555-5555-5555-5555-555555555555");
 
     private static string FindRepoRoot()
     {
-        var dir = new DirectoryInfo(AppContext.BaseDirectory);
-        while (dir != null && !File.Exists(Path.Combine(dir.FullName, "ScadaBuilderV2.sln")))
-            dir = dir.Parent;
-        return dir?.FullName ?? Directory.GetCurrentDirectory();
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null && !File.Exists(Path.Combine(directory.FullName, "ScadaBuilderV2.sln")))
+            directory = directory.Parent;
+        return directory?.FullName ?? throw new DirectoryNotFoundException("ScadaBuilderV2.sln not found.");
+    }
+
+    private static QuickWindowDefinition CreateDefinition()
+    {
+        var members = new[]
+        {
+            new QuickWindowInterfaceMember(LocalCountKey, "LocalCount", QuickWindowInterfaceFamily.PrivateVariable, QuickWindowDataType.Integer, QuickWindowMemberAccess.Internal),
+            new QuickWindowInterfaceMember(MotorNameKey, "MotorName", QuickWindowInterfaceFamily.PublicParameter, QuickWindowDataType.String, QuickWindowMemberAccess.Read),
+            new QuickWindowInterfaceMember(RunFeedbackKey, "RunFeedback", QuickWindowInterfaceFamily.ReadState, QuickWindowDataType.Boolean, QuickWindowMemberAccess.Read),
+            new QuickWindowInterfaceMember(StartCommandKey, "StartCommand", QuickWindowInterfaceFamily.WriteCommand, QuickWindowDataType.Boolean, QuickWindowMemberAccess.Write, Required: true),
+            new QuickWindowInterfaceMember(ThresholdKey, "Threshold", QuickWindowInterfaceFamily.PublicParameter, QuickWindowDataType.Integer, QuickWindowMemberAccess.Read)
+        };
+        return new QuickWindowDefinition(
+            DefinitionKey,
+            "qw_motor",
+            "Moteur Faceplate",
+            1,
+            new VisualContent(new CanvasSize(400, 300), SceneBackgroundStyle.Default, Array.Empty<ScadaElement>(), Array.Empty<string>(), Array.Empty<string>()),
+            members,
+            new QuickWindowPresentationDefaults());
+    }
+
+    private static QuickWindowInvocation CreateInvocation(Guid key, string suffix, int readTag, int writeTag)
+    {
+        var bindings = new[]
+        {
+            QuickWindowBinding.FromLiteral(MotorNameKey, $"Moteur {suffix}"),
+            QuickWindowBinding.FromTag(RunFeedbackKey, $"tf100.mapping.{readTag}"),
+            QuickWindowBinding.FromTag(StartCommandKey, $"tf100.mapping.{writeTag}"),
+            QuickWindowBinding.Absent(ThresholdKey)
+        }.OrderBy(binding => binding.MemberKey).ToArray();
+        return new QuickWindowInvocation(
+            key,
+            DefinitionKey,
+            bindings,
+            TitleOverride: suffix,
+            InterfaceVersion: 1,
+            OwnerPageKey: Guid.Parse("99999999-9999-4999-8999-999999999999"),
+            OwnerElementId: $"open-{suffix.ToLowerInvariant()}",
+            OwnerCommandId: $"cmd-{suffix.ToLowerInvariant()}");
+    }
+
+    private static ScadaTagCatalog CreateCatalog() => new("tf100web-scada-tags-v1", new[]
+    {
+        new ScadaTagDefinition("tf100.mapping.210", "RunFeedback M101", Datatype: "Bool", Writeable: false),
+        new ScadaTagDefinition("tf100.mapping.211", "StartCommand M101", Datatype: "Bool", Writeable: true),
+        new ScadaTagDefinition("tf100.mapping.310", "RunFeedback M102", Datatype: "Bool", Writeable: false),
+        new ScadaTagDefinition("tf100.mapping.311", "StartCommand M102", Datatype: "Bool", Writeable: true)
+    });
+
+    private static (JsonObject Manifest, JsonObject Expectations, string Sha) GenerateHandshake()
+    {
+        var root = FindRepoRoot();
+        var prototypeHash = File.ReadAllText(Path.Combine(root, "tools", "prototypes", "quick-window-dom-css-isolation", "prototype.sha256")).Trim();
+        var definition = CreateDefinition() with { InterfaceMembers = CreateDefinition().InterfaceMembers.OrderBy(member => member.Name, StringComparer.Ordinal).ToArray() };
+        var invocations = new[]
+        {
+            CreateInvocation(Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"), "M101", 210, 211),
+            CreateInvocation(Guid.Parse("cccccccc-cccc-cccc-cccc-cccccccccccc"), "M102", 310, 311)
+        }.OrderBy(invocation => invocation.InvocationKey).ToArray();
+
+        var manifest = new JsonObject
+        {
+            ["schema"] = "scada-builder-v2-quick-window-contract-handshake-v1",
+            ["manifestVersion"] = "2.3",
+            ["contractVersion"] = "1.0",
+            ["prototypeRevision"] = "1.0.2",
+            ["prototypeHash"] = prototypeHash,
+            ["project"] = "Handshake",
+            ["generatedFrom"] = "ScadaBuilderV2.Domain.QuickWindows records",
+            ["quickWindows"] = new JsonArray(JsonSerializer.SerializeToNode(definition, RecordOptions)),
+            ["quickWindowInvocations"] = new JsonArray(invocations.Select(invocation => JsonSerializer.SerializeToNode(invocation, RecordOptions)).ToArray()),
+            ["capabilities"] = new JsonArray("command.close-quick-window", "command.open-quick-window"),
+            ["profile"] = "2.3"
+        };
+        var canonicalPayload = manifest.ToJsonString(new JsonSerializerOptions { WriteIndented = false });
+        var sha = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(canonicalPayload))).ToLowerInvariant();
+        manifest["sha256"] = sha;
+
+        var expectations = new JsonObject
+        {
+            ["schema"] = "scada-builder-v2-quick-window-contract-handshake-expectations-v1",
+            ["generatedFrom"] = "manifest.json",
+            ["sha256"] = sha,
+            ["cases"] = new JsonArray(
+                Case("valid-two-invocations", "accept", "validation"),
+                Case("optional-absent-neutral", "accept", "neutral"),
+                Case("required-missing", "reject", "required", "binding.required-missing"),
+                Case("interface-version-mismatch", "reject", "interface-version", "invocation.interface-version-mismatch"),
+                Case("retired-command-kind", "reject", "retired", "retired-popup-command"),
+                Case("fourth-identifier-absent", "accept", "identity", "no-instance-key"),
+                Case("injection-literal-rejected", "reject", "injection-rejected", "injection-rejected"),
+                Case("type-mismatch", "reject", "validation", "binding.type-mismatch"),
+                Case("profile-2.1-rejected", "reject", "capability", "profile.quick-window-unsupported"),
+                Case("profile-2.2-rejected", "reject", "capability", "profile.quick-window-unsupported"),
+                Case("profile-2.3-accepted", "accept", "capability", "profile.compatible"),
+                Case("order-determinism", "accept", "determinism"),
+                Case("duplicate-invocation-key", "reject", "validation", "quick-window.duplicate-invocation")),
+            ["mutationMatrix"] = new JsonArray("keys", "types", "order", "InvocationKey", "InterfaceVersion", "capability", "manifest profile")
+        };
+        return (manifest, expectations, sha);
+    }
+
+    private static JsonObject Case(string id, string expected, string category, string? code = null)
+    {
+        var value = new JsonObject { ["id"] = id, ["expected"] = expected, ["category"] = category };
+        if (code is not null)
+            value["code"] = code;
+        return value;
+    }
+
+    private static string Formatted(JsonNode node) => node.ToJsonString(new JsonSerializerOptions { WriteIndented = true }) + Environment.NewLine;
+
+    private static (string ManifestPath, string ExpectationsPath) FixturePaths()
+    {
+        var directory = Path.Combine(FindRepoRoot(), "tests", "conformance", "quick-window-contract-handshake");
+        return (Path.Combine(directory, "manifest.json"), Path.Combine(directory, "expectations.json"));
     }
 
     [TestMethod]
-    public void HandshakeManifestIsGeneratedFromRecordsAndHasSameShaInBothRepos()
+    public void CommittedHandshakeIsExactDeterministicOutputFromDomainRecords()
     {
-        var repoRoot = FindRepoRoot();
-        var manifestPath = Path.Combine(repoRoot, "tests", "conformance", "quick-window-contract-handshake", "manifest.json");
-        var expectationsPath = Path.Combine(repoRoot, "tests", "conformance", "quick-window-contract-handshake", "expectations.json");
-        Assert.IsTrue(File.Exists(manifestPath), $"Manifest not found: {manifestPath}");
-        Assert.IsTrue(File.Exists(expectationsPath), $"Expectations not found: {expectationsPath}");
-
-        var manifestJson = File.ReadAllText(manifestPath);
-        var expectationsJson = File.ReadAllText(expectationsPath);
-        using var manifestDoc = JsonDocument.Parse(manifestJson);
-        using var expectationsDoc = JsonDocument.Parse(expectationsJson);
-
-        // Must contain exactly one definition and two invocations
-        var qws = manifestDoc.RootElement.GetProperty("quickWindows");
-        Assert.AreEqual(1, qws.GetArrayLength(), "Handshake must have one definition");
-        var invs = manifestDoc.RootElement.GetProperty("quickWindowInvocations");
-        Assert.AreEqual(2, invs.GetArrayLength(), "Handshake must have two invocations");
-
-        // Check deterministic ordering: quickWindows ordered by Code, invocations by InvocationKey
-        var defCode = qws[0].GetProperty("Code").GetString();
-        Assert.AreEqual("qw_motor", defCode);
-
-        // Check two invocations have distinct keys and same definition key
-        var inv1Key = invs[0].GetProperty("InvocationKey").GetString();
-        var inv2Key = invs[1].GetProperty("InvocationKey").GetString();
-        Assert.AreNotEqual(inv1Key, inv2Key);
-        Assert.AreEqual(invs[0].GetProperty("DefinitionKey").GetString(), invs[1].GetProperty("DefinitionKey").GetString());
-
-        // Check explicit absent binding for PrivateVariable is SourceKind None (0)
-        var bindings1 = invs[0].GetProperty("Bindings");
-        var absentBinding = bindings1.EnumerateArray().FirstOrDefault(b => b.GetProperty("MemberKey").GetString() == "44444444-4444-4444-4444-444444444444");
-        Assert.AreEqual(0, absentBinding.GetProperty("SourceKind").GetInt32(), "Optional absent must be None");
-
-        // Check no fourth identifier
-        Assert.IsFalse(manifestJson.Contains("InstanceKey", StringComparison.OrdinalIgnoreCase) && manifestJson.Contains("QuickWindowInstanceKey"), "Must not contain fourth identifier InstanceKey");
-        Assert.IsTrue(manifestJson.Contains("DefinitionKey"));
-        Assert.IsTrue(manifestJson.Contains("InvocationKey"));
-        // RuntimeInstanceId is runtime-only, not in manifest, but we ensure not present as fourth persisted key
-        Assert.IsFalse(manifestJson.Contains("\"InstanceKey\""));
-
-        // Verify SHA placeholder exists and is hex
-        var sha = manifestDoc.RootElement.GetProperty("sha256").GetString();
-        Assert.IsNotNull(sha);
-        Assert.AreEqual(64, sha!.Length);
-
-        // Verify expectations SHA matches manifest SHA
-        var expSha = expectationsDoc.RootElement.GetProperty("sha256").GetString();
-        Assert.AreEqual(sha, expSha, "Manifest and expectations SHA must match (vendored)");
-
-        // Verify manifest generated from records: deserialize and validate via domain validators
-        var def = JsonSerializer.Deserialize<QuickWindowDefinition>(qws[0].GetRawText(), JsonOptions);
-        Assert.IsNotNull(def);
-        var issues = QuickWindowValidation.ValidateDefinition(def!);
-        Assert.AreEqual(0, issues.Count, $"Definition validation failed: {string.Join("; ", issues)}");
-
-        var inv1 = JsonSerializer.Deserialize<QuickWindowInvocation>(invs[0].GetRawText(), JsonOptions);
-        var inv2 = JsonSerializer.Deserialize<QuickWindowInvocation>(invs[1].GetRawText(), JsonOptions);
-        Assert.IsNotNull(inv1);
-        Assert.IsNotNull(inv2);
-        var catalog = new ScadaTagCatalog("tf100web-scada-tags-v1", new[]
+        var generated = GenerateHandshake();
+        var paths = FixturePaths();
+        if (string.Equals(Environment.GetEnvironmentVariable("UPDATE_QUICK_WINDOW_HANDSHAKE"), "1", StringComparison.Ordinal))
         {
-            new ScadaTagDefinition("tf100.mapping.210", "RunFeedback M101", Datatype: "Bool", Writeable: false),
-            new ScadaTagDefinition("tf100.mapping.211", "StartCommand M101", Datatype: "Bool", Writeable: true),
-            new ScadaTagDefinition("tf100.mapping.310", "RunFeedback M102", Datatype: "Bool", Writeable: false),
-            new ScadaTagDefinition("tf100.mapping.311", "StartCommand M102", Datatype: "Bool", Writeable: true),
-        });
-        var r1 = QuickWindowBindingValidator.ValidateInvocation(inv1!, def!, catalog);
-        var r2 = QuickWindowBindingValidator.ValidateInvocation(inv2!, def!, catalog);
-        Assert.IsTrue(r1.All(r => r.IsValid), $"Invocation M101 should be valid: {string.Join("; ", r1.Where(r => !r.IsValid).Select(r => r.Message))}");
-        Assert.IsTrue(r2.All(r => r.IsValid));
+            File.WriteAllText(paths.ManifestPath, Formatted(generated.Manifest), new UTF8Encoding(false));
+            File.WriteAllText(paths.ExpectationsPath, Formatted(generated.Expectations), new UTF8Encoding(false));
+        }
+
+        Assert.AreEqual(Formatted(generated.Manifest), File.ReadAllText(paths.ManifestPath), "Regenerate the handshake from domain records.");
+        Assert.AreEqual(Formatted(generated.Expectations), File.ReadAllText(paths.ExpectationsPath), "Regenerate handshake expectations.");
+        Assert.AreNotEqual(new string('0', 64), generated.Sha);
+        Assert.AreNotEqual("e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855", generated.Sha);
     }
 
     [TestMethod]
-    public void HandshakeMutationsAreRejectedWithSameCategoryInBothRepos()
+    public void GeneratedRecordsValidateAndKeepInvocationsIsolated()
     {
-        var repoRoot = FindRepoRoot();
-        var manifestPath = Path.Combine(repoRoot, "tests", "conformance", "quick-window-contract-handshake", "manifest.json");
-        var json = File.ReadAllText(manifestPath);
-        using var doc = JsonDocument.Parse(json);
-        var def = JsonSerializer.Deserialize<QuickWindowDefinition>(doc.RootElement.GetProperty("quickWindows")[0].GetRawText(), JsonOptions)!;
-        var catalog = new ScadaTagCatalog("tf100web-scada-tags-v1", new[]
+        var generated = GenerateHandshake();
+        var definitions = generated.Manifest["quickWindows"]!.AsArray();
+        var invocations = generated.Manifest["quickWindowInvocations"]!.AsArray();
+        var definition = JsonSerializer.Deserialize<QuickWindowDefinition>(definitions[0]!.ToJsonString(), RecordOptions)!;
+        Assert.AreEqual(0, QuickWindowValidation.ValidateDefinition(definition).Count);
+        Assert.AreEqual(2, invocations.Count);
+        var parsedInvocations = invocations.Select(node => JsonSerializer.Deserialize<QuickWindowInvocation>(node!.ToJsonString(), RecordOptions)!).ToArray();
+        Assert.IsTrue(parsedInvocations.SelectMany(invocation => QuickWindowBindingValidator.ValidateInvocation(invocation, definition, CreateCatalog())).All(result => result.IsValid));
+        CollectionAssert.AreEqual(new[] { "tf100.mapping.210", "tf100.mapping.211" }, parsedInvocations[0].Bindings.Where(binding => binding.SourceKind == QuickWindowBindingSourceKind.Tag).Select(binding => binding.TagId).OrderBy(value => value).ToArray());
+        CollectionAssert.AreEqual(new[] { "tf100.mapping.310", "tf100.mapping.311" }, parsedInvocations[1].Bindings.Where(binding => binding.SourceKind == QuickWindowBindingSourceKind.Tag).Select(binding => binding.TagId).OrderBy(value => value).ToArray());
+        Assert.IsFalse(parsedInvocations.SelectMany(invocation => invocation.Bindings).Any(binding => binding.MemberKey == LocalCountKey), "Private members must never be invocation-bound.");
+    }
+
+    [TestMethod]
+    public void MutationsAreRejectedWithStableCategories()
+    {
+        var definition = CreateDefinition();
+        var catalog = CreateCatalog();
+        var valid = CreateInvocation(Guid.NewGuid(), "M101", 210, 211);
+
+        var wrongDefinition = valid with { DefinitionKey = Guid.NewGuid() };
+        Assert.IsTrue(QuickWindowBindingValidator.ValidateInvocation(wrongDefinition, definition, catalog).Any(result => result.ErrorCode == "invocation.definition-mismatch"));
+
+        var wrongVersion = valid with { InterfaceVersion = 2 };
+        Assert.IsTrue(QuickWindowBindingValidator.ValidateInvocation(wrongVersion, definition, catalog).Any(result => result.Category == "interface-version"));
+
+        var requiredMissing = QuickWindowBinding.Absent(StartCommandKey);
+        var startMember = definition.InterfaceMembers.Single(member => member.MemberKey == StartCommandKey);
+        Assert.AreEqual("binding.required-missing", QuickWindowBindingValidator.ValidateBinding(requiredMissing, startMember, catalog, 1).ErrorCode);
+
+        var motorNameMember = definition.InterfaceMembers.Single(member => member.MemberKey == MotorNameKey);
+        Assert.AreEqual("injection-rejected", QuickWindowBindingValidator.ValidateBinding(QuickWindowBinding.FromLiteral(MotorNameKey, "<script>"), motorNameMember, catalog, 1).Category);
+        Assert.AreEqual("binding.type-mismatch", QuickWindowBindingValidator.ValidateBinding(QuickWindowBinding.FromTag(MotorNameKey, "tf100.mapping.210"), motorNameMember, catalog, 1).ErrorCode);
+
+        foreach (var profile in new[] { "2.1", "2.2" })
         {
-            new ScadaTagDefinition("tf100.mapping.210", "Run", Datatype: "Bool", Writeable: false),
-            new ScadaTagDefinition("tf100.mapping.211", "Start", Datatype: "Bool", Writeable: true),
-        });
+            var result = QuickWindowProfileCompatibility.Validate(profile, containsQuickWindows: true);
+            Assert.IsFalse(result.IsCompatible);
+            Assert.AreEqual("profile.quick-window-unsupported", result.Code);
+        }
+        Assert.IsTrue(QuickWindowProfileCompatibility.Validate("2.3", containsQuickWindows: true).IsCompatible);
 
-        // Mutate keys
-        var mutatedKey = def with { DefinitionKey = Guid.NewGuid() };
-        var inv = new QuickWindowInvocation(Guid.NewGuid(), mutatedKey.DefinitionKey, Array.Empty<QuickWindowBinding>());
-        var issues = QuickWindowValidation.ValidateDefinition(mutatedKey);
-        // Definition key mutation alone is still valid if code unique, but invocation with wrong definition key should be rejected
-        var badInv = new QuickWindowInvocation(Guid.NewGuid(), Guid.NewGuid(), Array.Empty<QuickWindowBinding>());
-        var invIssues = QuickWindowBindingValidator.ValidateInvocation(badInv, def, catalog);
-        // Should be invalid because definition key mismatch not found? Our validator checks unknown member? Actually it checks definition key not matching? We need to simulate via BuildValidator
-        // Instead test required missing
-        var requiredMember = def.InterfaceMembers.First(m => m.Required);
-        var missingReq = QuickWindowBinding.Absent(requiredMember.MemberKey);
-        var res = QuickWindowBindingValidator.ValidateBinding(missingReq, requiredMember, catalog, def.InterfaceVersion);
-        Assert.IsFalse(res.IsValid);
-        Assert.AreEqual("binding.required-missing", res.ErrorCode);
-
-        // Duplicate InvocationKey
-        var inv1 = new QuickWindowInvocation(Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"), def.DefinitionKey, Array.Empty<QuickWindowBinding>());
-        var inv2 = new QuickWindowInvocation(Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"), def.DefinitionKey, Array.Empty<QuickWindowBinding>());
-        // Simulating duplicate detection via project validator would require project with duplicate keys
-        var project = ScadaProject.CreateDefault("Test") with
+        var duplicate = valid with { InvocationKey = Guid.Parse("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb") };
+        var project = ScadaProject.CreateDefault("Handshake") with
         {
             Scenes = new[] { new ScadaSceneReference("win00001", "Page", "scenes/win00001.scene.json", PageKey: Guid.NewGuid(), PageCode: "win00001") },
-            QuickWindows = new[] { def },
-            QuickWindowInvocations = new[] { inv1, inv2 }
+            QuickWindows = new[] { definition },
+            QuickWindowInvocations = new[] { duplicate, duplicate }
         };
-        var issues2 = ScadaProjectBuildValidator.Validate(project, Array.Empty<ScadaBuilderV2.Domain.Scenes.ScadaScene>());
-        Assert.IsTrue(issues2.Any(i => i.Code == "quick-window.duplicate-invocation"));
-
-        // Injection rejected
-        var paramMember = def.InterfaceMembers.First(m => m.Name == "MotorName");
-        var badLiteral = QuickWindowBinding.FromLiteral(paramMember.MemberKey, "<script>");
-        var injRes = QuickWindowBindingValidator.ValidateBinding(badLiteral, paramMember, catalog, def.InterfaceVersion);
-        Assert.IsFalse(injRes.IsValid);
-        Assert.AreEqual("injection-rejected", injRes.Category);
-
-        // Profile 2.1 must reject quick windows (simulated via project manifest version)
-        var project21 = project with { ManifestVersion = "2.1" };
-        // Our validator currently does not check manifest version, but handshake expects 2.1 rejection; we simulate by checking that profile field in manifest is 2.3
-        Assert.AreEqual("2.3", doc.RootElement.GetProperty("manifestVersion").GetString());
-        Assert.AreEqual("2.3", doc.RootElement.GetProperty("profile").GetString());
+        Assert.IsTrue(ScadaProjectBuildValidator.Validate(project, Array.Empty<ScadaScene>()).Any(issue => issue.Code == "quick-window.duplicate-invocation"));
     }
 
     [TestMethod]
-    public void NoFourthIdentifierInHandshake()
+    public void HandshakeHasOnlyCanonicalIdentitiesAndOrdinalOrder()
     {
-        var repoRoot = FindRepoRoot();
-        var manifestPath = Path.Combine(repoRoot, "tests", "conformance", "quick-window-contract-handshake", "manifest.json");
-        var json = File.ReadAllText(manifestPath);
-        // Ensure only three identities
-        Assert.IsTrue(json.Contains("DefinitionKey"));
-        Assert.IsTrue(json.Contains("InvocationKey"));
-        // RuntimeInstanceId is not persisted in manifest, so should not appear
-        Assert.IsFalse(json.Contains("RuntimeInstanceId") && json.Contains("\"RuntimeInstanceId\""), "Manifest must not contain RuntimeInstanceId as persisted; it's runtime-only");
-        Assert.IsFalse(json.Contains("InstanceKey") && json.Contains("\"InstanceKey\""), "Manifest must not contain InstanceKey");
-        // Count occurrences of GUID keys: only DefinitionKey and InvocationKey and MemberKey
-        var countDef = json.Split("DefinitionKey").Length - 1;
-        var countInv = json.Split("InvocationKey").Length - 1;
-        Assert.IsTrue(countDef >= 1 && countInv >= 2);
-    }
-
-    [TestMethod]
-    public void OldCommandKindIsRejected()
-    {
-        // Simulate old JSON with OpenPopup
-        var oldJson = "{ \"CommandConfig\": { \"Commands\": [ { \"Kind\": \"OpenPopup\" } ] } }";
-        Assert.IsTrue(oldJson.Contains("OpenPopup"));
-        // Modern validator should consider this retired
-        var retiredKinds = new[] { "OpenPopup", "TogglePopup", "ClosePopup" };
-        foreach (var k in retiredKinds)
-            Assert.IsTrue(Enum.TryParse<ScadaBuilderV2.Domain.ElementEvents.Command.ScadaCommandKind>(k, out _) == false, $"Old kind {k} must not parse to new enum");
-    }
-
-    [TestMethod]
-    public void HandshakeIsDeterministicAndOrdered()
-    {
-        var repoRoot = FindRepoRoot();
-        var manifestPath = Path.Combine(repoRoot, "tests", "conformance", "quick-window-contract-handshake", "manifest.json");
-        var json = File.ReadAllText(manifestPath);
-        using var doc = JsonDocument.Parse(json);
-        var caps = doc.RootElement.GetProperty("capabilities").EnumerateArray().Select(e => e.GetString()).ToArray();
-        var sorted = caps.OrderBy(c => c, StringComparer.Ordinal).ToArray();
-        CollectionAssert.AreEqual(sorted, caps, "Capabilities must be ordered deterministically");
-        var members = doc.RootElement.GetProperty("quickWindows")[0].GetProperty("InterfaceMembers").EnumerateArray().Select(e => e.GetProperty("Name").GetString()).ToArray();
-        var sortedMembers = members.OrderBy(m => m, StringComparer.Ordinal).ToArray();
-        // In our fixture, members are already ordered? Check: RunFeedback, StartCommand, MotorName, LocalCount - not alphabetical. So they are not sorted.
-        // But deterministic order requirement is for exporter: ordinal. Handshake may have insertion order; we just check that invocations are ordered by InvocationKey
-        var invKeys = doc.RootElement.GetProperty("quickWindowInvocations").EnumerateArray().Select(e => e.GetProperty("InvocationKey").GetString()).ToArray();
-        var sortedInv = invKeys.OrderBy(k => k, StringComparer.Ordinal).ToArray();
-        CollectionAssert.AreEqual(sortedInv, invKeys, "Invocations must be ordered deterministically");
+        var manifest = GenerateHandshake().Manifest;
+        var text = manifest.ToJsonString();
+        Assert.IsFalse(text.Contains("\"InstanceKey\"", StringComparison.Ordinal));
+        Assert.IsFalse(text.Contains("\"RuntimeInstanceId\"", StringComparison.Ordinal));
+        var members = manifest["quickWindows"]![0]!["InterfaceMembers"]!.AsArray().Select(item => item!["Name"]!.GetValue<string>()).ToArray();
+        CollectionAssert.AreEqual(members.OrderBy(value => value, StringComparer.Ordinal).ToArray(), members);
+        var capabilities = manifest["capabilities"]!.AsArray().Select(item => item!.GetValue<string>()).ToArray();
+        CollectionAssert.AreEqual(capabilities.OrderBy(value => value, StringComparer.Ordinal).ToArray(), capabilities);
+        var invocations = manifest["quickWindowInvocations"]!.AsArray().Select(item => item!["InvocationKey"]!.GetValue<string>()).ToArray();
+        CollectionAssert.AreEqual(invocations.OrderBy(value => value, StringComparer.Ordinal).ToArray(), invocations);
     }
 }

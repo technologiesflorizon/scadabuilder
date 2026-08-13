@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Project Model Contract
 
-Date: 2026-07-14
+Date: 2026-08-13
 Status: Active project model contract
-Document version: `V2.1.5.0000`
+Document version: `V2.1.5.0021`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0021` | `PENDING` | Contrat de persistance QuickWindow Phase 1 : fichiers autoritaires séparés, manifest sans duplication et profils antérieurs fail-closed. |
 | 2026-07-29 | `V2.1.5.0000` | `PENDING` | La persistance accepte une racine projet exacte choisie par l’utilisateur; `.sb2` demeure un artefact runtime. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | Les cellules ancres `InputNumeric` peuvent porter `DisplayFormat` et des bindings lecture/ecriture persistants, proteges par les operations structurelles et exclus du clipboard. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Validation end-to-end d'une table 16 x 10 avec contenus mixtes, deux en-têtes, fusion, styles par portée, pistes non uniformes, bordures physiques et `IsLocked`, sans modifier le schéma `.sb2`. |
@@ -58,6 +59,14 @@ Element numeric data keeps compatibility fields for older projects, but active a
 
 `TagBinding`, `Decimals`, and `Unit` are legacy model fields. They may be preserved by save/reload, but they are not active Element+ authoring controls.
 
+### 2.2 Fenêtres rapides — contrat persistant Phase 1
+
+`ScadaProject.QuickWindows` est la projection en mémoire des définitions chargées. Chaque définition persistante est autoritaire dans `quick-windows/<QuickWindowDefinitionKey>.quick-window.json`; `project.json` ne duplique jamais le graphe complet des définitions. Le nom du fichier et la clé du contenu doivent correspondre exactement.
+
+Une définition porte un `VisualContent` borné, sa version d’interface, ses membres locaux et ses defaults de présentation. Les invocations restent portées par le projet et les commandes appelantes au moyen d’un `InvocationKey`, d’un `QuickWindowDefinitionKey` et d’une `InterfaceVersion`; l’identité runtime n’est jamais persistée. Les membres privés ne sont pas bindables par une invocation.
+
+Les fichiers sont ordonnés de façon déterministe et remplacés atomiquement après écriture temporaire, flush et validation. Un projet historique sans Fenêtre rapide se recharge sans migration et ne doit pas être réécrit. Une définition inline sans fichier autoritaire est refusée au lieu d’être migrée implicitement. Les profils manifest 2.1/2.2 refusent toute présence QuickWindow; le profil 2.3 ne devient productible qu’après les gates des Phases 2 à 6.
+
 ## 3. Tag Catalog
 
 Imported tags are stored as `ScadaProject.TagCatalog` with schema `tf100web-scada-tags-v1`. The catalog is project-level data, not scene-level geometry.
@@ -83,3 +92,6 @@ All enabled tags are exposed for `Lire valeur` authoring. `Ecrire valeur` may ta
 3. `tests/ScadaBuilderV2.Tests/PageIdentityTests.cs`
 4. `tests/ScadaBuilderV2.Tests/ModernProjectAtomicSnapshotTests.cs`
 5. `tests/ScadaBuilderV2.Tests/PageLifecycleIntegrationTests.cs`
+6. `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowDomainTests.cs`
+7. `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowBindingTests.cs`
+8. `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowStoreTests.cs`

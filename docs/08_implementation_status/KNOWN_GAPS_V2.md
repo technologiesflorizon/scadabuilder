@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Known Gaps
 
-Date: 2026-07-17
+Date: 2026-08-13
 Status: Active known gaps register
-Document version: `V2.1.4.0063`
+Document version: `V2.1.5.0021`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0021` | `PENDING` | Phases 0/1 QuickWindow fermées après audit; orchestration, authoring, preview/export et runtime des Phases 2 à 7 restent explicitement ouverts et `Blocked`. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Faux positif des gates agreges ferme : 118 probes independants sont verts; les Blocked et la promotion distante demeurent les seuls gates de cette tranche. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | Gaps runtime reclasses depuis la matrice generee; seul le deploiement distant et les capabilities Blocked restent ouverts. |
 | 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | Gate industriel local ferme; promotion distante/restart et smoke operateur restent ouverts. |
@@ -70,7 +71,7 @@ Document version: `V2.1.4.0063`
 9. `.sb2` archive export validates import/package compatibility and transports the shared runtime. It does not make TF100Web execute inline page scripts that remain outside the extracted root fragment.
 10. Manual UI validation of the new Pages and Diagnostics surfaces on an isolated project copy remains pending; launching the current shell would open the protected real reference project. Automated WPF surface contracts and the temporary-project lifecycle test are green.
 11. Page folders, drag-and-drop ordering, reusable page templates beyond `Blank`, and role-based page permissions remain later slices. The command gate and stable identity model are extension points, not claims that these features are complete.
-12. The full test suite currently reports 683 passed and 5 pre-existing unrelated failures (`Ft100ExportPrefersReferenceHtmlSourceBeforeRawFallback`, `LegacyContextMenuExposesElementStudioCommand`, `ModernDoubleClickOpensWpfPropertiesDialog`, `ReadOnlyNumericElementsRenderDisplayFormatWhenValueIsMissing`, `ScadaBuilderLaunchesStudioFromProjectInDevelopmentToAvoidStaleBinaries`). The targeted runtime/action/conformance suites are green.
+12. The full test suite currently reports 754 passed and 5 failures outside the QuickWindow slice. Four are historical WPF/runtime contract tests (`Ft100ExportPrefersReferenceHtmlSourceBeforeRawFallback`, `LegacyContextMenuExposesElementStudioCommand`, `ModernDoubleClickOpensWpfPropertiesDialog`, `ReadOnlyNumericElementsRenderDisplayFormatWhenValueIsMissing`); the fifth is `ReferenceProjectExportsStrict23AndLocksFourIndustrialIntegrations`, where `win00003` currently exports 7 navigation commands while the acceptance expects 8. The targeted QuickWindow, popup-residue and conformance suites are green.
 13. Numeric Table cell and Element+ polling/editing now share one policy/controller/cache/formatter. Automated coverage includes read-only, write-only, split mappings, permissions, focus/pending polling, Enter/Escape/change, rejection/offline restore, readback and datatypes. Validation of real operator permissions and confirmed PLC readback still requires an explicitly authorized industrial TF100Web environment before delivery closure.
 14. `DEC-0040` code and automated slices are complete. Release measurements on the current machine record model/HTML initial rendering at 367,556 ms, selection inspection p95 at 12,403 ms and Domain resize p95 at 0,023 ms over 100 samples. The focused `DEC-0041` WPF/WebView2 smoke passed on an isolated copy; the separate 64 x 64 browser-composition performance gate remains pending, and automated values must not be presented as WebView2 timings.
 15. TF100Web `9d5d400` had the confirmed navigation/poll race observed on `win00008 -> win00012_modern_no_legacy -> win00008`. Branch commit `1fc3ac4` implements `DEC-0046` with abortable generations and mandatory coalesced hydration; an industrial browser smoke after deployment remains required before release closure.
@@ -83,11 +84,12 @@ Document version: `V2.1.4.0063`
 22. Shared object-action behavior is complete locally for all nine current kinds, simple/compound conditions, ordering, propagation and page-scoped targets. TF100Web negotiates manifest 2.3, owns only navigation/popup/write/URL/history services and enforces latest-wins through `1fc3ac4`. Capabilities still listed `Blocked` are intentionally rejected by the exact-SHA suite; each requires an explicit active host-service proof before registry promotion.
 23. The prior TF100Web conformance harness grouped 118 Supported ids behind five aggregate family booleans and could therefore pass several unexecuted variants. That validation gap is closed: every id now returns its own `probe:<capability-id>` result, concrete evidence and diagnostic, and an isolated fixture mutation proves independent failure. This does not promote any of the 44 intentionally Blocked capabilities.
 
+24. `DEC-0049` est implémentée et validée par build et tests ciblés. Le parcours interactif WPF complet (créer, modifier, changer de projet avec les trois choix dirty, fermer et rouvrir un récent) reste à exécuter sur une copie isolée avant promotion opérateur.
+25. `DEC-0050` Phases 0/1 sont validées uniquement pour l’isolation et les contrats persistants inertes. Les services Application et l’historique (Phase 2), l’authoring WPF (Phase 3), le preview/compilateur/runtime partagé (Phases 4/5), l’export et la promotion de capacités (Phase 6), puis l’intake/acceptance TF100Web (Phase 7) restent non implémentés. Aucun package QuickWindow productible ne doit être émis et toutes les capacités concernées restent `Blocked`.
+
 ## 2. Rule
 
 Known gaps must not be documented as implemented behavior.
-
-24. `DEC-0049` est implémentée et validée par build et tests ciblés. Le parcours interactif WPF complet (créer, modifier, changer de projet avec les trois choix dirty, fermer et rouvrir un récent) reste à exécuter sur une copie isolée avant promotion opérateur.
 
 ## 3. TF100Web Event Parity Backlog
 

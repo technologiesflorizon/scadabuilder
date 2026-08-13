@@ -182,7 +182,7 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         if (project is null)
             return null;
         project = ModernProjectMigration.MigrateProject(project);
-        // QuickWindow authoritative files under quick-windows/: if present, they override inline project.QuickWindows
+        // QuickWindow definition files are authoritative. project.json never embeds full definitions.
         var qwStore = new QuickWindowStore();
         var qwFromFiles = await qwStore.LoadAllAsync(projectRoot, cancellationToken);
         if (qwFromFiles.Count > 0)
@@ -191,7 +191,7 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         }
         else if (project.EffectiveQuickWindows.Count > 0)
         {
-            // Fallback: inline definitions without files (legacy or test) - keep as is
+            throw new InvalidDataException("project.json contains inline QuickWindow definitions without authoritative quick-windows/*.quick-window.json files. The file remains unchanged; no implicit migration is performed.");
         }
         return ModernProjectMigration.MigrateProject(project);
     }
@@ -252,9 +252,14 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(projectRoot);
         ArgumentNullException.ThrowIfNull(project);
+        projectRoot = Path.GetFullPath(projectRoot);
+        var normalized = ModernProjectMigration.MigrateProject(project);
+        var quickWindowStore = new QuickWindowStore();
+        foreach (var definition in normalized.EffectiveQuickWindows.OrderBy(item => item.Code, StringComparer.Ordinal).ThenBy(item => item.DefinitionKey))
+            await quickWindowStore.SaveAsync(projectRoot, definition, cancellationToken);
         var projectPath = Path.Combine(Path.GetFullPath(projectRoot), "project.json");
         Directory.CreateDirectory(Path.GetDirectoryName(projectPath)!);
-        await SaveJsonAsync(projectPath, ModernProjectMigration.MigrateProject(project), cancellationToken);
+        await SaveJsonAsync(projectPath, normalized with { QuickWindows = null }, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -319,7 +324,7 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
                 projectRoot,
                 transactionRoot,
                 "project.json",
-                normalized.Project,
+                normalized.Project with { QuickWindows = null },
                 cancellationToken));
             await ValidateStagedSnapshotAsync(transactionRoot, entries, normalized.Project, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
@@ -492,6 +497,8 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
 
         // Validate quick windows definitions
         var quickWindows = project.EffectiveQuickWindows;
+        if (quickWindows.Count == 0 && project.EffectiveQuickWindowInvocations.Count > 0)
+            throw new InvalidOperationException("QuickWindow invocations cannot be saved without authoritative definitions.");
         if (quickWindows.Count > 0)
         {
             var qwKeys = new HashSet<Guid>();

@@ -1,83 +1,82 @@
 {
   "schema": "scada-builder-v2-quick-window-contract-handshake-expectations-v1",
   "generatedFrom": "manifest.json",
-  "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "sha256": "f17d150f8d9f428fbf2451fe08106380c656bc20fb5f74f294f20bcfc85c9131",
   "cases": [
     {
       "id": "valid-two-invocations",
-      "description": "Two invocations M101/M102 with distinct tag bindings are accepted",
-      "input": "manifest.quickWindowInvocations[0..1]",
       "expected": "accept",
       "category": "validation"
     },
     {
       "id": "optional-absent-neutral",
-      "description": "Optional port absent is neutral, no subscription nor write",
-      "input": "MemberKey 44444444-... SourceKind None for LocalCount (PrivateVariable)",
       "expected": "accept",
       "category": "neutral"
     },
     {
       "id": "required-missing",
-      "description": "Required port StartCommand absent must be rejected",
-      "input": "Invocation with StartCommand Binding None",
       "expected": "reject",
-      "code": "binding.required-missing",
-      "category": "required"
+      "category": "required",
+      "code": "binding.required-missing"
+    },
+    {
+      "id": "interface-version-mismatch",
+      "expected": "reject",
+      "category": "interface-version",
+      "code": "invocation.interface-version-mismatch"
     },
     {
       "id": "retired-command-kind",
-      "description": "Old command kind OpenPopup must be rejected before deserialization",
-      "input": "Kind OpenPopup in CommandConfig",
       "expected": "reject",
-      "code": "retired-popup-command",
-      "category": "retired"
+      "category": "retired",
+      "code": "retired-popup-command"
     },
     {
       "id": "fourth-identifier-absent",
-      "description": "No fourth identifier InstanceKey may appear; only DefinitionKey, InvocationKey, RuntimeInstanceId",
-      "input": "manifest keys inspection",
       "expected": "accept",
-      "code": "no-instance-key",
-      "category": "identity"
+      "category": "identity",
+      "code": "no-instance-key"
     },
     {
       "id": "injection-literal-rejected",
-      "description": "Literal containing <script> must be rejected with injection-rejected",
-      "input": "LiteralValue <script> for MotorName",
       "expected": "reject",
-      "code": "injection-rejected",
-      "category": "injection-rejected"
+      "category": "injection-rejected",
+      "code": "injection-rejected"
     },
     {
       "id": "type-mismatch",
-      "description": "Tag datatype mismatch must be rejected",
-      "input": "Tag bool for String param with strict check",
       "expected": "reject",
-      "code": "binding.type-mismatch",
-      "category": "validation"
+      "category": "validation",
+      "code": "binding.type-mismatch"
     },
     {
-      "id": "capability-negotiation",
-      "description": "Manifest 2.3 with quick-window capabilities Blocked must be negotiated; 2.1/2.2 must reject",
-      "input": "profile 2.3 vs 2.1",
-      "expected": "accept-2.3-reject-2.1",
-      "category": "capability"
+      "id": "profile-2.1-rejected",
+      "expected": "reject",
+      "category": "capability",
+      "code": "profile.quick-window-unsupported"
+    },
+    {
+      "id": "profile-2.2-rejected",
+      "expected": "reject",
+      "category": "capability",
+      "code": "profile.quick-window-unsupported"
+    },
+    {
+      "id": "profile-2.3-accepted",
+      "expected": "accept",
+      "category": "capability",
+      "code": "profile.compatible"
     },
     {
       "id": "order-determinism",
-      "description": "QuickWindows, members, bindings and capabilities are ordered ordinally",
-      "input": "manifest ordering",
       "expected": "accept",
       "category": "determinism"
     },
     {
       "id": "duplicate-invocation-key",
-      "description": "Duplicate InvocationKey must be rejected",
-      "input": "Two invocations with same InvocationKey",
       "expected": "reject",
-      "code": "binding.duplicate",
-      "category": "validation"
+      "category": "validation",
+      "code": "quick-window.duplicate-invocation"
     }
   ],
   "mutationMatrix": [
@@ -85,8 +84,8 @@
     "types",
     "order",
     "InvocationKey",
+    "InterfaceVersion",
     "capability",
     "manifest profile"
-  ],
-  "note": "Both Builder and TF100Web must accept/reject same cases with same diagnostic category. SHA must match vendored fixture."
+  ]
 }

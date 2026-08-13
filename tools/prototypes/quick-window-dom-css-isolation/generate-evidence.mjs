@@ -195,7 +195,7 @@ function loadPrototype(doc) {
 
 async function main() {
   const outputArgIndex = process.argv.indexOf('--output');
-  const outputPath = outputArgIndex >=0 ? process.argv[outputArgIndex+1] : path.join(repoRoot, 'artifacts', 'quick-window-isolation', 'builder-webview2.json');
+  const outputPath = outputArgIndex >=0 ? process.argv[outputArgIndex+1] : path.join(repoRoot, 'artifacts', 'quick-window-isolation', 'node-headless.json');
   const { doc, hostRoot, pageRoot } = createFakeDocument();
   const { P, A } = loadPrototype(doc);
   P.Instrument.captureBaseline();
@@ -206,7 +206,7 @@ async function main() {
   const ctx = { doc, manager, pageRoot, hostRoot };
   const core = await A.runCoreAssertions(ctx);
   const perf = await A.runPerformance(ctx);
-  const assertions = { core: [...core, ...perf.assertions], hostExtensions: { builderWebView2: [{ id: 'host.builderWebView2.browserVersion', status: 'PASS', detail: 'simulated-headless 1.0.3967.48' }], tf100Web: [] } };
+  const assertions = { core: [...core, ...perf.assertions], hostExtensions: { builderWebView2: [], tf100Web: [] } };
   const overall = assertions.core.every(a=>a.status==='PASS') ? 'PASS' : 'FAIL';
   const nvmrc = fs.existsSync(path.join(repoRoot,'.nvmrc')) ? fs.readFileSync(path.join(repoRoot,'.nvmrc'),'utf8').trim() : '20.18.1';
   let enginesNode = '20.18.x';
@@ -222,11 +222,11 @@ async function main() {
       node: process.version,
       nvmrc, enginesNode,
       os: process.platform + ' ' + process.arch,
-      webView2Sdk: '1.0.3967.48',
-      webView2Runtime: 'simulated-headless 1.0.3967.48 (no HWND)',
+      webView2Sdk: null,
+      webView2Runtime: null,
       dotnet: '8.0',
       webView2Architecture: 'x64',
-      webView2Mode: 'Evergreen-simulated'
+      webView2Mode: null
     },
     invariants: { fr020: 'FR-020 racine scoppée + namespace stable', fr026: 'FR-026 gate bloquant' },
     assertions,

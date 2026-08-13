@@ -39,7 +39,7 @@ public sealed class QuickWindowIsolationPrototypeContractTests
         using var doc = LoadEvidence();
         var root = doc.RootElement;
         Assert.AreEqual("1.0.0", root.GetProperty("schemaVersion").GetString());
-        Assert.AreEqual("1.0.0", root.GetProperty("prototypeRevision").GetString());
+        Assert.AreEqual("1.0.2", root.GetProperty("prototypeRevision").GetString());
         var hash = root.GetProperty("prototypeHash").GetString();
         Assert.IsNotNull(hash);
         Assert.AreEqual(64, hash!.Length, "prototypeHash must be SHA-256 hex");
@@ -91,7 +91,11 @@ public sealed class QuickWindowIsolationPrototypeContractTests
         Assert.AreEqual("1.0.3967.48", versions.GetProperty("webView2Sdk").GetString(), "SDK version must be pinned 1.0.3967.48");
         var runtime = versions.GetProperty("webView2Runtime").GetString();
         Assert.IsFalse(string.IsNullOrWhiteSpace(runtime), "BrowserVersionString must be captured");
-        // Must be same major as pinned SDK (approx). If Evergreen diverged, gate requires testing both; we at least assert non-empty.
+        Assert.IsFalse(runtime!.Contains("simulated", StringComparison.OrdinalIgnoreCase), "Phase 0 requires the actual CoreWebView2 BrowserVersionString.");
+
+        var capturePath = doc.RootElement.GetProperty("capturePath").GetString();
+        Assert.IsFalse(string.IsNullOrWhiteSpace(capturePath), "The real WebView2 run must capture a PNG.");
+        Assert.IsTrue(File.Exists(capturePath), $"Missing WebView2 capture: {capturePath}");
     }
 
     [TestMethod]

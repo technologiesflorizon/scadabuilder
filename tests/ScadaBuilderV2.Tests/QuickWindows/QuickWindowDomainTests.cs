@@ -148,6 +148,37 @@ public sealed class QuickWindowDomainTests
     }
 
     [TestMethod]
+    public void InterfaceFamiliesEnforceAccessAndPrivateConstantValue()
+    {
+        var members = new[]
+        {
+            new QuickWindowInterfaceMember(Guid.NewGuid(), "Read", QuickWindowInterfaceFamily.ReadState, QuickWindowDataType.Boolean, QuickWindowMemberAccess.Write),
+            new QuickWindowInterfaceMember(Guid.NewGuid(), "Write", QuickWindowInterfaceFamily.WriteCommand, QuickWindowDataType.Boolean, QuickWindowMemberAccess.Read),
+            new QuickWindowInterfaceMember(Guid.NewGuid(), "Constant", QuickWindowInterfaceFamily.PrivateConstant, QuickWindowDataType.Integer, QuickWindowMemberAccess.Read)
+        };
+        var definition = new QuickWindowDefinition(Guid.NewGuid(), "qw_access", "Access", 1, new VisualContent(CanvasSize.DefaultDesktop), members);
+        var issues = QuickWindowValidation.ValidateDefinition(definition);
+        Assert.IsTrue(issues.Any(issue => issue.Contains("ReadState", StringComparison.Ordinal)));
+        Assert.IsTrue(issues.Any(issue => issue.Contains("WriteCommand", StringComparison.Ordinal)));
+        Assert.IsTrue(issues.Any(issue => issue.Contains("Internal", StringComparison.Ordinal)));
+        Assert.IsTrue(issues.Any(issue => issue.Contains("fixed DefaultValue", StringComparison.Ordinal)));
+    }
+
+    [TestMethod]
+    public void VisualContentReferencesAreBoundedAndProjectRelative()
+    {
+        var content = new VisualContent(
+            CanvasSize.DefaultDesktop,
+            StyleSheets: new[] { "styles/qw-motor.css" },
+            AssetReferences: new[] { "assets/motor.svg" });
+        var definition = new QuickWindowDefinition(Guid.NewGuid(), "qw_refs", "Refs", 1, content, Array.Empty<QuickWindowInterfaceMember>());
+        Assert.AreEqual(0, QuickWindowValidation.ValidateDefinition(definition).Count);
+
+        var unsafeDefinition = definition with { Content = content with { AssetReferences = new[] { "../outside.svg" } } };
+        Assert.IsTrue(QuickWindowValidation.ValidateDefinition(unsafeDefinition).Any(issue => issue.Contains("AssetReferences", StringComparison.Ordinal)));
+    }
+
+    [TestMethod]
     public void InterfaceMembersAreDeterministicallyOrdered()
     {
         var m1 = new QuickWindowInterfaceMember(Guid.Parse("11111111-1111-1111-1111-111111111111"), "A", QuickWindowInterfaceFamily.ReadState, QuickWindowDataType.Boolean, QuickWindowMemberAccess.Read);

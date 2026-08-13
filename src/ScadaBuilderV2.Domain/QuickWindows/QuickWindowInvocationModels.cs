@@ -71,7 +71,11 @@ public sealed record QuickWindowInvocation(
     Guid InvocationKey,
     Guid DefinitionKey,
     IReadOnlyList<QuickWindowBinding> Bindings,
-    string? TitleOverride = null)
+    string? TitleOverride = null,
+    int InterfaceVersion = 1,
+    Guid? OwnerPageKey = null,
+    string? OwnerElementId = null,
+    string? OwnerCommandId = null)
 {
     /// <summary>Gets effective title override, null means use definition default.</summary>
     [JsonIgnore]
@@ -84,5 +88,5 @@ public sealed record QuickWindowInvocation(
     }
 
     /// <summary>Returns a binding for a member, or null if absent.</summary>
-    public QuickWindowBinding? FindBinding(Guid memberKey) => Bindings.FirstOrDefault(b => b.MemberKey == memberKey);
+    public QuickWindowBinding? FindBinding(Guid memberKey) => (Bindings ?? Array.Empty<QuickWindowBinding>()).FirstOrDefault(b => b.MemberKey == memberKey);
 }

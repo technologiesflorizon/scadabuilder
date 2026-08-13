@@ -1,13 +1,14 @@
 # Fenêtres rapides paramétrées - Plan d’implémentation
 
 Date: 2026-08-10
-Status: Draft implementation plan - phase 0 isolation gate pending
-Document version: `V2.1.5.0020`
+Status: Active implementation plan - phases 0 and 1 complete after corrective audit; phase 2 pending
+Document version: `V2.1.5.0021`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0021` | `PENDING` | Audit correctif : Phase 0 rejouée sur hosts réels et Phase 1 alignée sur les validations, la persistance autoritaire et le handshake exécutable; Phase 2 reste bloquée jusqu’au commit vert. |
 | 2026-08-10 | `V2.1.5.0020` | `PENDING` | Corrections des 5 lacunes de revue : matrice FR→Tasks, anti-injection `Literal`/`Expression`, `PresentationDefaults` explicites, rejet profondeur 3 et épinglage Node LTS. |
 | 2026-08-10 | `V2.1.5.0019` | `PENDING` | Renforcement après revue : boucle d’itération du prototype, audit popup mesurable, rollback inter-phase, gate export structurel, handshakes cross-repository précoces, races, SLA, version WebView2, extraction hors `MainWindow`, versioning et canary TF100Web. |
 | 2026-08-10 | `V2.1.5.0018` | `PENDING` | Création du plan dérivé de `DEC-0050`; la phase 0 de prototype DOM/CSS est un gate bloquant avant toute modification de production. |
@@ -19,6 +20,18 @@ Document version: `V2.1.5.0020`
 **Architecture:** `QuickWindowDefinition` et `PageDefinition` possèdent chacune un `VisualContent` commun par composition. Une invocation persistante référence une définition et porte ses liaisons typées; un gestionnaire host crée un `RuntimeInstanceId` temporaire dans une racine DOM scoppée. Le runtime partagé conserve les sémantiques portables; le preview Builder et TF100Web fournissent chacun l’adaptateur host, le cache de tags et le pont d’écriture. Aucun héritage page/fenêtre, aucun second poller et aucun chemin Fragment de substitution ne sont permis.
 
 **Tech Stack:** C# 12, .NET 8, WPF/WebView2, JSON `System.Text.Json`, JavaScript ES modules, MSTest, Node 20 LTS (20.18.x, épinglée via `.nvmrc` + `package.json` `engines.node`, `node:test`), Django/Python et tests TF100Web. La version Node exacte est consignée dans les rapports Phase 0/7 et vérifiée au `Before You Start`.
+
+## État d’exécution audité au 2026-08-13
+
+- [x] Phase 0: fixture `1.0.2` gelée, hash commun, Node `20.18.1`, WebView2 réel et Edge/TF100Web réel.
+- [x] Phase 1.1: modèle, interface locale, présentation bornée et validation de domaine.
+- [x] Phase 1.2: invocations/version/interface, bindings typés, anti-injection et fermeture contextuelle.
+- [x] Phase 1.3: anciens command kinds popup refusés; résidus legacy isolés; commandes QuickWindow masquées de l’UI courante.
+- [x] Phase 1.4: définitions autoritaires sous `quick-windows/`, JSON déterministe et écriture atomique.
+- [x] Phase 1.5: handshake généré, SHA canonique et mutations exécutées dans Builder et TF100Web.
+- [ ] Phase 2 et suivantes: non démarrées.
+
+L’ancien rapport Phase 0 est invalidé et remplacé par la preuve corrigée. La Phase 1 avait historiquement démarré trop tôt. Aucune donnée QuickWindow n’est ajoutée aux projets durables; les données de référence sans rapport avec ce chantier restent hors portée et ne servent pas de preuve. Toutes les capacités QuickWindow restent `Blocked`.
 
 ## Global Constraints
 

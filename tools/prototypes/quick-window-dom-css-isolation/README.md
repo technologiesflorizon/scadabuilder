@@ -1,6 +1,6 @@
 # QuickWindow DOM/CSS Isolation Prototype — Phase 0 Gate (FR-020 / FR-026)
 
-**PrototypeRevision:** `1.0.0`  
+**PrototypeRevision:** `1.0.2`
 **Status:** Gate bloquant avant toute modification de production (`src/`, `frontend/scada_*.py`, `templates/`, `static/` interdits)  
 **Spec:** `docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md:FR-020`  
 **Plan:** `docs/superpowers/plans/2026-08-10-parameterized-quick-window-management.md#phase-0`
@@ -36,6 +36,7 @@ La fixture joue `Page -> A -> B` (A enfant de Page, B enfant de A). Deux défini
 ```powershell
 # Task 0.1 Step 4 — sans host produit
 Set-Location "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
+nvm use 20.18.1
 npm --prefix tests/runtime-js test
 
 # Task 0.2 — WebView2 harness (même fixture, même PrototypeRevision)

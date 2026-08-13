@@ -95,13 +95,15 @@ public partial class MainWindow : Window
             await Task.Delay(TimeSpan.FromSeconds(60));
             if (!_done.Task.IsCompleted)
             {
-                Dispatcher.Invoke(async () =>
-                {
-                    await WriteFailureAsync("Timeout waiting for __quickWindowIsolationEvidence (60s)");
-                    ShutdownWithCode(2);
-                });
+                await Dispatcher.InvokeAsync(HandleTimeoutAsync).Task.Unwrap();
             }
         });
+    }
+
+    private async Task HandleTimeoutAsync()
+    {
+        await WriteFailureAsync("Timeout waiting for __quickWindowIsolationEvidence (60s)");
+        ShutdownWithCode(2);
     }
 
     private async void OnNavigationCompleted(object? sender, CoreWebView2NavigationCompletedEventArgs e)
@@ -180,6 +182,7 @@ public partial class MainWindow : Window
         obj["prototypeHash"] = prototypeHash;
         if (obj["versions"] is JsonObject versions)
         {
+            versions["node"] = LoadExactNodeGateVersion(repoRoot, prototypeHash);
             versions["webView2Sdk"] = "1.0.3967.48";
             versions["webView2Runtime"] = browserVersion;
             versions["webView2UserDataFolder"] = userDataFolder;
@@ -219,8 +222,13 @@ public partial class MainWindow : Window
         var outputDir = Path.GetDirectoryName(_outputPath);
         if (!string.IsNullOrWhiteSpace(outputDir)) Directory.CreateDirectory(outputDir);
 
-        // Also capture screenshot via simple HTML capture (not pixel perfect but prove rendering)
-        // For now, just save JSON
+        var screenshotPath = Path.GetFullPath(Path.ChangeExtension(_outputPath, ".png"));
+        await using (var screenshot = File.Create(screenshotPath))
+        {
+            await WebView.CoreWebView2.CapturePreviewAsync(CoreWebView2CapturePreviewImageFormat.Png, screenshot);
+        }
+        obj["capturePath"] = screenshotPath;
+
         var outputJson = obj.ToJsonString(new JsonSerializerOptions { WriteIndented = true });
         await File.WriteAllTextAsync(_outputPath, outputJson);
 
@@ -253,6 +261,30 @@ public partial class MainWindow : Window
         return Convert.ToHexString(sha.Hash!).ToLowerInvariant();
     }
 
+    private static string LoadExactNodeGateVersion(string repoRoot, string prototypeHash)
+    {
+        var path = Path.Combine(repoRoot, "artifacts", "quick-window-isolation", "node-headless.json");
+        if (!File.Exists(path))
+            throw new InvalidOperationException($"Missing exact-Node gate evidence: {path}");
+
+        using var document = JsonDocument.Parse(File.ReadAllText(path));
+        var root = document.RootElement;
+        var overall = root.GetProperty("overall").GetString();
+        var revision = root.GetProperty("prototypeRevision").GetString();
+        var evidenceHash = root.GetProperty("prototypeHash").GetString();
+        var nodeVersion = root.GetProperty("versions").GetProperty("node").GetString();
+        if (!string.Equals(overall, "PASS", StringComparison.Ordinal)
+            || !string.Equals(revision, "1.0.2", StringComparison.Ordinal)
+            || !string.Equals(evidenceHash, prototypeHash, StringComparison.Ordinal)
+            || nodeVersion is null
+            || !nodeVersion.StartsWith("v20.18.", StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException("Exact-Node evidence does not match PrototypeRevision 1.0.2, the current prototype hash, and Node 20.18.x.");
+        }
+
+        return nodeVersion;
+    }
+
     private async Task WriteFailureAsync(string detail)
     {
         try
@@ -263,7 +295,7 @@ public partial class MainWindow : Window
             var failure = new JsonObject
             {
                 ["schemaVersion"] = "1.0.0",
-                ["prototypeRevision"] = "1.0.0",
+                ["prototypeRevision"] = "1.0.2",
                 ["prototypeHash"] = prototypeHash,
                 ["generatedUtc"] = DateTimeOffset.UtcNow.ToString("o"),
                 ["overall"] = "FAIL",
