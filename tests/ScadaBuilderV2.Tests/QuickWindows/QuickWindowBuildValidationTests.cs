@@ -11,6 +11,18 @@ namespace ScadaBuilderV2.Tests.QuickWindows;
 public sealed class QuickWindowBuildValidationTests
 {
     [TestMethod]
+    public void ProjectOnlyValidationStillAppliesQuickWindowBuildGate()
+    {
+        var definition = Definition("motor");
+        var page = Page("page");
+        var project = Project(page, [definition], []);
+
+        var issues = ScadaProjectBuildValidator.Validate(project);
+
+        Assert.IsTrue(issues.Any(issue => issue.Code == "quick-window.capability-unsupported"));
+    }
+
+    [TestMethod]
     public void BuildValidationSeparatesAuthoringWarningsFromErrorsAndNeverCreatesDefaults()
     {
         var member = Member("Run", QuickWindowInterfaceFamily.ReadState, QuickWindowDataType.Boolean, QuickWindowMemberAccess.Read, required: true);

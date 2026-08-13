@@ -232,14 +232,22 @@ public sealed record ScadaBuildValidationIssue(
     Guid? TargetKey = null,
     string? SuggestedFix = null);
 
+/// <summary>Validates the durable project model fail-closed before build or export.</summary>
+/// <remarks>
+/// Decisions: DEC-0038, DEC-0047, DEC-0050.
+/// Contracts: docs/03_runtime_contracts/PREVIEW_BUILD_EXPORT_CONTRACT_V2.md.
+/// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowBuildValidationTests.cs.
+/// </remarks>
 public static class ScadaProjectBuildValidator
 {
+    /// <summary>Validates project-level contracts when no loaded scene snapshots are supplied.</summary>
     public static IReadOnlyList<ScadaBuildValidationIssue> Validate(ScadaProject project)
     {
         ArgumentNullException.ThrowIfNull(project);
-        return Validate(project.Scenes, project.HomePageId, project.HomePageKey);
+        return Validate(project, Array.Empty<ScadaScene>());
     }
 
+    /// <summary>Validates project-level contracts and every supplied coherent scene snapshot.</summary>
     public static IReadOnlyList<ScadaBuildValidationIssue> Validate(
         ScadaProject project,
         IReadOnlyList<ScadaScene> scenes)
@@ -278,11 +286,12 @@ public static class ScadaProjectBuildValidator
             ValidateSceneCommandBindings(issues, scene, project.TagCatalog, pagesById, pagesByKey, project);
         }
 
-        ValidateQuickWindows(issues, project, tagsById);
+        ValidateQuickWindows(issues, project);
 
         return issues;
     }
 
+    /// <summary>Validates page inventory and configured home-page compatibility.</summary>
     public static IReadOnlyList<ScadaBuildValidationIssue> Validate(
         IReadOnlyList<ScadaSceneReference> pages,
         string? homePageId)
@@ -1050,8 +1059,7 @@ public static class ScadaProjectBuildValidator
 
     private static void ValidateQuickWindows(
         List<ScadaBuildValidationIssue> issues,
-        ScadaProject project,
-        IReadOnlyDictionary<string, ScadaTagDefinition> tagsById)
+        ScadaProject project)
     {
         var defs = project.EffectiveQuickWindows;
         var invs = project.EffectiveQuickWindowInvocations;

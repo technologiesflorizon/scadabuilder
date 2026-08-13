@@ -9,9 +9,13 @@ namespace ScadaBuilderV2.Application.QuickWindows;
 /// <summary>Identifies where a durable quick-window invocation is owned.</summary>
 public enum QuickWindowUsageKind
 {
+    /// <summary>An OpenQuickWindow command owned by a page scene.</summary>
     PageCommand,
+    /// <summary>An OpenQuickWindow command owned by another definition content tree.</summary>
     DefinitionCommand,
+    /// <summary>An invocation descriptor that currently has no resolved caller command.</summary>
     UnattachedInvocation,
+    /// <summary>One explicit invocation binding to a definition interface member.</summary>
     InvocationBinding
 }
 
