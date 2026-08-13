@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using ScadaBuilderV2.Domain.ElementEvents.State;
 using ScadaBuilderV2.Domain.QuickWindows;
+using ScadaBuilderV2.Domain.RuntimeContracts;
 using ScadaBuilderV2.Domain.Versioning;
 using ScadaBuilderV2.Domain.Scenes;
 using System.Text.Json.Serialization;
@@ -1054,6 +1055,29 @@ public static class ScadaProjectBuildValidator
     {
         var defs = project.EffectiveQuickWindows;
         var invs = project.EffectiveQuickWindowInvocations;
+        var containsQuickWindows = defs.Count > 0 || invs.Count > 0;
+        var profile = QuickWindowProfileCompatibility.Validate(project.ManifestVersion, containsQuickWindows);
+        if (!profile.IsCompatible)
+        {
+            issues.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                "quick-window.profile-unsupported",
+                $"Manifest profile '{project.ManifestVersion}' cannot carry QuickWindow definitions or invocations.",
+                PropertyPath: "Project.ManifestVersion",
+                SuggestedFix: "Target manifest profile 2.3; profiles 2.1 and 2.2 fail closed."));
+        }
+
+        if (containsQuickWindows &&
+            (ScadaRuntimeCapabilityCatalog.CommandKinds[ElementEvents.Command.ScadaCommandKind.OpenQuickWindow].Status != ScadaRuntimeCapabilityStatus.Supported ||
+             ScadaRuntimeCapabilityCatalog.CommandKinds[ElementEvents.Command.ScadaCommandKind.CloseQuickWindow].Status != ScadaRuntimeCapabilityStatus.Supported))
+        {
+            issues.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                "quick-window.capability-unsupported",
+                "QuickWindow build/export capabilities remain blocked until Builder, shared runtime and TF100Web conformance are promoted together.",
+                PropertyPath: "RuntimeCapabilities",
+                SuggestedFix: "Keep authoring data saved but do not build/export until the QuickWindow capability set is Supported."));
+        }
 
         // Validate each definition
         var seenKeys = new HashSet<Guid>();
@@ -1070,9 +1094,24 @@ public static class ScadaProjectBuildValidator
             // Avoid duplicate code error double count: filter
             foreach (var di in defIssues.Where(m => !m.Contains("Code:")))
             {
-                issues.Add(new ScadaBuildValidationIssue(ScadaBuildValidationSeverity.Error, "quick-window.definition-invalid", di, PropertyPath: $"Project.QuickWindows[{def.Code}]"));
+                var code = di.Contains("VisualContent is required", StringComparison.Ordinal)
+                    ? "quick-window.content-missing"
+                    : di.Contains("QuickWindowPosition", StringComparison.Ordinal) ||
+                      di.Contains("IsDraggable", StringComparison.Ordinal) ||
+                      di.Contains("IsResizable", StringComparison.Ordinal) ||
+                      di.Contains("IsViewportConstrained", StringComparison.Ordinal) ||
+                      di.Contains("Chrome.", StringComparison.Ordinal)
+                        ? "quick-window.presentation-invalid"
+                        : di.Contains("CloseQuickWindow", StringComparison.Ordinal)
+                            ? "quick-window.close-selector-invalid"
+                            : "quick-window.definition-invalid";
+                issues.Add(new ScadaBuildValidationIssue(
+                    ScadaBuildValidationSeverity.Error,
+                    code,
+                    di,
+                    PropertyPath: $"Project.QuickWindows[{def.Code}]",
+                    TargetKey: def.DefinitionKey));
             }
-            // Also validate member Required vs catalog etc. handled via invocation validation below
         }
 
         // Validate each invocation
@@ -1092,14 +1131,185 @@ public static class ScadaProjectBuildValidator
             var bindingResults = QuickWindows.QuickWindowBindingValidator.ValidateInvocation(inv, def, project.TagCatalog);
             foreach (var br in bindingResults.Where(r => !r.IsValid))
             {
-                var sev = br.ErrorCode == "injection-rejected" || br.Category == "injection-rejected" ? ScadaBuildValidationSeverity.Error : ScadaBuildValidationSeverity.Error;
-                var code = br.ErrorCode == "injection-rejected" ? "quick-window.injection-rejected" : br.ErrorCode == "binding.required-missing" ? "quick-window.required-missing" : "quick-window.binding-invalid";
-                issues.Add(new ScadaBuildValidationIssue(sev, code, br.Message ?? "Binding invalid", PropertyPath: $"Project.QuickWindowInvocations[{inv.InvocationKey}]"));
+                var code = BuildBindingDiagnosticCode(br);
+                issues.Add(new ScadaBuildValidationIssue(
+                    ScadaBuildValidationSeverity.Error,
+                    code,
+                    br.Message ?? "Binding invalid",
+                    PageKey: inv.OwnerPageKey,
+                    ElementId: inv.OwnerElementId,
+                    CommandId: inv.OwnerCommandId,
+                    PropertyPath: $"Project.QuickWindowInvocations[{inv.InvocationKey}]",
+                    TargetKey: inv.InvocationKey,
+                    SuggestedFix: "Repair the explicit typed binding; the validator never creates a default binding."));
             }
         }
 
-        // Depth/cycle validation placeholder: Page->A->B allowed, Page->A->B->C and cycles rejected via dedicated analyzer (Task 2.1)
-        // For now, ensure no invocation references parent port outside known definitions (basic check done via validator)
+        ValidateQuickWindowDependencyGraph(issues, defs, invs);
+    }
+
+    private static string BuildBindingDiagnosticCode(QuickWindowBindingValidator.BindingValidationResult result) =>
+        result.ErrorCode switch
+        {
+            "injection-rejected" or "invocation.title-injection" => "quick-window.injection-rejected",
+            "binding.required-missing" => "quick-window.required-missing",
+            "invocation.interface-version-mismatch" or "binding.interface-version-invalid" => "quick-window.interface-version-incompatible",
+            "binding.unknown-member" => "quick-window.port-removed",
+            "binding.catalog-missing" or "binding.tag-missing" or "binding.expression-tag-missing" => "quick-window.mapping-missing",
+            "binding.tag-disabled" => "quick-window.mapping-disabled",
+            "binding.type-mismatch" or "binding.literal-type" => "quick-window.type-incompatible",
+            "binding.tag-readonly" or "binding.write-source" or "binding.private-member" => "quick-window.access-invalid",
+            _ => "quick-window.binding-invalid"
+        };
+
+    private static void ValidateQuickWindowDependencyGraph(
+        List<ScadaBuildValidationIssue> issues,
+        IReadOnlyList<QuickWindowDefinition> definitions,
+        IReadOnlyList<QuickWindowInvocation> invocations)
+    {
+        var definitionsByKey = definitions
+            .GroupBy(definition => definition.DefinitionKey)
+            .ToDictionary(group => group.Key, group => group.First());
+        var invocationsByKey = invocations
+            .GroupBy(invocation => invocation.InvocationKey)
+            .ToDictionary(group => group.Key, group => group.First());
+        var edges = new List<(Guid Source, Guid Target, string PropertyPath)>();
+
+        foreach (var definition in definitions)
+        {
+            if (definition.Content is null)
+                continue;
+
+            foreach (var element in FlattenElements(definition.EffectiveContent.EffectiveElements))
+            {
+                foreach (var command in element.EffectiveCommandConfig.Commands)
+                {
+                    var path = $"Project.QuickWindows[{definition.DefinitionKey}].Content.Elements[{element.Id}].CommandConfig.Commands[{command.Id}]";
+                    if (command.Kind == ElementEvents.Command.ScadaCommandKind.CloseQuickWindow)
+                    {
+                        if (command.TargetPageKey is not null || !string.IsNullOrWhiteSpace(command.TargetPageId) || command.QuickWindowInvocationKey is not null)
+                        {
+                            issues.Add(new ScadaBuildValidationIssue(
+                                ScadaBuildValidationSeverity.Error,
+                                "quick-window.close-selector-invalid",
+                                $"CloseQuickWindow command '{command.Id}' must target Self implicitly.",
+                                ElementId: element.Id,
+                                CommandId: command.Id,
+                                PropertyPath: path,
+                                TargetKey: definition.DefinitionKey));
+                        }
+                        continue;
+                    }
+
+                    if (command.Kind != ElementEvents.Command.ScadaCommandKind.OpenQuickWindow)
+                        continue;
+                    if (command.QuickWindowInvocationKey is not { } invocationKey || invocationKey == Guid.Empty)
+                    {
+                        issues.Add(new ScadaBuildValidationIssue(
+                            ScadaBuildValidationSeverity.Error,
+                            "quick-window.invocation-missing",
+                            $"OpenQuickWindow command '{command.Id}' requires an InvocationKey.",
+                            ElementId: element.Id,
+                            CommandId: command.Id,
+                            PropertyPath: $"{path}.QuickWindowInvocationKey",
+                            TargetKey: definition.DefinitionKey));
+                        continue;
+                    }
+
+                    if (!invocationsByKey.TryGetValue(invocationKey, out var invocation))
+                    {
+                        issues.Add(new ScadaBuildValidationIssue(
+                            ScadaBuildValidationSeverity.Error,
+                            "quick-window.invocation-missing",
+                            $"OpenQuickWindow command '{command.Id}' references missing invocation '{invocationKey}'.",
+                            ElementId: element.Id,
+                            CommandId: command.Id,
+                            PropertyPath: $"{path}.QuickWindowInvocationKey",
+                            TargetKey: invocationKey));
+                        continue;
+                    }
+
+                    if (!definitionsByKey.ContainsKey(invocation.DefinitionKey))
+                    {
+                        issues.Add(new ScadaBuildValidationIssue(
+                            ScadaBuildValidationSeverity.Error,
+                            "quick-window.invocation-definition-missing",
+                            $"Invocation '{invocation.InvocationKey}' references missing definition '{invocation.DefinitionKey}'.",
+                            ElementId: element.Id,
+                            CommandId: command.Id,
+                            PropertyPath: $"{path}.QuickWindowInvocationKey",
+                            TargetKey: invocation.DefinitionKey));
+                        continue;
+                    }
+
+                    edges.Add((definition.DefinitionKey, invocation.DefinitionKey, $"{path}.QuickWindowInvocationKey"));
+                }
+            }
+        }
+
+        var edgesBySource = edges
+            .GroupBy(edge => edge.Source)
+            .ToDictionary(group => group.Key, group => group.OrderBy(edge => edge.PropertyPath, StringComparer.Ordinal).ToArray());
+        var seenCycles = new HashSet<string>(StringComparer.Ordinal);
+        var seenDepth = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var root in definitionsByKey.Keys.OrderBy(key => key))
+            Visit(root, 1, [root]);
+
+        void Visit(Guid current, int depth, List<Guid> path)
+        {
+            if (!edgesBySource.TryGetValue(current, out var outgoing))
+                return;
+            foreach (var edge in outgoing)
+            {
+                var cycleIndex = path.IndexOf(edge.Target);
+                if (cycleIndex >= 0)
+                {
+                    var cycle = path.Skip(cycleIndex).Append(edge.Target).ToArray();
+                    var signature = CanonicalQuickWindowCycle(cycle);
+                    if (seenCycles.Add(signature))
+                    {
+                        issues.Add(new ScadaBuildValidationIssue(
+                            ScadaBuildValidationSeverity.Error,
+                            "cycle/depth-exceeded",
+                            $"Quick-window dependency cycle detected: {string.Join(" -> ", cycle)}.",
+                            PropertyPath: edge.PropertyPath,
+                            TargetKey: edge.Target,
+                            SuggestedFix: "Remove the recursive OpenQuickWindow command."));
+                    }
+                    continue;
+                }
+
+                if (depth + 1 > 2)
+                {
+                    if (seenDepth.Add(edge.PropertyPath))
+                    {
+                        issues.Add(new ScadaBuildValidationIssue(
+                            ScadaBuildValidationSeverity.Error,
+                            "cycle/depth-exceeded",
+                            $"Quick-window nesting depth exceeds two definitions at '{edge.Target}'.",
+                            PropertyPath: edge.PropertyPath,
+                            TargetKey: edge.Target,
+                            SuggestedFix: "Keep Page -> A -> B as the deepest supported chain."));
+                    }
+                    continue;
+                }
+
+                path.Add(edge.Target);
+                Visit(edge.Target, depth + 1, path);
+                path.RemoveAt(path.Count - 1);
+            }
+        }
+    }
+
+    private static string CanonicalQuickWindowCycle(IReadOnlyList<Guid> cycle)
+    {
+        var nodes = cycle.Take(cycle.Count - 1).Select(key => key.ToString("N")).ToArray();
+        if (nodes.Length == 0)
+            return string.Empty;
+        return Enumerable.Range(0, nodes.Length)
+            .Select(offset => string.Join(">", Enumerable.Range(0, nodes.Length).Select(index => nodes[(index + offset) % nodes.Length])))
+            .OrderBy(value => value, StringComparer.Ordinal)
+            .First();
     }
 
     private static void ValidateCommandPageTarget(
