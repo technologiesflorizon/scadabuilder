@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active project model contract
-Document version: `V2.1.5.0021`
+Document version: `V2.1.5.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Phase 2 : mutations Application coordonnent projet, scène appelante, commande et invocation; l’historique restaure le snapshot complet sans I/O. |
 | 2026-08-13 | `V2.1.5.0021` | `PENDING` | Contrat de persistance QuickWindow Phase 1 : fichiers autoritaires séparés, manifest sans duplication et profils antérieurs fail-closed. |
 | 2026-07-29 | `V2.1.5.0000` | `PENDING` | La persistance accepte une racine projet exacte choisie par l’utilisateur; `.sb2` demeure un artefact runtime. |
 | 2026-07-15 | `V2.1.4.0039` | `PENDING` | Les cellules ancres `InputNumeric` peuvent porter `DisplayFormat` et des bindings lecture/ecriture persistants, proteges par les operations structurelles et exclus du clipboard. |
@@ -65,7 +66,9 @@ Element numeric data keeps compatibility fields for older projects, but active a
 
 Une définition porte un `VisualContent` borné, sa version d’interface, ses membres locaux et ses defaults de présentation. Les invocations restent portées par le projet et les commandes appelantes au moyen d’un `InvocationKey`, d’un `QuickWindowDefinitionKey` et d’une `InterfaceVersion`; l’identité runtime n’est jamais persistée. Les membres privés ne sont pas bindables par une invocation.
 
-Les fichiers sont ordonnés de façon déterministe et remplacés atomiquement après écriture temporaire, flush et validation. Un projet historique sans Fenêtre rapide se recharge sans migration et ne doit pas être réécrit. Une définition inline sans fichier autoritaire est refusée au lieu d’être migrée implicitement. Les profils manifest 2.1/2.2 refusent toute présence QuickWindow; le profil 2.3 ne devient productible qu’après les gates des Phases 2 à 6.
+Les fichiers sont ordonnés de façon déterministe et remplacés atomiquement après écriture temporaire, flush et validation. Un projet historique sans Fenêtre rapide se recharge sans migration et ne doit pas être réécrit. Une définition inline sans fichier autoritaire est refusée au lieu d’être migrée implicitement. Les profils manifest 2.1/2.2 refusent toute présence QuickWindow; le profil 2.3 ne devient productible qu’après les gates des Phases 3 à 6.
+
+Les mutations Phase 2 sont préparées en mémoire comme un snapshot cohérent du projet et des scènes appelantes. Ajouter, modifier ou retirer une invocation met à jour sa commande `OpenQuickWindow` dans la même transition. L’undo/redo restaure le projet, les scènes, la sélection et le dirty state sans effectuer d’I/O; Save demeure le seul commit persistant.
 
 ## 3. Tag Catalog
 

@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Command Flow Diagram
 
 Date: 2026-07-14
-Status: Generated baseline with implemented page and Table command flows
-Document version: `V2.1.4.0027`
+Status: Generated baseline with implemented page, Table and QuickWindow Application flows
+Document version: `V2.1.5.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Ajout du flux de services QuickWindow Phase 2, antérieur au branchement WPF de Phase 3. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Ajout du flux Tableau par view model, requête typée, coordinateur, Domain et historique. |
 | 2026-07-14 | `V2.1.2.0003` | `PENDING` | Ajout du flux asynchrone partagé des commandes de page et des diagnostics. |
 | 2026-06-16 | `V2.1.2.0002` | `PENDING` | Ajout du flux de groupement Element+ only et avertissement legacy. |
@@ -20,13 +21,20 @@ sequenceDiagram
   participant Context as Command Context
   participant Handler as Handler
   participant Coordinator as Page Coordinator
+  participant QuickWindow as QuickWindow Services
   participant Model as Model
   participant History as History
   participant Diagnostics as Diagnostics
   UI->>Registry: command id
   Registry->>Context: resolve state
   Context->>Handler: execute
-  alt page.* command
+  alt QuickWindow Phase 2 service request
+    UI->>QuickWindow: definition / invocation intent
+    QuickWindow->>Model: prepare project + caller-scene mutation
+    QuickWindow->>History: QuickWindowWorkspaceSnapshotAction
+    QuickWindow-->>Diagnostics: usages / cycle / depth / bindings
+    QuickWindow-->>UI: result + navigation target
+  else page.* command
     Handler->>Coordinator: typed PageCommandRequest
     Coordinator->>Model: produce PageWorkspaceMutation
     Coordinator->>History: project-scoped snapshot action

@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active flow contract
-Document version: `V2.1.5.0000`
+Document version: `V2.1.5.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Ajout du flux Application QuickWindow Phase 2 : services immuables, dépendances, historique atomique et validation build fail-closed. |
 | 2026-07-29 | `V2.1.5.0000` | `PENDING` | Ajout du flux `DEC-0049` de création, ouverture, sauvegarde, fermeture et récents. |
 | 2026-07-14 | `V2.1.1.0040` | `PENDING` | Ajout du flux partagé des commandes de page, de l'historique projet, de la sauvegarde atomique et des diagnostics. |
 | 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du flow applicatif global pour relier import, edition, preview, Studio Element+, export et validation. |
@@ -46,6 +47,21 @@ flowchart LR
   Snapshot --> Identity["Adaptateur PageKey vers PageCode"]
   Identity --> Sb2["Export .sb2 inchangé"]
 ```
+
+### QuickWindow Phase 2 flow
+
+```mermaid
+flowchart LR
+  Intent["Future surface WPF / test Application"] --> Services["DefinitionService / InvocationService"]
+  Services --> Dependencies["DependencyAnalyzer usages + cycle/depth"]
+  Services --> Snapshot["Project + caller scenes immutable snapshot"]
+  Snapshot --> History["QuickWindowWorkspaceSnapshotAction"]
+  Snapshot --> BuildValidation["ScadaProjectBuildValidator"]
+  BuildValidation --> Authoring["Warnings authoring; save allowed"]
+  BuildValidation --> Blocked["Build/export blocked while capabilities unsupported"]
+```
+
+La Phase 2 n’ajoute ni surface WPF, ni preview produit, ni compilateur/export QuickWindow. Les services et l’historique sont prêts pour la Phase 3, tandis que le validateur bloque explicitement les profils antérieurs, les graphes invalides, les liaisons incompatibles et les capacités non promues.
 
 ## 2. Validation Points
 

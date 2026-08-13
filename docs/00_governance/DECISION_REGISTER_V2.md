@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active authoritative decision register
-Document version: `V2.1.5.0021`
+Document version: `V2.1.5.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0022` | `PENDING` | `DEC-0050` Phase 2 implémentée : orchestration Application, dépendances, undo/redo workspace et validation build/export; capacités QuickWindow toujours `Blocked`. |
 | 2026-08-13 | `V2.1.5.0021` | `PENDING` | `DEC-0050` synchronisée après audit : Phases 0/1 corrigées et validées, Phase 2 en attente, capacités QuickWindow toujours `Blocked`. |
 | 2026-08-10 | `V2.1.5.0018` | `PENDING` | Le plan d’implémentation de `DEC-0050` est créé; sa phase 0 d’isolation DOM/CSS est un gate absolu avant toute modification de production. |
 | 2026-08-10 | `V2.1.5.0017` | `PENDING` | Ajout de `DEC-0050` : les Fenêtres rapides deviennent des entités typées distinctes avec liaisons par invocation; `DEC-0019`, `DEC-0020` et `DEC-0022` sont supersédées. |
@@ -142,11 +143,11 @@ La première tranche est une verticale `win00054` couvrant modèle, persistance,
 
 Implementation status:
 
-La Phase 0 d’isolation DOM/CSS est validée avec la fixture gelée `1.0.2` dans WebView2 et TF100Web. La Phase 1 fournit les contrats Domain/persistance et le handshake cross-repository, tous inertes. La Phase 2 n’est pas démarrée; toutes les capacités Fenêtre rapide demeurent `Blocked` et aucun comportement preview/export/host n’est déclaré implémenté.
+La Phase 0 d’isolation DOM/CSS est validée avec la fixture gelée `1.0.2` dans WebView2 et TF100Web. La Phase 1 fournit les contrats Domain/persistance et le handshake cross-repository, tous inertes. La Phase 2 fournit les services Application de définition/invocation, l’analyse des usages/cycles/profondeur, l’historique workspace atomique et la validation build/export fail-closed. Toutes les capacités Fenêtre rapide demeurent `Blocked` et aucun comportement WPF, preview, export ou host n’est déclaré implémenté.
 
 Regression coverage:
 
-Les preuves Phase 0/1 sont référencées dans `docs/08_implementation_status/REGRESSION_COVERAGE_V2.md` et le rapport d’audit du 2026-08-13. Les preuves Application/WPF produit, preview/export, runtime partagé et host TF100Web restent à créer dans les Phases 2 à 7.
+Les preuves Phases 0 à 2 sont référencées dans `docs/08_implementation_status/REGRESSION_COVERAGE_V2.md` et le rapport d’audit du 2026-08-13. Les preuves WPF produit, preview/export, runtime partagé et host TF100Web restent à créer dans les Phases 3 à 7.
 
 ### DEC-0049 - Cycle de vie autonome des projets V2
 

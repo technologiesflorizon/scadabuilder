@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active editor command contract
-Document version: `V2.1.5.0000`
+Document version: `V2.1.5.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Services Application QuickWindow Phase 2 : mutations immuables définition/invocation/appelant, diagnostics référentiels et résultats structurés avant branchement WPF. |
 | 2026-07-29 | `V2.1.5.0000` | `PENDING` | Activation des commandes `project.new`, `project.open`, `project.reopen-last`, `project.save` et `project.close`. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | `table.merge-toggle` remplace les deux choix visibles Fusionner/Defusionner et derive son action de la plage selectionnee. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Ajout des requêtes typées de propriétés/dimensions, reset d'une propriété, distribution proportionnelle et marquage/démarquage des en-têtes; les dialogues ne remplacent plus directement la définition Tableau. |
@@ -66,12 +67,19 @@ sequenceDiagram
   participant Registry as Command Registry
   participant Context as Command Context
   participant Handler as Command Handler
+  participant QuickWindow as QuickWindow Services
   participant Model as Scene/Project Model
   participant History as History Stack
   Surface->>Registry: request command id
   Registry->>Context: build current context
   Registry->>Handler: execute when enabled
-  Handler->>Model: validate and mutate
+  alt QuickWindow Phase 2 mutation
+    Handler->>QuickWindow: definition / invocation request
+    QuickWindow->>Model: validate and prepare immutable snapshot
+    QuickWindow-->>Handler: mutation + diagnostics + usage routing
+  else other editor command
+    Handler->>Model: validate and mutate
+  end
   Handler->>History: push action when required
   Handler-->>Surface: result and diagnostics
 ```
@@ -84,7 +92,13 @@ Stable page command ids are `page.new`, `page.rename`, `page.change-code`, `page
 
 `CommandRegistry`, `PageCommandCoordinator` and typed `PageCommandRequest` records are the shared authority for ribbon, project tree, context menu and properties panel. A cancelled command does not display the blocking error dialog; blocked/failed results retain structured diagnostics.
 
-## 5. Related Tests
+## 5. Implemented QuickWindow Application Services
+
+Phase 2 de `DEC-0050` fournit `QuickWindowDefinitionService`, `QuickWindowInvocationService` et `QuickWindowDependencyAnalyzer`. Ils préparent des `QuickWindowWorkspaceMutation` immuables qui coordonnent projet, scène appelante, commande `OpenQuickWindow`, invocation et liaisons. Une définition référencée ne peut pas être supprimée; les cycles et une profondeur supérieure à deux utilisent le diagnostic stable `cycle/depth-exceeded`.
+
+Ces services ne constituent pas encore une surface WPF ni des ids enregistrés dans le ruban. Leur branchement aux surfaces dédiées appartient à la Phase 3; jusque-là, les kinds QuickWindow restent masqués dans le dialogue de commande général.
+
+## 6. Related Tests
 
 1. `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`
 2. `tests/ScadaBuilderV2.Tests/EditorHistoryServiceTests.cs`
@@ -92,3 +106,4 @@ Stable page command ids are `page.new`, `page.rename`, `page.change-code`, `page
 4. `tests/ScadaBuilderV2.Tests/RibbonCommandCatalogTests.cs`
 5. `tests/ScadaBuilderV2.Tests/PageApplicationCommandTests.cs`
 6. `tests/ScadaBuilderV2.Tests/PageLifecycleIntegrationTests.cs`
+7. `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowApplicationTests.cs`

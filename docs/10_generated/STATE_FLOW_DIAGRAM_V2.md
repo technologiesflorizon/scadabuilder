@@ -1,13 +1,14 @@
 # SCADA Builder V2 - State Flow Diagram
 
 Date: 2026-07-16
-Status: Generated baseline with project workspace, Table editor and runtime effect state
-Document version: `V2.1.4.0044`
+Status: Generated baseline with project workspace, QuickWindow history, Table editor and runtime effect state
+Document version: `V2.1.5.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Ajout des transitions snapshot QuickWindow projet/scènes/UI/dirty et restore atomique. |
 | 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | Ajout du flow runtime snapshot, fallback reversible et effet confirme sous contenu semantique. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Ajout des transitions atomiques Objet/Cellules et de la visibilite effective des reperes A/1. |
 | 2026-07-14 | `V2.1.1.0040` | `PENDING` | Ajout du dirty state, undo/redo projet, suppressions en attente et sauvegarde atomique des pages. |
@@ -29,9 +30,12 @@ stateDiagram-v2
   TableObject --> SelectionActive: select non-Table Element+
   SceneActive --> Dirty: mutation
   SceneActive --> ProjectDirty: page.* mutation
+  SceneActive --> QuickWindowDirty: definition / invocation / caller mutation
+  QuickWindowDirty --> ProjectUndoAvailable: atomic workspace snapshot action
   ProjectDirty --> ProjectUndoAvailable: project history push
   ProjectUndoAvailable --> ProjectRedoAvailable: undo
   ProjectRedoAvailable --> ProjectUndoAvailable: redo
+  ProjectUndoAvailable --> QuickWindowDirty: undo / redo restores QW selection + dirty state
   ProjectDirty --> SavingAtomic: save project + scenes + deletions
   SavingAtomic --> ProjectOpen: commit succeeds
   SavingAtomic --> ProjectDirty: rollback/recovery on failure

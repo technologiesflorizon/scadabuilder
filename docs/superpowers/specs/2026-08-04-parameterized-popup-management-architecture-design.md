@@ -1,8 +1,8 @@
 # Fenêtres rapides paramétrées - Registre de décisions et spécification d’orientation
 
 Date: 2026-08-10
-Status: Approved - `DEC-0050`; phases 0 and 1 validated, phase 2 pending, all runtime capabilities blocked
-Document version: `V2.1.5.0021`
+Status: Approved - `DEC-0050`; phases 0 to 2 validated, phase 3 pending, all runtime capabilities blocked
+Document version: `V2.1.5.0022`
 Portée: SCADA Builder V2, runtime partagé `.sb2` et services host TF100Web
 Dépendances: `docs/02_architecture/GLOBAL_ARCHITECTURE_V2.md`, `docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md`, `docs/03_runtime_contracts/PREVIEW_BUILD_EXPORT_CONTRACT_V2.md`, `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md`, `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`, `docs/04_editor/STATE_MANAGEMENT_CONTRACT_V2.md`
 
@@ -10,6 +10,7 @@ Dépendances: `docs/02_architecture/GLOBAL_ARCHITECTURE_V2.md`, `docs/03_runtime
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Phase 2 synchronisée : services Application, dépendances, historique workspace atomique et validation build/export fail-closed implémentés sans promotion de capacité runtime. |
 | 2026-08-13 | `V2.1.5.0021` | `PENDING` | Statut synchronisé après audit : gate Phase 0 réel validé et contrats persistants Phase 1 corrigés; aucune capacité runtime, UI ou export promue. |
 | 2026-08-10 | `V2.1.5.0018` | `PENDING` | Création du plan d’implémentation dérivé; sa phase 0 doit valider l’isolation DOM/CSS dans WebView2 et TF100Web avant toute modification de production. |
 | 2026-08-10 | `V2.1.5.0017` | `PENDING` | Approbation formelle par `DEC-0050`; `DEC-0019`, `DEC-0020` et `DEC-0022` sont supersédées. La spécification est complète et peut maintenant produire un plan dont la phase 0 d’isolation demeure bloquante. |
@@ -32,7 +33,7 @@ Dépendances: `docs/02_architecture/GLOBAL_ARCHITECTURE_V2.md`, `docs/03_runtime
 
 ## 1. Statut décisionnel
 
-Ce document est la spécification propriétaire approuvée de la fonctionnalité par `DEC-0050`. Cette décision supersède `DEC-0019`, `DEC-0020` et `DEC-0022`. Les Phases 0 et 1 matérialisent uniquement le gate d’isolation et les contrats persistants inertes; aucun comportement QuickWindow n’est encore activé dans le preview, les packages `.sb2` ou TF100Web.
+Ce document est la spécification propriétaire approuvée de la fonctionnalité par `DEC-0050`. Cette décision supersède `DEC-0019`, `DEC-0020` et `DEC-0022`. Les Phases 0 et 1 matérialisent le gate d’isolation et les contrats persistants inertes; la Phase 2 ajoute l’orchestration Application, les dépendances, l’historique et le gate de build. Aucun comportement QuickWindow n’est encore activé dans le preview, les packages `.sb2` ou TF100Web.
 
 Il distingue explicitement :
 

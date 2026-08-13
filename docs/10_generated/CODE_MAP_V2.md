@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Code Map
 
 Date: 2026-07-15
-Status: Generated baseline; DEC-0040 ownership verified
-Document version: `V2.1.4.0027`
+Status: Generated baseline; DEC-0040 and DEC-0050 Phase 2 ownership verified
+Document version: `V2.1.5.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Ajout des propriétaires QuickWindow Phase 2 : Application, historique workspace et validation build Domain. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Carte Tableau complétée avec inspecteur Application, view models App, tests bridge/performance/intégration et rendu sémantique. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Ajout des proprietaires Tableau avance et verrouillage persistant Element+. |
 | 2026-07-14 | `V2.1.2.0020` | `PENDING` | Ajout des propriétaires identité, commandes, workspace, diagnostics, migration, persistance atomique et projection `.sb2` des pages. |
@@ -51,7 +52,17 @@ Document version: `V2.1.4.0027`
 | WPF Table surfaces and typed WebView bridge | `App/TableEditor/` (`TableRibbonViewModel`, `TablePropertiesViewModel`, adapter/script), `App/MainWindow.TableIntegration.cs` |
 | Shared Table runtime rendering | `Rendering/ModernTableHtmlRenderer.cs` |
 
-## 4. Verification
+## 4. DEC-0050 Phase 2 Owners
+
+| Area | Owner |
+| --- | --- |
+| Definition/invocation orchestration | `Application/QuickWindows/QuickWindowDefinitionService.cs`, `QuickWindowInvocationService.cs` |
+| Usage, reference, cycle and depth analysis | `Application/QuickWindows/QuickWindowDependencyAnalyzer.cs` |
+| Atomic workspace undo/redo | `Application/History/QuickWindowWorkspaceSnapshotAction.cs`, `ProjectWorkspaceSnapshotAction.cs`, `EditorHistoryService.cs` |
+| Build/export fail-closed validation | `Domain/Projects/ProjectModels.cs` (`ScadaProjectBuildValidator`) |
+| Regression evidence | `Tests/QuickWindows/QuickWindowApplicationTests.cs`, `QuickWindowHistoryTests.cs`, `QuickWindowBuildValidationTests.cs` |
+
+## 5. Verification
 
 Run:
 

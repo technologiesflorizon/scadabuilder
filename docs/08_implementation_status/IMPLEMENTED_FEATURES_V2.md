@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active implementation status
-Document version: `V2.1.5.0021`
+Document version: `V2.1.5.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Phase 2 Fenêtres rapides implémentée : services Application, dépendances, undo/redo atomique et validation build/export fail-closed; UI/runtime/export non activés. |
 | 2026-08-13 | `V2.1.5.0021` | `PENDING` | Phases 0/1 Fenêtres rapides validées après audit : isolation réelle, contrats inertes, persistance et handshake; aucune capacité authoring/runtime/export promue. |
 | 2026-07-30 | `V2.1.5.0002` | `PENDING` | Les effets Etat de fond/bordure recolorent la géométrie SVG visible des formes de base en preview et export, avec restauration et repli compatibles. |
 | 2026-07-29 | `V2.1.5.0001` | `PENDING` | Découverte initiale contrôlée du plus proche répertoire `projects/` : les manifestes existants apparaissent dans les récents sans réouverture automatique ni réajout après retrait. |
@@ -109,7 +110,7 @@ Document version: `V2.1.5.0021`
 
 ## 1. Current Verified Baseline
 
-As of 2026-08-13, the solution build and the 53 targeted QuickWindow/legacy-popup tests pass. Phase 0 also passes under exact Node 20.18.1, real WebView2 and the TF100Web browser fixture. The full-suite result is recorded in `REGRESSION_COVERAGE_V2.md`.
+As of 2026-08-13, the solution build and the 67 targeted QuickWindow/legacy-popup tests pass. Phase 0 also passes under exact Node 20.18.1, real WebView2 and the TF100Web browser fixture. The full-suite result is recorded in `REGRESSION_COVERAGE_V2.md`.
 
 ## 2. Implemented Areas
 
@@ -208,7 +209,7 @@ As of 2026-08-13, the solution build and the 53 targeted QuickWindow/legacy-popu
 93. `win00012_modern_no_legacy` preserves the blank spacer below pre-cooling and adds two 32-pixel rows. `Depart Manuel` owns one unmapped `Command` button per evaporator; `Etat du degivrage` owns one rectangular Element+ status shape per evaporator. The 28 controls intentionally have no state, command, read or write mapping until the PLC tags are supplied, and their durable layout/export is protected by `Win00012DefrostToggleConfigurationTests` plus industrial package acceptance.
 94. Builder keeps numeric runtime reads coherent at three boundaries: `WithElementStateConfig` synchronizes new authoring, `ModernProjectMigration` repairs existing scenes recursively on load/snapshot/save, and build/export validation rejects any remaining `InputNumeric` divergence between `ValueBindings.ReadTagId` and `StateConfig.ReadVariable.TagId`. Reference-project acceptance scans every compiled page and locks `win00017` to `TE_EXT`, `PE_95`, and `PE_96` rather than the duplicated `PE_16` binding.
 95. Generated Rectangle, RoundedRectangle, Circle, Ellipse, Triangle and Star geometry identifies its visible SVG fill and stroke as semantic State-effect targets in both editor preview and `.sb2` export. The shared `EffectApplier` applies and restores background/border effects on those targets, while older or custom markup continues through the wrapper fallback. This makes the `win00012_modern_no_legacy` defrost status rectangles visibly red/green without changing their mappings or requiring TF100Web source changes.
-96. `DEC-0050` Phases 0/1 implement only the validated isolation fixture and inert QuickWindow contracts: bounded definitions, typed/versioned invocations, fail-closed legacy/profile rules, deterministic authoritative files and a generated Builder→TF100Web handshake. The normal page command UI hides QuickWindow kinds. Application orchestration, dedicated authoring, product preview, export, shared runtime and TF100Web host activation are not implemented and every QuickWindow capability remains `Blocked`.
+96. `DEC-0050` Phases 0/1 implement the validated isolation fixture and inert QuickWindow contracts: bounded definitions, typed/versioned invocations, fail-closed legacy/profile rules, deterministic authoritative files and a generated Builder→TF100Web handshake. Phase 2 adds immutable definition/invocation mutations, navigable dependency analysis, deterministic cycle/depth rejection, atomic project-scoped undo/redo and build/export validation that separates authoring warnings from blocking errors without fabricating bindings. Dedicated WPF authoring, product preview, export/compiler, shared runtime and TF100Web host activation are not implemented and every QuickWindow capability remains `Blocked`.
 
 ## 3. Source Of Truth
 

@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active runtime contract
-Document version: `V2.1.4.0062`
+Document version: `V2.1.5.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Gate build/export QuickWindow Phase 2 : erreurs required/mapping/type/accès/version/graphe/profil/présentation/injection et capacité bloquée, sans fabriquer de liaison. |
 | 2026-07-16 | `V2.1.4.0062` | `PENDING` | Parite modele/preview/export/runtime host verrouillee par fixture, capabilities, hash runtime et exclusion editor-only. |
 | 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | Tests de parite exacte ajoutes jusqu'au runtime stable et hashe deploye. |
 | 2026-07-16 | `V2.1.4.0046` | `b2e4f5f` | `DEC-0047` approuvee : la parite inclura un registre de capacites derive, manifest 2.3 et package de conformance partage avec TF100Web. |
@@ -48,6 +49,8 @@ Le manifest `.sb2` strict actif est en version `2.3`. Un objet Tableau peut expo
 
 Sous `DEC-0047`, preview/build/export derivent le meme ensemble `RequiredCapabilities` du modele; le package publie aussi le SHA-256 du runtime partage. Le validateur refuse les capabilities inconnues, bloquees, dupliquees ou non triees ainsi que toute divergence du runtime. TF100Web applique la meme negotiation avant remplacement du package actif. Les profils 2.1/2.2 restent des chemins de compatibilite explicites.
 
+Sous `DEC-0050` Phase 2, `ScadaProjectBuildValidator` refuse les Fenêtres rapides dont la définition, le contenu, la présentation, la version d’interface, les ports requis, les mappings, les types, les accès, les expressions/littéraux, les invocations ou le graphe cycle/profondeur sont invalides. Les profils 2.1/2.2 et toute capacité QuickWindow encore `Blocked` produisent une erreur. L’analyse Application peut exposer les mêmes défauts comme warnings d’authoring et la sauvegarde intermédiaire reste permise; le validateur ne crée jamais de liaison par défaut. Aucun compilateur, preview ou artefact `.sb2` QuickWindow n’est activé par cette phase.
+
 La fixture de conformance compare les objets du modele, le markup du preview natif et de l'export, les namespaces, l'absence d'artefacts editeur, les capabilities analysees/manifestees et le SHA runtime. TF100Web prouve ensuite que le runtime package est byte-identique aux fichiers stable et hashe servis et execute le fichier stable. Les preuves sont Builder `22c787f` et TF100Web `6fac468`.
 
 Element+ button hover behavior is FT100Web runtime metadata, not an editor overlay and not SCADA Builder V2 preview styling. Preview must preserve `ScadaButtonBehavior` without applying hover locally. FT100 export must preserve `ScadaButtonBehavior` in the manifest and may generate page-scoped CSS `:hover` rules from enabled hover metadata.
@@ -84,6 +87,8 @@ flowchart TD
   Diff --> Tests
   Model --> Capabilities[DEC-0047 capability analysis]
   Capabilities --> Validate
+  Model --> QuickWindowGate[DEC-0050 QuickWindow build validation]
+  QuickWindowGate --> Validate
 ```
 
 ## 3. Related Decisions
@@ -93,9 +98,11 @@ flowchart TD
 3. `DEC-0012` - Element+ Button Default Hover Behavior.
 4. `DEC-0013` - Runtime Group Event Wrapper Export.
 5. `DEC-0014` - Runtime Pointer Cursor For Clickable Targets.
+6. `DEC-0050` - Fenêtres rapides paramétrées et validation fail-closed.
 
 ## 4. Related Tests
 
 1. `tests/ScadaBuilderV2.Tests/PreviewDocumentTests.cs`
 2. `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
 3. `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`
+4. `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowBuildValidationTests.cs`

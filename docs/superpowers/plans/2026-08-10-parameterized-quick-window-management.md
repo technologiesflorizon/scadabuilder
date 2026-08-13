@@ -1,13 +1,14 @@
 # Fenêtres rapides paramétrées - Plan d’implémentation
 
 Date: 2026-08-10
-Status: Active implementation plan - phases 0 and 1 complete after corrective audit; phase 2 pending
-Document version: `V2.1.5.0021`
+Status: Active implementation plan - phases 0 to 2 complete; phase 3 pending
+Document version: `V2.1.5.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Phase 2 livrée : services de définition/invocation, analyse des usages/cycles/profondeur, snapshots undo/redo atomiques et validateur build/export fail-closed; capacités runtime toujours bloquées. |
 | 2026-08-13 | `V2.1.5.0021` | `PENDING` | Audit correctif : Phase 0 rejouée sur hosts réels et Phase 1 alignée sur les validations, la persistance autoritaire et le handshake exécutable; Phase 2 reste bloquée jusqu’au commit vert. |
 | 2026-08-10 | `V2.1.5.0020` | `PENDING` | Corrections des 5 lacunes de revue : matrice FR→Tasks, anti-injection `Literal`/`Expression`, `PresentationDefaults` explicites, rejet profondeur 3 et épinglage Node LTS. |
 | 2026-08-10 | `V2.1.5.0019` | `PENDING` | Renforcement après revue : boucle d’itération du prototype, audit popup mesurable, rollback inter-phase, gate export structurel, handshakes cross-repository précoces, races, SLA, version WebView2, extraction hors `MainWindow`, versioning et canary TF100Web. |
@@ -29,7 +30,8 @@ Document version: `V2.1.5.0021`
 - [x] Phase 1.3: anciens command kinds popup refusés; résidus legacy isolés; commandes QuickWindow masquées de l’UI courante.
 - [x] Phase 1.4: définitions autoritaires sous `quick-windows/`, JSON déterministe et écriture atomique.
 - [x] Phase 1.5: handshake généré, SHA canonique et mutations exécutées dans Builder et TF100Web.
-- [ ] Phase 2 et suivantes: non démarrées.
+- [x] Phase 2: orchestration Application, dépendances, historique et validation build/export fail-closed.
+- [ ] Phases 3 à 7: non démarrées.
 
 L’ancien rapport Phase 0 est invalidé et remplacé par la preuve corrigée. La Phase 1 avait historiquement démarré trop tôt. Aucune donnée QuickWindow n’est ajoutée aux projets durables; les données de référence sans rapport avec ce chantier restent hors portée et ne servent pas de preuve. Toutes les capacités QuickWindow restent `Blocked`.
 
@@ -432,10 +434,10 @@ Expected: fixture et expectations portent le même SHA dans les deux dépôts; a
 - Consumes: snapshots projet/scènes, validateur domaine et catalogue.
 - Produces: create/update/delete/navigation-to-usage, diagnostics référentiels et blocage de suppression d’une définition référencée.
 
-- [ ] Implémenter création vide, édition de métadonnées/interface, liste d’usages et suppression fail-closed.
-- [ ] Interdire cycles et profondeur > 2 dans l’analyse générale, tout en gardant l’imbrication hors surface de production de la première tranche; couvrir `A->B->A` (cycle direct) et `Page->A->B->C` (profondeur 3) comme rejets déterministes dans `QuickWindowDependencyAnalyzer` avec diagnostic `cycle/depth-exceeded` (même si `Page->A->B` reste vert).
-- [ ] Tester définitions manquantes, versions incompatibles, ports supprimés et diagnostics stables.
-- [ ] Commit: `feat: orchestrate quick window definitions`.
+- [x] Implémenter création vide, édition de métadonnées/interface, liste d’usages et suppression fail-closed.
+- [x] Interdire cycles et profondeur > 2 dans l’analyse générale, tout en gardant l’imbrication hors surface de production de la première tranche; couvrir `A->B->A` (cycle direct) et `Page->A->B->C` (profondeur 3) comme rejets déterministes dans `QuickWindowDependencyAnalyzer` avec diagnostic `cycle/depth-exceeded` (même si `Page->A->B` reste vert).
+- [x] Tester définitions manquantes, versions incompatibles, ports supprimés et diagnostics stables.
+- [x] Commit: `feat: orchestrate quick window definitions` (`4912f22`).
 
 ### Task 2.2: Rendre les mutations atomiques et undoables
 
@@ -450,9 +452,9 @@ Expected: fixture et expectations portent le même SHA dans les deux dépôts; a
 - Consumes: mutation définition/invocation/élément appelant.
 - Produces: une unité d’historique restaurant exactement élément, commande, invocation et liaisons.
 
-- [ ] Couvrir suppression de l’appelant, changement de définition/liaison et restauration de sélection/dirty state.
-- [ ] Tester undo/redo répété et indépendance de deux invocations créées séparément.
-- [ ] Commit: `feat: add quick window undo history`.
+- [x] Couvrir suppression de l’appelant, changement de définition/liaison et restauration de sélection/dirty state.
+- [x] Tester undo/redo répété et indépendance de deux invocations créées séparément.
+- [x] Commit: `feat: add quick window undo history` (`0017f2b`).
 
 ### Task 2.3: Étendre le validateur build/export fail-closed
 
@@ -464,9 +466,10 @@ Expected: fixture et expectations portent le même SHA dans les deux dépôts; a
 - Consumes: projet, scènes, définitions, invocations, catalogue et profil manifest.
 - Produces: diagnostics de la section 11 de la spec, sans empêcher la sauvegarde intermédiaire authoring.
 
-- [ ] Couvrir required absent, mapping/type/accès, définition/contenu/version, cycles/profondeur (incluant `Page->A->B->C` profondeur 3 doit être rejeté en build/export avec diagnostic `cycle/depth-exceeded` même si `A->B` reste vert, et `A->B->A` cycle), profil 2.1/2.2, présentation interdite et capacité non supportée; rejouer l’injection `Literal`/`Expression` invalide côté build pour prouver rejet fail-closed sans souscription ni écriture.
-- [ ] Séparer warnings d’authoring des erreurs build/export; ne jamais fabriquer de liaison par défaut.
-- [ ] Commit: `feat: validate quick window builds`.
+- [x] Couvrir required absent, mapping/type/accès, définition/contenu/version, cycles/profondeur (incluant `Page->A->B->C` profondeur 3 doit être rejeté en build/export avec diagnostic `cycle/depth-exceeded` même si `A->B` reste vert, et `A->B->A` cycle), profil 2.1/2.2, présentation interdite et capacité non supportée; rejouer l’injection `Literal`/`Expression` invalide côté build pour prouver rejet fail-closed sans souscription ni écriture.
+- [x] Séparer warnings d’authoring des erreurs build/export; ne jamais fabriquer de liaison par défaut.
+- [x] Commit: `feat: validate quick window builds` (`b84c8f6`).
+- [x] Correction de suivi: l’overload de validation projet seul applique aussi le gate QuickWindow et conserve les XML docs publiques (`a58903f`).
 
 ---
 
@@ -905,7 +908,7 @@ Chaque invariant approuvé de la spec `docs/superpowers/specs/2026-08-04-paramet
 - [ ] Chaque phase possède un checkpoint vert et une frontière de revert; aucune branche partielle n’est fusionnée/déployée.
 - [ ] Bumps `iteration` avant activation, bump `feature` exactement à la promotion livrable de Phase 6, aucun bump `production` implicite.
 - [ ] `Literal`/`Expression` contenant HTML/JS/sélecteur/chemin est rejetée en domaine, build et runtime partagé sans souscription ni écriture (FR-010 inv.10).
-- [ ] `Page->A->B->C` profondeur 3 et cycle `A->B->A` sont rejetés en `QuickWindowDependencyAnalyzer` et en build/export `Blocked` avec diagnostic `depth-exceeded`/`cycle`; `Page->A->B` reste vert.
+- [x] `Page->A->B->C` profondeur 3 et cycle `A->B->A` sont rejetés en `QuickWindowDependencyAnalyzer` et en build/export avec diagnostic `cycle/depth-exceeded`; `Page->A->B` reste vert pour cette règle.
 - [ ] Node LTS épinglée (`20.18.x` via `.nvmrc` + `package.json` `engines.node` + `node --version`) est identique dans les rapports Phase 0 et Phase 7; aucune divergence de version n’est tolérée.
 - [ ] `PresentationDefaults` contient `Title`/`Center`/`Backdrop`/`Chrome` borné/`IsDraggable=true`/`IsResizable=false`/`IsViewportConstrained=true` et aucune autre propriété V1; chrome host reste hors `CanvasSize` (FR-UI-02/11).
 - [ ] Annexe A mapping `FR-001..029` + `FR-UI-01..22` est 100% verte et `rg FR-0` ne révèle aucune FR orpheline.

@@ -1,13 +1,14 @@
 # SCADA Builder V2 - Module Function Index
 
 Date: 2026-07-15
-Status: Generated baseline; XML documentation gaps expected during migration
-Document version: `V2.1.4.0027`
+Status: Generated baseline; QuickWindow Phase 2 public APIs indexed
+Document version: `V2.1.5.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Index des services, analyseur et action d’historique QuickWindow Phase 2. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Ajout de `TablePropertiesInspector` et des nouvelles requêtes de format/propriétés au suivi d'API `DEC-0040`. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Index manuel des API publiques de lock et d'authoring Tableau `DEC-0040`. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout manuel des nouvelles API publiques d'export `.sb2` et validation FT100. |
@@ -44,3 +45,8 @@ The current baseline is intentionally lightweight. `tools/docs/verify-docs.ps1` 
 | `ScadaBuilderV2.Application` | `TablePropertiesInspector` | `Inspect` | Computes effective/local inherited, custom and mixed format state by scope. |
 | `ScadaBuilderV2.Application` | `TableEditCoordinator` | `Apply` | Applies typed format reset, exact dimensions, track, header and border requests atomically. |
 | `ScadaBuilderV2.Application` | `ElementTransformGuard` | `CanApply` | Rejects effective X/Y changes for locked closures. |
+| `ScadaBuilderV2.Application` | `QuickWindowDefinitionService` | `CreateEmpty`, `Update`, `ListUsages`, `NavigateToUsage`, `Delete` | Prepares definition mutations and fail-closed reference handling. |
+| `ScadaBuilderV2.Application` | `QuickWindowInvocationService` | `Upsert`, `RemoveInvocation`, `DeleteCaller`, `Analyze` | Coordinates caller command, invocation and bindings in one immutable workspace transition. |
+| `ScadaBuilderV2.Application` | `QuickWindowDependencyAnalyzer` | `Analyze` | Produces stable usages, missing-reference diagnostics and cycle/depth rejection. |
+| `ScadaBuilderV2.Application` | `QuickWindowWorkspaceSnapshotAction` | `UndoAsync`, `RedoAsync` | Restores project, caller scenes, selections and dirty state atomically. |
+| `ScadaBuilderV2.Domain` | `ScadaProjectBuildValidator` | `Validate` QuickWindow branch | Rejects invalid QuickWindow build/export inputs and blocked capabilities without generating defaults. |

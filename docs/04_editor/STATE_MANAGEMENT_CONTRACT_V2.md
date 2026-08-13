@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active editor state contract
-Document version: `V2.1.5.0000`
+Document version: `V2.1.5.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Historique QuickWindow Phase 2 : snapshot projet/scènes/UI/dirty atomique, sélection dédiée et restauration exacte de l’appelant, commande, invocation et liaisons. |
 | 2026-07-29 | `V2.1.5.0000` | `PENDING` | Une fenêtre possède zéro ou une session projet active; fermer réinitialise tout état projet. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Snapshot editor-only atomique du mode Tableau, de la visibilite effective A/1 et de l'id actif; refresh du meme Tableau preserve le mode Cellules. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Ajout de `IsLocked` persistant, de l'agregation de multiselection, du guard de translation et de la session d'authoring Tableau hors modele de scene. |
@@ -28,6 +29,7 @@ State ownership must be explicit. Durable behavior belongs to project/scene/appl
 5. History state: undo/redo stacks per active scene context.
 6. Element lock state: `ScadaElement.IsLocked`; les toggles UI projettent l'agregation de la fermeture selection/groupe sans posseder un etat durable distinct.
 7. Table authoring session: surface, mode, configuration de creation, plage et portee; elle ne transporte aucun `ScadaElement` et ne remplace jamais la definition persistante du Tableau. Le WebView recoit un snapshot atomique derive (`mode`, visibilite effective A/1, id actif) apres chaque transition ou rerender.
+8. QuickWindow workspace state: définitions et invocations dans le projet, scène de l’appelant, sélection page/Fenêtre rapide et dirty state restaurés comme une seule unité; aucune pile d’historique n’est persistée sur disque.
 
 ## 3. State Diagram
 
@@ -38,6 +40,7 @@ stateDiagram-v2
   Dirty --> Clean: save succeeds
   Dirty --> Dirty: additional mutation
   Dirty --> UndoAvailable: history action pushed
+  Dirty --> UndoAvailable: QuickWindow workspace snapshot pushed
   UndoAvailable --> RedoAvailable: undo
   RedoAvailable --> UndoAvailable: redo
   UndoAvailable --> Dirty: new mutation clears redo
@@ -49,12 +52,15 @@ stateDiagram-v2
 
 `PageWorkspaceSnapshot` includes the project, scenes, active/selected page, open tabs, dirty state, and pending file deletions. `ProjectWorkspaceSnapshotAction` restores this state even after an onglet closes or a page is removed. `ModernProjectStore.SaveWorkspaceSnapshotAsync` stages and commits project/scenes as one recoverable transaction; `SaveSceneAsync` no longer upserts the authoritative page inventory.
 
+`QuickWindowWorkspaceSnapshotAction` réutilise la cible d’historique projet et restaure exactement projet, scènes, sélection `QuickWindowEditorSelectionSnapshot`, dirty state et suppressions de pages en attente. `EditorHistoryContext.RestoreProjectWorkspaceSnapshot` permet au host d’effectuer un swap atomique unique; les callbacks granulaires historiques restent le chemin de compatibilité. Une exception de restore conserve l’action au sommet de la pile afin qu’un échec ne perde pas la capacité d’annuler.
+
 ## 5. Related Decisions
 
 1. `DEC-0006` - Polymorphic Selection And Durable Source Delete.
 2. `DEC-0038` - Modern Page Identity And Lifecycle Commands.
 3. `DEC-0040` - Advanced Table Authoring And Persistent Element Position Lock.
 4. `DEC-0041` - Deterministic Table Interaction And Immediate Element Position Lock.
+5. `DEC-0050` - Fenêtres rapides paramétrées comme entités typées distinctes.
 
 ## 6. Related Tests
 
@@ -64,3 +70,4 @@ stateDiagram-v2
 4. `tests/ScadaBuilderV2.Tests/ModernProjectAtomicSnapshotTests.cs`
 5. `tests/ScadaBuilderV2.Tests/TableAuthoringSessionTests.cs`
 6. `tests/ScadaBuilderV2.Tests/TableEditorWebViewStateTests.cs`
+7. `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowHistoryTests.cs`
