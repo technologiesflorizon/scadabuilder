@@ -504,6 +504,24 @@ public sealed class EditorHistoryServiceTests
         Assert.AreEqual(2, history.UndoCount);
     }
 
+    [TestMethod]
+    public async Task FailedUndoKeepsActionOnUndoStack()
+    {
+        var scene = ScadaScene.CreateEmpty("history", "History", new(1280, 873));
+        var history = new EditorHistoryService();
+        history.Push(new DelegateEditorHistoryAction(
+            scene.Id,
+            "failing action",
+            _ => throw new InvalidOperationException("restore failed"),
+            _ => Task.CompletedTask));
+        var context = CreateContext(scene, _ => { });
+
+        await Assert.ThrowsExceptionAsync<InvalidOperationException>(() => history.UndoAsync(context));
+
+        Assert.AreEqual(1, history.UndoCount);
+        Assert.AreEqual(0, history.RedoCount);
+    }
+
     private static EditorHistoryContext CreateContext(
         ScadaScene scene,
         Action<ScadaScene> replaceScene)

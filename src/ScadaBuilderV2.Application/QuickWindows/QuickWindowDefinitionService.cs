@@ -1,4 +1,5 @@
 using ScadaBuilderV2.Application.Commands;
+using ScadaBuilderV2.Application.History;
 using ScadaBuilderV2.Application.Pages;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.QuickWindows;
@@ -13,7 +14,28 @@ public sealed record QuickWindowWorkspaceMutation(
     string HistoryLabel,
     Guid? AffectedDefinitionKey = null,
     Guid? AffectedInvocationKey = null,
-    QuickWindowUsage? UsageToNavigate = null);
+    QuickWindowUsage? UsageToNavigate = null)
+{
+    /// <summary>Creates one project-scoped history action restoring project, scenes, selection and dirty state together.</summary>
+    public QuickWindowWorkspaceSnapshotAction ToHistoryAction(
+        ProjectWorkspaceUiSnapshot beforeUi,
+        ProjectWorkspaceUiSnapshot afterUi,
+        bool beforeWasDirty,
+        bool afterIsDirty = true) => new(
+            ToHistorySnapshot(Before, beforeUi, beforeWasDirty),
+            ToHistorySnapshot(After, afterUi, afterIsDirty),
+            HistoryLabel);
+
+    private static ProjectWorkspaceHistorySnapshot ToHistorySnapshot(
+        PageWorkspaceSnapshot snapshot,
+        ProjectWorkspaceUiSnapshot ui,
+        bool isDirty) => new(
+            snapshot.Project,
+            snapshot.Scenes,
+            ui,
+            isDirty,
+            snapshot.PendingDeletions.Select(deletion => deletion.PageKey).ToArray());
+}
 
 /// <summary>Creates, updates, routes to and deletes quick-window definitions without WPF or file I/O.</summary>
 /// <remarks>

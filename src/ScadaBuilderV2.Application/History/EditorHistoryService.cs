@@ -56,6 +56,12 @@ public sealed class EditorHistoryContext
 
     public Action<bool>? SetWorkspaceDirty { get; init; }
 
+    /// <summary>
+    /// Optionally restores one complete project snapshot through a host-owned atomic swap.
+    /// When absent, project actions use the granular compatibility callbacks above.
+    /// </summary>
+    public Action<ProjectWorkspaceHistorySnapshot>? RestoreProjectWorkspaceSnapshot { get; init; }
+
     public required Action MarkDirty { get; init; }
 
     public required Func<Task> RefreshPreviewAsync { get; init; }
@@ -70,7 +76,8 @@ public sealed class EditorHistoryContext
         ArgumentNullException.ThrowIfNull(target);
         if (target.Scope == EditorHistoryScope.Project)
         {
-            return GetProject is not null &&
+            return RestoreProjectWorkspaceSnapshot is not null ||
+                (GetProject is not null &&
                 ReplaceProject is not null &&
                 GetWorkspaceSceneKeys is not null &&
                 GetSceneByPageKey is not null &&
@@ -78,7 +85,7 @@ public sealed class EditorHistoryContext
                 RemoveSceneByPageKey is not null &&
                 RestoreWorkspaceUi is not null &&
                 SetPendingDeletedPageKeys is not null &&
-                SetWorkspaceDirty is not null;
+                SetWorkspaceDirty is not null);
         }
 
         if (target.PageKey is { } pageKey)
@@ -203,8 +210,8 @@ public sealed class EditorHistoryService
             return false;
         }
 
-        undoStack.Pop();
         await action.UndoAsync(context);
+        undoStack.Pop();
         redoStack.Push(action);
         return true;
     }
@@ -218,8 +225,8 @@ public sealed class EditorHistoryService
             return false;
         }
 
-        redoStack.Pop();
         await action.RedoAsync(context);
+        redoStack.Pop();
         undoStack.Push(action);
         return true;
     }

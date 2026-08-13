@@ -8,12 +8,25 @@ public sealed record EditorPageSelectionSnapshot(
     IReadOnlyList<string> ElementIds,
     string? PrimaryElementId = null);
 
+/// <summary>Restorable selection and active-definition state for the dedicated quick-window editor.</summary>
+/// <remarks>
+/// Decisions: DEC-0050, FR-014.
+/// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §14.1.
+/// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowHistoryTests.cs.
+/// </remarks>
+public sealed record QuickWindowEditorSelectionSnapshot(
+    Guid? SelectedDefinitionKey,
+    Guid? ActiveDefinitionKey,
+    IReadOnlyList<string> ElementIds,
+    string? PrimaryElementId = null);
+
 /// <summary>Restorable project-tree and editor-tab state.</summary>
 public sealed record ProjectWorkspaceUiSnapshot(
     IReadOnlyList<Guid> OpenPageKeys,
     Guid? SelectedPageKey,
     Guid? ActivePageKey,
-    IReadOnlyDictionary<Guid, EditorPageSelectionSnapshot> PageSelections);
+    IReadOnlyDictionary<Guid, EditorPageSelectionSnapshot> PageSelections,
+    QuickWindowEditorSelectionSnapshot? QuickWindowSelection = null);
 
 /// <summary>Immutable in-memory state used by project-scoped undo/redo.</summary>
 /// <remarks>No filesystem, WPF or WebView state is captured.</remarks>
@@ -55,7 +68,7 @@ public sealed record ProjectWorkspaceSnapshotAction(
     public Task RedoAsync(EditorHistoryContext context) =>
         ApplyAsync(context, After, $"Redo {Label}.");
 
-    private static async Task ApplyAsync(
+    internal static async Task ApplyAsync(
         EditorHistoryContext context,
         ProjectWorkspaceHistorySnapshot snapshot,
         string status)
@@ -65,21 +78,28 @@ public sealed record ProjectWorkspaceSnapshotAction(
             throw new InvalidOperationException("The history context cannot restore a project workspace snapshot.");
         }
 
-        var snapshotKeys = snapshot.Scenes.Keys.ToHashSet();
-        foreach (var pageKey in context.GetWorkspaceSceneKeys!().Where(key => !snapshotKeys.Contains(key)).ToArray())
+        if (context.RestoreProjectWorkspaceSnapshot is not null)
         {
-            context.RemoveSceneByPageKey!(pageKey);
+            context.RestoreProjectWorkspaceSnapshot(snapshot);
         }
-
-        foreach (var (pageKey, scene) in snapshot.Scenes)
+        else
         {
-            context.ReplaceSceneByPageKey!(pageKey, scene);
-        }
+            var snapshotKeys = snapshot.Scenes.Keys.ToHashSet();
+            foreach (var pageKey in context.GetWorkspaceSceneKeys!().Where(key => !snapshotKeys.Contains(key)).ToArray())
+            {
+                context.RemoveSceneByPageKey!(pageKey);
+            }
 
-        context.ReplaceProject!(snapshot.Project);
-        context.SetPendingDeletedPageKeys!(snapshot.PendingDeletedPageKeys);
-        context.RestoreWorkspaceUi!(snapshot.Ui);
-        context.SetWorkspaceDirty!(snapshot.IsDirty);
+            foreach (var (pageKey, scene) in snapshot.Scenes)
+            {
+                context.ReplaceSceneByPageKey!(pageKey, scene);
+            }
+
+            context.ReplaceProject!(snapshot.Project);
+            context.SetPendingDeletedPageKeys!(snapshot.PendingDeletedPageKeys);
+            context.RestoreWorkspaceUi!(snapshot.Ui);
+            context.SetWorkspaceDirty!(snapshot.IsDirty);
+        }
         await context.RefreshAsync(EditorHistoryTarget.Project);
         context.SetStatus(status);
     }
