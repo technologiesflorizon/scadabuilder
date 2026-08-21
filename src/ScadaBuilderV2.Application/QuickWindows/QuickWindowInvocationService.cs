@@ -114,6 +114,78 @@ public sealed class QuickWindowInvocationService(QuickWindowDependencyAnalyzer? 
             invocationKey);
     }
 
+    /// <summary>
+    /// Repairs one outdated invocation by replacing its bindings and realigning it on the current
+    /// interface version. The realignment happens only when nothing breaks any more; otherwise the
+    /// invocation keeps its stored version and bindings and the operation is blocked with its reasons.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0050, FR-032, FR-UI-24.
+    /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowInterfaceVersioningTests.cs.
+    /// </remarks>
+    public QuickWindowWorkspaceMutation Repair(
+        PageWorkspaceSnapshot snapshot,
+        Guid invocationKey,
+        IReadOnlyList<QuickWindowBinding> bindings)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var invocation = snapshot.Project.EffectiveQuickWindowInvocations.FirstOrDefault(item => item.InvocationKey == invocationKey);
+        if (invocation is null)
+            return Block(snapshot, "repair quick-window invocation", "quick-window.invocation-missing", "The invocation does not exist.", invocationKey);
+        var definition = snapshot.Project.EffectiveQuickWindows.FirstOrDefault(item => item.DefinitionKey == invocation.DefinitionKey);
+        if (definition is null)
+            return Block(snapshot, "repair quick-window invocation", "quick-window.definition-missing", "The target quick-window definition does not exist.", invocation.DefinitionKey);
+
+        var candidate = invocation with { Bindings = (bindings ?? Array.Empty<QuickWindowBinding>()).ToArray() };
+        var reasons = QuickWindowInterfaceCompatibility.BreakingReasonsFor(definition, candidate);
+        if (reasons.Count > 0)
+        {
+            var issue = QuickWindowDefinitionService.OutdatedIssue(definition, invocation, reasons);
+            return new QuickWindowWorkspaceMutation(
+                snapshot,
+                snapshot,
+                CommandResult.Blocked("The invocation is still incompatible with its definition interface.", [issue with { Severity = ScadaBuildValidationSeverity.Error }]),
+                "repair quick-window invocation",
+                definition.DefinitionKey,
+                invocationKey);
+        }
+
+        var repaired = QuickWindowInterfaceCompatibility.Realign(candidate, definition);
+        var invocations = snapshot.Project.EffectiveQuickWindowInvocations
+            .Select(item => item.InvocationKey == invocationKey ? repaired : item)
+            .ToArray();
+        var after = snapshot with
+        {
+            Version = snapshot.Version + 1,
+            Project = snapshot.Project with { QuickWindowInvocations = invocations }
+        };
+        var diagnostics = QuickWindowBindingValidator.ValidateInvocation(repaired, definition, snapshot.Project.TagCatalog)
+            .Where(result => !result.IsValid)
+            .Select(result => new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Warning,
+                $"quick-window.{result.ErrorCode ?? "binding-invalid"}",
+                result.Message ?? "Quick-window binding is invalid.",
+                PageKey: repaired.OwnerPageKey,
+                ElementId: repaired.OwnerElementId,
+                CommandId: repaired.OwnerCommandId,
+                PropertyPath: $"Project.QuickWindowInvocations[{invocationKey}]",
+                TargetKey: invocationKey,
+                SuggestedFix: "Complete or repair the typed binding before build/export."))
+            .ToArray();
+        return new QuickWindowWorkspaceMutation(
+            snapshot,
+            after,
+            CommandResult.Success(
+                "Quick-window invocation repaired.",
+                repaired.OwnerPageKey is { } ownerPage ? [ownerPage] : null,
+                repaired.OwnerPageKey,
+                workspaceDirty: true,
+                diagnostics: diagnostics),
+            "repair quick-window invocation",
+            definition.DefinitionKey,
+            invocationKey);
+    }
+
     /// <summary>Removes an invocation and clears exactly the command that owned it.</summary>
     public QuickWindowWorkspaceMutation RemoveInvocation(PageWorkspaceSnapshot snapshot, Guid invocationKey)
     {

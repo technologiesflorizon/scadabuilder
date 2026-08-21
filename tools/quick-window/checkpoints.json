@@ -1,0 +1,27 @@
+﻿{
+    "schemaVersion":  "1.0",
+    "policy":  "Phase Completion, Rollback and Version Policy docs/superpowers/plans/2026-08-10-parameterized-quick-window-management.md:66",
+    "versioning":  "iteration bumps until Phase 6 feature bump; no production bump without explicit approval",
+    "rollback":  "git revert never reset --hard reverse order",
+    "checkpoints":  [
+                        {
+                            "phase":  "2.4",
+                            "timestampUtc":  "2026-08-21T19:10:31.1873535Z",
+                            "builder":  {
+                                            "branch":  "codex/GestionFenetreRapide",
+                                            "status":  "## codex/GestionFenetreRapide...origin/codex/GestionFenetreRapide [ahead 13]",
+                                            "head":  "89530c026395d0474c289f515fb993e060d353dc"
+                                        },
+                            "tf100web":  {
+                                             "branch":  "main",
+                                             "status":  "## main...origin/main",
+                                             "head":  "820be25e43c0d85ef86b73e537ec7c68fbd7d335"
+                                         },
+                            "dotnetSdk":  "10.0.302",
+                            "nodeInstalled":  "v24.15.0",
+                            "nvmrc":  "20.18.1",
+                            "enginesNode":  "20.18.x",
+                            "notes":  ""
+                        }
+                    ]
+}

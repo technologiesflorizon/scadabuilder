@@ -37,6 +37,21 @@ public sealed record QuickWindowWorkspaceMutation(
             snapshot.PendingDeletions.Select(deletion => deletion.PageKey).ToArray());
 }
 
+/// <summary>One invocation that no longer matches its definition interface and must be repaired explicitly.</summary>
+/// <remarks>
+/// Decisions: DEC-0050, FR-032, FR-UI-24.
+/// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowInterfaceVersioningTests.cs.
+/// </remarks>
+public sealed record QuickWindowOutdatedInvocation(
+    Guid InvocationKey,
+    Guid DefinitionKey,
+    int DefinitionInterfaceVersion,
+    int InvocationInterfaceVersion,
+    Guid? OwnerPageKey,
+    string? OwnerElementId,
+    string? OwnerCommandId,
+    IReadOnlyList<string> Reasons);
+
 /// <summary>Creates, updates, routes to and deletes quick-window definitions without WPF or file I/O.</summary>
 /// <remarks>
 /// Decisions: DEC-0050, FR-001, FR-014, FR-018, FR-019.
@@ -85,7 +100,8 @@ public sealed class QuickWindowDefinitionService(QuickWindowDependencyAnalyzer? 
         }
 
         var issues = ValidateCandidate(snapshot, candidate, current);
-        if (InterfaceContractChanged(current, candidate) && candidate.InterfaceVersion <= current.InterfaceVersion)
+        var transition = QuickWindowInterfaceCompatibility.Classify(current, candidate);
+        if (transition.RequiresVersionIncrement && candidate.InterfaceVersion <= current.InterfaceVersion)
         {
             issues.Add(Issue(
                 "quick-window.interface-version-not-incremented",
@@ -116,11 +132,43 @@ public sealed class QuickWindowDefinitionService(QuickWindowDependencyAnalyzer? 
         var definitions = snapshot.Project.EffectiveQuickWindows
             .Select(definition => definition.DefinitionKey == candidate.DefinitionKey ? candidate : definition)
             .ToArray();
-        var after = Next(snapshot, snapshot.Project with { QuickWindows = definitions });
-        var diagnostics = confirmReferencedMemberRemoval
+        var (invocations, outdated) = RealignInvocations(snapshot, current, candidate);
+        var after = Next(snapshot, snapshot.Project with
+        {
+            QuickWindows = definitions,
+            QuickWindowInvocations = invocations
+        });
+        var diagnostics = (confirmReferencedMemberRemoval
             ? dependencyAnalyzer.Analyze(after).Diagnostics
-            : Array.Empty<ScadaBuildValidationIssue>();
+            : Array.Empty<ScadaBuildValidationIssue>())
+            .Concat(outdated)
+            .ToArray();
         return Changed(snapshot, after, "Quick window updated.", "update quick window", candidate.DefinitionKey, diagnostics);
+    }
+
+    /// <summary>Lists every invocation of one definition that is outdated, with the reason of each incompatibility.</summary>
+    public IReadOnlyList<QuickWindowOutdatedInvocation> ListOutdatedInvocations(PageWorkspaceSnapshot snapshot, Guid definitionKey)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var definition = snapshot.Project.EffectiveQuickWindows.FirstOrDefault(item => item.DefinitionKey == definitionKey);
+        if (definition is null)
+            return Array.Empty<QuickWindowOutdatedInvocation>();
+
+        return snapshot.Project.EffectiveQuickWindowInvocations
+            .Where(invocation => invocation.DefinitionKey == definitionKey)
+            .Where(invocation => QuickWindowInterfaceCompatibility.StatusOf(definition, invocation) == QuickWindowInvocationStatus.Outdated)
+            .Select(invocation => new QuickWindowOutdatedInvocation(
+                invocation.InvocationKey,
+                definitionKey,
+                definition.InterfaceVersion,
+                invocation.InterfaceVersion,
+                invocation.OwnerPageKey,
+                invocation.OwnerElementId,
+                invocation.OwnerCommandId,
+                QuickWindowInterfaceCompatibility.BreakingReasonsFor(definition, invocation) is { Count: > 0 } reasons
+                    ? reasons
+                    : [$"Invocation interface version {invocation.InterfaceVersion} does not match definition version {definition.InterfaceVersion}."]))
+            .ToArray();
     }
 
     /// <summary>Lists every caller and unattached invocation that currently prevents definition deletion.</summary>
@@ -206,19 +254,56 @@ public sealed class QuickWindowDefinitionService(QuickWindowDependencyAnalyzer? 
             .ToList();
     }
 
-    private static bool InterfaceContractChanged(QuickWindowDefinition before, QuickWindowDefinition after)
+    /// <summary>
+    /// Carries every invocation that the transition does not break onto the candidate interface version,
+    /// and leaves the others on their stored version so they surface as <see cref="QuickWindowInvocationStatus.Outdated"/>.
+    /// Bindings are never rewritten, removed nor defaulted.
+    /// </summary>
+    private static (IReadOnlyList<QuickWindowInvocation> Invocations, IReadOnlyList<ScadaBuildValidationIssue> Outdated) RealignInvocations(
+        PageWorkspaceSnapshot snapshot,
+        QuickWindowDefinition current,
+        QuickWindowDefinition candidate)
     {
-        static string Signature(QuickWindowInterfaceMember member) => string.Join("|",
-            member.MemberKey,
-            member.Name,
-            member.Family,
-            member.DataType,
-            member.Access,
-            member.Required,
-            member.DefaultValue);
-        return !before.EffectiveInterfaceMembers.Select(Signature).OrderBy(value => value, StringComparer.Ordinal)
-            .SequenceEqual(after.EffectiveInterfaceMembers.Select(Signature).OrderBy(value => value, StringComparer.Ordinal), StringComparer.Ordinal);
+        var invocations = new List<QuickWindowInvocation>();
+        var diagnostics = new List<ScadaBuildValidationIssue>();
+
+        foreach (var invocation in snapshot.Project.EffectiveQuickWindowInvocations)
+        {
+            if (invocation.DefinitionKey != candidate.DefinitionKey)
+            {
+                invocations.Add(invocation);
+                continue;
+            }
+
+            var reasons = QuickWindowInterfaceCompatibility.BreakingReasonsFor(current, candidate, invocation);
+            if (reasons.Count == 0)
+            {
+                invocations.Add(QuickWindowInterfaceCompatibility.Realign(invocation, candidate));
+                continue;
+            }
+
+            invocations.Add(invocation);
+            diagnostics.Add(OutdatedIssue(candidate, invocation, reasons));
+        }
+
+        return (invocations, diagnostics);
     }
+
+    /// <summary>Builds the stable authoring diagnostic that flags one outdated invocation.</summary>
+    internal static ScadaBuildValidationIssue OutdatedIssue(
+        QuickWindowDefinition definition,
+        QuickWindowInvocation invocation,
+        IReadOnlyList<string> reasons) =>
+        new(
+            ScadaBuildValidationSeverity.Warning,
+            "quick-window.invocation-outdated",
+            $"Invocation '{invocation.InvocationKey}' no longer matches interface version {definition.InterfaceVersion} of '{definition.EffectiveCode}': {string.Join(" ", reasons)}",
+            PageKey: invocation.OwnerPageKey,
+            ElementId: invocation.OwnerElementId,
+            CommandId: invocation.OwnerCommandId,
+            PropertyPath: $"Project.QuickWindowInvocations[{invocation.InvocationKey}]",
+            TargetKey: invocation.InvocationKey,
+            SuggestedFix: "Repair the invocation port by port; build and export stay blocked until it is realigned.");
 
     private static PageWorkspaceSnapshot Next(PageWorkspaceSnapshot snapshot, ScadaProject project) =>
         snapshot with { Version = snapshot.Version + 1, Project = project };
