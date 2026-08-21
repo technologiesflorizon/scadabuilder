@@ -8,7 +8,7 @@ Document version: `V2.1.5.0024`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-21 | `V2.1.5.0024` | `PENDING` | Dette documentaire fermee : 493 placeholders `PENDING` resolus vers leur commit introducteur, resolveur `tools/docs/resolve-pending-commits.py` ajoute et branche dans `verify-docs`. |
+| 2026-08-21 | `V2.1.5.0024` | `f881bbe` | Dette documentaire fermee : 493 placeholders `PENDING` resolus vers leur commit introducteur, resolveur `tools/docs/resolve-pending-commits.py` ajoute et branche dans `verify-docs`. |
 | 2026-08-21 | `V2.1.5.0023` | `b0159f9` | Audit de complétude Fenêtres rapides avant Phase 3 : spec étendue (`FR-030..036`, `FR-UI-23..26`) et plan complété par Task 2.4, Tasks 3.5/3.6, Task 4.0 prérequis de contrat package, Task 5.4 composition/legacy, blocs de vérification par tâche et checkpoints versionnés. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 Fenêtres rapides livrée : orchestration Application, analyse référentielle cycle/profondeur, mutations atomiques, historique workspace et validation build/export fail-closed; capacités runtime toujours `Blocked`. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Audit correctif Fenêtres rapides : Phase 0 validée sur DOM/WebView2/Edge réels; contrats, persistance et handshake de Phase 1 alignés; capacités toujours `Blocked`. |

@@ -8,7 +8,7 @@ Document version: `V2.1.5.0024`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-21 | `V2.1.5.0024` | `PENDING` | Boucle de fermeture des `PENDING` rendue obligatoire et outillee par `tools/docs/resolve-pending-commits.py`; exemption explicite des commits de bookkeeping et de `docs/10_generated/`. |
+| 2026-08-21 | `V2.1.5.0024` | `f881bbe` | Boucle de fermeture des `PENDING` rendue obligatoire et outillee par `tools/docs/resolve-pending-commits.py`; exemption explicite des commits de bookkeeping et de `docs/10_generated/`. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Bump d'iteration pour l'implementation et la validation corrective de `DEC-0041`. |
 | 2026-07-15 | `V2.1.4.0033` | `e811253` | Bump d'iteration pour l'approbation du contrat correctif Tableau/verrou. |
 | 2026-07-15 | `V2.1.4.0032` | `ff21e33` | Bump d'iteration pour la specification et le plan de correction des regressions d'interaction Tableau/verrou. |

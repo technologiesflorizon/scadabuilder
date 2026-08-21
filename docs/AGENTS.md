@@ -8,7 +8,7 @@ Document version: `V2.1.5.0024`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-21 | `V2.1.5.0024` | `PENDING` | Ajout de l'etape de fermeture des `PENDING` apres commit, outillee et verifiee par `verify-docs`. |
+| 2026-08-21 | `V2.1.5.0024` | `f881bbe` | Ajout de l'etape de fermeture des `PENDING` apres commit, outillee et verifiee par `verify-docs`. |
 | 2026-06-19 | `V2.1.2.0012` | `f35a5f4` | Ajout de la regle de polish produit visant un niveau concurrentiel face a ScadaPlant. |
 | 2026-06-17 | `V2.1.2.0011` | `b75ea10` | Ajout de l'obligation de commit automatique apres chaque implementation validee. |
 | 2026-06-17 | `V2.1.2.0008` | `f78e8cd` | Ajout de l'obligation de worktree propre ou commit produit, puis planification avant tout ajout fonctionnel ou contractuel. |
