@@ -64,6 +64,7 @@ Documentation validation (PowerShell, run after any `docs/` change):
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File tools/docs/verify-docs.ps1
+powershell -ExecutionPolicy Bypass -File tools/docs/generate-runtime-capability-matrix.ps1   # after any capability-registry change
 ```
 
 ## Architecture
@@ -74,13 +75,15 @@ Clean-architecture layering; dependencies point inward (`App` → `Infrastructur
 - **`ScadaBuilderV2.Application`** — orchestration with no UI. The command registry & ribbon command catalog (`Commands/`), undo/redo (`History/` — each editor mutation is an `*Action` reversible command), polymorphic selection state (`Selection/`), legacy→Element+ conversion (`Conversion/`), and Element Studio component/package models (`ElementStudio/`).
 - **`ScadaBuilderV2.Infrastructure`** — file/system I/O: legacy HTML element detection (`LegacyExtraction/`), project persistence (`ModernProjects/ModernProjectStore.cs`), TF100Web tag-catalog import, `.sep`/import package read-write, and reference-project reading.
 - **`ScadaBuilderV2.Rendering`** — preview document generation (`PreviewDocument.cs`) and the FT100/`.sb2` exporter (`Ft100SceneExporter.cs`) plus its package validation. Preview, build, and export all consume the **same** V2 project model.
-- **`ScadaBuilderV2.App`** — the WPF shell. `MainWindow.xaml.cs` is the very large (~9k line) editor host that drives a WebView2 canvas; the editor↔canvas boundary is a JS message bridge. Dialogs: `ElementPropertiesDialog`, `ElementEventDialog`, `ColorPickerDialog`/`ColorPickerField`.
+- **`ScadaBuilderV2.App`** — the WPF shell. `MainWindow.xaml.cs` is the very large (~7.7k line) editor host that drives a WebView2 canvas; the editor↔canvas boundary is a JS message bridge. Dialogs: `ElementPropertiesDialog`, `ElementEventDialog`, `ColorPickerDialog`/`ColorPickerField`.
 - **`ScadaBuilderV2.ElementStudio.App`** — a separate WPF app for authoring reusable Element+ library components (`.sep` packages).
 
 Key runtime concepts:
 - **Element+** objects are the canonical, exportable scene objects (own their SVG/DOM). Legacy/source nodes must be **converted** to Element+ before they can be grouped or fully authored.
 - The current export artifact is **`.sb2`** — a ZIP whose top-level entry is `scada-builder-v2-ft100-package/`, containing root `manifest.json` + `<page-id>/<page-id>.html`. `index.html` is deprecated.
 - Exported CSS, DOM ids, and runtime action targets are **page-namespaced** to avoid collisions in TF100Web composition.
+- **Runtime capability registry** (`Domain/RuntimeContracts/ScadaRuntimeCapabilityCatalog.cs` + `Application/RuntimeContracts/ScadaRuntimeCapabilityAnalyzer.cs`) is the source of truth for what the `.sb2` manifest 2.3 negotiates with TF100Web. A capability may only be promoted to `Supported` with Builder + runtime + TF100Web evidence; the generated matrix under `docs/10_generated/` must be regenerated with `tools/docs/generate-runtime-capability-matrix.ps1` or `verify-docs.ps1` fails on a stale gate.
+- **Quick windows** (`Domain/QuickWindows/`, `Application/QuickWindows/`, `Infrastructure/ModernProjects/QuickWindowStore.cs`) are a distinct entity from pages, persisted under `quick-windows/`. Their runtime capabilities are still `Blocked`, so build/export gates them fail-closed — do not describe them as runtime-ready.
 
 ## Protected TF100Web package contract
 
@@ -115,8 +118,13 @@ These are active decisions (full list: `docs/00_governance/DECISION_REGISTER_V2.
 - Additive changes (new features, UI surfaces, contracts, model fields, export behavior, dependencies) require a planning step first; iterative bug fixes on already-implemented behavior may skip it.
 - Documentation is ownership-based: edit only the owner document for the touched area (`docs/README.md` is the index/router). Never add active contracts to files under `docs/09_archive/`. Record decision changes as `DEC-xxxx` entries; mark superseded decisions `Deprecated`/`Superseded` rather than deleting them.
 - Public APIs require XML docs. Contract-sensitive code should cite `Decisions:`, `Contracts:`, and `Tests:` in `<remarks>`.
-- Versioning: `VERSION` and `docs/` changelog tables use `V2.x.y.zzzz`; use `PENDING` for commit hashes that don't exist yet.
+- Versioning: `VERSION` and `docs/` changelog tables use `V2.x.y.zzzz`; use `PENDING` for commit hashes that don't exist yet. Bump `VERSION` and add a changelog row in the touched owner document (and `docs/README.md`) in the same change.
+- Documentation changelog rows and decision text are written in **French**; code, identifiers, and XML docs stay in English. Follow the surrounding language of the file you edit.
+- This repo carries three near-identical agent briefs: `CLAUDE.md`, `AGENTS.md` (Codex), and the shorter `codex.md` (TF100Web contract only). When a rule here changes, mirror it into `AGENTS.md`.
+- `artifacts/` and `projects/*/exports/` are gitignored scratch/output — never treat their contents as sources of truth or commit them.
 
 ## Tests
 
-MSTest (`tests/ScadaBuilderV2.Tests`). Notable suites map to guardrails: `Ft100SceneExporterTests` (export/validation), `WebViewContextMenuScriptTests` + `StudioElementPlusContractTests` (Studio selection/menu contracts), `EditorHistoryServiceTests` (undo/redo), `RibbonCommandCatalogTests` (command catalog), `Legacy*DetectorTests` (import). Regression coverage map: `docs/08_implementation_status/REGRESSION_COVERAGE_V2.md`.
+MSTest (`tests/ScadaBuilderV2.Tests`). Notable suites map to guardrails: `Ft100SceneExporterTests` (export/validation), `WebViewContextMenuScriptTests` + `StudioElementPlusContractTests` (Studio selection/menu contracts), `EditorHistoryServiceTests` (undo/redo), `RibbonCommandCatalogTests` (command catalog), `Legacy*DetectorTests` (import). Also `Ft100PackageValidatorTests` (package validation), `QuickWindows/` + `QuickWindowIsolationPrototypeContractTests` (quick-window contracts/isolation gate), `RuntimeContracts/` (capability registry/manifest negotiation), `ModernProjectStoreTests` (atomic persistence). Regression coverage map: `docs/08_implementation_status/REGRESSION_COVERAGE_V2.md`.
+
+Filtered runs use MSTest syntax (`--filter "FullyQualifiedName~..."`); prefer them over full-suite runs while iterating, but run the full suite before committing behavior changes.
