@@ -3,6 +3,13 @@
 Date: 2026-07-07
 Status: Approved design — prêt pour planification d'implémentation
 Portée: SCADA Builder V2 (implémentation complète) + contrat runtime pour TF100Web (spec seulement)
+Document version: `V2.1.3.0003`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-07 | `V2.1.3.0003` | `e5d7f78` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
 
 ## 1. Problème
 

@@ -1,5 +1,15 @@
 # Studio Element+ Library Preview Tiles Implementation Plan
 
+Date: 2026-07-03
+Status: Historical - plan anterieur au standard documentaire; conserve pour tracabilite
+Document version: `V2.1.3.0002`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-03 | `V2.1.3.0002` | `ec4164f` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Replace the plain-text list in Studio Element+'s "Librairie" tab with icon/preview tiles, matching SCADA Builder V2's own "Librairie" panel exactly.

@@ -4,6 +4,13 @@ Date: 2026-07-07
 Status: Approved design — prêt pour planification d'implémentation
 Portée: SCADA Builder V2 (exporteur) + TF100Web (runtime hôte, déploiement industriel)
 Dépendance: `2026-07-07-element-plus-state-command-events-design.md` (modèle domaine implémenté)
+Document version: `V2.1.3.0003`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-07 | `V2.1.3.0003` | `76d93fe` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
 
 ## 1. Problème
 

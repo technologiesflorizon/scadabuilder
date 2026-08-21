@@ -1,5 +1,15 @@
 # Element+ Studio Import Crash — Implementation Plan
 
+Date: 2026-07-08
+Status: Historical - plan anterieur au standard documentaire; conserve pour tracabilite
+Document version: `V2.1.3.0003`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-08 | `V2.1.3.0003` | `7ad070f` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Stop Studio Element+ from crashing silently when importing large legacy batches (win00059, 152 items) by shrinking captured style payloads and adding a size-guarded WebView2 navigation fallback plus a global exception handler.

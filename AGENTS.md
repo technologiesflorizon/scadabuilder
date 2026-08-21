@@ -100,7 +100,7 @@ These are active decisions (full list: `docs/00_governance/DECISION_REGISTER_V2.
 - Additive changes (new features, UI surfaces, contracts, model fields, export behavior, dependencies) require a planning step first; iterative bug fixes on already-implemented behavior may skip it.
 - Documentation is ownership-based: edit only the owner document for the touched area (`docs/README.md` is the index/router). Never add active contracts to files under `docs/09_archive/`. Record decision changes as `DEC-xxxx` entries; mark superseded decisions `Deprecated`/`Superseded` rather than deleting them.
 - Public APIs require XML docs. Contract-sensitive code should cite `Decisions:`, `Contracts:`, and `Tests:` in `<remarks>`.
-- Versioning: `VERSION` and `docs/` changelog tables use `V2.x.y.zzzz`; use `PENDING` for commit hashes that don't exist yet. After the commit exists, close the placeholders with `python tools/docs/resolve-pending-commits.py --apply`; a stale `PENDING` fails `verify-docs.ps1`.
+- Versioning: `VERSION` and `docs/` changelog tables use `V2.x.y.zzzz`; use `PENDING` for commit hashes that don't exist yet. After the commit exists, close the placeholders with `python tools/docs/resolve-pending-commits.py --apply`; a stale `PENDING` fails `verify-docs.ps1`. Les documents anterieurs au standard sont retro-documentes par `python tools/docs/backfill-doc-headers.py --apply`; `verify-docs.ps1` doit rester a zero erreur.
 
 ## Tests
 

@@ -2,12 +2,13 @@
 
 Date: 2026-06-16
 Status: Active enterprise documentation standard
-Document version: `V2.1.1.0039`
+Document version: `V2.1.5.0025`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-21 | `V2.1.5.0025` | `PENDING` | En-tetes retro-remplis pour les documents anterieurs au standard et outil `tools/docs/backfill-doc-headers.py` ajoute; le gate documentaire doit rester a zero erreur. |
 | 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du standard documentaire modulaire, decisionnel, diagramme et verifiable. |
 
 ## 1. Objective
@@ -48,7 +49,28 @@ Every Markdown document under `docs/` must start with:
 5. `## Historique des changements`.
 6. A table with `Date`, `Version`, `Commit`, and `Changement`.
 
-Use `PENDING` only when the commit hash is not available yet.
+Use `PENDING` only when the commit hash is not available yet, and close it with
+`python tools/docs/resolve-pending-commits.py --apply` once the commit exists
+(`VERSIONING_AND_CHANGELOG_POLICY_V2.md` section 3).
+
+Documents written before this standard are backfilled, never left failing:
+
+```bash
+python tools/docs/backfill-doc-headers.py --check   # liste les documents non conformes
+python tools/docs/backfill-doc-headers.py --apply   # ecrit les en-tetes manquants
+```
+
+The backfill derives every value from repository facts: `Date` from the filename prefix or
+the first commit that added the document, `Document version` from `VERSION` at that commit,
+and one change-history row pointing at that commit. It never invents a version, a date or a
+hash; a document whose origin commit cannot be read is reported and left untouched.
+
+A backfilled document carries `Status: Historical - ...`. That status states only that the
+document predates this standard; it never claims a delivery state. `docs/10_generated/` is
+excluded because its files belong to their generators.
+
+`verify-docs.ps1` must stay at zero errors. A permanent error backlog turns the gate into
+background noise and hides real regressions.
 
 ## 4. Decision Governance
 

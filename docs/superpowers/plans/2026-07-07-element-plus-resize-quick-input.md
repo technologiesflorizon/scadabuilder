@@ -1,5 +1,15 @@
 # Element+ Resize Quick-Input (Context Menu) Implementation Plan
 
+Date: 2026-07-07
+Status: Historical - plan anterieur au standard documentaire; conserve pour tracabilite
+Document version: `V2.1.3.0003`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-07 | `V2.1.3.0003` | `264897f` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add a "Redimensionner" right-click context-menu entry on a single Element+ object that opens two floating numeric inputs — positioned at the element's current on-screen N and W handles — pre-filled with the dimension each handle actually controls right now (accounting for rotation), and commits a new width/height on Enter.

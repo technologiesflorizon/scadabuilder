@@ -1,5 +1,15 @@
 # Studio Element+ Tools Ribbon Button Implementation Plan
 
+Date: 2026-07-03
+Status: Historical - plan anterieur au standard documentaire; conserve pour tracabilite
+Document version: `V2.1.3.0002`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-03 | `V2.1.3.0002` | `6c77c6c` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add a working "Studio E+" button to the Tools ribbon tab's Configuration group, removing the equivalent entry from the side tool palette where it doesn't semantically belong.

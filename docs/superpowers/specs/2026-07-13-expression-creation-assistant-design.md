@@ -4,7 +4,7 @@ Date: 2026-07-13
 Status: Draft design
 Portée: SCADA Builder V2 — App WPF uniquement (nouveau dialogue + modification d'un dialogue existant)
 Dépendances: `docs/superpowers/specs/2026-07-07-etat-condition-variable-expression-design.md`, `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
-Version du document: `V2.1.4.0003`
+Document version: `V2.1.4.0003`
 
 ## Historique des changements
 

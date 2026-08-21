@@ -1,5 +1,15 @@
 # Fiabilisation du resize Element+ Implementation Plan
 
+Date: 2026-07-06
+Status: Historical - plan anterieur au standard documentaire; conserve pour tracabilite
+Document version: `V2.1.3.0003`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-06 | `V2.1.3.0003` | `66f89bb` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Corriger les 5 defauts constates de l'outil de resize des objets Element+ dans SCADA Builder V2 : padding residuel sur les Shapes, absence de mise a l'echelle des enfants d'un groupe, absence de poignees a un seul axe, absence de conservation du ratio avec Shift, et instabilite pres des bords du canvas.

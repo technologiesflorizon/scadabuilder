@@ -2,6 +2,14 @@
 
 Date: 2026-07-04
 Statut: Approuve (brainstorming)
+Status: Historical - specification anterieure au standard documentaire; conservee pour tracabilite
+Document version: `V2.1.3.0002`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-04 | `V2.1.3.0002` | `92a77e2` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
 
 ## Probleme
 

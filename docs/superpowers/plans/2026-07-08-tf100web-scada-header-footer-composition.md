@@ -1,5 +1,15 @@
 # TF100Web — Composition header/body/footer du flux SCADA statique Implementation Plan
 
+Date: 2026-07-08
+Status: Historical - plan anterieur au standard documentaire; conserve pour tracabilite
+Document version: `V2.1.3.0003`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-08 | `V2.1.3.0003` | `9dbfd88` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Restaurer la composition header + body + footer pour le flux SCADA `STATIC_ROOT`-based (`frontend.views.scada_package_page` → JS `ScadaHost`), avec persistance du header/footer à travers la navigation (seul le body est toujours remplacé ; header/footer ne sont remplacés que si la page cible en référence un différent).

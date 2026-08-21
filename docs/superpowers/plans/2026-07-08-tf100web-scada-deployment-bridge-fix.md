@@ -1,5 +1,15 @@
 # TF100Web — Correction du pont déploiement admin → STATIC_ROOT
 
+Date: 2026-07-08
+Status: Historical - plan anterieur au standard documentaire; conserve pour tracabilite
+Document version: `V2.1.3.0003`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-08 | `V2.1.3.0003` | `9dbfd88` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Raccorder le flux d'import admin SCADA Builder (`ScadaBuilderAdminView` → `import_project_from_zip`) au déploiement `STATIC_ROOT/scada/` attendu par `visualisation.html` et `visualisation_import.js`, corriger les URLs hardcodées sans préfixe `/app`, mettre à jour le test obsolète, et corriger une dépréciation erronée qui menace de supprimer le chemin d'upload admin lui-même. Cible : un `.sb2` déployable **soit** en CLI (`manage.py deploy_scada_builder`) **soit** via `/scada-builder/` en admin, avec un rendu 100% fonctionnel dans les deux cas — c'est la seule voie de déploiement disponible sur un poste d'usine en test sans accès shell.

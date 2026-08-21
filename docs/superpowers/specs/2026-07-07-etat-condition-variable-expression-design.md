@@ -1,5 +1,15 @@
 # État — Condition variable/expression (Tag Picker)
 
+Date: 2026-07-07
+Status: Historical - specification anterieure au standard documentaire; conservee pour tracabilite
+Document version: `V2.1.3.0003`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-07 | `V2.1.3.0003` | `c648aa9` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 **Date:** 2026-07-07
 **Status:** Spec
 **Scope:** `ElementStateRuleDialog` — remplacer le champ Condition texte libre par un choix Variable/Expression avec dropdown tag.

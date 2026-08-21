@@ -1,5 +1,15 @@
 # Element+ Rotation Handle & Context Menu Implementation Plan
 
+Date: 2026-07-06
+Status: Historical - plan anterieur au standard documentaire; conserve pour tracabilite
+Document version: `V2.1.3.0003`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-06 | `V2.1.3.0003` | `e0353a3` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Let a user rotate a single selected Element+ object either by dragging a repurposed top-right (NE) handle, or by picking a preset (0/90/180/270°) or a custom angle from the existing right-click context menu.

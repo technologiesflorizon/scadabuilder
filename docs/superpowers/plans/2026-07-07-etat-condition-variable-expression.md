@@ -1,5 +1,15 @@
 # Condition Variable/Expression Tag Picker — Implementation Plan
 
+Date: 2026-07-07
+Status: Historical - plan anterieur au standard documentaire; conserve pour tracabilite
+Document version: `V2.1.3.0003`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-07 | `V2.1.3.0003` | `ea90740` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Replace the free-text Condition field in `ElementStateRuleDialog` with a Variable (tag dropdown + operator) / Expression (free text) radio button choice.

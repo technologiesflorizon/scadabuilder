@@ -1,5 +1,13 @@
 # Element+ — Événements d'affichage d'état & de commande — Implementation Plan
 
+Document version: `V2.1.3.0003`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-07 | `V2.1.3.0003` | `e5d7f78` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Remplacer le système d'events Element+ actuel (classes CSS figées, conditions limitées à la visibilité) par deux systèmes découplés : un onglet **Événement d'affichage d'état** (liste ordonnée d'états pilotés par expressions, first-match-wins, effets riches cumulables) et un onglet **Événement de commande** (écriture tag à 4 modes + navigation/popup/URL/retour), avec un mini-parser d'expression maison.

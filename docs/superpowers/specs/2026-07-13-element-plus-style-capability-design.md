@@ -4,7 +4,7 @@ Date: 2026-07-13
 Status: Draft design — validation TF100Web et approbation utilisateur requises
 Portée: SCADA Builder V2 — Domain + App WPF + WebView preview + Rendering/exporteur
 Dépendances: `docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md`, `docs/06_ui_ux/UI_SPECIFICATION_V2.md`, `docs/06_ui_ux/ICON_STRATEGY_V2.md`
-Version du document: `V2.1.3.0009`
+Document version: `V2.1.3.0009`
 
 ## Historique des changements
 

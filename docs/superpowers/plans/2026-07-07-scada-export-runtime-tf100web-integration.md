@@ -1,5 +1,15 @@
 # SCADA Export Runtime & TF100Web Industrial Integration — Implementation Plan
 
+Date: 2026-07-07
+Status: Historical - plan anterieur au standard documentaire; conserve pour tracabilite
+Document version: `V2.1.3.0003`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-07 | `V2.1.3.0003` | `76d93fe` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Serialize state/command configs in the .sb2 export, ship a shared JS runtime that TF100Web executes, and deploy pages directly to templates/static via a Django management command.

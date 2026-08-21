@@ -1,5 +1,15 @@
 # Scene Clipboard & Keyboard Shortcuts Implementation Plan
 
+Date: 2026-07-06
+Status: Historical - plan anterieur au standard documentaire; conserve pour tracabilite
+Document version: `V2.1.3.0003`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-06 | `V2.1.3.0003` | `1953fe1` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add Select All (Ctrl+A), Copy (Ctrl+C), Cut (Ctrl+X), and Paste (Ctrl+V) for Element+ scene objects on the main canvas, and fold Undo (Ctrl+Z) / Redo (Ctrl+Y) into the same shortcut-resolution mechanism.

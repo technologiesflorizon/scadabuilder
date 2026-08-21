@@ -1,5 +1,14 @@
 # Context Menu "Ouvrir dans Studio Element+" and Library Import Naming — Implementation Plan
 
+Date: 2026-07-06
+Document version: `V2.1.3.0003`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-06 | `V2.1.3.0003` | `aa8ab25` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Restore the ability to open an already-converted Element+ object's source `.sep` component in Studio Element+ for re-editing, and make newly created library components default to a meaningful name instead of the generic placeholder "Nouveau composant".

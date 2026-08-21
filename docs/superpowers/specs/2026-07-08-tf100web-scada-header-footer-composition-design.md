@@ -1,5 +1,15 @@
 # TF100Web — Composition header/body/footer du flux SCADA statique (design)
 
+Date: 2026-07-08
+Status: Historical - specification anterieure au standard documentaire; conservee pour tracabilite
+Document version: `V2.1.3.0003`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-08 | `V2.1.3.0003` | `71383d9` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 **Repo d'implémentation :** `F:\Projet\Git\TF100Web`, branche `feature/element-plus-state-command-events`.
 
 ## Contexte

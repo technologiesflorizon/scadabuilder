@@ -1,5 +1,15 @@
 # Element+ Studio — crash silencieux à l'import de lots legacy volumineux
 
+Date: 2026-07-08
+Status: Historical - specification anterieure au standard documentaire; conservee pour tracabilite
+Document version: `V2.1.3.0003`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-08 | `V2.1.3.0003` | `3088acb` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 - **Date** : 2026-07-08
 - **Statut** : Approuvé
 - **Scène de repro** : `win00059` (AMR_REF_SCADA_V2), 152 items sélectionnés

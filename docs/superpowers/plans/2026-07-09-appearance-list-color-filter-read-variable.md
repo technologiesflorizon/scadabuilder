@@ -1,5 +1,15 @@
 # Appearance List, Color Filter, Independent Read-Variable — Implementation Plan
 
+Date: 2026-07-09
+Status: Historical - plan anterieur au standard documentaire; conserve pour tracabilite
+Document version: `V2.1.3.0003`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-08 | `V2.1.3.0003` | `9c525cb` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add an independent, tag-driven "Lecture de variable" display to Element+, a new cumulable "Filtre de couleur" appearance effect that works on `.sep` SVG components, and a cumulable-list UI for appearance modifications — plus fix the two runtime bugs that currently make `TextContent` a no-op on every element.

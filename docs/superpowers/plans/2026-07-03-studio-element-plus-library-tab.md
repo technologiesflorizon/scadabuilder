@@ -1,5 +1,15 @@
 # Studio Element+ Library Tab Implementation Plan
 
+Date: 2026-07-03
+Status: Historical - plan anterieur au standard documentaire; conserve pour tracabilite
+Document version: `V2.1.3.0002`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-03 | `V2.1.3.0002` | `ec4164f` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add a "Librairie" tab to Studio Element+'s side panel that lets a user browse the active library's saved components and Renommer/Copier/Supprimer them (Éditer visible but disabled, reserved for a future plan).

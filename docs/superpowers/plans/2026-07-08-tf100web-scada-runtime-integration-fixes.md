@@ -1,5 +1,15 @@
 # TF100Web SCADA Runtime Integration — Correction Plan
 
+Date: 2026-07-08
+Status: Historical - plan anterieur au standard documentaire; conserve pour tracabilite
+Document version: `V2.1.3.0003`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-07-08 | `V2.1.3.0003` | `0ccbc60` | Ajout initial du document, anterieur au standard documentaire; en-tete et historique retro-remplis depuis le commit d'origine. |
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Fix the 6 contract/integration bugs found in the SCADA Builder V2 ↔ TF100Web import-and-runtime audit (2026-07-08) so that, when `TF100_INDUSTRIAL_DEPLOYMENT=True` and a station's `station_type == SCADA_BUILDER_2`, `/visualisation/` displays live tag-driven state correctly and all in-SCADA navigation (page switch, popups) stays AJAX-based with no full-page reload.
