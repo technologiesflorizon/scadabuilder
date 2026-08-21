@@ -8,7 +8,7 @@ Document version: `V2.1.5.0026`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-21 | `V2.1.5.0026` | `PENDING` | Task 2.4 exécutée et cochée : compatibilité d'interface, réalignement, `Outdated` et réparation implémentés et couverts par `QuickWindowInterfaceVersioningTests`. |
+| 2026-08-21 | `V2.1.5.0026` | `1452849` | Task 2.4 exécutée et cochée : compatibilité d'interface, réalignement, `Outdated` et réparation implémentés et couverts par `QuickWindowInterfaceVersioningTests`. |
 | 2026-08-21 | `V2.1.5.0023` | `b0159f9` | Fermeture des lacunes d'audit avant Phase 3 : Task 2.4 (versionnement d'interface), Task 4.0 (contrat package prealable), Tasks 3.5/3.6 (presse-papier, reparation), Task 5.4 (composition header/pied et coexistence legacy), blocs de verification par tache, checkpoints versionnes et rapports d'audit par phase. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 livrée : services de définition/invocation, analyse des usages/cycles/profondeur, snapshots undo/redo atomiques et validateur build/export fail-closed; capacités runtime toujours bloquées. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Audit correctif : Phase 0 rejouée sur hosts réels et Phase 1 alignée sur les validations, la persistance autoritaire et le handshake exécutable; Phase 2 reste bloquée jusqu’au commit vert. |

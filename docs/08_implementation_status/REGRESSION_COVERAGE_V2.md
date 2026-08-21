@@ -8,7 +8,7 @@ Document version: `V2.1.5.0026`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-21 | `V2.1.5.0026` | `PENDING` | Couverture Task 2.4 : versionnement d'Interface locale, statut `Outdated` dérivé et réparation explicite. |
+| 2026-08-21 | `V2.1.5.0026` | `1452849` | Couverture Task 2.4 : versionnement d'Interface locale, statut `Outdated` dérivé et réparation explicite. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Couverture Phase 2 QuickWindow : services Application, usages/cycles/profondeur, historique atomique et matrice build/export fail-closed. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Couverture Phases 0/1 QuickWindow : DOM réel, WebView2/Edge, validations Domain, persistance atomique, retrait popup et handshake muté dans les deux dépôts. |
 | 2026-07-30 | `V2.1.5.0002` | `0168f2f` | Régression effets SVG : cibles preview/export, application fill/stroke, transition, reset de baseline, repli wrapper et fixture conformance régénérée. |

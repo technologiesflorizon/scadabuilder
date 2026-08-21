@@ -10,7 +10,7 @@ Dépendances: `docs/02_architecture/GLOBAL_ARCHITECTURE_V2.md`, `docs/03_runtime
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-21 | `V2.1.5.0026` | `PENDING` | Précision `FR-032` : réalignement automatique par invocation sur transition compatible; `Outdated` reste dérivé du couple de versions, sans champ persistant. |
+| 2026-08-21 | `V2.1.5.0026` | `1452849` | Précision `FR-032` : réalignement automatique par invocation sur transition compatible; `Outdated` reste dérivé du couple de versions, sans champ persistant. |
 | 2026-08-21 | `V2.1.5.0023` | `b0159f9` | Fermeture des lacunes d’audit avant Phase 3 : composition header/pied, presse-papier inter-contextes, évolution d’Interface locale versionnée, duplication de définition, bibliothèque Element+, portée undo/redo et coexistence popup legacy (`FR-030..036`, `FR-UI-23..26`). |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 synchronisée : services Application, dépendances, historique workspace atomique et validation build/export fail-closed implémentés sans promotion de capacité runtime. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Statut synchronisé après audit : gate Phase 0 réel validé et contrats persistants Phase 1 corrigés; aucune capacité runtime, UI ou export promue. |

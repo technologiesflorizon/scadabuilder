@@ -8,7 +8,7 @@ Document version: `V2.1.5.0026`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-21 | `V2.1.5.0026` | `PENDING` | `DEC-0050` Task 2.4 implémentée : Interface locale versionnée, invocations `Outdated` dérivées et réparation explicite; capacités toujours `Blocked`. |
+| 2026-08-21 | `V2.1.5.0026` | `1452849` | `DEC-0050` Task 2.4 implémentée : Interface locale versionnée, invocations `Outdated` dérivées et réparation explicite; capacités toujours `Blocked`. |
 | 2026-08-21 | `V2.1.5.0023` | `b0159f9` | `DEC-0050` étendue par `FR-030..036` et `FR-UI-23..26` : composition header/pied, presse-papier inter-contextes, Interface locale versionnée, duplication de définition, bibliothèque Element+, portée undo/redo et isolation vis-à-vis des popups legacy. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | `DEC-0050` Phase 2 implémentée : orchestration Application, dépendances, undo/redo workspace et validation build/export; capacités QuickWindow toujours `Blocked`. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | `DEC-0050` synchronisée après audit : Phases 0/1 corrigées et validées, Phase 2 en attente, capacités QuickWindow toujours `Blocked`. |

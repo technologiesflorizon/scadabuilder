@@ -8,7 +8,7 @@ Document version: `V2.1.5.0026`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-21 | `V2.1.5.0026` | `PENDING` | Gate build/export explicite pour les invocations `Outdated`, levé uniquement par réparation explicite. |
+| 2026-08-21 | `V2.1.5.0026` | `1452849` | Gate build/export explicite pour les invocations `Outdated`, levé uniquement par réparation explicite. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Gate build/export QuickWindow Phase 2 : erreurs required/mapping/type/accès/version/graphe/profil/présentation/injection et capacité bloquée, sans fabriquer de liaison. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | Parite modele/preview/export/runtime host verrouillee par fixture, capabilities, hash runtime et exclusion editor-only. |
 | 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | Tests de parite exacte ajoutes jusqu'au runtime stable et hashe deploye. |

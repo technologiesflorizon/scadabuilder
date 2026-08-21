@@ -8,7 +8,7 @@ Document version: `V2.1.5.0026`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-21 | `V2.1.5.0026` | `PENDING` | Versionnement de l'Interface locale : réalignement par invocation, statut `Outdated` dérivé et liaisons jamais réécrites. |
+| 2026-08-21 | `V2.1.5.0026` | `1452849` | Versionnement de l'Interface locale : réalignement par invocation, statut `Outdated` dérivé et liaisons jamais réécrites. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 : mutations Application coordonnent projet, scène appelante, commande et invocation; l’historique restaure le snapshot complet sans I/O. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Contrat de persistance QuickWindow Phase 1 : fichiers autoritaires séparés, manifest sans duplication et profils antérieurs fail-closed. |
 | 2026-07-29 | `V2.1.5.0000` | `8fe1077` | La persistance accepte une racine projet exacte choisie par l’utilisateur; `.sb2` demeure un artefact runtime. |
