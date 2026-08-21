@@ -8,7 +8,7 @@ Document version: `V2.1.5.0025`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-21 | `V2.1.5.0025` | `PENDING` | En-tetes retro-remplis pour les documents anterieurs au standard et outil `tools/docs/backfill-doc-headers.py` ajoute; le gate documentaire doit rester a zero erreur. |
+| 2026-08-21 | `V2.1.5.0025` | `abb81d2` | En-tetes retro-remplis pour les documents anterieurs au standard et outil `tools/docs/backfill-doc-headers.py` ajoute; le gate documentaire doit rester a zero erreur. |
 | 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du standard documentaire modulaire, decisionnel, diagramme et verifiable. |
 
 ## 1. Objective
