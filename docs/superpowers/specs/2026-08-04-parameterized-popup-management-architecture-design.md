@@ -2,7 +2,7 @@
 
 Date: 2026-08-10
 Status: Approved - `DEC-0050`; phases 0 to 2 validated, phase 3 pending, all runtime capabilities blocked
-Document version: `V2.1.5.0022`
+Document version: `V2.1.5.0023`
 Portée: SCADA Builder V2, runtime partagé `.sb2` et services host TF100Web
 Dépendances: `docs/02_architecture/GLOBAL_ARCHITECTURE_V2.md`, `docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md`, `docs/03_runtime_contracts/PREVIEW_BUILD_EXPORT_CONTRACT_V2.md`, `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md`, `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`, `docs/04_editor/STATE_MANAGEMENT_CONTRACT_V2.md`
 
@@ -10,6 +10,7 @@ Dépendances: `docs/02_architecture/GLOBAL_ARCHITECTURE_V2.md`, `docs/03_runtime
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-21 | `V2.1.5.0023` | `PENDING` | Fermeture des lacunes d’audit avant Phase 3 : composition header/pied, presse-papier inter-contextes, évolution d’Interface locale versionnée, duplication de définition, bibliothèque Element+, portée undo/redo et coexistence popup legacy (`FR-030..036`, `FR-UI-23..26`). |
 | 2026-08-13 | `V2.1.5.0022` | `PENDING` | Phase 2 synchronisée : services Application, dépendances, historique workspace atomique et validation build/export fail-closed implémentés sans promotion de capacité runtime. |
 | 2026-08-13 | `V2.1.5.0021` | `PENDING` | Statut synchronisé après audit : gate Phase 0 réel validé et contrats persistants Phase 1 corrigés; aucune capacité runtime, UI ou export promue. |
 | 2026-08-10 | `V2.1.5.0018` | `PENDING` | Création du plan d’implémentation dérivé; sa phase 0 doit valider l’isolation DOM/CSS dans WebView2 et TF100Web avant toute modification de production. |
@@ -84,6 +85,13 @@ Le terme utilisateur approuvé est **Fenêtre rapide**. Le terme `popup` demeure
 | `FR-027` | Aucun `InstanceKey` fonctionnel distinct n’est ajouté. `QuickWindowDefinitionKey` identifie la définition persistante, `InvocationKey` identifie la configuration persistante d’ouverture et `RuntimeInstanceId` identifie le montage runtime temporaire. Aucun quatrième identifiant ni politique `SinglePerInstanceKey` ne doit apparaître dans le domaine, le manifest, l’authoring ou le runtime. |
 | `FR-028` | La première tranche est une verticale fonctionnelle fondée sur `win00054` comme référence de contrôle moteur. Elle couvre le modèle et la persistance, l’arborescence et l’éditeur de Fenêtre rapide, l’Interface locale, les Liaisons, undo/redo, le preview, le manifest 2.3, le runtime partagé et TF100Web. Deux invocations de la même définition utilisent des mappings moteur différents sans coexistence simultanée ni écriture croisée. La tranche inclut le cadre minimal, le backdrop configurable, `X`, `Escape` et `Self`. L’imbrication de production, la conversion de Fragment, l’adaptateur `iframe`, la copie de liaisons et la personnalisation avancée du cadre sont reportés aux tranches suivantes. |
 | `FR-029` | `DEC-0050` formalise la présente spécification et supersède `DEC-0019`, `DEC-0020` et `DEC-0022`. Leurs contenus demeurent historiques; ils ne constituent plus un contrat actif ni une preuve de prise en charge des Fenêtres rapides. Le retrait physique de leurs résidus reste une tâche explicite du chantier de décommissionnement. |
+| `FR-030` | Un Element+ situé sur une page `Header` ou `Footer` peut porter une invocation `OpenQuickWindow`. L’instance runtime appartient toujours à la racine host de la page composée, jamais au fragment header/pied. Toute navigation de page ferme la chaîne complète de Fenêtres rapides actives, y compris celles ouvertes depuis un header ou un pied persistant; aucune instance ne survit à une navigation avec des liaisons résolues sur l’ancienne page. |
+| `FR-031` | Le presse-papier et la duplication d’Element+ franchissant la frontière page ↔ Fenêtre rapide sont validés fail-closed. Un contenu collé sur un canvas de Fenêtre rapide ne peut référencer ni tag/mapping du catalogue projet, ni membre d’une autre Interface locale; un contenu collé sur une page ne peut référencer un membre d’Interface locale. Le collage est refusé par défaut avec un diagnostic listant les références fautives. Une variante explicitement confirmée `Coller sans liaisons` dépouille ces références, laisse chaque propriété concernée `Non lié` et reste une opération atomique et undoable. Aucun dépouillement silencieux et aucune promotion automatique en membre d’Interface locale ne sont permis. |
+| `FR-032` | L’évolution de l’Interface locale est versionnée et n’est jamais migrée silencieusement. Renommer un membre conserve sa clé stable et ne casse aucune invocation. Supprimer un membre public, changer son type, son accès ou son `Required` incrémente `InterfaceVersion`, exige une confirmation affichant les usages, puis marque chaque invocation désormais incompatible `Outdated`. Une invocation `Outdated` produit un diagnostic d’authoring et bloque build/export jusqu’à réparation explicite; aucune reliaison automatique n’est produite. |
+| `FR-033` | `Dupliquer la fenêtre rapide` produit une nouvelle `QuickWindowDefinitionKey`, une copie complète du `VisualContent`, de l’Interface locale et des `PresentationDefaults`, un `Code` unique dérivé, et aucune référence partagée avec la source. La duplication ne copie aucune invocation existante et le namespace DOM/CSS de la copie dérive de sa propre clé. |
+| `FR-034` | Les composants de bibliothèque Element+ (`.sep`) peuvent être instanciés sur un canvas de Fenêtre rapide; ils demeurent des contenus visuels de portée projet et ne deviennent pas des entités de portée Fenêtre rapide. Toute liaison transportée par le composant vers le catalogue projet suit exactement `FR-031`. La bibliothèque n’expose ni ne consomme d’Interface locale. |
+| `FR-035` | Les Fenêtres rapides ne créent aucun second service d’historique. Le workspace conserve une pile undo/redo unique dont chaque action porte son `EditorHistoryTarget`; l’édition du contenu d’une définition utilise une portée `QuickWindow` identifiée par `QuickWindowDefinitionKey`, tandis que les mutations référentielles (création/suppression de définition, invocation supprimée avec son appelant) restent de portée `Project`. Annuler une action dont la cible n’est pas le contexte actif active d’abord ce contexte de façon déterministe, puis applique l’annulation; l’historique n’est ni vidé ni fusionné au basculement page ↔ Fenêtre rapide. |
+| `FR-036` | Tant que des popups `Fragment` legacy demeurent déployés, une Fenêtre rapide et un popup legacy ne partagent ni backdrop, ni bande de z-order, ni chemin de fermeture. Le gestionnaire de Fenêtres rapides possède sa propre couche overlay au-dessus du contenu legacy. Aucun contenu de Fenêtre rapide ne peut ouvrir un popup legacy et aucun popup legacy ne peut ouvrir une Fenêtre rapide. Le host doit prouver l’absence d’interférence de focus, de backdrop et de `dispose` lorsque les deux mécanismes coexistent sur une même page. |
 
 ### 1.3 Décisions UI approuvées
 
@@ -111,6 +119,10 @@ Le terme utilisateur approuvé est **Fenêtre rapide**. Le terme `popup` demeure
 | `FR-UI-20` | Un port optionnel non lié apparaît en gris avec le statut `Non lié`. Un port requis non lié apparaît en rouge. Le preview montre également le comportement runtime indisponible. |
 | `FR-UI-21` | Un panneau de test intégré permet de fournir des valeurs, littéraux et liaisons temporaires puis d’ouvrir une instance de prévisualisation. Ces données de test sont editor-only et ne sont jamais exportées. |
 | `FR-UI-22` | La suppression d’une définition référencée est bloquée. Le dialogue affiche la liste des éléments appelants et permet d’y naviguer; aucune suppression en cascade ou référence cassée silencieuse n’est produite. |
+| `FR-UI-23` | Un collage refusé par `FR-031` affiche un dialogue listant chaque référence fautive avec son objet et sa propriété, et propose uniquement `Annuler` ou `Coller sans liaisons`. Aucun collage partiel silencieux n’est proposé. |
+| `FR-UI-24` | Une surface de réparation liste les invocations `Outdated` d’une définition avec leur page, leur élément appelant et le motif d’incompatibilité; elle permet d’y naviguer et de relier port par port. Les invocations `Outdated` apparaissent en rouge dans la grille `Liaisons` et dans les usages du membre. |
+| `FR-UI-25` | L’arborescence `Fenêtres rapides` expose `Dupliquer`, qui crée immédiatement une définition indépendante au nom unique dérivé et la sélectionne. |
+| `FR-UI-26` | Les commandes `Annuler`/`Rétablir` du ruban agissent sur la pile unique du workspace et affichent le contexte cible de la prochaine action. Lorsque cette action vise un autre contexte, l’éditeur bascule visiblement vers ce contexte avant de l’appliquer. |
 
 ### 1.4 Conséquences approuvées pour l’authoring
 
@@ -682,6 +694,24 @@ Le gestionnaire host, nommé provisoirement `QuickWindowManager`, doit être le 
 
 Le runtime partagé ne doit pas créer directement des overlays HTML. TF100Web et le preview Builder doivent chacun fournir un adaptateur du même contrat host de Fenêtre rapide.
 
+### 8.11 Composition de page, header/pied et coexistence legacy
+
+Le host TF100Web compose une page active avec ses pages `Header` et `Footer`. Le contrat approuvé pour les Fenêtres rapides dans cette composition est :
+
+1. une invocation `OpenQuickWindow` peut être portée par un Element+ d'une page normale, d'un header ou d'un pied;
+2. le gestionnaire de Fenêtres rapides est unique par racine host composée; il n'existe pas d'instance possédée par un fragment header/pied;
+3. la racine de montage est toujours la racine host de la page composée, au-dessus du header, du contenu et du pied;
+4. la navigation ferme la chaîne complète des Fenêtres rapides actives, quelle que soit l'origine de leur invocation, avant de résoudre la nouvelle page;
+5. une invocation portée par un header persistant est recompilée avec la nouvelle génération de page; aucune instance ne survit à la navigation avec des liaisons résolues sur la génération précédente;
+6. l'invalidation de session ou de déploiement ferme également la chaîne, sans écriture ni mutation d'historique.
+
+La coexistence avec les popups `Fragment` legacy encore déployés obéit à `FR-036` :
+
+1. le gestionnaire de Fenêtres rapides possède sa propre couche overlay et sa propre bande de z-order, réservées au-dessus du contenu legacy;
+2. les deux mécanismes ne partagent ni backdrop, ni piège de focus, ni chemin `dispose`;
+3. aucune traversée n'est autorisée : un contenu de Fenêtre rapide n'ouvre pas de popup legacy et l'inverse est refusé;
+4. le host doit prouver par test qu'une page portant les deux mécanismes ne produit ni fuite de focus, ni backdrop orphelin, ni `dispose` croisé.
+
 ## 9. Authoring proposé dans SCADA Builder V2
 
 ### 9.1 Module `Fenêtres rapides`
@@ -723,6 +753,42 @@ Les variables et constantes privées n’apparaissent pas dans cette grille. Une
 Le preview contient un panneau de test intégré permettant de fournir des valeurs, littéraux et liaisons temporaires puis d’ouvrir une instance. Il doit permettre d’ouvrir successivement la même définition avec deux jeux de liaisons différents, sans jamais conserver deux instances simultanées. Il vérifie aussi une chaîne parent/enfant de profondeur deux et le refus des cycles. Toutes les données de test restent editor-only et ne sont jamais exportées comme mappings réels.
 
 La suppression d’une définition référencée est bloquée. Le dialogue affiche la liste des éléments appelants et permet d’y naviguer; il ne propose ni cascade silencieuse ni maintien de références cassées.
+
+### 9.4 Contextes d'édition, presse-papier et évolution d'interface
+
+Cette section ferme les cas d'authoring franchissant la frontière page vers Fenêtre rapide.
+
+**Presse-papier et duplication (`FR-031`, `FR-034`, `FR-UI-23`).** Le canvas d'une Fenêtre rapide ne référence jamais un tag physique du projet et une page ne référence jamais un membre d'Interface locale. Une opération de collage ou de duplication franchissant cette frontière est donc validée avant application :
+
+1. l'analyse liste chaque référence non résoluble dans le contexte cible : mapping/tag projet, membre d'Interface locale, port d'une autre définition, invocation dont la cible est absente;
+2. si la liste n'est pas vide, le collage est refusé avec un diagnostic nommant l'objet et la propriété fautifs;
+3. l'auteur peut confirmer explicitement `Coller sans liaisons`; le contenu visuel est alors collé, chaque référence fautive est retirée et la propriété correspondante devient `Non lié`;
+4. l'opération est atomique et undoable dans l'historique du contexte cible;
+5. aucune référence n'est convertie, devinée ou promue automatiquement en membre d'Interface locale;
+6. un composant de bibliothèque `.sep` instancié sur un canvas de Fenêtre rapide suit exactement la même validation.
+
+**Évolution de l'Interface locale (`FR-032`, `FR-UI-24`).** `InterfaceVersion` est comparée par égalité entre la définition et chaque invocation. Les transitions approuvées sont :
+
+| Modification | Effet sur `InterfaceVersion` | Effet sur les invocations existantes |
+| --- | --- | --- |
+| Renommer le nom d'authoring d'un membre | inchangée | aucune; la clé stable porte la liaison |
+| Ajouter un membre public optionnel | incrémentée | invocations valides, nouveau port `Non lié` |
+| Ajouter un membre public `Required` | incrémentée | invocations `Outdated`, build/export bloqué |
+| Supprimer un membre public | incrémentée | invocations `Outdated`, liaison orpheline signalée |
+| Changer type, accès ou `Required` d'un membre | incrémentée | invocations `Outdated` si la liaison n'est plus compatible |
+| Modifier une variable ou constante privée | inchangée | aucune; les membres privés sont invisibles des invocations |
+
+Une invocation `Outdated` conserve ses liaisons persistées, reste sauvegardable, produit un diagnostic d'authoring et de preview, et bloque le build/export. La réparation est une action explicite de l'auteur port par port; aucune reliaison automatique, aucune suppression en cascade et aucune valeur par défaut fabriquée ne sont permises.
+
+**Duplication d'une définition (`FR-033`, `FR-UI-25`).** `Dupliquer` produit une définition indépendante avec sa propre clé, son propre namespace DOM/CSS et son propre `Code`; elle ne copie aucune invocation et ne partage aucune référence avec la source.
+
+**Portée undo/redo (`FR-035`, `FR-UI-26`).** Le workspace conserve une pile unique. Chaque action porte sa cible :
+
+1. `Scene` pour le contenu d'une page;
+2. `QuickWindow`, identifiée par `QuickWindowDefinitionKey`, pour le contenu d'une définition;
+3. `Project` pour les mutations référentielles : création/suppression de définition, suppression d'un élément appelant avec sa commande et ses liaisons, modification d'interface impactant plusieurs invocations.
+
+Annuler une action ciblant un contexte inactif active d'abord ce contexte, puis applique l'annulation. Le basculement page vers Fenêtre rapide ne vide, ne tronque et ne fusionne jamais la pile.
 
 ## 10. Package et runtime
 
@@ -907,7 +973,13 @@ La tranche comprend :
 7. gestionnaire runtime à instance unique, cadre minimal et backdrop configurable;
 8. compilation déterministe, registres `QuickWindows[]`/`QuickWindowInvocations[]` et capacités 2.3;
 9. runtime partagé et intégration host TF100Web;
-10. retrait des anciens kinds, branches runtime et capacités popup incomplets.
+10. retrait des anciens kinds, branches runtime et capacités popup incomplets;
+11. validation fail-closed du presse-papier et de la duplication franchissant la frontière page vers Fenêtre rapide;
+12. versionnement de l'Interface locale, statut `Outdated` et surface de réparation des invocations;
+13. duplication d'une définition;
+14. portée undo/redo `QuickWindow` dans la pile unique du workspace;
+15. invocation depuis une page `Header`/`Footer` et fermeture de chaîne à la navigation;
+16. isolation de z-order et de backdrop vis-à-vis des popups `Fragment` legacy encore déployés.
 
 ### 15.3 Critères de sortie
 
@@ -927,7 +999,12 @@ La tranche est terminée uniquement si :
 12. les profils 2.1/2.2 et un host 2.3 sans capacités requises refusent le package;
 13. `OpenPopup`, `TogglePopup`, `ClosePopup` et leurs capacités ne subsistent ni dans l’authoring, ni dans le modèle actif, ni dans la fixture;
 14. les tests de fuite, de stale hydration, de mappings croisés et de package byte-déterministe réussissent;
-15. TF100Web capable est déployé et vérifié avant activation de l’export Builder.
+15. TF100Web capable est déployé et vérifié avant activation de l’export Builder;
+16. un collage franchissant la frontière page vers Fenêtre rapide est refusé ou explicitement dépouillé, sans référence orpheline;
+17. une modification incompatible d'Interface locale marque ses invocations `Outdated`, bloque le build/export et se répare explicitement;
+18. une définition dupliquée possède sa propre clé, son propre namespace et aucune invocation héritée;
+19. undo/redo traverse page et Fenêtre rapide dans une pile unique en activant le contexte cible;
+20. une Fenêtre rapide ouverte depuis un header se ferme à la navigation et ne coexiste jamais avec le backdrop d'un popup legacy.
 
 ### 15.4 Reporté aux tranches suivantes de la première version
 
@@ -956,7 +1033,7 @@ La tranche est terminée uniquement si :
 
 ## 16. État des décisions produit
 
-Les décisions générales approuvées sont enregistrées dans `FR-001` à `FR-029`. Les 22 décisions UI approuvées sont enregistrées dans `FR-UI-01` à `FR-UI-22`.
+Les décisions générales approuvées sont enregistrées dans `FR-001` à `FR-036`. Les 26 décisions UI approuvées sont enregistrées dans `FR-UI-01` à `FR-UI-26`. Les décisions `FR-030` à `FR-036` et `FR-UI-23` à `FR-UI-26` ferment les lacunes relevées à l'audit du 2026-08-21 avant l'exécution de la Phase 3; elles étendent `DEC-0050` sans en modifier les invariants antérieurs.
 
 Aucune question `FR-Oxx` ne reste ouverte. `DEC-0050` formalise la spécification; aucune décision produit ou architecture ne bloque la rédaction du plan.
 

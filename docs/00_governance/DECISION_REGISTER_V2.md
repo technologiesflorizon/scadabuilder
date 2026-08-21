@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active authoritative decision register
-Document version: `V2.1.5.0022`
+Document version: `V2.1.5.0023`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-21 | `V2.1.5.0023` | `PENDING` | `DEC-0050` étendue par `FR-030..036` et `FR-UI-23..26` : composition header/pied, presse-papier inter-contextes, Interface locale versionnée, duplication de définition, bibliothèque Element+, portée undo/redo et isolation vis-à-vis des popups legacy. |
 | 2026-08-13 | `V2.1.5.0022` | `PENDING` | `DEC-0050` Phase 2 implémentée : orchestration Application, dépendances, undo/redo workspace et validation build/export; capacités QuickWindow toujours `Blocked`. |
 | 2026-08-13 | `V2.1.5.0021` | `PENDING` | `DEC-0050` synchronisée après audit : Phases 0/1 corrigées et validées, Phase 2 en attente, capacités QuickWindow toujours `Blocked`. |
 | 2026-08-10 | `V2.1.5.0018` | `PENDING` | Le plan d’implémentation de `DEC-0050` est créé; sa phase 0 d’isolation DOM/CSS est un gate absolu avant toute modification de production. |
@@ -135,6 +136,8 @@ Le runtime monte le contenu moderne dans une racine DOM scoppée, possède le cy
 
 Le manifest 2.3 transporte des registres déterministes de définitions et d’invocations ainsi que des capacités granulaires initialement `Blocked`, promues seulement avec les preuves Builder, package/runtime partagé et TF100Web exigées par `DEC-0047`. Les profils 2.1/2.2 refusent les Fenêtres rapides. Le plan d’implémentation doit commencer par un prototype d’isolation DOM/CSS bloquant avant toute modification de production.
 
+Une invocation peut être portée par une page `Header` ou `Footer`; l'instance appartient toujours à la racine host composée et toute navigation ferme la chaîne active. Le presse-papier et la duplication franchissant la frontière page/Fenêtre rapide sont validés fail-closed. L'Interface locale est versionnée: une modification incompatible marque les invocations `Outdated` et bloque build/export jusqu'à réparation explicite. Les Fenêtres rapides n'ajoutent aucun second service d'historique ni couche overlay partagée avec les popups `Fragment` legacy.
+
 Le système popup `ScadaActionDefinition` (`MountFragment`, `ClosePopup`, `TogglePopup`, `ScadaPopupOptions`) est phased-out et n’est ni étendu ni migré vers les Fenêtres rapides. Les valeurs `ScadaCommandKind.OpenPopup`, `TogglePopup` et `ClosePopup`, qui n’ont jamais constitué un flux accepté complet, sont retirées sans conversion silencieuse. `DEC-0019`, `DEC-0020` et `DEC-0022` sont supersédées par la présente décision.
 
 Consequences:
@@ -143,7 +146,7 @@ La première tranche est une verticale `win00054` couvrant modèle, persistance,
 
 Implementation status:
 
-La Phase 0 d’isolation DOM/CSS est validée avec la fixture gelée `1.0.2` dans WebView2 et TF100Web. La Phase 1 fournit les contrats Domain/persistance et le handshake cross-repository, tous inertes. La Phase 2 fournit les services Application de définition/invocation, l’analyse des usages/cycles/profondeur, l’historique workspace atomique et la validation build/export fail-closed. Toutes les capacités Fenêtre rapide demeurent `Blocked` et aucun comportement WPF, preview, export ou host n’est déclaré implémenté.
+La Phase 0 d’isolation DOM/CSS est validée avec la fixture gelée `1.0.2` dans WebView2 et TF100Web. La Phase 1 fournit les contrats Domain/persistance et le handshake cross-repository, tous inertes. La Phase 2 fournit les services Application de définition/invocation, l’analyse des usages/cycles/profondeur, l’historique workspace atomique et la validation build/export fail-closed. L'audit du 2026-08-21 rouvre la Phase 2 par une Task 2.4 non implémentée (versionnement d'Interface locale et statut `Outdated`) et ajoute les Tasks 3.5, 3.6, 4.0 et 5.4 au plan. Toutes les capacités Fenêtre rapide demeurent `Blocked` et aucun comportement WPF, preview, export ou host n’est déclaré implémenté.
 
 Regression coverage:
 

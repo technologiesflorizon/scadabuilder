@@ -1,13 +1,14 @@
 # Fenêtres rapides paramétrées - Plan d’implémentation
 
 Date: 2026-08-10
-Status: Active implementation plan - phases 0 to 2 complete; phase 3 pending
-Document version: `V2.1.5.0022`
+Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
+Document version: `V2.1.5.0023`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-21 | `V2.1.5.0023` | `PENDING` | Fermeture des lacunes d'audit avant Phase 3 : Task 2.4 (versionnement d'interface), Task 4.0 (contrat package prealable), Tasks 3.5/3.6 (presse-papier, reparation), Task 5.4 (composition header/pied et coexistence legacy), blocs de verification par tache, checkpoints versionnes et rapports d'audit par phase. |
 | 2026-08-13 | `V2.1.5.0022` | `PENDING` | Phase 2 livrée : services de définition/invocation, analyse des usages/cycles/profondeur, snapshots undo/redo atomiques et validateur build/export fail-closed; capacités runtime toujours bloquées. |
 | 2026-08-13 | `V2.1.5.0021` | `PENDING` | Audit correctif : Phase 0 rejouée sur hosts réels et Phase 1 alignée sur les validations, la persistance autoritaire et le handshake exécutable; Phase 2 reste bloquée jusqu’au commit vert. |
 | 2026-08-10 | `V2.1.5.0020` | `PENDING` | Corrections des 5 lacunes de revue : matrice FR→Tasks, anti-injection `Literal`/`Expression`, `PresentationDefaults` explicites, rejet profondeur 3 et épinglage Node LTS. |
@@ -22,7 +23,7 @@ Document version: `V2.1.5.0022`
 
 **Tech Stack:** C# 12, .NET 8, WPF/WebView2, JSON `System.Text.Json`, JavaScript ES modules, MSTest, Node 20 LTS (20.18.x, épinglée via `.nvmrc` + `package.json` `engines.node`, `node:test`), Django/Python et tests TF100Web. La version Node exacte est consignée dans les rapports Phase 0/7 et vérifiée au `Before You Start`.
 
-## État d’exécution audité au 2026-08-13
+## État d’exécution audité au 2026-08-21
 
 - [x] Phase 0: fixture `1.0.2` gelée, hash commun, Node `20.18.1`, WebView2 réel et Edge/TF100Web réel.
 - [x] Phase 1.1: modèle, interface locale, présentation bornée et validation de domaine.
@@ -31,13 +32,16 @@ Document version: `V2.1.5.0022`
 - [x] Phase 1.4: définitions autoritaires sous `quick-windows/`, JSON déterministe et écriture atomique.
 - [x] Phase 1.5: handshake généré, SHA canonique et mutations exécutées dans Builder et TF100Web.
 - [x] Phase 2: orchestration Application, dépendances, historique et validation build/export fail-closed.
+- [ ] Phase 2.4: versionnement d'Interface locale et statut `Outdated` (lacune ouverte le 2026-08-21, non implémentée).
 - [ ] Phases 3 à 7: non démarrées.
+
+Audit du 2026-08-21: la spec a été étendue par `FR-030..036` et `FR-UI-23..26`. Le plan ajoute en conséquence Task 2.4, Task 3.5, Task 3.6, Task 4.0 et Task 5.4. La Phase 0 n'est pas rouverte: la composition header/pied et la coexistence legacy n'existent que dans un host composé réel et sont donc prouvées en Phase 5 contre TF100Web, sans invalider le hash de fixture gelé.
 
 L’ancien rapport Phase 0 est invalidé et remplacé par la preuve corrigée. La Phase 1 avait historiquement démarré trop tôt. Aucune donnée QuickWindow n’est ajoutée aux projets durables; les données de référence sans rapport avec ce chantier restent hors portée et ne servent pas de preuve. Toutes les capacités QuickWindow restent `Blocked`.
 
 ## Global Constraints
 
-- Spec propriétaire: `docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md` (`DEC-0050`, `FR-001` à `FR-029`, `FR-UI-01` à `FR-UI-22`).
+- Spec propriétaire: `docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md` (`DEC-0050`, `FR-001` à `FR-036`, `FR-UI-01` à `FR-UI-26`).
 - Conformance runtime: `DEC-0047`; chaque capacité `quick-window.*` ou `command.*-quick-window` commence `Blocked` et exige des preuves Builder, runtime partagé et TF100Web avant promotion.
 - La phase 0 valide `FR-020` et `FR-026`. Aucune modification des projets `src/`, du modèle persistant, de l’authoring, du compilateur, du package ou du runtime de production n’est autorisée avant son succès documenté.
 - Les identités sont exactement `QuickWindowDefinitionKey`, `InvocationKey` et `RuntimeInstanceId`; aucun `InstanceKey` additionnel n’est introduit (`FR-027`).
@@ -52,6 +56,8 @@ L’ancien rapport Phase 0 est invalidé et remplacé par la preuve corrigée. L
 - Les séquences concurrentes font partie du contrat: double ouverture, navigation pendant montage, fermeture pendant hydratation, ouverture pendant dispose et résultats asynchrones stale sont testés par générations monotones et cleanup idempotent.
 
 ---
+
+- Aucun second service d'historique, presse-papier, gestionnaire d'overlay ou pile undo/redo n'est créé pour les Fenêtres rapides. Elles étendent `EditorHistoryTarget`, `SceneClipboard` et le gestionnaire host existants (`FR-031`, `FR-035`, `FR-036`).
 
 ## Before You Start
 
@@ -80,7 +86,8 @@ Expected: conserver le résultat frais comme baseline; toute nouvelle régressio
 
 ## Phase Completion, Rollback and Version Policy
 
-- [ ] Avant chaque phase, enregistrer `git rev-parse HEAD`, la branche, les résultats de baseline et les commits de la phase précédente dans `artifacts/quick-window-rollout/checkpoints.json` (artefact local non versionné).
+- [ ] Avant chaque phase, enregistrer `git rev-parse HEAD`, la branche, les résultats de baseline et les commits de la phase précédente avec `powershell -ExecutionPolicy Bypass -File tools/quick-window/record-checkpoint.ps1 -Phase <n>`. Le fichier `tools/quick-window/checkpoints.json` est **versionné**; une copie sous `artifacts/` ne constitue pas une preuve de rollback puisque `artifacts/` est ignoré par git.
+- [ ] À la fin de chaque phase, produire un rapport d'audit `docs/superpowers/reports/<date>-quick-window-phase-<n>-audit.md` au même format que l'audit Phases 0-1. Une phase sans rapport et sans entrée de checkpoint versionnée n'est pas considérée complète, même si son code est vert.
 - [ ] Une phase n’est complète que si tous ses tests ciblés et la baseline pertinente réussissent, que le worktree est propre et que son dernier commit ne rend aucune surface partielle visible ou exportable.
 - [ ] Tant que Phase 6 n’est pas franchie, le modèle et l’authoring restent inertes derrière les capacités `Blocked`; aucun projet existant n’est migré et aucun package QuickWindow productible ne peut être émis.
 - [ ] Si une phase échoue, ne pas continuer avec un sous-ensemble. Corriger sur la branche de phase ou revenir par `git revert` aux commits cohérents de cette phase; ne pas utiliser `git reset --hard`. Conserver les phases antérieures uniquement si leurs APIs restent backward-compatible, invisibles et vertes. Sinon, les réverter dans l’ordre inverse.
@@ -471,6 +478,31 @@ Expected: fixture et expectations portent le même SHA dans les deux dépôts; a
 - [x] Commit: `feat: validate quick window builds` (`b84c8f6`).
 - [x] Correction de suivi: l’overload de validation projet seul applique aussi le gate QuickWindow et conserve les XML docs publiques (`a58903f`).
 
+### Task 2.4: Versionner l'Interface locale et marquer les invocations `Outdated`
+
+**Files:**
+- Modify: `src/ScadaBuilderV2.Domain/QuickWindows/QuickWindowModels.cs`
+- Modify: `src/ScadaBuilderV2.Domain/QuickWindows/QuickWindowValidation.cs`
+- Modify: `src/ScadaBuilderV2.Application/QuickWindows/QuickWindowDefinitionService.cs`
+- Modify: `src/ScadaBuilderV2.Application/QuickWindows/QuickWindowInvocationService.cs`
+- Create: `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowInterfaceVersioningTests.cs`
+
+**Interfaces:**
+- Consumes: définitions persistées, invocations typées et analyse d'usages de Task 2.1.
+- Produces: transitions d'interface déterministes, statut `Outdated` par invocation et diagnostic bloquant build/export.
+
+- [ ] Implémenter la matrice de transitions de `FR-032`: renommage sans effet, ajout optionnel/`Required`, suppression, changement de type/accès/`Required`, membres privés neutres. Toute transition incompatible incrémente `InterfaceVersion`.
+- [ ] Marquer chaque invocation devenue incompatible `Outdated` en conservant ses liaisons persistées; ne jamais relier, supprimer ou fabriquer une valeur par défaut.
+- [ ] Autoriser la sauvegarde d'un projet contenant des invocations `Outdated`; bloquer build et export avec un diagnostic nommant définition, invocation, page et port.
+- [ ] Tester la réparation explicite port par port, la stabilité des clés au renommage et l'absence de migration silencieuse.
+- [ ] Commit: `feat: version quick window local interfaces`.
+
+**Vérification:**
+
+```bash
+dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWindowInterfaceVersioningTests|FullyQualifiedName~QuickWindowBuildValidationTests|FullyQualifiedName~QuickWindowApplicationTests"
+```
+
 ---
 
 ## Phase 3 - Authoring WPF et preview Builder
@@ -483,6 +515,7 @@ Expected: fixture et expectations portent le même SHA dans les deux dépôts; a
 - Create: `src/ScadaBuilderV2.App/MainWindow.QuickWindows.cs`
 - Create: `src/ScadaBuilderV2.App/QuickWindows/QuickWindowEditorContext.cs`
 - Create: `src/ScadaBuilderV2.App/QuickWindows/QuickWindowWorkspaceController.cs`
+- Modify: `src/ScadaBuilderV2.Application/History/EditorHistoryTarget.cs`
 - Create: `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowShellContractTests.cs`
 
 **Interfaces:**
@@ -493,7 +526,16 @@ Expected: fixture et expectations portent le même SHA dans les deux dépôts; a
 - [ ] Masquer navigation, route, header/footer, import et autres commandes page-only; afficher le contexte actif sans ambiguïté.
 - [ ] Garder dans `MainWindow.xaml.cs` seulement l’initialisation du controller et les délégations d’événements d’une ligne. Toute logique de sélection, création, refresh, enablement et navigation QuickWindow appartient au controller ou à `MainWindow.QuickWindows.cs`.
 - [ ] Tester le contrat XAML/commandes et le basculement page/fenêtre. Ajouter un test d’architecture qui échoue si de nouvelles méthodes QuickWindow substantielles ou des types métier sont ajoutés à `MainWindow.xaml.cs`.
+- [ ] Ajouter `Dupliquer` dans l'arborescence (`FR-033`, `FR-UI-25`): nouvelle clé, `Code` unique dérivé, copie complète du contenu/interface/présentation, aucune invocation copiée et aucune référence partagée.
+- [ ] Étendre `EditorHistoryTarget` à une portée `QuickWindow` identifiée par `QuickWindowDefinitionKey` (`FR-035`) sans créer de second service d'historique; `Annuler`/`Rétablir` activent d'abord le contexte cible puis appliquent l'action (`FR-UI-26`).
+- [ ] Tester une séquence alternée page → fenêtre → page: pile unique, aucun vidage au basculement, activation déterministe du contexte et cible affichée.
 - [ ] Commit: `feat: add quick window authoring shell`.
+
+**Vérification:**
+
+```bash
+dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWindowShellContractTests|FullyQualifiedName~EditorHistoryServiceTests|FullyQualifiedName~ProjectWorkspaceHistoryTests"
+```
 
 ### Task 3.2: Construire l’éditeur Interface locale
 
@@ -510,7 +552,14 @@ Expected: fixture et expectations portent le même SHA dans les deux dépôts; a
 
 - [ ] Remplacer `Catalogue Tags` par `Interface locale` uniquement dans ce contexte; restreindre les sélecteurs état/commande/binding/expression aux membres locaux.
 - [ ] Afficher optional non lié gris et required non lié rouge; confirmer toute suppression référencée.
+- [ ] Implémenter explicitement `FR-UI-15` (tableau unique groupé `Interface publique`/`Données privées` avec filtres par famille), `FR-UI-16` (édition inline des propriétés courantes et dialogue commun pour les avancées) et `FR-UI-17` (compteur d'usages par membre et navigation vers chaque usage). Chaque point possède son test de contrat.
 - [ ] Commit: `feat: author quick window local interfaces`.
+
+**Vérification:**
+
+```bash
+dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWindowInterfaceAuthoringTests"
+```
 
 ### Task 3.3: Ajouter Open/Close et l’onglet conditionnel Liaisons
 
@@ -529,7 +578,15 @@ Expected: fixture et expectations portent le même SHA dans les deux dépôts; a
 - [ ] N’afficher `Liaisons` que pour `OpenQuickWindow`; ne proposer ni Toggle ni cible page.
 - [ ] Dans un contenu Fenêtre rapide, proposer `CloseQuickWindow(Self)` sans cible libre.
 - [ ] Vérifier persistance, undo/redo, suppression appelant et absence d’état partagé.
+- [ ] Implémenter explicitement `FR-UI-18` (colonnes nom, famille, type, source, valeur/référence, statut) et `FR-UI-19` (choix de source typé `Tag`/`Littéral`/`Expression`/`Port parent` puis sélecteur contextuel, sans champ libre unique).
+- [ ] Afficher le statut `Outdated` de Task 2.4 en rouge dans la grille et interdire l'export tant qu'une invocation reste `Outdated`.
 - [ ] Commit: `feat: author quick window bindings`.
+
+**Vérification:**
+
+```bash
+dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWindowBindingAuthoringTests|FullyQualifiedName~QuickWindowBindingTests"
+```
 
 ### Task 3.4: Ajouter le preview et le banc d’essai editor-only
 
@@ -550,9 +607,95 @@ Expected: fixture et expectations portent le même SHA dans les deux dépôts; a
 - [ ] Vérifier même invocation => focus, autre invocation => close/dispose/recreate, aucune fuite de mapping et aucune exportation des données de test.
 - [ ] Commit: `feat: preview quick window instances`.
 
+**Vérification:**
+
+```bash
+dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWindowPreviewTests|FullyQualifiedName~PreviewDocumentTests"
+```
+
+### Task 3.5: Valider le presse-papier et la duplication inter-contextes
+
+**Files:**
+- Modify: `src/ScadaBuilderV2.Application/Clipboard/SceneClipboard.cs`
+- Create: `src/ScadaBuilderV2.Application/QuickWindows/QuickWindowClipboardValidator.cs`
+- Modify: `src/ScadaBuilderV2.App/QuickWindows/QuickWindowWorkspaceController.cs`
+- Create: `src/ScadaBuilderV2.App/QuickWindows/QuickWindowPasteDiagnosticsDialog.xaml`
+- Create: `src/ScadaBuilderV2.App/QuickWindows/QuickWindowPasteDiagnosticsDialog.xaml.cs`
+- Create: `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowClipboardTests.cs`
+
+**Interfaces:**
+- Consumes: presse-papier de scène existant, catalogue projet et Interface locale de la définition cible.
+- Produces: analyse fail-closed des références non résolubles, refus par défaut et variante confirmée `Coller sans liaisons`.
+
+- [ ] Analyser tout collage/duplication franchissant la frontière page ↔ Fenêtre rapide (`FR-031`, `FR-034`): mapping/tag projet, membre d'une autre Interface locale, port d'une autre définition et invocation dont la cible est absente.
+- [ ] Refuser par défaut avec un diagnostic nommant objet et propriété; n'offrir que `Annuler` ou `Coller sans liaisons` (`FR-UI-23`).
+- [ ] `Coller sans liaisons` retire chaque référence fautive, laisse la propriété `Non lié`, reste atomique et undoable dans le contexte cible; aucune promotion automatique en membre d'Interface locale.
+- [ ] Appliquer la même validation à un composant de bibliothèque `.sep` instancié sur un canvas de Fenêtre rapide (`FR-034`).
+- [ ] Tester les deux sens de la frontière, la duplication d'un Element+ lié et l'absence de référence orpheline après collage.
+- [ ] Commit: `feat: validate quick window clipboard boundaries`.
+
+**Vérification:**
+
+```bash
+dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWindowClipboardTests|FullyQualifiedName~SceneClipboardTests"
+```
+
+### Task 3.6: Ajouter la surface de réparation des invocations `Outdated`
+
+**Files:**
+- Create: `src/ScadaBuilderV2.App/QuickWindows/QuickWindowInvocationRepairDialog.xaml`
+- Create: `src/ScadaBuilderV2.App/QuickWindows/QuickWindowInvocationRepairDialog.xaml.cs`
+- Modify: `src/ScadaBuilderV2.App/QuickWindows/QuickWindowInterfacePanel.xaml.cs`
+- Modify: `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowInterfaceVersioningTests.cs`
+
+**Interfaces:**
+- Consumes: statut `Outdated` et diagnostics de Task 2.4.
+- Produces: liste des invocations à réparer, navigation vers l'appelant et reliaison explicite port par port.
+
+- [ ] Afficher pour chaque définition ses invocations `Outdated` avec page, élément appelant et motif d'incompatibilité (`FR-UI-24`).
+- [ ] Permettre la navigation vers l'appelant et la reliaison port par port; aucune réparation automatique ni en masse silencieuse.
+- [ ] Confirmer explicitement toute modification d'interface qui rendra des invocations `Outdated`, en affichant leur nombre avant application.
+- [ ] Tester que la réparation est undoable et que le build redevient vert uniquement lorsque toutes les invocations sont réparées.
+- [ ] Commit: `feat: repair outdated quick window invocations`.
+
+**Vérification:**
+
+```bash
+dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWindowInterfaceVersioningTests|FullyQualifiedName~QuickWindowBuildValidationTests"
+```
+
 ---
 
 ## Phase 4 - Package 2.3, runtime partagé et conformance encore bloquée
+
+### Task 4.0: Figer le contrat package Fenêtre rapide avant toute compilation (prérequis bloquant)
+
+**Files:**
+- Modify: `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md`
+- Modify: `docs/03_runtime_contracts/PREVIEW_BUILD_EXPORT_CONTRACT_V2.md`
+- Read only: `F:\Projet\Git\TF100Web\frontend\scada_builder_composition.py`
+- Read only: `F:\Projet\Git\TF100Web\frontend\scada_package.py`
+
+**Interfaces:**
+- Consumes: contrat `.sb2` 2.3 existant et fonctions TF100Web `deploy_scada_builder` / `load_composed_page`.
+- Produces: layout package et layout déployé documentés pour les Fenêtres rapides, avant la moindre ligne de compilateur.
+
+> Règle du dépôt (`CLAUDE.md`, `codex.md`): toute modification du contrat package exige l'inspection des fonctions/tests TF100Web correspondants **et** la mise à jour explicite de `FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` **avant** implémentation. Task 7.3 synchronise la documentation finale, elle ne remplace pas ce prérequis.
+
+- [ ] Documenter le chemin exact du contenu Fenêtre rapide dans le `.sb2`: répertoire dérivé de `QuickWindowDefinitionKey`, fichier HTML, CSS de définition et assets, sous le root `scada-builder-v2-ft100-package/`.
+- [ ] Documenter le layout déployé correspondant sous `STATIC_ROOT/scada/`, et statuer explicitement si `deploy_scada_builder` doit copier un nouveau répertoire ou réutiliser l'arborescence de pages existante.
+- [ ] Documenter ce que `load_composed_page` et `scada_package_page` lisent ou ignorent pour ce contenu: hash CSS, dimensions, attributs injectés, contenu traité comme statique opaque.
+- [ ] Documenter les registres manifest `QuickWindows[]`/`QuickWindowInvocations[]`, leur ordre déterministe, leur casing PascalCase et le camelCase du JSON runtime embarqué.
+- [ ] Vérifier chaque affirmation contre le code TF100Web réel avant de l'écrire; ne rien supposer sur une fonction non lue.
+- [ ] Commit: `docs: define quick window package contract`.
+
+**Vérification:**
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools/docs/verify-docs.ps1
+```
+
+Expected: aucun `[ERROR]`; le contrat décrit le layout package et déployé des Fenêtres rapides avant toute tâche de compilation.
 
 ### Task 4.1: Ajouter les capacités Blocked et l’analyse exhaustive
 
@@ -570,6 +713,13 @@ Expected: fixture et expectations portent le même SHA dans les deux dépôts; a
 - [ ] Ajouter les capacités incluses dans la verticale seulement; conserver nesting/parent-port/legacy-adapter bloqués et non requis si hors tranche.
 - [ ] Ajouter tests de réflexion/exhaustivité et mutation indépendante.
 - [ ] Commit: `feat: register blocked quick window capabilities`.
+
+**Vérification:**
+
+```bash
+dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~RuntimeContracts"
+powershell -ExecutionPolicy Bypass -File tools/docs/generate-runtime-capability-matrix.ps1 -Check
+```
 
 ### Task 4.2: Compiler définitions et invocations déterministes
 
@@ -593,6 +743,12 @@ Expected: fixture et expectations portent le même SHA dans les deux dépôts; a
 - [ ] Tester package byte-déterministe, rejets 2.1/2.2 et absence de Fragment de substitution.
 - [ ] Commit: `feat: compile quick window package contracts`.
 
+**Vérification:**
+
+```bash
+dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWindowExporterTests|FullyQualifiedName~Ft100PackageValidatorTests|FullyQualifiedName~Ft100SceneExporterTests"
+```
+
 ### Task 4.3: Étendre le runtime partagé et la fixture de conformance
 
 **Files:**
@@ -613,6 +769,13 @@ Expected: fixture et expectations portent le même SHA dans les deux dépôts; a
 - [ ] Implémenter ports optionnels/required validés, états/commandes/expressions avec scope instance et cleanup idempotent; rejeter `Literal`/`Expression` d’injection (`<script>`,`../`,`#...`) avant souscription et prouver qu’aucune écriture n’est émise.
 - [ ] Ajouter probes exacts, deux invocations M101/M102, stale hydration, cross-write rejection, profondeur 3 / cycle rejetés, injection rejetée et hash partagé; garder les statuts `Blocked`.
 - [ ] Commit: `feat: add shared quick window runtime`.
+
+**Vérification:**
+
+```bash
+node --test src/ScadaBuilderV2.Rendering/Runtime/tests
+dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~Runtime"
+```
 
 ### Task 4.4: Exécuter le package compilé dans TF100Web avant tout host complet
 
@@ -662,6 +825,12 @@ Expected: le premier round-trip package réel est vert avant le code host comple
 - [ ] Vendoriser fixture/hash exacts et tester rollback conservant le package actif.
 - [ ] Commit: `feat: validate quick window packages`.
 
+**Vérification:**
+
+```bash
+python -m pytest frontend/tests_scada_package.py frontend/tests_scada_deploy.py -q   # exécuté dans F:\Projet\Git\TF100Web
+```
+
 ### Task 5.2: Implémenter l’adaptateur host et le gestionnaire SinglePerDefinition
 
 **Files:**
@@ -682,6 +851,12 @@ Expected: le premier round-trip package réel est vert avant le code host comple
 - [ ] Rejouer les races de Phase 0 contre le vrai host: double-clic/open concurrent, navigation pendant montage, close pendant hydration, open pendant dispose, invalidation de session/déploiement et callbacks tardifs. Vérifier une génération active maximum, dispose idempotent et aucun changement DOM/historique après invalidation.
 - [ ] Commit: `feat: host quick windows in TF100Web`.
 
+**Vérification:**
+
+```bash
+python -m pytest frontend/tests_scada_quick_window_host.py -q   # exécuté dans F:\Projet\Git\TF100Web
+```
+
 ### Task 5.3: Exécuter la conformance cross-runtime et déployer TF100Web
 
 **Files:**
@@ -701,6 +876,41 @@ Expected: le premier round-trip package réel est vert avant le code host comple
 - [ ] Après autorisation distincte, déployer TF100Web en production. Effectuer un smoke read-only, surveiller erreurs et métriques, puis conserver la possibilité de redéployer immédiatement le package known-good.
 - [ ] Ne promouvoir aucune capacité et ne passer à Phase 6 qu’après canary/soak/rollback verts et preuve du déploiement production capable. Si production échoue, redéployer known-good et garder toutes les capacités Builder `Blocked`.
 - [ ] Commit: `test: prove quick window host conformance`.
+
+**Vérification:**
+
+```bash
+dotnet test ScadaBuilderV2.sln --no-restore
+node --test src/ScadaBuilderV2.Rendering/Runtime/tests
+python -m pytest frontend -q   # exécuté dans F:\Projet\Git\TF100Web
+```
+
+### Task 5.4: Prouver la composition header/pied et la coexistence legacy
+
+**Files:**
+- Modify: `F:\Projet\Git\TF100Web\frontend\scada_builder_composition.py`
+- Modify: `F:\Projet\Git\TF100Web\static\asset\js\station\quick-window-host.js`
+- Create: `F:\Projet\Git\TF100Web\frontend\tests_scada_quick_window_composition.py`
+
+**Interfaces:**
+- Consumes: page composée `Header` + contenu + `Footer`, gestionnaire host unique et popups `Fragment` legacy encore déployés.
+- Produces: propriété d'instance par racine host composée, fermeture de chaîne à la navigation et isolation stricte vis-à-vis du legacy.
+
+> La Phase 0 n'est pas rejouée pour ces cas: ils n'existent que dans un host composé réel. Le hash de fixture gelé reste valide et ces preuves appartiennent au host.
+
+- [ ] Prouver qu'une invocation portée par un Element+ d'une page `Header` ou `Footer` ouvre son instance dans la racine host de la page composée, au-dessus du header/contenu/pied (`FR-030`).
+- [ ] Prouver qu'aucune instance n'est possédée par un fragment header/pied et qu'un seul gestionnaire existe par racine composée.
+- [ ] Prouver que la navigation ferme la chaîne complète, y compris une fenêtre ouverte depuis un header persistant, avant de résoudre la nouvelle page; aucune liaison de la génération précédente ne survit.
+- [ ] Prouver que l'invalidation de session/déploiement ferme la chaîne sans écriture ni mutation d'historique.
+- [ ] Monter une page portant simultanément un popup `Fragment` legacy et une Fenêtre rapide (`FR-036`): backdrops distincts, bandes de z-order distinctes, pièges de focus distincts, `dispose` non croisé.
+- [ ] Prouver le refus de traversée: un contenu de Fenêtre rapide n'ouvre pas de popup legacy et un popup legacy n'ouvre pas de Fenêtre rapide.
+- [ ] Commit TF100Web: `test: prove quick window composition and legacy isolation`.
+
+**Vérification:**
+
+```bash
+python -m pytest frontend/tests_scada_quick_window_composition.py -q   # exécuté dans F:\Projet\Git\TF100Web
+```
 
 ---
 
@@ -724,6 +934,13 @@ Expected: le premier round-trip package réel est vert avant le code host comple
 - [ ] Puisque cette promotion introduit la première capacité QuickWindow livrable, calculer un bump `feature` depuis la valeur courante de `VERSION` avec `python C:\Users\mathi\.codex\skills\scada-builder-v2-versioning\scripts\bump_scada_v2_version.py <current> feature`, remettre l’itération à `0000` et synchroniser seulement les documents propriétaires touchés. Ne pas effectuer ce bump si une capacité, le canary, le déploiement ou l’export reste bloqué.
 - [ ] Commit: `feat: promote proven quick window capabilities`.
 
+**Vérification:**
+
+```bash
+powershell -ExecutionPolicy Bypass -File tools/docs/generate-runtime-capability-matrix.ps1
+dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~RuntimeContracts"
+```
+
 ### Task 6.2: Activer l’export strict 2.3 Fenêtre rapide
 
 **Files:**
@@ -739,6 +956,12 @@ Expected: le premier round-trip package réel est vert avant le code host comple
 - [ ] Retirer le gate temporaire uniquement pour les variantes Supported; maintenir le rejet de toute variante Blocked ou host incompatible.
 - [ ] Tester export/rejet, hash, déterminisme, aucune donnée test/editor-only et aucune géométrie de chrome host dans le contenu.
 - [ ] Commit: `feat: enable strict quick window export`.
+
+**Vérification:**
+
+```bash
+dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWindowExporterTests|FullyQualifiedName~Ft100PackageValidatorTests"
+```
 
 ---
 
@@ -766,6 +989,12 @@ Expected: le premier round-trip package réel est vert avant le code host comple
 - [ ] Tester save/reopen, required/optional, focus/recreate, cross-read/write, undo/redo et preview/export.
 - [ ] Commit: `test: add win00054 quick window vertical`.
 
+**Vérification:**
+
+```bash
+dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWindows"
+```
+
 ### Task 7.2: Exécuter l’acceptation complète sans écriture PLC non autorisée
 
 **Files:**
@@ -780,6 +1009,13 @@ Expected: le premier round-trip package réel est vert avant le code host comple
 - [ ] Mesurer 30 ouvertures froides et 100 chaudes après warmup sur la même machine et même Node LTS (20.18.x) que Phase 0. Exiger p95 chaud ≤ 500 ms, p95 froid ≤ 1 500 ms et régression ≤ 10 % contre la baseline gelée; vérifier aussi absence de croissance mémoire après les 100 cycles.
 - [ ] N’exécuter une écriture/readback PLC qu’après autorisation explicite; sinon consigner le gate restant sans présenter la livraison comme validée en production.
 - [ ] Commit: `test: validate win00054 quick window vertical`.
+
+**Vérification:**
+
+```bash
+dotnet test ScadaBuilderV2.sln --no-restore
+python -m pytest frontend -q   # exécuté dans F:\Projet\Git\TF100Web
+```
 
 ### Task 7.3: Synchroniser contrats, décisions et couverture
 
@@ -820,7 +1056,7 @@ Expected: `verify-docs` valide séparément les métadonnées `Document version`
 
 ## Annexe A — Matrice de couverture FR → Tasks (preuve de complétude)
 
-Chaque invariant approuvé de la spec `docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md:FR-001..029 + FR-UI-01..22` est tracé vers au moins une tâche testée. Une case vide = gap bloquant à combler avant `PASS` Phase 0 ou promotion.
+Chaque invariant approuvé de la spec `docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md:FR-001..036 + FR-UI-01..26` est tracé vers au moins une tâche testée. Une case vide = gap bloquant à combler avant `PASS` Phase 0 ou promotion.
 
 | FR | Intitulé court | Tasks porteuses (production) | Type de preuve |
 | --- | --- | --- | --- |
@@ -853,6 +1089,13 @@ Chaque invariant approuvé de la spec `docs/superpowers/specs/2026-08-04-paramet
 | `FR-027` | 3 identités, pas de 4e | `1.1`/`1.2` + `4.2` + Global Constraints | Absence `InstanceKey` |
 | `FR-028` | Verticale `win00054` 2 invocations | `7.1`/`7.2` | M101/M102 cross-leak tests |
 | `FR-029` | `DEC-0050` supersède `DEC-0019/020/022` | `1.3` + `7.3` docs | Registre + archives |
+| `FR-030` | Invocation depuis header/pied, chaîne fermée à la navigation | `5.4` composition host | Instance en racine composée + fermeture navigation |
+| `FR-031` | Presse-papier inter-contextes fail-closed | `3.5` clipboard validator | Refus + `Coller sans liaisons` undoable |
+| `FR-032` | Interface versionnée, invocations `Outdated` | `2.4` domaine/services + `3.6` réparation | Matrice de transitions + build bloqué |
+| `FR-033` | Duplication de définition indépendante | `3.1` commande `Dupliquer` | Nouvelle clé/namespace, aucune invocation copiée |
+| `FR-034` | Composants `.sep` sur canvas Fenêtre rapide | `3.5` | Même validation de liaisons que le collage |
+| `FR-035` | Pile undo/redo unique, portée `QuickWindow` | `3.1` history target | Alternance page/fenêtre sans vidage |
+| `FR-036` | Isolation z-order/backdrop vs popup legacy | `5.4` | Backdrops et `dispose` non croisés |
 
 | `FR-UI-01` | Chrome host + X | `0.1` + `3.4` + `5.2` | Barre titre hors canvas |
 | `FR-UI-02` | `CanvasSize` = contenu seul | `1.1` `PresentationDefaults` + `5.2` | Host ajoute chrome hors dimensions |
@@ -876,6 +1119,10 @@ Chaque invariant approuvé de la spec `docs/superpowers/specs/2026-08-04-paramet
 | `FR-UI-20` | Optional gris `Non lié` / Required rouge + preview indisponible | `3.2` + `3.4` | Statut + valeur `—` |
 | `FR-UI-21` | Banc d’essai editor-only non exporté | `3.4` | `QuickWindowTestBench` + test absence `.sb2` |
 | `FR-UI-22` | Suppression référencée bloquée + nav | `2.1` + `3.2` | Dialogue usages + confirmation |
+| `FR-UI-23` | Dialogue de collage refusé + `Coller sans liaisons` | `3.5` | Liste objet/propriété fautifs |
+| `FR-UI-24` | Surface de réparation des invocations `Outdated` | `3.6` | Navigation + reliaison port par port |
+| `FR-UI-25` | Commande `Dupliquer` dans l'arborescence | `3.1` | Nom unique dérivé + sélection |
+| `FR-UI-26` | Undo/redo affiche et active le contexte cible | `3.1` | Bascule visible avant application |
 
 > Gap check: si une FR n’a pas de ligne verte dans cette annexe à la fin d’une phase, la phase est incomplète. Le `verify-docs` de `Task 7.3` doit rejouer `rg` sur `FR-0` pour détecter toute FR orpheline.
 
@@ -911,6 +1158,14 @@ Chaque invariant approuvé de la spec `docs/superpowers/specs/2026-08-04-paramet
 - [x] `Page->A->B->C` profondeur 3 et cycle `A->B->A` sont rejetés en `QuickWindowDependencyAnalyzer` et en build/export avec diagnostic `cycle/depth-exceeded`; `Page->A->B` reste vert pour cette règle.
 - [ ] Node LTS épinglée (`20.18.x` via `.nvmrc` + `package.json` `engines.node` + `node --version`) est identique dans les rapports Phase 0 et Phase 7; aucune divergence de version n’est tolérée.
 - [ ] `PresentationDefaults` contient `Title`/`Center`/`Backdrop`/`Chrome` borné/`IsDraggable=true`/`IsResizable=false`/`IsViewportConstrained=true` et aucune autre propriété V1; chrome host reste hors `CanvasSize` (FR-UI-02/11).
-- [ ] Annexe A mapping `FR-001..029` + `FR-UI-01..22` est 100% verte et `rg FR-0` ne révèle aucune FR orpheline.
+- [ ] Annexe A mapping `FR-001..036` + `FR-UI-01..26` est 100% verte et `rg FR-0` ne révèle aucune FR orpheline.
 - [ ] Full suites Builder, runtime JS, package/conformance TF100Web et vérification docs réussissent par rapport aux baselines fraîches.
 - [ ] Toute écriture PLC réelle reste explicitement autorisée et traçable; sinon le gate industriel reste ouvert.
+- [ ] Le contrat `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` décrit le layout package et déployé des Fenêtres rapides **avant** la première ligne de compilateur (Task 4.0).
+- [ ] Une invocation portée par un header/pied s'ouvre dans la racine composée et sa chaîne se ferme à toute navigation ou invalidation (`FR-030`).
+- [ ] Aucun collage ou duplication ne fait traverser une liaison la frontière page ↔ Fenêtre rapide sans refus ou dépouillement confirmé (`FR-031`, `FR-034`).
+- [ ] Une modification incompatible d'Interface locale incrémente `InterfaceVersion`, marque les invocations `Outdated` et bloque build/export jusqu'à réparation explicite (`FR-032`).
+- [ ] Une définition dupliquée possède sa propre clé, son propre namespace et aucune invocation héritée (`FR-033`).
+- [ ] La pile undo/redo reste unique; le basculement page ↔ Fenêtre rapide ne la vide ni ne la fusionne, et l'annulation active le contexte cible (`FR-035`).
+- [ ] Fenêtre rapide et popup `Fragment` legacy ne partagent ni backdrop, ni z-order, ni `dispose`, et aucune traversée n'est possible (`FR-036`).
+- [ ] Chaque phase possède une entrée dans `tools/quick-window/checkpoints.json` versionné et un rapport d'audit sous `docs/superpowers/reports/`.

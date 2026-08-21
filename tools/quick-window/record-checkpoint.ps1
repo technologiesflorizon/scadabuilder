@@ -6,7 +6,7 @@
 
 .DESCRIPTION
   - Capture git rev-parse HEAD + branch des deux dépôts
-  - Conserve le fichier checkpoints.json sous artifacts/quick-window-rollout/ (non versionné, voir .gitignore: artifacts/)
+  - Ecrit le fichier versionne tools/quick-window/checkpoints.json (artifacts/ est ignore par git et ne peut pas servir de preuve de rollback)
   - N'utilise jamais git reset --hard; le rollback attendu est git revert en ordre inverse
 #>
 param(
@@ -18,7 +18,7 @@ $ErrorActionPreference = "Stop"
 
 $builderRoot = "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
 $tf100Root   = "F:\Projet\Git\TF100Web"
-$checkpointFile = Join-Path $builderRoot "artifacts/quick-window-rollout/checkpoints.json"
+$checkpointFile = Join-Path $builderRoot "tools/quick-window/checkpoints.json"
 
 function Get-GitInfo($root) {
   $head = & git -C $root rev-parse HEAD 2>$null

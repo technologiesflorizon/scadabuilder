@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.5.0022`
+Document version: `V2.1.5.0023`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-21 | `V2.1.5.0023` | `PENDING` | Audit de complétude Fenêtres rapides avant Phase 3 : spec étendue (`FR-030..036`, `FR-UI-23..26`) et plan complété par Task 2.4, Tasks 3.5/3.6, Task 4.0 prérequis de contrat package, Task 5.4 composition/legacy, blocs de vérification par tâche et checkpoints versionnés. |
 | 2026-08-13 | `V2.1.5.0022` | `PENDING` | Phase 2 Fenêtres rapides livrée : orchestration Application, analyse référentielle cycle/profondeur, mutations atomiques, historique workspace et validation build/export fail-closed; capacités runtime toujours `Blocked`. |
 | 2026-08-13 | `V2.1.5.0021` | `PENDING` | Audit correctif Fenêtres rapides : Phase 0 validée sur DOM/WebView2/Edge réels; contrats, persistance et handshake de Phase 1 alignés; capacités toujours `Blocked`. |
 | 2026-08-11 | `V2.1.5.0020` | `PENDING` | Phase 1 livrée : modèle QuickWindow (VisualContent, PresentationDefaults, SinglePerDefinition), invocations typées avec anti-injection, retrait fail-closed des kinds popup, persistance atomique quick-windows/ et handshake contractuel Builder→TF100Web. |
