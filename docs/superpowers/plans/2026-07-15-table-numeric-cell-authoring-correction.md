@@ -9,7 +9,7 @@ Document version: `V2.1.4.0041`
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
 | 2026-07-16 | `V2.1.4.0041` | `6afe427` | Plan execute dans un worktree isole; code, tests cibles, suite complete et smoke interactif consignes. |
-| 2026-07-15 | `V2.1.4.0040` | `PENDING` | Plan cree depuis la specification corrective approuvee `DEC-0043`. |
+| 2026-07-15 | `V2.1.4.0040` | `75f5000` | Plan cree depuis la specification corrective approuvee `DEC-0043`. |
 
 > **Pour les agents d'execution :** executer ce plan tache par tache. Chaque tache commence par des tests en echec, se termine par les validations indiquees et possede sa propre frontiere de commit.
 

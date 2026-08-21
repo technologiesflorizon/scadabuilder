@@ -8,8 +8,8 @@ Document version: `V2.1.5.0000`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-29 | `V2.1.5.0000` | `PENDING` | Spécification synchronisée avec l’accueil projet et le dialogue de création `DEC-0049`. |
-| 2026-07-16 | `V2.1.4.0041` | `PENDING` | Authoring InputNumeric Tableau fiabilise par une commande unique, une cible Tableau/A1 visible, une selection fraiche et l'alignement Lire depuis Ecrire. |
+| 2026-07-29 | `V2.1.5.0000` | `8fe1077` | Spécification synchronisée avec l’accueil projet et le dialogue de création `DEC-0049`. |
+| 2026-07-16 | `V2.1.4.0041` | `090d388` | Authoring InputNumeric Tableau fiabilise par une commande unique, une cible Tableau/A1 visible, une selection fraiche et l'alignement Lire depuis Ecrire. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Mode Objet initial et reselection deterministe; verrou de position immediat sans bloquer cellules/pistes; A/1 aligne sur la visibilite effective. |
 | 2026-07-15 | `V2.1.4.0031` | `e127190` | Ruban secondaire sans scrollbar native, navigation d'overflow par chevrons et hauteur anti-clipping. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Interactions Tableau corriges : cellules et pistes prioritaires, reperes A/1 masquables, fusion toggle et origine du format explicite. |
@@ -43,7 +43,7 @@ Document version: `V2.1.5.0000`
 15. Le dialogue reste sur une page. Choisir Ecrire initialise immediatement Lire avec le meme tag seulement lorsque Lire est vide; une lecture distincte est preservee.
 16. Le double-clic d'une cellule `InputNumeric` ouvre la configuration de cette cellule exacte; le double-clic d'une cellule texte conserve l'edition inline.
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Direction haut de gamme de l’inspecteur Style : sections, contrôles à état, icônes sémantiques et aperçu vivant. |
-| 2026-06-19 | `V2.1.3.0002` | `PENDING` | Ajout du standard de polish produit concurrentiel face a ScadaPlant. |
+| 2026-06-19 | `V2.1.3.0002` | `f35a5f4` | Ajout du standard de polish produit concurrentiel face a ScadaPlant. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes: icones 32x32 et boutons sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Normalisation de la galerie Formes du ruban Inserer avec icones 64x64 et etat actif. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | La palette laterale d'outils consomme maintenant le catalogue semantique d'icones. |
@@ -54,7 +54,7 @@ Document version: `V2.1.5.0000`
 | 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Refonte du ruban superieur en groupes visuels, onglet actif et overflow horizontal. |
 | 2026-06-17 | `V2.1.2.0021` | `1040889` | Correction du feedback de progression pour cibler le handler `.sb2`. |
 | 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Ajout de l'indicateur de progression statut pour l'export FT100 `.sb2`. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du nouveau document proprietaire UI spec avec lien de migration vers l'ancien document. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du nouveau document proprietaire UI spec avec lien de migration vers l'ancien document. |
 
 ## 1. Active Direction
 

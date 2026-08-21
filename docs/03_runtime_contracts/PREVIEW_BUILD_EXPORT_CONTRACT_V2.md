@@ -8,24 +8,24 @@ Document version: `V2.1.5.0022`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Gate build/export QuickWindow Phase 2 : erreurs required/mapping/type/accès/version/graphe/profil/présentation/injection et capacité bloquée, sans fabriquer de liaison. |
-| 2026-07-16 | `V2.1.4.0062` | `PENDING` | Parite modele/preview/export/runtime host verrouillee par fixture, capabilities, hash runtime et exclusion editor-only. |
+| 2026-08-13 | `V2.1.5.0022` | `436d38f` | Gate build/export QuickWindow Phase 2 : erreurs required/mapping/type/accès/version/graphe/profil/présentation/injection et capacité bloquée, sans fabriquer de liaison. |
+| 2026-07-16 | `V2.1.4.0062` | `370641d` | Parite modele/preview/export/runtime host verrouillee par fixture, capabilities, hash runtime et exclusion editor-only. |
 | 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | Tests de parite exacte ajoutes jusqu'au runtime stable et hashe deploye. |
 | 2026-07-16 | `V2.1.4.0046` | `b2e4f5f` | `DEC-0047` approuvee : la parite inclura un registre de capacites derive, manifest 2.3 et package de conformance partage avec TF100Web. |
-| 2026-07-15 | `V2.1.4.0039` | `PENDING` | Preview/build/export partagent les inputs numeriques cellule; le manifest global 2.2 publie `TableCellBindings` sans alterer le DOM Tableau. |
+| 2026-07-15 | `V2.1.4.0039` | `ce99ff9` | Preview/build/export partagent les inputs numeriques cellule; le manifest global 2.2 publie `TableCellBindings` sans alterer le DOM Tableau. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Les tableaux exportent des rangées HTML valides, des `<th>/<td>` avec `rowspan`/`colspan` et des segments conservant style, couleur et épaisseur; le scénario 16 x 10 vérifie preview et `.sb2`. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Parite Tableau avancee : headers semantiques, wrap/line-height et segments de bordure; exclusion explicite du lock et des gouttieres editor-only. |
-| 2026-07-14 | `V2.1.2.0039` | `PENDING` | Ajout des pages natives et de la projection `PageKey` vers `PageCode` sans changement du contrat `.sb2`. |
+| 2026-07-14 | `V2.1.2.0039` | `50b2ad9` | Ajout des pages natives et de la projection `PageKey` vers `PageCode` sans changement du contrat `.sb2`. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Alignement metadata preview/export pour wrappers de boutons Element+. |
 | 2026-06-19 | `V2.1.2.0037` | `2a540d6` | Ajout du contrat des evenements runtime pour boutons standards. |
 | 2026-06-19 | `V2.1.2.0036` | `8cc4d33` | Ajout du contrat runtime disabled reel pour boutons Element+. |
 | 2026-06-19 | `V2.1.2.0035` | `588d712` | Ajout du contrat runtime local d'etat Toggle pour boutons Element+. |
 | 2026-06-19 | `V2.1.2.0034` | `61eef34` | Ajout du contrat export CSS appui/actif pour les boutons Element+. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout de l'export archive `.sb2` FT100 avec validation de compatibilite avant packaging. |
-| 2026-06-16 | `V2.1.2.0007` | `PENDING` | Clarification du curseur FT100 runtime par defaut sur boutons et cibles avec events. |
-| 2026-06-16 | `V2.1.2.0006` | `PENDING` | Clarification de la parite export des events runtime portes par des groupes Element+. |
-| 2026-06-16 | `V2.1.2.0005` | `PENDING` | Ajout des metadonnees preview/export du hover automatique des boutons Element+. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat actif preview/build/export separe des notes historiques. |
+| 2026-06-16 | `V2.1.2.0007` | `5c7d617` | Clarification du curseur FT100 runtime par defaut sur boutons et cibles avec events. |
+| 2026-06-16 | `V2.1.2.0006` | `5c7d617` | Clarification de la parite export des events runtime portes par des groupes Element+. |
+| 2026-06-16 | `V2.1.2.0005` | `5c7d617` | Ajout des metadonnees preview/export du hover automatique des boutons Element+. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du contrat actif preview/build/export separe des notes historiques. |
 
 ## 1. Contract
 

@@ -8,7 +8,7 @@ Document version: `V2.1.1.0039`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Correction du compteur de tests de regression documente apres verification locale: 174 tests passent. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Correction du compteur de tests de regression documente apres verification locale: 174 tests passent. |
 | 2026-06-15 | `V2.1.1.0036` | `63c2475` | Generalisation du namespace CSS/DOM/runtime par page pour empecher les collisions de selecteurs TF100Web. |
 | 2026-06-15 | `V2.1.1.0035` | `63c2475` | Ajout du contrat de CSS source page-scopee pour eviter les collisions `data-id` en composition TF100Web. |
 | 2026-06-15 | `V2.1.1.0034` | `63c2475` | Alignement avec le contrat selection polymorphe et suppression source durable par etat scene. |

@@ -8,7 +8,7 @@ Document version: `V2.1.4.0011`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-14 | `V2.1.4.0011` | `PENDING` | Tâches 1 à 13 et validation automatisée de la tâche 14 réalisées; vérification UI manuelle et tâche 16 non exécutées. |
+| 2026-07-14 | `V2.1.4.0011` | `50b2ad9` | Tâches 1 à 13 et validation automatisée de la tâche 14 réalisées; vérification UI manuelle et tâche 16 non exécutées. |
 | 2026-07-14 | `V2.1.4.0010` | `c5d6f0e` | Création du plan exécutable dérivé de la spécification approuvée des commandes et du modèle moderne de pages. |
 
 > Ce plan est dérivé de la spécification `docs/superpowers/specs/2026-07-14-page-commands-design.md` (`V2.1.4.0009`, D1–D38). Aucune décision produit n’y reste ouverte.

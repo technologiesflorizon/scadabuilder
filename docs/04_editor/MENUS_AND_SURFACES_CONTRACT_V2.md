@@ -8,10 +8,10 @@ Document version: `V2.1.5.0000`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-29 | `V2.1.5.0000` | `PENDING` | Accueil projet, dialogue Nouveau, sélecteur `project.json`, récents et commandes de fermeture livrés. |
+| 2026-07-29 | `V2.1.5.0000` | `8fe1077` | Accueil projet, dialogue Nouveau, sélecteur `project.json`, récents et commandes de fermeture livrés. |
 | 2026-07-16 | `V2.1.4.0042` | `9fd2a30` | `page.properties` ouvre et active maintenant la page selectionnee avant d'afficher le panneau Page afin de charger le bon snapshot de proprietes. |
-| 2026-07-16 | `V2.1.4.0041` | `PENDING` | Le groupe Input numerique est reduit a `Configurer <A1>` et partage une cible Tableau/cellule fraiche avec le panneau, le dialogue et le double-clic. |
-| 2026-07-15 | `V2.1.4.0039` | `PENDING` | Le ruban contextuel Tableau expose le groupe Input numerique et route ses editions liees vers le controleur/dialogue dedies. |
+| 2026-07-16 | `V2.1.4.0041` | `090d388` | Le groupe Input numerique est reduit a `Configurer <A1>` et partage une cible Tableau/cellule fraiche avec le panneau, le dialogue et le double-clic. |
+| 2026-07-15 | `V2.1.4.0039` | `ce99ff9` | Le ruban contextuel Tableau expose le groupe Input numerique et route ses editions liees vers le controleur/dialogue dedies. |
 | 2026-07-15 | `V2.1.4.0031` | `e127190` | Overflow du niveau 2 remplace par des chevrons sans barre native; hauteur reservee augmentee pour interdire le rognage vertical. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Gestes Tableau rendus prioritaires en mode Cellules, reperes A/1 masquables, fusion contextuelle et coche de menu alignee a droite. |
 | 2026-07-15 | `V2.1.4.0029` | `bbca8fa` | Niveau 2 du ruban densifie en commandes horizontales compactes sur deux rangees; galerie Formes et groupes visuels reduits. |
@@ -20,10 +20,10 @@ Document version: `V2.1.5.0000`
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Sous-surface Tableau contextuelle implementee dans le niveau 2 Inserer, creation configuree sans dialogue et modes Objet/Cellules exclusifs. |
 | 2026-07-14 | `V2.1.4.0017` | `a94016a` | Niveau 1 du ruban Inserer compacte avec style independant afin de reserver la hauteur necessaire aux outils du niveau 2. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Ruban Inserer hierarchique a huit familles et menu contextuel Tableau type tableur implementes depuis des catalogues dedies. |
-| 2026-07-14 | `V2.1.4.0015` | `PENDING` | Correction du clic droit Pages pour remonter correctement depuis un contenu WPF `Run` sans appeler `VisualTreeHelper` sur un objet non visuel. |
-| 2026-07-14 | `V2.1.4.0014` | `PENDING` | Ajustement de l'icone Nouvelle page a 16x16 avec marge interne explicite pour eviter son rognage. |
-| 2026-07-14 | `V2.1.4.0013` | `PENDING` | Finition du panneau Pages : libelle Recherche, filtres initiaux Default/Tous et icone semantique partagee pour Nouvelle page. |
-| 2026-07-14 | `V2.1.4.0012` | `PENDING` | Onglet Pages, actions rapides, menu contextuel, recherche/filtres et surfaces Diagnostics désormais implémentés. |
+| 2026-07-14 | `V2.1.4.0015` | `34dfc82` | Correction du clic droit Pages pour remonter correctement depuis un contenu WPF `Run` sans appeler `VisualTreeHelper` sur un objet non visuel. |
+| 2026-07-14 | `V2.1.4.0014` | `fdcd11e` | Ajustement de l'icone Nouvelle page a 16x16 avec marge interne explicite pour eviter son rognage. |
+| 2026-07-14 | `V2.1.4.0013` | `cc670c1` | Finition du panneau Pages : libelle Recherche, filtres initiaux Default/Tous et icone semantique partagee pour Nouvelle page. |
+| 2026-07-14 | `V2.1.4.0012` | `50b2ad9` | Onglet Pages, actions rapides, menu contextuel, recherche/filtres et surfaces Diagnostics désormais implémentés. |
 | 2026-07-14 | `V2.1.4.0011` | `4def659` | Ajout de la cible approuvée du ruban `Pages`, des actions rapides et du menu contextuel commun. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes a des icones 32x32 sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout du contrat de galerie Formes 4 colonnes, icones 64x64, et etat actif d'insertion. |
@@ -33,11 +33,11 @@ Document version: `V2.1.5.0000`
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Le ruban WPF adapte le catalogue applicatif de commandes au lieu de posseder la liste canonique. |
 | 2026-06-19 | `V2.1.2.0040` | `335adfb` | Le ruban superieur est maintenant rendu depuis un registre de commandes actif. |
 | 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Ajout du contrat de ruban superieur groupe et icone pour les surfaces de commande. |
-| 2026-06-17 | `V2.1.2.0013` | `PENDING` | Ajout du contrat de surface pour le panneau `Catalogue Tags` filtre. |
-| 2026-06-16 | `V2.1.2.0003` | `PENDING` | Ajout de la hierarchie parent/enfant dans l'onglet Element pour les groupes Element+. |
-| 2026-06-16 | `V2.1.2.0002` | `PENDING` | Ajout du contrat menu pour `object.group` et avertissement de conversion avant groupement legacy. |
-| 2026-06-16 | `V2.1.2.0000` | `PENDING` | Ajout du contrat du choix contextuel Propriete et des commandes desactivees avec raison visible au survol. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat menus/surfaces separe des commandes et de l'UI generale. |
+| 2026-06-17 | `V2.1.2.0013` | `4b01460` | Ajout du contrat de surface pour le panneau `Catalogue Tags` filtre. |
+| 2026-06-16 | `V2.1.2.0003` | `940af93` | Ajout de la hierarchie parent/enfant dans l'onglet Element pour les groupes Element+. |
+| 2026-06-16 | `V2.1.2.0002` | `2c5a0b4` | Ajout du contrat menu pour `object.group` et avertissement de conversion avant groupement legacy. |
+| 2026-06-16 | `V2.1.2.0000` | `2c5a0b4` | Ajout du contrat du choix contextuel Propriete et des commandes desactivees avec raison visible au survol. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du contrat menus/surfaces separe des commandes et de l'UI generale. |
 
 ## 1. Contract
 

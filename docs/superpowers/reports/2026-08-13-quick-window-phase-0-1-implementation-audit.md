@@ -8,7 +8,7 @@ Document version: `V2.1.5.0021`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-13 | `V2.1.5.0021` | `PENDING` | Audit du commit de Phase 1, correction des preuves Phase 0 et des écarts Domain/persistance/handshake de Phase 1. |
+| 2026-08-13 | `V2.1.5.0021` | `b353e37` | Audit du commit de Phase 1, correction des preuves Phase 0 et des écarts Domain/persistance/handshake de Phase 1. |
 
 ## 1. Portée et conclusion
 

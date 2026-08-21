@@ -684,7 +684,7 @@ In `docs/00_governance/DECISION_REGISTER_V2.md`, after the last existing `DEC-00
 
 Status: Active
 Created: 2026-07-06 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `aa8ab25`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A

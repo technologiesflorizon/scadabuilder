@@ -8,14 +8,14 @@ Document version: `V2.1.3.0001`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-05 | `V2.1.3.0001` | `PENDING` | Ajout du champ `Component.Provenance` (`Legacy` \| `AiModernized`) pour distinguer une artwork originale d'une retouche via la boucle de modernisation interactive (DEC-0034). |
+| 2026-07-05 | `V2.1.3.0001` | `a49ad78` | Ajout du champ `Component.Provenance` (`Legacy` \| `AiModernized`) pour distinguer une artwork originale d'une retouche via la boucle de modernisation interactive (DEC-0034). |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Extension du contrat formes standards a Cercle/Triangle/Etoile et aux lignes/fleches en deux points. |
 | 2026-06-19 | `V2.1.2.0033` | `89d7165` | Ajout des primitives HMI/SCADA electriques et alarme `Switch`, `Breaker`, `Transformer` et `AlarmBeacon`. |
 | 2026-06-18 | `V2.1.2.0031` | `f6a85ed` | Ajout des primitives machines/mesure HMI Element+ `Motor`, `Fan`, `Conveyor` et `Gauge`. |
 | 2026-06-18 | `V2.1.2.0029` | `b97ef16` | Ajout des primitives process HMI Element+ `Tank`, `PipeHorizontal`, `PipeVertical`, `Valve` et `Pump`. |
-| 2026-06-18 | `V2.1.2.0028` | `PENDING` | Ajout des primitives HMI Element+ `IndicatorLamp`, `HorizontalBar` et `VerticalBar`. |
-| 2026-06-18 | `V2.1.2.0027` | `PENDING` | Ajout du contrat des formes standards Element+ creees depuis SCADA Builder V2 et exportees en SVG runtime. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat `.sep` Studio Element+. |
+| 2026-06-18 | `V2.1.2.0028` | `44fbdae` | Ajout des primitives HMI Element+ `IndicatorLamp`, `HorizontalBar` et `VerticalBar`. |
+| 2026-06-18 | `V2.1.2.0027` | `530907a` | Ajout du contrat des formes standards Element+ creees depuis SCADA Builder V2 et exportees en SVG runtime. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du contrat `.sep` Studio Element+. |
 
 ## 1. Contract
 

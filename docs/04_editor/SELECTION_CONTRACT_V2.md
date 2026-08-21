@@ -12,9 +12,9 @@ Document version: `V2.1.4.0035`
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Verrou projete dans le payload editor-only avant hit-testing; mode Tableau Objet/Cellules deterministe et gestes internes disponibles sans translation. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Verrou applique avant tout preview de deplacement et priorite des gestes internes Tableau en mode Cellules. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Separation du verrou de position et de la selection; ajout des portees cellule/plage/rangee/colonne propres au Tableau. |
-| 2026-06-16 | `V2.1.2.0003` | `PENDING` | Clarification que le deplacement normal d'un enfant de groupe Element+ cible son groupe parent. |
-| 2026-06-16 | `V2.1.2.0002` | `PENDING` | Clarification que le groupement de scene consomme uniquement la selection Element+ moderne. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat actif de selection SCADA Builder V2. |
+| 2026-06-16 | `V2.1.2.0003` | `940af93` | Clarification que le deplacement normal d'un enfant de groupe Element+ cible son groupe parent. |
+| 2026-06-16 | `V2.1.2.0002` | `2c5a0b4` | Clarification que le groupement de scene consomme uniquement la selection Element+ moderne. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du contrat actif de selection SCADA Builder V2. |
 
 ## 1. Contract
 

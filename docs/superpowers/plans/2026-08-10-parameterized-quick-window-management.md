@@ -8,12 +8,12 @@ Document version: `V2.1.5.0023`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-21 | `V2.1.5.0023` | `PENDING` | Fermeture des lacunes d'audit avant Phase 3 : Task 2.4 (versionnement d'interface), Task 4.0 (contrat package prealable), Tasks 3.5/3.6 (presse-papier, reparation), Task 5.4 (composition header/pied et coexistence legacy), blocs de verification par tache, checkpoints versionnes et rapports d'audit par phase. |
-| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Phase 2 livrée : services de définition/invocation, analyse des usages/cycles/profondeur, snapshots undo/redo atomiques et validateur build/export fail-closed; capacités runtime toujours bloquées. |
-| 2026-08-13 | `V2.1.5.0021` | `PENDING` | Audit correctif : Phase 0 rejouée sur hosts réels et Phase 1 alignée sur les validations, la persistance autoritaire et le handshake exécutable; Phase 2 reste bloquée jusqu’au commit vert. |
-| 2026-08-10 | `V2.1.5.0020` | `PENDING` | Corrections des 5 lacunes de revue : matrice FR→Tasks, anti-injection `Literal`/`Expression`, `PresentationDefaults` explicites, rejet profondeur 3 et épinglage Node LTS. |
-| 2026-08-10 | `V2.1.5.0019` | `PENDING` | Renforcement après revue : boucle d’itération du prototype, audit popup mesurable, rollback inter-phase, gate export structurel, handshakes cross-repository précoces, races, SLA, version WebView2, extraction hors `MainWindow`, versioning et canary TF100Web. |
-| 2026-08-10 | `V2.1.5.0018` | `PENDING` | Création du plan dérivé de `DEC-0050`; la phase 0 de prototype DOM/CSS est un gate bloquant avant toute modification de production. |
+| 2026-08-21 | `V2.1.5.0023` | `b0159f9` | Fermeture des lacunes d'audit avant Phase 3 : Task 2.4 (versionnement d'interface), Task 4.0 (contrat package prealable), Tasks 3.5/3.6 (presse-papier, reparation), Task 5.4 (composition header/pied et coexistence legacy), blocs de verification par tache, checkpoints versionnes et rapports d'audit par phase. |
+| 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 livrée : services de définition/invocation, analyse des usages/cycles/profondeur, snapshots undo/redo atomiques et validateur build/export fail-closed; capacités runtime toujours bloquées. |
+| 2026-08-13 | `V2.1.5.0021` | `b353e37` | Audit correctif : Phase 0 rejouée sur hosts réels et Phase 1 alignée sur les validations, la persistance autoritaire et le handshake exécutable; Phase 2 reste bloquée jusqu’au commit vert. |
+| 2026-08-10 | `V2.1.5.0020` | `fc5b333` | Corrections des 5 lacunes de revue : matrice FR→Tasks, anti-injection `Literal`/`Expression`, `PresentationDefaults` explicites, rejet profondeur 3 et épinglage Node LTS. |
+| 2026-08-10 | `V2.1.5.0019` | `fc5b333` | Renforcement après revue : boucle d’itération du prototype, audit popup mesurable, rollback inter-phase, gate export structurel, handshakes cross-repository précoces, races, SLA, version WebView2, extraction hors `MainWindow`, versioning et canary TF100Web. |
+| 2026-08-10 | `V2.1.5.0018` | `fc5b333` | Création du plan dérivé de `DEC-0050`; la phase 0 de prototype DOM/CSS est un gate bloquant avant toute modification de production. |
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use `superpowers:subagent-driven-development` (recommended) or `superpowers:executing-plans` to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 

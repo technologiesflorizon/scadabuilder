@@ -2,40 +2,41 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.5.0023`
+Document version: `V2.1.5.0024`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-21 | `V2.1.5.0023` | `PENDING` | Audit de complétude Fenêtres rapides avant Phase 3 : spec étendue (`FR-030..036`, `FR-UI-23..26`) et plan complété par Task 2.4, Tasks 3.5/3.6, Task 4.0 prérequis de contrat package, Task 5.4 composition/legacy, blocs de vérification par tâche et checkpoints versionnés. |
-| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Phase 2 Fenêtres rapides livrée : orchestration Application, analyse référentielle cycle/profondeur, mutations atomiques, historique workspace et validation build/export fail-closed; capacités runtime toujours `Blocked`. |
-| 2026-08-13 | `V2.1.5.0021` | `PENDING` | Audit correctif Fenêtres rapides : Phase 0 validée sur DOM/WebView2/Edge réels; contrats, persistance et handshake de Phase 1 alignés; capacités toujours `Blocked`. |
-| 2026-08-11 | `V2.1.5.0020` | `PENDING` | Phase 1 livrée : modèle QuickWindow (VisualContent, PresentationDefaults, SinglePerDefinition), invocations typées avec anti-injection, retrait fail-closed des kinds popup, persistance atomique quick-windows/ et handshake contractuel Builder→TF100Web. |
-| 2026-08-10 | `V2.1.5.0019` | `PENDING` | Revue renforcée du plan `DEC-0050` : audit popup mesurable, prototype itératif hashé, rollback inter-phase, export sans bypass, handshakes précoces, races/SLA, WebView2 qualifié, canary TF100Web et versioning explicite. |
-| 2026-08-10 | `V2.1.5.0018` | `PENDING` | Ajout du plan d’implémentation `DEC-0050`; sa phase 0 constitue le gate absolu du prototype d’isolation DOM/CSS dans WebView2 et TF100Web avant tout développement de production. |
-| 2026-08-10 | `V2.1.5.0017` | `PENDING` | `DEC-0050` approuve la spécification Fenêtre rapide et supersède les décisions popup Fragment historiques `DEC-0019`, `DEC-0020` et `DEC-0022`; le plan peut maintenant être rédigé avec un gate d’isolation en phase 0. |
-| 2026-08-10 | `V2.1.5.0016` | `PENDING` | La première tranche Fenêtre rapide est une verticale `win00054` complète, de l’authoring au runtime TF100Web, éprouvant deux invocations moteur aux mappings indépendants. |
-| 2026-08-10 | `V2.1.5.0015` | `PENDING` | Le modèle Fenêtre rapide n’ajoute aucun `InstanceKey` distinct : définition, invocation persistante et montage runtime possèdent chacun leur clé canonique. |
-| 2026-08-10 | `V2.1.5.0014` | `PENDING` | Le plan Fenêtre rapide devra être écrit avant le prototype; ce dernier devient sa phase 0 bloquante avant toute modification de production. |
-| 2026-08-10 | `V2.1.5.0013` | `PENDING` | Les kinds `OpenPopup`, `TogglePopup` et `ClosePopup`, jamais complétés bout en bout, seront retirés; les Fenêtres rapides introduisent seulement `OpenQuickWindow`, `CloseQuickWindow` et une référence d’invocation typée. |
-| 2026-08-10 | `V2.1.5.0012` | `PENDING` | Les actions popup legacy et `ScadaPopupOptions` sont explicitement phased-out et exclus de la migration Fenêtre rapide; le choix restant concerne uniquement les commandes modernes `ScadaCommandBinding`. |
-| 2026-08-10 | `V2.1.5.0011` | `PENDING` | La V1 des Fenêtres rapides retire le Toggle moderne : ouverture et fermeture sont explicites; `TogglePopup` reste limité à la compatibilité des Fragments legacy. |
-| 2026-08-10 | `V2.1.5.0010` | `PENDING` | La V1 des Fenêtres rapides conserve des liaisons explicites par invocation; leur copie est une aide d’authoring autonome et undoable, sans preset persistant ni contexte d’équipement. |
-| 2026-08-10 | `V2.1.5.0009` | `PENDING` | Les Fenêtres rapides étendent le manifest 2.3 par capacités granulaires, sans repli 2.1/2.2; TF100Web doit être capable et déployé avant l’activation de leur export Builder. |
-| 2026-08-10 | `V2.1.5.0008` | `PENDING` | L’isolation des Fenêtres rapides modernes utilise une racine DOM scoppée et un namespace stable par définition; l’`iframe` reste limité à l’adaptation legacy opaque et un prototype cross-runtime demeure requis. |
-| 2026-08-10 | `V2.1.5.0007` | `PENDING` | La composition visuelle des Fenêtres rapides est arrêtée : pages et Fenêtres rapides possèdent un `VisualContent` commun borné, sans héritage de domaine ni mélange de leurs responsabilités propres. |
-| 2026-08-10 | `V2.1.5.0006` | `PENDING` | Résolution du contrat de ports requis des Fenêtres rapides : optionnels par défaut, `Required` explicite et build/export bloqué seulement lorsque requis. |
-| 2026-08-05 | `V2.1.5.0005` | `PENDING` | Approbation et consignation des 22 décisions UI Fenêtre rapide couvrant le cadre runtime, le backdrop, la réouverture, l’arborescence, l’Interface locale, les Liaisons, le preview et les suppressions référentielles. |
-| 2026-08-05 | `V2.1.5.0004` | `PENDING` | Consolidation du registre de décisions Fenêtre rapide : entité distincte, Interface locale typée, liaisons par invocation, ports optionnels, instance unique, imbrication bornée, backdrop et choix visuels encore ouverts. |
-| 2026-08-04 | `V2.1.5.0003` | `PENDING` | Ajout du premier brouillon exploratoire sur les popups paramétrés et les mappings typés; l’hypothèse multi-instance a ensuite été écartée pour la première version par `V2.1.5.0004`. |
-| 2026-07-30 | `V2.1.5.0002` | `PENDING` | Les effets Etat de fond et de bordure ciblent désormais explicitement la géométrie SVG visible des formes exportées, avec repli compatible sur le wrapper HTML. |
-| 2026-07-29 | `V2.1.5.0001` | `PENDING` | À l’initialisation du registre, les projets existants sous le répertoire produit `projects/` sont inscrits dans les récents sans ouverture automatique; un retrait reste persistant. |
-| 2026-07-29 | `V2.1.5.0000` | `PENDING` | `DEC-0049` implémentée : accueil sans projet, création et ouverture à racine choisie, sauvegarde/fermeture sûres et projets récents. |
-| 2026-07-29 | `V2.1.4.0068` | `PENDING` | Ajout de la spécification approuvée `DEC-0049` et du plan d’implémentation du cycle de vie autonome des projets. |
-| 2026-07-18 | `V2.1.4.0067` | `PENDING` | Correction Builder des bindings numeriques divergents : normalisation StateConfig/ValueBindings, validation fail-closed et audit de toutes les pages compilees. |
-| 2026-07-17 | `V2.1.4.0066` | `PENDING` | Ajout du contrat de direction artistique versionnee pour la modernisation des ecrans. |
-| 2026-07-17 | `V2.1.4.0065` | `PENDING` | Correction du filtre Etat sur SVG opaque : geometrie visuelle sous l'overlay, texte/controles au-dessus et ordre auteur entre objets inchange. |
+| 2026-08-21 | `V2.1.5.0024` | `PENDING` | Dette documentaire fermee : 493 placeholders `PENDING` resolus vers leur commit introducteur, resolveur `tools/docs/resolve-pending-commits.py` ajoute et branche dans `verify-docs`. |
+| 2026-08-21 | `V2.1.5.0023` | `b0159f9` | Audit de complétude Fenêtres rapides avant Phase 3 : spec étendue (`FR-030..036`, `FR-UI-23..26`) et plan complété par Task 2.4, Tasks 3.5/3.6, Task 4.0 prérequis de contrat package, Task 5.4 composition/legacy, blocs de vérification par tâche et checkpoints versionnés. |
+| 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 Fenêtres rapides livrée : orchestration Application, analyse référentielle cycle/profondeur, mutations atomiques, historique workspace et validation build/export fail-closed; capacités runtime toujours `Blocked`. |
+| 2026-08-13 | `V2.1.5.0021` | `b353e37` | Audit correctif Fenêtres rapides : Phase 0 validée sur DOM/WebView2/Edge réels; contrats, persistance et handshake de Phase 1 alignés; capacités toujours `Blocked`. |
+| 2026-08-11 | `V2.1.5.0020` | `fc5b333` | Phase 1 livrée : modèle QuickWindow (VisualContent, PresentationDefaults, SinglePerDefinition), invocations typées avec anti-injection, retrait fail-closed des kinds popup, persistance atomique quick-windows/ et handshake contractuel Builder→TF100Web. |
+| 2026-08-10 | `V2.1.5.0019` | `fc5b333` | Revue renforcée du plan `DEC-0050` : audit popup mesurable, prototype itératif hashé, rollback inter-phase, export sans bypass, handshakes précoces, races/SLA, WebView2 qualifié, canary TF100Web et versioning explicite. |
+| 2026-08-10 | `V2.1.5.0018` | `fc5b333` | Ajout du plan d’implémentation `DEC-0050`; sa phase 0 constitue le gate absolu du prototype d’isolation DOM/CSS dans WebView2 et TF100Web avant tout développement de production. |
+| 2026-08-10 | `V2.1.5.0017` | `fc5b333` | `DEC-0050` approuve la spécification Fenêtre rapide et supersède les décisions popup Fragment historiques `DEC-0019`, `DEC-0020` et `DEC-0022`; le plan peut maintenant être rédigé avec un gate d’isolation en phase 0. |
+| 2026-08-10 | `V2.1.5.0016` | `fc5b333` | La première tranche Fenêtre rapide est une verticale `win00054` complète, de l’authoring au runtime TF100Web, éprouvant deux invocations moteur aux mappings indépendants. |
+| 2026-08-10 | `V2.1.5.0015` | `fc5b333` | Le modèle Fenêtre rapide n’ajoute aucun `InstanceKey` distinct : définition, invocation persistante et montage runtime possèdent chacun leur clé canonique. |
+| 2026-08-10 | `V2.1.5.0014` | `fc5b333` | Le plan Fenêtre rapide devra être écrit avant le prototype; ce dernier devient sa phase 0 bloquante avant toute modification de production. |
+| 2026-08-10 | `V2.1.5.0013` | `fc5b333` | Les kinds `OpenPopup`, `TogglePopup` et `ClosePopup`, jamais complétés bout en bout, seront retirés; les Fenêtres rapides introduisent seulement `OpenQuickWindow`, `CloseQuickWindow` et une référence d’invocation typée. |
+| 2026-08-10 | `V2.1.5.0012` | `fc5b333` | Les actions popup legacy et `ScadaPopupOptions` sont explicitement phased-out et exclus de la migration Fenêtre rapide; le choix restant concerne uniquement les commandes modernes `ScadaCommandBinding`. |
+| 2026-08-10 | `V2.1.5.0011` | `fc5b333` | La V1 des Fenêtres rapides retire le Toggle moderne : ouverture et fermeture sont explicites; `TogglePopup` reste limité à la compatibilité des Fragments legacy. |
+| 2026-08-10 | `V2.1.5.0010` | `fc5b333` | La V1 des Fenêtres rapides conserve des liaisons explicites par invocation; leur copie est une aide d’authoring autonome et undoable, sans preset persistant ni contexte d’équipement. |
+| 2026-08-10 | `V2.1.5.0009` | `fc5b333` | Les Fenêtres rapides étendent le manifest 2.3 par capacités granulaires, sans repli 2.1/2.2; TF100Web doit être capable et déployé avant l’activation de leur export Builder. |
+| 2026-08-10 | `V2.1.5.0008` | `fc5b333` | L’isolation des Fenêtres rapides modernes utilise une racine DOM scoppée et un namespace stable par définition; l’`iframe` reste limité à l’adaptation legacy opaque et un prototype cross-runtime demeure requis. |
+| 2026-08-10 | `V2.1.5.0007` | `fc5b333` | La composition visuelle des Fenêtres rapides est arrêtée : pages et Fenêtres rapides possèdent un `VisualContent` commun borné, sans héritage de domaine ni mélange de leurs responsabilités propres. |
+| 2026-08-10 | `V2.1.5.0006` | `fc5b333` | Résolution du contrat de ports requis des Fenêtres rapides : optionnels par défaut, `Required` explicite et build/export bloqué seulement lorsque requis. |
+| 2026-08-05 | `V2.1.5.0005` | `fc5b333` | Approbation et consignation des 22 décisions UI Fenêtre rapide couvrant le cadre runtime, le backdrop, la réouverture, l’arborescence, l’Interface locale, les Liaisons, le preview et les suppressions référentielles. |
+| 2026-08-05 | `V2.1.5.0004` | `fc5b333` | Consolidation du registre de décisions Fenêtre rapide : entité distincte, Interface locale typée, liaisons par invocation, ports optionnels, instance unique, imbrication bornée, backdrop et choix visuels encore ouverts. |
+| 2026-08-04 | `V2.1.5.0003` | `fc5b333` | Ajout du premier brouillon exploratoire sur les popups paramétrés et les mappings typés; l’hypothèse multi-instance a ensuite été écartée pour la première version par `V2.1.5.0004`. |
+| 2026-07-30 | `V2.1.5.0002` | `0168f2f` | Les effets Etat de fond et de bordure ciblent désormais explicitement la géométrie SVG visible des formes exportées, avec repli compatible sur le wrapper HTML. |
+| 2026-07-29 | `V2.1.5.0001` | `0a961d2` | À l’initialisation du registre, les projets existants sous le répertoire produit `projects/` sont inscrits dans les récents sans ouverture automatique; un retrait reste persistant. |
+| 2026-07-29 | `V2.1.5.0000` | `8fe1077` | `DEC-0049` implémentée : accueil sans projet, création et ouverture à racine choisie, sauvegarde/fermeture sûres et projets récents. |
+| 2026-07-29 | `V2.1.4.0068` | `9e1c4c1` | Ajout de la spécification approuvée `DEC-0049` et du plan d’implémentation du cycle de vie autonome des projets. |
+| 2026-07-18 | `V2.1.4.0067` | `23daac2` | Correction Builder des bindings numeriques divergents : normalisation StateConfig/ValueBindings, validation fail-closed et audit de toutes les pages compilees. |
+| 2026-07-17 | `V2.1.4.0066` | `41ccbae` | Ajout du contrat de direction artistique versionnee pour la modernisation des ecrans. |
+| 2026-07-17 | `V2.1.4.0065` | `4bee5ab` | Correction du filtre Etat sur SVG opaque : geometrie visuelle sous l'overlay, texte/controles au-dessus et ordre auteur entre objets inchange. |
 | 2026-07-17 | `V2.1.4.0064` | `f73b3e3` | `win00012_modern_no_legacy` ajoute les rangees Depart Manuel et Etat du degivrage, avec 14 boutons et 14 voyants rectangulaires sans mapping. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Les 118 capabilities Supported possedent maintenant un probe TF100Web exact, independant et mutation-teste; les operateurs AST lower-camel exportes sont executes par le runtime partage. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | Contrats, matrice 162 capabilities et preuves Builder/runtime/TF100Web synchronises; promotion distante reservee a la livraison. |
@@ -55,16 +56,16 @@ Document version: `V2.1.5.0023`
 | 2026-07-16 | `V2.1.4.0048` | `684478e` | Matrice runtime generee depuis le registre et gate stale branche dans `verify-docs`; promotion `Supported` interdite sans trois couches de preuves. |
 | 2026-07-16 | `V2.1.4.0047` | `9a58d0c` | Premiere tranche `DEC-0047` : registre type de plus de 100 capabilities, proprietaire/statut/version et analyseur pur avec exhaustivite enum/effet/AST. |
 | 2026-07-16 | `V2.1.4.0046` | `b2e4f5f` | `DEC-0047` approuvee : registre exhaustif de capacites, manifest 2.3 negocie, runtime semantique unique et suite de conformance partagee Builder/TF100Web. |
-| 2026-07-16 | `V2.1.4.0045` | `PENDING` | `DEC-0046` approuvee : navigation TF100Web latest-wins, hydratation obligatoire et matrice exhaustive pour `win00003`, `win00004`, `win00008` et `win00012_modern_no_legacy`. |
+| 2026-07-16 | `V2.1.4.0045` | `2f4010c` | `DEC-0046` approuvee : navigation TF100Web latest-wins, hydratation obligatoire et matrice exhaustive pour `win00003`, `win00004`, `win00008` et `win00012_modern_no_legacy`. |
 | 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | `DEC-0045` implementee : effets Etat reversibles, filtre sous le contenu et bindings numeriques standards/Tableau reunis dans le cache et le bridge TF100Web partages. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | `DEC-0044` implementee : runtime Etat/Commande TF100Web partage, cible texte semantique et 56 boutons de degivrage relies au bit PLC confirme. |
 | 2026-07-16 | `V2.1.4.0042` | `9fd2a30` | Correction du routage `page.properties` : la page cible est ouverte et activee avant le chargement du panneau Page, avec regression dediee. |
-| 2026-07-16 | `V2.1.4.0041` | `PENDING` | `DEC-0043` implementee et validee : surface InputNumeric unique, identite A1 fiable, fallback Lire/Ecrire explicite et smoke isole reussi. |
-| 2026-07-15 | `V2.1.4.0040` | `PENDING` | Approbation de `DEC-0043` : commande unique pour les cellules InputNumeric, identite A1 fiable et fallback Ecrire vers Lire; specification et plan correctifs ajoutes. |
-| 2026-07-15 | `V2.1.4.0039` | `PENDING` | `DEC-0042` implemente en code : inputs numeriques cellule, manifest 2.2 et intake TF100Web 2.1/2.2; gates industriels et livraison ordonnee encore ouverts. |
-| 2026-07-15 | `V2.1.4.0038` | `PENDING` | Integration de la revue du plan `DEC-0042` : nouvelles valeurs `TableEditKind` explicites et justification de `data-scada-step` sur la cible cellule TF100Web. |
-| 2026-07-15 | `V2.1.4.0037` | `PENDING` | Approbation de la specification des inputs numeriques lies dans les cellules Tableau, ajout de `DEC-0042` et creation du plan cross-repo ordonnant TF100Web avant l'export `.sb2` 2.2. |
-| 2026-07-15 | `V2.1.4.0036` | `PENDING` | Ajout de la specification cross-repo pour les bindings lecture/ecriture des cellules InputNumeric de Tableau dans TF100Web, sans support InputText dans cette tranche. |
+| 2026-07-16 | `V2.1.4.0041` | `090d388` | `DEC-0043` implementee et validee : surface InputNumeric unique, identite A1 fiable, fallback Lire/Ecrire explicite et smoke isole reussi. |
+| 2026-07-15 | `V2.1.4.0040` | `75f5000` | Approbation de `DEC-0043` : commande unique pour les cellules InputNumeric, identite A1 fiable et fallback Ecrire vers Lire; specification et plan correctifs ajoutes. |
+| 2026-07-15 | `V2.1.4.0039` | `ce99ff9` | `DEC-0042` implemente en code : inputs numeriques cellule, manifest 2.2 et intake TF100Web 2.1/2.2; gates industriels et livraison ordonnee encore ouverts. |
+| 2026-07-15 | `V2.1.4.0038` | `0086bae` | Integration de la revue du plan `DEC-0042` : nouvelles valeurs `TableEditKind` explicites et justification de `data-scada-step` sur la cible cellule TF100Web. |
+| 2026-07-15 | `V2.1.4.0037` | `0086bae` | Approbation de la specification des inputs numeriques lies dans les cellules Tableau, ajout de `DEC-0042` et creation du plan cross-repo ordonnant TF100Web avant l'export `.sb2` 2.2. |
+| 2026-07-15 | `V2.1.4.0036` | `0086bae` | Ajout de la specification cross-repo pour les bindings lecture/ecriture des cellules InputNumeric de Tableau dans TF100Web, sans support InputText dans cette tranche. |
 | 2026-07-15 | `V2.1.4.0035` | `740796e` | Correction du hit-testing Tableau : les reperes A/1 ne recouvrent plus les cellules, le drag de plage exige un pointeur gauche actif et les scopes d'en-tete partagent le rendu de selection normalise. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Implementation de `DEC-0041` : verrou immediat avant preview, modes Tableau deterministes, etat A/1 effectif, payload editor-only teste et smoke WPF/WebView2 isole reussi. |
 | 2026-07-15 | `V2.1.4.0033` | `e811253` | Approbation de la specification corrective Tableau/verrou et autorisation de son plan d'implementation. |
@@ -89,11 +90,11 @@ Document version: `V2.1.5.0023`
 | 2026-07-14 | `V2.1.4.0014` | `a95addd` | Specification Tableau precisee avec surfaces de proprietes dediees, menu contextuel type tableur, dimensions manuelles, limite validee contre `win00012` et garde-fou strict hors `MainWindow`; une precedence de style detaillee reste a confirmer. |
 | 2026-07-14 | `V2.1.4.0013` | `766f8e2` | Specification Tableau precisee : cellules texte ou inputs natifs, sans `ValueBindings` cellule par cellule. |
 | 2026-07-14 | `V2.1.4.0012` | `da244d9` | Ajout du routage vers la specification draft du tableau moderne et du ruban Inserer hierarchique. |
-| 2026-07-14 | `V2.1.4.0011` | `PENDING` | Gestion moderne des pages implémentée; contrats, état, surfaces, diagnostics, couverture et limites synchronisés. |
+| 2026-07-14 | `V2.1.4.0011` | `50b2ad9` | Gestion moderne des pages implémentée; contrats, état, surfaces, diagnostics, couverture et limites synchronisés. |
 | 2026-07-14 | `V2.1.4.0010` | `c5d6f0e` | Ajout du routage vers la spécification approuvée et le plan d’implémentation de la gestion moderne des pages. |
-| 2026-07-05 | `V2.1.3.0004` | `PENDING` | Ajout du champ `Component.Provenance` (Legacy/AiModernized) au contrat `.sep` (DEC-0034), avec badge "IA" dans la bibliotheque Element+ des deux applications. |
-| 2026-07-05 | `V2.1.3.0003` | `PENDING` | Ajout du guide de style d'icones SCADA 2026 et du workflow interactif de modernisation Element+ (DEC-0033), en remplacement du pipeline autonome sep-ai-modernizer. |
-| 2026-06-19 | `V2.1.3.0002` | `PENDING` | Ajout du color picker moderne pour les couleurs arriere-plan/bordure Style et Bouton Element+. |
+| 2026-07-05 | `V2.1.3.0004` | `a49ad78` | Ajout du champ `Component.Provenance` (Legacy/AiModernized) au contrat `.sep` (DEC-0034), avec badge "IA" dans la bibliotheque Element+ des deux applications. |
+| 2026-07-05 | `V2.1.3.0003` | `0aa1251` | Ajout du guide de style d'icones SCADA 2026 et du workflow interactif de modernisation Element+ (DEC-0033), en remplacement du pipeline autonome sep-ai-modernizer. |
+| 2026-06-19 | `V2.1.3.0002` | `a99b886` | Ajout du color picker moderne pour les couleurs arriere-plan/bordure Style et Bouton Element+. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes a des icones 32x32 sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Correction de la galerie Formes du ruban Inserer, ajout Cercle/Triangle/Etoile, et placement Ligne/Fleche en deux points. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Extraction de la palette laterale d'outils vers le catalogue semantique d'icones et commandes. |
@@ -112,38 +113,38 @@ Document version: `V2.1.5.0023`
 | 2026-06-18 | `V2.1.2.0031` | `f6a85ed` | Ajout des symboles HMI Element+ moteur, ventilateur, convoyeur et jauge. |
 | 2026-06-18 | `V2.1.2.0030` | `cae57c9` | Ajout des presets de boutons HMI Element+ et du champ exporte `ButtonKind`. |
 | 2026-06-18 | `V2.1.2.0029` | `b97ef16` | Ajout des formes process HMI Element+ reservoir, tuyaux, vanne et pompe. |
-| 2026-06-18 | `V2.1.2.0028` | `PENDING` | Ajout des formes HMI Element+ voyant et barres de valeur. |
-| 2026-06-18 | `V2.1.2.0027` | `PENDING` | Ajout de la tranche formes standards Element+ et insertion de boutons depuis le ruban. |
+| 2026-06-18 | `V2.1.2.0028` | `44fbdae` | Ajout des formes HMI Element+ voyant et barres de valeur. |
+| 2026-06-18 | `V2.1.2.0027` | `530907a` | Ajout de la tranche formes standards Element+ et insertion de boutons depuis le ruban. |
 | 2026-06-17 | `V2.1.2.0026` | `876a6be` | Correction du contrat `DisplayFormat` manifest et alignement TF100Web sur les datatypes de mapping. |
 | 2026-06-17 | `V2.1.2.0025` | `58567eb` | Synchronisation du contrat TF100Web apres support des masques `DisplayFormat` `#` dans le runtime `.sb2`. |
-| 2026-06-17 | `V2.1.2.0024` | `PENDING` | Refactor de l'onglet Donnees Element+: `Format affichage` devient le signal actif, `Mapping / Tag`, `Decimales` et `Unite` passent en legacy. |
-| 2026-06-17 | `V2.1.2.0023` | `PENDING` | Ajout du statut de parite event SCADA Builder V2 / TF100Web et preparation de la prochaine tranche d'implementation. |
-| 2026-06-17 | `V2.1.2.0022` | `PENDING` | Harmonisation du contrat `.sb2` pour les events de binding TF100Web `ValueBindings`. |
+| 2026-06-17 | `V2.1.2.0024` | `49cedc7` | Refactor de l'onglet Donnees Element+: `Format affichage` devient le signal actif, `Mapping / Tag`, `Decimales` et `Unite` passent en legacy. |
+| 2026-06-17 | `V2.1.2.0023` | `3b67c3a` | Ajout du statut de parite event SCADA Builder V2 / TF100Web et preparation de la prochaine tranche d'implementation. |
+| 2026-06-17 | `V2.1.2.0022` | `3b67c3a` | Harmonisation du contrat `.sb2` pour les events de binding TF100Web `ValueBindings`. |
 | 2026-06-17 | `V2.1.2.0021` | `1040889` | Correction du feedback `.sb2` pour qu'il soit applique au bon handler d'export. |
 | 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Correction du validateur CSS `.sb2` et ajout d'un indicateur de progression non bloquant pour l'export FT100. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout de l'export `.sb2` FT100 avec gate anti-collision DOM/CSS. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Ajout du contrat d'intake FT100 audite dans TF100Web et de la reference source locale. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout des effets visuels runtime standards. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout du bridge lifecycle runtime global. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout des groupes de conditions runtime et politique degradee explicite. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout des options runtime avancees pour popup Fragment. |
-| 2026-06-17 | `V2.1.2.0016` | `PENDING` | Ajout des actions runtime de bordure Element+ ciblee. |
-| 2026-06-17 | `V2.1.2.0015` | `PENDING` | Ajout des actions runtime `Fermer popup` et `Basculer popup`. |
-| 2026-06-17 | `V2.1.2.0014` | `PENDING` | Ajout de l'action runtime `Ouvrir popup` pour fragments compiles. |
-| 2026-06-17 | `V2.1.2.0013` | `PENDING` | Ajout des filtres et du resume de catalogue tags dans l'editeur. |
-| 2026-06-17 | `V2.1.2.0012` | `PENDING` | Ajout de l'application runtime des valeurs de tags lues aux Element+ lies. |
-| 2026-06-17 | `V2.1.2.0010` | `PENDING` | Ajout des actions objet conditionnelles `Afficher`, `Masquer` et `Basculer visibilite`. |
-| 2026-06-17 | `V2.1.2.0009` | `PENDING` | Remplacement de l'authoring `WriteTag` par les bindings Element+ `Lire valeur` et `Ecrire valeur`. |
-| 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout du catalogue tags TF100Web importe au projet et de l'authoring `WriteTag` Element+. |
-| 2026-06-16 | `V2.1.2.0007` | `PENDING` | Ajout du curseur runtime par defaut pour boutons et cibles cliquables FT100/TF100Web. |
-| 2026-06-16 | `V2.1.2.0006` | `PENDING` | Correction de l'export FT100 des events `Clic -> Changer de page` portes par des groupes Element+. |
-| 2026-06-16 | `V2.1.2.0005` | `PENDING` | Ajout des metadonnees hover automatique des boutons Element+, de la tab Bouton et du CSS hover FT100. |
-| 2026-06-16 | `V2.1.2.0004` | `PENDING` | Ajout du registre Evenement Element+ et de la premiere tranche Clic -> Changer de page. |
-| 2026-06-16 | `V2.1.2.0003` | `PENDING` | Correction du groupement Element+: preservation de l'ordre visuel, hierarchie Element et mouvement solidaire. |
-| 2026-06-16 | `V2.1.2.0002` | `PENDING` | Ajout du contrat de groupement scene Element+ only et de l'avertissement conversion legacy. |
-| 2026-06-16 | `V2.1.2.0001` | `PENDING` | Correction du raccourci clavier WebView: Backspace ne supprime plus un Element+ selectionne et les champs editables ne declenchent pas les raccourcis scene. |
-| 2026-06-16 | `V2.1.2.0000` | `PENDING` | Bump feature pour la conversion dynamique Element+ des boutons legacy, le menu Propriete contextualise et le rendu/export du texte des boutons. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Refonte de l'architecture documentaire en modules, ajout du registre decisionnel, des regles AGENTS, des contrats separes, des diagrammes Mermaid et du workflow de verification documentaire. |
+| 2026-06-17 | `V2.1.2.0017` | `789a433` | Ajout des effets visuels runtime standards. |
+| 2026-06-17 | `V2.1.2.0017` | `b465ba9` | Ajout du bridge lifecycle runtime global. |
+| 2026-06-17 | `V2.1.2.0017` | `1b5df61` | Ajout des groupes de conditions runtime et politique degradee explicite. |
+| 2026-06-17 | `V2.1.2.0017` | `95af4bb` | Ajout des options runtime avancees pour popup Fragment. |
+| 2026-06-17 | `V2.1.2.0016` | `32d9227` | Ajout des actions runtime de bordure Element+ ciblee. |
+| 2026-06-17 | `V2.1.2.0015` | `6ac2245` | Ajout des actions runtime `Fermer popup` et `Basculer popup`. |
+| 2026-06-17 | `V2.1.2.0014` | `06652c6` | Ajout de l'action runtime `Ouvrir popup` pour fragments compiles. |
+| 2026-06-17 | `V2.1.2.0013` | `4b01460` | Ajout des filtres et du resume de catalogue tags dans l'editeur. |
+| 2026-06-17 | `V2.1.2.0012` | `a73be05` | Ajout de l'application runtime des valeurs de tags lues aux Element+ lies. |
+| 2026-06-17 | `V2.1.2.0010` | `5302022` | Ajout des actions objet conditionnelles `Afficher`, `Masquer` et `Basculer visibilite`. |
+| 2026-06-17 | `V2.1.2.0009` | `7e3610c` | Remplacement de l'authoring `WriteTag` par les bindings Element+ `Lire valeur` et `Ecrire valeur`. |
+| 2026-06-17 | `V2.1.2.0008` | `f78e8cd` | Ajout du catalogue tags TF100Web importe au projet et de l'authoring `WriteTag` Element+. |
+| 2026-06-16 | `V2.1.2.0007` | `5c7d617` | Ajout du curseur runtime par defaut pour boutons et cibles cliquables FT100/TF100Web. |
+| 2026-06-16 | `V2.1.2.0006` | `5c7d617` | Correction de l'export FT100 des events `Clic -> Changer de page` portes par des groupes Element+. |
+| 2026-06-16 | `V2.1.2.0005` | `5c7d617` | Ajout des metadonnees hover automatique des boutons Element+, de la tab Bouton et du CSS hover FT100. |
+| 2026-06-16 | `V2.1.2.0004` | `5c7d617` | Ajout du registre Evenement Element+ et de la premiere tranche Clic -> Changer de page. |
+| 2026-06-16 | `V2.1.2.0003` | `940af93` | Correction du groupement Element+: preservation de l'ordre visuel, hierarchie Element et mouvement solidaire. |
+| 2026-06-16 | `V2.1.2.0002` | `2c5a0b4` | Ajout du contrat de groupement scene Element+ only et de l'avertissement conversion legacy. |
+| 2026-06-16 | `V2.1.2.0001` | `2c5a0b4` | Correction du raccourci clavier WebView: Backspace ne supprime plus un Element+ selectionne et les champs editables ne declenchent pas les raccourcis scene. |
+| 2026-06-16 | `V2.1.2.0000` | `2c5a0b4` | Bump feature pour la conversion dynamique Element+ des boutons legacy, le menu Propriete contextualise et le rendu/export du texte des boutons. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Refonte de l'architecture documentaire en modules, ajout du registre decisionnel, des regles AGENTS, des contrats separes, des diagrammes Mermaid et du workflow de verification documentaire. |
 | 2026-06-15 | `V2.1.1.0038` | `841d05a` | Ajout de la roadmap `On click -> open popup` et hover border sur element/groupe. |
 | 2026-06-15 | `V2.1.1.0037` | `90c108b` | Ajout de la roadmap de developpement: events, tags TF100Web, Studio Element+, proprietes CSS, effets visuels et scripts globaux. |
 | 2026-06-15 | `V2.1.1.0036` | `63c2475` | Generalisation du contrat de namespace CSS/DOM par page pour interdire les collisions de selecteurs en composition TF100Web. |

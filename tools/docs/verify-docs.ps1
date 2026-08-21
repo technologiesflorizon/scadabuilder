@@ -1,5 +1,6 @@
 param(
-    [switch]$StrictCodeDocs
+    [switch]$StrictCodeDocs,
+    [switch]$SkipPendingCheck
 )
 
 $ErrorActionPreference = "Stop"
@@ -230,8 +231,36 @@ function Test-HighRiskTerms {
         if ($doc.Text -match 'Open Decisions|Open Questions|Questions ouvertes') {
             Add-WarningMessage "$($doc.Path): legacy open-decision heading remains; prefer DECISION_REGISTER_V2.md."
         }
-        if ($doc.Text -match 'PENDING') {
-            Add-WarningMessage "$($doc.Path): contains PENDING commit references; replace after commit exists."
+
+    }
+}
+
+function Test-PendingCommitPlaceholders {
+    if ($SkipPendingCheck) {
+        Add-WarningMessage "Stale PENDING check skipped by -SkipPendingCheck."
+        return
+    }
+
+    $resolver = Join-Path $PSScriptRoot "resolve-pending-commits.py"
+    if (-not (Test-Path -LiteralPath $resolver)) {
+        Add-WarningMessage "Missing PENDING resolver: $resolver"
+        return
+    }
+
+    $python = Get-Command python -ErrorAction SilentlyContinue
+    if (-not $python) {
+        Add-WarningMessage "python not found; stale PENDING placeholders were not verified."
+        return
+    }
+
+    $output = & $python.Source $resolver --check
+    if ($LASTEXITCODE -eq 0) {
+        return
+    }
+
+    foreach ($line in $output) {
+        if ($line -match 'PENDING resolvable') {
+            Add-ErrorMessage "Stale placeholder: $line. Run tools/docs/resolve-pending-commits.py --apply in a bookkeeping commit."
         }
     }
 }
@@ -246,6 +275,7 @@ Test-MermaidRequiredDocs
 Test-GeneratedDocs
 Test-PublicCSharpDocs
 Test-HighRiskTerms
+Test-PendingCommitPlaceholders
 
 Write-Host "SCADA Builder V2 documentation verification"
 Write-Host "Errors: $($errors.Count)"

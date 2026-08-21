@@ -11,10 +11,10 @@ Version du document: `V2.1.3.0009`
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
 | 2026-07-13 | `V2.1.3.0009` | `b954d46` | Statut repassé en Draft, aperçu vivant rendu obligatoire, et contrat réel de persistance/export/TF100Web distingué et vérifié. |
-| 2026-07-13 | `V2.1.3.0008` | `PENDING` | Réécriture complète : hypothèses vérifiées contre le code, questions ouvertes résolues (D19-D20), mapping CSS précis, spécification du `DialogResult` étendu et du contrat de sérialisation. |
-| 2026-07-13 | `V2.1.3.0007` | `PENDING` | Ajout de la direction UI inspirée de Microsoft Word et clarification du statut des icônes `Icon.Property.*`. |
-| 2026-07-13 | `V2.1.3.0006` | `PENDING` | Refonte de la spécification : contrat de modèle, flux UI, sérialisation, rendu, migration et critères d'acceptation. |
-| 2026-07-13 | `V2.1.3.0005` | `PENDING` | Première ébauche issue de l'audit des lacunes Style. |
+| 2026-07-13 | `V2.1.3.0008` | `1ef3049` | Réécriture complète : hypothèses vérifiées contre le code, questions ouvertes résolues (D19-D20), mapping CSS précis, spécification du `DialogResult` étendu et du contrat de sérialisation. |
+| 2026-07-13 | `V2.1.3.0007` | `1ef3049` | Ajout de la direction UI inspirée de Microsoft Word et clarification du statut des icônes `Icon.Property.*`. |
+| 2026-07-13 | `V2.1.3.0006` | `1ef3049` | Refonte de la spécification : contrat de modèle, flux UI, sérialisation, rendu, migration et critères d'acceptation. |
+| 2026-07-13 | `V2.1.3.0005` | `1ef3049` | Première ébauche issue de l'audit des lacunes Style. |
 
 ---
 

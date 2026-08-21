@@ -8,12 +8,12 @@ Document version: `V2.1.5.0000`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-29 | `V2.1.5.0000` | `PENDING` | Le shell démarre vide et projette une session préparée par Application; WPF conserve seulement dialogues et rendu. |
+| 2026-07-29 | `V2.1.5.0000` | `8fe1077` | Le shell démarre vide et projette une session préparée par Application; WPF conserve seulement dialogues et rendu. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Ajout des view models Tableau dédiés, diagnostics de bridge, inspecteur d'état, color pickers, distribution/en-têtes et auto-fit proportionnel mesuré en lot. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Ajout de `TableAuthoringSession`, du ruban Tableau contextuel, du bridge type, des headers editor-only et du view model de verrouillage partage. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Ajout du ruban Inserer famille/outils et des surfaces Tableau dediees (panneau, dialogues, WebView, menu type tableur). |
-| 2026-07-05 | `V2.1.4.0000` | `PENDING` | Description du modele de docking AvalonDock pour les panneaux lateraux. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat d'architecture UI. |
+| 2026-07-05 | `V2.1.4.0000` | `a535cf2` | Description du modele de docking AvalonDock pour les panneaux lateraux. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du contrat d'architecture UI. |
 
 ## 1. Contract
 

@@ -8,20 +8,20 @@ Document version: `V2.1.5.0022`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Phase 2 : mutations Application coordonnent projet, scène appelante, commande et invocation; l’historique restaure le snapshot complet sans I/O. |
-| 2026-08-13 | `V2.1.5.0021` | `PENDING` | Contrat de persistance QuickWindow Phase 1 : fichiers autoritaires séparés, manifest sans duplication et profils antérieurs fail-closed. |
-| 2026-07-29 | `V2.1.5.0000` | `PENDING` | La persistance accepte une racine projet exacte choisie par l’utilisateur; `.sb2` demeure un artefact runtime. |
-| 2026-07-15 | `V2.1.4.0039` | `PENDING` | Les cellules ancres `InputNumeric` peuvent porter `DisplayFormat` et des bindings lecture/ecriture persistants, proteges par les operations structurelles et exclus du clipboard. |
+| 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 : mutations Application coordonnent projet, scène appelante, commande et invocation; l’historique restaure le snapshot complet sans I/O. |
+| 2026-08-13 | `V2.1.5.0021` | `b353e37` | Contrat de persistance QuickWindow Phase 1 : fichiers autoritaires séparés, manifest sans duplication et profils antérieurs fail-closed. |
+| 2026-07-29 | `V2.1.5.0000` | `8fe1077` | La persistance accepte une racine projet exacte choisie par l’utilisateur; `.sb2` demeure un artefact runtime. |
+| 2026-07-15 | `V2.1.4.0039` | `ce99ff9` | Les cellules ancres `InputNumeric` peuvent porter `DisplayFormat` et des bindings lecture/ecriture persistants, proteges par les operations structurelles et exclus du clipboard. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Validation end-to-end d'une table 16 x 10 avec contenus mixtes, deux en-têtes, fusion, styles par portée, pistes non uniformes, bordures physiques et `IsLocked`, sans modifier le schéma `.sb2`. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Extension Tableau par retour a la ligne, hauteur typographique et bordures physiques; ajout de `ScadaElement.IsLocked` comme metadata d'authoring. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Ajout du contrat persistant `ScadaElementKind.Table`, pistes, cellules, fusions, contenus input et styles heritables. |
-| 2026-07-14 | `V2.1.4.0012` | `PENDING` | Contrat `PageKey`/`PageCode`, provenance Wonderware, pages natives et sauvegarde atomique désormais implémenté. |
+| 2026-07-14 | `V2.1.4.0012` | `50b2ad9` | Contrat `PageKey`/`PageCode`, provenance Wonderware, pages natives et sauvegarde atomique désormais implémenté. |
 | 2026-07-14 | `V2.1.4.0011` | `4def659` | Ajout de la cible approuvée `PageKey`/`PageCode`, provenance importée et migration compatible, avant implémentation. |
-| 2026-06-17 | `V2.1.2.0024` | `PENDING` | Clarification du role actif de `DisplayFormat` et de la deprecation authoring de `TagBinding`, `Decimals` et `Unit`. |
-| 2026-06-17 | `V2.1.2.0010` | `PENDING` | Ajout du modele `ScadaActionCondition` pour actions objet conditionnelles. |
-| 2026-06-17 | `V2.1.2.0009` | `PENDING` | Ajout des bindings Element+ `ReadTagId` et `WriteTagId` et des validations de build. |
-| 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout du catalogue tags TF100Web importe au modele projet. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat actif du modele projet et scene. |
+| 2026-06-17 | `V2.1.2.0024` | `49cedc7` | Clarification du role actif de `DisplayFormat` et de la deprecation authoring de `TagBinding`, `Decimals` et `Unit`. |
+| 2026-06-17 | `V2.1.2.0010` | `5302022` | Ajout du modele `ScadaActionCondition` pour actions objet conditionnelles. |
+| 2026-06-17 | `V2.1.2.0009` | `7e3610c` | Ajout des bindings Element+ `ReadTagId` et `WriteTagId` et des validations de build. |
+| 2026-06-17 | `V2.1.2.0008` | `f78e8cd` | Ajout du catalogue tags TF100Web importe au modele projet. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du contrat actif du modele projet et scene. |
 
 ## 1. Contract
 

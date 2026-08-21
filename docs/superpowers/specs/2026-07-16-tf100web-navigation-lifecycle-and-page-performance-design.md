@@ -8,8 +8,8 @@ Document version: `V2.1.4.0046`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-16 | `V2.1.4.0046` | `PENDING` | Navigation latest-wins conservee comme invariant; execution integree au contrat general `DEC-0047`; mapping absent reclasse non bloquant. |
-| 2026-07-16 | `V2.1.4.0045` | `PENDING` | Specification du cycle latest-navigation-wins, de l'hydratation obligatoire et des gates exhaustifs pour `win00003`, `win00004`, `win00008` et `win00012_modern_no_legacy`. |
+| 2026-07-16 | `V2.1.4.0046` | `b2e4f5f` | Navigation latest-wins conservee comme invariant; execution integree au contrat general `DEC-0047`; mapping absent reclasse non bloquant. |
+| 2026-07-16 | `V2.1.4.0045` | `2f4010c` | Specification du cycle latest-navigation-wins, de l'hydratation obligatoire et des gates exhaustifs pour `win00003`, `win00004`, `win00008` et `win00012_modern_no_legacy`. |
 
 ## 1. Probleme confirme
 

@@ -8,8 +8,8 @@ Document version: `V2.1.2.0003`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-16 | `V2.1.2.0003` | `PENDING` | Ajout des regressions de groupement scene Element+: ordre visuel, hierarchie Element et deplacement solidaire. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Migration du contrat de selection Studio Element+ vers le nouveau module documentaire. |
+| 2026-06-16 | `V2.1.2.0003` | `940af93` | Ajout des regressions de groupement scene Element+: ordre visuel, hierarchie Element et deplacement solidaire. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Migration du contrat de selection Studio Element+ vers le nouveau module documentaire. |
 
 ## 1. Contract
 

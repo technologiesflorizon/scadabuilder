@@ -8,7 +8,7 @@ Document version: `V2.1.1.0039`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Correction de l'historique documentaire: l'entree de correction suppression source precede la normalisation documentaire et ne doit pas dupliquer `V2.1.1.0030`. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Correction de l'historique documentaire: l'entree de correction suppression source precede la normalisation documentaire et ne doit pas dupliquer `V2.1.1.0030`. |
 | 2026-06-15 | `V2.1.1.0036` | `63c2475` | Generalisation du namespace CSS/DOM/runtime FT100 pour supprimer les collisions de selecteurs en composition TF100Web. |
 | 2026-06-15 | `V2.1.1.0035` | `63c2475` | Scoping des CSS source `data-id` par page pour corriger les collisions runtime TF100Web footer. |
 | 2026-06-15 | `V2.1.1.0034` | `63c2475` | Durcissement du contrat selection polymorphe et suppression globale source/objet sans masquage persistant. |

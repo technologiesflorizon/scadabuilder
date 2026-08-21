@@ -10,9 +10,9 @@ Reference: `docs/superpowers/specs/2026-07-07-element-plus-state-command-events-
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-09 | `V2.1.4.0002` | PENDING | Fixe explicitement le contrat TF100Web obligatoire : les expressions d'etat exportees doivent livrer `tagName = tf100.mapping.<id>` au runtime JS. |
-| 2026-07-09 | `V2.1.4.0001` | PENDING | Precision du modele cible `ScadaExprTagRef` avec `TagId` canonique + libelle humain, normalisation export obligatoire, et contrat TF100Web degrade en `qualityFallback` si tag non resolu. |
-| 2026-07-09 | `V2.1.4.0000` | PENDING | Design initial : reference par Id canonique dans les expressions d'etat. |
+| 2026-07-09 | `V2.1.4.0002` | `2a2f22b` | Fixe explicitement le contrat TF100Web obligatoire : les expressions d'etat exportees doivent livrer `tagName = tf100.mapping.<id>` au runtime JS. |
+| 2026-07-09 | `V2.1.4.0001` | `2a2f22b` | Precision du modele cible `ScadaExprTagRef` avec `TagId` canonique + libelle humain, normalisation export obligatoire, et contrat TF100Web degrade en `qualityFallback` si tag non resolu. |
+| 2026-07-09 | `V2.1.4.0000` | `2a2f22b` | Design initial : reference par Id canonique dans les expressions d'etat. |
 
 ## 1. Probleme
 

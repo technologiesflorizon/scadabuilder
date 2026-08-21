@@ -10,7 +10,7 @@ Dépendances: `docs/04_editor/COMMANDS_CONTRACT_V2.md`, `docs/04_editor/MENUS_AN
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-14 | `V2.1.4.0010` | `PENDING` | Tranche implémentée : identité, commandes, historique, persistance, pages natives, surfaces et diagnostics; migration réelle toujours soumise à autorisation. |
+| 2026-07-14 | `V2.1.4.0010` | `50b2ad9` | Tranche implémentée : identité, commandes, historique, persistance, pages natives, surfaces et diagnostics; migration réelle toujours soumise à autorisation. |
 | 2026-07-14 | `V2.1.4.0009` | `c5d6f0e` | Décisions finales confirmées : onglet `Pages`, nouvelle page exclue du build par défaut et duplication d’une page importée conservant automatiquement sa projection Wonderware. |
 | 2026-07-14 | `V2.1.4.0008` | `c5d6f0e` | Décisions confirmées : `PageKey` GUID immuable, `PageCode` visible et modifiable, diagnostics modernes, sauvegarde atomique compatible, commandes éditeur asynchrones, historique au niveau projet et provenance d’import Wonderware générique. |
 | 2026-07-14 | `V2.1.4.0007` | `c5d6f0e` | Revue de complétude fondée sur le code : séparation des états de page, prise en charge des pages sans source legacy, provenance de source, dépendances modernes, historique projet, identité exportable et cycle de vie des onglets. |

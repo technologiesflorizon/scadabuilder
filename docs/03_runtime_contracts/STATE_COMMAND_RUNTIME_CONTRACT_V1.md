@@ -9,7 +9,7 @@ Owner: SCADA Builder V2 authoring team and shared package runtime. TF100Web owns
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-17 | `V2.1.4.0065` | `PENDING` | Filtre Etat SVG corrige : overlay visible au-dessus des geometries opaques, contenu semantique preserve et ordre auteur entre objets inchange. |
+| 2026-07-17 | `V2.1.4.0065` | `4bee5ab` | Filtre Etat SVG corrige : overlay visible au-dessus des geometries opaques, contenu semantique preserve et ordre auteur entre objets inchange. |
 | 2026-07-17 | `V2.1.4.0064` | `f73b3e3` | Artefact industriel regenere apres ajout de commandes/voyants non mappes; aucune semantique runtime Etat/Commande n'est modifiee. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Casing AST ferme : lower-camel canonique exporte execute directement, PascalCase historique accepte, probes exacts pour chaque operateur. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | Contrat synchronise avec le runtime partage, le HostAdapter unique, la fixture exacte et les statuts Supported/Blocked stricts. |
@@ -17,7 +17,7 @@ Owner: SCADA Builder V2 authoring team and shared package runtime. TF100Web owns
 | 2026-07-16 | `V2.1.4.0051` | `9878fb1` | Semantiques Etat/Expression/Effet partagees completees et table-driven : fallback, erreurs, coercions, transitions, tokens, animations et re-init. |
 | 2026-07-16 | `V2.1.4.0046` | `b2e4f5f` | `DEC-0047` approuvee : couverture exhaustive de chaque trigger/kind/mode/expression/effet et migration des actions vers l'executeur partage unique. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Contrat Etat/Commande confirme dans TF100Web : runtime partage deploye, mappings Etat/Commande collectes, boutons avec cible texte semantique et 56 toggles de degivrage configures. |
-| 2026-07-07 | `V2.1.2.0023` | `PENDING` | Creation du contrat runtime state/command V1 (specification, non implemente). |
+| 2026-07-07 | `V2.1.2.0023` | `4db9dea` | Creation du contrat runtime state/command V1 (specification, non implemente). |
 
 ## 1. Purpose
 

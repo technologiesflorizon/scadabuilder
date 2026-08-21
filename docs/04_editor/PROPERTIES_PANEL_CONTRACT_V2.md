@@ -8,23 +8,23 @@ Document version: `V2.1.4.0039`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-15 | `V2.1.4.0039` | `PENDING` | Ajout de l'inspecteur/dialogue Input numerique Tableau : valeur, placeholder, readonly, min/max/pas, format et tags lecture/ecriture. |
+| 2026-07-15 | `V2.1.4.0039` | `ce99ff9` | Ajout de l'inspecteur/dialogue Input numerique Tableau : valeur, placeholder, readonly, min/max/pas, format et tags lecture/ecriture. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Origine du format Tableau explicitee et fusion/defusion remplacee par un bouton contextuel unique. |
 | 2026-07-15 | `V2.1.4.0028` | `c873744` | La case explicite `Verrouiller la position` est visible dans Propriété > Général et partage l'état normal/mixte avec toutes les autres surfaces. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | `TablePropertiesViewModel` partage les valeurs effectives/locales et les états Hérité/Personnalisé/Mixte; reset de propriété/portée, color picker et X/Y/W/H exacts passent par des requêtes typées et le guard de verrou. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Onglet Tableau et dialogues etendus aux types/valeurs, portees, format complet, bordures et en-tetes; case de verrouillage partagee ajoutee aux proprietes generales. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Ajout de l'onglet Tableau contextuel, du dialogue de proprietes Tableau, du format de cellule et des dimensions de pistes partageant le coordinateur type. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Ajout des propriétés typographiques Element+, Foreground authorable, styles de bordure avancés, BorderRadius et aperçu vivant. |
-| 2026-06-19 | `V2.1.3.0002` | `PENDING` | Remplacement des couleurs arriere-plan/bordure Style et Bouton par le color picker modal aligne sur `CSS fond`. |
+| 2026-06-19 | `V2.1.3.0002` | `a99b886` | Remplacement des couleurs arriere-plan/bordure Style et Bouton par le color picker modal aligne sur `CSS fond`. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Clarification de la parite metadata preview/export pour les wrappers de boutons Element+. |
 | 2026-06-19 | `V2.1.2.0034` | `61eef34` | Ajout du style bouton appui/actif model-backed dans l'onglet Bouton. |
 | 2026-06-18 | `V2.1.2.0032` | `d5ee1fd` | Ajout des proprietes Style avancees opacite et rotation pour les Element+. |
 | 2026-06-18 | `V2.1.2.0030` | `cae57c9` | Ajout des presets de boutons HMI Element+ persistants via `ScadaButtonKind`. |
-| 2026-06-17 | `V2.1.2.0024` | `PENDING` | Refactor de l'onglet Donnees Element+: retrait authoring de `Mapping / Tag`, `Decimales` et `Unite`; `Format affichage` devient le signal actif. |
-| 2026-06-16 | `V2.1.2.0005` | `PENDING` | Ajout de la tab Bouton pour hover automatique, style de survol et etat desactive. |
-| 2026-06-16 | `V2.1.2.0004` | `PENDING` | Ajout de l'entree Evenement pour l'edition des bindings runtime Element+. |
-| 2026-06-16 | `V2.1.2.0000` | `PENDING` | Clarification du contrat Propriete pour les objets Element+ et du blocage explicite pour les sources non converties. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat actif du panneau proprietes. |
+| 2026-06-17 | `V2.1.2.0024` | `49cedc7` | Refactor de l'onglet Donnees Element+: retrait authoring de `Mapping / Tag`, `Decimales` et `Unite`; `Format affichage` devient le signal actif. |
+| 2026-06-16 | `V2.1.2.0005` | `5c7d617` | Ajout de la tab Bouton pour hover automatique, style de survol et etat desactive. |
+| 2026-06-16 | `V2.1.2.0004` | `5c7d617` | Ajout de l'entree Evenement pour l'edition des bindings runtime Element+. |
+| 2026-06-16 | `V2.1.2.0000` | `2c5a0b4` | Clarification du contrat Propriete pour les objets Element+ et du blocage explicite pour les sources non converties. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du contrat actif du panneau proprietes. |
 
 ## 5. Advanced Element+ Style Contract
 

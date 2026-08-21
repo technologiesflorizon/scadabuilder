@@ -8,10 +8,10 @@ Document version: `V2.1.3.0006`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-05 | `V2.1.3.0006` | `PENDING` | Triangle.sep et VentilateurPale.sep extraits de Condenseur.sep (voir MODERNIZATION_WORKFLOW_V2.md section 5: decomposition par besoin d'evenement); Condenseur.sep reduit au cadre statique (panneau + biseau superieur). |
-| 2026-07-05 | `V2.1.3.0005` | `PENDING` | Condenseur.sep approuve (composite panneau/triangle/biseau superieur/2 ventilateurs); ajout de la convention "variante palee" pour les sous-composants destines a un halo d'etat runtime. |
-| 2026-07-05 | `V2.1.3.0004` | `PENDING` | Premiere icone approuvee (Ventilateur.sep, famille ventilateur) via la boucle interactive; ajout de la regle 6 interdisant les transformations autres que `translate` (contrainte decouverte en pratique: `tools/icon_modernization` rejette `rotate`/`scale`/`matrix`). |
-| 2026-07-05 | `V2.1.3.0003` | `PENDING` | Creation du guide de style visuel pour la modernisation des icones Element+ (DEC-0033). |
+| 2026-07-05 | `V2.1.3.0006` | `1072344` | Triangle.sep et VentilateurPale.sep extraits de Condenseur.sep (voir MODERNIZATION_WORKFLOW_V2.md section 5: decomposition par besoin d'evenement); Condenseur.sep reduit au cadre statique (panneau + biseau superieur). |
+| 2026-07-05 | `V2.1.3.0005` | `daa6e52` | Condenseur.sep approuve (composite panneau/triangle/biseau superieur/2 ventilateurs); ajout de la convention "variante palee" pour les sous-composants destines a un halo d'etat runtime. |
+| 2026-07-05 | `V2.1.3.0004` | `9b70c80` | Premiere icone approuvee (Ventilateur.sep, famille ventilateur) via la boucle interactive; ajout de la regle 6 interdisant les transformations autres que `translate` (contrainte decouverte en pratique: `tools/icon_modernization` rejette `rotate`/`scale`/`matrix`). |
+| 2026-07-05 | `V2.1.3.0003` | `0aa1251` | Creation du guide de style visuel pour la modernisation des icones Element+ (DEC-0033). |
 
 ## 1. Purpose
 

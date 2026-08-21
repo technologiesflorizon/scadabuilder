@@ -8,16 +8,16 @@ Document version: `V2.1.5.0023`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-21 | `V2.1.5.0023` | `PENDING` | `DEC-0050` étendue par `FR-030..036` et `FR-UI-23..26` : composition header/pied, presse-papier inter-contextes, Interface locale versionnée, duplication de définition, bibliothèque Element+, portée undo/redo et isolation vis-à-vis des popups legacy. |
-| 2026-08-13 | `V2.1.5.0022` | `PENDING` | `DEC-0050` Phase 2 implémentée : orchestration Application, dépendances, undo/redo workspace et validation build/export; capacités QuickWindow toujours `Blocked`. |
-| 2026-08-13 | `V2.1.5.0021` | `PENDING` | `DEC-0050` synchronisée après audit : Phases 0/1 corrigées et validées, Phase 2 en attente, capacités QuickWindow toujours `Blocked`. |
-| 2026-08-10 | `V2.1.5.0018` | `PENDING` | Le plan d’implémentation de `DEC-0050` est créé; sa phase 0 d’isolation DOM/CSS est un gate absolu avant toute modification de production. |
-| 2026-08-10 | `V2.1.5.0017` | `PENDING` | Ajout de `DEC-0050` : les Fenêtres rapides deviennent des entités typées distinctes avec liaisons par invocation; `DEC-0019`, `DEC-0020` et `DEC-0022` sont supersédées. |
-| 2026-07-30 | `V2.1.5.0002` | `PENDING` | `DEC-0045` clarifiée : les couleurs Etat de fond et de bordure ciblent la géométrie SVG marquée, puis reviennent au wrapper en compatibilité. |
-| 2026-07-29 | `V2.1.5.0000` | `PENDING` | `DEC-0049` livrée dans le shell WPF et la persistance projet générale; validation automatisée ajoutée. |
-| 2026-07-29 | `V2.1.4.0068` | `PENDING` | Ajout de `DEC-0049` : cycle de vie projet autonome, racine choisie, accueil sans projet, transitions sûres et projets récents. |
-| 2026-07-17 | `V2.1.4.0066` | `PENDING` | Ajout de `DEC-0048` : la modernisation visuelle des controles d'ecran est gouvernee par une direction artistique versionnee et verifiable. |
-| 2026-07-17 | `V2.1.4.0065` | `PENDING` | `DEC-0045` clarifiee : le filtre Etat est au-dessus des geometries SVG/image/canvas/table opaques, sous le contenu semantique, sans modifier l'ordre auteur des objets. |
+| 2026-08-21 | `V2.1.5.0023` | `b0159f9` | `DEC-0050` étendue par `FR-030..036` et `FR-UI-23..26` : composition header/pied, presse-papier inter-contextes, Interface locale versionnée, duplication de définition, bibliothèque Element+, portée undo/redo et isolation vis-à-vis des popups legacy. |
+| 2026-08-13 | `V2.1.5.0022` | `436d38f` | `DEC-0050` Phase 2 implémentée : orchestration Application, dépendances, undo/redo workspace et validation build/export; capacités QuickWindow toujours `Blocked`. |
+| 2026-08-13 | `V2.1.5.0021` | `b353e37` | `DEC-0050` synchronisée après audit : Phases 0/1 corrigées et validées, Phase 2 en attente, capacités QuickWindow toujours `Blocked`. |
+| 2026-08-10 | `V2.1.5.0018` | `fc5b333` | Le plan d’implémentation de `DEC-0050` est créé; sa phase 0 d’isolation DOM/CSS est un gate absolu avant toute modification de production. |
+| 2026-08-10 | `V2.1.5.0017` | `fc5b333` | Ajout de `DEC-0050` : les Fenêtres rapides deviennent des entités typées distinctes avec liaisons par invocation; `DEC-0019`, `DEC-0020` et `DEC-0022` sont supersédées. |
+| 2026-07-30 | `V2.1.5.0002` | `0168f2f` | `DEC-0045` clarifiée : les couleurs Etat de fond et de bordure ciblent la géométrie SVG marquée, puis reviennent au wrapper en compatibilité. |
+| 2026-07-29 | `V2.1.5.0000` | `8fe1077` | `DEC-0049` livrée dans le shell WPF et la persistance projet générale; validation automatisée ajoutée. |
+| 2026-07-29 | `V2.1.4.0068` | `9e1c4c1` | Ajout de `DEC-0049` : cycle de vie projet autonome, racine choisie, accueil sans projet, transitions sûres et projets récents. |
+| 2026-07-17 | `V2.1.4.0066` | `41ccbae` | Ajout de `DEC-0048` : la modernisation visuelle des controles d'ecran est gouvernee par une direction artistique versionnee et verifiable. |
+| 2026-07-17 | `V2.1.4.0065` | `4bee5ab` | `DEC-0045` clarifiee : le filtre Etat est au-dessus des geometries SVG/image/canvas/table opaques, sous le contenu semantique, sans modifier l'ordre auteur des objets. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | `DEC-0047` corrige : 118 probes exacts remplacent les gates agreges; mutation independante et AST lower-camel sont verrouilles. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | `DEC-0047` tranche 16 : contrats et preuves Supported/Blocked synchronises; livraison distante reste gatee. |
 | 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | `DEC-0047` tranche 15 : integrations 03/04/08/12 et artefact industriel 2.3 preuves. |
@@ -36,13 +36,13 @@ Document version: `V2.1.5.0023`
 | 2026-07-16 | `V2.1.4.0048` | `684478e` | `DEC-0047` tranche 2 : matrice code-generee, preuves typees et verification stale; les gaps sans preuves restent bloques. |
 | 2026-07-16 | `V2.1.4.0047` | `9a58d0c` | `DEC-0047` tranche 1 : registre Domain et analyseur Application implementes avec tests d'exhaustivite; negotiation 2.3 encore pending. |
 | 2026-07-16 | `V2.1.4.0046` | `b2e4f5f` | Ajout de `DEC-0047` : couverture runtime generale par capabilities, negotiation manifest 2.3 et executeur semantique unique. |
-| 2026-07-16 | `V2.1.4.0045` | `PENDING` | Ajout de `DEC-0046` : navigation TF100Web latest-wins, hydratation obligatoire et acceptation exhaustive des quatre pages de reference. |
+| 2026-07-16 | `V2.1.4.0045` | `2f4010c` | Ajout de `DEC-0046` : navigation TF100Web latest-wins, hydratation obligatoire et acceptation exhaustive des quatre pages de reference. |
 | 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | Ajout et implementation de `DEC-0045` : transitions Etat reversibles, filtre sous le contenu et ValueBinding numerique TF100Web commun. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Ajout et implementation de `DEC-0044` : boutons de degivrage sur le pipeline Etat/Commande partage, texte semantique et collecte des mappings de commande TF100Web. |
-| 2026-07-16 | `V2.1.4.0041` | `PENDING` | `DEC-0043` implementee : commande numerique unique, identite Tableau/A1 partagee, selection fraiche, double-clic cible et fallback Ecrire vers Lire valides. |
-| 2026-07-15 | `V2.1.4.0040` | `PENDING` | Ajout de `DEC-0043` pour simplifier l'authoring InputNumeric Tableau, fiabiliser l'identite A1 et initialiser Lire depuis Ecrire lorsque Lire est vide. |
-| 2026-07-15 | `V2.1.4.0039` | `PENDING` | `DEC-0042` implemente dans les deux depots; preuves package 2.1/2.2 locales acquises, gate industriel et ordre de livraison maintenus ouverts. |
-| 2026-07-15 | `V2.1.4.0037` | `PENDING` | Ajout de `DEC-0042` pour les bindings lecture/ecriture des cellules Tableau `InputNumeric`, le manifest `.sb2` 2.2 et l'intake TF100Web ordonne avant l'exporteur. |
+| 2026-07-16 | `V2.1.4.0041` | `090d388` | `DEC-0043` implementee : commande numerique unique, identite Tableau/A1 partagee, selection fraiche, double-clic cible et fallback Ecrire vers Lire valides. |
+| 2026-07-15 | `V2.1.4.0040` | `75f5000` | Ajout de `DEC-0043` pour simplifier l'authoring InputNumeric Tableau, fiabiliser l'identite A1 et initialiser Lire depuis Ecrire lorsque Lire est vide. |
+| 2026-07-15 | `V2.1.4.0039` | `ce99ff9` | `DEC-0042` implemente dans les deux depots; preuves package 2.1/2.2 locales acquises, gate industriel et ordre de livraison maintenus ouverts. |
+| 2026-07-15 | `V2.1.4.0037` | `0086bae` | Ajout de `DEC-0042` pour les bindings lecture/ecriture des cellules Tableau `InputNumeric`, le manifest `.sb2` 2.2 et l'intake TF100Web ordonne avant l'exporteur. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | `DEC-0041` implementee et validee sans changement des contrats `.sb2`, `.sep` ou TF100Web. |
 | 2026-07-15 | `V2.1.4.0033` | `e811253` | Ajout de `DEC-0041` pour les corrections d'interaction Tableau/verrou approuvees. |
 | 2026-07-15 | `V2.1.4.0028` | `c873744` | `DEC-0040` corrigée sur ses surfaces WPF fondamentales : accès Tableau sans modale et état de verrou partagé jusque dans le menu contextuel Element+. |
@@ -50,10 +50,10 @@ Document version: `V2.1.5.0023`
 | 2026-07-15 | `V2.1.4.0024` | `3f6e6a5` | Ajout de `DEC-0040` pour la sous-surface Tableau, l'authoring avancé des cellules et le verrouillage persistant de position de tous les Element+. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | `DEC-0039` implementee avec modele Tableau, edition type tableur, export `.sb2`, tests et ruban Inserer hierarchique; smoke interactif isole restant. |
 | 2026-07-14 | `V2.1.4.0015` | `95a57ac` | Ajout de `DEC-0039` pour l'Element+ Tableau moderne, l'edition type tableur, le ruban Inserer hierarchique et l'extraction des responsabilites hors `MainWindow`. |
-| 2026-07-14 | `V2.1.4.0011` | `PENDING` | DEC-0038 passée de décision approuvée à tranche implémentée et couverte; la vérification UI manuelle et la migration du projet réel restent séparées. |
+| 2026-07-14 | `V2.1.4.0011` | `50b2ad9` | DEC-0038 passée de décision approuvée à tranche implémentée et couverte; la vérification UI manuelle et la migration du projet réel restent séparées. |
 | 2026-07-14 | `V2.1.4.0010` | `c5d6f0e` | Ajout de DEC-0038 pour l’identité moderne des pages, les commandes partagées, l’historique projet, la persistance atomique et la compatibilité `.sb2`. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Ajout de DEC-0037 pour le contrat de style avancé Element+ model-backed et la conservation HTML/CSS TF100Web. |
-| 2026-07-09 | `V2.1.4.0002` | `PENDING` | Ajout de DEC-0036 pour les references de tags d'expressions d'etat : libelle humain conserve, Id canonique obligatoire a l'export TF100Web. |
+| 2026-07-09 | `V2.1.4.0002` | `8a4fe7c` | Ajout de DEC-0036 pour les references de tags d'expressions d'etat : libelle humain conserve, Id canonique obligatoire a l'export TF100Web. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de DEC-0032 pour la galerie Formes 32x32 sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout de DEC-0032 pour la galerie Formes du ruban Inserer et le placement ligne/fleche en deux points. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Mise a jour de DEC-0031 apres extraction de la palette laterale d'outils vers le catalogue semantique. |
@@ -63,28 +63,28 @@ Document version: `V2.1.5.0023`
 | 2026-06-19 | `V2.1.2.0040` | `335adfb` | Mise a jour de DEC-0031 apres implementation du rendu de ruban depuis registre. |
 | 2026-06-19 | `V2.1.2.0039` | `e5f8a82` | Ajout de DEC-0031 pour le ruban superieur groupe et le registre d'icones semantiques. |
 | 2026-06-17 | `V2.1.2.0025` | `58567eb` | Mise a jour de DEC-0030 apres implementation TF100Web des masques `DisplayFormat` `#`. |
-| 2026-06-17 | `V2.1.2.0024` | `PENDING` | Ajout de DEC-0030 pour la refonte de l'onglet Donnees Element+ et le format numerique actif. |
-| 2026-06-17 | `V2.1.2.0022` | `PENDING` | Ajout de DEC-0029 pour l'intake TF100Web des events de binding `ValueBindings` depuis `.sb2`. |
+| 2026-06-17 | `V2.1.2.0024` | `49cedc7` | Ajout de DEC-0030 pour la refonte de l'onglet Donnees Element+ et le format numerique actif. |
+| 2026-06-17 | `V2.1.2.0022` | `3b67c3a` | Ajout de DEC-0029 pour l'intake TF100Web des events de binding `ValueBindings` depuis `.sb2`. |
 | 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Ajout de DEC-0028 pour l'export `.sb2` non bloquant et la validation CSS indentee. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout de DEC-0027 pour l'export `.sb2` FT100 et le gate anti-collision. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Ajout de DEC-0026 pour le contrat d'intake fragment audite dans TF100Web. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0025 pour les effets visuels runtime standards. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0024 pour le bridge lifecycle runtime global. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0023 pour les groupes de conditions runtime et politique degradee. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de DEC-0022 pour les options runtime avancees des popup Fragment. |
-| 2026-06-17 | `V2.1.2.0016` | `PENDING` | Ajout de DEC-0021 pour les actions runtime de bordure Element+. |
-| 2026-06-17 | `V2.1.2.0015` | `PENDING` | Ajout de DEC-0020 pour `Fermer popup` et `Basculer popup`. |
-| 2026-06-17 | `V2.1.2.0014` | `PENDING` | Ajout de DEC-0019 pour l'action runtime `Ouvrir popup`. |
-| 2026-06-17 | `V2.1.2.0012` | `PENDING` | Ajout de DEC-0018 pour l'application runtime des valeurs de tags lues. |
-| 2026-06-17 | `V2.1.2.0010` | `PENDING` | Ajout de DEC-0017 pour les actions objet conditionnelles basees sur tags importes. |
-| 2026-06-17 | `V2.1.2.0009` | `PENDING` | Ajout de DEC-0016 pour les bindings Element+ `Lire valeur` et `Ecrire valeur`; DEC-0015 est supersedee. |
-| 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout de la decision d'import catalogue tags TF100Web et d'authoring `WriteTag`. |
-| 2026-06-16 | `V2.1.2.0007` | `PENDING` | Ajout de la decision de curseur runtime pour les cibles cliquables FT100/TF100Web. |
-| 2026-06-16 | `V2.1.2.0006` | `PENDING` | Ajout de la decision d'export runtime transparent pour les events portes par des groupes Element+. |
-| 2026-06-16 | `V2.1.2.0005` | `PENDING` | Ajout de la decision hover automatique des boutons Element+. |
-| 2026-06-16 | `V2.1.2.0004` | `PENDING` | Ajout de la decision de registre contractuel des evenements Element+ et fonctions runtime. |
-| 2026-06-16 | `V2.1.2.0002` | `PENDING` | Ajout de la decision Element+ only pour le groupement dans la scene principale. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du registre decisionnel centralise avec decisions actives, historiques et regles de deprecation. |
+| 2026-06-17 | `V2.1.2.0017` | `789a433` | Ajout de DEC-0025 pour les effets visuels runtime standards. |
+| 2026-06-17 | `V2.1.2.0017` | `b465ba9` | Ajout de DEC-0024 pour le bridge lifecycle runtime global. |
+| 2026-06-17 | `V2.1.2.0017` | `1b5df61` | Ajout de DEC-0023 pour les groupes de conditions runtime et politique degradee. |
+| 2026-06-17 | `V2.1.2.0017` | `95af4bb` | Ajout de DEC-0022 pour les options runtime avancees des popup Fragment. |
+| 2026-06-17 | `V2.1.2.0016` | `32d9227` | Ajout de DEC-0021 pour les actions runtime de bordure Element+. |
+| 2026-06-17 | `V2.1.2.0015` | `6ac2245` | Ajout de DEC-0020 pour `Fermer popup` et `Basculer popup`. |
+| 2026-06-17 | `V2.1.2.0014` | `06652c6` | Ajout de DEC-0019 pour l'action runtime `Ouvrir popup`. |
+| 2026-06-17 | `V2.1.2.0012` | `a73be05` | Ajout de DEC-0018 pour l'application runtime des valeurs de tags lues. |
+| 2026-06-17 | `V2.1.2.0010` | `5302022` | Ajout de DEC-0017 pour les actions objet conditionnelles basees sur tags importes. |
+| 2026-06-17 | `V2.1.2.0009` | `7e3610c` | Ajout de DEC-0016 pour les bindings Element+ `Lire valeur` et `Ecrire valeur`; DEC-0015 est supersedee. |
+| 2026-06-17 | `V2.1.2.0008` | `f78e8cd` | Ajout de la decision d'import catalogue tags TF100Web et d'authoring `WriteTag`. |
+| 2026-06-16 | `V2.1.2.0007` | `5c7d617` | Ajout de la decision de curseur runtime pour les cibles cliquables FT100/TF100Web. |
+| 2026-06-16 | `V2.1.2.0006` | `5c7d617` | Ajout de la decision d'export runtime transparent pour les events portes par des groupes Element+. |
+| 2026-06-16 | `V2.1.2.0005` | `5c7d617` | Ajout de la decision hover automatique des boutons Element+. |
+| 2026-06-16 | `V2.1.2.0004` | `5c7d617` | Ajout de la decision de registre contractuel des evenements Element+ et fonctions runtime. |
+| 2026-06-16 | `V2.1.2.0002` | `2c5a0b4` | Ajout de la decision Element+ only pour le groupement dans la scene principale. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du registre decisionnel centralise avec decisions actives, historiques et regles de deprecation. |
 
 ## 1. Rules
 
@@ -118,7 +118,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-08-10 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `fc5b333`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -156,7 +156,7 @@ Les preuves Phases 0 à 2 sont référencées dans `docs/08_implementation_statu
 
 Status: Active
 Created: 2026-07-29 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `9e1c4c1`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -184,7 +184,7 @@ Implémentée dans `ProjectLifecycleInfrastructureTests`, `ProjectLifecycleCoord
 
 Status: Active
 Created: 2026-07-17 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `41ccbae`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -210,7 +210,7 @@ Validation JSON de scene, `Ft100SceneExporterTests`, build cible et revue visuel
 
 Status: Active
 Created: 2026-06-16 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `2c5a0b4`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -236,7 +236,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-16 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `2c5a0b4`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -418,7 +418,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-16 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `2c5a0b4`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -444,7 +444,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-16 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `2c5a0b4`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -470,7 +470,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-16 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `5c7d617`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -496,7 +496,7 @@ Regression coverage:
 
 Status: Superseded
 Created: 2026-06-16 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `5c7d617`
 Deprecated: 2026-07-16 00:00 America/Toronto
 Deprecated in commit: `bcec075`
 Superseded by: DEC-0047
@@ -522,7 +522,7 @@ Regression coverage:
 
 Status: Superseded
 Created: 2026-06-16 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `5c7d617`
 Deprecated: 2026-07-16 00:00 America/Toronto
 Deprecated in commit: `bcec075`
 Superseded by: DEC-0047
@@ -548,7 +548,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-16 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `5c7d617`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -576,7 +576,7 @@ Status: Superseded
 Created: 2026-06-17 00:00 America/Toronto
 Created in commit: `bd6515e`
 Deprecated: 2026-06-17 00:00 America/Toronto
-Deprecated in commit: `PENDING`
+Deprecated in commit: `f78e8cd`
 Superseded by: DEC-0016
 Owner document: `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
 
@@ -626,9 +626,9 @@ Regression coverage:
 
 Status: Superseded
 Created: 2026-06-17 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `06652c6`
 Deprecated: 2026-08-10 00:00 America/Toronto
-Deprecated in commit: `PENDING`
+Deprecated in commit: `06652c6`
 Superseded by: DEC-0050
 Owner document: `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
 
@@ -652,9 +652,9 @@ Regression coverage:
 
 Status: Superseded
 Created: 2026-06-17 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `6ac2245`
 Deprecated: 2026-08-10 00:00 America/Toronto
-Deprecated in commit: `PENDING`
+Deprecated in commit: `6ac2245`
 Superseded by: DEC-0050
 Owner document: `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
 
@@ -678,7 +678,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-17 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `789a433`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -756,7 +756,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-17 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `c2f0b6f`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -782,7 +782,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-17 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `3b67c3a`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -808,7 +808,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-17 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `49cedc7`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -886,7 +886,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-17 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `b465ba9`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -912,7 +912,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-17 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `1b5df61`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -938,9 +938,9 @@ Regression coverage:
 
 Status: Superseded
 Created: 2026-06-17 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `95af4bb`
 Deprecated: 2026-08-10 00:00 America/Toronto
-Deprecated in commit: `PENDING`
+Deprecated in commit: `95af4bb`
 Superseded by: DEC-0050
 Owner document: `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
 
@@ -964,7 +964,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-17 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `32d9227`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -990,7 +990,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-17 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `5302022`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -1016,7 +1016,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-06-17 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `7e3610c`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -1042,7 +1042,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-07-05 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `0aa1251`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -1091,7 +1091,7 @@ manual visual review recorded in
 
 Status: Active
 Created: 2026-07-05 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `a49ad78`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -1139,7 +1139,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-07-06 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `f7ac270`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -1165,7 +1165,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-07-09 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `8a4fe7c`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -1392,7 +1392,7 @@ Covered by SCADA Builder V2 `TableCellBindingOperationsTests`, `TableContentOper
 
 Status: Active
 Created: 2026-07-15 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `75f5000`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -1480,7 +1480,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-07-16 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `2f4010c`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A

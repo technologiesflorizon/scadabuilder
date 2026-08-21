@@ -8,11 +8,11 @@ Document version: `V2.1.2.0011`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-14 | `V2.1.2.0011` | `PENDING` | Ajout du modèle de page moderne, des clés internes, de la provenance, du snapshot workspace et des diagnostics structurés. |
-| 2026-06-17 | `V2.1.2.0010` | `PENDING` | Ajout de la relation conditionnelle entre action runtime et tag importe. |
-| 2026-06-17 | `V2.1.2.0009` | `PENDING` | Ajout des relations `ReadTagId` et `WriteTagId` sur les donnees Element+. |
-| 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout du catalogue tags TF100Web au modele projet et aux relations runtime. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation de la vue d'ensemble du modele projet, scene, elements, actions, Studio et export. |
+| 2026-07-14 | `V2.1.2.0011` | `50b2ad9` | Ajout du modèle de page moderne, des clés internes, de la provenance, du snapshot workspace et des diagnostics structurés. |
+| 2026-06-17 | `V2.1.2.0010` | `5302022` | Ajout de la relation conditionnelle entre action runtime et tag importe. |
+| 2026-06-17 | `V2.1.2.0009` | `7e3610c` | Ajout des relations `ReadTagId` et `WriteTagId` sur les donnees Element+. |
+| 2026-06-17 | `V2.1.2.0008` | `f78e8cd` | Ajout du catalogue tags TF100Web au modele projet et aux relations runtime. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation de la vue d'ensemble du modele projet, scene, elements, actions, Studio et export. |
 
 ## 1. Model Families
 

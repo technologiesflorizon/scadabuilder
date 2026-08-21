@@ -8,8 +8,8 @@ Document version: `V2.1.5.0022`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Phase 2 QuickWindow fermée; authoring WPF, preview/compiler/runtime, export/promotion et intake TF100Web des Phases 3 à 7 restent ouverts et `Blocked`. |
-| 2026-08-13 | `V2.1.5.0021` | `PENDING` | Phases 0/1 QuickWindow fermées après audit; orchestration, authoring, preview/export et runtime des Phases 2 à 7 restent explicitement ouverts et `Blocked`. |
+| 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 QuickWindow fermée; authoring WPF, preview/compiler/runtime, export/promotion et intake TF100Web des Phases 3 à 7 restent ouverts et `Blocked`. |
+| 2026-08-13 | `V2.1.5.0021` | `b353e37` | Phases 0/1 QuickWindow fermées après audit; orchestration, authoring, preview/export et runtime des Phases 2 à 7 restent explicitement ouverts et `Blocked`. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Faux positif des gates agreges ferme : 118 probes independants sont verts; les Blocked et la promotion distante demeurent les seuls gates de cette tranche. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | Gaps runtime reclasses depuis la matrice generee; seul le deploiement distant et les capabilities Blocked restent ouverts. |
 | 2026-07-16 | `V2.1.4.0061` | Builder `c56c5af`/`3fc1fc8`, TF100Web `33c5846` | Gate industriel local ferme; promotion distante/restart et smoke operateur restent ouverts. |
@@ -20,44 +20,44 @@ Document version: `V2.1.5.0022`
 | 2026-07-16 | `V2.1.4.0056` | TF100Web `1fc3ac4` | Gap `DEC-0046` ferme sur branche; bindings exhaustifs, performance, fixture executee et promotion industrielle restent ouverts. |
 | 2026-07-16 | `V2.1.4.0055` | TF100Web `cab2733` | HostAdapter unique complete sur branche; lifecycle latest-wins, fixture executee et promotion industrielle restent gates. |
 | 2026-07-16 | `V2.1.4.0054` | TF100Web `7d60c63` | Negotiation/hash/capabilities 2.3 completees sur branche; HostAdapter et deploiement restent gates. |
-| 2026-07-16 | `V2.1.4.0053` | `PENDING` | Actions objet portables completees; negotiation/HostAdapter TF100Web et preuves de promotion restent ouvertes. |
-| 2026-07-16 | `V2.1.4.0052` | `PENDING` | CommandConfig portable complete; host adapter TF100Web et promotion Momentary restent gates end-to-end. |
-| 2026-07-16 | `V2.1.4.0051` | `PENDING` | Trous unitaires Etat/Expression/Effet fermes; promotion animation et preuve TF100Web demeurent gates end-to-end. |
-| 2026-07-16 | `V2.1.4.0050` | `PENDING` | Fixture partageable Builder creee; execution par TF100Web, negotiation 2.3 et preuves end-to-end restent ouvertes. |
-| 2026-07-16 | `V2.1.4.0049` | `PENDING` | Builder 2.3 strict implemente; negotiation/rejet atomique TF100Web et fixture partagee restent gaps actifs. |
-| 2026-07-16 | `V2.1.4.0048` | `PENDING` | Matrice runtime generee et verifiee; gaps semantiques bloques et fixture end-to-end par capability encore pending. |
-| 2026-07-16 | `V2.1.4.0047` | `PENDING` | Registre/analyseur `DEC-0047` implementes; negotiation 2.3, matrice generee, fixture partagee et preuves end-to-end restent gaps actifs. |
-| 2026-07-16 | `V2.1.4.0046` | `PENDING` | `DEC-0047` enregistre le gap systemique : absence actuelle de negotiation de capabilities et de preuve exhaustive; mapping absent reclasse fallback non bloquant. |
-| 2026-07-16 | `V2.1.4.0045` | `PENDING` | Ajout du gap confirme navigation/poll de TF100Web `9d5d400`, de la latence de composition et du mapping officiel manquant `YL_E12_HDEG4`. |
+| 2026-07-16 | `V2.1.4.0053` | `bcec075` | Actions objet portables completees; negotiation/HostAdapter TF100Web et preuves de promotion restent ouvertes. |
+| 2026-07-16 | `V2.1.4.0052` | `a76e220` | CommandConfig portable complete; host adapter TF100Web et promotion Momentary restent gates end-to-end. |
+| 2026-07-16 | `V2.1.4.0051` | `9878fb1` | Trous unitaires Etat/Expression/Effet fermes; promotion animation et preuve TF100Web demeurent gates end-to-end. |
+| 2026-07-16 | `V2.1.4.0050` | `c626442` | Fixture partageable Builder creee; execution par TF100Web, negotiation 2.3 et preuves end-to-end restent ouvertes. |
+| 2026-07-16 | `V2.1.4.0049` | `f9659ae` | Builder 2.3 strict implemente; negotiation/rejet atomique TF100Web et fixture partagee restent gaps actifs. |
+| 2026-07-16 | `V2.1.4.0048` | `684478e` | Matrice runtime generee et verifiee; gaps semantiques bloques et fixture end-to-end par capability encore pending. |
+| 2026-07-16 | `V2.1.4.0047` | `9a58d0c` | Registre/analyseur `DEC-0047` implementes; negotiation 2.3, matrice generee, fixture partagee et preuves end-to-end restent gaps actifs. |
+| 2026-07-16 | `V2.1.4.0046` | `b2e4f5f` | `DEC-0047` enregistre le gap systemique : absence actuelle de negotiation de capabilities et de preuve exhaustive; mapping absent reclasse fallback non bloquant. |
+| 2026-07-16 | `V2.1.4.0045` | `2f4010c` | Ajout du gap confirme navigation/poll de TF100Web `9d5d400`, de la latence de composition et du mapping officiel manquant `YL_E12_HDEG4`. |
 | 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | Retrait du gap de code polling/gestes des cellules : chemin partage implemente; validation mappings/permissions/feedback PLC reels demeure un gate industriel. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Retrait du gap Etat/Commande TF100Web : runtime package partage deploye et initialise, mappings de commande collectes; les anciennes actions popup/lifecycle restent distinctes. |
-| 2026-07-15 | `V2.1.4.0039` | `PENDING` | `DEC-0042` est implemente et valide localement; polling/ecriture/gestes et permissions sur mappings industriels reels restent un gate de livraison autorise. |
+| 2026-07-15 | `V2.1.4.0039` | `ce99ff9` | `DEC-0042` est implemente et valide localement; polling/ecriture/gestes et permissions sur mappings industriels reels restent un gate de livraison autorise. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Smoke correctif Tableau/verrou reussi sur copie isolee; le gate performance WebView2 64 x 64 plus large de `DEC-0040` demeure distinct. Baseline : 618 reussites et 5 echecs historiques non lies. |
 | 2026-07-15 | `V2.1.4.0028` | `c873744` | Les quatre blocages de validation des surfaces fondamentales ont été corrigés; le smoke WPF/WebView2 complet demeure le seul gate Tableau/verrou restant. |
 | 2026-07-15 | `V2.1.4.0027` | `32a3ef6` | Mesures automatisées modèle/rendu 64 x 64 consignées; le gap est réduit au smoke WPF/WebView2 interactif isolé. Baseline complète : 608/613, cinq échecs historiques non liés. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | Ajout du gate interactif Release 64 x 64 restant avant cloture produit de `DEC-0040`. |
-| 2026-07-14 | `V2.1.2.0027` | `PENDING` | Baseline de tests actualisee apres la correction du crash WPF au demarrage. |
-| 2026-07-14 | `V2.1.2.0026` | `PENDING` | Ajout des validations manuelles et fonctions avancées de classement/modèles/droits restant hors de la tranche Pages. |
+| 2026-07-14 | `V2.1.2.0027` | `fd445ac` | Baseline de tests actualisee apres la correction du crash WPF au demarrage. |
+| 2026-07-14 | `V2.1.2.0026` | `50b2ad9` | Ajout des validations manuelles et fonctions avancées de classement/modèles/droits restant hors de la tranche Pages. |
 | 2026-06-17 | `V2.1.2.0025` | `58567eb` | Retrait du gap TF100Web pour les masques `DisplayFormat` `#` apres commit `3c795c2`. |
-| 2026-06-17 | `V2.1.2.0024` | `PENDING` | Ajout du gap TF100Web restant pour interpreter les masques `DisplayFormat` de type `##.#`. |
-| 2026-06-17 | `V2.1.2.0023` | `PENDING` | Ajout du backlog de parite events TF100Web pour preparer la prochaine tranche d'implementation. |
-| 2026-06-17 | `V2.1.2.0022` | `PENDING` | Retrait du gap TF100Web pour l'intake host-side des events de binding `ValueBindings`; maintien des gaps page-script hors fragment. |
+| 2026-06-17 | `V2.1.2.0024` | `49cedc7` | Ajout du gap TF100Web restant pour interpreter les masques `DisplayFormat` de type `##.#`. |
+| 2026-06-17 | `V2.1.2.0023` | `3b67c3a` | Ajout du backlog de parite events TF100Web pour preparer la prochaine tranche d'implementation. |
+| 2026-06-17 | `V2.1.2.0022` | `3b67c3a` | Retrait du gap TF100Web pour l'intake host-side des events de binding `ValueBindings`; maintien des gaps page-script hors fragment. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Clarification que l'export `.sb2` ne ferme pas le gap runtime fragment TF100Web. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Ajout du gap de parite entre runtime exporte SCADA Builder et intake fragment TF100Web. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Retrait du gap effets visuels standards; le styling custom reste roadmap. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Retrait du gap lifecycle runtime global; le chargement de scripts custom reste roadmap. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Retrait du gap conditions composees et politique degradee simple. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Retrait du gap politique popup avancee; le placement visuel authorable reste roadmap. |
-| 2026-06-17 | `V2.1.2.0016` | `PENDING` | Retrait du gap hover group border; les effets visuels avances restent roadmap. |
-| 2026-06-17 | `V2.1.2.0015` | `PENDING` | Retrait du gap actions popup close/toggle; les politiques avancees restent roadmap. |
-| 2026-06-17 | `V2.1.2.0014` | `PENDING` | Retrait du gap `On click -> open popup`; les options avancees de popup restent roadmap. |
-| 2026-06-17 | `V2.1.2.0012` | `PENDING` | Retrait du gap d'application runtime des valeurs lues; les reponses degradees restent roadmap. |
-| 2026-06-17 | `V2.1.2.0010` | `PENDING` | Clarification que les conditions simples sont implementees pour actions objet, tandis que degrade/expressions restent roadmap. |
-| 2026-06-17 | `V2.1.2.0009` | `PENDING` | Retrait du gap binding valeur importe et ajout du gap import protocoles pour creation locale de tags. |
-| 2026-06-17 | `V2.1.2.0008` | `PENDING` | Remplacement du gap schema tags global par les limites restantes apres import catalogue et `WriteTag`. |
-| 2026-06-16 | `V2.1.2.0005` | `PENDING` | Clarification que les metadonnees hover bouton sont implementees, tandis que l'application runtime appartient a FT100Web. |
-| 2026-06-16 | `V2.1.2.0004` | `PENDING` | Clarification des limites restantes apres la premiere tranche Evenement Element+. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du registre des ecarts connus. |
+| 2026-06-17 | `V2.1.2.0017` | `789a433` | Retrait du gap effets visuels standards; le styling custom reste roadmap. |
+| 2026-06-17 | `V2.1.2.0017` | `b465ba9` | Retrait du gap lifecycle runtime global; le chargement de scripts custom reste roadmap. |
+| 2026-06-17 | `V2.1.2.0017` | `1b5df61` | Retrait du gap conditions composees et politique degradee simple. |
+| 2026-06-17 | `V2.1.2.0017` | `95af4bb` | Retrait du gap politique popup avancee; le placement visuel authorable reste roadmap. |
+| 2026-06-17 | `V2.1.2.0016` | `32d9227` | Retrait du gap hover group border; les effets visuels avances restent roadmap. |
+| 2026-06-17 | `V2.1.2.0015` | `6ac2245` | Retrait du gap actions popup close/toggle; les politiques avancees restent roadmap. |
+| 2026-06-17 | `V2.1.2.0014` | `06652c6` | Retrait du gap `On click -> open popup`; les options avancees de popup restent roadmap. |
+| 2026-06-17 | `V2.1.2.0012` | `a73be05` | Retrait du gap d'application runtime des valeurs lues; les reponses degradees restent roadmap. |
+| 2026-06-17 | `V2.1.2.0010` | `5302022` | Clarification que les conditions simples sont implementees pour actions objet, tandis que degrade/expressions restent roadmap. |
+| 2026-06-17 | `V2.1.2.0009` | `7e3610c` | Retrait du gap binding valeur importe et ajout du gap import protocoles pour creation locale de tags. |
+| 2026-06-17 | `V2.1.2.0008` | `f78e8cd` | Remplacement du gap schema tags global par les limites restantes apres import catalogue et `WriteTag`. |
+| 2026-06-16 | `V2.1.2.0005` | `5c7d617` | Clarification que les metadonnees hover bouton sont implementees, tandis que l'application runtime appartient a FT100Web. |
+| 2026-06-16 | `V2.1.2.0004` | `5c7d617` | Clarification des limites restantes apres la premiere tranche Evenement Element+. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du registre des ecarts connus. |
 
 ## 1. Known Gaps
 

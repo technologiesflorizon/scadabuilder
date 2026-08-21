@@ -8,22 +8,22 @@ Document version: `V2.1.5.0022`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Services Application QuickWindow Phase 2 : mutations immuables définition/invocation/appelant, diagnostics référentiels et résultats structurés avant branchement WPF. |
-| 2026-07-29 | `V2.1.5.0000` | `PENDING` | Activation des commandes `project.new`, `project.open`, `project.reopen-last`, `project.save` et `project.close`. |
+| 2026-08-13 | `V2.1.5.0022` | `436d38f` | Services Application QuickWindow Phase 2 : mutations immuables définition/invocation/appelant, diagnostics référentiels et résultats structurés avant branchement WPF. |
+| 2026-07-29 | `V2.1.5.0000` | `8fe1077` | Activation des commandes `project.new`, `project.open`, `project.reopen-last`, `project.save` et `project.close`. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | `table.merge-toggle` remplace les deux choix visibles Fusionner/Defusionner et derive son action de la plage selectionnee. |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Ajout des requêtes typées de propriétés/dimensions, reset d'une propriété, distribution proportionnelle et marquage/démarquage des en-têtes; les dialogues ne remplacent plus directement la définition Tableau. |
 | 2026-07-15 | `V2.1.4.0026` | `0874416` | `object.lock` rendu persistant et commandes `table.*` avancees routees par session, coordinateur et operations Domain. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Ajout des commandes typees Tableau, du presse-papiers rectangulaire et du catalogue Inserer hierarchique pilote par descripteurs. |
-| 2026-07-14 | `V2.1.4.0012` | `PENDING` | Commandes asynchrones `page.*`, coordinateur partagé, diagnostics et mutations de propriétés désormais implémentés. |
+| 2026-07-14 | `V2.1.4.0012` | `50b2ad9` | Commandes asynchrones `page.*`, coordinateur partagé, diagnostics et mutations de propriétés désormais implémentés. |
 | 2026-07-14 | `V2.1.4.0011` | `4def659` | Ajout de la cible approuvée des commandes asynchrones `page.*` partagées par toutes les surfaces. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Ajout des commandes `insert.shape.circle`, `insert.shape.triangle`, `insert.shape.star` et du placement deux points ligne/fleche. |
 | 2026-06-19 | `V2.1.2.0042` | `0825cfe` | Activation des commandes de ruban `object.group` et `object.ungroup`. |
 | 2026-06-19 | `V2.1.2.0041` | `88a3e8b` | Le catalogue de commandes du ruban devient un contrat applicatif testable. |
 | 2026-06-19 | `V2.1.2.0040` | `335adfb` | Ajout du contrat de metadonnees de commandes pour le ruban superieur. |
-| 2026-06-16 | `V2.1.2.0003` | `PENDING` | Clarification du groupement Element+: ordre de rendu preserve et deplacement solidaire des enfants de groupe. |
-| 2026-06-16 | `V2.1.2.0002` | `PENDING` | Decommission du groupement legacy direct et verrouillage du groupement scene Element+ only. |
-| 2026-06-16 | `V2.1.2.0001` | `PENDING` | Ajout du contrat des raccourcis clavier WebView: Backspace est non destructif et les champs editables interceptent leurs touches. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat commandes separe du contrat etat/actions/menus. |
+| 2026-06-16 | `V2.1.2.0003` | `940af93` | Clarification du groupement Element+: ordre de rendu preserve et deplacement solidaire des enfants de groupe. |
+| 2026-06-16 | `V2.1.2.0002` | `2c5a0b4` | Decommission du groupement legacy direct et verrouillage du groupement scene Element+ only. |
+| 2026-06-16 | `V2.1.2.0001` | `2c5a0b4` | Ajout du contrat des raccourcis clavier WebView: Backspace est non destructif et les champs editables interceptent leurs touches. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du contrat commandes separe du contrat etat/actions/menus. |
 
 ## 1. Contract
 

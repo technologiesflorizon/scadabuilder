@@ -8,7 +8,7 @@ Document version: `V2.1.1.0039`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat d'architecture Studio Element+. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du contrat d'architecture Studio Element+. |
 
 ## 1. Contract
 

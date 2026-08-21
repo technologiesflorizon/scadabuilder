@@ -11,7 +11,7 @@ Dependance: `2026-07-07-scada-export-runtime-tf100web-integration-design.md`,
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-09 | `V2.1.3.0005` | `PENDING` | Creation de la spec d'initialisation deterministe du runtime TF100Web, avec nettoyage obligatoire des artefacts `EventBindings` legacy-only. |
+| 2026-07-09 | `V2.1.3.0005` | `0982195` | Creation de la spec d'initialisation deterministe du runtime TF100Web, avec nettoyage obligatoire des artefacts `EventBindings` legacy-only. |
 
 ## 1. Probleme
 

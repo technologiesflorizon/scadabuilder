@@ -18,26 +18,26 @@ Document version: `V2.1.5.0021`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-13 | `V2.1.5.0021` | `PENDING` | Les commandes QuickWindow de Phase 1 restent inertes et sont exclues du dialogue de commande de page jusqu’à la surface dédiée de Phase 3. |
-| 2026-08-10 | `V2.1.5.0017` | `PENDING` | `DEC-0050` supersède le contrat popup Fragment de `DEC-0019`, `DEC-0020` et `DEC-0022`; les actions et options restantes deviennent des résidus de décommissionnement, sans migration vers les Fenêtres rapides. |
-| 2026-07-16 | `V2.1.4.0053` | `PENDING` | `DEC-0047` : les 9 actions objet utilisent ActionDispatcher, conditions partagees, ordre/propagation et page scope. |
+| 2026-08-13 | `V2.1.5.0021` | `b353e37` | Les commandes QuickWindow de Phase 1 restent inertes et sont exclues du dialogue de commande de page jusqu’à la surface dédiée de Phase 3. |
+| 2026-08-10 | `V2.1.5.0017` | `fc5b333` | `DEC-0050` supersède le contrat popup Fragment de `DEC-0019`, `DEC-0020` et `DEC-0022`; les actions et options restantes deviennent des résidus de décommissionnement, sans migration vers les Fenêtres rapides. |
+| 2026-07-16 | `V2.1.4.0053` | `bcec075` | `DEC-0047` : les 9 actions objet utilisent ActionDispatcher, conditions partagees, ordre/propagation et page scope. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | `DEC-0044` applique le modele Etat/Commande qui remplace les anciennes actions visuelles : 56 boutons Toggle, filtres PLC et texte dynamique via cible semantique partagee. |
-| 2026-06-17 | `V2.1.2.0022` | `PENDING` | Clarification que `Lire valeur` et `Ecrire valeur` sont des events de binding runtime sans trigger utilisateur. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des effets visuels runtime standards. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout du bridge lifecycle runtime global exporte. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des groupes de conditions runtime `All/Any` et politique de tag manquant. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des options runtime avancees pour popup Fragment. |
-| 2026-06-17 | `V2.1.2.0016` | `PENDING` | Implementation des actions runtime `Afficher bordure`, `Masquer bordure` et `Basculer bordure`. |
-| 2026-06-17 | `V2.1.2.0015` | `PENDING` | Implementation de `Fermer popup` et `Basculer popup` vers fragments compiles. |
-| 2026-06-17 | `V2.1.2.0014` | `PENDING` | Implementation de `Ouvrir popup` vers fragments compiles. |
-| 2026-06-17 | `V2.1.2.0012` | `PENDING` | Clarification de l'application runtime des valeurs recues par `Lire valeur`. |
-| 2026-06-17 | `V2.1.2.0010` | `PENDING` | Implementation des actions objet `Afficher`, `Masquer`, `Basculer visibilite` avec condition tag deterministe. |
-| 2026-06-17 | `V2.1.2.0009` | `PENDING` | Remplacement de l'action authorable `WriteTag` par les bindings Element+ `Lire valeur` et `Ecrire valeur`. |
-| 2026-06-17 | `V2.1.2.0008` | `PENDING` | Implementation de l'import tags TF100Web et de l'authoring Element+ `WriteTag`. |
-| 2026-06-16 | `V2.1.2.0007` | `PENDING` | Ajout du curseur runtime par defaut pour les cibles `Clic` exportees. |
-| 2026-06-16 | `V2.1.2.0006` | `PENDING` | Clarification de l'export FT100 des events `Clic -> Changer de page` portes par des groupes Element+. |
-| 2026-06-16 | `V2.1.2.0004` | `PENDING` | Ajout du registre contractuel Element+ events/actions et de la premiere modale Clic -> Changer de page. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat actions/events separe des commandes et du statut d'implementation. |
+| 2026-06-17 | `V2.1.2.0022` | `3b67c3a` | Clarification que `Lire valeur` et `Ecrire valeur` sont des events de binding runtime sans trigger utilisateur. |
+| 2026-06-17 | `V2.1.2.0017` | `789a433` | Implementation des effets visuels runtime standards. |
+| 2026-06-17 | `V2.1.2.0017` | `b465ba9` | Ajout du bridge lifecycle runtime global exporte. |
+| 2026-06-17 | `V2.1.2.0017` | `1b5df61` | Implementation des groupes de conditions runtime `All/Any` et politique de tag manquant. |
+| 2026-06-17 | `V2.1.2.0017` | `95af4bb` | Implementation des options runtime avancees pour popup Fragment. |
+| 2026-06-17 | `V2.1.2.0016` | `32d9227` | Implementation des actions runtime `Afficher bordure`, `Masquer bordure` et `Basculer bordure`. |
+| 2026-06-17 | `V2.1.2.0015` | `6ac2245` | Implementation de `Fermer popup` et `Basculer popup` vers fragments compiles. |
+| 2026-06-17 | `V2.1.2.0014` | `06652c6` | Implementation de `Ouvrir popup` vers fragments compiles. |
+| 2026-06-17 | `V2.1.2.0012` | `a73be05` | Clarification de l'application runtime des valeurs recues par `Lire valeur`. |
+| 2026-06-17 | `V2.1.2.0010` | `5302022` | Implementation des actions objet `Afficher`, `Masquer`, `Basculer visibilite` avec condition tag deterministe. |
+| 2026-06-17 | `V2.1.2.0009` | `7e3610c` | Remplacement de l'action authorable `WriteTag` par les bindings Element+ `Lire valeur` et `Ecrire valeur`. |
+| 2026-06-17 | `V2.1.2.0008` | `f78e8cd` | Implementation de l'import tags TF100Web et de l'authoring Element+ `WriteTag`. |
+| 2026-06-16 | `V2.1.2.0007` | `5c7d617` | Ajout du curseur runtime par defaut pour les cibles `Clic` exportees. |
+| 2026-06-16 | `V2.1.2.0006` | `5c7d617` | Clarification de l'export FT100 des events `Clic -> Changer de page` portes par des groupes Element+. |
+| 2026-06-16 | `V2.1.2.0004` | `5c7d617` | Ajout du registre contractuel Element+ events/actions et de la premiere modale Clic -> Changer de page. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du contrat actions/events separe des commandes et du statut d'implementation. |
 
 ## 1. Contract
 

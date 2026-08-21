@@ -1110,8 +1110,8 @@ Document version: `V2.1.3.0003`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-05 | `V2.1.3.0003` | `PENDING` | Remplacement du stub par le workflow actif de modernisation visuelle interactive (DEC-0033), en reponse a l'echec du pipeline autonome `sep-ai-modernizer`. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du nouveau document proprietaire du workflow de modernisation legacy. |
+| 2026-07-05 | `V2.1.3.0003` | `28a832c` | Remplacement du stub par le workflow actif de modernisation visuelle interactive (DEC-0033), en reponse a l'echec du pipeline autonome `sep-ai-modernizer`. |
+| 2026-06-16 | `V2.1.1.0039` | `bf63ab1` | Creation du nouveau document proprietaire du workflow de modernisation legacy. |
 
 ## 1. Workflow
 
@@ -1194,7 +1194,7 @@ Document version: `V2.1.3.0003`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-05 | `V2.1.3.0003` | `PENDING` | Creation du guide de style visuel pour la modernisation des icones Element+ (DEC-0033). |
+| 2026-07-05 | `V2.1.3.0003` | `28a832c` | Creation du guide de style visuel pour la modernisation des icones Element+ (DEC-0033). |
 
 ## 1. Purpose
 
@@ -1256,7 +1256,7 @@ Append to the end of the "Active Decisions" section (after the last existing `##
 
 Status: Active
 Created: 2026-07-05 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `28a832c`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
@@ -1309,7 +1309,7 @@ changements` table, right after the header separator row, keeping every
 existing row unchanged below it):
 
 ```markdown
-| 2026-07-05 | `V2.1.3.0003` | `PENDING` | Ajout du guide de style d'icones SCADA 2026 et du workflow interactif de modernisation Element+ (DEC-0033), en remplacement du pipeline autonome sep-ai-modernizer. |
+| 2026-07-05 | `V2.1.3.0003` | `28a832c` | Ajout du guide de style d'icones SCADA 2026 et du workflow interactif de modernisation Element+ (DEC-0033), en remplacement du pipeline autonome sep-ai-modernizer. |
 ```
 
 Bump the header `Document version:` from `V2.1.3.0002` to `V2.1.3.0003`.

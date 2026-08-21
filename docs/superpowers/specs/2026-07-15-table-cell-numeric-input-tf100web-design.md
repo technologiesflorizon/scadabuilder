@@ -8,9 +8,9 @@ Document version: `V2.1.4.0039`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-15 | `V2.1.4.0039` | `PENDING` | Implementation cross-repo terminee et validee localement avec packages 2.1/2.2; smoke sur mappings reels et livraison ordonnee restent ouverts. |
-| 2026-07-15 | `V2.1.4.0037` | `PENDING` | Specification approuvee, decision `DEC-0042` enregistree et plan d'implementation cross-repo cree. |
-| 2026-07-15 | `V2.1.4.0036` | `PENDING` | Creation puis revue de la specification cross-repo : contraintes min/max natives conservees, reutilisation JS de l'input enfant detaillee et rupture manifest 2.2 rendue explicite. |
+| 2026-07-15 | `V2.1.4.0039` | `ce99ff9` | Implementation cross-repo terminee et validee localement avec packages 2.1/2.2; smoke sur mappings reels et livraison ordonnee restent ouverts. |
+| 2026-07-15 | `V2.1.4.0037` | `0086bae` | Specification approuvee, decision `DEC-0042` enregistree et plan d'implementation cross-repo cree. |
+| 2026-07-15 | `V2.1.4.0036` | `0086bae` | Creation puis revue de la specification cross-repo : contraintes min/max natives conservees, reutilisation JS de l'input enfant detaillee et rupture manifest 2.2 rendue explicite. |
 
 ## 1. Objet et cycle de vie
 

@@ -715,7 +715,7 @@ With `dotnet run --project src/ScadaBuilderV2.App`, confirm all of the following
 Add a new row to the changelog table (top of the table, following the existing newest-first ordering) and a new numbered bullet under "Implemented Areas":
 
 ```markdown
-| 2026-07-05 | `V2.1.4.0000` | `PENDING` | Implementation du docking AvalonDock pour les panneaux lateraux avec persistance de disposition. |
+| 2026-07-05 | `V2.1.4.0000` | `b66fa81` | Implementation du docking AvalonDock pour les panneaux lateraux avec persistance de disposition. |
 ```
 
 ```markdown
@@ -745,7 +745,7 @@ with:
 Add a changelog row at the top of that document's history table:
 
 ```markdown
-| 2026-07-05 | `V2.1.4.0000` | `PENDING` | Description du modele de docking AvalonDock pour les panneaux lateraux. |
+| 2026-07-05 | `V2.1.4.0000` | `b66fa81` | Description du modele de docking AvalonDock pour les panneaux lateraux. |
 ```
 
 - [ ] **Step 4: Run documentation validation**

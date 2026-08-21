@@ -10,8 +10,8 @@ Dépendances: `docs/02_architecture/APPLICATION_FLOW_V2.md`, `docs/03_runtime_co
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-29 | `V2.1.5.0000` | `PENDING` | Implémentation de `DEC-0049` dans Application, Infrastructure et le shell WPF; validation automatisée complétée. |
-| 2026-07-29 | `V2.1.4.0068` | `PENDING` | Audit du cycle de vie actuel et approbation de l’architecture pour créer, ouvrir, fermer et retrouver des projets V2 arbitraires. |
+| 2026-07-29 | `V2.1.5.0000` | `8fe1077` | Implémentation de `DEC-0049` dans Application, Infrastructure et le shell WPF; validation automatisée complétée. |
+| 2026-07-29 | `V2.1.4.0068` | `9e1c4c1` | Audit du cycle de vie actuel et approbation de l’architecture pour créer, ouvrir, fermer et retrouver des projets V2 arbitraires. |
 
 ---
 

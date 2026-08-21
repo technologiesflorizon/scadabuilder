@@ -8,13 +8,13 @@ Document version: `V2.1.5.0022`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Phase 2 Fenêtres rapides implémentée : services Application, dépendances, undo/redo atomique et validation build/export fail-closed; UI/runtime/export non activés. |
-| 2026-08-13 | `V2.1.5.0021` | `PENDING` | Phases 0/1 Fenêtres rapides validées après audit : isolation réelle, contrats inertes, persistance et handshake; aucune capacité authoring/runtime/export promue. |
-| 2026-07-30 | `V2.1.5.0002` | `PENDING` | Les effets Etat de fond/bordure recolorent la géométrie SVG visible des formes de base en preview et export, avec restauration et repli compatibles. |
-| 2026-07-29 | `V2.1.5.0001` | `PENDING` | Découverte initiale contrôlée du plus proche répertoire `projects/` : les manifestes existants apparaissent dans les récents sans réouverture automatique ni réajout après retrait. |
-| 2026-07-29 | `V2.1.5.0000` | `PENDING` | `DEC-0049` : démarrage sans projet, dialogue de création à emplacement choisi, ouverture `project.json`, sauvegarde/fermeture dirty-safe, changement de projet et récents utilisateur. |
-| 2026-07-18 | `V2.1.4.0067` | `PENDING` | Correction Builder des lectures numeriques : authoring et migration alignent `ValueBindings.ReadTagId` sur `StateConfig.ReadVariable`, avec gate de build et acceptance globale. |
-| 2026-07-17 | `V2.1.4.0065` | `PENDING` | Correction runtime des filtres Etat SVG : couche visuelle 0, overlay 1, contenu semantique 2, avec restauration complete et ordre scene preserve. |
+| 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 Fenêtres rapides implémentée : services Application, dépendances, undo/redo atomique et validation build/export fail-closed; UI/runtime/export non activés. |
+| 2026-08-13 | `V2.1.5.0021` | `b353e37` | Phases 0/1 Fenêtres rapides validées après audit : isolation réelle, contrats inertes, persistance et handshake; aucune capacité authoring/runtime/export promue. |
+| 2026-07-30 | `V2.1.5.0002` | `0168f2f` | Les effets Etat de fond/bordure recolorent la géométrie SVG visible des formes de base en preview et export, avec restauration et repli compatibles. |
+| 2026-07-29 | `V2.1.5.0001` | `0a961d2` | Découverte initiale contrôlée du plus proche répertoire `projects/` : les manifestes existants apparaissent dans les récents sans réouverture automatique ni réajout après retrait. |
+| 2026-07-29 | `V2.1.5.0000` | `8fe1077` | `DEC-0049` : démarrage sans projet, dialogue de création à emplacement choisi, ouverture `project.json`, sauvegarde/fermeture dirty-safe, changement de projet et récents utilisateur. |
+| 2026-07-18 | `V2.1.4.0067` | `23daac2` | Correction Builder des lectures numeriques : authoring et migration alignent `ValueBindings.ReadTagId` sur `StateConfig.ReadVariable`, avec gate de build et acceptance globale. |
+| 2026-07-17 | `V2.1.4.0065` | `4bee5ab` | Correction runtime des filtres Etat SVG : couche visuelle 0, overlay 1, contenu semantique 2, avec restauration complete et ordre scene preserve. |
 | 2026-07-17 | `V2.1.4.0064` | `f73b3e3` | Deux rangees Element+ ajoutees a `win00012_modern_no_legacy` : 14 commandes de depart manuel et 14 voyants d'etat rectangulaires, volontairement sans mapping. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Validation runtime exacte 118/118, mutation isolee, index `probe:<id>` et compatibilite AST lower-camel/Pascal verrouilles. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | Contrats, matrice et statuts de livraison `DEC-0047` synchronises. |
@@ -26,18 +26,18 @@ Document version: `V2.1.5.0022`
 | 2026-07-16 | `V2.1.4.0056` | TF100Web `1fc3ac4` | Navigation latest-wins, snapshots generationnels, disposal runtime et hydration forcee coalescee. |
 | 2026-07-16 | `V2.1.4.0055` | TF100Web `cab2733` | Adaptateur host unique Runtime 1.0 avec validation, services navigation/popup/URL/ecriture et compatibilite message unifiee. |
 | 2026-07-16 | `V2.1.4.0054` | TF100Web `7d60c63` | Negotiation 2.3 fail-closed, registry host explicite et fixture Builder vendoree par SHA. |
-| 2026-07-16 | `V2.1.4.0053` | `PENDING` | `DEC-0047` tranche 7 : 9 actions objet, conditions, bindings DOM et cibles page-scope partages. |
-| 2026-07-16 | `V2.1.4.0052` | `PENDING` | `DEC-0047` tranche 6 : CommandConfig complet, intent host 1.0, Momentary reel et cleanup input/DOM. |
-| 2026-07-16 | `V2.1.4.0051` | `PENDING` | `DEC-0047` tranche 5 : Etat/Expression/Effet partages complets, reversibles et table-driven. |
-| 2026-07-16 | `V2.1.4.0050` | `PENDING` | `DEC-0047` tranche 4 : fixture `.sb2` deterministe, index exhaustif et archive reproductible. |
-| 2026-07-16 | `V2.1.4.0049` | `PENDING` | `DEC-0047` tranche 3 Builder : manifest 2.3, requirements tries, SHA-256 runtime et validation stricte. |
-| 2026-07-16 | `V2.1.4.0048` | `PENDING` | `DEC-0047` tranche 2 : matrice code-generee, evidence typee et gate stale de documentation. |
-| 2026-07-16 | `V2.1.4.0047` | `PENDING` | `DEC-0047` tranche 1 : registre runtime type et analyseur de capabilities implemente avec tests d'exhaustivite. |
+| 2026-07-16 | `V2.1.4.0053` | `bcec075` | `DEC-0047` tranche 7 : 9 actions objet, conditions, bindings DOM et cibles page-scope partages. |
+| 2026-07-16 | `V2.1.4.0052` | `a76e220` | `DEC-0047` tranche 6 : CommandConfig complet, intent host 1.0, Momentary reel et cleanup input/DOM. |
+| 2026-07-16 | `V2.1.4.0051` | `9878fb1` | `DEC-0047` tranche 5 : Etat/Expression/Effet partages complets, reversibles et table-driven. |
+| 2026-07-16 | `V2.1.4.0050` | `c626442` | `DEC-0047` tranche 4 : fixture `.sb2` deterministe, index exhaustif et archive reproductible. |
+| 2026-07-16 | `V2.1.4.0049` | `f9659ae` | `DEC-0047` tranche 3 Builder : manifest 2.3, requirements tries, SHA-256 runtime et validation stricte. |
+| 2026-07-16 | `V2.1.4.0048` | `684478e` | `DEC-0047` tranche 2 : matrice code-generee, evidence typee et gate stale de documentation. |
+| 2026-07-16 | `V2.1.4.0047` | `9a58d0c` | `DEC-0047` tranche 1 : registre runtime type et analyseur de capabilities implemente avec tests d'exhaustivite. |
 | 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | `DEC-0045` implementee : transitions Etat non cumulatives, filtre lisible et runtime numerique partage pour Element+ et cellules Tableau. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | `DEC-0044` implementee : 56 boutons de degivrage pilotent filtre vert/rouge et texte ACTIF/ARRÊTÉ depuis le bit PLC confirme via le runtime Etat/Commande partage. |
 | 2026-07-16 | `V2.1.4.0042` | `9fd2a30` | Correction du menu Pages > Proprietes : la page cible est ouverte et activee avant le panneau Page, sans dirty state ni historique artificiel. |
 | 2026-07-16 | `V2.1.4.0041` | `6afe427` | `DEC-0043` implementee : une commande InputNumeric, cible Tableau/A1 partagee, selection perimee refusee, double-clic exact et fallback Ecrire vers Lire explicite. |
-| 2026-07-15 | `V2.1.4.0039` | `PENDING` | `DEC-0042` implemente en code : inputs numeriques cellule lies, authoring dedie, manifest 2.2 et intake TF100Web 2.1/2.2; validation industrielle reelle encore gatee. |
+| 2026-07-15 | `V2.1.4.0039` | `ce99ff9` | `DEC-0042` implemente en code : inputs numeriques cellule lies, authoring dedie, manifest 2.2 et intake TF100Web 2.1/2.2; validation industrielle reelle encore gatee. |
 | 2026-07-15 | `V2.1.4.0035` | `740796e` | Selection cellule Tableau corrigee : clic unitaire stable, extension de plage liee a un drag explicite, reperes A/1 hors des cellules et scopes rangee/colonne visuellement synchronises. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | `DEC-0041` implemente : verrou avant preview, Table Objet initial, etat WebView atomique, cellules/pistes verrouillees et cycle A/1 fiable; smoke isole reussi. |
 | 2026-07-15 | `V2.1.4.0031` | `e127190` | Niveau 2 agrandi verticalement et overflow horizontal modernise par chevrons sans scrollbar native. |
@@ -49,15 +49,15 @@ Document version: `V2.1.5.0022`
 | 2026-07-14 | `V2.1.4.0018` | `858473c` | Correction du generateur des dialogues Tableau : les champs TextBox, CheckBox, ComboBox et TextBlock sont maintenant tous rendus. |
 | 2026-07-14 | `V2.1.4.0017` | `a94016a` | Niveau 1 du ruban Inserer reduit a des boutons 26 px et des icones 14 px; le niveau 2 recupere l'espace vertical auparavant consomme par le style de commande 58 px. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Tableau Element+ moderne implemente : creation 1..64 (preset 6x8), resize global et pistes, selection de plages, fusion, edition, formats/couleurs, clipboard, menu tableur, panneau/dialogues, persistance, preview/export `.sb2`; ruban Inserer a huit familles. |
-| 2026-07-14 | `V2.1.4.0009` | `PENDING` | Correction du crash au clic droit sur une page : la remontée du parent accepte maintenant les contenus WPF `Run` et le menu contextuel peut s'afficher. |
-| 2026-07-14 | `V2.1.4.0008` | `PENDING` | Correction du rognage de l'icone Nouvelle page dans le panneau Projet. |
-| 2026-07-14 | `V2.1.4.0007` | `PENDING` | Finition visuelle du panneau Pages : libelle Recherche, filtres Default/Tous et icone Nouvelle page alignee sur le ruban. |
-| 2026-07-14 | `V2.1.4.0006` | `PENDING` | Correction du crash au demarrage cause par des liaisons WPF `Run.Text` TwoWay implicites vers des proprietes Diagnostics et Pages en lecture seule. |
-| 2026-07-14 | `V2.1.4.0005` | `PENDING` | Gestion moderne des pages : identité stable, commandes partagées, historique projet, sauvegarde atomique, pages natives, surfaces Pages et Diagnostics, propriétés centralisées et compatibilité `.sb2`. |
-| 2026-07-14 | `V2.1.4.0004` | `PENDING` | Assistant de creation d'expressions pour les conditions d'etat : selection des tags actifs, insertion au caret, operateurs guides et application controlee dans le dialogue parent. |
+| 2026-07-14 | `V2.1.4.0009` | `34dfc82` | Correction du crash au clic droit sur une page : la remontée du parent accepte maintenant les contenus WPF `Run` et le menu contextuel peut s'afficher. |
+| 2026-07-14 | `V2.1.4.0008` | `fdcd11e` | Correction du rognage de l'icone Nouvelle page dans le panneau Projet. |
+| 2026-07-14 | `V2.1.4.0007` | `cc670c1` | Finition visuelle du panneau Pages : libelle Recherche, filtres Default/Tous et icone Nouvelle page alignee sur le ruban. |
+| 2026-07-14 | `V2.1.4.0006` | `fd445ac` | Correction du crash au demarrage cause par des liaisons WPF `Run.Text` TwoWay implicites vers des proprietes Diagnostics et Pages en lecture seule. |
+| 2026-07-14 | `V2.1.4.0005` | `50b2ad9` | Gestion moderne des pages : identité stable, commandes partagées, historique projet, sauvegarde atomique, pages natives, surfaces Pages et Diagnostics, propriétés centralisées et compatibilité `.sb2`. |
+| 2026-07-14 | `V2.1.4.0004` | `29a22b6` | Assistant de creation d'expressions pour les conditions d'etat : selection des tags actifs, insertion au caret, operateurs guides et application controlee dans le dialogue parent. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Tranche Element+ Style : champs typographiques, Foreground, 9 styles de bordure, BorderRadius, export FT100, preview WebView, surface WPF et icônes `Icon.Property.*`. La preuve d’intake TF100Web reste bloquée par l’absence de MySQL local. |
-| 2026-07-05 | `V2.1.4.0000` | `PENDING` | Implementation du docking AvalonDock pour les panneaux lateraux avec persistance de disposition. |
-| 2026-06-19 | `V2.1.3.0002` | `PENDING` | Implementation du color picker modal aligne sur `CSS fond` pour les couleurs arriere-plan/bordure Style et Bouton Element+. |
+| 2026-07-05 | `V2.1.4.0000` | `a535cf2` | Implementation du docking AvalonDock pour les panneaux lateraux avec persistance de disposition. |
+| 2026-06-19 | `V2.1.3.0002` | `a99b886` | Implementation du color picker modal aligne sur `CSS fond` pour les couleurs arriere-plan/bordure Style et Bouton Element+. |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajustement de la galerie Formes a des icones 32x32 sans libelles visibles. |
 | 2026-06-19 | `V2.1.3.0000` | `b195fe0` | Implementation de la galerie Formes du ruban Inserer et du placement Ligne/Fleche en deux points. |
 | 2026-06-19 | `V2.1.2.0044` | `c50cbcf` | Extraction de la palette laterale d'outils vers le catalogue semantique partage. |
@@ -76,37 +76,37 @@ Document version: `V2.1.5.0022`
 | 2026-06-18 | `V2.1.2.0031` | `f6a85ed` | Implementation des symboles HMI Element+ moteur, ventilateur, convoyeur et jauge. |
 | 2026-06-18 | `V2.1.2.0030` | `cae57c9` | Implementation des presets de boutons HMI Element+ `Command`, `Toggle`, `Navigation`, `AlarmAcknowledge` et `EmergencyStop`. |
 | 2026-06-18 | `V2.1.2.0029` | `b97ef16` | Implementation des primitives process HMI Element+ reservoir, tuyaux, vanne et pompe. |
-| 2026-06-18 | `V2.1.2.0028` | `PENDING` | Implementation des primitives HMI Element+ voyant et barres de valeur. |
-| 2026-06-18 | `V2.1.2.0027` | `PENDING` | Implementation des formes standards Element+ et insertion manuelle des boutons Element+ depuis le ruban. |
+| 2026-06-18 | `V2.1.2.0028` | `44fbdae` | Implementation des primitives HMI Element+ voyant et barres de valeur. |
+| 2026-06-18 | `V2.1.2.0027` | `530907a` | Implementation des formes standards Element+ et insertion manuelle des boutons Element+ depuis le ruban. |
 | 2026-06-17 | `V2.1.2.0026` | `876a6be` | Correction du transport manifest `Data.DisplayFormat` et alignement du formatage TF100Web sur les datatypes de mapping. |
 | 2026-06-17 | `V2.1.2.0025` | `58567eb` | Ajout du support TF100Web des masques `DisplayFormat` `#` comme comportement implemente. |
-| 2026-06-17 | `V2.1.2.0024` | `PENDING` | Refactor de l'onglet Donnees Element+ et activation de `Format affichage` comme source du masque numerique. |
-| 2026-06-17 | `V2.1.2.0022` | `PENDING` | Harmonisation TF100Web pour consommer les events de binding `ValueBindings` depuis `.sb2`. |
+| 2026-06-17 | `V2.1.2.0024` | `49cedc7` | Refactor de l'onglet Donnees Element+ et activation de `Format affichage` comme source du masque numerique. |
+| 2026-06-17 | `V2.1.2.0022` | `3b67c3a` | Harmonisation TF100Web pour consommer les events de binding `ValueBindings` depuis `.sb2`. |
 | 2026-06-17 | `V2.1.2.0021` | `1040889` | Correction du handler `.sb2` pour afficher le statut et la progression des le clic. |
 | 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Correction du validateur CSS `.sb2` et ajout du feedback de progression non bloquant. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Implementation de l'export `.sb2` FT100 et du validateur anti-collision/compatibilite TF100Web. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Clarification que plusieurs runtimes sont exporteur-only tant que TF100Web n'execute pas les scripts de page exportes. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des effets visuels runtime standards. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation du bridge lifecycle runtime global. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des groupes de conditions runtime et politique de tag manquant. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Implementation des options runtime avancees pour popup Fragment. |
-| 2026-06-17 | `V2.1.2.0016` | `PENDING` | Implementation des actions runtime de bordure Element+. |
-| 2026-06-17 | `V2.1.2.0015` | `PENDING` | Implementation des actions `Fermer popup` et `Basculer popup`. |
-| 2026-06-17 | `V2.1.2.0014` | `PENDING` | Implementation de l'action `Ouvrir popup` vers fragments compiles. |
-| 2026-06-17 | `V2.1.2.0013` | `PENDING` | Implementation des filtres et du resume de catalogue tags dans l'editeur. |
-| 2026-06-17 | `V2.1.2.0012` | `PENDING` | Implementation de l'application runtime des valeurs de tags lues. |
-| 2026-06-17 | `V2.1.2.0010` | `PENDING` | Implementation des actions objet conditionnelles sur tags importes. |
-| 2026-06-17 | `V2.1.2.0009` | `PENDING` | Implementation des bindings Element+ `Lire valeur` et `Ecrire valeur` sur tags importes. |
-| 2026-06-17 | `V2.1.2.0008` | `PENDING` | Implementation de l'import catalogue tags TF100Web et de l'authoring Element+ `WriteTag`. |
-| 2026-06-16 | `V2.1.2.0007` | `PENDING` | Implementation du curseur runtime par defaut pour boutons et cibles cliquables FT100. |
-| 2026-06-16 | `V2.1.2.0006` | `PENDING` | Implementation de l'export FT100 des events `Clic -> Changer de page` portes par des groupes Element+. |
-| 2026-06-16 | `V2.1.2.0005` | `PENDING` | Implementation des metadonnees hover automatique des boutons Element+ et de la tab Bouton. |
-| 2026-06-16 | `V2.1.2.0004` | `PENDING` | Implementation du registre evenements Element+ et de la modale Clic -> Changer de page. |
-| 2026-06-16 | `V2.1.2.0003` | `PENDING` | Correction du groupement Element+: ordre visuel preserve, enfants affiches sous leur groupe et deplacement solidaire. |
-| 2026-06-16 | `V2.1.2.0002` | `PENDING` | Implementation du groupement de scene Element+ only et de l'avertissement conversion pour les selections legacy. |
-| 2026-06-16 | `V2.1.2.0001` | `PENDING` | Correction du raccourci Backspace pour les Element+ selectionnes et protection des champs editables contre les raccourcis scene. |
-| 2026-06-16 | `V2.1.2.0000` | `PENDING` | Implementation de la conversion Button plausible, du choix Propriete contextualise et du rendu/export du texte des boutons Element+. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du registre des fonctionnalites implementees. |
+| 2026-06-17 | `V2.1.2.0017` | `789a433` | Implementation des effets visuels runtime standards. |
+| 2026-06-17 | `V2.1.2.0017` | `b465ba9` | Implementation du bridge lifecycle runtime global. |
+| 2026-06-17 | `V2.1.2.0017` | `1b5df61` | Implementation des groupes de conditions runtime et politique de tag manquant. |
+| 2026-06-17 | `V2.1.2.0017` | `95af4bb` | Implementation des options runtime avancees pour popup Fragment. |
+| 2026-06-17 | `V2.1.2.0016` | `32d9227` | Implementation des actions runtime de bordure Element+. |
+| 2026-06-17 | `V2.1.2.0015` | `6ac2245` | Implementation des actions `Fermer popup` et `Basculer popup`. |
+| 2026-06-17 | `V2.1.2.0014` | `06652c6` | Implementation de l'action `Ouvrir popup` vers fragments compiles. |
+| 2026-06-17 | `V2.1.2.0013` | `4b01460` | Implementation des filtres et du resume de catalogue tags dans l'editeur. |
+| 2026-06-17 | `V2.1.2.0012` | `a73be05` | Implementation de l'application runtime des valeurs de tags lues. |
+| 2026-06-17 | `V2.1.2.0010` | `5302022` | Implementation des actions objet conditionnelles sur tags importes. |
+| 2026-06-17 | `V2.1.2.0009` | `7e3610c` | Implementation des bindings Element+ `Lire valeur` et `Ecrire valeur` sur tags importes. |
+| 2026-06-17 | `V2.1.2.0008` | `f78e8cd` | Implementation de l'import catalogue tags TF100Web et de l'authoring Element+ `WriteTag`. |
+| 2026-06-16 | `V2.1.2.0007` | `5c7d617` | Implementation du curseur runtime par defaut pour boutons et cibles cliquables FT100. |
+| 2026-06-16 | `V2.1.2.0006` | `5c7d617` | Implementation de l'export FT100 des events `Clic -> Changer de page` portes par des groupes Element+. |
+| 2026-06-16 | `V2.1.2.0005` | `5c7d617` | Implementation des metadonnees hover automatique des boutons Element+ et de la tab Bouton. |
+| 2026-06-16 | `V2.1.2.0004` | `5c7d617` | Implementation du registre evenements Element+ et de la modale Clic -> Changer de page. |
+| 2026-06-16 | `V2.1.2.0003` | `940af93` | Correction du groupement Element+: ordre visuel preserve, enfants affiches sous leur groupe et deplacement solidaire. |
+| 2026-06-16 | `V2.1.2.0002` | `2c5a0b4` | Implementation du groupement de scene Element+ only et de l'avertissement conversion pour les selections legacy. |
+| 2026-06-16 | `V2.1.2.0001` | `2c5a0b4` | Correction du raccourci Backspace pour les Element+ selectionnes et protection des champs editables contre les raccourcis scene. |
+| 2026-06-16 | `V2.1.2.0000` | `2c5a0b4` | Implementation de la conversion Button plausible, du choix Propriete contextualise et du rendu/export du texte des boutons Element+. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du registre des fonctionnalites implementees. |
 
 ## 1. Current Verified Baseline
 

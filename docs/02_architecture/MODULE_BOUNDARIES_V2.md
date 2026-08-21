@@ -10,7 +10,7 @@ Document version: `V2.1.4.0027`
 | --- | --- | --- | --- |
 | 2026-07-15 | `V2.1.4.0027` | `88e865a` | Frontière avancée complétée avec `TablePropertiesInspector` en Application et `TableRibbonViewModel`/`TablePropertiesViewModel` en App; `MainWindow` conserve seulement l'adaptation workspace/scene. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Frontiere Tableau explicitee : regles Domain, coordination/clipboard/catalogue Application, rendu Rendering et adaptation WPF/WebView App hors `MainWindow`. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation de la matrice de responsabilites par module logiciel. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation de la matrice de responsabilites par module logiciel. |
 
 ## 1. Boundary Matrix
 

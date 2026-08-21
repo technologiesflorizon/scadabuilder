@@ -8,9 +8,9 @@ Document version: `V2.1.5.0002`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-30 | `V2.1.5.0002` | `PENDING` | Les formes SVG générées exposent des cibles sémantiques de fond/bordure; le runtime applique les effets sur `fill`/`stroke` visibles et conserve le repli wrapper. |
-| 2026-07-18 | `V2.1.4.0067` | `PENDING` | Builder normalise les lectures `InputNumeric` vers le tag canonique de `StateConfig.ReadVariable`, bloque toute divergence residuelle et couvre toutes les pages compilees. |
-| 2026-07-17 | `V2.1.4.0065` | `PENDING` | Runtime Etat corrige pour rendre les filtres visibles sur SVG opaques sans modifier l'ordre auteur des objets ni couvrir les controles semantiques. |
+| 2026-07-30 | `V2.1.5.0002` | `0168f2f` | Les formes SVG générées exposent des cibles sémantiques de fond/bordure; le runtime applique les effets sur `fill`/`stroke` visibles et conserve le repli wrapper. |
+| 2026-07-18 | `V2.1.4.0067` | `23daac2` | Builder normalise les lectures `InputNumeric` vers le tag canonique de `StateConfig.ReadVariable`, bloque toute divergence residuelle et couvre toutes les pages compilees. |
+| 2026-07-17 | `V2.1.4.0065` | `4bee5ab` | Runtime Etat corrige pour rendre les filtres visibles sur SVG opaques sans modifier l'ordre auteur des objets ni couvrir les controles semantiques. |
 | 2026-07-17 | `V2.1.4.0064` | `f73b3e3` | Acceptance industrielle regeneree avec les 14 boutons de depart manuel et 14 voyants sans mapping de `win00012`; runtime et 46 capabilities inchanges. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Gate 2.3 renforce : un resultat et un evaluateur exact par capability Supported, mutation independante et fixture SHA `bf41c4c3...02cc4`. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | Contrat 2.3 final synchronise : 118 Supported executes, 44 Blocked rejetes et promotion distante separee. |
@@ -28,10 +28,10 @@ Document version: `V2.1.5.0002`
 | 2026-07-16 | `V2.1.4.0050` | `c626442` | Fixture 2.3 deterministe et sanitisee ajoutee avec index exhaustif, archive stable et SHA-256 `9e64bb33...e274`. |
 | 2026-07-16 | `V2.1.4.0049` | `f9659ae` | Builder emet 2.3 strict par defaut avec capabilities triees et SHA-256 runtime; validateur fail-closed et profils 2.1/2.2 explicites. |
 | 2026-07-16 | `V2.1.4.0046` | `b2e4f5f` | `DEC-0047` approuvee : cible manifest 2.3 avec capabilities requises, hash runtime et rejet strict des gaps. |
-| 2026-07-16 | `V2.1.4.0045` | `PENDING` | `DEC-0046` approuvee : contrat cible latest-wins et hydratation obligatoire; la course de `9d5d400` demeure un gap jusqu'a implementation. |
+| 2026-07-16 | `V2.1.4.0045` | `2f4010c` | `DEC-0046` approuvee : contrat cible latest-wins et hydratation obligatoire; la course de `9d5d400` demeure un gap jusqu'a implementation. |
 | 2026-07-16 | `V2.1.4.0044` | `de37a35`, TF100Web `9d5d400` | `DEC-0045` : effets Etat reversibles, overlay sous le contenu, snapshot initial force et ValueBinding numerique commun pour Element+ et cellules Tableau. |
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Runtime Etat/Commande partage confirme : runtime package deploye, fragments initialises, mappings de commande collectes et texte de bouton cible via `[data-scada-text]`. |
-| 2026-07-15 | `V2.1.4.0039` | `PENDING` | Manifest 2.2 et `Objects[].TableCellBindings` implementes; TF100Web accepte 2.1/2.2, cible le `<td>` page-scope et reutilise l'input numerique enfant. |
+| 2026-07-15 | `V2.1.4.0039` | `ce99ff9` | Manifest 2.2 et `Objects[].TableCellBindings` implementes; TF100Web accepte 2.1/2.2, cible le `<td>` page-scope et reutilise l'input numerique enfant. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Le Tableau Element+ est exporte dans le HTML/CSS de page du contrat `.sb2` existant; les inputs cellule restent locaux et les artefacts editeur sont exclus. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Confirmation du contrat réel TF100Web pour les styles Element+ : HTML/CSS opaque, manifest PascalCase, runtime HTML camelCase et preuve de conservation après déploiement. |
 | 2026-06-19 | `V2.1.2.0038` | `6f76dc8` | Clarification de la parite metadata wrapper preview/export pour boutons Element+. |
@@ -43,26 +43,26 @@ Document version: `V2.1.5.0002`
 | 2026-06-18 | `V2.1.2.0030` | `cae57c9` | Ajout du champ manifest `ButtonKind` et de l'attribut HTML `data-scada-button-kind` pour les boutons Element+. |
 | 2026-06-17 | `V2.1.2.0026` | `876a6be` | Correction du contrat manifest des affichages numeriques: `Data.DisplayFormat` est exporte, et TF100Web aligne le formatage sur les datatypes `RegisterMapping.DataType`. |
 | 2026-06-17 | `V2.1.2.0025` | `58567eb` | Synchronisation avec TF100Web commit `3c795c2`: interpretation runtime des masques `DisplayFormat` `#`. |
-| 2026-06-17 | `V2.1.2.0024` | `PENDING` | Clarification que `DisplayFormat` est le signal d'affichage numerique actif exporte vers TF100Web. |
-| 2026-06-17 | `V2.1.2.0023` | `PENDING` | Ajout de la matrice de parite des events SCADA Builder V2 / TF100Web et du plan de prochaine tranche runtime. |
-| 2026-06-17 | `V2.1.2.0022` | `PENDING` | Harmonisation de l'intake TF100Web `.sb2` pour consommer les events de binding `ValueBindings` exportes par SCADA Builder V2. |
+| 2026-06-17 | `V2.1.2.0024` | `49cedc7` | Clarification que `DisplayFormat` est le signal d'affichage numerique actif exporte vers TF100Web. |
+| 2026-06-17 | `V2.1.2.0023` | `3b67c3a` | Ajout de la matrice de parite des events SCADA Builder V2 / TF100Web et du plan de prochaine tranche runtime. |
+| 2026-06-17 | `V2.1.2.0022` | `3b67c3a` | Harmonisation de l'intake TF100Web `.sb2` pour consommer les events de binding `ValueBindings` exportes par SCADA Builder V2. |
 | 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Correction de la validation CSS page-scopee indentee et de l'export `.sb2` non bloquant cote WPF. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout de l'export `.sb2` FT100 et du validateur anti-collision/compatibilite TF100Web. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Documentation du contrat d'intake FT100 reel audite dans TF100Web commit `7d57600`. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout des effets visuels runtime standards. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout du bridge lifecycle runtime global. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de l'evaluation runtime des groupes de conditions `All/Any`. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout des options runtime avancees pour popup Fragment. |
-| 2026-06-17 | `V2.1.2.0016` | `PENDING` | Ajout du runtime de bordure ciblee via classe CSS page-scopee. |
-| 2026-06-17 | `V2.1.2.0015` | `PENDING` | Ajout des runtimes popup `ClosePopup` et `TogglePopup`. |
-| 2026-06-17 | `V2.1.2.0014` | `PENDING` | Ajout du runtime popup pour actions `MountFragment`. |
-| 2026-06-17 | `V2.1.2.0012` | `PENDING` | Ajout du protocole runtime `scadaBuilderSetTagValue` pour appliquer les valeurs lues. |
-| 2026-06-17 | `V2.1.2.0010` | `PENDING` | Ajout de l'evaluation runtime des conditions tag pour actions objet Element+. |
-| 2026-06-17 | `V2.1.2.0009` | `PENDING` | Remplacement du hook `WriteTag` authorable par les attributs runtime de binding valeur. |
-| 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout du catalogue tags et du hook runtime `WriteTag` au contrat FT100/TF100Web. |
-| 2026-06-16 | `V2.1.2.0007` | `PENDING` | Ajout du contrat `cursor: pointer` pour les boutons et elements avec events runtime. |
-| 2026-06-16 | `V2.1.2.0006` | `PENDING` | Ajout du contrat de wrapper runtime transparent pour les groupes Element+ portant des events. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du contrat actif FT100/TF100Web avec namespace, manifest et deprecation `index.html`. |
+| 2026-06-17 | `V2.1.2.0017` | `789a433` | Ajout des effets visuels runtime standards. |
+| 2026-06-17 | `V2.1.2.0017` | `b465ba9` | Ajout du bridge lifecycle runtime global. |
+| 2026-06-17 | `V2.1.2.0017` | `1b5df61` | Ajout de l'evaluation runtime des groupes de conditions `All/Any`. |
+| 2026-06-17 | `V2.1.2.0017` | `95af4bb` | Ajout des options runtime avancees pour popup Fragment. |
+| 2026-06-17 | `V2.1.2.0016` | `32d9227` | Ajout du runtime de bordure ciblee via classe CSS page-scopee. |
+| 2026-06-17 | `V2.1.2.0015` | `6ac2245` | Ajout des runtimes popup `ClosePopup` et `TogglePopup`. |
+| 2026-06-17 | `V2.1.2.0014` | `06652c6` | Ajout du runtime popup pour actions `MountFragment`. |
+| 2026-06-17 | `V2.1.2.0012` | `a73be05` | Ajout du protocole runtime `scadaBuilderSetTagValue` pour appliquer les valeurs lues. |
+| 2026-06-17 | `V2.1.2.0010` | `5302022` | Ajout de l'evaluation runtime des conditions tag pour actions objet Element+. |
+| 2026-06-17 | `V2.1.2.0009` | `7e3610c` | Remplacement du hook `WriteTag` authorable par les attributs runtime de binding valeur. |
+| 2026-06-17 | `V2.1.2.0008` | `f78e8cd` | Ajout du catalogue tags et du hook runtime `WriteTag` au contrat FT100/TF100Web. |
+| 2026-06-16 | `V2.1.2.0007` | `5c7d617` | Ajout du contrat `cursor: pointer` pour les boutons et elements avec events runtime. |
+| 2026-06-16 | `V2.1.2.0006` | `5c7d617` | Ajout du contrat de wrapper runtime transparent pour les groupes Element+ portant des events. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du contrat actif FT100/TF100Web avec namespace, manifest et deprecation `index.html`. |
 
 ## 1. Package Shape
 

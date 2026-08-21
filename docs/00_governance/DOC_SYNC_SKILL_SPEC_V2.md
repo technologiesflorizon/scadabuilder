@@ -8,7 +8,7 @@ Document version: `V2.1.1.0039`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Specification du skill `scada-v2-doc-sync` et de la validation documentaire automatisee. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Specification du skill `scada-v2-doc-sync` et de la validation documentaire automatisee. |
 
 ## 1. Purpose
 

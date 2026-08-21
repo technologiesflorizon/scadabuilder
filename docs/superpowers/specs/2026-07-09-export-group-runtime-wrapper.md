@@ -9,8 +9,8 @@ Portee: SCADA Builder V2 - `Ft100SceneExporter`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-09 | `V2.1.5.0001` | `PENDING` | Verrouille le contrat de sortie TF100Web moderne, retire `EventBindings` et les anciens `Data.ReadTagId`/`Data.WriteTagId` des criteres runtime, precise le gate lifecycle TF100Web pour `StateConfig`, et garde l'ancien flow comme code decommissionne temporaire. |
-| 2026-07-09 | `V2.1.5.0000` | `PENDING` | Design initial du critere de wrapper DOM pour les groupes portant des donnees runtime. |
+| 2026-07-09 | `V2.1.5.0001` | `006d61c` | Verrouille le contrat de sortie TF100Web moderne, retire `EventBindings` et les anciens `Data.ReadTagId`/`Data.WriteTagId` des criteres runtime, precise le gate lifecycle TF100Web pour `StateConfig`, et garde l'ancien flow comme code decommissionne temporaire. |
+| 2026-07-09 | `V2.1.5.0000` | `006d61c` | Design initial du critere de wrapper DOM pour les groupes portant des donnees runtime. |
 
 ## 1. Probleme
 

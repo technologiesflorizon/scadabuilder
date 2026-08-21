@@ -9,7 +9,7 @@ Document version: `V2.1.4.0003`
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
 | 2026-07-14 | `V2.1.4.0004` | `29a22b6` | Implementation des deux dialogues, branchement du bouton Outil, tests de contrat et validation build. La verification visuelle STA reste a effectuer. |
-| 2026-07-13 | `V2.1.4.0003` | `PENDING` | Correction du plan : métadonnées, caret initial, contrat Annuler/Appliquer, ressources WPF et tests dédiés non intrusifs. |
+| 2026-07-13 | `V2.1.4.0003` | `7cfffa4` | Correction du plan : métadonnées, caret initial, contrat Annuler/Appliquer, ressources WPF et tests dédiés non intrusifs. |
 
 > Ce plan est dérivé de la spec `docs/superpowers/specs/2026-07-13-expression-creation-assistant-design.md`.
 
@@ -663,7 +663,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 - [ ] **Step 2: Mettre à jour IMPLEMENTED_FEATURES_V2.md**
 
 ```markdown
-| 2026-07-13 | `V2.1.4.0003` | `PENDING` | Assistant de création d'expressions : TagSelectionDialog, ExpressionCreationDialog avec opérateurs et validation inline, bouton Outil dans ElementStateRuleDialog |
+| 2026-07-13 | `V2.1.4.0003` | `ff11ca9` | Assistant de création d'expressions : TagSelectionDialog, ExpressionCreationDialog avec opérateurs et validation inline, bouton Outil dans ElementStateRuleDialog |
 ```
 
 - [ ] **Step 3: Commit**

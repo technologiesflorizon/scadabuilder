@@ -8,7 +8,7 @@ Document version: `V2.1.4.0066`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-17 | `V2.1.4.0066` | `PENDING` | Premiere reference versionnee pour moderniser les controles de page a partir du pattern approuve de `win00008`. |
+| 2026-07-17 | `V2.1.4.0066` | `41ccbae` | Premiere reference versionnee pour moderniser les controles de page a partir du pattern approuve de `win00008`. |
 
 ## 1. Objet et reference
 

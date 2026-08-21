@@ -8,8 +8,8 @@ Document version: `V2.1.4.0046`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-16 | `V2.1.4.0046` | `PENDING` | Plan remplace par `2026-07-16-scada-v2-tf100web-runtime-conformance.md`; les tasks navigation/performance y demeurent obligatoires. |
-| 2026-07-16 | `V2.1.4.0045` | `PENDING` | Plan cross-repository pour le cycle latest-wins, l'hydratation obligatoire, la performance serveur et l'acceptation exhaustive des quatre pages. |
+| 2026-07-16 | `V2.1.4.0046` | `b2e4f5f` | Plan remplace par `2026-07-16-scada-v2-tf100web-runtime-conformance.md`; les tasks navigation/performance y demeurent obligatoires. |
+| 2026-07-16 | `V2.1.4.0045` | `2f4010c` | Plan cross-repository pour le cycle latest-wins, l'hydratation obligatoire, la performance serveur et l'acceptation exhaustive des quatre pages. |
 
 **Goal:** Eliminer definitivement les courses navigation/polling et garantir tous les comportements authorés de `win00003`, `win00004`, `win00008` et `win00012_modern_no_legacy` avec des temps de composition observables.
 

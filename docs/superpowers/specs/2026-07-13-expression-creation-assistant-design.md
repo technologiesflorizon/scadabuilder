@@ -10,9 +10,9 @@ Version du document: `V2.1.4.0003`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-13 | `V2.1.4.0003` | `PENDING` | Corrections de décision : caret nul ou position zéro au début, assistant avec copie locale et bouton Appliquer, vocabulaire d'actions harmonisé, suite de tests dédiée et version alignée. |
-| 2026-07-13 | `V2.1.4.0000` | `PENDING` | Standardisation : hypothèses vérifiées contre le code, contrat AST/parser/validateur documenté, décisions de format d'insertion explicitées, parenthèses ajoutées aux opérateurs, flux de résolution TagId documenté. |
-| 2026-07-13 | `V2.1.3.0000` | `PENDING` | Première ébauche : assistant de composition guidée pour le mode Expression. |
+| 2026-07-13 | `V2.1.4.0003` | `2664210` | Corrections de décision : caret nul ou position zéro au début, assistant avec copie locale et bouton Appliquer, vocabulaire d'actions harmonisé, suite de tests dédiée et version alignée. |
+| 2026-07-13 | `V2.1.4.0000` | `72f6048` | Standardisation : hypothèses vérifiées contre le code, contrat AST/parser/validateur documenté, décisions de format d'insertion explicitées, parenthèses ajoutées aux opérateurs, flux de résolution TagId documenté. |
+| 2026-07-13 | `V2.1.3.0000` | `72f6048` | Première ébauche : assistant de composition guidée pour le mode Expression. |
 
 ---
 

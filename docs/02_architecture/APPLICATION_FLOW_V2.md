@@ -8,10 +8,10 @@ Document version: `V2.1.5.0022`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Ajout du flux Application QuickWindow Phase 2 : services immuables, dépendances, historique atomique et validation build fail-closed. |
-| 2026-07-29 | `V2.1.5.0000` | `PENDING` | Ajout du flux `DEC-0049` de création, ouverture, sauvegarde, fermeture et récents. |
-| 2026-07-14 | `V2.1.1.0040` | `PENDING` | Ajout du flux partagé des commandes de page, de l'historique projet, de la sauvegarde atomique et des diagnostics. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation du flow applicatif global pour relier import, edition, preview, Studio Element+, export et validation. |
+| 2026-08-13 | `V2.1.5.0022` | `436d38f` | Ajout du flux Application QuickWindow Phase 2 : services immuables, dépendances, historique atomique et validation build fail-closed. |
+| 2026-07-29 | `V2.1.5.0000` | `8fe1077` | Ajout du flux `DEC-0049` de création, ouverture, sauvegarde, fermeture et récents. |
+| 2026-07-14 | `V2.1.1.0040` | `50b2ad9` | Ajout du flux partagé des commandes de page, de l'historique projet, de la sauvegarde atomique et des diagnostics. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du flow applicatif global pour relier import, edition, preview, Studio Element+, export et validation. |
 
 ## 1. Flow Contract
 

@@ -9,7 +9,7 @@ Document version: `V2.1.3.0010`
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Exécution approuvée : modèle, export, preview WebView/WPF, surfaces Style, icônes et tests ciblés implémentés ; preuve TF100Web bloquée par MySQL indisponible. |
-| 2026-07-13 | `V2.1.3.0010` | `PENDING` | Correction du plan : aperçu vivant obligatoire, preuve d’intake TF100Web ajoutée et gate inter-dépôts explicite. |
+| 2026-07-13 | `V2.1.3.0010` | `b954d46` | Correction du plan : aperçu vivant obligatoire, preuve d’intake TF100Web ajoutée et gate inter-dépôts explicite. |
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -1760,7 +1760,7 @@ Ajouter à la section 3 "Related Tests" :
 - [ ] **Step 4: Mettre à jour l'historique des changements**
 
 ```markdown
-| 2026-07-13 | `V2.1.3.0010` | `PENDING` | Ajout des règles 20-26 et synchronisation du contrat TF100Web pour les propriétés de style avancées. |
+| 2026-07-13 | `V2.1.3.0010` | `b954d46` | Ajout des règles 20-26 et synchronisation du contrat TF100Web pour les propriétés de style avancées. |
 ```
 
 - [ ] **Step 5: Commit**
@@ -1977,7 +1977,7 @@ Exécuter les scénarios suivants avec l'application :
 Ajouter une entrée :
 
 ```markdown
-| 2026-07-13 | `V2.1.3.0010` | `PENDING` | Style Element+ avancé : typographie, 9 styles de bordure, BorderRadius, Foreground authorable, aperçu vivant et refonte UI en sections avec icônes `Icon.Property.*`. |
+| 2026-07-13 | `V2.1.3.0010` | `b954d46` | Style Element+ avancé : typographie, 9 styles de bordure, BorderRadius, Foreground authorable, aperçu vivant et refonte UI en sections avec icônes `Icon.Property.*`. |
 ```
 
 - [ ] **Step 3: Mettre à jour REGRESSION_COVERAGE_V2.md**

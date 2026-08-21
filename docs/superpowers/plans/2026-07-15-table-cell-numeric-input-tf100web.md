@@ -8,9 +8,9 @@ Document version: `V2.1.4.0039`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-15 | `V2.1.4.0039` | `PENDING` | Taches 1 a 13 implementees; package 2.2 et compatibilite 2.1 prouves localement sous WSL, smoke industriel et livraison ordonnee non executes. |
-| 2026-07-15 | `V2.1.4.0038` | `PENDING` | Integration de la revue contre le code : valeurs `TableEditKind` et branches de dispatch rendues explicites; role runtime de `data-scada-step` distingue de l'attribut natif `step`. |
-| 2026-07-15 | `V2.1.4.0037` | `PENDING` | Creation du plan executable cross-repo derive de la specification approuvee et de `DEC-0042`, avec TF100Web obligatoire avant le manifest `.sb2` 2.2. |
+| 2026-07-15 | `V2.1.4.0039` | `ce99ff9` | Taches 1 a 13 implementees; package 2.2 et compatibilite 2.1 prouves localement sous WSL, smoke industriel et livraison ordonnee non executes. |
+| 2026-07-15 | `V2.1.4.0038` | `0086bae` | Integration de la revue contre le code : valeurs `TableEditKind` et branches de dispatch rendues explicites; role runtime de `data-scada-step` distingue de l'attribut natif `step`. |
+| 2026-07-15 | `V2.1.4.0037` | `0086bae` | Creation du plan executable cross-repo derive de la specification approuvee et de `DEC-0042`, avec TF100Web obligatoire avant le manifest `.sb2` 2.2. |
 
 > **Pour les agents d'execution :** executer ce plan tache par tache. Ne pas deleguer a des sous-agents sans autorisation explicite de l'utilisateur. Chaque tache a sa propre frontiere de commit. Suspendre l'execution a tout gate explicite ou a toute divergence contractuelle non couverte par la specification.
 

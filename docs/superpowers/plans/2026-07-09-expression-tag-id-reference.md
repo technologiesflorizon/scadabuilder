@@ -18,9 +18,9 @@ Document version: `V2.1.4.0002`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-09 | `V2.1.4.0002` | PENDING | Correctif : resolver public, normalisation manifest + HTML, warnings non resolus dedupliques, D9 sur ScadaCommandBinding, casing AST coherent, warnings projet, regression archive .sb2. |
-| 2026-07-09 | `V2.1.4.0001` | PENDING | Ajout Task 3 (ScadaExpression), Task 7 (D9) ; correction injection TagId individuelle, ambiguÃ¯tÃ©s export. |
-| 2026-07-09 | `V2.1.4.0000` | PENDING | Plan initial (6 tÃ¢ches). |
+| 2026-07-09 | `V2.1.4.0002` | `2a2f22b` | Correctif : resolver public, normalisation manifest + HTML, warnings non resolus dedupliques, D9 sur ScadaCommandBinding, casing AST coherent, warnings projet, regression archive .sb2. |
+| 2026-07-09 | `V2.1.4.0001` | `2a2f22b` | Ajout Task 3 (ScadaExpression), Task 7 (D9) ; correction injection TagId individuelle, ambiguÃ¯tÃ©s export. |
+| 2026-07-09 | `V2.1.4.0000` | `2a2f22b` | Plan initial (6 tÃ¢ches). |
 
 ## Global Constraints
 

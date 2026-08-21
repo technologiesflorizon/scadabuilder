@@ -9,7 +9,7 @@ Document version: `V2.1.4.0041`
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
 | 2026-07-16 | `V2.1.4.0041` | `6afe427` | Specification implementee : identite A1 partagee, selection fraiche, surface unique, double-clic cible et normalisation Lire/Ecrire. |
-| 2026-07-15 | `V2.1.4.0040` | `PENDING` | Specification corrective approuvee pour une commande unique, une identite de cellule visible, une selection fraiche et le fallback Ecrire vers Lire. |
+| 2026-07-15 | `V2.1.4.0040` | `75f5000` | Specification corrective approuvee pour une commande unique, une identite de cellule visible, une selection fraiche et le fallback Ecrire vers Lire. |
 
 ## 1. Objet et cycle de vie
 

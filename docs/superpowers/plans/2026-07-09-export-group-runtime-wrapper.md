@@ -8,8 +8,8 @@ Document version: `V2.1.5.0002`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-07-09 | `V2.1.5.0002` | `PENDING` | Correction du plan pour refleter la spec: retrait global de `data-scada-events`, `StateConfig.ReadVariable` dans HTML/manifest, gate TF100Web separe, tests sans reference directe a `ScadaBuilderV2.App`. |
-| 2026-07-09 | `V2.1.5.0001` | `PENDING` | Plan initial du correctif de wrapper runtime des groupes. |
+| 2026-07-09 | `V2.1.5.0002` | `8fba97d` | Correction du plan pour refleter la spec: retrait global de `data-scada-events`, `StateConfig.ReadVariable` dans HTML/manifest, gate TF100Web separe, tests sans reference directe a `ScadaBuilderV2.App`. |
+| 2026-07-09 | `V2.1.5.0001` | `8fba97d` | Plan initial du correctif de wrapper runtime des groupes. |
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 

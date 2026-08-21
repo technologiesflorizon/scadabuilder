@@ -8,13 +8,13 @@ Document version: `V2.1.5.0022`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-13 | `V2.1.5.0022` | `PENDING` | Couverture Phase 2 QuickWindow : services Application, usages/cycles/profondeur, historique atomique et matrice build/export fail-closed. |
-| 2026-08-13 | `V2.1.5.0021` | `PENDING` | Couverture Phases 0/1 QuickWindow : DOM réel, WebView2/Edge, validations Domain, persistance atomique, retrait popup et handshake muté dans les deux dépôts. |
-| 2026-07-30 | `V2.1.5.0002` | `PENDING` | Régression effets SVG : cibles preview/export, application fill/stroke, transition, reset de baseline, repli wrapper et fixture conformance régénérée. |
-| 2026-07-29 | `V2.1.5.0001` | `PENDING` | Régression de découverte : seuls les enfants immédiats contenant `project.json` sont inscrits; build solution et 9 tests cycle projet verts. |
-| 2026-07-29 | `V2.1.5.0000` | `PENDING` | Cycle projet couvert par 8 tests infrastructure/coordinator et contrats ciblés WPF/ruban; build solution vert. Après synchronisation des contrats de test, les cinq échecs historiques hors tranche demeurent. |
-| 2026-07-18 | `V2.1.4.0067` | `PENDING` | Regressions de coherence numerique : authoring, migration idempotente, validation bloquante, audit des 26 pages compilees et export cible `win00017`; suite complete observee a 689/697 avec huit echecs hors tranche. |
-| 2026-07-17 | `V2.1.4.0065` | `PENDING` | Regression `win00008` : filtre visible sur SVG opaque, texte/controles directs ou imbriques au-dessus, `pointer-events:none`, z-index du wrapper inchange et styles descendants restaures. |
+| 2026-08-13 | `V2.1.5.0022` | `436d38f` | Couverture Phase 2 QuickWindow : services Application, usages/cycles/profondeur, historique atomique et matrice build/export fail-closed. |
+| 2026-08-13 | `V2.1.5.0021` | `b353e37` | Couverture Phases 0/1 QuickWindow : DOM réel, WebView2/Edge, validations Domain, persistance atomique, retrait popup et handshake muté dans les deux dépôts. |
+| 2026-07-30 | `V2.1.5.0002` | `0168f2f` | Régression effets SVG : cibles preview/export, application fill/stroke, transition, reset de baseline, repli wrapper et fixture conformance régénérée. |
+| 2026-07-29 | `V2.1.5.0001` | `0a961d2` | Régression de découverte : seuls les enfants immédiats contenant `project.json` sont inscrits; build solution et 9 tests cycle projet verts. |
+| 2026-07-29 | `V2.1.5.0000` | `856398e` | Cycle projet couvert par 8 tests infrastructure/coordinator et contrats ciblés WPF/ruban; build solution vert. Après synchronisation des contrats de test, les cinq échecs historiques hors tranche demeurent. |
+| 2026-07-18 | `V2.1.4.0067` | `23daac2` | Regressions de coherence numerique : authoring, migration idempotente, validation bloquante, audit des 26 pages compilees et export cible `win00017`; suite complete observee a 689/697 avec huit echecs hors tranche. |
+| 2026-07-17 | `V2.1.4.0065` | `4bee5ab` | Regression `win00008` : filtre visible sur SVG opaque, texte/controles directs ou imbriques au-dessus, `pointer-events:none`, z-index du wrapper inchange et styles descendants restaures. |
 | 2026-07-17 | `V2.1.4.0064` | `f73b3e3` | Regression `win00012` couvrant 18 rangees, l'espacement conserve, 14 boutons manuels, 14 voyants Rectangle et l'absence volontaire de mappings. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Couverture 118/118 rendue point par point : resultat unique, evaluateur exact, mutation isolee et operateurs AST serialises executes. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | Carte synchronisee avec les gates exact-SHA, parite, rollback et acceptance industrielle sans ecriture PLC. |
@@ -38,7 +38,7 @@ Document version: `V2.1.5.0022`
 | 2026-07-16 | `V2.1.4.0043` | `8489dbd` | Ajout de la couverture `DEC-0044` pour les 56 toggles, le texte semantique exporte, les effets true/false et la collecte TF100Web des mappings de commande. |
 | 2026-07-16 | `V2.1.4.0042` | `9fd2a30` | Regression `page.properties` : ouverture, activation et selection de la page cible sans mutation, dirty state ni historique; suite complete 659/664 avec cinq echecs historiques inchanges. |
 | 2026-07-16 | `V2.1.4.0041` | `6afe427` | Couverture `DEC-0043` pour A1, provenance de selection, commande/dialogue unique, fallback Lire/Ecrire, double-clic, round-trip/export et smoke isole; suite complete 658/663 avec cinq echecs historiques inchanges. |
-| 2026-07-15 | `V2.1.4.0039` | `PENDING` | Couverture `DEC-0042` Domain/Application/WPF/rendu/export/validation et intake TF100Web; suite SCADA 645/650 avec cinq echecs historiques inchanges. |
+| 2026-07-15 | `V2.1.4.0039` | `ce99ff9` | Couverture `DEC-0042` Domain/Application/WPF/rendu/export/validation et intake TF100Web; suite SCADA 645/650 avec cinq echecs historiques inchanges. |
 | 2026-07-15 | `V2.1.4.0035` | `740796e` | Regression du hit-testing cellule Tableau : guides A/1 externes, drag primaire explicite, annulation pointeur, normalisation des plages et rendu commun des scopes rangee/colonne. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Couverture `DEC-0041` du payload reel, etat Tableau atomique, refus avant preview, resize verrouille, guide A/1 et absence d'artefact export; smoke WPF/WebView2 isole reussi. |
 | 2026-07-15 | `V2.1.4.0031` | `e127190` | Regression XAML du ruban secondaire : hauteur anti-clipping, scrollbar masquee et chevrons de pagination; 14 tests ruban reussis, suite complete inchangee a 614 reussites et 5 echecs historiques. |
@@ -50,11 +50,11 @@ Document version: `V2.1.5.0022`
 | 2026-07-14 | `V2.1.4.0018` | `858473c` | Couverture du layout type des dialogues Tableau et de l'affichage de leurs controles WPF concrets. |
 | 2026-07-14 | `V2.1.4.0017` | `a94016a` | Ajout de la regression garantissant un niveau 1 Inserer compact, independant du style 58 px des commandes de niveau 2. |
 | 2026-07-14 | `V2.1.4.0016` | `10cfa72` | Couverture Tableau : modele/limites/precedence, operations, coordinator, clipboard, menu, architecture hors MainWindow, persistance scene, rendu HTML et archive `.sb2`; couverture des huit familles Inserer. |
-| 2026-07-14 | `V2.1.4.0008` | `PENDING` | Ajout de la couverture du clic droit sur une page lorsque la cible est un contenu inline WPF `Run`. |
-| 2026-07-14 | `V2.1.4.0007` | `PENDING` | Couverture des dimensions et de la marge interne de l'icone Nouvelle page. |
-| 2026-07-14 | `V2.1.4.0006` | `PENDING` | Couverture du libelle Recherche, des filtres initiaux Default/Tous et de l'icone partagee Nouvelle page. |
-| 2026-07-14 | `V2.1.4.0005` | `PENDING` | Ajout de la regression interdisant les liaisons `Run.Text` TwoWay implicites vers les proprietes Pages et Diagnostics en lecture seule. |
-| 2026-07-14 | `V2.1.4.0004` | `PENDING` | Ajout de la couverture identité, commandes, historique, sauvegarde atomique, pages natives, surfaces Pages/Diagnostics et cycle `.sb2` complet. |
+| 2026-07-14 | `V2.1.4.0008` | `34dfc82` | Ajout de la couverture du clic droit sur une page lorsque la cible est un contenu inline WPF `Run`. |
+| 2026-07-14 | `V2.1.4.0007` | `fdcd11e` | Couverture des dimensions et de la marge interne de l'icone Nouvelle page. |
+| 2026-07-14 | `V2.1.4.0006` | `cc670c1` | Couverture du libelle Recherche, des filtres initiaux Default/Tous et de l'icone partagee Nouvelle page. |
+| 2026-07-14 | `V2.1.4.0005` | `fd445ac` | Ajout de la regression interdisant les liaisons `Run.Text` TwoWay implicites vers les proprietes Pages et Diagnostics en lecture seule. |
+| 2026-07-14 | `V2.1.4.0004` | `50b2ad9` | Ajout de la couverture identité, commandes, historique, sauvegarde atomique, pages natives, surfaces Pages/Diagnostics et cycle `.sb2` complet. |
 | 2026-07-13 | `V2.1.4.0003` | `b954d46` | Couverture des nouveaux champs de style, export CSS, preview WebView, icônes sémantiques et preuve d’intake TF100Web. |
 | 2026-07-06 | `V2.1.3.0002` | `4dfe7fe` | Ajout de la couverture de la poignée de rotation Element+ et des presets/angle personnalisé du menu contextuel (7 tests WebViewContextMenuScriptTests). |
 | 2026-06-19 | `V2.1.3.0001` | `620e914` | Ajout de la couverture icon-only 32x32 pour la galerie Formes. |
@@ -72,35 +72,35 @@ Document version: `V2.1.5.0022`
 | 2026-06-18 | `V2.1.2.0031` | `f6a85ed` | Ajout de la couverture des symboles HMI Element+ moteur, ventilateur, convoyeur et jauge. |
 | 2026-06-18 | `V2.1.2.0030` | `cae57c9` | Ajout de la couverture des presets de boutons HMI Element+ et du champ exporte `ButtonKind`. |
 | 2026-06-18 | `V2.1.2.0029` | `b97ef16` | Ajout de la couverture des primitives process HMI Element+ reservoir, tuyaux, vanne et pompe. |
-| 2026-06-18 | `V2.1.2.0028` | `PENDING` | Ajout de la couverture des primitives HMI Element+ voyant et barres de valeur. |
-| 2026-06-18 | `V2.1.2.0027` | `PENDING` | Ajout de la couverture des formes standards Element+ et de l'insertion manuelle des boutons Element+. |
+| 2026-06-18 | `V2.1.2.0028` | `44fbdae` | Ajout de la couverture des primitives HMI Element+ voyant et barres de valeur. |
+| 2026-06-18 | `V2.1.2.0027` | `530907a` | Ajout de la couverture des formes standards Element+ et de l'insertion manuelle des boutons Element+. |
 | 2026-06-17 | `V2.1.2.0025` | `58567eb` | Ajout de la validation TF100Web du formatage runtime `DisplayFormat` hash mask. |
-| 2026-06-17 | `V2.1.2.0024` | `PENDING` | Ajout de la couverture du refactor Donnees Element+ et du masque numerique `DisplayFormat`. |
-| 2026-06-17 | `V2.1.2.0022` | `PENDING` | Ajout de la couverture TF100Web des events de binding `ValueBindings` issus du `.sb2`. |
+| 2026-06-17 | `V2.1.2.0024` | `49cedc7` | Ajout de la couverture du refactor Donnees Element+ et du masque numerique `DisplayFormat`. |
+| 2026-06-17 | `V2.1.2.0022` | `3b67c3a` | Ajout de la couverture TF100Web des events de binding `ValueBindings` issus du `.sb2`. |
 | 2026-06-17 | `V2.1.2.0020` | `c2f0b6f` | Ajout de la couverture du validateur CSS `.sb2` avec selecteurs page-scopes indentes. |
 | 2026-06-17 | `V2.1.2.0019` | `bd6515e` | Ajout du validateur `.sb2` FT100 a la carte de couverture et test archive cible. |
 | 2026-06-17 | `V2.1.2.0018` | `ad364a6` | Ajout de la reference aux tests d'intake TF100Web audites. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de la couverture domaine, persistance et export pour effets visuels runtime. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de la couverture export pour le bridge lifecycle runtime global. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de la couverture domaine, validation, persistance et export pour conditions composees. |
-| 2026-06-17 | `V2.1.2.0017` | `PENDING` | Ajout de la couverture domaine, validation, persistance et export pour options popup avancees. |
-| 2026-06-17 | `V2.1.2.0016` | `PENDING` | Ajout de la couverture domaine, validation, persistance et export pour les actions bordure Element+. |
-| 2026-06-17 | `V2.1.2.0015` | `PENDING` | Ajout de la couverture domaine, persistance et export pour `Fermer popup` et `Basculer popup`. |
-| 2026-06-17 | `V2.1.2.0014` | `PENDING` | Ajout de la couverture domaine, persistance, validation et export pour `Ouvrir popup`. |
-| 2026-06-17 | `V2.1.2.0013` | `PENDING` | Ajout de la couverture de contrat pour le panneau `Catalogue Tags` filtre. |
-| 2026-06-17 | `V2.1.2.0012` | `PENDING` | Ajout de la couverture export runtime pour l'application des valeurs `Lire valeur`. |
-| 2026-06-17 | `V2.1.2.0010` | `PENDING` | Ajout de la couverture actions objet conditionnelles, validation build et export runtime. |
-| 2026-06-17 | `V2.1.2.0009` | `PENDING` | Ajout de la couverture bindings `Lire valeur` et `Ecrire valeur`, validation build et export runtime. |
-| 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout de la couverture import tags TF100Web, persistance catalogue et export `WriteTag`. |
-| 2026-06-16 | `V2.1.2.0007` | `PENDING` | Ajout de la couverture du curseur runtime par defaut des cibles cliquables FT100. |
-| 2026-06-16 | `V2.1.2.0006` | `PENDING` | Ajout de la couverture des wrappers runtime transparents pour events de groupe Element+. |
-| 2026-06-16 | `V2.1.2.0005` | `PENDING` | Ajout de la couverture metadonnees hover automatique, CSS FT100 et disabled des boutons Element+. |
-| 2026-06-16 | `V2.1.2.0004` | `PENDING` | Ajout de la couverture du registre evenements Element+ et du bouton Evenement de l'editeur double-clic. |
-| 2026-06-16 | `V2.1.2.0003` | `PENDING` | Ajout de la couverture pour ordre visuel, inventaire hierarchique et mouvement solidaire des groupes Element+. |
-| 2026-06-16 | `V2.1.2.0002` | `PENDING` | Ajout de la couverture regression pour le groupement de scene Element+ only. |
-| 2026-06-16 | `V2.1.2.0001` | `PENDING` | Ajout de la couverture regression du raccourci Backspace non destructif et du garde-fou clavier pour champs editables. |
-| 2026-06-16 | `V2.1.2.0000` | `PENDING` | Ajout de la couverture regression pour conversion Button, Propriete contextuelle et rendu/export du texte des boutons. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation de la carte de couverture regression. |
+| 2026-06-17 | `V2.1.2.0017` | `789a433` | Ajout de la couverture domaine, persistance et export pour effets visuels runtime. |
+| 2026-06-17 | `V2.1.2.0017` | `b465ba9` | Ajout de la couverture export pour le bridge lifecycle runtime global. |
+| 2026-06-17 | `V2.1.2.0017` | `1b5df61` | Ajout de la couverture domaine, validation, persistance et export pour conditions composees. |
+| 2026-06-17 | `V2.1.2.0017` | `95af4bb` | Ajout de la couverture domaine, validation, persistance et export pour options popup avancees. |
+| 2026-06-17 | `V2.1.2.0016` | `32d9227` | Ajout de la couverture domaine, validation, persistance et export pour les actions bordure Element+. |
+| 2026-06-17 | `V2.1.2.0015` | `6ac2245` | Ajout de la couverture domaine, persistance et export pour `Fermer popup` et `Basculer popup`. |
+| 2026-06-17 | `V2.1.2.0014` | `06652c6` | Ajout de la couverture domaine, persistance, validation et export pour `Ouvrir popup`. |
+| 2026-06-17 | `V2.1.2.0013` | `4b01460` | Ajout de la couverture de contrat pour le panneau `Catalogue Tags` filtre. |
+| 2026-06-17 | `V2.1.2.0012` | `a73be05` | Ajout de la couverture export runtime pour l'application des valeurs `Lire valeur`. |
+| 2026-06-17 | `V2.1.2.0010` | `5302022` | Ajout de la couverture actions objet conditionnelles, validation build et export runtime. |
+| 2026-06-17 | `V2.1.2.0009` | `7e3610c` | Ajout de la couverture bindings `Lire valeur` et `Ecrire valeur`, validation build et export runtime. |
+| 2026-06-17 | `V2.1.2.0008` | `f78e8cd` | Ajout de la couverture import tags TF100Web, persistance catalogue et export `WriteTag`. |
+| 2026-06-16 | `V2.1.2.0007` | `5c7d617` | Ajout de la couverture du curseur runtime par defaut des cibles cliquables FT100. |
+| 2026-06-16 | `V2.1.2.0006` | `5c7d617` | Ajout de la couverture des wrappers runtime transparents pour events de groupe Element+. |
+| 2026-06-16 | `V2.1.2.0005` | `5c7d617` | Ajout de la couverture metadonnees hover automatique, CSS FT100 et disabled des boutons Element+. |
+| 2026-06-16 | `V2.1.2.0004` | `5c7d617` | Ajout de la couverture du registre evenements Element+ et du bouton Evenement de l'editeur double-clic. |
+| 2026-06-16 | `V2.1.2.0003` | `940af93` | Ajout de la couverture pour ordre visuel, inventaire hierarchique et mouvement solidaire des groupes Element+. |
+| 2026-06-16 | `V2.1.2.0002` | `2c5a0b4` | Ajout de la couverture regression pour le groupement de scene Element+ only. |
+| 2026-06-16 | `V2.1.2.0001` | `2c5a0b4` | Ajout de la couverture regression du raccourci Backspace non destructif et du garde-fou clavier pour champs editables. |
+| 2026-06-16 | `V2.1.2.0000` | `2c5a0b4` | Ajout de la couverture regression pour conversion Button, Propriete contextuelle et rendu/export du texte des boutons. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation de la carte de couverture regression. |
 
 ## 1. Current Test Baseline
 

@@ -2,16 +2,17 @@
 
 Date: 2026-06-19
 Status: Active agent operating contract
-Document version: `V2.1.2.0012`
+Document version: `V2.1.5.0024`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-06-19 | `V2.1.2.0012` | `PENDING` | Ajout de la regle de polish produit visant un niveau concurrentiel face a ScadaPlant. |
-| 2026-06-17 | `V2.1.2.0011` | `PENDING` | Ajout de l'obligation de commit automatique apres chaque implementation validee. |
-| 2026-06-17 | `V2.1.2.0008` | `PENDING` | Ajout de l'obligation de worktree propre ou commit produit, puis planification avant tout ajout fonctionnel ou contractuel. |
-| 2026-06-16 | `V2.1.1.0039` | `PENDING` | Creation des regles operationnelles pour humains et agents travaillant dans la documentation SCADA Builder V2. |
+| 2026-08-21 | `V2.1.5.0024` | `PENDING` | Ajout de l'etape de fermeture des `PENDING` apres commit, outillee et verifiee par `verify-docs`. |
+| 2026-06-19 | `V2.1.2.0012` | `f35a5f4` | Ajout de la regle de polish produit visant un niveau concurrentiel face a ScadaPlant. |
+| 2026-06-17 | `V2.1.2.0011` | `b75ea10` | Ajout de l'obligation de commit automatique apres chaque implementation validee. |
+| 2026-06-17 | `V2.1.2.0008` | `f78e8cd` | Ajout de l'obligation de worktree propre ou commit produit, puis planification avant tout ajout fonctionnel ou contractuel. |
+| 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation des regles operationnelles pour humains et agents travaillant dans la documentation SCADA Builder V2. |
 
 ## 1. Required Workflow
 
@@ -29,6 +30,7 @@ For any change under `docs/`, or any code change that affects documented behavio
 10. Update Mermaid diagrams when flow, ownership, command dispatch, state transitions, export, or Studio Element+ paths change.
 11. Update generated documentation or run the verification script when public functions, commands, tests, or contracts change.
 12. Run `tools/docs/verify-docs.ps1`.
+12b. After the commit exists, run `python tools/docs/resolve-pending-commits.py --apply` and ship the resolved placeholders in the next commit or in a dedicated bookkeeping commit.
 13. After each implementation, once required validations pass, automatically create a commit for the implemented changes before starting another implementation or ending the turn, unless the user explicitly requests a different commit boundary or asks not to commit.
 
 ## 2. Decision Rules
@@ -45,7 +47,13 @@ Required metadata:
 6. Owner document.
 7. Related tests when behavior is protected by tests.
 
-Use `PENDING` only when the commit does not exist yet.
+Use `PENDING` only when the commit does not exist yet. After committing, close every placeholder with:
+
+```bash
+python tools/docs/resolve-pending-commits.py --apply
+```
+
+A placeholder whose introducing commit exists is stale debt and fails `verify-docs.ps1`. See `docs/00_governance/VERSIONING_AND_CHANGELOG_POLICY_V2.md` section 3.
 
 ## 3. Code Documentation Rules
 
