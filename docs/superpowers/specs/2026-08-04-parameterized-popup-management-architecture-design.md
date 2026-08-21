@@ -2,7 +2,7 @@
 
 Date: 2026-08-10
 Status: Approved - `DEC-0050`; phases 0 to 2 validated, phase 3 pending, all runtime capabilities blocked
-Document version: `V2.1.5.0023`
+Document version: `V2.1.5.0026`
 Portée: SCADA Builder V2, runtime partagé `.sb2` et services host TF100Web
 Dépendances: `docs/02_architecture/GLOBAL_ARCHITECTURE_V2.md`, `docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md`, `docs/03_runtime_contracts/PREVIEW_BUILD_EXPORT_CONTRACT_V2.md`, `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md`, `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`, `docs/04_editor/STATE_MANAGEMENT_CONTRACT_V2.md`
 
@@ -10,6 +10,7 @@ Dépendances: `docs/02_architecture/GLOBAL_ARCHITECTURE_V2.md`, `docs/03_runtime
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-21 | `V2.1.5.0026` | `PENDING` | Précision `FR-032` : réalignement automatique par invocation sur transition compatible; `Outdated` reste dérivé du couple de versions, sans champ persistant. |
 | 2026-08-21 | `V2.1.5.0023` | `b0159f9` | Fermeture des lacunes d’audit avant Phase 3 : composition header/pied, presse-papier inter-contextes, évolution d’Interface locale versionnée, duplication de définition, bibliothèque Element+, portée undo/redo et coexistence popup legacy (`FR-030..036`, `FR-UI-23..26`). |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 synchronisée : services Application, dépendances, historique workspace atomique et validation build/export fail-closed implémentés sans promotion de capacité runtime. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Statut synchronisé après audit : gate Phase 0 réel validé et contrats persistants Phase 1 corrigés; aucune capacité runtime, UI ou export promue. |
@@ -777,6 +778,8 @@ Cette section ferme les cas d'authoring franchissant la frontière page vers Fen
 | Supprimer un membre public | incrémentée | invocations `Outdated`, liaison orpheline signalée |
 | Changer type, accès ou `Required` d'un membre | incrémentée | invocations `Outdated` si la liaison n'est plus compatible |
 | Modifier une variable ou constante privée | inchangée | aucune; les membres privés sont invisibles des invocations |
+
+L'évaluation est **par invocation**, pas globale : lors d'une transition, chaque invocation dont rien ne casse est réalignée automatiquement sur la nouvelle `InterfaceVersion` sans que ses liaisons soient touchées, et un port ajouté reste explicitement `Non lié`. Seules les invocations réellement cassées — port lié retiré, contrat d'un port lié modifié, port `Required` non lié — conservent leur version stockée. Le statut `Outdated` est donc **dérivé** du couple de versions et n'introduit ni champ persistant ni quatrième identifiant (`FR-027`).
 
 Une invocation `Outdated` conserve ses liaisons persistées, reste sauvegardable, produit un diagnostic d'authoring et de preview, et bloque le build/export. La réparation est une action explicite de l'auteur port par port; aucune reliaison automatique, aucune suppression en cascade et aucune valeur par défaut fabriquée ne sont permises.
 

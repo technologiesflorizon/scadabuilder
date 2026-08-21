@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
-Document version: `V2.1.5.0023`
+Document version: `V2.1.5.0026`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-21 | `V2.1.5.0026` | `PENDING` | Task 2.4 exécutée et cochée : compatibilité d'interface, réalignement, `Outdated` et réparation implémentés et couverts par `QuickWindowInterfaceVersioningTests`. |
 | 2026-08-21 | `V2.1.5.0023` | `b0159f9` | Fermeture des lacunes d'audit avant Phase 3 : Task 2.4 (versionnement d'interface), Task 4.0 (contrat package prealable), Tasks 3.5/3.6 (presse-papier, reparation), Task 5.4 (composition header/pied et coexistence legacy), blocs de verification par tache, checkpoints versionnes et rapports d'audit par phase. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 livrée : services de définition/invocation, analyse des usages/cycles/profondeur, snapshots undo/redo atomiques et validateur build/export fail-closed; capacités runtime toujours bloquées. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Audit correctif : Phase 0 rejouée sur hosts réels et Phase 1 alignée sur les validations, la persistance autoritaire et le handshake exécutable; Phase 2 reste bloquée jusqu’au commit vert. |
@@ -32,7 +33,7 @@ Document version: `V2.1.5.0023`
 - [x] Phase 1.4: définitions autoritaires sous `quick-windows/`, JSON déterministe et écriture atomique.
 - [x] Phase 1.5: handshake généré, SHA canonique et mutations exécutées dans Builder et TF100Web.
 - [x] Phase 2: orchestration Application, dépendances, historique et validation build/export fail-closed.
-- [ ] Phase 2.4: versionnement d'Interface locale et statut `Outdated` (lacune ouverte le 2026-08-21, non implémentée).
+- [x] Phase 2.4: versionnement d'Interface locale, réalignement par invocation, statut `Outdated` dérivé et réparation explicite (`ea5a8bc`).
 - [ ] Phases 3 à 7: non démarrées.
 
 Audit du 2026-08-21: la spec a été étendue par `FR-030..036` et `FR-UI-23..26`. Le plan ajoute en conséquence Task 2.4, Task 3.5, Task 3.6, Task 4.0 et Task 5.4. La Phase 0 n'est pas rouverte: la composition header/pied et la coexistence legacy n'existent que dans un host composé réel et sont donc prouvées en Phase 5 contre TF100Web, sans invalider le hash de fixture gelé.
@@ -491,11 +492,11 @@ Expected: fixture et expectations portent le même SHA dans les deux dépôts; a
 - Consumes: définitions persistées, invocations typées et analyse d'usages de Task 2.1.
 - Produces: transitions d'interface déterministes, statut `Outdated` par invocation et diagnostic bloquant build/export.
 
-- [ ] Implémenter la matrice de transitions de `FR-032`: renommage sans effet, ajout optionnel/`Required`, suppression, changement de type/accès/`Required`, membres privés neutres. Toute transition incompatible incrémente `InterfaceVersion`.
-- [ ] Marquer chaque invocation devenue incompatible `Outdated` en conservant ses liaisons persistées; ne jamais relier, supprimer ou fabriquer une valeur par défaut.
-- [ ] Autoriser la sauvegarde d'un projet contenant des invocations `Outdated`; bloquer build et export avec un diagnostic nommant définition, invocation, page et port.
-- [ ] Tester la réparation explicite port par port, la stabilité des clés au renommage et l'absence de migration silencieuse.
-- [ ] Commit: `feat: version quick window local interfaces`.
+- [x] Implémenter la matrice de transitions de `FR-032`: renommage sans effet, ajout optionnel/`Required`, suppression, changement de type/accès/`Required`, membres privés neutres. Toute transition incompatible incrémente `InterfaceVersion`.
+- [x] Marquer chaque invocation devenue incompatible `Outdated` en conservant ses liaisons persistées; ne jamais relier, supprimer ou fabriquer une valeur par défaut.
+- [x] Autoriser la sauvegarde d'un projet contenant des invocations `Outdated`; bloquer build et export avec un diagnostic nommant définition, invocation, page et port.
+- [x] Tester la réparation explicite port par port, la stabilité des clés au renommage et l'absence de migration silencieuse.
+- [x] Commit: `feat: version quick window local interfaces` (`ea5a8bc`).
 
 **Vérification:**
 

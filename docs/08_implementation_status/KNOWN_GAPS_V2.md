@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active known gaps register
-Document version: `V2.1.5.0022`
+Document version: `V2.1.5.0026`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-21 | `V2.1.5.0026` | `PENDING` | Task 2.4 QuickWindow fermée (versionnement d'Interface locale et statut `Outdated`); la surface WPF de réparation `FR-UI-24` reste ouverte en Task 3.6. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 QuickWindow fermée; authoring WPF, preview/compiler/runtime, export/promotion et intake TF100Web des Phases 3 à 7 restent ouverts et `Blocked`. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Phases 0/1 QuickWindow fermées après audit; orchestration, authoring, preview/export et runtime des Phases 2 à 7 restent explicitement ouverts et `Blocked`. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Faux positif des gates agreges ferme : 118 probes independants sont verts; les Blocked et la promotion distante demeurent les seuls gates de cette tranche. |

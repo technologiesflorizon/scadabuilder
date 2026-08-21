@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active runtime contract
-Document version: `V2.1.5.0022`
+Document version: `V2.1.5.0026`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-21 | `V2.1.5.0026` | `PENDING` | Gate build/export explicite pour les invocations `Outdated`, levé uniquement par réparation explicite. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Gate build/export QuickWindow Phase 2 : erreurs required/mapping/type/accès/version/graphe/profil/présentation/injection et capacité bloquée, sans fabriquer de liaison. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | Parite modele/preview/export/runtime host verrouillee par fixture, capabilities, hash runtime et exclusion editor-only. |
 | 2026-07-16 | `V2.1.4.0060` | Builder `22c787f`, TF100Web `6fac468` | Tests de parite exacte ajoutes jusqu'au runtime stable et hashe deploye. |
@@ -49,7 +50,7 @@ Le manifest `.sb2` strict actif est en version `2.3`. Un objet Tableau peut expo
 
 Sous `DEC-0047`, preview/build/export derivent le meme ensemble `RequiredCapabilities` du modele; le package publie aussi le SHA-256 du runtime partage. Le validateur refuse les capabilities inconnues, bloquees, dupliquees ou non triees ainsi que toute divergence du runtime. TF100Web applique la meme negotiation avant remplacement du package actif. Les profils 2.1/2.2 restent des chemins de compatibilite explicites.
 
-Sous `DEC-0050` Phase 2, `ScadaProjectBuildValidator` refuse les Fenêtres rapides dont la définition, le contenu, la présentation, la version d’interface, les ports requis, les mappings, les types, les accès, les expressions/littéraux, les invocations ou le graphe cycle/profondeur sont invalides. Les profils 2.1/2.2 et toute capacité QuickWindow encore `Blocked` produisent une erreur. L’analyse Application peut exposer les mêmes défauts comme warnings d’authoring et la sauvegarde intermédiaire reste permise; le validateur ne crée jamais de liaison par défaut. Aucun compilateur, preview ou artefact `.sb2` QuickWindow n’est activé par cette phase.
+Sous `DEC-0050` Phase 2, `ScadaProjectBuildValidator` refuse les Fenêtres rapides dont la définition, le contenu, la présentation, la version d’interface, les ports requis, les mappings, les types, les accès, les expressions/littéraux, les invocations ou le graphe cycle/profondeur sont invalides. Les profils 2.1/2.2 et toute capacité QuickWindow encore `Blocked` produisent une erreur. L’analyse Application peut exposer les mêmes défauts comme warnings d’authoring et la sauvegarde intermédiaire reste permise; le validateur ne crée jamais de liaison par défaut. Aucun compilateur, preview ou artefact `.sb2` QuickWindow n’est activé par cette phase. Une invocation `Outdated` — sa `InterfaceVersion` diffère de celle de sa définition parce que la transition d’interface l’a cassée — reste sauvegardable en authoring mais bloque build et export avec `quick-window.interface-version-incompatible`; le gate ne se lève que par une réparation explicite port par port, sans qu’aucune liaison soit fabriquée, réécrite ou supprimée.
 
 La fixture de conformance compare les objets du modele, le markup du preview natif et de l'export, les namespaces, l'absence d'artefacts editeur, les capabilities analysees/manifestees et le SHA runtime. TF100Web prouve ensuite que le runtime package est byte-identique aux fichiers stable et hashe servis et execute le fichier stable. Les preuves sont Builder `22c787f` et TF100Web `6fac468`.
 

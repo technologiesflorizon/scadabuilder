@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active implementation status
-Document version: `V2.1.5.0022`
+Document version: `V2.1.5.0026`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-21 | `V2.1.5.0026` | `PENDING` | Versionnement de l'Interface locale QuickWindow : transitions classées par clé stable, réalignement par invocation, statut `Outdated` dérivé et réparation explicite; capacités runtime toujours `Blocked`. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 Fenêtres rapides implémentée : services Application, dépendances, undo/redo atomique et validation build/export fail-closed; UI/runtime/export non activés. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Phases 0/1 Fenêtres rapides validées après audit : isolation réelle, contrats inertes, persistance et handshake; aucune capacité authoring/runtime/export promue. |
 | 2026-07-30 | `V2.1.5.0002` | `0168f2f` | Les effets Etat de fond/bordure recolorent la géométrie SVG visible des formes de base en preview et export, avec restauration et repli compatibles. |

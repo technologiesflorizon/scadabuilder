@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.5.0025`
+Document version: `V2.1.5.0026`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-21 | `V2.1.5.0026` | `PENDING` | Task 2.4 Fenêtres rapides livrée : versionnement d'Interface locale, réalignement par invocation, statut `Outdated` dérivé et réparation explicite. |
 | 2026-08-21 | `V2.1.5.0025` | `abb81d2` | Gate documentaire ramene a zero erreur : 39 plans/specs anterieurs au standard retro-documentes par `tools/docs/backfill-doc-headers.py`. |
 | 2026-08-21 | `V2.1.5.0024` | `f881bbe` | Dette documentaire fermee : 493 placeholders `PENDING` resolus vers leur commit introducteur, resolveur `tools/docs/resolve-pending-commits.py` ajoute et branche dans `verify-docs`. |
 | 2026-08-21 | `V2.1.5.0023` | `b0159f9` | Audit de complétude Fenêtres rapides avant Phase 3 : spec étendue (`FR-030..036`, `FR-UI-23..26`) et plan complété par Task 2.4, Tasks 3.5/3.6, Task 4.0 prérequis de contrat package, Task 5.4 composition/legacy, blocs de vérification par tâche et checkpoints versionnés. |
