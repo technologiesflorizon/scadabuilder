@@ -149,7 +149,7 @@ public sealed class WebViewContextMenuScriptTests
 
         StringAssert.Contains(source, "window.chrome?.webview?.postMessage({ type: 'openSceneObjectProperties', id: element.Id });");
         StringAssert.Contains(source, "ShowModernElementProperties(message.Id);");
-        StringAssert.Contains(source, "var dialog = new ElementPropertiesDialog(current, GetCurrentSceneReferences(), _modernProject?.TagCatalog)");
+        StringAssert.Contains(source, "var dialog = new ElementPropertiesDialog(current, _modernProject?.Scenes ?? [], _modernProject?.TagCatalog)");
         Assert.IsFalse(
             source.Contains("openModernEditor(", StringComparison.Ordinal),
             "Double-click properties must use the WPF ElementPropertiesDialog, not the old WebView floating editor.");
@@ -541,7 +541,7 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(source, "BringProcessWindowToFront");
         StringAssert.Contains(source, "BuildElementStudioProjectAsync(studioProjectPath)");
         StringAssert.Contains(source, "dotnetStartInfo.ArgumentList.Add(\"--no-build\");");
-        StringAssert.Contains(source, "Studio Element+ via dotnet run reste actif, mais aucune fenetre WPF visible n'a ete detectee.");
+        StringAssert.Contains(source, "(fenetre non detectee dans le delai; le studio peut prendre quelques secondes de plus)");
         StringAssert.Contains(source, "Studio Element+ a quitte immediatement");
         StringAssert.Contains(source, "ResolveElementStudioProjectPath");
         StringAssert.Contains(source, "dotnetStartInfo.ArgumentList.Add(\"run\");");
@@ -891,8 +891,16 @@ public sealed class WebViewContextMenuScriptTests
 
         StringAssert.Contains(source, "element.Kind === 'InputNumeric' && data.IsReadOnly === true");
         StringAssert.Contains(source, "data.Value ?? data.DisplayFormat ?? data.Placeholder ?? ''");
-        Assert.IsFalse(
-            source.Contains("input.type = element.Kind === 'InputNumeric' ? 'number' : 'text';\r\n        input.readOnly = data.IsReadOnly === true;\r\n        input.placeholder = data.Placeholder || '';\r\n        input.value = element.Kind === 'InputNumeric'\r\n          ? (data.Value ?? '')", StringComparison.Ordinal),
+        // The read-only numeric branch must be reached before the generic input branch, otherwise a
+        // legacy numeric placeholder such as #### renders as an empty number input. Asserted on branch
+        // order rather than on an exact code block, so the check stays independent of line endings and
+        // of the editable-input branch that legitimately keeps `data.Value ?? ''`.
+        var readOnlyBranch = source.IndexOf("element.Kind === 'InputNumeric' && data.IsReadOnly === true", StringComparison.Ordinal);
+        var genericInputBranch = source.IndexOf("input.type = element.Kind === 'InputNumeric' ? 'number' : 'text';", StringComparison.Ordinal);
+        Assert.AreNotEqual(-1, readOnlyBranch, "The read-only numeric rendering branch must exist.");
+        Assert.AreNotEqual(-1, genericInputBranch, "The generic input rendering branch must exist.");
+        Assert.IsTrue(
+            readOnlyBranch < genericInputBranch,
             "Read-only numeric display must not render as an empty number input when legacy text is a numeric placeholder such as ####.");
     }
 

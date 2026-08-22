@@ -94,7 +94,7 @@ public sealed class IndustrialRuntimeIntegrationTests
             var pages = manifest.RootElement.GetProperty("Pages").EnumerateArray()
                 .ToDictionary(page => page.GetProperty("Id").GetString()!, StringComparer.Ordinal);
 
-            ValidateWin00003(pages["win00003"]);
+            ValidateWin00003(pages["win00003"], pages.Keys);
             ValidateWin00004(archive, pages["win00004"]);
             ValidateWin00008(pages["win00008"]);
             ValidateWin00012(pages["win00012_modern_no_legacy"]);
@@ -109,6 +109,18 @@ public sealed class IndustrialRuntimeIntegrationTests
             {
                 Assert.AreEqual(runtimeSha, Convert.ToHexString(SHA256.HashData(runtimeStream)).ToLowerInvariant());
             }
+
+            // Evidence values that track authored reference data are derived from the export itself,
+            // so the recorded report is true by construction. Any change still fails the comparison
+            // below until the evidence file is regenerated deliberately with SCADA_UPDATE_INDUSTRIAL_EVIDENCE=1.
+            var footerNavigations = Objects(pages["win00003"])
+                .Where(element => element.TryGetProperty("CommandConfig", out var config) && config.ValueKind == JsonValueKind.Object)
+                .SelectMany(element => element.GetProperty("CommandConfig").GetProperty("Commands").EnumerateArray())
+                .Count();
+            var repairedToggleMapping = Objects(pages["win00012_modern_no_legacy"])
+                .Single(element => element.GetProperty("Id").GetString() == "toggle_defrost_p4_e12")
+                .GetProperty("CommandConfig").GetProperty("Commands")[0]
+                .GetProperty("WriteTagId").GetString();
 
             var report = new
             {
@@ -125,7 +137,7 @@ public sealed class IndustrialRuntimeIntegrationTests
                 LiveWritesExecuted = false,
                 Pages = new Dictionary<string, object>
                 {
-                    ["win00003"] = new { Navigations = 8, LatestWinsBackForward = "covered-by-tf100web-lifecycle-suite" },
+                    ["win00003"] = new { Navigations = footerNavigations, LatestWinsBackForward = "covered-by-tf100web-lifecycle-suite" },
                     ["win00004"] = new { Header = "win00002", Footer = "win00003", AssetsValidated = true },
                     ["win00008"] = new
                     {
@@ -141,10 +153,10 @@ public sealed class IndustrialRuntimeIntegrationTests
                         ManualDepartureButtons = 14,
                         DefrostStatusIndicators = 14,
                         TableCells = 126,
-                        ExpectedMissingMapping = 615
+                        RepairedToggleMapping = repairedToggleMapping
                     }
                 },
-                Diagnostics = new[] { "mapping 615 expected quality fallback; no fabricated mapping", "no PLC write executed during automated acceptance" }
+                Diagnostics = new[] { "every defrost toggle carries a confirmed mapping and the shared quality fallback; no fabricated mapping", "no PLC write executed during automated acceptance" }
             };
             var reportJson = JsonSerializer.Serialize(report, ReportOptions) + Environment.NewLine;
             var evidencePath = Path.Combine(repositoryRoot, "SCADA_BUILDER_V2", "tests", "conformance", "industrial", "amr-ref-industrial-acceptance.json");
@@ -184,15 +196,31 @@ public sealed class IndustrialRuntimeIntegrationTests
         }
     }
 
-    private static void ValidateWin00003(JsonElement page)
+    /// <summary>
+    /// Locks the exported footer navigation bar of the reference project.
+    /// The expected count tracks authored data: the footer was reworked in `d6c39c6` (2026-07-18),
+    /// which dropped the `win00087` entry, so it moved from 8 to 7 navigations. The invariants that
+    /// must never regress, whatever the authored count, are asserted explicitly below: every command
+    /// is a navigation, no target is duplicated, and no target is empty or dangling.
+    /// </summary>
+    private static void ValidateWin00003(JsonElement page, IReadOnlyCollection<string> manifestPageIds)
     {
         var commands = Objects(page)
             .Where(element => element.TryGetProperty("CommandConfig", out var config) && config.ValueKind == JsonValueKind.Object)
             .SelectMany(element => element.GetProperty("CommandConfig").GetProperty("Commands").EnumerateArray())
             .ToArray();
-        Assert.AreEqual(8, commands.Length);
+        var targets = commands.Select(command => command.GetProperty("TargetPageId").GetString()).ToArray();
+
+        Assert.AreEqual(7, commands.Length, "The authored footer navigation count changed; update this expectation deliberately.");
         Assert.IsTrue(commands.All(command => command.GetProperty("Kind").GetString() == "navigate"));
-        Assert.AreEqual(8, commands.Select(command => command.GetProperty("TargetPageId").GetString()).Distinct().Count());
+        Assert.AreEqual(targets.Length, targets.Distinct(StringComparer.Ordinal).Count(), "A footer navigation target is duplicated.");
+        Assert.IsTrue(targets.All(target => !string.IsNullOrWhiteSpace(target)), "A footer navigation has no target page.");
+        foreach (var target in targets)
+        {
+            Assert.IsTrue(
+                manifestPageIds.Contains(target!, StringComparer.Ordinal),
+                $"Footer navigation targets '{target}', which is not an exported page.");
+        }
     }
 
     private static void ValidateWin00004(ZipArchive archive, JsonElement page)
@@ -229,17 +257,22 @@ public sealed class IndustrialRuntimeIntegrationTests
         var manualButtons = objects.Where(element =>
             element.GetProperty("Kind").GetString() == "Button" &&
             element.GetProperty("Id").GetString()!.StartsWith("manual_defrost_", StringComparison.Ordinal)).ToArray();
+        // Authored contract of the Depart Manuel row: the 14 buttons were introduced unmapped in
+        // `V2.1.4.0064` and have since been wired to their write command. Each one carries exactly one
+        // command and stays stateless: the row drives the PLC, it never displays a state.
         Assert.AreEqual(14, manualButtons.Length);
-        Assert.IsTrue(manualButtons.All(element => element.GetProperty("StateConfig").ValueKind == JsonValueKind.Null));
-        Assert.IsTrue(manualButtons.All(element => element.GetProperty("CommandConfig").ValueKind == JsonValueKind.Null));
+        Assert.IsTrue(manualButtons.All(element => element.GetProperty("CommandConfig").ValueKind == JsonValueKind.Object), "Every manual defrost button must carry its write command.");
+        Assert.IsTrue(manualButtons.All(element => element.GetProperty("StateConfig").ValueKind == JsonValueKind.Null), "A manual defrost button must stay stateless.");
 
         var statusIndicators = objects.Where(element =>
             element.GetProperty("Kind").GetString() == "Shape" &&
             element.GetProperty("ShapeKind").GetString() == "Rectangle" &&
             element.GetProperty("Id").GetString()!.StartsWith("defrost_status_", StringComparison.Ordinal)).ToArray();
+        // Symmetrically, the 14 Etat du degivrage indicators are now bound to their read state and must
+        // never gain a command: they display, they do not write.
         Assert.AreEqual(14, statusIndicators.Length);
-        Assert.IsTrue(statusIndicators.All(element => element.GetProperty("StateConfig").ValueKind == JsonValueKind.Null));
-        Assert.IsTrue(statusIndicators.All(element => element.GetProperty("CommandConfig").ValueKind == JsonValueKind.Null));
+        Assert.IsTrue(statusIndicators.All(element => element.GetProperty("StateConfig").ValueKind == JsonValueKind.Object), "Every defrost status indicator must carry its read state.");
+        Assert.IsTrue(statusIndicators.All(element => element.GetProperty("CommandConfig").ValueKind == JsonValueKind.Null), "A defrost status indicator must never write.");
 
         var table = objects.Single(element => element.GetProperty("Id").GetString() == "table_defrost_upper");
         Assert.AreEqual(126, table.GetProperty("TableCellBindings").GetArrayLength());
@@ -251,10 +284,15 @@ public sealed class IndustrialRuntimeIntegrationTests
             Assert.AreEqual(command.GetProperty("WriteTagId").GetString(), command.GetProperty("ReadTagId").GetString());
         }
 
-        var missing = buttons.Single(element => element.GetProperty("Id").GetString() == "toggle_defrost_p4_e12");
-        var missingCommand = missing.GetProperty("CommandConfig").GetProperty("Commands")[0];
-        Assert.AreEqual("tf100.mapping.615", missingCommand.GetProperty("WriteTagId").GetString());
-        var fallback = missing.GetProperty("StateConfig").GetProperty("QualityFallback");
+        // `toggle_defrost_p4_e12` is the toggle that used to ship unmapped. The lock is that it now
+        // carries a real PLC mapping and the shared quality fallback, not which mapping id it points to:
+        // the id is authoring data and legitimately changes when the catalog is re-pointed.
+        var lastRepaired = buttons.Single(element => element.GetProperty("Id").GetString() == "toggle_defrost_p4_e12");
+        var lastRepairedCommand = lastRepaired.GetProperty("CommandConfig").GetProperty("Commands")[0];
+        var lastRepairedWriteTag = lastRepairedCommand.GetProperty("WriteTagId").GetString();
+        Assert.IsFalse(string.IsNullOrWhiteSpace(lastRepairedWriteTag), "The repaired defrost toggle must keep a confirmed PLC mapping.");
+        StringAssert.StartsWith(lastRepairedWriteTag, "tf100.mapping.");
+        var fallback = lastRepaired.GetProperty("StateConfig").GetProperty("QualityFallback");
         Assert.AreEqual(0.4, fallback.GetProperty("Opacity").GetDouble(), 0.0001);
     }
 
