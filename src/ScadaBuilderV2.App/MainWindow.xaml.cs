@@ -301,6 +301,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
         ProjectNameText.Text = $"{_modernProject.Name} ({_modernProject.Scenes.Count} pages)";
         _pagesPanel.Load(_modernProject, candidate.Diagnostics);
         PagesListBox.ItemsSource = _pagesPanel.View;
+        await RefreshQuickWindowGroupAsync();
         RefreshProjectTagSummary();
         await RefreshLibrarySelectorAsync();
 
@@ -472,6 +473,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
         _activeSceneTab = tab;
         _activeScene = tab.Scene;
         _activeSceneDirty = tab.IsDirty;
+        ActivatePageEditorContext(tab.PageKey, tab.Scene.EffectivePageCode, tab.Scene.Title);
         RestoreTabSelectionState(tab);
 
         _isUpdatingSceneTabSelection = true;
@@ -7112,7 +7114,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private RibbonGroupViewModel CreateRibbonGroupViewModel(RibbonGroupDefinition group)
     {
-        var commands = group.Commands.Select(CreateRibbonCommandViewModel).ToArray();
+        var commands = group.Commands.Where(IsCommandVisibleInActiveContext).Select(CreateRibbonCommandViewModel).ToArray();
         return new RibbonGroupViewModel(group.Label, commands);
     }
 

@@ -628,6 +628,84 @@
                             </ListBox>
                         </Grid>
                         </avalonDock:LayoutAnchorable>
+                        <avalonDock:LayoutAnchorable x:Name="QuickWindowsAnchorable" Title="Fenêtres rapides" ContentId="QuickWindows" CanClose="True">
+                        <Grid Margin="12">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="Fenêtres rapides" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Définitions réutilisables, distinctes des pages"
+                                               FontSize="11" TextWrapping="Wrap"
+                                               Foreground="{StaticResource MutedBrush}"/>
+                                </StackPanel>
+                                <Button Grid.Column="1" Width="30" Height="28" Padding="3"
+                                        Tag="quick-window.new" ToolTip="Nouvelle fenêtre rapide"
+                                        Content="+" FontWeight="Bold"
+                                        Click="OnQuickWindowCommandClick"/>
+                            </Grid>
+                            <ListBox x:Name="QuickWindowsListBox"
+                                     Grid.Row="1"
+                                     Margin="0,6,0,0"
+                                     ItemsSource="{Binding QuickWindowsPanel.Items}"
+                                     SelectionChanged="OnQuickWindowSelectionChanged"
+                                     MouseDoubleClick="OnQuickWindowsListMouseDoubleClick"
+                                     ScrollViewer.VerticalScrollBarVisibility="Auto">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Padding="7" Margin="0,1" CornerRadius="4" BorderBrush="{StaticResource BorderBrushSoft}" BorderThickness="0,0,0,1">
+                                            <Grid>
+                                                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis"/>
+                                                    <TextBlock Text="{Binding SubtitleLabel}" FontSize="11" Foreground="{StaticResource MutedBrush}"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                                    <Button Width="25" Height="25" Padding="4" Margin="2,0" Tag="quick-window.rename" ToolTip="Renommer" Click="OnQuickWindowCommandClick">
+                                                        <Image Source="{StaticResource Icon.Page.Rename}" Stretch="Uniform"/>
+                                                    </Button>
+                                                    <Button Width="25" Height="25" Padding="4" Margin="2,0" Tag="quick-window.duplicate" ToolTip="Dupliquer" Click="OnQuickWindowCommandClick">
+                                                        <Image Source="{StaticResource Icon.Page.Duplicate}" Stretch="Uniform"/>
+                                                    </Button>
+                                                    <Button Width="25" Height="25" Padding="4" Margin="2,0" Tag="quick-window.delete" ToolTip="Supprimer" Click="OnQuickWindowCommandClick">
+                                                        <Image Source="{StaticResource Icon.Page.Delete}" Stretch="Uniform"/>
+                                                    </Button>
+                                                </StackPanel>
+                                                <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,4,0,0">
+                                                    <TextBlock Text="{Binding UsageLabel}" FontSize="10" Margin="0,0,8,0" Foreground="{StaticResource MutedBrush}"/>
+                                                    <TextBlock Text="{Binding OutdatedLabel}" FontSize="10" FontWeight="Bold" Foreground="#B3261E">
+                                                        <TextBlock.Style>
+                                                            <Style TargetType="TextBlock">
+                                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                                <Style.Triggers>
+                                                                    <DataTrigger Binding="{Binding HasOutdatedInvocations}" Value="True">
+                                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                                    </DataTrigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBlock.Style>
+                                                    </TextBlock>
+                                                </StackPanel>
+                                            </Grid>
+                                            <Border.ContextMenu>
+                                                <ContextMenu>
+                                                    <MenuItem Header="Ouvrir" Tag="quick-window.open" Click="OnQuickWindowCommandClick"/>
+                                                    <MenuItem Header="Renommer" Tag="quick-window.rename" Click="OnQuickWindowCommandClick"/>
+                                                    <MenuItem Header="Dupliquer" Tag="quick-window.duplicate" Click="OnQuickWindowCommandClick"/>
+                                                    <Separator/>
+                                                    <MenuItem Header="Supprimer" Tag="quick-window.delete" Click="OnQuickWindowCommandClick"/>
+                                                </ContextMenu>
+                                            </Border.ContextMenu>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </Grid>
+                        </avalonDock:LayoutAnchorable>
                         <avalonDock:LayoutAnchorable x:Name="TagCatalogAnchorable" Title="Catalogue Tags" ContentId="TagCatalog" CanClose="True">
                         <DockPanel Margin="12">
                             <Button DockPanel.Dock="Top"
@@ -705,6 +783,20 @@
                         <avalonDock:LayoutDocument Title="Canvas" ContentId="Canvas" CanClose="False" CanFloat="False">
                 <Grid>
                 <DockPanel>
+                    <Border x:Name="EditorContextPanel"
+                            DockPanel.Dock="Top"
+                            Visibility="Collapsed"
+                            Padding="10,4"
+                            Background="{StaticResource PanelBrush}"
+                            BorderBrush="{StaticResource BorderBrushSoft}"
+                            BorderThickness="0,0,0,1">
+                        <StackPanel Orientation="Horizontal">
+                            <Border Background="#2090A0" CornerRadius="3" Padding="6,1" Margin="0,0,8,0">
+                                <TextBlock x:Name="EditorContextBadgeText" Text="Page" Foreground="White" FontSize="11" FontWeight="Bold"/>
+                            </Border>
+                            <TextBlock x:Name="EditorContextTitleText" Text="" VerticalAlignment="Center" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
                     <TabControl x:Name="SceneTabs"
                                 DockPanel.Dock="Top"
                                 Height="34"

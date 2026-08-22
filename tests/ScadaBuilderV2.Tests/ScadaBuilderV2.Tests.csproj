@@ -32,6 +32,7 @@
     <Compile Include="..\..\src\ScadaBuilderV2.App\EditorBridge\ModernElementRenderPayloadFactory.cs" Link="AppSource\ModernElementRenderPayloadFactory.cs" />
     <Compile Include="..\..\src\ScadaBuilderV2.App\TableEditor\TableEditorWebViewState.cs" Link="AppSource\TableEditorWebViewState.cs" />
     <Compile Include="..\..\src\ScadaBuilderV2.App\TableEditor\TableEditorWebViewStateFactory.cs" Link="AppSource\TableEditorWebViewStateFactory.cs" />
+    <Compile Include="..\..\src\ScadaBuilderV2.App\QuickWindows\QuickWindowEditorContext.cs" Link="AppSource\QuickWindowEditorContext.cs" />
   </ItemGroup>
 
 </Project>
