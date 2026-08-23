@@ -4174,6 +4174,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         };
         dialog.SaveStateConfig = config => SaveElementStateConfigFromDialog(current.Id, config);
         dialog.SaveCommandConfig = config => SaveElementCommandConfigFromDialog(current.Id, config);
+        dialog.QuickWindowContext = BuildQuickWindowAuthoringContext();
+        dialog.SaveQuickWindowInvocation = request => SaveQuickWindowInvocationFromDialogAsync(current.Id, request);
         if (dialog.ShowDialog() != true || dialog.Result is null)
         {
             return;

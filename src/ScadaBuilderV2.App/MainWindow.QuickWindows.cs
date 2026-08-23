@@ -314,6 +314,60 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         }
     }
 
+    /// <summary>
+    /// Builds the bounded quick-window authoring context of the active surface: the definitions that may be
+    /// opened, the parent ports a binding may forward and whether `CloseQuickWindow(Self)` is offered.
+    /// </summary>
+    private QuickWindowCommandAuthoringContext BuildQuickWindowAuthoringContext() => new(
+        _modernProject?.EffectiveQuickWindows ?? [],
+        _hostedQuickWindowDefinition?.EffectiveInterfaceMembers ?? [],
+        IsQuickWindowSurfaceHosted,
+        invocationKey => _modernProject?.EffectiveQuickWindowInvocations
+            .FirstOrDefault(invocation => invocation.InvocationKey == invocationKey));
+
+    /// <summary>
+    /// Applies one invocation authored by the `Liaisons` tab as a single undoable transition covering the
+    /// project, the caller scene and the caller command.
+    /// </summary>
+    private async Task<QuickWindowInvocationAuthoringOutcome> SaveQuickWindowInvocationFromDialogAsync(
+        string elementId,
+        QuickWindowInvocationAuthoringRequest request)
+    {
+        if (_modernProject is null || _activeSceneTab?.PageKey is not { } pageKey)
+        {
+            return QuickWindowInvocationAuthoringOutcome.Blocked("Aucune page active pour enregistrer les liaisons.");
+        }
+
+        try
+        {
+            var snapshot = await _pageWorkspaceController.CaptureSnapshotAsync();
+            var mutation = QuickWindowWorkspace.SaveInvocation(snapshot, pageKey, elementId, request);
+            if (mutation.Result.Status != CommandResultStatus.Succeeded)
+            {
+                var reason = mutation.Result.Diagnostics.FirstOrDefault()?.Message ?? mutation.Result.Message;
+                return new QuickWindowInvocationAuthoringOutcome(false, null, reason, mutation.Result.Diagnostics);
+            }
+
+            await ApplyQuickWindowMutationAsync(mutation);
+            if (mutation.After.Scenes.TryGetValue(pageKey, out var updatedScene))
+            {
+                _activeScene = updatedScene;
+                MarkActiveSceneDirty();
+                RefreshModernSceneUi();
+            }
+
+            return new QuickWindowInvocationAuthoringOutcome(
+                true,
+                mutation.AffectedInvocationKey,
+                mutation.Result.Message,
+                mutation.Result.Diagnostics);
+        }
+        catch (Exception ex)
+        {
+            return QuickWindowInvocationAuthoringOutcome.Blocked($"Enregistrement des liaisons impossible: {ex.Message}");
+        }
+    }
+
     /// <summary>Selects and reveals the page that owns one quick-window usage, without mutating anything.</summary>
     private void NavigateToQuickWindowUsage(QuickWindowWorkspaceMutation mutation)
     {

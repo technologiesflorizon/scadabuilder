@@ -2,6 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:ScadaBuilderV2.App"
+        xmlns:qw="clr-namespace:ScadaBuilderV2.App.QuickWindows"
         Title="Proprietes Element+"
         Width="620"
         Height="680"
@@ -301,6 +302,7 @@
                                Foreground="{StaticResource InkBrush}"/>
                     <ListBox x:Name="CommandsListBox" Height="240" SelectionMode="Single" Margin="0,8,0,8"
                              DisplayMemberPath="Name"
+                             SelectionChanged="OnCommandSelectionChanged"
                              MouseDoubleClick="OnCommandDoubleClick"/>
                     <StackPanel Orientation="Horizontal">
                         <Button Content="+ Ajouter" Click="OnAddCommandClick" Margin="0,0,6,0"/>
@@ -308,6 +310,10 @@
                         <Button Content="Supprimer" Click="OnDeleteCommandClick"/>
                     </StackPanel>
                 </StackPanel>
+            </TabItem>
+
+            <TabItem x:Name="QuickWindowBindingsTab" Header="Liaisons" Visibility="Collapsed">
+                <qw:QuickWindowBindingsEditor x:Name="QuickWindowBindingsEditorControl" Margin="0,8,8,0"/>
             </TabItem>
         </TabControl>
 

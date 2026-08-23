@@ -47,6 +47,19 @@
                 <ComboBox x:Name="TargetPageComboBox" Margin="0,2,0,8" DisplayMemberPath="Id"/>
             </StackPanel>
 
+            <StackPanel x:Name="QuickWindowPanel" Visibility="Collapsed">
+                <TextBlock Text="Fenetre rapide cible" Foreground="{StaticResource MutedBrush}"/>
+                <ComboBox x:Name="QuickWindowDefinitionComboBox" Margin="0,2,0,8" DisplayMemberPath="DisplayName"/>
+            </StackPanel>
+
+            <StackPanel x:Name="CloseQuickWindowPanel" Visibility="Collapsed">
+                <TextBlock x:Name="CloseQuickWindowNoticeText"
+                           Text="Ferme la fenetre rapide courante (Self). Aucune cible libre n'est proposee."
+                           TextWrapping="Wrap"
+                           Margin="0,2,0,8"
+                           Foreground="{StaticResource MutedBrush}"/>
+            </StackPanel>
+
             <StackPanel x:Name="UrlPanel" Visibility="Collapsed">
                 <TextBlock Text="URL" Foreground="{StaticResource MutedBrush}"/>
                 <TextBox x:Name="UrlTextBox" Margin="0,2,0,8"/>

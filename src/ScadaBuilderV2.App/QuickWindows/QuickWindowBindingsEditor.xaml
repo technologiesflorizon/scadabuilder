@@ -1,0 +1,129 @@
+<UserControl x:Class="ScadaBuilderV2.App.QuickWindows.QuickWindowBindingsEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="EditorMutedBrush" Color="#5E7A82"/>
+        <SolidColorBrush x:Key="EditorBorderBrush" Color="#DCE8DD"/>
+        <SolidColorBrush x:Key="EditorDangerBrush" Color="#B3261E"/>
+        <SolidColorBrush x:Key="EditorInkBrush" Color="#0F2A30"/>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
+    </UserControl.Resources>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,8">
+            <TextBlock Text="Liaisons de la fenêtre rapide"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource EditorInkBrush}"/>
+            <TextBlock x:Name="DefinitionLabelText"
+                       Text="{Binding DefinitionLabel}"
+                       FontSize="11"
+                       TextWrapping="Wrap"
+                       Foreground="{StaticResource EditorMutedBrush}"/>
+            <TextBlock x:Name="OutdatedBannerText"
+                       Text="{Binding OutdatedLabel}"
+                       FontSize="11"
+                       FontWeight="Bold"
+                       TextWrapping="Wrap"
+                       Margin="0,4,0,0"
+                       Foreground="{StaticResource EditorDangerBrush}"
+                       Visibility="{Binding IsOutdated, Converter={StaticResource BooleanToVisibility}}"/>
+            <TextBlock Text="Titre de l'instance (optionnel)"
+                       Margin="0,8,0,2"
+                       Foreground="{StaticResource EditorMutedBrush}"/>
+            <TextBox x:Name="TitleOverrideTextBox"
+                     MinHeight="28"
+                     Text="{Binding TitleOverride, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+
+        <StackPanel DockPanel.Dock="Bottom" Margin="0,8,0,0">
+            <TextBlock x:Name="BindingValidationText"
+                       Text="{Binding ValidationMessage}"
+                       TextWrapping="Wrap"
+                       Margin="0,0,0,6"
+                       Foreground="{StaticResource EditorDangerBrush}"/>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="SaveBindingsButton"
+                        Content="Enregistrer les liaisons"
+                        MinHeight="30"
+                        Padding="12,4"
+                        Click="OnSaveBindingsClick"/>
+            </StackPanel>
+        </StackPanel>
+
+        <DataGrid x:Name="BindingsDataGrid"
+                  AutoGenerateColumns="False"
+                  CanUserAddRows="False"
+                  CanUserDeleteRows="False"
+                  HeadersVisibility="Column"
+                  GridLinesVisibility="Horizontal"
+                  SelectionMode="Single"
+                  SelectionUnit="FullRow"
+                  BorderBrush="{StaticResource EditorBorderBrush}"
+                  BorderThickness="1"
+                  ItemsSource="{Binding Rows}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Nom" Binding="{Binding Name}" IsReadOnly="True" Width="1.3*"/>
+                <DataGridTextColumn Header="Famille" Binding="{Binding FamilyLabel}" IsReadOnly="True" Width="1.1*"/>
+                <DataGridTextColumn Header="Type" Binding="{Binding DataTypeLabel}" IsReadOnly="True" Width="0.9*"/>
+                <DataGridTemplateColumn Header="Source" Width="1.1*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox ItemsSource="{Binding SourceOptions}"
+                                      DisplayMemberPath="Label"
+                                      SelectedValuePath="Kind"
+                                      SelectedValue="{Binding SourceKind, UpdateSourceTrigger=PropertyChanged}"
+                                      MinHeight="26"
+                                      Margin="2"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Valeur / Référence" Width="1.6*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid Margin="2">
+                                <ComboBox x:Name="TagSelector"
+                                          ItemsSource="{Binding DataContext.Tags, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                          DisplayMemberPath="AuthoringLabel"
+                                          SelectedValuePath="Id"
+                                          SelectedValue="{Binding ValueOrReference, UpdateSourceTrigger=PropertyChanged}"
+                                          MinHeight="26"
+                                          Visibility="{Binding UsesTagSelector, Converter={StaticResource BooleanToVisibility}}"/>
+                                <ComboBox x:Name="ParentPortSelector"
+                                          ItemsSource="{Binding ParentPorts}"
+                                          DisplayMemberPath="Name"
+                                          SelectedItem="{Binding SelectedParentPort, UpdateSourceTrigger=PropertyChanged}"
+                                          MinHeight="26"
+                                          Visibility="{Binding UsesParentPortSelector, Converter={StaticResource BooleanToVisibility}}"/>
+                                <TextBox x:Name="TypedValueTextBox"
+                                         Text="{Binding ValueOrReference, UpdateSourceTrigger=LostFocus}"
+                                         MinHeight="26"
+                                         Visibility="{Binding UsesTextValue, Converter={StaticResource BooleanToVisibility}}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Statut" Width="0.9*" IsReadOnly="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding StatusLabel}" VerticalAlignment="Center" Margin="4,0">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Foreground" Value="{StaticResource EditorInkBrush}"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsUnboundOptional}" Value="True">
+                                                <Setter Property="Foreground" Value="{StaticResource EditorMutedBrush}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding IsBlocking}" Value="True">
+                                                <Setter Property="Foreground" Value="{StaticResource EditorDangerBrush}"/>
+                                                <Setter Property="FontWeight" Value="Bold"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</UserControl>
