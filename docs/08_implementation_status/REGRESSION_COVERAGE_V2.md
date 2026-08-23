@@ -8,7 +8,7 @@ Document version: `V2.1.5.0029`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-23 | `V2.1.5.0029` | `PENDING` | Couverture Task 3.3 : kinds offerts par surface, onglet conditionnel, colonnes et sources typees, statuts, `Outdated` bloquant et transitions d'invocation. |
+| 2026-08-23 | `V2.1.5.0029` | `012135d` | Couverture Task 3.3 : kinds offerts par surface, onglet conditionnel, colonnes et sources typees, statuts, `Outdated` bloquant et transitions d'invocation. |
 | 2026-08-23 | `V2.1.5.0028` | `2fd6c72` | Couverture Task 3.2 : panneau `Interface locale`, filtres, édition inline versionnée, usages/navigation, suppression confirmée et catalogue de sélecteurs local. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Couverture Task 3.1 : shell d'authoring, portée d'historique QuickWindow, politique de commandes et projection canvas editor-only. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Couverture Task 2.4 : versionnement d'Interface locale, statut `Outdated` dérivé et réparation explicite. |
