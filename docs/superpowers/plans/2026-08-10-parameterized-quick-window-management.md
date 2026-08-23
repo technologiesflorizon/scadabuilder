@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
-Document version: `V2.1.5.0027`
+Document version: `V2.1.5.0028`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-23 | `V2.1.5.0028` | `fafdf53` | Task 3.2 exécutée et cochée : panneau `Interface locale` substitué au catalogue de tags, tableau unique groupé avec filtres, édition inline et dialogue commun, compteurs d'usages avec navigation, suppression référencée confirmée et sélecteurs restreints aux membres locaux. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Task 3.1 exécutée et cochée : shell d'authoring, contexte borné, duplication, portée d'historique `QuickWindow` et projection canvas editor-only; l'édition du contenu reste aux Tasks 3.2/3.4. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Task 2.4 exécutée et cochée : compatibilité d'interface, réalignement, `Outdated` et réparation implémentés et couverts par `QuickWindowInterfaceVersioningTests`. |
 | 2026-08-21 | `V2.1.5.0023` | `b0159f9` | Fermeture des lacunes d'audit avant Phase 3 : Task 2.4 (versionnement d'interface), Task 4.0 (contrat package prealable), Tasks 3.5/3.6 (presse-papier, reparation), Task 5.4 (composition header/pied et coexistence legacy), blocs de verification par tache, checkpoints versionnes et rapports d'audit par phase. |
@@ -36,7 +37,8 @@ Document version: `V2.1.5.0027`
 - [x] Phase 2: orchestration Application, dépendances, historique et validation build/export fail-closed.
 - [x] Phase 2.4: versionnement d'Interface locale, réalignement par invocation, statut `Outdated` dérivé et réparation explicite (`ea5a8bc`).
 - [x] Phase 3.1: groupe projet, contexte d'éditeur borné, duplication, portée d'historique `QuickWindow` et projection canvas editor-only (`2551d35`, `f4867fa`).
-- [ ] Phases 3.2 à 7: non démarrées.
+- [x] Phase 3.2: éditeur `Interface locale`, tableau unique groupé et filtré, édition inline et dialogue commun, compteurs d'usages et navigation, suppression référencée confirmée (`fafdf53`).
+- [ ] Phases 3.3 à 7: non démarrées.
 
 Audit du 2026-08-21: la spec a été étendue par `FR-030..036` et `FR-UI-23..26`. Le plan ajoute en conséquence Task 2.4, Task 3.5, Task 3.6, Task 4.0 et Task 5.4. La Phase 0 n'est pas rouverte: la composition header/pied et la coexistence legacy n'existent que dans un host composé réel et sont donc prouvées en Phase 5 contre TF100Web, sans invalider le hash de fixture gelé.
 
@@ -553,10 +555,10 @@ dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWi
 - Consumes: membres typés et analyse d’usages.
 - Produces: tableau groupé public/privé, filtres, édition inline/avancée, compteurs et navigation vers usages.
 
-- [ ] Remplacer `Catalogue Tags` par `Interface locale` uniquement dans ce contexte; restreindre les sélecteurs état/commande/binding/expression aux membres locaux.
-- [ ] Afficher optional non lié gris et required non lié rouge; confirmer toute suppression référencée.
-- [ ] Implémenter explicitement `FR-UI-15` (tableau unique groupé `Interface publique`/`Données privées` avec filtres par famille), `FR-UI-16` (édition inline des propriétés courantes et dialogue commun pour les avancées) et `FR-UI-17` (compteur d'usages par membre et navigation vers chaque usage). Chaque point possède son test de contrat.
-- [ ] Commit: `feat: author quick window local interfaces`.
+- [x] Remplacer `Catalogue Tags` par `Interface locale` uniquement dans ce contexte; restreindre les sélecteurs état/commande/binding/expression aux membres locaux.
+- [x] Afficher optional non lié gris et required non lié rouge; confirmer toute suppression référencée.
+- [x] Implémenter explicitement `FR-UI-15` (tableau unique groupé `Interface publique`/`Données privées` avec filtres par famille), `FR-UI-16` (édition inline des propriétés courantes et dialogue commun pour les avancées) et `FR-UI-17` (compteur d'usages par membre et navigation vers chaque usage). Chaque point possède son test de contrat.
+- [x] Commit: `feat: author quick window local interfaces` (`fafdf53`).
 
 **Vérification:**
 

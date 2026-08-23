@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active known gaps register
-Document version: `V2.1.5.0027`
+Document version: `V2.1.5.0028`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-23 | `V2.1.5.0028` | `PENDING` | Task 3.2 QuickWindow fermée; l'onglet `Liaisons` des appelants (Task 3.3), le preview/banc d'essai (Task 3.4) et la surface de réparation `FR-UI-24` (Task 3.6) restent ouverts. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Task 3.1 QuickWindow fermée; l'édition du contenu d'une définition sur le canvas reste ouverte (projection en lecture seule) et appartient aux Tasks 3.2 et 3.4. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Task 2.4 QuickWindow fermée (versionnement d'Interface locale et statut `Outdated`); la surface WPF de réparation `FR-UI-24` reste ouverte en Task 3.6. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 QuickWindow fermée; authoring WPF, preview/compiler/runtime, export/promotion et intake TF100Web des Phases 3 à 7 restent ouverts et `Blocked`. |

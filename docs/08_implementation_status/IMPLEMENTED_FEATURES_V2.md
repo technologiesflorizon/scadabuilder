@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active implementation status
-Document version: `V2.1.5.0027`
+Document version: `V2.1.5.0028`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-23 | `V2.1.5.0028` | `PENDING` | Éditeur `Interface locale` Fenêtres rapides : tableau unique groupé et filtré, édition inline des propriétés courantes, dialogue commun pour les avancées, compteurs d'usages avec navigation, suppression référencée confirmée et sélecteurs restreints aux membres locaux. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Shell d'authoring Fenêtres rapides : groupe projet distinct, création/ouverture/renommage/duplication/suppression, contexte d'éditeur borné, portée d'historique dédiée et projection canvas editor-only en lecture seule. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Versionnement de l'Interface locale QuickWindow : transitions classées par clé stable, réalignement par invocation, statut `Outdated` dérivé et réparation explicite; capacités runtime toujours `Blocked`. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 Fenêtres rapides implémentée : services Application, dépendances, undo/redo atomique et validation build/export fail-closed; UI/runtime/export non activés. |

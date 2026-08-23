@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active editor menu and surface contract
-Document version: `V2.1.5.0027`
+Document version: `V2.1.5.0028`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-23 | `V2.1.5.0028` | `PENDING` | Panneau `Interface locale` : substitution du `Catalogue Tags` dans le contexte Fenêtre rapide, tableau unique groupé public/privé, filtres par famille, statut de liaison et compteurs d'usages. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Ajout de la surface Fenêtres rapides : groupe projet distinct, projection canvas editor-only non exportable, lecture seule gardée et bandeau de contexte actif. |
 | 2026-07-29 | `V2.1.5.0000` | `8fe1077` | Accueil projet, dialogue Nouveau, sélecteur `project.json`, récents et commandes de fermeture livrés. |
 | 2026-07-16 | `V2.1.4.0042` | `9fd2a30` | `page.properties` ouvre et active maintenant la page selectionnee avant d'afficher le panneau Page afin de charger le bon snapshot de proprietes. |
@@ -49,6 +50,14 @@ Ouvrir une définition projette son `VisualContent` sur le canvas partagé au mo
 Dans cette tranche, la projection est en lecture seule : tant qu’une Fenêtre rapide est affichée, le handler de messages du canvas est fermé, afin qu’aucune interaction ne puisse muter la dernière page active pendant que son contenu n’est pas celui affiché. L’édition du contenu appartient aux tranches d’authoring suivantes.
 
 Un bandeau de contexte affiche en permanence le badge `Page` ou `Fenêtre rapide` et le titre de la surface active.
+
+## Panneau Interface locale
+
+Tant qu'une Fenêtre rapide est la surface active, le panneau `Catalogue Tags` du projet est masqué et remplacé par `Interface locale`. Le contenu d'une Fenêtre rapide ne référence jamais un tag physique du projet : les sélecteurs d'état, de commande, de liaison et d'expression consomment le catalogue de contexte, projeté depuis les membres de l'Interface locale de la définition ouverte. Cette projection est editor-only, reconstruite à chaque activation, jamais persistée ni exportée. Revenir sur une page restaure le catalogue de tags projet.
+
+`Interface locale` est un tableau unique groupé en `Interface publique` et `Données privées`, filtrable par famille et par texte. Chaque ligne expose nom, famille, type, accès, requis, statut de liaison et compteur d'utilisations. Les propriétés courantes — nom, famille, type, accès, requis — sont modifiables directement dans le tableau; la famille impose l'accès et interdit `Requis` sur un membre privé. Les propriétés avancées — valeur par défaut et description — passent par le dialogue commun de membre, qui sert aussi la création.
+
+Un port optionnel non lié est affiché en gris avec le statut `Non lié`; un port requis non lié est affiché en rouge. Chaque membre affiche son nombre d'utilisations et permet d'y naviguer; la page appelante est alors sélectionnée sans qu'aucune mutation ne soit produite. Supprimer un membre encore référencé exige une confirmation explicite qui liste les liaisons concernées; les invocations affectées deviennent `Outdated` et restent à réparer.
 
 ## 1. Contract
 
