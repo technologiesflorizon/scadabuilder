@@ -8,7 +8,7 @@ Document version: `V2.1.5.0028`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-23 | `V2.1.5.0028` | `PENDING` | Task 3.2 Fenêtres rapides livrée : éditeur `Interface locale` substitué au catalogue de tags, tableau unique groupé et filtré, édition inline et dialogue commun, compteurs d'usages avec navigation et suppression référencée confirmée. |
+| 2026-08-23 | `V2.1.5.0028` | `2fd6c72` | Task 3.2 Fenêtres rapides livrée : éditeur `Interface locale` substitué au catalogue de tags, tableau unique groupé et filtré, édition inline et dialogue commun, compteurs d'usages avec navigation et suppression référencée confirmée. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Task 3.1 Fenêtres rapides livrée : groupe projet distinct, contexte d'éditeur borné, duplication, portée d'historique dédiée et projection canvas editor-only en lecture seule. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Task 2.4 Fenêtres rapides livrée : versionnement d'Interface locale, réalignement par invocation, statut `Outdated` dérivé et réparation explicite. |
 | 2026-08-21 | `V2.1.5.0025` | `abb81d2` | Gate documentaire ramene a zero erreur : 39 plans/specs anterieurs au standard retro-documentes par `tools/docs/backfill-doc-headers.py`. |

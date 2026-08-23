@@ -8,7 +8,7 @@ Document version: `V2.1.5.0028`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-23 | `V2.1.5.0028` | `PENDING` | Couverture Task 3.2 : panneau `Interface locale`, filtres, édition inline versionnée, usages/navigation, suppression confirmée et catalogue de sélecteurs local. |
+| 2026-08-23 | `V2.1.5.0028` | `2fd6c72` | Couverture Task 3.2 : panneau `Interface locale`, filtres, édition inline versionnée, usages/navigation, suppression confirmée et catalogue de sélecteurs local. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Couverture Task 3.1 : shell d'authoring, portée d'historique QuickWindow, politique de commandes et projection canvas editor-only. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Couverture Task 2.4 : versionnement d'Interface locale, statut `Outdated` dérivé et réparation explicite. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Couverture Phase 2 QuickWindow : services Application, usages/cycles/profondeur, historique atomique et matrice build/export fail-closed. |
