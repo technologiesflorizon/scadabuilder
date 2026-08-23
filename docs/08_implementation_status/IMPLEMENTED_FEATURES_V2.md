@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active implementation status
-Document version: `V2.1.5.0029`
+Document version: `V2.1.5.0030`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-23 | `V2.1.5.0030` | `PENDING` | Apercu d'instance Fenetre rapide editor-only : gestionnaire hote partage (SinglePerDefinition, generations, hydratation obsolete, cascade), chrome minimal, `X`/`Escape`/`Self` et banc d'essai transitoire. |
 | 2026-08-23 | `V2.1.5.0029` | `012135d` | Authoring des appelants Fenetre rapide : `OpenQuickWindow` avec cible definition, `CloseQuickWindow(Self)`, onglet conditionnel `Liaisons`, sources typees et statuts non lie/a reparer. |
 | 2026-08-23 | `V2.1.5.0028` | `2fd6c72` | Éditeur `Interface locale` Fenêtres rapides : tableau unique groupé et filtré, édition inline des propriétés courantes, dialogue commun pour les avancées, compteurs d'usages avec navigation, suppression référencée confirmée et sélecteurs restreints aux membres locaux. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Shell d'authoring Fenêtres rapides : groupe projet distinct, création/ouverture/renommage/duplication/suppression, contexte d'éditeur borné, portée d'historique dédiée et projection canvas editor-only en lecture seule. |

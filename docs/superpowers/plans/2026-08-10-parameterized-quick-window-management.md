@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
-Document version: `V2.1.5.0029`
+Document version: `V2.1.5.0030`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-23 | `V2.1.5.0030` | `724e621` | Task 3.4 exécutée et cochée : module runtime hôte adapté du prototype gelé, aperçu d'instance editor-only avec chrome minimal, banc d'essai transitoire et bundle d'aperçu séparé du bundle exporté. |
 | 2026-08-23 | `V2.1.5.0029` | `9795cce` | Task 3.3 exécutée et cochée : commande `OpenQuickWindow` avec cible définition, `CloseQuickWindow(Self)` dans un contenu, onglet conditionnel `Liaisons`, grille typée `FR-UI-18`/`FR-UI-19` et statut `Outdated` bloquant l'export. |
 | 2026-08-23 | `V2.1.5.0028` | `fafdf53` | Task 3.2 exécutée et cochée : panneau `Interface locale` substitué au catalogue de tags, tableau unique groupé avec filtres, édition inline et dialogue commun, compteurs d'usages avec navigation, suppression référencée confirmée et sélecteurs restreints aux membres locaux. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Task 3.1 exécutée et cochée : shell d'authoring, contexte borné, duplication, portée d'historique `QuickWindow` et projection canvas editor-only; l'édition du contenu reste aux Tasks 3.2/3.4. |
@@ -40,7 +41,8 @@ Document version: `V2.1.5.0029`
 - [x] Phase 3.1: groupe projet, contexte d'éditeur borné, duplication, portée d'historique `QuickWindow` et projection canvas editor-only (`2551d35`, `f4867fa`).
 - [x] Phase 3.2: éditeur `Interface locale`, tableau unique groupé et filtré, édition inline et dialogue commun, compteurs d'usages et navigation, suppression référencée confirmée (`fafdf53`).
 - [x] Phase 3.3: commandes appelantes Fenêtre rapide, onglet conditionnel `Liaisons`, sources typées et statut `Outdated` (`9795cce`).
-- [ ] Phases 3.4 à 7: non démarrées.
+- [x] Phase 3.4: aperçu d'instance editor-only, gestionnaire hôte partagé et banc d'essai transitoire (`724e621`).
+- [ ] Phases 3.5 à 7: non démarrées.
 
 Audit du 2026-08-21: la spec a été étendue par `FR-030..036` et `FR-UI-23..26`. Le plan ajoute en conséquence Task 2.4, Task 3.5, Task 3.6, Task 4.0 et Task 5.4. La Phase 0 n'est pas rouverte: la composition header/pied et la coexistence legacy n'existent que dans un host composé réel et sont donc prouvées en Phase 5 contre TF100Web, sans invalider le hash de fixture gelé.
 
@@ -610,9 +612,9 @@ dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWi
 - Consumes: définition compilée, mappings/valeurs temporaires et gestionnaire partagé issu du prototype validé.
 - Produces: preview avec cadre minimal, backdrop, `X`, `Escape`, `Self`, remplacement M101/M102 et diagnostics.
 
-- [ ] Adapter le prototype validé au code de production sans copier une seconde sémantique; connecter le runtime/cache/pont existants.
-- [ ] Vérifier même invocation => focus, autre invocation => close/dispose/recreate, aucune fuite de mapping et aucune exportation des données de test.
-- [ ] Commit: `feat: preview quick window instances`.
+- [x] Adapter le prototype validé au code de production sans copier une seconde sémantique; connecter le runtime/cache/pont existants.
+- [x] Vérifier même invocation => focus, autre invocation => close/dispose/recreate, aucune fuite de mapping et aucune exportation des données de test.
+- [x] Commit: `feat: preview quick window instances` (`724e621`).
 
 **Vérification:**
 

@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active editor menu and surface contract
-Document version: `V2.1.5.0029`
+Document version: `V2.1.5.0030`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-23 | `V2.1.5.0030` | `PENDING` | Banc d'essai Fenetre rapide : valeurs et titre temporaires, ouverture d'une instance d'apercu editor-only et fermeture explicite. |
 | 2026-08-23 | `V2.1.5.0029` | `012135d` | Onglet conditionnel `Liaisons` du dialogue Proprietes : grille typee nom/famille/type/source/valeur/statut, selecteurs contextuels et banniere `Outdated`. |
 | 2026-08-23 | `V2.1.5.0028` | `2fd6c72` | Panneau `Interface locale` : substitution du `Catalogue Tags` dans le contexte Fenêtre rapide, tableau unique groupé public/privé, filtres par famille, statut de liaison et compteurs d'usages. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Ajout de la surface Fenêtres rapides : groupe projet distinct, projection canvas editor-only non exportable, lecture seule gardée et bandeau de contexte actif. |
@@ -69,6 +70,14 @@ La grille expose, pour chaque port public de la definition : nom, famille, type,
 Un port optionnel non lie apparait en gris avec le statut `Non lie`, un port requis non lie apparait en rouge. Une invocation `Outdated` affiche une banniere rouge, marque en rouge ses ports a reparer et ses ports retires, et laisse build et export bloques jusqu'a reparation.
 
 L'editeur n'ecrit jamais dans le workspace : il valide les liaisons contre le domaine et emet une demande d'enregistrement que le shell applique comme une transition unique annulable.
+
+## Banc d'essai Fenetre rapide
+
+Le banc d'essai est une surface editor-only. Il liste les ports publics de la definition active et permet de fournir, par port, un tag temporaire et une valeur temporaire, plus un titre d'instance temporaire. Ces donnees ne sont jamais persistees dans le modele, jamais validees comme liaisons durables et jamais exportees.
+
+`Ouvrir l'apercu` materialise une instance sous la racine d'apercu de l'editeur et l'affiche dans le banc; `Fermer l'apercu` la retire. Chaque demande recoit une generation strictement monotone et son propre identifiant d'instance temporaire, de sorte qu'une hydratation obsolete soit rejetee de facon deterministe.
+
+L'apercu presente le chrome minimal contractuel : backdrop partage, cadre `role="dialog"`, barre de titre et bouton `X`. `Escape` et `CloseQuickWindow(Self)` ferment la meme instance; un clic sur le backdrop ne ferme jamais.
 
 ## 1. Contract
 
