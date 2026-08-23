@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active editor menu and surface contract
-Document version: `V2.1.5.0000`
+Document version: `V2.1.5.0027`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-23 | `V2.1.5.0027` | `PENDING` | Ajout de la surface Fenêtres rapides : groupe projet distinct, projection canvas editor-only non exportable, lecture seule gardée et bandeau de contexte actif. |
 | 2026-07-29 | `V2.1.5.0000` | `8fe1077` | Accueil projet, dialogue Nouveau, sélecteur `project.json`, récents et commandes de fermeture livrés. |
 | 2026-07-16 | `V2.1.4.0042` | `9fd2a30` | `page.properties` ouvre et active maintenant la page selectionnee avant d'afficher le panneau Page afin de charger le bon snapshot de proprietes. |
 | 2026-07-16 | `V2.1.4.0041` | `090d388` | Le groupe Input numerique est reduit a `Configurer <A1>` et partage une cible Tableau/cellule fraiche avec le panneau, le dialogue et le double-clic. |
@@ -38,6 +39,16 @@ Document version: `V2.1.5.0000`
 | 2026-06-16 | `V2.1.2.0002` | `2c5a0b4` | Ajout du contrat menu pour `object.group` et avertissement de conversion avant groupement legacy. |
 | 2026-06-16 | `V2.1.2.0000` | `2c5a0b4` | Ajout du contrat du choix contextuel Propriete et des commandes desactivees avec raison visible au survol. |
 | 2026-06-16 | `V2.1.1.0039` | `2c5a0b4` | Creation du contrat menus/surfaces separe des commandes et de l'UI generale. |
+
+## Surface Fenêtres rapides
+
+L’arborescence du projet possède un groupe `Fenêtres rapides` distinct, séparé des pages et de la bibliothèque Element+. Chaque entrée affiche son nom, son code, sa version d’interface, son nombre d’appelants et, le cas échéant, le nombre d’invocations `Outdated` à réparer.
+
+Ouvrir une définition projette son `VisualContent` sur le canvas partagé au moyen d’une scène et d’une référence strictement editor-only : exclue du build, sans fichier durable, avec un code préfixé `qw-` qui ne peut entrer en collision avec une page. Cette projection n’est jamais ajoutée à `Project.Scenes`, donc aucun artefact d’éditeur ne peut atteindre un export.
+
+Dans cette tranche, la projection est en lecture seule : tant qu’une Fenêtre rapide est affichée, le handler de messages du canvas est fermé, afin qu’aucune interaction ne puisse muter la dernière page active pendant que son contenu n’est pas celui affiché. L’édition du contenu appartient aux tranches d’authoring suivantes.
+
+Un bandeau de contexte affiche en permanence le badge `Page` ou `Fenêtre rapide` et le titre de la surface active.
 
 ## 1. Contract
 

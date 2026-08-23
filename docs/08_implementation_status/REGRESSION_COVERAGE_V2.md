@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active regression coverage map
-Document version: `V2.1.5.0026`
+Document version: `V2.1.5.0027`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-23 | `V2.1.5.0027` | `PENDING` | Couverture Task 3.1 : shell d'authoring, portée d'historique QuickWindow, politique de commandes et projection canvas editor-only. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Couverture Task 2.4 : versionnement d'Interface locale, statut `Outdated` dérivé et réparation explicite. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Couverture Phase 2 QuickWindow : services Application, usages/cycles/profondeur, historique atomique et matrice build/export fail-closed. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Couverture Phases 0/1 QuickWindow : DOM réel, WebView2/Edge, validations Domain, persistance atomique, retrait popup et handshake muté dans les deux dépôts. |
@@ -118,6 +119,7 @@ Les 67 tests QuickWindow/legacy-popup ciblés, les 4 tests de fixture conformanc
 | --- | --- |
 | Fenêtres rapides Phase 0 — isolation (`DEC-0050`) | `tests/runtime-js/quick-window-dom-css-isolation.test.mjs` verrouille Node `20.18.x`, révision/hash et 100 cycles; `QuickWindowIsolationPrototypeContractTests` exige une capture WebView2 réelle. TF100Web exécute la même fixture/hash avec son test Node et `tests_scada_quick_window_isolation_prototype.py` dans Edge headless. |
 | Fenêtres rapides Phase 1 — contrats et handshake (`DEC-0050`) | `QuickWindowDomainTests`, `QuickWindowBindingTests`, `QuickWindowStoreTests` et `QuickWindowContractHandshakeTests` couvrent familles/type/accès, anti-injection, version/profil, fermeture contextuelle, persistance déterministe/atomique et SHA canonique. TF100Web `tests_scada_quick_window_contract_handshake.py` parse le manifest et exécute les mutations clés/type/ordre/profil/required/legacy. |
+| Fenêtres rapides Phase 3.1 — shell d'authoring (`DEC-0050`, `FR-033`, `FR-035`) | `QuickWindowShellContractTests` couvre la portée d'historique `QuickWindow`, la pile unique sur une alternance page/fenêtre, l'activation du contexte cible, le refus non destructif d'une action non résoluble, le masquage des commandes page-only, le contrat XAML du groupe projet, la garde d'architecture de `MainWindow.xaml.cs`, la projection canvas editor-only non exportable et la fermeture du handler de canvas en lecture seule. |
 | Fenêtres rapides Phase 2.4 — versionnement d'Interface locale (`DEC-0050`, `FR-032`) | `QuickWindowInterfaceVersioningTests` couvre le renommage sans increment, la neutralité des membres privés, le réalignement sur ajout optionnel, le statut `Outdated` sur ajout `Required`, retrait de port lié et changement de type, la préservation des liaisons, le blocage build/export et la réparation explicite (réussie et refusée). |
 | Fenêtres rapides Phase 2 — Application, historique et build (`DEC-0050`) | `QuickWindowApplicationTests` couvre création/édition/suppression fail-closed, navigation vers usages, définitions manquantes, versions, ports retirés, cycle et profondeur; `QuickWindowHistoryTests` couvre appelant/commande/invocation/liaisons, sélection, dirty state et deux invocations indépendantes; `QuickWindowBuildValidationTests` couvre required, mapping/type/accès, injection, profil, présentation, capacité bloquée et absence de binding fabriqué. `EditorHistoryServiceTests` verrouille aussi la conservation de la pile lorsqu’un restore échoue. |
 | Numeric `StateConfig.ReadVariable` / `ValueBindings.ReadTagId` coherence | `ScadaSceneElementEventsTests.WithElementStateConfigSynchronizesNumericReadVariableWithCanonicalValueBinding`, `ModernProjectStoreTests.SceneMigrationRepairsPersistedNumericReadBindingMismatch`, `OfficialSceneDomainTests.BuildValidationRejectsNumericReadVariableValueBindingMismatch`, and `IndustrialRuntimeIntegrationTests.ReferenceProjectNormalizesEveryCompiledNumericReadBindingAndExportsWin00017Mappings` cover authoring, migration, fail-closed validation, all compiled reference pages and exact `win00017` export mappings. |

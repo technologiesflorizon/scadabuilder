@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active authoritative decision register
-Document version: `V2.1.5.0026`
+Document version: `V2.1.5.0027`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-23 | `V2.1.5.0027` | `PENDING` | `DEC-0050` Task 3.1 implémentée : shell d'authoring, contexte borné, duplication et projection canvas editor-only; capacités toujours `Blocked`. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | `DEC-0050` Task 2.4 implémentée : Interface locale versionnée, invocations `Outdated` dérivées et réparation explicite; capacités toujours `Blocked`. |
 | 2026-08-21 | `V2.1.5.0023` | `b0159f9` | `DEC-0050` étendue par `FR-030..036` et `FR-UI-23..26` : composition header/pied, presse-papier inter-contextes, Interface locale versionnée, duplication de définition, bibliothèque Element+, portée undo/redo et isolation vis-à-vis des popups legacy. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | `DEC-0050` Phase 2 implémentée : orchestration Application, dépendances, undo/redo workspace et validation build/export; capacités QuickWindow toujours `Blocked`. |
@@ -147,7 +148,7 @@ La première tranche est une verticale `win00054` couvrant modèle, persistance,
 
 Implementation status:
 
-La Phase 0 d’isolation DOM/CSS est validée avec la fixture gelée `1.0.2` dans WebView2 et TF100Web. La Phase 1 fournit les contrats Domain/persistance et le handshake cross-repository, tous inertes. La Phase 2 fournit les services Application de définition/invocation, l’analyse des usages/cycles/profondeur, l’historique workspace atomique et la validation build/export fail-closed. L'audit du 2026-08-21 a rouvert la Phase 2 par une Task 2.4, maintenant implémentée : transitions d'Interface locale classées par clé stable, réalignement par invocation, statut `Outdated` dérivé et réparation explicite. Les Tasks 3.5, 3.6, 4.0 et 5.4 ajoutées au plan restent ouvertes. Toutes les capacités Fenêtre rapide demeurent `Blocked` et aucun comportement WPF, preview, export ou host n’est déclaré implémenté.
+La Phase 0 d’isolation DOM/CSS est validée avec la fixture gelée `1.0.2` dans WebView2 et TF100Web. La Phase 1 fournit les contrats Domain/persistance et le handshake cross-repository, tous inertes. La Phase 2 fournit les services Application de définition/invocation, l’analyse des usages/cycles/profondeur, l’historique workspace atomique et la validation build/export fail-closed. L'audit du 2026-08-21 a rouvert la Phase 2 par une Task 2.4, maintenant implémentée : transitions d'Interface locale classées par clé stable, réalignement par invocation, statut `Outdated` dérivé et réparation explicite. La Task 3.1 livre ensuite le shell d'authoring : groupe projet distinct, contexte d'éditeur borné masquant les commandes page-only, duplication indépendante, portée d'historique `QuickWindow` sur la pile unique et projection canvas editor-only en lecture seule. Les Tasks 3.2 à 3.6, 4.0 et 5.4 restent ouvertes. Toutes les capacités Fenêtre rapide demeurent `Blocked` et aucun comportement WPF, preview, export ou host n’est déclaré implémenté.
 
 Regression coverage:
 

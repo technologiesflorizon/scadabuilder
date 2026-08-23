@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
-Document version: `V2.1.5.0026`
+Document version: `V2.1.5.0027`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-23 | `V2.1.5.0027` | `PENDING` | Task 3.1 exécutée et cochée : shell d'authoring, contexte borné, duplication, portée d'historique `QuickWindow` et projection canvas editor-only; l'édition du contenu reste aux Tasks 3.2/3.4. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Task 2.4 exécutée et cochée : compatibilité d'interface, réalignement, `Outdated` et réparation implémentés et couverts par `QuickWindowInterfaceVersioningTests`. |
 | 2026-08-21 | `V2.1.5.0023` | `b0159f9` | Fermeture des lacunes d'audit avant Phase 3 : Task 2.4 (versionnement d'interface), Task 4.0 (contrat package prealable), Tasks 3.5/3.6 (presse-papier, reparation), Task 5.4 (composition header/pied et coexistence legacy), blocs de verification par tache, checkpoints versionnes et rapports d'audit par phase. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 livrée : services de définition/invocation, analyse des usages/cycles/profondeur, snapshots undo/redo atomiques et validateur build/export fail-closed; capacités runtime toujours bloquées. |
@@ -34,7 +35,8 @@ Document version: `V2.1.5.0026`
 - [x] Phase 1.5: handshake généré, SHA canonique et mutations exécutées dans Builder et TF100Web.
 - [x] Phase 2: orchestration Application, dépendances, historique et validation build/export fail-closed.
 - [x] Phase 2.4: versionnement d'Interface locale, réalignement par invocation, statut `Outdated` dérivé et réparation explicite (`ea5a8bc`).
-- [ ] Phases 3 à 7: non démarrées.
+- [x] Phase 3.1: groupe projet, contexte d'éditeur borné, duplication, portée d'historique `QuickWindow` et projection canvas editor-only (`2551d35`, `f4867fa`).
+- [ ] Phases 3.2 à 7: non démarrées.
 
 Audit du 2026-08-21: la spec a été étendue par `FR-030..036` et `FR-UI-23..26`. Le plan ajoute en conséquence Task 2.4, Task 3.5, Task 3.6, Task 4.0 et Task 5.4. La Phase 0 n'est pas rouverte: la composition header/pied et la coexistence legacy n'existent que dans un host composé réel et sont donc prouvées en Phase 5 contre TF100Web, sans invalider le hash de fixture gelé.
 
@@ -523,14 +525,14 @@ dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWi
 - Consumes: services Application et éditeur visuel existant.
 - Produces: groupe distinct, création vide, onglet/badge/titre, sélection et politique de commandes masquées.
 
-- [ ] Ajouter `Fenêtres rapides` sans les mélanger aux pages ou Element+; réutiliser le canvas via le contexte `VisualContent`.
-- [ ] Masquer navigation, route, header/footer, import et autres commandes page-only; afficher le contexte actif sans ambiguïté.
-- [ ] Garder dans `MainWindow.xaml.cs` seulement l’initialisation du controller et les délégations d’événements d’une ligne. Toute logique de sélection, création, refresh, enablement et navigation QuickWindow appartient au controller ou à `MainWindow.QuickWindows.cs`.
-- [ ] Tester le contrat XAML/commandes et le basculement page/fenêtre. Ajouter un test d’architecture qui échoue si de nouvelles méthodes QuickWindow substantielles ou des types métier sont ajoutés à `MainWindow.xaml.cs`.
-- [ ] Ajouter `Dupliquer` dans l'arborescence (`FR-033`, `FR-UI-25`): nouvelle clé, `Code` unique dérivé, copie complète du contenu/interface/présentation, aucune invocation copiée et aucune référence partagée.
-- [ ] Étendre `EditorHistoryTarget` à une portée `QuickWindow` identifiée par `QuickWindowDefinitionKey` (`FR-035`) sans créer de second service d'historique; `Annuler`/`Rétablir` activent d'abord le contexte cible puis appliquent l'action (`FR-UI-26`).
-- [ ] Tester une séquence alternée page → fenêtre → page: pile unique, aucun vidage au basculement, activation déterministe du contexte et cible affichée.
-- [ ] Commit: `feat: add quick window authoring shell`.
+- [x] Ajouter `Fenêtres rapides` sans les mélanger aux pages ou Element+; réutiliser le canvas via le contexte `VisualContent`.
+- [x] Masquer navigation, route, header/footer, import et autres commandes page-only; afficher le contexte actif sans ambiguïté.
+- [x] Garder dans `MainWindow.xaml.cs` seulement l’initialisation du controller et les délégations d’événements d’une ligne. Toute logique de sélection, création, refresh, enablement et navigation QuickWindow appartient au controller ou à `MainWindow.QuickWindows.cs`.
+- [x] Tester le contrat XAML/commandes et le basculement page/fenêtre. Ajouter un test d’architecture qui échoue si de nouvelles méthodes QuickWindow substantielles ou des types métier sont ajoutés à `MainWindow.xaml.cs`.
+- [x] Ajouter `Dupliquer` dans l'arborescence (`FR-033`, `FR-UI-25`): nouvelle clé, `Code` unique dérivé, copie complète du contenu/interface/présentation, aucune invocation copiée et aucune référence partagée.
+- [x] Étendre `EditorHistoryTarget` à une portée `QuickWindow` identifiée par `QuickWindowDefinitionKey` (`FR-035`) sans créer de second service d'historique; `Annuler`/`Rétablir` activent d'abord le contexte cible puis appliquent l'action (`FR-UI-26`).
+- [x] Tester une séquence alternée page → fenêtre → page: pile unique, aucun vidage au basculement, activation déterministe du contexte et cible affichée.
+- [x] Commit: `feat: add quick window authoring shell` (`2551d35`), puis hébergement canvas editor-only en lecture seule (`f4867fa`).
 
 **Vérification:**
 

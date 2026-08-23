@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active editor state contract
-Document version: `V2.1.5.0022`
+Document version: `V2.1.5.0027`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-23 | `V2.1.5.0027` | `PENDING` | Portée d’historique `QuickWindow` ajoutée : pile unique partagée avec les pages, activation déterministe du contexte cible et refus non destructif d’une action non résoluble. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Historique QuickWindow Phase 2 : snapshot projet/scènes/UI/dirty atomique, sélection dédiée et restauration exacte de l’appelant, commande, invocation et liaisons. |
 | 2026-07-29 | `V2.1.5.0000` | `8fe1077` | Une fenêtre possède zéro ou une session projet active; fermer réinitialise tout état projet. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Snapshot editor-only atomique du mode Tableau, de la visibilite effective A/1 et de l'id actif; refresh du meme Tableau preserve le mode Cellules. |
@@ -51,6 +52,8 @@ stateDiagram-v2
 `DEC-0038` moves the polymorphic undo/redo stack to the project workspace. Scene actions keep scene scope; page lifecycle actions use project scope and survive tab closure or deletion. Undo/redo mutates the in-memory workspace and marks it dirty; only Save persists a coherent project/scenes snapshot.
 
 `PageWorkspaceSnapshot` includes the project, scenes, active/selected page, open tabs, dirty state, and pending file deletions. `ProjectWorkspaceSnapshotAction` restores this state even after an onglet closes or a page is removed. `ModernProjectStore.SaveWorkspaceSnapshotAsync` stages and commits project/scenes as one recoverable transaction; `SaveSceneAsync` no longer upserts the authoritative page inventory.
+
+`EditorHistoryTarget` possède une portée `QuickWindow` identifiée par `QuickWindowDefinitionKey`. Les Fenêtres rapides ne créent aucun second service d’historique : `QuickWindowContentChangedAction` rend le `VisualContent` d’une définition réversible sur la pile unique du workspace et rafraîchit son propre contexte avant d’afficher l’état restauré, de sorte qu’annuler une action visant un contexte inactif l’active d’abord. Le basculement page ↔ Fenêtre rapide ne vide, ne tronque ni ne fusionne la pile. `EditorHistoryContext` refuse une action QuickWindow qu’il ne peut pas résoudre et la laisse au sommet plutôt que de la perdre.
 
 `QuickWindowWorkspaceSnapshotAction` réutilise la cible d’historique projet et restaure exactement projet, scènes, sélection `QuickWindowEditorSelectionSnapshot`, dirty state et suppressions de pages en attente. `EditorHistoryContext.RestoreProjectWorkspaceSnapshot` permet au host d’effectuer un swap atomique unique; les callbacks granulaires historiques restent le chemin de compatibilité. Une exception de restore conserve l’action au sommet de la pile afin qu’un échec ne perde pas la capacité d’annuler.
 
