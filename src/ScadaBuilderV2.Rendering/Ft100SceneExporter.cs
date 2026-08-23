@@ -1038,19 +1038,11 @@ public sealed partial class Ft100SceneExporter
         string? runtimeScriptSource,
         ScadaTagCatalog? tagCatalog, List<string> warnings)
     {
-        var scope = Ft100ExportScope.ForScene(scene);
         var title = HtmlEncoder.Default.Encode(scene.Title);
-        var pageId = HtmlEncoder.Default.Encode(scene.Id);
-        var rootDomId = HtmlEncoder.Default.Encode(scope.RootDomId);
-        var pageClass = HtmlEncoder.Default.Encode(CssIdentifier(scene.Id));
-        var sceneType = HtmlEncoder.Default.Encode(ToManifestPageType(scene.PageType));
-        var rootStyle = HtmlEncoder.Default.Encode(BuildSceneRootInlineStyle(scene));
-        var actionRegistryAttribute = BuildActionRegistryAttribute(scene);
-        var modernElements = string.Concat(scene.Elements.Select(
-            element => BuildElementHtml(element, 0, 0, scope, tagCatalog, warnings)));
         var runtimeScript = string.IsNullOrWhiteSpace(runtimeScriptSource)
             ? string.Empty
             : $"  <script src=\"{HtmlEncoder.Default.Encode(runtimeScriptSource)}\" defer></script>";
+        var sceneRoot = BuildSceneRootHtml(scene, sourceContent, tagCatalog, warnings);
 
         return $$"""
 <!doctype html>
@@ -1062,17 +1054,47 @@ public sealed partial class Ft100SceneExporter
   <link rel="stylesheet" href="{{HtmlEncoder.Default.Encode(stylesheetHref)}}">
 </head>
 <body style="margin:0;padding:0;">
-  <div id="{{rootDomId}}" class="ft100-scada-scene ft100-scada-scene--{{pageClass}}" data-scada-page-id="{{pageId}}" data-scada-page-type="{{sceneType}}" data-scada-width="{{Format(scene.CanvasSize.Width)}}" data-scada-height="{{Format(scene.CanvasSize.Height)}}" style="{{rootStyle}}"{{actionRegistryAttribute}}>
-    <div class="ft100-source-layer" style="position:absolute;inset:0;">
-{{Indent(sourceContent, 6)}}
-    </div>
-    <div class="ft100-elementplus-layer" style="position:absolute;inset:0;pointer-events:none;">
-{{Indent(modernElements, 6)}}
-    </div>
-  </div>
+{{Indent(sceneRoot, 2)}}
 {{runtimeScript}}
 </body>
 </html>
+""";
+    }
+
+    /// <summary>
+    /// Builds the scene root markup shared by the exported page document and the editor-only
+    /// quick-window instance preview, so both consume exactly one Element+ geometry semantics.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0038, DEC-0050.
+    /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md.
+    /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowPreviewTests.cs.
+    /// </remarks>
+    internal static string BuildSceneRootHtml(
+        ScadaScene scene,
+        string sourceContent,
+        ScadaTagCatalog? tagCatalog,
+        List<string> warnings)
+    {
+        var scope = Ft100ExportScope.ForScene(scene);
+        var pageId = HtmlEncoder.Default.Encode(scene.Id);
+        var rootDomId = HtmlEncoder.Default.Encode(scope.RootDomId);
+        var pageClass = HtmlEncoder.Default.Encode(CssIdentifier(scene.Id));
+        var sceneType = HtmlEncoder.Default.Encode(ToManifestPageType(scene.PageType));
+        var rootStyle = HtmlEncoder.Default.Encode(BuildSceneRootInlineStyle(scene));
+        var actionRegistryAttribute = BuildActionRegistryAttribute(scene);
+        var modernElements = string.Concat(scene.Elements.Select(
+            element => BuildElementHtml(element, 0, 0, scope, tagCatalog, warnings)));
+
+        return $$"""
+<div id="{{rootDomId}}" class="ft100-scada-scene ft100-scada-scene--{{pageClass}}" data-scada-page-id="{{pageId}}" data-scada-page-type="{{sceneType}}" data-scada-width="{{Format(scene.CanvasSize.Width)}}" data-scada-height="{{Format(scene.CanvasSize.Height)}}" style="{{rootStyle}}"{{actionRegistryAttribute}}>
+  <div class="ft100-source-layer" style="position:absolute;inset:0;">
+{{Indent(sourceContent, 4)}}
+  </div>
+  <div class="ft100-elementplus-layer" style="position:absolute;inset:0;pointer-events:none;">
+{{Indent(modernElements, 4)}}
+  </div>
+</div>
 """;
     }
 

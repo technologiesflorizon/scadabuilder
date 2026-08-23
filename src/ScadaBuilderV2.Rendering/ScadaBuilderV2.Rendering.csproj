@@ -11,6 +11,7 @@
     <EmbeddedResource Include="Runtime\input-edit-guard.js" />
     <EmbeddedResource Include="Runtime\confirmation-modal.js" />
     <EmbeddedResource Include="Runtime\scada-runtime.js" />
+    <EmbeddedResource Include="Runtime\quick-window-host.js" />
   </ItemGroup>
 
   <ItemGroup>

@@ -39,6 +39,8 @@
     <Compile Include="..\..\src\ScadaBuilderV2.App\QuickWindows\QuickWindowInterfaceViewModel.cs" Link="AppSource\QuickWindowInterfaceViewModel.cs" />
     <Compile Include="..\..\src\ScadaBuilderV2.App\QuickWindows\QuickWindowInterfaceCatalogProjection.cs" Link="AppSource\QuickWindowInterfaceCatalogProjection.cs" />
     <Compile Include="..\..\src\ScadaBuilderV2.App\QuickWindows\QuickWindowBindingsViewModel.cs" Link="AppSource\QuickWindowBindingsViewModel.cs" />
+    <Compile Include="..\..\src\ScadaBuilderV2.App\QuickWindows\QuickWindowTestBenchViewModel.cs" Link="AppSource\QuickWindowTestBenchViewModel.cs" />
+    <Compile Include="..\..\src\ScadaBuilderV2.App\QuickWindows\BuilderQuickWindowHostAdapter.cs" Link="AppSource\BuilderQuickWindowHostAdapter.cs" />
   </ItemGroup>
 
 </Project>

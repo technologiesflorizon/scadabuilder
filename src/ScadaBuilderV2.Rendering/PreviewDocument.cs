@@ -59,6 +59,44 @@ public sealed record PreviewDocument
         return new PreviewDocument(document.PageCode, input.Page.Title, htmlRelativePath);
     }
 
+    /// <summary>
+    /// Materializes one editor-only quick-window instance preview under the preview root: document,
+    /// stylesheet and the preview script bundle carrying the shared runtime and the quick-window host.
+    /// </summary>
+    /// <remarks>
+    /// The materialized files live only under the editor preview root; they are never part of the project
+    /// model and never reach a `.sb2` package.
+    ///
+    /// Decisions: DEC-0050, FR-019, FR-UI-21.
+    /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowPreviewTests.cs.
+    /// </remarks>
+    public static async Task<PreviewDocument> MaterializeQuickWindowAsync(
+        QuickWindows.QuickWindowPreviewInput input,
+        string previewRootPath,
+        long generation = 1,
+        Guid? runtimeInstanceId = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentException.ThrowIfNullOrWhiteSpace(previewRootPath);
+        var document = QuickWindows.QuickWindowPreviewDocumentFactory.Create(input, generation, runtimeInstanceId);
+        var relativeDirectory = Path.Combine(QuickWindows.QuickWindowPreviewDocumentFactory.InstanceCodePrefix.TrimEnd('-'), document.InstanceCode);
+        var instanceDirectory = Path.Combine(previewRootPath, relativeDirectory);
+        var cssDirectory = Path.Combine(instanceDirectory, "css");
+        Directory.CreateDirectory(cssDirectory);
+        var htmlRelativePath = Path.Combine(relativeDirectory, $"{document.InstanceCode}.html");
+        await File.WriteAllTextAsync(Path.Combine(previewRootPath, htmlRelativePath), document.Html, cancellationToken);
+        await File.WriteAllTextAsync(
+            Path.Combine(cssDirectory, $"{document.InstanceCode}.css"),
+            document.Css,
+            cancellationToken);
+        await File.WriteAllTextAsync(
+            Path.Combine(instanceDirectory, QuickWindows.QuickWindowPreviewDocumentFactory.ScriptFileName),
+            document.Script,
+            cancellationToken);
+        return new PreviewDocument(document.InstanceCode, input.Definition.EffectiveTitle, htmlRelativePath);
+    }
+
     private static string RequireText(string value, string parameterName)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(value, parameterName);

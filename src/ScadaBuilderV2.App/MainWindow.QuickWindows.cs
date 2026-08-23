@@ -31,6 +31,8 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
     private Guid? _hostedQuickWindowKey;
     private QuickWindowDefinition? _hostedQuickWindowDefinition;
     private bool _isQuickWindowInterfacePanelBound;
+    private bool _isQuickWindowTestBenchBound;
+    private BuilderQuickWindowHostAdapter? _quickWindowPreviewHost;
 
     /// <summary>
     /// Gets whether the canvas currently hosts a quick-window projection instead of a page.
@@ -56,6 +58,15 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
 
     private void OnShowQuickWindowInterfaceAnchorableClick(object sender, RoutedEventArgs e) =>
         QuickWindowInterfaceAnchorable.Show();
+
+    private void OnShowQuickWindowTestBenchAnchorableClick(object sender, RoutedEventArgs e) =>
+        QuickWindowTestBenchAnchorable.Show();
+
+    /// <summary>Gets the editor-only preview host adapter, created once the project root is known.</summary>
+    private BuilderQuickWindowHostAdapter? QuickWindowPreviewHost =>
+        _quickWindowPreviewHost ??= _repositoryRoot is null
+            ? null
+            : new BuilderQuickWindowHostAdapter(Path.Combine(_repositoryRoot, ".studio", "preview"));
 
     /// <summary>
     /// Returns whether one command applies to the active authoring surface.
@@ -177,6 +188,7 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         EditorContextTitleText.Text = context.ContextTitle;
         EditorContextPanel.Visibility = Visibility.Visible;
         ShowLocalInterfacePanel();
+        ShowQuickWindowTestBench(definition);
         RefreshActiveRibbonCommandStates();
         await HostQuickWindowProjectionAsync(definition);
     }
@@ -233,6 +245,7 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         EditorContextTitleText.Text = _activeEditorContext.ContextTitle;
         EditorContextPanel.Visibility = Visibility.Visible;
         HideLocalInterfacePanel();
+        HideQuickWindowTestBench();
     }
 
     /// <summary>
@@ -263,6 +276,66 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
     {
         QuickWindowInterfaceAnchorable.Hide();
         TagCatalogAnchorable.Show();
+    }
+
+    /// <summary>Binds and shows the editor-only test bench of the activated definition (FR-UI-21).</summary>
+    private void ShowQuickWindowTestBench(QuickWindowDefinition definition)
+    {
+        if (!_isQuickWindowTestBenchBound)
+        {
+            QuickWindowTestBenchControl.PreviewRequested += OnQuickWindowPreviewRequested;
+            QuickWindowTestBenchControl.CloseRequested += OnQuickWindowPreviewCloseRequested;
+            _isQuickWindowTestBenchBound = true;
+        }
+
+        QuickWindowTestBenchControl.Model.Load(definition);
+        QuickWindowTestBenchAnchorable.Show();
+    }
+
+    /// <summary>Clears the bench and its preview when a page becomes the active surface again.</summary>
+    private void HideQuickWindowTestBench()
+    {
+        QuickWindowTestBenchControl.HidePreview();
+        QuickWindowTestBenchControl.Model.Clear();
+        QuickWindowPreviewHost?.Close();
+        QuickWindowTestBenchAnchorable.Hide();
+    }
+
+    private async void OnQuickWindowPreviewRequested(object? sender, EventArgs e)
+    {
+        if (_hostedQuickWindowDefinition is not { } definition)
+        {
+            QuickWindowTestBenchControl.Model.Status = "Aucune fenetre rapide active.";
+            return;
+        }
+
+        if (QuickWindowPreviewHost is not { } adapter)
+        {
+            QuickWindowTestBenchControl.Model.Status = "Aucun projet actif.";
+            return;
+        }
+
+        try
+        {
+            var session = await adapter.OpenAsync(
+                definition,
+                Guid.NewGuid(),
+                QuickWindowTestBenchControl.Model.ToTestBenchValues(),
+                ActiveSelectorTagCatalog);
+            QuickWindowTestBenchControl.ShowPreview(session.Source);
+            QuickWindowTestBenchControl.Model.Status =
+                $"Instance de prévisualisation ouverte (génération {session.Generation}).";
+        }
+        catch (Exception ex)
+        {
+            QuickWindowTestBenchControl.HidePreview($"Aperçu impossible: {ex.Message}");
+        }
+    }
+
+    private void OnQuickWindowPreviewCloseRequested(object? sender, EventArgs e)
+    {
+        QuickWindowPreviewHost?.Close();
+        QuickWindowTestBenchControl.HidePreview("Instance de prévisualisation fermée.");
     }
 
     private async void OnQuickWindowAddMemberRequested(object? sender, EventArgs e) =>

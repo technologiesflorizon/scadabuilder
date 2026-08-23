@@ -385,6 +385,7 @@
                                 <MenuItem Header="Projet" Click="OnShowProjectAnchorableClick" />
                                 <MenuItem Header="Catalogue Tags" Click="OnShowTagCatalogAnchorableClick" />
                                 <MenuItem Header="Interface locale" Click="OnShowQuickWindowInterfaceAnchorableClick" />
+                                <MenuItem Header="Banc d'essai" Click="OnShowQuickWindowTestBenchAnchorableClick" />
                                 <MenuItem Header="Page" Click="OnShowPageAnchorableClick" />
                                 <MenuItem Header="Element" Click="OnShowElementAnchorableClick" />
                                 <MenuItem Header="Propriete" Click="OnShowPropertiesAnchorableClick" />
@@ -710,6 +711,9 @@
                         </avalonDock:LayoutAnchorable>
                         <avalonDock:LayoutAnchorable x:Name="QuickWindowInterfaceAnchorable" Title="Interface locale" ContentId="QuickWindowInterface" CanClose="True">
                             <qw:QuickWindowInterfacePanel x:Name="QuickWindowInterfacePanelControl"/>
+                        </avalonDock:LayoutAnchorable>
+                        <avalonDock:LayoutAnchorable x:Name="QuickWindowTestBenchAnchorable" Title="Banc d'essai" ContentId="QuickWindowTestBench" CanClose="True">
+                            <qw:QuickWindowTestBench x:Name="QuickWindowTestBenchControl"/>
                         </avalonDock:LayoutAnchorable>
                         <avalonDock:LayoutAnchorable x:Name="TagCatalogAnchorable" Title="Catalogue Tags" ContentId="TagCatalog" CanClose="True">
                         <DockPanel Margin="12">
