@@ -34,6 +34,10 @@
     <Compile Include="..\..\src\ScadaBuilderV2.App\TableEditor\TableEditorWebViewStateFactory.cs" Link="AppSource\TableEditorWebViewStateFactory.cs" />
     <Compile Include="..\..\src\ScadaBuilderV2.App\QuickWindows\QuickWindowEditorContext.cs" Link="AppSource\QuickWindowEditorContext.cs" />
     <Compile Include="..\..\src\ScadaBuilderV2.App\QuickWindows\QuickWindowPreviewProjection.cs" Link="AppSource\QuickWindowPreviewProjection.cs" />
+    <Compile Include="..\..\src\ScadaBuilderV2.App\QuickWindows\QuickWindowListItemViewModel.cs" Link="AppSource\QuickWindowListItemViewModel.cs" />
+    <Compile Include="..\..\src\ScadaBuilderV2.App\QuickWindows\QuickWindowWorkspaceController.cs" Link="AppSource\QuickWindowWorkspaceController.cs" />
+    <Compile Include="..\..\src\ScadaBuilderV2.App\QuickWindows\QuickWindowInterfaceViewModel.cs" Link="AppSource\QuickWindowInterfaceViewModel.cs" />
+    <Compile Include="..\..\src\ScadaBuilderV2.App\QuickWindows\QuickWindowInterfaceCatalogProjection.cs" Link="AppSource\QuickWindowInterfaceCatalogProjection.cs" />
   </ItemGroup>
 
 </Project>

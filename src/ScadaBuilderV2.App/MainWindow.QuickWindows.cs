@@ -5,6 +5,7 @@ using ScadaBuilderV2.App.QuickWindows;
 using ScadaBuilderV2.Application.Commands;
 using ScadaBuilderV2.Application.Pages;
 using ScadaBuilderV2.Application.QuickWindows;
+using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.QuickWindows;
 using ScadaBuilderV2.Rendering;
 
@@ -28,6 +29,8 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
     private QuickWindowEditorContext? _activeEditorContext;
     private bool _isUpdatingQuickWindowSelection;
     private Guid? _hostedQuickWindowKey;
+    private QuickWindowDefinition? _hostedQuickWindowDefinition;
+    private bool _isQuickWindowInterfacePanelBound;
 
     /// <summary>
     /// Gets whether the canvas currently hosts a quick-window projection instead of a page.
@@ -42,6 +45,17 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
 
     /// <summary>Gets the quick-window inventory bound by the project group.</summary>
     public QuickWindowsPanelViewModel QuickWindowsPanel => QuickWindowWorkspace.Panel;
+
+    /// <summary>
+    /// Gets the catalogue offered to the state, command, binding and expression selectors of the active
+    /// surface: the project tags on a page, the local interface members on a quick window (FR-031).
+    /// </summary>
+    private ScadaTagCatalog? ActiveSelectorTagCatalog => _hostedQuickWindowDefinition is { } definition
+        ? QuickWindowInterfaceCatalogProjection.Create(definition)
+        : _modernProject?.TagCatalog;
+
+    private void OnShowQuickWindowInterfaceAnchorableClick(object sender, RoutedEventArgs e) =>
+        QuickWindowInterfaceAnchorable.Show();
 
     /// <summary>
     /// Returns whether one command applies to the active authoring surface.
@@ -158,9 +172,11 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         ArgumentNullException.ThrowIfNull(definition);
         _activeEditorContext = context;
         _hostedQuickWindowKey = definition.DefinitionKey;
+        _hostedQuickWindowDefinition = definition;
         EditorContextBadgeText.Text = context.ContextBadge;
         EditorContextTitleText.Text = context.ContextTitle;
         EditorContextPanel.Visibility = Visibility.Visible;
+        ShowLocalInterfacePanel();
         RefreshActiveRibbonCommandStates();
         await HostQuickWindowProjectionAsync(definition);
     }
@@ -211,10 +227,116 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
     {
         _activeEditorContext = QuickWindowEditorContext.ForPage(pageKey, code, title);
         _hostedQuickWindowKey = null;
+        _hostedQuickWindowDefinition = null;
         QuickWindowWorkspace.ClearActiveContext();
         EditorContextBadgeText.Text = _activeEditorContext.ContextBadge;
         EditorContextTitleText.Text = _activeEditorContext.ContextTitle;
         EditorContextPanel.Visibility = Visibility.Visible;
+        HideLocalInterfacePanel();
+    }
+
+    /// <summary>
+    /// Shows `Interface locale` in place of the project `Catalogue Tags` while a quick window is authored.
+    /// The tag catalogue is hidden rather than left visible and ambiguous: quick-window content never
+    /// references a physical project tag.
+    /// </summary>
+    private void ShowLocalInterfacePanel()
+    {
+        if (!_isQuickWindowInterfacePanelBound)
+        {
+            QuickWindowInterfacePanelControl.Bind(QuickWindowWorkspace.InterfacePanel);
+            QuickWindowInterfacePanelControl.AddMemberRequested += OnQuickWindowAddMemberRequested;
+            QuickWindowInterfacePanelControl.EditMemberRequested += OnQuickWindowEditMemberRequested;
+            QuickWindowInterfacePanelControl.DeleteMemberRequested += OnQuickWindowDeleteMemberRequested;
+            QuickWindowInterfacePanelControl.NavigateToUsageRequested += OnQuickWindowNavigateToMemberUsageRequested;
+            QuickWindowInterfacePanelControl.MemberInlineEdited += OnQuickWindowMemberInlineEdited;
+            _isQuickWindowInterfacePanelBound = true;
+        }
+
+        TagCatalogAnchorable.Hide();
+        QuickWindowInterfaceAnchorable.Show();
+        QuickWindowInterfaceAnchorable.IsActive = true;
+    }
+
+    /// <summary>Restores the project `Catalogue Tags` when a page becomes the active surface again.</summary>
+    private void HideLocalInterfacePanel()
+    {
+        QuickWindowInterfaceAnchorable.Hide();
+        TagCatalogAnchorable.Show();
+    }
+
+    private async void OnQuickWindowAddMemberRequested(object? sender, EventArgs e) =>
+        await ExecuteQuickWindowInterfaceCommandAsync((snapshot, definitionKey) =>
+            QuickWindowWorkspace.AddInterfaceMemberAsync(snapshot, definitionKey));
+
+    private async void OnQuickWindowEditMemberRequested(object? sender, QuickWindowInterfaceMemberViewModel member) =>
+        await ExecuteQuickWindowInterfaceCommandAsync((snapshot, definitionKey) =>
+            QuickWindowWorkspace.EditInterfaceMemberAsync(snapshot, definitionKey, member.MemberKey));
+
+    private async void OnQuickWindowDeleteMemberRequested(object? sender, QuickWindowInterfaceMemberViewModel member) =>
+        await ExecuteQuickWindowInterfaceCommandAsync((snapshot, definitionKey) =>
+            QuickWindowWorkspace.DeleteInterfaceMemberAsync(snapshot, definitionKey, member.MemberKey));
+
+    private async void OnQuickWindowMemberInlineEdited(object? sender, QuickWindowInterfaceMemberViewModel member) =>
+        await ExecuteQuickWindowInterfaceCommandAsync((snapshot, definitionKey) =>
+            Task.FromResult(QuickWindowWorkspace.ApplyInlineInterfaceEdit(snapshot, definitionKey, member.Member)));
+
+    private async void OnQuickWindowNavigateToMemberUsageRequested(object? sender, QuickWindowInterfaceMemberViewModel member)
+    {
+        if (_modernProject is null || _hostedQuickWindowKey is not { } definitionKey) return;
+        var snapshot = await _pageWorkspaceController.CaptureSnapshotAsync();
+        var mutation = QuickWindowWorkspace.NavigateToMemberUsage(snapshot, definitionKey, member.MemberKey);
+        if (mutation is null) return;
+        NavigateToQuickWindowUsage(mutation);
+    }
+
+    /// <summary>
+    /// Applies one local-interface command as a single undoable transition, then refreshes the hosted
+    /// projection so the canvas keeps showing the definition that was just edited.
+    /// </summary>
+    private async Task ExecuteQuickWindowInterfaceCommandAsync(
+        Func<PageWorkspaceSnapshot, Guid, Task<QuickWindowWorkspaceMutation?>> command)
+    {
+        if (_modernProject is null || _hostedQuickWindowKey is not { } definitionKey)
+        {
+            SetStatus("Aucune fenetre rapide active.");
+            return;
+        }
+
+        var snapshot = await _pageWorkspaceController.CaptureSnapshotAsync();
+        var mutation = await command(snapshot, definitionKey);
+        if (mutation is null || mutation.Result.Status != CommandResultStatus.Succeeded || !mutation.Result.Changed) return;
+
+        await ApplyQuickWindowMutationAsync(mutation);
+        if (mutation.After.Project.EffectiveQuickWindows.FirstOrDefault(item => item.DefinitionKey == definitionKey) is { } updated)
+        {
+            _hostedQuickWindowDefinition = updated;
+        }
+    }
+
+    /// <summary>Selects and reveals the page that owns one quick-window usage, without mutating anything.</summary>
+    private void NavigateToQuickWindowUsage(QuickWindowWorkspaceMutation mutation)
+    {
+        if (mutation.Result.PageToSelectKey is { } pageKey)
+        {
+            _pagesPanel.SelectedPage = _pagesPanel.Items.FirstOrDefault(item => item.PageKey == pageKey);
+            _isUpdatingPageSelection = true;
+            try
+            {
+                PagesListBox.SelectedItem = _pagesPanel.SelectedPage;
+            }
+            finally
+            {
+                _isUpdatingPageSelection = false;
+            }
+
+            PageAnchorable.IsActive = true;
+        }
+
+        var usage = mutation.UsageToNavigate;
+        SetStatus(usage is null
+            ? mutation.Result.Message
+            : $"Utilisation: {usage.PropertyPath}");
     }
 
     /// <inheritdoc />
@@ -247,6 +369,33 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
             "Supprimer la fenetre rapide",
             MessageBoxButton.YesNo,
             MessageBoxImage.Question) == MessageBoxResult.Yes;
+        return Task.FromResult(confirmed);
+    }
+
+    /// <inheritdoc />
+    public Task<QuickWindowInterfaceMember?> RequestInterfaceMemberAsync(
+        string title,
+        QuickWindowInterfaceMemberDraft draft,
+        IReadOnlyList<QuickWindowInterfaceMember> siblings)
+    {
+        var dialog = new QuickWindowInterfaceMemberDialog(title, draft, siblings) { Owner = this };
+        return Task.FromResult(dialog.ShowDialog() == true ? dialog.AuthoredMember : null);
+    }
+
+    /// <inheritdoc />
+    public Task<bool> ConfirmInterfaceMemberDeletionAsync(
+        QuickWindowInterfaceMember member,
+        IReadOnlyList<QuickWindowUsage> usages)
+    {
+        ArgumentNullException.ThrowIfNull(member);
+        ArgumentNullException.ThrowIfNull(usages);
+        var callers = string.Join(Environment.NewLine, usages.Take(10).Select(usage => $"· {usage.PropertyPath}"));
+        var confirmed = MessageBox.Show(
+            this,
+            $"Le membre '{member.Name}' est utilise par {usages.Count} liaison(s):{Environment.NewLine}{callers}{Environment.NewLine}{Environment.NewLine}Supprimer ce membre rendra ces invocations a reparer. Continuer ?",
+            "Supprimer un membre reference",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning) == MessageBoxResult.Yes;
         return Task.FromResult(confirmed);
     }
 

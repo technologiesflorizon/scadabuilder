@@ -149,7 +149,7 @@ public sealed class WebViewContextMenuScriptTests
 
         StringAssert.Contains(source, "window.chrome?.webview?.postMessage({ type: 'openSceneObjectProperties', id: element.Id });");
         StringAssert.Contains(source, "ShowModernElementProperties(message.Id);");
-        StringAssert.Contains(source, "var dialog = new ElementPropertiesDialog(current, _modernProject?.Scenes ?? [], _modernProject?.TagCatalog)");
+        StringAssert.Contains(source, "var dialog = new ElementPropertiesDialog(current, _modernProject?.Scenes ?? [], ActiveSelectorTagCatalog)");
         Assert.IsFalse(
             source.Contains("openModernEditor(", StringComparison.Ordinal),
             "Double-click properties must use the WPF ElementPropertiesDialog, not the old WebView floating editor.");

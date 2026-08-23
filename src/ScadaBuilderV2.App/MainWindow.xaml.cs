@@ -173,7 +173,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
             this,
             CommitTableElement,
             CanCommitTableTransform,
-            () => _modernProject?.TagCatalog);
+            () => ActiveSelectorTagCatalog);
         _pageWorkspaceController = new PageWorkspaceController(_modernProjectStore, this);
         _pageExportInputBuilder = new PageExportInputBuilder(
             new ProjectRootWorkspaceStore(_modernProjectStore),
@@ -3716,7 +3716,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private string FormatProjectTag(string tagId)
     {
-        var tag = _modernProject?.TagCatalog?.Tags.FirstOrDefault(tag => string.Equals(tag.Id, tagId, StringComparison.Ordinal));
+        var tag = ActiveSelectorTagCatalog?.Tags.FirstOrDefault(tag => string.Equals(tag.Id, tagId, StringComparison.Ordinal));
         return tag?.AuthoringLabel ?? tagId;
     }
 
@@ -4168,7 +4168,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
-        var dialog = new ElementPropertiesDialog(current, _modernProject?.Scenes ?? [], _modernProject?.TagCatalog)
+        var dialog = new ElementPropertiesDialog(current, _modernProject?.Scenes ?? [], ActiveSelectorTagCatalog)
         {
             Owner = this
         };
@@ -5705,7 +5705,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
-        var dialog = new ElementReadVariableDialog(element.EffectiveStateConfig.ReadVariable, _modernProject?.TagCatalog) { Owner = this };
+        var dialog = new ElementReadVariableDialog(element.EffectiveStateConfig.ReadVariable, ActiveSelectorTagCatalog) { Owner = this };
         if (dialog.ShowDialog() != true || dialog.Result is null)
         {
             return;
@@ -5741,7 +5741,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
-        var dialog = new ElementStateRuleDialog(null, _modernProject?.TagCatalog) { Owner = this };
+        var dialog = new ElementStateRuleDialog(null, ActiveSelectorTagCatalog) { Owner = this };
         if (dialog.ShowDialog() != true || dialog.Result is null)
         {
             return;
@@ -5778,7 +5778,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
-        var dialog = new ElementStateRuleDialog(selected, _modernProject?.TagCatalog) { Owner = this };
+        var dialog = new ElementStateRuleDialog(selected, ActiveSelectorTagCatalog) { Owner = this };
         if (dialog.ShowDialog() != true || dialog.Result is null)
         {
             return;
@@ -5880,7 +5880,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
 
         var usedKinds = element.EffectiveCommandConfig.Commands.Select(c => c.Kind).ToArray();
-        var dialog = new ElementCommandDialog(null, _modernProject?.Scenes ?? [], _modernProject?.TagCatalog, usedKinds) { Owner = this };
+        var dialog = new ElementCommandDialog(null, _modernProject?.Scenes ?? [], ActiveSelectorTagCatalog, usedKinds) { Owner = this };
         if (dialog.ShowDialog() != true || dialog.Result is null)
         {
             return;
@@ -5921,7 +5921,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             .Where(c => c.Id != selected.Id)
             .Select(c => c.Kind)
             .ToArray();
-        var dialog = new ElementCommandDialog(selected, _modernProject?.Scenes ?? [], _modernProject?.TagCatalog, usedKinds) { Owner = this };
+        var dialog = new ElementCommandDialog(selected, _modernProject?.Scenes ?? [], ActiveSelectorTagCatalog, usedKinds) { Owner = this };
         if (dialog.ShowDialog() != true || dialog.Result is null)
         {
             return;
@@ -6071,7 +6071,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             _activeScene.ActionDefinitions,
             _activeScene.Elements,
             _modernProject?.Scenes ?? [],
-            _modernProject?.TagCatalog)
+            ActiveSelectorTagCatalog)
         {
             Owner = owner ?? this
         };

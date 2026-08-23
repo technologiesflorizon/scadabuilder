@@ -21,6 +21,20 @@ public interface IQuickWindowWorkspaceHost
     /// <summary>Asks the operator to confirm a referential deletion, listing its callers.</summary>
     Task<bool> ConfirmQuickWindowDeletionAsync(QuickWindowDefinition definition, IReadOnlyList<QuickWindowUsage> usages);
 
+    /// <summary>
+    /// Opens the shared member dialog on one draft and returns the authored member; null cancels.
+    /// The same dialog serves creation and advanced edition (FR-UI-16).
+    /// </summary>
+    Task<QuickWindowInterfaceMember?> RequestInterfaceMemberAsync(
+        string title,
+        QuickWindowInterfaceMemberDraft draft,
+        IReadOnlyList<QuickWindowInterfaceMember> siblings);
+
+    /// <summary>Asks the operator to confirm the removal of a member that is still referenced (FR-UI-17).</summary>
+    Task<bool> ConfirmInterfaceMemberDeletionAsync(
+        QuickWindowInterfaceMember member,
+        IReadOnlyList<QuickWindowUsage> usages);
+
     /// <summary>Reports one workspace status message.</summary>
     void ReportQuickWindowStatus(string message);
 }
@@ -48,6 +62,9 @@ public sealed class QuickWindowWorkspaceController(
 
     /// <summary>Gets the searchable inventory bound to the project group.</summary>
     public QuickWindowsPanelViewModel Panel { get; } = new();
+
+    /// <summary>Gets the `Interface locale` panel of the active definition, replacing the project tag catalogue.</summary>
+    public QuickWindowInterfacePanelViewModel InterfacePanel { get; } = new();
 
     /// <summary>Gets the editor context of the active quick window, or null when a page is active.</summary>
     public QuickWindowEditorContext? ActiveContext { get; private set; }
@@ -167,11 +184,168 @@ public sealed class QuickWindowWorkspaceController(
         if (definition is null) return;
 
         ActiveContext = QuickWindowEditorContext.ForQuickWindow(definition.DefinitionKey, definition.EffectiveCode, definition.DisplayName);
+        LoadInterface(snapshot, definitionKey);
         await host.ActivateQuickWindowAsync(ActiveContext, definition);
     }
 
     /// <summary>Clears the quick-window context when a page becomes the active surface again.</summary>
-    public void ClearActiveContext() => ActiveContext = null;
+    public void ClearActiveContext()
+    {
+        ActiveContext = null;
+        InterfacePanel.Clear();
+    }
+
+    /// <summary>Reloads the `Interface locale` panel of one definition with its per-member usage counters.</summary>
+    public void LoadInterface(PageWorkspaceSnapshot snapshot, Guid definitionKey)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var definition = Find(snapshot, definitionKey);
+        if (definition is null)
+        {
+            InterfacePanel.Clear();
+            return;
+        }
+
+        var analysis = analyzer.Analyze(snapshot);
+        var usages = definition.EffectiveInterfaceMembers.ToDictionary(
+            member => member.MemberKey,
+            member => analysis.GetMemberUsages(definitionKey, member.MemberKey));
+        InterfacePanel.Load(definition, usages);
+    }
+
+    /// <summary>Adds one member authored through the shared dialog.</summary>
+    public async Task<QuickWindowWorkspaceMutation?> AddInterfaceMemberAsync(PageWorkspaceSnapshot snapshot, Guid definitionKey)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var definition = Find(snapshot, definitionKey);
+        if (definition is null) return null;
+
+        var draft = QuickWindowInterfaceMemberDraft.ForNew(ProposeMemberName(definition));
+        var member = await host.RequestInterfaceMemberAsync(
+            "Nouveau membre d'interface",
+            draft,
+            definition.EffectiveInterfaceMembers);
+        if (member is null) return null;
+
+        return ApplyMembers(
+            snapshot,
+            definition,
+            definition.EffectiveInterfaceMembers.Append(member).ToArray(),
+            $"Membre '{member.Name}' ajouté.");
+    }
+
+    /// <summary>Edits the advanced properties of one member through the shared dialog (FR-UI-16).</summary>
+    public async Task<QuickWindowWorkspaceMutation?> EditInterfaceMemberAsync(
+        PageWorkspaceSnapshot snapshot,
+        Guid definitionKey,
+        Guid memberKey)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var definition = Find(snapshot, definitionKey);
+        var current = definition?.EffectiveInterfaceMembers.FirstOrDefault(item => item.MemberKey == memberKey);
+        if (definition is null || current is null) return null;
+
+        var member = await host.RequestInterfaceMemberAsync(
+            "Propriétés du membre",
+            QuickWindowInterfaceMemberDraft.From(current),
+            definition.EffectiveInterfaceMembers);
+        if (member is null) return null;
+
+        return ApplyMembers(
+            snapshot,
+            definition,
+            Replace(definition, member),
+            $"Membre '{member.Name}' mis à jour.");
+    }
+
+    /// <summary>Applies one inline table edit of a common member property (FR-UI-16).</summary>
+    public QuickWindowWorkspaceMutation? ApplyInlineInterfaceEdit(
+        PageWorkspaceSnapshot snapshot,
+        Guid definitionKey,
+        QuickWindowInterfaceMember member)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        ArgumentNullException.ThrowIfNull(member);
+        var definition = Find(snapshot, definitionKey);
+        var current = definition?.EffectiveInterfaceMembers.FirstOrDefault(item => item.MemberKey == member.MemberKey);
+        if (definition is null || current is null || current == member) return null;
+
+        var issues = QuickWindowValidation.ValidateMember(member, definition.EffectiveInterfaceMembers);
+        if (issues.Count > 0)
+        {
+            host.ReportQuickWindowStatus($"Modification refusée : {issues[0]}");
+            return null;
+        }
+
+        return ApplyMembers(
+            snapshot,
+            definition,
+            Replace(definition, member),
+            $"Membre '{member.Name}' mis à jour.");
+    }
+
+    /// <summary>Deletes one member; a referenced member requires an explicit confirmation (FR-UI-17).</summary>
+    public async Task<QuickWindowWorkspaceMutation?> DeleteInterfaceMemberAsync(
+        PageWorkspaceSnapshot snapshot,
+        Guid definitionKey,
+        Guid memberKey)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var definition = Find(snapshot, definitionKey);
+        var member = definition?.EffectiveInterfaceMembers.FirstOrDefault(item => item.MemberKey == memberKey);
+        if (definition is null || member is null) return null;
+
+        var usages = ListMemberUsages(snapshot, definitionKey, memberKey);
+        if (usages.Count > 0 && !await host.ConfirmInterfaceMemberDeletionAsync(member, usages))
+        {
+            host.ReportQuickWindowStatus($"Suppression du membre '{member.Name}' annulée.");
+            return null;
+        }
+
+        return ApplyMembers(
+            snapshot,
+            definition,
+            definition.EffectiveInterfaceMembers.Where(item => item.MemberKey != memberKey).ToArray(),
+            $"Membre '{member.Name}' supprimé.",
+            confirmReferencedMemberRemoval: usages.Count > 0);
+    }
+
+    /// <summary>Lists every invocation binding that references one interface member (FR-UI-17).</summary>
+    public IReadOnlyList<QuickWindowUsage> ListMemberUsages(PageWorkspaceSnapshot snapshot, Guid definitionKey, Guid memberKey)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        return analyzer.Analyze(snapshot).GetMemberUsages(definitionKey, memberKey);
+    }
+
+    /// <summary>Produces a non-mutating navigation result for one member usage (FR-UI-17).</summary>
+    public QuickWindowWorkspaceMutation? NavigateToMemberUsage(
+        PageWorkspaceSnapshot snapshot,
+        Guid definitionKey,
+        Guid memberKey,
+        int usageIndex = 0)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var usages = ListMemberUsages(snapshot, definitionKey, memberKey);
+        if (usageIndex < 0 || usageIndex >= usages.Count)
+        {
+            host.ReportQuickWindowStatus("Cette utilisation n'existe plus.");
+            return null;
+        }
+
+        var usage = usages[usageIndex];
+        var result = CommandResult.NoChange(
+            "Utilisation du membre sélectionnée.",
+            pageToSelectKey: usage.OwnerPageKey,
+            pageToOpenKey: usage.OwnerPageKey);
+        return new QuickWindowWorkspaceMutation(
+            snapshot,
+            snapshot,
+            result,
+            "navigate to quick-window member usage",
+            definitionKey,
+            usage.InvocationKey,
+            usage);
+    }
 
     /// <summary>Lists the callers of one definition for the usage navigation surface.</summary>
     public IReadOnlyList<QuickWindowUsage> ListUsages(PageWorkspaceSnapshot snapshot, Guid definitionKey) =>
@@ -180,6 +354,59 @@ public sealed class QuickWindowWorkspaceController(
     /// <summary>Lists the outdated invocations of one definition for the repair surface.</summary>
     public IReadOnlyList<QuickWindowOutdatedInvocation> ListOutdatedInvocations(PageWorkspaceSnapshot snapshot, Guid definitionKey) =>
         definitions.ListOutdatedInvocations(snapshot, definitionKey);
+
+    /// <summary>
+    /// Prepares one interface transition: the local interface version is incremented only when the public
+    /// contract actually changed, so a private edit or a rename never invalidates a persisted invocation.
+    /// </summary>
+    private QuickWindowWorkspaceMutation ApplyMembers(
+        PageWorkspaceSnapshot snapshot,
+        QuickWindowDefinition current,
+        IReadOnlyList<QuickWindowInterfaceMember> members,
+        string successMessage,
+        bool confirmReferencedMemberRemoval = false)
+    {
+        var candidate = current with { InterfaceMembers = members };
+        if (QuickWindowInterfaceCompatibility.Classify(current, candidate).RequiresVersionIncrement)
+        {
+            candidate = candidate with { InterfaceVersion = current.InterfaceVersion + 1 };
+        }
+
+        var mutation = definitions.Update(snapshot, candidate, confirmReferencedMemberRemoval);
+        if (mutation.Result.Status != CommandResultStatus.Succeeded)
+        {
+            var reason = mutation.Result.Diagnostics.FirstOrDefault()?.Message;
+            host.ReportQuickWindowStatus(string.IsNullOrWhiteSpace(reason)
+                ? "Modification de l'interface locale refusée."
+                : $"Modification de l'interface locale refusée : {reason}");
+            return mutation;
+        }
+
+        LoadInterface(mutation.After, candidate.DefinitionKey);
+        host.ReportQuickWindowStatus(successMessage);
+        return mutation;
+    }
+
+    private static IReadOnlyList<QuickWindowInterfaceMember> Replace(
+        QuickWindowDefinition definition,
+        QuickWindowInterfaceMember member) =>
+        definition.EffectiveInterfaceMembers
+            .Select(item => item.MemberKey == member.MemberKey ? member : item)
+            .ToArray();
+
+    private static string ProposeMemberName(QuickWindowDefinition definition)
+    {
+        var taken = definition.EffectiveInterfaceMembers
+            .Select(member => member.Name)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        for (var index = 1; index < 1000; index++)
+        {
+            var candidate = $"membre{index}";
+            if (!taken.Contains(candidate)) return candidate;
+        }
+
+        return $"membre_{Guid.NewGuid().ToString("N")[..6]}";
+    }
 
     private static QuickWindowDefinition? Find(PageWorkspaceSnapshot snapshot, Guid definitionKey) =>
         snapshot.Project.EffectiveQuickWindows.FirstOrDefault(item => item.DefinitionKey == definitionKey);

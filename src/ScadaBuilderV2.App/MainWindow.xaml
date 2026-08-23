@@ -5,6 +5,7 @@
         xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         xmlns:primitives="clr-namespace:System.Windows.Controls.Primitives;assembly=PresentationFramework"
         xmlns:local="clr-namespace:ScadaBuilderV2.App"
+        xmlns:qw="clr-namespace:ScadaBuilderV2.App.QuickWindows"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
@@ -383,6 +384,7 @@
                                 <MenuItem Header="Outil" Click="OnShowToolAnchorableClick" />
                                 <MenuItem Header="Projet" Click="OnShowProjectAnchorableClick" />
                                 <MenuItem Header="Catalogue Tags" Click="OnShowTagCatalogAnchorableClick" />
+                                <MenuItem Header="Interface locale" Click="OnShowQuickWindowInterfaceAnchorableClick" />
                                 <MenuItem Header="Page" Click="OnShowPageAnchorableClick" />
                                 <MenuItem Header="Element" Click="OnShowElementAnchorableClick" />
                                 <MenuItem Header="Propriete" Click="OnShowPropertiesAnchorableClick" />
@@ -705,6 +707,9 @@
                                 </ListBox.ItemTemplate>
                             </ListBox>
                         </Grid>
+                        </avalonDock:LayoutAnchorable>
+                        <avalonDock:LayoutAnchorable x:Name="QuickWindowInterfaceAnchorable" Title="Interface locale" ContentId="QuickWindowInterface" CanClose="True">
+                            <qw:QuickWindowInterfacePanel x:Name="QuickWindowInterfacePanelControl"/>
                         </avalonDock:LayoutAnchorable>
                         <avalonDock:LayoutAnchorable x:Name="TagCatalogAnchorable" Title="Catalogue Tags" ContentId="TagCatalog" CanClose="True">
                         <DockPanel Margin="12">

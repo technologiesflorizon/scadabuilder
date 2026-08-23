@@ -54,6 +54,38 @@ public static class QuickWindowValidation
         return issues;
     }
 
+    /// <summary>
+    /// Validates one interface member in isolation and against its siblings, without requiring a full definition.
+    /// Authoring surfaces use it to refuse an invalid member before any workspace mutation is prepared.
+    /// </summary>
+    /// <param name="member">The candidate member.</param>
+    /// <param name="siblings">The other members of the same definition; the candidate itself is ignored when present.</param>
+    /// <returns>Every issue found; an empty list means the member is valid.</returns>
+    /// <remarks>
+    /// Decisions: DEC-0050, FR-005, FR-006.
+    /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowInterfaceAuthoringTests.cs.
+    /// </remarks>
+    public static IReadOnlyList<string> ValidateMember(
+        QuickWindowInterfaceMember member,
+        IEnumerable<QuickWindowInterfaceMember>? siblings = null)
+    {
+        ArgumentNullException.ThrowIfNull(member);
+        var issues = new List<string>();
+        ValidateMembers([member], issues);
+
+        foreach (var sibling in (siblings ?? Array.Empty<QuickWindowInterfaceMember>())
+                     .Where(candidate => candidate.MemberKey != member.MemberKey))
+        {
+            if (sibling.MemberKey == member.MemberKey)
+                continue;
+
+            if (string.Equals(sibling.Name, member.Name, StringComparison.OrdinalIgnoreCase))
+                issues.Add($"Duplicate member Name '{member.Name}'.");
+        }
+
+        return issues;
+    }
+
     /// <summary>Validates presentation defaults. Any extra placement per invocation must be rejected elsewhere.</summary>
     public static IReadOnlyList<string> ValidatePresentation(QuickWindowPresentationDefaults? presentation)
     {
