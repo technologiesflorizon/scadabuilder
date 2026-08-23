@@ -8,7 +8,7 @@ Document version: `V2.1.5.0030`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-23 | `V2.1.5.0030` | `PENDING` | Banc d'essai Fenetre rapide : valeurs et titre temporaires, ouverture d'une instance d'apercu editor-only et fermeture explicite. |
+| 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Banc d'essai Fenetre rapide : valeurs et titre temporaires, ouverture d'une instance d'apercu editor-only et fermeture explicite. |
 | 2026-08-23 | `V2.1.5.0029` | `012135d` | Onglet conditionnel `Liaisons` du dialogue Proprietes : grille typee nom/famille/type/source/valeur/statut, selecteurs contextuels et banniere `Outdated`. |
 | 2026-08-23 | `V2.1.5.0028` | `2fd6c72` | Panneau `Interface locale` : substitution du `Catalogue Tags` dans le contexte Fenêtre rapide, tableau unique groupé public/privé, filtres par famille, statut de liaison et compteurs d'usages. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Ajout de la surface Fenêtres rapides : groupe projet distinct, projection canvas editor-only non exportable, lecture seule gardée et bandeau de contexte actif. |

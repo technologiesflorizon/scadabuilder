@@ -8,7 +8,7 @@ Document version: `V2.1.5.0030`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-23 | `V2.1.5.0030` | `PENDING` | Module runtime `quick-window-host.js` ajoute pour l'apercu editeur uniquement : il n'entre pas dans le bundle runtime exporte tant que les capacites `quick-window.*` restent `Blocked`. |
+| 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Module runtime `quick-window-host.js` ajoute pour l'apercu editeur uniquement : il n'entre pas dans le bundle runtime exporte tant que les capacites `quick-window.*` restent `Blocked`. |
 | 2026-07-30 | `V2.1.5.0002` | `0168f2f` | Les formes SVG générées exposent des cibles sémantiques de fond/bordure; le runtime applique les effets sur `fill`/`stroke` visibles et conserve le repli wrapper. |
 | 2026-07-18 | `V2.1.4.0067` | `23daac2` | Builder normalise les lectures `InputNumeric` vers le tag canonique de `StateConfig.ReadVariable`, bloque toute divergence residuelle et couvre toutes les pages compilees. |
 | 2026-07-17 | `V2.1.4.0065` | `4bee5ab` | Runtime Etat corrige pour rendre les filtres visibles sur SVG opaques sans modifier l'ordre auteur des objets ni couvrir les controles semantiques. |
