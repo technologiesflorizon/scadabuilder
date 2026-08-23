@@ -1351,6 +1351,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
     {
         try
         {
+            if (IsQuickWindowSurfaceHosted) return;
             if (ForwardTableWebViewMessage(e.WebMessageAsJson)) return;
             var message = JsonSerializer.Deserialize<LegacyViewerMessage>(e.WebMessageAsJson, WebMessageJsonOptions);
             if (message is null)

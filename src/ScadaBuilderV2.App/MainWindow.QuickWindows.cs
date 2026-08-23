@@ -1,3 +1,4 @@
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using ScadaBuilderV2.App.QuickWindows;
@@ -5,6 +6,7 @@ using ScadaBuilderV2.Application.Commands;
 using ScadaBuilderV2.Application.Pages;
 using ScadaBuilderV2.Application.QuickWindows;
 using ScadaBuilderV2.Domain.QuickWindows;
+using ScadaBuilderV2.Rendering;
 
 namespace ScadaBuilderV2.App;
 
@@ -25,6 +27,14 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
     private QuickWindowWorkspaceController? _quickWindowWorkspaceController;
     private QuickWindowEditorContext? _activeEditorContext;
     private bool _isUpdatingQuickWindowSelection;
+    private Guid? _hostedQuickWindowKey;
+
+    /// <summary>
+    /// Gets whether the canvas currently hosts a quick-window projection instead of a page.
+    /// The projection is read-only in this slice: canvas messages are ignored so no interaction can
+    /// mutate the last active page while its content is not the one displayed.
+    /// </summary>
+    private bool IsQuickWindowSurfaceHosted => _hostedQuickWindowKey is not null;
 
     /// <summary>Gets the quick-window workspace controller, created on first use.</summary>
     private QuickWindowWorkspaceController QuickWindowWorkspace =>
@@ -142,23 +152,65 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
     }
 
     /// <inheritdoc />
-    public Task ActivateQuickWindowAsync(QuickWindowEditorContext context, QuickWindowDefinition definition)
+    public async Task ActivateQuickWindowAsync(QuickWindowEditorContext context, QuickWindowDefinition definition)
     {
         ArgumentNullException.ThrowIfNull(context);
         ArgumentNullException.ThrowIfNull(definition);
         _activeEditorContext = context;
+        _hostedQuickWindowKey = definition.DefinitionKey;
         EditorContextBadgeText.Text = context.ContextBadge;
         EditorContextTitleText.Text = context.ContextTitle;
         EditorContextPanel.Visibility = Visibility.Visible;
         RefreshActiveRibbonCommandStates();
-        SetStatus($"Contexte actif: {context.ContextTitle}");
-        return Task.CompletedTask;
+        await HostQuickWindowProjectionAsync(definition);
+    }
+
+    /// <summary>
+    /// Materializes the definition visual content as an editor-only native preview and shows it on the
+    /// shared canvas. The projection never enters the project, is excluded from build and carries a
+    /// collision-free code, so no editor artifact can reach an export.
+    /// </summary>
+    private async Task HostQuickWindowProjectionAsync(QuickWindowDefinition definition)
+    {
+        if (_repositoryRoot is null)
+        {
+            SetPreviewPlaceholder("Aucun projet actif.");
+            return;
+        }
+
+        try
+        {
+            var projection = QuickWindowPreviewProjection.Create(definition);
+            var previewRoot = Path.Combine(
+                _repositoryRoot,
+                ".studio",
+                "preview",
+                QuickWindowPreviewProjection.PreviewDirectoryName);
+            var preview = await PreviewDocument.MaterializeNativeAsync(
+                new PageDocumentInput(projection.Reference, projection.Scene),
+                previewRoot);
+            var sourceUri = preview.GetSourceUri(previewRoot);
+
+            UpdatePreviewSurfaceBackground(projection.Scene.BackgroundColor);
+            ActivePageText.Text = projection.ProjectedCode;
+            PreviewSourceText.Text = sourceUri.LocalPath;
+            PreviewPlaceholder.Visibility = Visibility.Collapsed;
+            PreviewWebView.Visibility = Visibility.Collapsed;
+            PreviewWebView.Source = sourceUri;
+            PreviewWebView.Visibility = Visibility.Visible;
+            SetStatus($"Fenetre rapide affichee en lecture seule: {definition.DisplayName}");
+        }
+        catch (Exception ex)
+        {
+            SetPreviewPlaceholder($"Affichage de la fenetre rapide impossible: {ex.Message}");
+        }
     }
 
     /// <summary>Restores the page context after a page becomes the active surface again.</summary>
     private void ActivatePageEditorContext(Guid pageKey, string code, string? title)
     {
         _activeEditorContext = QuickWindowEditorContext.ForPage(pageKey, code, title);
+        _hostedQuickWindowKey = null;
         QuickWindowWorkspace.ClearActiveContext();
         EditorContextBadgeText.Text = _activeEditorContext.ContextBadge;
         EditorContextTitleText.Text = _activeEditorContext.ContextTitle;

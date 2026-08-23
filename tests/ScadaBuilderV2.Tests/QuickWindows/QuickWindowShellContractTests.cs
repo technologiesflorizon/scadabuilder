@@ -196,6 +196,48 @@ public sealed class QuickWindowShellContractTests
             "quick windows must not be mixed into the pages list");
     }
 
+    [TestMethod]
+    public void QuickWindowCanvasProjectionIsEditorOnlyAndNeverExportable()
+    {
+        var definition = Definition() with
+        {
+            Content = new VisualContent(new CanvasSize(640, 480), Elements: []),
+        };
+
+        var projection = QuickWindowPreviewProjection.Create(definition);
+
+        Assert.IsFalse(projection.Reference.IncludeInBuild, "a projected quick window must never be exportable");
+        Assert.AreEqual(PageOrigin.Native, projection.Reference.EffectiveOrigin);
+        Assert.AreEqual(definition.DefinitionKey, projection.Reference.PageKey, "the definition key stays the routing key");
+        StringAssert.StartsWith(projection.ProjectedCode, QuickWindowPreviewProjection.ProjectedCodePrefix);
+        Assert.AreEqual(new CanvasSize(640, 480), projection.Scene.CanvasSize);
+        Assert.AreEqual(definition.EffectiveTitle, projection.Scene.Title);
+        Assert.AreEqual(string.Empty, projection.Reference.RelativePath, "no durable page file backs the projection");
+    }
+
+    [TestMethod]
+    public void QuickWindowProjectionCodeCannotCollideWithAPageCode()
+    {
+        var projection = QuickWindowPreviewProjection.Create(Definition());
+
+        Assert.AreNotEqual("motor", projection.ProjectedCode);
+        Assert.AreEqual("qw-motor", projection.ProjectedCode);
+    }
+
+    [TestMethod]
+    public void HostedQuickWindowSurfaceIgnoresEveryCanvasMessage()
+    {
+        var source = ReadAppFile("MainWindow.xaml.cs");
+        var handler = source.IndexOf("private void OnLegacyViewerMessageReceived", StringComparison.Ordinal);
+        Assert.AreNotEqual(-1, handler, "the canvas message handler must exist");
+        var guard = source.IndexOf("if (IsQuickWindowSurfaceHosted) return;", handler, StringComparison.Ordinal);
+        var firstDispatch = source.IndexOf("ForwardTableWebViewMessage", handler, StringComparison.Ordinal);
+
+        Assert.AreNotEqual(-1, guard, "a hosted quick window must gate the canvas message handler.");
+        Assert.IsTrue(
+            guard < firstDispatch,
+            "the read-only gate must run before any canvas message is dispatched to the active page.");
+    }
     private static QuickWindowDefinition Definition() =>
         new(
             DefinitionKey,
