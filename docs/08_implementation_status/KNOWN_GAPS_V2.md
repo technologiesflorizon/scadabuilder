@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active known gaps register
-Document version: `V2.1.5.0028`
+Document version: `V2.1.5.0029`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-23 | `V2.1.5.0029` | `PENDING` | Task 3.3 QuickWindow fermee; le preview/banc d'essai (Task 3.4), le presse-papier inter-contextes (Task 3.5) et la surface de reparation `FR-UI-24` (Task 3.6) restent ouverts. L'authoring `CloseQuickWindow(Self)` reste inaccessible depuis le canvas tant que la projection est en lecture seule. |
 | 2026-08-23 | `V2.1.5.0028` | `2fd6c72` | Task 3.2 QuickWindow fermée; l'onglet `Liaisons` des appelants (Task 3.3), le preview/banc d'essai (Task 3.4) et la surface de réparation `FR-UI-24` (Task 3.6) restent ouverts. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Task 3.1 QuickWindow fermée; l'édition du contenu d'une définition sur le canvas reste ouverte (projection en lecture seule) et appartient aux Tasks 3.2 et 3.4. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Task 2.4 QuickWindow fermée (versionnement d'Interface locale et statut `Outdated`); la surface WPF de réparation `FR-UI-24` reste ouverte en Task 3.6. |

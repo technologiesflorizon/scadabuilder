@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
-Document version: `V2.1.5.0028`
+Document version: `V2.1.5.0029`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-23 | `V2.1.5.0029` | `9795cce` | Task 3.3 exécutée et cochée : commande `OpenQuickWindow` avec cible définition, `CloseQuickWindow(Self)` dans un contenu, onglet conditionnel `Liaisons`, grille typée `FR-UI-18`/`FR-UI-19` et statut `Outdated` bloquant l'export. |
 | 2026-08-23 | `V2.1.5.0028` | `fafdf53` | Task 3.2 exécutée et cochée : panneau `Interface locale` substitué au catalogue de tags, tableau unique groupé avec filtres, édition inline et dialogue commun, compteurs d'usages avec navigation, suppression référencée confirmée et sélecteurs restreints aux membres locaux. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Task 3.1 exécutée et cochée : shell d'authoring, contexte borné, duplication, portée d'historique `QuickWindow` et projection canvas editor-only; l'édition du contenu reste aux Tasks 3.2/3.4. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Task 2.4 exécutée et cochée : compatibilité d'interface, réalignement, `Outdated` et réparation implémentés et couverts par `QuickWindowInterfaceVersioningTests`. |
@@ -38,7 +39,8 @@ Document version: `V2.1.5.0028`
 - [x] Phase 2.4: versionnement d'Interface locale, réalignement par invocation, statut `Outdated` dérivé et réparation explicite (`ea5a8bc`).
 - [x] Phase 3.1: groupe projet, contexte d'éditeur borné, duplication, portée d'historique `QuickWindow` et projection canvas editor-only (`2551d35`, `f4867fa`).
 - [x] Phase 3.2: éditeur `Interface locale`, tableau unique groupé et filtré, édition inline et dialogue commun, compteurs d'usages et navigation, suppression référencée confirmée (`fafdf53`).
-- [ ] Phases 3.3 à 7: non démarrées.
+- [x] Phase 3.3: commandes appelantes Fenêtre rapide, onglet conditionnel `Liaisons`, sources typées et statut `Outdated` (`9795cce`).
+- [ ] Phases 3.4 à 7: non démarrées.
 
 Audit du 2026-08-21: la spec a été étendue par `FR-030..036` et `FR-UI-23..26`. Le plan ajoute en conséquence Task 2.4, Task 3.5, Task 3.6, Task 4.0 et Task 5.4. La Phase 0 n'est pas rouverte: la composition header/pied et la coexistence legacy n'existent que dans un host composé réel et sont donc prouvées en Phase 5 contre TF100Web, sans invalider le hash de fixture gelé.
 
@@ -580,12 +582,12 @@ dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWi
 - Consumes: définitions, interface publique, catalogue et historique.
 - Produces: choix cible, `InvocationKey`, grille typée Tag/Littéral/Expression/Port parent et diagnostic final.
 
-- [ ] N’afficher `Liaisons` que pour `OpenQuickWindow`; ne proposer ni Toggle ni cible page.
-- [ ] Dans un contenu Fenêtre rapide, proposer `CloseQuickWindow(Self)` sans cible libre.
-- [ ] Vérifier persistance, undo/redo, suppression appelant et absence d’état partagé.
-- [ ] Implémenter explicitement `FR-UI-18` (colonnes nom, famille, type, source, valeur/référence, statut) et `FR-UI-19` (choix de source typé `Tag`/`Littéral`/`Expression`/`Port parent` puis sélecteur contextuel, sans champ libre unique).
-- [ ] Afficher le statut `Outdated` de Task 2.4 en rouge dans la grille et interdire l'export tant qu'une invocation reste `Outdated`.
-- [ ] Commit: `feat: author quick window bindings`.
+- [x] N’afficher `Liaisons` que pour `OpenQuickWindow`; ne proposer ni Toggle ni cible page.
+- [x] Dans un contenu Fenêtre rapide, proposer `CloseQuickWindow(Self)` sans cible libre.
+- [x] Vérifier persistance, undo/redo, suppression appelant et absence d’état partagé.
+- [x] Implémenter explicitement `FR-UI-18` (colonnes nom, famille, type, source, valeur/référence, statut) et `FR-UI-19` (choix de source typé `Tag`/`Littéral`/`Expression`/`Port parent` puis sélecteur contextuel, sans champ libre unique).
+- [x] Afficher le statut `Outdated` de Task 2.4 en rouge dans la grille et interdire l'export tant qu'une invocation reste `Outdated`.
+- [x] Commit: `feat: author quick window bindings` (`9795cce`).
 
 **Vérification:**
 

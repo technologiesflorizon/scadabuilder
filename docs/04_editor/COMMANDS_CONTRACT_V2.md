@@ -2,12 +2,13 @@
 
 Date: 2026-07-14
 Status: Active editor command contract
-Document version: `V2.1.5.0027`
+Document version: `V2.1.5.0029`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-23 | `V2.1.5.0029` | `PENDING` | Commandes appelantes Fenetre rapide : `OpenQuickWindow` avec cible definition et sans cible page, `CloseQuickWindow(Self)` reserve au contenu d'une definition, aucun kind Toggle. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Commandes de surface QuickWindow : groupe projet, duplication indépendante, suppression fail-closed et masquage des commandes page-only. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Services Application QuickWindow Phase 2 : mutations immuables définition/invocation/appelant, diagnostics référentiels et résultats structurés avant branchement WPF. |
 | 2026-07-29 | `V2.1.5.0000` | `8fe1077` | Activation des commandes `project.new`, `project.open`, `project.reopen-last`, `project.save` et `project.close`. |
@@ -98,6 +99,14 @@ Stable page command ids are `page.new`, `page.rename`, `page.change-code`, `page
 Le groupe projet expose `quick-window.new`, `quick-window.open`, `quick-window.rename`, `quick-window.duplicate` et `quick-window.delete`. `quick-window.duplicate` produit une définition indépendante : nouvelle clé, code unique dérivé, copie complète du contenu, de l’Interface locale et des defaults de présentation, aucune invocation héritée et aucune référence partagée. `quick-window.delete` est bloqué tant qu’un appelant existe et liste ces appelants.
 
 La surface active est portée par `QuickWindowEditorContext`. Sur une Fenêtre rapide, les commandes page-only — préfixes `page.` et `import.`, plus `view.mobile`, `view.tablet` et `view.desktop` — sont masquées et non désactivées, afin qu’aucune commande ambiguë ne subsiste. Les commandes d’édition, de sélection, d’ordre et d’outils restent disponibles.
+
+## 4c. QuickWindow Caller Commands
+
+Un Element+ peut porter une commande `OpenQuickWindow`. Son type de cible est une definition de Fenetre rapide, jamais une page : la commande ne porte qu'un `InvocationKey` et l'invocation resout la definition. Aucun kind Toggle n'existe : `DEC-0050` a retire `OpenPopup`, `TogglePopup` et `ClosePopup` du modele de commande moderne.
+
+`CloseQuickWindow` n'est propose que dans le contenu d'une Fenetre rapide et agit sur `Self`; aucune cible libre n'est offerte. Le contexte d'authoring borne de la surface appelante decide des kinds offerts et des ports parents qu'une liaison peut relayer.
+
+Enregistrer des liaisons produit une transition unique qui met a jour le projet, la scene appelante et la commande appelante ensemble; supprimer l'appelant supprime ses invocations dans la meme transition.
 
 ## 5. Implemented QuickWindow Application Services
 

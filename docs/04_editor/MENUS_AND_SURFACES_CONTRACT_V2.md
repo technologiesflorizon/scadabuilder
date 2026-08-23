@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active editor menu and surface contract
-Document version: `V2.1.5.0028`
+Document version: `V2.1.5.0029`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-23 | `V2.1.5.0029` | `PENDING` | Onglet conditionnel `Liaisons` du dialogue Proprietes : grille typee nom/famille/type/source/valeur/statut, selecteurs contextuels et banniere `Outdated`. |
 | 2026-08-23 | `V2.1.5.0028` | `2fd6c72` | Panneau `Interface locale` : substitution du `Catalogue Tags` dans le contexte Fenêtre rapide, tableau unique groupé public/privé, filtres par famille, statut de liaison et compteurs d'usages. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Ajout de la surface Fenêtres rapides : groupe projet distinct, projection canvas editor-only non exportable, lecture seule gardée et bandeau de contexte actif. |
 | 2026-07-29 | `V2.1.5.0000` | `8fe1077` | Accueil projet, dialogue Nouveau, sélecteur `project.json`, récents et commandes de fermeture livrés. |
@@ -58,6 +59,16 @@ Tant qu'une Fenêtre rapide est la surface active, le panneau `Catalogue Tags` d
 `Interface locale` est un tableau unique groupé en `Interface publique` et `Données privées`, filtrable par famille et par texte. Chaque ligne expose nom, famille, type, accès, requis, statut de liaison et compteur d'utilisations. Les propriétés courantes — nom, famille, type, accès, requis — sont modifiables directement dans le tableau; la famille impose l'accès et interdit `Requis` sur un membre privé. Les propriétés avancées — valeur par défaut et description — passent par le dialogue commun de membre, qui sert aussi la création.
 
 Un port optionnel non lié est affiché en gris avec le statut `Non lié`; un port requis non lié est affiché en rouge. Chaque membre affiche son nombre d'utilisations et permet d'y naviguer; la page appelante est alors sélectionnée sans qu'aucune mutation ne soit produite. Supprimer un membre encore référencé exige une confirmation explicite qui liste les liaisons concernées; les invocations affectées deviennent `Outdated` et restent à réparer.
+
+## Onglet Liaisons
+
+L'onglet `Liaisons` du dialogue Proprietes Element+ n'apparait que lorsque la commande selectionnee est une commande `OpenQuickWindow` resolue vers une definition; toute autre commande le masque et vide sa grille.
+
+La grille expose, pour chaque port public de la definition : nom, famille, type, source, valeur ou reference et statut. Chaque ligne choisit d'abord son type de source parmi `Tag`, `Litteral`, `Expression` ou `Port parent`, puis presente le selecteur contextuel correspondant; changer de source efface la valeur typee precedente. `Port parent` n'est propose que lorsque l'appelant vit dans le contenu d'une Fenetre rapide.
+
+Un port optionnel non lie apparait en gris avec le statut `Non lie`, un port requis non lie apparait en rouge. Une invocation `Outdated` affiche une banniere rouge, marque en rouge ses ports a reparer et ses ports retires, et laisse build et export bloques jusqu'a reparation.
+
+L'editeur n'ecrit jamais dans le workspace : il valide les liaisons contre le domaine et emet une demande d'enregistrement que le shell applique comme une transition unique annulable.
 
 ## 1. Contract
 
