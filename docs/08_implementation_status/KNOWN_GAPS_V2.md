@@ -8,7 +8,7 @@ Document version: `V2.1.5.0027`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-23 | `V2.1.5.0027` | `PENDING` | Task 3.1 QuickWindow fermée; l'édition du contenu d'une définition sur le canvas reste ouverte (projection en lecture seule) et appartient aux Tasks 3.2 et 3.4. |
+| 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Task 3.1 QuickWindow fermée; l'édition du contenu d'une définition sur le canvas reste ouverte (projection en lecture seule) et appartient aux Tasks 3.2 et 3.4. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Task 2.4 QuickWindow fermée (versionnement d'Interface locale et statut `Outdated`); la surface WPF de réparation `FR-UI-24` reste ouverte en Task 3.6. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 QuickWindow fermée; authoring WPF, preview/compiler/runtime, export/promotion et intake TF100Web des Phases 3 à 7 restent ouverts et `Blocked`. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Phases 0/1 QuickWindow fermées après audit; orchestration, authoring, preview/export et runtime des Phases 2 à 7 restent explicitement ouverts et `Blocked`. |

@@ -8,7 +8,7 @@ Document version: `V2.1.5.0027`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-23 | `V2.1.5.0027` | `PENDING` | Task 3.1 Fenêtres rapides livrée : groupe projet distinct, contexte d'éditeur borné, duplication, portée d'historique dédiée et projection canvas editor-only en lecture seule. |
+| 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Task 3.1 Fenêtres rapides livrée : groupe projet distinct, contexte d'éditeur borné, duplication, portée d'historique dédiée et projection canvas editor-only en lecture seule. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Task 2.4 Fenêtres rapides livrée : versionnement d'Interface locale, réalignement par invocation, statut `Outdated` dérivé et réparation explicite. |
 | 2026-08-21 | `V2.1.5.0025` | `abb81d2` | Gate documentaire ramene a zero erreur : 39 plans/specs anterieurs au standard retro-documentes par `tools/docs/backfill-doc-headers.py`. |
 | 2026-08-21 | `V2.1.5.0024` | `f881bbe` | Dette documentaire fermee : 493 placeholders `PENDING` resolus vers leur commit introducteur, resolveur `tools/docs/resolve-pending-commits.py` ajoute et branche dans `verify-docs`. |

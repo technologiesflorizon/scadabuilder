@@ -8,7 +8,7 @@ Document version: `V2.1.5.0027`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-23 | `V2.1.5.0027` | `PENDING` | Couverture Task 3.1 : shell d'authoring, portée d'historique QuickWindow, politique de commandes et projection canvas editor-only. |
+| 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Couverture Task 3.1 : shell d'authoring, portée d'historique QuickWindow, politique de commandes et projection canvas editor-only. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Couverture Task 2.4 : versionnement d'Interface locale, statut `Outdated` dérivé et réparation explicite. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Couverture Phase 2 QuickWindow : services Application, usages/cycles/profondeur, historique atomique et matrice build/export fail-closed. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Couverture Phases 0/1 QuickWindow : DOM réel, WebView2/Edge, validations Domain, persistance atomique, retrait popup et handshake muté dans les deux dépôts. |

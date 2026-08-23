@@ -8,7 +8,7 @@ Document version: `V2.1.5.0027`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-23 | `V2.1.5.0027` | `PENDING` | Commandes de surface QuickWindow : groupe projet, duplication indépendante, suppression fail-closed et masquage des commandes page-only. |
+| 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Commandes de surface QuickWindow : groupe projet, duplication indépendante, suppression fail-closed et masquage des commandes page-only. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Services Application QuickWindow Phase 2 : mutations immuables définition/invocation/appelant, diagnostics référentiels et résultats structurés avant branchement WPF. |
 | 2026-07-29 | `V2.1.5.0000` | `8fe1077` | Activation des commandes `project.new`, `project.open`, `project.reopen-last`, `project.save` et `project.close`. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | `table.merge-toggle` remplace les deux choix visibles Fusionner/Defusionner et derive son action de la plage selectionnee. |

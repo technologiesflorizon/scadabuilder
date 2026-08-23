@@ -8,7 +8,7 @@ Document version: `V2.1.5.0027`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-23 | `V2.1.5.0027` | `PENDING` | Portée d’historique `QuickWindow` ajoutée : pile unique partagée avec les pages, activation déterministe du contexte cible et refus non destructif d’une action non résoluble. |
+| 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Portée d’historique `QuickWindow` ajoutée : pile unique partagée avec les pages, activation déterministe du contexte cible et refus non destructif d’une action non résoluble. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Historique QuickWindow Phase 2 : snapshot projet/scènes/UI/dirty atomique, sélection dédiée et restauration exacte de l’appelant, commande, invocation et liaisons. |
 | 2026-07-29 | `V2.1.5.0000` | `8fe1077` | Une fenêtre possède zéro ou une session projet active; fermer réinitialise tout état projet. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Snapshot editor-only atomique du mode Tableau, de la visibilite effective A/1 et de l'id actif; refresh du meme Tableau preserve le mode Cellules. |

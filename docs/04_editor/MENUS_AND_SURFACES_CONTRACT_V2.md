@@ -8,7 +8,7 @@ Document version: `V2.1.5.0027`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-23 | `V2.1.5.0027` | `PENDING` | Ajout de la surface Fenêtres rapides : groupe projet distinct, projection canvas editor-only non exportable, lecture seule gardée et bandeau de contexte actif. |
+| 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Ajout de la surface Fenêtres rapides : groupe projet distinct, projection canvas editor-only non exportable, lecture seule gardée et bandeau de contexte actif. |
 | 2026-07-29 | `V2.1.5.0000` | `8fe1077` | Accueil projet, dialogue Nouveau, sélecteur `project.json`, récents et commandes de fermeture livrés. |
 | 2026-07-16 | `V2.1.4.0042` | `9fd2a30` | `page.properties` ouvre et active maintenant la page selectionnee avant d'afficher le panneau Page afin de charger le bon snapshot de proprietes. |
 | 2026-07-16 | `V2.1.4.0041` | `090d388` | Le groupe Input numerique est reduit a `Configurer <A1>` et partage une cible Tableau/cellule fraiche avec le panneau, le dialogue et le double-clic. |
