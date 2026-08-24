@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active runtime contract
-Document version: `V2.1.5.0037`
+Document version: `V2.1.5.0039`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0039` | `PENDING` | Gate structurel d'export : la validation de capacites precede toute creation de repertoire, et un projet a capacite `Blocked` ne laisse aucun artefact. |
 | 2026-08-24 | `V2.1.5.0037` | `c4f7391` | Task 4.0 : projection build/export des Fenêtres rapides documentée, artefacts editor-only exclus et gate fail-closed rappelé. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Gate build/export explicite pour les invocations `Outdated`, levé uniquement par réparation explicite. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Gate build/export QuickWindow Phase 2 : erreurs required/mapping/type/accès/version/graphe/profil/présentation/injection et capacité bloquée, sans fabriquer de liaison. |
@@ -108,6 +109,12 @@ flowchart TD
 2. `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
 3. `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`
 4. `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowBuildValidationTests.cs`
+
+## 4b. Structural Export Gate
+
+`ExportProjectAsync` et `ExportProjectArchiveAsync` executent `ScadaRuntimeCapabilityAnalyzer.Analyze` puis la validation de capacites **avant** de creer le moindre repertoire de staging ou d'ecrire le moindre fichier. Tant qu'une capacite requise reste `Blocked`, l'appel public leve une erreur deterministe nommant la capacite fautive et ne laisse aucun artefact, pas meme un repertoire vide.
+
+Aucun bypass n'existe : ni parametre `allowBlocked`, ni variable d'environnement, ni profil cache, ni option CLI, ni branche conditionnelle. Le compilateur de Fenetres rapides est `internal` et n'est atteignable que par `InternalsVisibleTo` depuis les tests, afin de produire la fixture non livrable sans ouvrir de chemin produit.
 
 ## 5. Quick Window Build And Export Projection (Manifest 2.3)
 

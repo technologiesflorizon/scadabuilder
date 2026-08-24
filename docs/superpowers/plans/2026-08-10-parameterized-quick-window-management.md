@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
-Document version: `V2.1.5.0038`
+Document version: `V2.1.5.0039`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0039` | `PENDING` | Task 4.2 exécutée et cochée : compilation déterministe des définitions et invocations, contenu namespacé, validation package et gate structurel d'export sans bypass. |
 | 2026-08-24 | `V2.1.5.0038` | `b1ec4cd` | Task 4.1 exécutée et cochée : 13 capacités granulaires enregistrées `Blocked`, analyse par déclencheur propre, index de conformance et matrice régénérés. |
 | 2026-08-24 | `V2.1.5.0037` | `c4f7391` | Task 4.0 exécutée et cochée : contrat package et layout déployé des Fenêtres rapides figés avant toute compilation, vérifiés contre le code TF100Web réel. |
 | 2026-08-24 | `V2.1.5.0036` | `3560f48` | Phase 3 close : rapport d'audit de phase et checkpoint versionné enregistrés; entrée en Phase 4 conditionnée par la Task 4.0. |
@@ -55,7 +56,8 @@ Document version: `V2.1.5.0038`
 - [x] Phase 3 close: rapport d'audit `docs/superpowers/reports/2026-08-24-quick-window-phase-3-audit.md` et entrée `phase 3` dans `tools/quick-window/checkpoints.json`.
 - [x] Phase 4.0: contrat package Fenêtre rapide figé avant compilation (`PENDING`).
 - [x] Phase 4.1: capacités granulaires `Blocked` et analyse exhaustive (`b1ec4cd`).
-- [ ] Phases 4.2 à 7: non démarrées.
+- [x] Phase 4.2: compilation déterministe et gate structurel d'export (`PENDING`).
+- [ ] Phases 4.3 à 7: non démarrées.
 
 Audit du 2026-08-21: la spec a été étendue par `FR-030..036` et `FR-UI-23..26`. Le plan ajoute en conséquence Task 2.4, Task 3.5, Task 3.6, Task 4.0 et Task 5.4. La Phase 0 n'est pas rouverte: la composition header/pied et la coexistence legacy n'existent que dans un host composé réel et sont donc prouvées en Phase 5 contre TF100Web, sans invalider le hash de fixture gelé.
 
@@ -757,13 +759,13 @@ powershell -ExecutionPolicy Bypass -File tools/docs/generate-runtime-capability-
 - Consumes: modèle validé et namespaces prouvés en phase 0.
 - Produces: `QuickWindows[]`, `QuickWindowInvocations[]`, contenu/CSS namespacés et référence de commande par `InvocationKey`.
 
-- [ ] Ordonner ordinalement définitions, membres et liaisons; écrire sous un chemin stable dérivé de `QuickWindowDefinitionKey`.
-- [ ] Namespace ids, références internes, CSS et cibles sans réécriture à l’ouverture; exclure données de test et editor-only.
-- [ ] **Implémenter un gate structurel sans bypass produit:** `Ft100SceneExporter.ExportProjectAsync` et `ExportProjectArchiveAsync` doivent appeler `ScadaRuntimeCapabilityAnalyzer.Analyze` puis `EnsureRuntimeCapabilitiesExportable` avant de créer le staging directory ou d’écrire le moindre fichier. Tant qu’une capacité QuickWindow est `Blocked`, l’appel public lève une erreur déterministe et laisse zéro artefact.
-- [ ] Tester `QuickWindowCompiler` directement comme classe `internal` via `InternalsVisibleTo` pour produire la fixture non livrable. Ne créer aucun paramètre `allowBlocked`, variable d’environnement, profil caché, option CLI ou branche conditionnelle permettant de contourner le gate depuis le produit.
-- [ ] Ajouter un test d’ordre d’appel et un test filesystem prouvant qu’un refactoring ne peut compiler/archiver avant la validation; muter chaque capacité QuickWindow à `Blocked` et vérifier le même rejet.
-- [ ] Tester package byte-déterministe, rejets 2.1/2.2 et absence de Fragment de substitution.
-- [ ] Commit: `feat: compile quick window package contracts`.
+- [x] Ordonner ordinalement définitions, membres et liaisons; écrire sous un chemin stable dérivé de `QuickWindowDefinitionKey`.
+- [x] Namespace ids, références internes, CSS et cibles sans réécriture à l’ouverture; exclure données de test et editor-only.
+- [x] **Implémenter un gate structurel sans bypass produit:** `Ft100SceneExporter.ExportProjectAsync` et `ExportProjectArchiveAsync` doivent appeler `ScadaRuntimeCapabilityAnalyzer.Analyze` puis `EnsureRuntimeCapabilitiesExportable` avant de créer le staging directory ou d’écrire le moindre fichier. Tant qu’une capacité QuickWindow est `Blocked`, l’appel public lève une erreur déterministe et laisse zéro artefact.
+- [x] Tester `QuickWindowCompiler` directement comme classe `internal` via `InternalsVisibleTo` pour produire la fixture non livrable. Ne créer aucun paramètre `allowBlocked`, variable d’environnement, profil caché, option CLI ou branche conditionnelle permettant de contourner le gate depuis le produit.
+- [x] Ajouter un test d’ordre d’appel et un test filesystem prouvant qu’un refactoring ne peut compiler/archiver avant la validation; muter chaque capacité QuickWindow à `Blocked` et vérifier le même rejet.
+- [x] Tester package byte-déterministe, rejets 2.1/2.2 et absence de Fragment de substitution.
+- [x] Commit: `feat: compile quick window package contracts` (`PENDING`).
 
 **Vérification:**
 

@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.5.0038`
+Document version: `V2.1.5.0039`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0039` | `PENDING` | Task 4.2 : compilation deterministe des Fenetres rapides et gate structurel d'export sans bypass; aucun artefact produit tant qu'une capacite reste `Blocked`. |
 | 2026-08-24 | `V2.1.5.0038` | `5953265` | Task 4.1 : 13 capacites granulaires Fenetre rapide enregistrees `Blocked` avec analyse par declencheur propre; matrice generee et index de conformance regeneres. |
 | 2026-08-24 | `V2.1.5.0037` | `c4f7391` | Task 4.0 : contrat package et layout déployé des Fenêtres rapides figés avant toute compilation; capacités TF100Web encore inconnues côté runtime. |
 | 2026-08-24 | `V2.1.5.0036` | `3560f48` | Phase 3 Fenetres rapides cloturee : rapport d'audit de phase publie et checkpoint versionne enregistre; capacites toujours `Blocked`. |
