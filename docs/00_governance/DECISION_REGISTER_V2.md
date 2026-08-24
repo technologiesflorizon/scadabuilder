@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active authoritative decision register
-Document version: `V2.1.5.0027`
+Document version: `V2.1.5.0031`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0031` | `PENDING` | Ajout de `DEC-0051` : le moteur Node épinglé passe de `20.18.x` à `24.15.x`; la fixture Phase 0 et son hash restent gelés et le leg Node est rejoué sur `v24.15.0`. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | `DEC-0050` Task 3.1 implémentée : shell d'authoring, contexte borné, duplication et projection canvas editor-only; capacités toujours `Blocked`. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | `DEC-0050` Task 2.4 implémentée : Interface locale versionnée, invocations `Outdated` dérivées et réparation explicite; capacités toujours `Blocked`. |
 | 2026-08-21 | `V2.1.5.0023` | `b0159f9` | `DEC-0050` étendue par `FR-030..036` et `FR-UI-23..26` : composition header/pied, presse-papier inter-contextes, Interface locale versionnée, duplication de définition, bibliothèque Element+, portée undo/redo et isolation vis-à-vis des popups legacy. |
@@ -115,6 +116,30 @@ Regression coverage:
 ```
 
 ## 3. Active Decisions
+
+### DEC-0051 - Moteur Node épinglé sur 24.15.x
+
+Status: Active
+Created: 2026-08-24 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/plans/2026-08-10-parameterized-quick-window-management.md`
+
+Context:
+
+Le gate d'isolation de la Phase 0 de `DEC-0050` épinglait Node `20.18.x` via `.nvmrc`, `engines.node` et une assertion de test. Le poste de référence a depuis été mis à jour sur Node `v24.15.0`, ce qui faisait échouer l'assertion d'épinglage alors que les 67 autres tests runtime JS restaient verts. Deux voies existaient : réinstaller `20.18.1` pour retrouver l'environnement exact des preuves gelées, ou ré-épingler le plan sur la version installée.
+
+Decision:
+
+Le moteur épinglé devient Node `24.15.x` (`.nvmrc` = `24.15.0`). La fixture d'isolation `1.0.2` et son hash `prototype.sha256` restent gelés et ne sont pas réécrits : seul le moteur qui les exécute change. Le leg Node headless du gate est rejoué sur `v24.15.0` et reste `PASS` avec un hash de prototype identique, ce qui démontre que les invariants `FR-020` et `FR-026` ne dépendent pas de la version majeure du moteur.
+
+Les preuves historiques produites sur `v20.18.1` ne sont ni supprimées ni réécrites : elles restent le dossier de la validation initiale. Les legs WebView2 réel et TF100Web/Edge portent encore la version `v20.18.1` dans leur bloc `versions` et doivent être rejoués sur le moteur épinglé avant l'entrée en Phase 4, faute de quoi la règle de non-divergence entre les rapports Phase 0 et Phase 7 ne peut pas être satisfaite.
+
+Consequences:
+
+Le dépôt TF100Web doit adopter le même épinglage avant l'exécution de la conformance cross-runtime; toute exécution des fixtures de conformance sur un moteur non épinglé est irrecevable. Aucune capacité `quick-window.*` n'est promue par la présente décision et aucun comportement de production n'est modifié : le changement porte exclusivement sur l'environnement de vérification.
 
 ### DEC-0050 - Fenêtres rapides paramétrées comme entités typées distinctes
 

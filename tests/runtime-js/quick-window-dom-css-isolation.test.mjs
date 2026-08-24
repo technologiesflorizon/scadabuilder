@@ -301,12 +301,12 @@ test('lifecycle: 100 cycles, cascade, stale hydration, races, depth/cycle reject
   assert.equal(manager._active.size, 0);
 });
 
-test('engine Node pinned: .nvmrc and engines.node must match 20.18.x', () => {
+test('engine Node pinned: .nvmrc and engines.node must match 24.15.x', () => {
   const nvmrc = fs.readFileSync(path.resolve(__dirname,'../../.nvmrc'),'utf8').trim();
   const pkg = JSON.parse(fs.readFileSync(path.join(__dirname,'package.json'),'utf8'));
-  assert.match(nvmrc, /^20\.18\./);
-  assert.equal(pkg.engines.node, '20.18.x');
-  assert.match(process.version, /^v20\.18\./, `installed Node ${process.version} must match the Phase 0 gate`);
+  assert.match(nvmrc, /^24\.15\./);
+  assert.equal(pkg.engines.node, '24.15.x');
+  assert.match(process.version, /^v24\.15\./, `installed Node ${process.version} must match the Phase 0 gate`);
 });
 
 test('PrototypeRevision hash file is frozen and synchronized (Task 0.3b)', () => {

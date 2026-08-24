@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active implementation status
-Document version: `V2.1.5.0030`
+Document version: `V2.1.5.0031`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0031` | `PENDING` | `DEC-0051` : moteur de vérification ré-épinglé sur Node `24.15.x`; aucun comportement de production modifié. |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Apercu d'instance Fenetre rapide editor-only : gestionnaire hote partage (SinglePerDefinition, generations, hydratation obsolete, cascade), chrome minimal, `X`/`Escape`/`Self` et banc d'essai transitoire. |
 | 2026-08-23 | `V2.1.5.0029` | `012135d` | Authoring des appelants Fenetre rapide : `OpenQuickWindow` avec cible definition, `CloseQuickWindow(Self)`, onglet conditionnel `Liaisons`, sources typees et statuts non lie/a reparer. |
 | 2026-08-23 | `V2.1.5.0028` | `2fd6c72` | Éditeur `Interface locale` Fenêtres rapides : tableau unique groupé et filtré, édition inline des propriétés courantes, dialogue commun pour les avancées, compteurs d'usages avec navigation, suppression référencée confirmée et sélecteurs restreints aux membres locaux. |
@@ -115,7 +116,7 @@ Document version: `V2.1.5.0030`
 
 ## 1. Current Verified Baseline
 
-As of 2026-08-13, the solution build and the 67 targeted QuickWindow/legacy-popup tests pass. Phase 0 also passes under exact Node 20.18.1, real WebView2 and the TF100Web browser fixture. The full-suite result is recorded in `REGRESSION_COVERAGE_V2.md`.
+As of 2026-08-13, the solution build and the 67 targeted QuickWindow/legacy-popup tests pass. Phase 0 also passes under exact Node 20.18.1, real WebView2 and the TF100Web browser fixture. Since `DEC-0051` (2026-08-24) the pinned engine is Node 24.15.x: the frozen fixture and its hash are unchanged and the Node leg was replayed PASS, while the real WebView2 and TF100Web legs must be replayed on the pinned engine before Phase 4. The full-suite result is recorded in `REGRESSION_COVERAGE_V2.md`.
 
 ## 2. Implemented Areas
 

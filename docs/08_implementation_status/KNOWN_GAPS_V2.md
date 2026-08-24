@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active known gaps register
-Document version: `V2.1.5.0030`
+Document version: `V2.1.5.0031`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0031` | `PENDING` | `DEC-0051` : legs WebView2 réel et TF100Web du gate Phase 0 à rejouer sur Node `24.15.x` avant l'entrée en Phase 4. |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Task 3.4 QuickWindow fermee cote editeur; l'apercu reste editor-only et aucune capacite runtime n'est promue. Le presse-papier inter-contextes (Task 3.5) et la surface de reparation `FR-UI-24` (Task 3.6) restent ouverts. |
 | 2026-08-23 | `V2.1.5.0029` | `012135d` | Task 3.3 QuickWindow fermee; le preview/banc d'essai (Task 3.4), le presse-papier inter-contextes (Task 3.5) et la surface de reparation `FR-UI-24` (Task 3.6) restent ouverts. L'authoring `CloseQuickWindow(Self)` reste inaccessible depuis le canvas tant que la projection est en lecture seule. |
 | 2026-08-23 | `V2.1.5.0028` | `2fd6c72` | Task 3.2 QuickWindow fermée; l'onglet `Liaisons` des appelants (Task 3.3), le preview/banc d'essai (Task 3.4) et la surface de réparation `FR-UI-24` (Task 3.6) restent ouverts. |
@@ -91,6 +92,8 @@ Document version: `V2.1.5.0030`
 23. The prior TF100Web conformance harness grouped 118 Supported ids behind five aggregate family booleans and could therefore pass several unexecuted variants. That validation gap is closed: every id now returns its own `probe:<capability-id>` result, concrete evidence and diagnostic, and an isolated fixture mutation proves independent failure. This does not promote any of the 44 intentionally Blocked capabilities.
 
 24. `DEC-0049` est implémentée et validée par build et tests ciblés. Le parcours interactif WPF complet (créer, modifier, changer de projet avec les trois choix dirty, fermer et rouvrir un récent) reste à exécuter sur une copie isolée avant promotion opérateur.
+26. `DEC-0051` a ré-épinglé le moteur de vérification sur Node `24.15.x`. Le leg Node headless du gate Phase 0 est rejoué `PASS` avec le hash de fixture gelé inchangé, mais les preuves WebView2 réelle et Edge/TF100Web portent encore `v20.18.1`. Elles doivent être rejouées sur le moteur épinglé avant l'entrée en Phase 4; le dépôt TF100Web doit adopter le même épinglage avant la conformance cross-runtime.
+
 25. `DEC-0050` Phases 0 à 2 sont validées pour l’isolation, les contrats persistants, l’orchestration Application, les dépendances, l’historique et le gate de build. L’authoring WPF (Phase 3), le preview/compilateur/runtime partagé (Phases 4/5), l’export et la promotion de capacités (Phase 6), puis l’intake/acceptance TF100Web (Phase 7) restent non implémentés. Aucun package QuickWindow productible ne doit être émis et toutes les capacités concernées restent `Blocked`.
 
 ## 2. Rule

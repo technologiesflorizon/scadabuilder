@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
-Document version: `V2.1.5.0030`
+Document version: `V2.1.5.0031`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0031` | `PENDING` | Ré-épinglage du moteur Node de `20.18.x` vers `24.15.x` (`DEC-0051`) : fixture Phase 0 inchangée et rejouée sur `v24.15.0` avec le même hash gelé; les legs WebView2 réel et TF100Web restent à rejouer avant la Phase 4. |
 | 2026-08-23 | `V2.1.5.0030` | `724e621` | Task 3.4 exécutée et cochée : module runtime hôte adapté du prototype gelé, aperçu d'instance editor-only avec chrome minimal, banc d'essai transitoire et bundle d'aperçu séparé du bundle exporté. |
 | 2026-08-23 | `V2.1.5.0029` | `9795cce` | Task 3.3 exécutée et cochée : commande `OpenQuickWindow` avec cible définition, `CloseQuickWindow(Self)` dans un contenu, onglet conditionnel `Liaisons`, grille typée `FR-UI-18`/`FR-UI-19` et statut `Outdated` bloquant l'export. |
 | 2026-08-23 | `V2.1.5.0028` | `fafdf53` | Task 3.2 exécutée et cochée : panneau `Interface locale` substitué au catalogue de tags, tableau unique groupé avec filtres, édition inline et dialogue commun, compteurs d'usages avec navigation, suppression référencée confirmée et sélecteurs restreints aux membres locaux. |
@@ -26,11 +27,11 @@ Document version: `V2.1.5.0030`
 
 **Architecture:** `QuickWindowDefinition` et `PageDefinition` possèdent chacune un `VisualContent` commun par composition. Une invocation persistante référence une définition et porte ses liaisons typées; un gestionnaire host crée un `RuntimeInstanceId` temporaire dans une racine DOM scoppée. Le runtime partagé conserve les sémantiques portables; le preview Builder et TF100Web fournissent chacun l’adaptateur host, le cache de tags et le pont d’écriture. Aucun héritage page/fenêtre, aucun second poller et aucun chemin Fragment de substitution ne sont permis.
 
-**Tech Stack:** C# 12, .NET 8, WPF/WebView2, JSON `System.Text.Json`, JavaScript ES modules, MSTest, Node 20 LTS (20.18.x, épinglée via `.nvmrc` + `package.json` `engines.node`, `node:test`), Django/Python et tests TF100Web. La version Node exacte est consignée dans les rapports Phase 0/7 et vérifiée au `Before You Start`.
+**Tech Stack:** C# 12, .NET 8, WPF/WebView2, JSON `System.Text.Json`, JavaScript ES modules, MSTest, Node 24 LTS (24.15.x, épinglée via `.nvmrc` + `package.json` `engines.node`, `node:test`; `20.18.x` jusqu'au ré-épinglage `DEC-0051`), Django/Python et tests TF100Web. La version Node exacte est consignée dans les rapports Phase 0/7 et vérifiée au `Before You Start`.
 
 ## État d’exécution audité au 2026-08-21
 
-- [x] Phase 0: fixture `1.0.2` gelée, hash commun, Node `20.18.1`, WebView2 réel et Edge/TF100Web réel.
+- [x] Phase 0: fixture `1.0.2` gelée, hash commun, Node `20.18.1`, WebView2 réel et Edge/TF100Web réel. Ré-épinglée sur Node `24.15.0` le 2026-08-24 (`DEC-0051`) : fixture et hash inchangés, leg Node rejoué `PASS`; les legs WebView2 réel et TF100Web doivent être rejoués avant la Phase 4.
 - [x] Phase 1.1: modèle, interface locale, présentation bornée et validation de domaine.
 - [x] Phase 1.2: invocations/version/interface, bindings typés, anti-injection et fermeture contextuelle.
 - [x] Phase 1.3: anciens command kinds popup refusés; résidus legacy isolés; commandes QuickWindow masquées de l’UI courante.
@@ -88,7 +89,7 @@ node --version; node --test frontend/tests_runtime_js/*.test.mjs
 
 Expected: conserver le résultat frais comme baseline; toute nouvelle régression doit être expliquée et corrigée avant commit.
 
-- [ ] Vérifier épinglage Node LTS: `node --version`, `.nvmrc` et `package.json` `engines.node` doivent correspondre à `Tech Stack` (`20.18.x`). Toute divergence bloque le démarrage.
+- [ ] Vérifier épinglage Node LTS: `node --version`, `.nvmrc` et `package.json` `engines.node` doivent correspondre à `Tech Stack` (`24.15.x`). Toute divergence bloque le démarrage.
 
 - [ ] Confirmer que `win00054` et ses mappings de référence sont des données de test/acceptation sans autorisation d’écriture PLC réelle. Les smokes de production restent read-only jusqu’à une fenêtre industrielle explicitement autorisée.
 - [ ] Respecter les gates cross-repo: aucun déploiement TF100Web, activation d’export Builder ou écriture PLC n’est autorisé implicitement par ce plan.
@@ -149,7 +150,7 @@ Expected: la suite existante reste conforme et la fixture produit un rapport dé
 
 - [ ] **Step 5: Établir la baseline performance du prototype**
 
-Sur la machine de référence, exécuter 30 ouvertures froides et 100 ouvertures chaudes après 10 warmups; consigner CPU, RAM, versions OS/WebView2/Node (Node 20.18.x épinglée via `.nvmrc`/`engines.node`) et p50/p95 `request -> Active`. Le SLA de sortie est: p95 chaud ≤ 500 ms, p95 froid ≤ 1 500 ms et aucune régression > 10 % entre la fixture gelée et son portage de production sur la même machine. Toute mesure hors seuil bloque le gate ou exige une décision explicitement documentée.
+Sur la machine de référence, exécuter 30 ouvertures froides et 100 ouvertures chaudes après 10 warmups; consigner CPU, RAM, versions OS/WebView2/Node (Node 24.15.x épinglée via `.nvmrc`/`engines.node`) et p50/p95 `request -> Active`. Le SLA de sortie est: p95 chaud ≤ 500 ms, p95 froid ≤ 1 500 ms et aucune régression > 10 % entre la fixture gelée et son portage de production sur la même machine. Toute mesure hors seuil bloque le gate ou exige une décision explicitement documentée.
 
 - [ ] **Step 6: Commit prototype commun**
 
@@ -1015,7 +1016,7 @@ dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWi
 - Produces: preuve de parité Builder/TF100Web et statut clair des smokes industriels.
 
 - [ ] Exécuter full suites, fixture conformance, races concurrentes, 100 cycles, navigation/reopen et read-only smoke.
-- [ ] Mesurer 30 ouvertures froides et 100 chaudes après warmup sur la même machine et même Node LTS (20.18.x) que Phase 0. Exiger p95 chaud ≤ 500 ms, p95 froid ≤ 1 500 ms et régression ≤ 10 % contre la baseline gelée; vérifier aussi absence de croissance mémoire après les 100 cycles.
+- [ ] Mesurer 30 ouvertures froides et 100 chaudes après warmup sur la même machine et même Node LTS (24.15.x) que Phase 0. Exiger p95 chaud ≤ 500 ms, p95 froid ≤ 1 500 ms et régression ≤ 10 % contre la baseline gelée; vérifier aussi absence de croissance mémoire après les 100 cycles.
 - [ ] N’exécuter une écriture/readback PLC qu’après autorisation explicite; sinon consigner le gate restant sans présenter la livraison comme validée en production.
 - [ ] Commit: `test: validate win00054 quick window vertical`.
 
@@ -1165,7 +1166,7 @@ Chaque invariant approuvé de la spec `docs/superpowers/specs/2026-08-04-paramet
 - [ ] Bumps `iteration` avant activation, bump `feature` exactement à la promotion livrable de Phase 6, aucun bump `production` implicite.
 - [ ] `Literal`/`Expression` contenant HTML/JS/sélecteur/chemin est rejetée en domaine, build et runtime partagé sans souscription ni écriture (FR-010 inv.10).
 - [x] `Page->A->B->C` profondeur 3 et cycle `A->B->A` sont rejetés en `QuickWindowDependencyAnalyzer` et en build/export avec diagnostic `cycle/depth-exceeded`; `Page->A->B` reste vert pour cette règle.
-- [ ] Node LTS épinglée (`20.18.x` via `.nvmrc` + `package.json` `engines.node` + `node --version`) est identique dans les rapports Phase 0 et Phase 7; aucune divergence de version n’est tolérée.
+- [ ] Node LTS épinglée (`24.15.x` via `.nvmrc` + `package.json` `engines.node` + `node --version`) est identique dans les rapports Phase 0 et Phase 7; aucune divergence de version n’est tolérée.
 - [ ] `PresentationDefaults` contient `Title`/`Center`/`Backdrop`/`Chrome` borné/`IsDraggable=true`/`IsResizable=false`/`IsViewportConstrained=true` et aucune autre propriété V1; chrome host reste hors `CanvasSize` (FR-UI-02/11).
 - [ ] Annexe A mapping `FR-001..036` + `FR-UI-01..26` est 100% verte et `rg FR-0` ne révèle aucune FR orpheline.
 - [ ] Full suites Builder, runtime JS, package/conformance TF100Web et vérification docs réussissent par rapport aux baselines fraîches.

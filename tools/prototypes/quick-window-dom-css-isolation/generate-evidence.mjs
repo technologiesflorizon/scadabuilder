@@ -208,8 +208,8 @@ async function main() {
   const perf = await A.runPerformance(ctx);
   const assertions = { core: [...core, ...perf.assertions], hostExtensions: { builderWebView2: [], tf100Web: [] } };
   const overall = assertions.core.every(a=>a.status==='PASS') ? 'PASS' : 'FAIL';
-  const nvmrc = fs.existsSync(path.join(repoRoot,'.nvmrc')) ? fs.readFileSync(path.join(repoRoot,'.nvmrc'),'utf8').trim() : '20.18.1';
-  let enginesNode = '20.18.x';
+  const nvmrc = fs.existsSync(path.join(repoRoot,'.nvmrc')) ? fs.readFileSync(path.join(repoRoot,'.nvmrc'),'utf8').trim() : '24.15.0';
+  let enginesNode = '24.15.x';
   try { enginesNode = JSON.parse(fs.readFileSync(path.join(repoRoot,'tests','runtime-js','package.json'),'utf8')).engines.node; } catch {}
   const hash = hashPrototype();
   const evidence = {

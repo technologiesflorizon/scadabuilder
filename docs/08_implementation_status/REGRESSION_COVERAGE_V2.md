@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active regression coverage map
-Document version: `V2.1.5.0030`
+Document version: `V2.1.5.0031`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0031` | `PENDING` | Épinglage du moteur de vérification aligné sur Node `24.15.x` (`DEC-0051`). |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Couverture Task 3.4 : apercu d'instance namespace, chrome minimal, bundle d'apercu separe de l'export, generations monotones, confinement de la materialisation et semantique hote verifiee en Node. |
 | 2026-08-23 | `V2.1.5.0029` | `012135d` | Couverture Task 3.3 : kinds offerts par surface, onglet conditionnel, colonnes et sources typees, statuts, `Outdated` bloquant et transitions d'invocation. |
 | 2026-08-23 | `V2.1.5.0028` | `2fd6c72` | Couverture Task 3.2 : panneau `Interface locale`, filtres, édition inline versionnée, usages/navigation, suppression confirmée et catalogue de sélecteurs local. |
@@ -120,7 +121,7 @@ Les 67 tests QuickWindow/legacy-popup ciblés, les 4 tests de fixture conformanc
 
 | Contract area | Primary tests |
 | --- | --- |
-| Fenêtres rapides Phase 0 — isolation (`DEC-0050`) | `tests/runtime-js/quick-window-dom-css-isolation.test.mjs` verrouille Node `20.18.x`, révision/hash et 100 cycles; `QuickWindowIsolationPrototypeContractTests` exige une capture WebView2 réelle. TF100Web exécute la même fixture/hash avec son test Node et `tests_scada_quick_window_isolation_prototype.py` dans Edge headless. |
+| Fenêtres rapides Phase 0 — isolation (`DEC-0050`) | `tests/runtime-js/quick-window-dom-css-isolation.test.mjs` verrouille Node `24.15.x` (`20.18.x` avant `DEC-0051`), révision/hash et 100 cycles; `QuickWindowIsolationPrototypeContractTests` exige une capture WebView2 réelle. TF100Web exécute la même fixture/hash avec son test Node et `tests_scada_quick_window_isolation_prototype.py` dans Edge headless. |
 | Fenêtres rapides Phase 1 — contrats et handshake (`DEC-0050`) | `QuickWindowDomainTests`, `QuickWindowBindingTests`, `QuickWindowStoreTests` et `QuickWindowContractHandshakeTests` couvrent familles/type/accès, anti-injection, version/profil, fermeture contextuelle, persistance déterministe/atomique et SHA canonique. TF100Web `tests_scada_quick_window_contract_handshake.py` parse le manifest et exécute les mutations clés/type/ordre/profil/required/legacy. |
 | Fenêtres rapides Phase 3.1 — shell d'authoring (`DEC-0050`, `FR-033`, `FR-035`) | `QuickWindowShellContractTests` couvre la portée d'historique `QuickWindow`, la pile unique sur une alternance page/fenêtre, l'activation du contexte cible, le refus non destructif d'une action non résoluble, le masquage des commandes page-only, le contrat XAML du groupe projet, la garde d'architecture de `MainWindow.xaml.cs`, la projection canvas editor-only non exportable et la fermeture du handler de canvas en lecture seule. |
 | Fenêtres rapides Phase 3.2 — Interface locale (`DEC-0050`, `FR-UI-15`, `FR-UI-16`, `FR-UI-17`, `FR-UI-20`, `FR-031`) | `QuickWindowInterfaceAuthoringTests` couvre le tableau unique groupé public/privé, les filtres famille/texte, la répartition inline/avancée et le contrat XAML du panneau et du dialogue, la cohérence des règles typées à l'édition inline, l'incrément d'`InterfaceVersion` limité aux changements de contrat public, le refus d'une édition invalide, les compteurs d'usages et la navigation non mutante, la suppression référencée confirmée ou annulée, les statuts gris/rouge des ports non liés et le catalogue de sélecteurs restreint aux membres locaux. |
