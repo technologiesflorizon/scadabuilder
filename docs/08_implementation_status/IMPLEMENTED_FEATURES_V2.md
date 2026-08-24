@@ -8,7 +8,7 @@ Document version: `V2.1.5.0035`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0035` | `PENDING` | Surface de reparation `FR-UI-24` livree : liste des invocations `Outdated`, navigation vers l'appelant, reliaison port par port et confirmation d'impact avant toute evolution d'interface. Phase 3 authoring terminee. |
+| 2026-08-24 | `V2.1.5.0035` | `2e86fd9` | Surface de reparation `FR-UI-24` livree : liste des invocations `Outdated`, navigation vers l'appelant, reliaison port par port et confirmation d'impact avant toute evolution d'interface. Phase 3 authoring terminee. |
 | 2026-08-24 | `V2.1.5.0034` | `4202a70` | Validation fail-closed du presse-papier et de la duplication inter-contextes Fenetre rapide, avec dialogue de diagnostics et variante `Coller sans liaisons`. |
 | 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | `DEC-0051` : moteur de vérification ré-épinglé sur Node `24.15.x`; aucun comportement de production modifié. |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Apercu d'instance Fenetre rapide editor-only : gestionnaire hote partage (SinglePerDefinition, generations, hydratation obsolete, cascade), chrome minimal, `X`/`Escape`/`Self` et banc d'essai transitoire. |

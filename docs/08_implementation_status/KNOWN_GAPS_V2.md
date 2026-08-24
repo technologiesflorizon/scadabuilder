@@ -8,7 +8,7 @@ Document version: `V2.1.5.0035`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0035` | `PENDING` | Task 3.6 QuickWindow fermee : la Phase 3 authoring est complete cote code; restent le rapport d'audit de phase, l'entree de checkpoint, puis les Phases 4 a 7. |
+| 2026-08-24 | `V2.1.5.0035` | `2e86fd9` | Task 3.6 QuickWindow fermee : la Phase 3 authoring est complete cote code; restent le rapport d'audit de phase, l'entree de checkpoint, puis les Phases 4 a 7. |
 | 2026-08-24 | `V2.1.5.0034` | `4202a70` | Task 3.5 QuickWindow fermee; seule la surface de reparation `FR-UI-24` (Task 3.6) reste ouverte en Phase 3. |
 | 2026-08-24 | `V2.1.5.0033` | `85e088d` | Les trois legs du gate Phase 0 sont rejoués sur Node `24.15.x`; la lacune d'épinglage est fermée. |
 | 2026-08-24 | `V2.1.5.0032` | `1fd1d14` | Leg WebView2 réel du gate Phase 0 rejoué sur Node `24.15.0`; seul le leg Edge/TF100Web reste à rejouer. |

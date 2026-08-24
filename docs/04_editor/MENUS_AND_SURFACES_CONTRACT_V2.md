@@ -8,7 +8,7 @@ Document version: `V2.1.5.0035`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0035` | `PENDING` | Surface de reparation des invocations `Outdated` : liste page/appelant/commande/motif, navigation vers l'appelant et reliaison port par port. |
+| 2026-08-24 | `V2.1.5.0035` | `2e86fd9` | Surface de reparation des invocations `Outdated` : liste page/appelant/commande/motif, navigation vers l'appelant et reliaison port par port. |
 | 2026-08-24 | `V2.1.5.0034` | `4202a70` | Dialogue de collage refuse : liste objet/propriete/reference/motif et deux issues seulement, `Annuler` ou `Coller sans liaisons`. |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Banc d'essai Fenetre rapide : valeurs et titre temporaires, ouverture d'une instance d'apercu editor-only et fermeture explicite. |
 | 2026-08-23 | `V2.1.5.0029` | `012135d` | Onglet conditionnel `Liaisons` du dialogue Proprietes : grille typee nom/famille/type/source/valeur/statut, selecteurs contextuels et banniere `Outdated`. |

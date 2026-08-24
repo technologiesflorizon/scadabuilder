@@ -8,7 +8,7 @@ Document version: `V2.1.5.0035`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0035` | `PENDING` | Couverture Task 3.6 : liste de reparation, navigation non mutante, reparation unitaire annulable, confirmation d'impact et gate de build ferme jusqu'a reparation complete. |
+| 2026-08-24 | `V2.1.5.0035` | `2e86fd9` | Couverture Task 3.6 : liste de reparation, navigation non mutante, reparation unitaire annulable, confirmation d'impact et gate de build ferme jusqu'a reparation complete. |
 | 2026-08-24 | `V2.1.5.0034` | `4202a70` | Couverture Task 3.5 : frontiere presse-papier dans les deux sens, duplication, composant de bibliotheque, decision operateur et absence de reference orpheline. |
 | 2026-08-24 | `V2.1.5.0033` | `85e088d` | Les trois legs du gate Phase 0 sont rejoués sur le moteur épinglé; épinglage LF de la fixture ajouté des deux côtés. |
 | 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | Épinglage du moteur de vérification aligné sur Node `24.15.x` (`DEC-0051`). |
