@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
-Document version: `V2.1.5.0037`
+Document version: `V2.1.5.0038`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0038` | `b1ec4cd` | Task 4.1 exécutée et cochée : 13 capacités granulaires enregistrées `Blocked`, analyse par déclencheur propre, index de conformance et matrice régénérés. |
 | 2026-08-24 | `V2.1.5.0037` | `c4f7391` | Task 4.0 exécutée et cochée : contrat package et layout déployé des Fenêtres rapides figés avant toute compilation, vérifiés contre le code TF100Web réel. |
 | 2026-08-24 | `V2.1.5.0036` | `3560f48` | Phase 3 close : rapport d'audit de phase et checkpoint versionné enregistrés; entrée en Phase 4 conditionnée par la Task 4.0. |
 | 2026-08-24 | `V2.1.5.0035` | `2e86fd9` | Task 3.6 exécutée et cochée : surface de réparation des invocations `Outdated`, confirmation d'impact avant évolution d'interface et gate de build fermé jusqu'à réparation complète. Phase 3 terminée côté code. |
@@ -53,7 +54,8 @@ Document version: `V2.1.5.0037`
 - [x] Phase 3.6: surface de réparation des invocations `Outdated` et confirmation d'impact (`1d4604d`).
 - [x] Phase 3 close: rapport d'audit `docs/superpowers/reports/2026-08-24-quick-window-phase-3-audit.md` et entrée `phase 3` dans `tools/quick-window/checkpoints.json`.
 - [x] Phase 4.0: contrat package Fenêtre rapide figé avant compilation (`PENDING`).
-- [ ] Phases 4.1 à 7: non démarrées.
+- [x] Phase 4.1: capacités granulaires `Blocked` et analyse exhaustive (`b1ec4cd`).
+- [ ] Phases 4.2 à 7: non démarrées.
 
 Audit du 2026-08-21: la spec a été étendue par `FR-030..036` et `FR-UI-23..26`. Le plan ajoute en conséquence Task 2.4, Task 3.5, Task 3.6, Task 4.0 et Task 5.4. La Phase 0 n'est pas rouverte: la composition header/pied et la coexistence legacy n'existent que dans un host composé réel et sont donc prouvées en Phase 5 contre TF100Web, sans invalider le hash de fixture gelé.
 
@@ -730,9 +732,9 @@ Expected: aucun `[ERROR]`; le contrat décrit le layout package et déployé des
 - Consumes: variantes persistantes de définition/invocation/commande.
 - Produces: capacités granulaires exactes de §10.2, toutes `Blocked`, sans identifiant parapluie.
 
-- [ ] Ajouter les capacités incluses dans la verticale seulement; conserver nesting/parent-port/legacy-adapter bloqués et non requis si hors tranche.
-- [ ] Ajouter tests de réflexion/exhaustivité et mutation indépendante.
-- [ ] Commit: `feat: register blocked quick window capabilities`.
+- [x] Ajouter les capacités incluses dans la verticale seulement; conserver nesting/parent-port/legacy-adapter bloqués et non requis si hors tranche.
+- [x] Ajouter tests de réflexion/exhaustivité et mutation indépendante.
+- [x] Commit: `feat: register blocked quick window capabilities` (`b1ec4cd`).
 
 **Vérification:**
 

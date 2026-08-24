@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active implementation status
-Document version: `V2.1.5.0035`
+Document version: `V2.1.5.0038`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0038` | `PENDING` | Capacites Fenetre rapide enregistrees et analysees : 13 identifiants granulaires, tous `Blocked`, chacun derive de son propre declencheur; aucun identifiant parapluie. |
 | 2026-08-24 | `V2.1.5.0035` | `2e86fd9` | Surface de reparation `FR-UI-24` livree : liste des invocations `Outdated`, navigation vers l'appelant, reliaison port par port et confirmation d'impact avant toute evolution d'interface. Phase 3 authoring terminee. |
 | 2026-08-24 | `V2.1.5.0034` | `4202a70` | Validation fail-closed du presse-papier et de la duplication inter-contextes Fenetre rapide, avec dialogue de diagnostics et variante `Coller sans liaisons`. |
 | 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | `DEC-0051` : moteur de vérification ré-épinglé sur Node `24.15.x`; aucun comportement de production modifié. |
