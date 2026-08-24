@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active implementation status
-Document version: `V2.1.5.0031`
+Document version: `V2.1.5.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0034` | `PENDING` | Validation fail-closed du presse-papier et de la duplication inter-contextes Fenetre rapide, avec dialogue de diagnostics et variante `Coller sans liaisons`. |
 | 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | `DEC-0051` : moteur de vérification ré-épinglé sur Node `24.15.x`; aucun comportement de production modifié. |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Apercu d'instance Fenetre rapide editor-only : gestionnaire hote partage (SinglePerDefinition, generations, hydratation obsolete, cascade), chrome minimal, `X`/`Escape`/`Self` et banc d'essai transitoire. |
 | 2026-08-23 | `V2.1.5.0029` | `012135d` | Authoring des appelants Fenetre rapide : `OpenQuickWindow` avec cible definition, `CloseQuickWindow(Self)`, onglet conditionnel `Liaisons`, sources typees et statuts non lie/a reparer. |

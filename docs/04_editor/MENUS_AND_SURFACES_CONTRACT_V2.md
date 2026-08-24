@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active editor menu and surface contract
-Document version: `V2.1.5.0030`
+Document version: `V2.1.5.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0034` | `PENDING` | Dialogue de collage refuse : liste objet/propriete/reference/motif et deux issues seulement, `Annuler` ou `Coller sans liaisons`. |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Banc d'essai Fenetre rapide : valeurs et titre temporaires, ouverture d'une instance d'apercu editor-only et fermeture explicite. |
 | 2026-08-23 | `V2.1.5.0029` | `012135d` | Onglet conditionnel `Liaisons` du dialogue Proprietes : grille typee nom/famille/type/source/valeur/statut, selecteurs contextuels et banniere `Outdated`. |
 | 2026-08-23 | `V2.1.5.0028` | `2fd6c72` | Panneau `Interface locale` : substitution du `Catalogue Tags` dans le contexte Fenêtre rapide, tableau unique groupé public/privé, filtres par famille, statut de liaison et compteurs d'usages. |
@@ -78,6 +79,16 @@ Le banc d'essai est une surface editor-only. Il liste les ports publics de la de
 `Ouvrir l'apercu` materialise une instance sous la racine d'apercu de l'editeur et l'affiche dans le banc; `Fermer l'apercu` la retire. Chaque demande recoit une generation strictement monotone et son propre identifiant d'instance temporaire, de sorte qu'une hydratation obsolete soit rejetee de facon deterministe.
 
 L'apercu presente le chrome minimal contractuel : backdrop partage, cadre `role="dialog"`, barre de titre et bouton `X`. `Escape` et `CloseQuickWindow(Self)` ferment la meme instance; un clic sur le backdrop ne ferme jamais.
+
+## Frontiere presse-papier page / fenetre rapide
+
+Le contenu d'une fenetre rapide ne reference jamais un tag physique du projet et une page ne reference jamais un membre d'Interface locale. Tout collage, duplication ou instanciation d'un composant de bibliotheque franchissant cette frontiere est analyse avant insertion.
+
+Le refus est le comportement par defaut. Le dialogue de collage refuse liste chaque reference fautive avec son objet, sa propriete, la reference et le motif, et n'offre que deux issues : `Annuler` ou `Coller sans liaisons`. Aucun collage partiel silencieux n'est propose.
+
+`Coller sans liaisons` retire chaque reference fautive et laisse la propriete `Non lie`. Rien n'est reecrit, remappe ni promu automatiquement en membre d'Interface locale, et le collage reste une transition unique annulable dans le contexte cible.
+
+Sont egalement refuses : un port appartenant a une autre definition, une reference qui ne resout nulle part dans une fenetre rapide, une invocation dont la definition cible a disparu et une invocation deja possedee par un autre appelant, une invocation ne pouvant jamais etre partagee entre deux appelants.
 
 ## 1. Contract
 

@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active known gaps register
-Document version: `V2.1.5.0033`
+Document version: `V2.1.5.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0034` | `PENDING` | Task 3.5 QuickWindow fermee; seule la surface de reparation `FR-UI-24` (Task 3.6) reste ouverte en Phase 3. |
 | 2026-08-24 | `V2.1.5.0033` | `85e088d` | Les trois legs du gate Phase 0 sont rejoués sur Node `24.15.x`; la lacune d'épinglage est fermée. |
 | 2026-08-24 | `V2.1.5.0032` | `1fd1d14` | Leg WebView2 réel du gate Phase 0 rejoué sur Node `24.15.0`; seul le leg Edge/TF100Web reste à rejouer. |
 | 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | `DEC-0051` : legs WebView2 réel et TF100Web du gate Phase 0 à rejouer sur Node `24.15.x` avant l'entrée en Phase 4. |

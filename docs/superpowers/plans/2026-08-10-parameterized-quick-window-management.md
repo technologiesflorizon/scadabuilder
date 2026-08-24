@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
-Document version: `V2.1.5.0033`
+Document version: `V2.1.5.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0034` | `PENDING` | Task 3.5 exécutée et cochée : validation fail-closed de la frontière presse-papier page ↔ fenêtre rapide, dialogue de diagnostics et variante `Coller sans liaisons` sans promotion ni référence orpheline. |
 | 2026-08-24 | `V2.1.5.0033` | `85e088d` | Gate Phase 0 entièrement rejoué sur Node `24.15.0` : les trois legs `PASS` avec le hash gelé inchangé; fixture vendorisée TF100Web réalignée octet pour octet et épinglée en LF des deux côtés. |
 | 2026-08-24 | `V2.1.5.0032` | `1fd1d14` | Leg WebView2 réel du gate Phase 0 rejoué sur Node `24.15.0` (`PASS`, hash gelé inchangé); le harnais dérive l'épinglage de `.nvmrc`. Seul le leg Edge/TF100Web reste à rejouer avant la Phase 4. |
 | 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | Ré-épinglage du moteur Node de `20.18.x` vers `24.15.x` (`DEC-0051`) : fixture Phase 0 inchangée et rejouée sur `v24.15.0` avec le même hash gelé; les legs WebView2 réel et TF100Web restent à rejouer avant la Phase 4. |
@@ -45,7 +46,8 @@ Document version: `V2.1.5.0033`
 - [x] Phase 3.2: éditeur `Interface locale`, tableau unique groupé et filtré, édition inline et dialogue commun, compteurs d'usages et navigation, suppression référencée confirmée (`fafdf53`).
 - [x] Phase 3.3: commandes appelantes Fenêtre rapide, onglet conditionnel `Liaisons`, sources typées et statut `Outdated` (`9795cce`).
 - [x] Phase 3.4: aperçu d'instance editor-only, gestionnaire hôte partagé et banc d'essai transitoire (`724e621`).
-- [ ] Phases 3.5 à 7: non démarrées.
+- [x] Phase 3.5: frontière presse-papier et duplication inter-contextes validées fail-closed (`dae5b89`).
+- [ ] Phases 3.6 à 7: non démarrées.
 
 Audit du 2026-08-21: la spec a été étendue par `FR-030..036` et `FR-UI-23..26`. Le plan ajoute en conséquence Task 2.4, Task 3.5, Task 3.6, Task 4.0 et Task 5.4. La Phase 0 n'est pas rouverte: la composition header/pied et la coexistence legacy n'existent que dans un host composé réel et sont donc prouvées en Phase 5 contre TF100Web, sans invalider le hash de fixture gelé.
 
@@ -639,12 +641,12 @@ dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWi
 - Consumes: presse-papier de scène existant, catalogue projet et Interface locale de la définition cible.
 - Produces: analyse fail-closed des références non résolubles, refus par défaut et variante confirmée `Coller sans liaisons`.
 
-- [ ] Analyser tout collage/duplication franchissant la frontière page ↔ Fenêtre rapide (`FR-031`, `FR-034`): mapping/tag projet, membre d'une autre Interface locale, port d'une autre définition et invocation dont la cible est absente.
-- [ ] Refuser par défaut avec un diagnostic nommant objet et propriété; n'offrir que `Annuler` ou `Coller sans liaisons` (`FR-UI-23`).
-- [ ] `Coller sans liaisons` retire chaque référence fautive, laisse la propriété `Non lié`, reste atomique et undoable dans le contexte cible; aucune promotion automatique en membre d'Interface locale.
-- [ ] Appliquer la même validation à un composant de bibliothèque `.sep` instancié sur un canvas de Fenêtre rapide (`FR-034`).
-- [ ] Tester les deux sens de la frontière, la duplication d'un Element+ lié et l'absence de référence orpheline après collage.
-- [ ] Commit: `feat: validate quick window clipboard boundaries`.
+- [x] Analyser tout collage/duplication franchissant la frontière page ↔ Fenêtre rapide (`FR-031`, `FR-034`): mapping/tag projet, membre d'une autre Interface locale, port d'une autre définition et invocation dont la cible est absente.
+- [x] Refuser par défaut avec un diagnostic nommant objet et propriété; n'offrir que `Annuler` ou `Coller sans liaisons` (`FR-UI-23`).
+- [x] `Coller sans liaisons` retire chaque référence fautive, laisse la propriété `Non lié`, reste atomique et undoable dans le contexte cible; aucune promotion automatique en membre d'Interface locale.
+- [x] Appliquer la même validation à un composant de bibliothèque `.sep` instancié sur un canvas de Fenêtre rapide (`FR-034`).
+- [x] Tester les deux sens de la frontière, la duplication d'un Element+ lié et l'absence de référence orpheline après collage.
+- [x] Commit: `feat: validate quick window clipboard boundaries` (`dae5b89`).
 
 **Vérification:**
 
