@@ -2,12 +2,13 @@
 
 Date: 2026-07-30
 Status: Active runtime package contract
-Document version: `V2.1.5.0030`
+Document version: `V2.1.5.0037`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0037` | `PENDING` | Task 4.0 : layout package et layout déployé des Fenêtres rapides figés avant toute compilation, vérifiés contre `scada_package.py`, `scada_builder_composition.py` et `deploy_scada_builder.py`. |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Module runtime `quick-window-host.js` ajoute pour l'apercu editeur uniquement : il n'entre pas dans le bundle runtime exporte tant que les capacites `quick-window.*` restent `Blocked`. |
 | 2026-07-30 | `V2.1.5.0002` | `0168f2f` | Les formes SVG générées exposent des cibles sémantiques de fond/bordure; le runtime applique les effets sur `fill`/`stroke` visibles et conserve le repli wrapper. |
 | 2026-07-18 | `V2.1.4.0067` | `23daac2` | Builder normalise les lectures `InputNumeric` vers le tag canonique de `StateConfig.ReadVariable`, bloque toute divergence residuelle et couvre toutes les pages compilees. |
@@ -321,3 +322,82 @@ Each entry carries `Row`, `Column`, unscoped `TargetId = <normalized-table-id>__
 TF100Web commits through `33c5846` preserve `TableCellBindings` through composition, inject mapping metadata on the `<td>`, collect resolved mappings in the shared cache, reuse the existing input without destructive `replaceChildren`, and negotiate manifest 2.3 before atomic replacement. Builder validation accepts table bindings in 2.2/2.3 and rejects them in 2.1; the remote server must receive this TF100Web branch before the 2.3 package.
 
 Polling, POST feedback, focus/Enter/blur/Escape and permission guards are implemented through the same target-agnostic runtime path. Their operation against real industrial mappings and PLC feedback remains a delivery gate until an explicitly authorized TF100Web environment is available.
+
+## 12. Quick Window Package And Deployed Layout (Manifest 2.3)
+
+Cette section fige le contrat de transport des Fenêtres rapides **avant** toute tâche de compilation (`DEC-0050`, plan Task 4.0). Chaque affirmation ci-dessous a été vérifiée dans le code TF100Web réel aux fichiers cités; rien n'est supposé sur une fonction non lue.
+
+Code TF100Web inspecté le 2026-08-24 : `frontend/scada_package.py`, `frontend/scada_builder_composition.py`, `core/management/commands/deploy_scada_builder.py`, `frontend/tests_scada_deploy.py`.
+
+### 12.1 Layout dans le `.sb2`
+
+Le contenu d'une Fenêtre rapide est transporté comme un répertoire **de premier niveau** sous `scada-builder-v2-ft100-package/`, dérivé de `QuickWindowDefinitionKey` :
+
+```
+scada-builder-v2-ft100-package/
+  manifest.json
+  scada-runtime.<hash8>.js
+  <page-id>/<page-id>.html
+  <page-id>/css/<page-id>.css
+  qw-<key8>/qw-<key8>.html
+  qw-<key8>/css/qw-<key8>.css
+  images/<shared-image>
+```
+
+`<key8>` est le préfixe de 8 caractères hexadécimaux de `QuickWindowDefinitionKey`, identique au namespace DOM/CSS `qw-<key8>` déjà figé en Phase 0 (`FR-020`).
+
+Le répertoire est **de premier niveau et non imbriqué**. Un regroupement du type `quick-windows/<key>/…` est explicitement rejeté : `deploy_package_to_static` ne conserve que `parts[0]` du chemin relatif pour router un `.html`, donc toutes les définitions s'écraseraient dans un unique `pages/quick-windows/`. Le préfixe `qw-` garantit par ailleurs qu'un répertoire de Fenêtre rapide ne peut jamais collisionner avec un `<page-id>`, les codes de page étant validés par `PageCodePolicy`.
+
+`validate_scada_builder_package` n'itère que sur `manifest.Pages` filtré par `IncludeInBuild`; un répertoire supplémentaire n'est ni validé ni refusé. Les Fenêtres rapides ne sont donc **pas** déclarées dans `Pages` : les y ajouter les transformerait en pages composables et exigerait un `id="ft100-<page-id>"`, ce que `DEC-0050` interdit.
+
+### 12.2 Layout déployé sous `STATIC_ROOT/scada/`
+
+`deploy_package_to_static` réutilise l'arborescence existante; **aucun nouveau répertoire de déploiement n'est créé**. Les règles de copie réellement implémentées sont :
+
+| Source dans le package | Condition exacte du code | Destination |
+| --- | --- | --- |
+| `qw-<key8>/qw-<key8>.html` | suffixe `.html` et profondeur ≥ 2 | `scada/pages/qw-<key8>/qw-<key8>.html` |
+| `qw-<key8>/css/qw-<key8>.css` | suffixe `.css`, profondeur ≥ 3 et répertoire parent nommé `css` | `scada/css/qw-<key8>.css` |
+| `images/<name>` | profondeur ≥ 3 et répertoire parent nommé `images` | `scada/images/<name>` |
+| `scada-runtime.<hash8>.js` | nom conforme à `^scada-runtime\..*\.js$` | `scada/js/` (copie hachée + copie `scada-runtime.js`) |
+| `manifest.json` | à la racine du package | `scada/manifest.json` |
+
+Deux conséquences sont contraignantes et doivent être respectées par le compilateur :
+
+1. **Le CSS est aplati par nom de fichier.** `scada/css/` ne conserve aucune arborescence : deux fichiers homonymes s'écraseraient. Le nom `qw-<key8>.css` est donc obligatoire et suffit, la clé de définition étant unique.
+2. **Tout fichier ne correspondant à aucune règle est silencieusement ignoré.** Un registre annexe du type `quick-windows.json` n'atteindrait jamais `STATIC_ROOT`. Les registres de Fenêtres rapides doivent donc vivre dans le `manifest.json` racine, seul fichier JSON copié.
+
+Le déploiement reste atomique : staging temporaire, `.generation` réécrit, `os.replace` avec restauration du backup en cas d'échec, puis `invalidate_scada_composition_cache()`.
+
+### 12.3 Ce que lisent — et ignorent — `load_composed_page` et `scada_package_page`
+
+`load_composed_page` ne connaît que les pages : elle construit `pages_by_id` à partir de `_compiled_pages(manifest)` et lit `scada/pages/<page_id>/<page_id>.html`. Pour chaque partie composée elle extrait le fragment `id="ft100-<page-id>"`, le hash CSS depuis le `<link href="….<hash>.css">`, `data-scada-width` et `data-scada-height`, réécrit les `src="images/…"` vers `scada/images/`, et joint la liste `Objects` de l'entrée manifest.
+
+En conséquence, **aujourd'hui** :
+
+- un répertoire `qw-<key8>` déployé sous `scada/pages/` n'est jamais servi, puisque son id n'apparaît pas dans `Pages`;
+- le contenu d'une Fenêtre rapide reste du HTML/CSS statique opaque, exactement comme le contenu Element+ d'une page : ni `ScadaElementStyle`, ni `data-scada-state-config`, ni déclaration CSS n'est interprété;
+- `scada_package_page` peut injecter des attributs de liaison runtime via `_inject_scada_element_attrs`, sans jamais remplacer ni réinterpréter le CSS de style Element+.
+
+Le montage d'une instance de Fenêtre rapide appartient donc au runtime partagé et à l'adaptateur host, pas au chemin de composition : c'est le travail de la Phase 5. Aucune modification de `load_composed_page` n'est requise par le présent contrat.
+
+### 12.4 Registres manifest `QuickWindows[]` et `QuickWindowInvocations[]`
+
+Les deux registres sont des tableaux de la racine du `manifest.json`, en **PascalCase**, conformément au contrat de nommage .NET déjà en vigueur. Le JSON runtime embarqué dans les attributs HTML conserve le camelCase du contrat runtime Builder; les deux conventions ne sont jamais fusionnées.
+
+`QuickWindows[]` : `DefinitionKey`, `Code`, `DisplayName`, `InterfaceVersion`, `Content`, `InterfaceMembers[]`, `PresentationDefaults`. Chaque membre porte `MemberKey`, `Name`, `Family`, `DataType`, `Access`, `Required`, `DefaultValue`, `Description`.
+
+`QuickWindowInvocations[]` : `InvocationKey`, `DefinitionKey`, `Bindings[]`, `TitleOverride`, `InterfaceVersion`, `OwnerPageKey`, `OwnerElementId`, `OwnerCommandId`.
+
+Ces formes sont celles que valide déjà le handshake exécutable TF100Web `frontend/tests_scada_quick_window_contract_handshake.py` sur sa fixture figée.
+
+**Ordre déterministe.** `QuickWindows[]` est trié par `DefinitionKey`; `QuickWindowInvocations[]` est trié par `InvocationKey`; `InterfaceMembers[]` est trié par `MemberKey`; `Bindings[]` est trié par `MemberKey`. Deux compilations du même projet produisent des octets identiques.
+
+### 12.5 Négociation de capacités : état réel aujourd'hui
+
+`validate_scada_manifest_contract` rejette le package **avant tout déploiement** si `RuntimeContract.RequiredCapabilities` contient une capacité inconnue, non triée ou dupliquée, ou si `RuntimeSha256` ne correspond pas à l'unique `scada-runtime.<hash8>.js`.
+
+L'ensemble `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` de `frontend/scada_package.py` **ne contient pas** `command.open-quick-window` ni `command.close-quick-window` — il contient encore les capacités popup legacy `command.open-popup`, `command.close-popup` et `command.toggle-popup`. Un package déclarant une capacité Fenêtre rapide est donc aujourd'hui rejeté avec `unsupported-runtime-capabilities:…`, comportement fail-closed vérifié par `test_deploy_rejects_unknown_capability_before_replacing_active_package`.
+
+L'extension de cet ensemble côté TF100Web est un prérequis de la promotion de Phase 6, jamais une conséquence de la compilation de Phase 4. Tant qu'elle n'est pas faite, un `.sb2` contenant des Fenêtres rapides ne peut déclarer aucune capacité `quick-window.*` en `RequiredCapabilities`.
+

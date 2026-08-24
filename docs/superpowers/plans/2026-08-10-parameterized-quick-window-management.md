@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
-Document version: `V2.1.5.0036`
+Document version: `V2.1.5.0037`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0037` | `PENDING` | Task 4.0 exécutée et cochée : contrat package et layout déployé des Fenêtres rapides figés avant toute compilation, vérifiés contre le code TF100Web réel. |
 | 2026-08-24 | `V2.1.5.0036` | `3560f48` | Phase 3 close : rapport d'audit de phase et checkpoint versionné enregistrés; entrée en Phase 4 conditionnée par la Task 4.0. |
 | 2026-08-24 | `V2.1.5.0035` | `2e86fd9` | Task 3.6 exécutée et cochée : surface de réparation des invocations `Outdated`, confirmation d'impact avant évolution d'interface et gate de build fermé jusqu'à réparation complète. Phase 3 terminée côté code. |
 | 2026-08-24 | `V2.1.5.0034` | `4202a70` | Task 3.5 exécutée et cochée : validation fail-closed de la frontière presse-papier page ↔ fenêtre rapide, dialogue de diagnostics et variante `Coller sans liaisons` sans promotion ni référence orpheline. |
@@ -51,7 +52,8 @@ Document version: `V2.1.5.0036`
 - [x] Phase 3.5: frontière presse-papier et duplication inter-contextes validées fail-closed (`dae5b89`).
 - [x] Phase 3.6: surface de réparation des invocations `Outdated` et confirmation d'impact (`1d4604d`).
 - [x] Phase 3 close: rapport d'audit `docs/superpowers/reports/2026-08-24-quick-window-phase-3-audit.md` et entrée `phase 3` dans `tools/quick-window/checkpoints.json`.
-- [ ] Phases 4 à 7: non démarrées.
+- [x] Phase 4.0: contrat package Fenêtre rapide figé avant compilation (`PENDING`).
+- [ ] Phases 4.1 à 7: non démarrées.
 
 Audit du 2026-08-21: la spec a été étendue par `FR-030..036` et `FR-UI-23..26`. Le plan ajoute en conséquence Task 2.4, Task 3.5, Task 3.6, Task 4.0 et Task 5.4. La Phase 0 n'est pas rouverte: la composition header/pied et la coexistence legacy n'existent que dans un host composé réel et sont donc prouvées en Phase 5 contre TF100Web, sans invalider le hash de fixture gelé.
 
@@ -700,12 +702,12 @@ dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWi
 
 > Règle du dépôt (`CLAUDE.md`, `codex.md`): toute modification du contrat package exige l'inspection des fonctions/tests TF100Web correspondants **et** la mise à jour explicite de `FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` **avant** implémentation. Task 7.3 synchronise la documentation finale, elle ne remplace pas ce prérequis.
 
-- [ ] Documenter le chemin exact du contenu Fenêtre rapide dans le `.sb2`: répertoire dérivé de `QuickWindowDefinitionKey`, fichier HTML, CSS de définition et assets, sous le root `scada-builder-v2-ft100-package/`.
-- [ ] Documenter le layout déployé correspondant sous `STATIC_ROOT/scada/`, et statuer explicitement si `deploy_scada_builder` doit copier un nouveau répertoire ou réutiliser l'arborescence de pages existante.
-- [ ] Documenter ce que `load_composed_page` et `scada_package_page` lisent ou ignorent pour ce contenu: hash CSS, dimensions, attributs injectés, contenu traité comme statique opaque.
-- [ ] Documenter les registres manifest `QuickWindows[]`/`QuickWindowInvocations[]`, leur ordre déterministe, leur casing PascalCase et le camelCase du JSON runtime embarqué.
-- [ ] Vérifier chaque affirmation contre le code TF100Web réel avant de l'écrire; ne rien supposer sur une fonction non lue.
-- [ ] Commit: `docs: define quick window package contract`.
+- [x] Documenter le chemin exact du contenu Fenêtre rapide dans le `.sb2`: répertoire dérivé de `QuickWindowDefinitionKey`, fichier HTML, CSS de définition et assets, sous le root `scada-builder-v2-ft100-package/`.
+- [x] Documenter le layout déployé correspondant sous `STATIC_ROOT/scada/`, et statuer explicitement si `deploy_scada_builder` doit copier un nouveau répertoire ou réutiliser l'arborescence de pages existante.
+- [x] Documenter ce que `load_composed_page` et `scada_package_page` lisent ou ignorent pour ce contenu: hash CSS, dimensions, attributs injectés, contenu traité comme statique opaque.
+- [x] Documenter les registres manifest `QuickWindows[]`/`QuickWindowInvocations[]`, leur ordre déterministe, leur casing PascalCase et le camelCase du JSON runtime embarqué.
+- [x] Vérifier chaque affirmation contre le code TF100Web réel avant de l'écrire; ne rien supposer sur une fonction non lue.
+- [x] Commit: `docs: define quick window package contract` (`PENDING`).
 
 **Vérification:**
 

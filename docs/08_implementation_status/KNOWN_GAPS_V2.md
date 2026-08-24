@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active known gaps register
-Document version: `V2.1.5.0036`
+Document version: `V2.1.5.0037`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0037` | `PENDING` | Task 4.0 close; `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` de TF100Web ne connaît aucune capacité `quick-window.*`, prérequis explicite de la Phase 6. |
 | 2026-08-24 | `V2.1.5.0036` | `3560f48` | Phase 3 formellement close (audit + checkpoint); la Phase 4 demarre par la Task 4.0, gate bloquant exigeant TF100Web. |
 | 2026-08-24 | `V2.1.5.0035` | `2e86fd9` | Task 3.6 QuickWindow fermee : la Phase 3 authoring est complete cote code; restent le rapport d'audit de phase, l'entree de checkpoint, puis les Phases 4 a 7. |
 | 2026-08-24 | `V2.1.5.0034` | `4202a70` | Task 3.5 QuickWindow fermee; seule la surface de reparation `FR-UI-24` (Task 3.6) reste ouverte en Phase 3. |

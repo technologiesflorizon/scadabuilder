@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active runtime contract
-Document version: `V2.1.5.0026`
+Document version: `V2.1.5.0037`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0037` | `PENDING` | Task 4.0 : projection build/export des Fenêtres rapides documentée, artefacts editor-only exclus et gate fail-closed rappelé. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Gate build/export explicite pour les invocations `Outdated`, levé uniquement par réparation explicite. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Gate build/export QuickWindow Phase 2 : erreurs required/mapping/type/accès/version/graphe/profil/présentation/injection et capacité bloquée, sans fabriquer de liaison. |
 | 2026-07-16 | `V2.1.4.0062` | `370641d` | Parite modele/preview/export/runtime host verrouillee par fixture, capabilities, hash runtime et exclusion editor-only. |
@@ -107,3 +108,14 @@ flowchart TD
 2. `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
 3. `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs`
 4. `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowBuildValidationTests.cs`
+
+## 5. Quick Window Build And Export Projection (Manifest 2.3)
+
+Preview, build et export consomment le même modèle de projet, y compris pour les Fenêtres rapides : la définition compilée dérive de `QuickWindowDefinition.Content`, comme l'aperçu editor-only, sans seconde géométrie.
+
+Les artefacts editor-only ne franchissent jamais la frontière : l'aperçu d'instance, son chrome `qw-frame`, le backdrop, les valeurs du banc d'essai `data-qw-test-values` et la projection canvas restent sous la racine d'aperçu de l'éditeur et n'apparaissent dans aucun `.sb2`. Le module runtime hôte `quick-window-host.js` est volontairement absent du bundle runtime exporté tant que les capacités `quick-window.*` sont `Blocked`.
+
+Le layout package et le layout déployé des Fenêtres rapides sont figés par `FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` §12. Deux règles y contraignent directement le compilateur : le CSS déployé est aplati par nom de fichier, donc `qw-<key8>.css` est obligatoire; et tout fichier ne correspondant à aucune règle de copie est ignoré au déploiement, donc les registres `QuickWindows[]` et `QuickWindowInvocations[]` vivent dans le `manifest.json` racine et nulle part ailleurs.
+
+Le gate build/export reste fail-closed : une invocation `Outdated`, une liaison requise absente, un cycle ou une profondeur supérieure à `Page -> A -> B` bloquent la production du package, et aucune capacité `quick-window.*` ne peut être déclarée `Required` tant que TF100Web ne la reconnaît pas.
+
