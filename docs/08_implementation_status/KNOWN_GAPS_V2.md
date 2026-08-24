@@ -8,7 +8,7 @@ Document version: `V2.1.5.0032`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0032` | `PENDING` | Leg WebView2 réel du gate Phase 0 rejoué sur Node `24.15.0`; seul le leg Edge/TF100Web reste à rejouer. |
+| 2026-08-24 | `V2.1.5.0032` | `1fd1d14` | Leg WebView2 réel du gate Phase 0 rejoué sur Node `24.15.0`; seul le leg Edge/TF100Web reste à rejouer. |
 | 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | `DEC-0051` : legs WebView2 réel et TF100Web du gate Phase 0 à rejouer sur Node `24.15.x` avant l'entrée en Phase 4. |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Task 3.4 QuickWindow fermee cote editeur; l'apercu reste editor-only et aucune capacite runtime n'est promue. Le presse-papier inter-contextes (Task 3.5) et la surface de reparation `FR-UI-24` (Task 3.6) restent ouverts. |
 | 2026-08-23 | `V2.1.5.0029` | `012135d` | Task 3.3 QuickWindow fermee; le preview/banc d'essai (Task 3.4), le presse-papier inter-contextes (Task 3.5) et la surface de reparation `FR-UI-24` (Task 3.6) restent ouverts. L'authoring `CloseQuickWindow(Self)` reste inaccessible depuis le canvas tant que la projection est en lecture seule. |

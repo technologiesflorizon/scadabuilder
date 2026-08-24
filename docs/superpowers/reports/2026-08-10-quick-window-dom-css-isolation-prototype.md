@@ -8,7 +8,7 @@ Document version: `V2.1.5.0032`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0032` | `PENDING` | Leg WebView2 réel rejoué sur Node `24.15.0` (`PASS`, hash gelé inchangé, WebView2 Runtime `151.0.4129.101`); le harnais lit désormais l'épinglage depuis `.nvmrc`. Leg TF100Web toujours à rejouer. |
+| 2026-08-24 | `V2.1.5.0032` | `1fd1d14` | Leg WebView2 réel rejoué sur Node `24.15.0` (`PASS`, hash gelé inchangé, WebView2 Runtime `151.0.4129.101`); le harnais lit désormais l'épinglage depuis `.nvmrc`. Leg TF100Web toujours à rejouer. |
 | 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | Ré-épinglage du moteur sur Node `24.15.x` (`DEC-0051`) : fixture et hash gelés inchangés, leg Node rejoué `PASS` sur `v24.15.0`; legs WebView2 réel et TF100Web à rejouer. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Remplacement des preuves simulées par des assertions DOM réelles, exécution WebView2 réelle, exécution Edge/TF100Web réelle, 100 cycles et hash gelé strict. |
 | 2026-08-11 | `V2.1.5.0019` | `b353e37` | Rapport initial déclaré PASS; invalidé par l’audit correctif du 2026-08-13 parce qu’il utilisait un host simulé, des assertions permissives et une version Node non conforme. |
