@@ -8,7 +8,7 @@ Document version: `V2.1.5.0037`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0037` | `PENDING` | Task 4.0 : layout package et layout déployé des Fenêtres rapides figés avant toute compilation, vérifiés contre `scada_package.py`, `scada_builder_composition.py` et `deploy_scada_builder.py`. |
+| 2026-08-24 | `V2.1.5.0037` | `c4f7391` | Task 4.0 : layout package et layout déployé des Fenêtres rapides figés avant toute compilation, vérifiés contre `scada_package.py`, `scada_builder_composition.py` et `deploy_scada_builder.py`. |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Module runtime `quick-window-host.js` ajoute pour l'apercu editeur uniquement : il n'entre pas dans le bundle runtime exporte tant que les capacites `quick-window.*` restent `Blocked`. |
 | 2026-07-30 | `V2.1.5.0002` | `0168f2f` | Les formes SVG générées exposent des cibles sémantiques de fond/bordure; le runtime applique les effets sur `fill`/`stroke` visibles et conserve le repli wrapper. |
 | 2026-07-18 | `V2.1.4.0067` | `23daac2` | Builder normalise les lectures `InputNumeric` vers le tag canonique de `StateConfig.ReadVariable`, bloque toute divergence residuelle et couvre toutes les pages compilees. |

@@ -8,7 +8,7 @@ Document version: `V2.1.5.0037`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0037` | `PENDING` | Task 4.0 exécutée et cochée : contrat package et layout déployé des Fenêtres rapides figés avant toute compilation, vérifiés contre le code TF100Web réel. |
+| 2026-08-24 | `V2.1.5.0037` | `c4f7391` | Task 4.0 exécutée et cochée : contrat package et layout déployé des Fenêtres rapides figés avant toute compilation, vérifiés contre le code TF100Web réel. |
 | 2026-08-24 | `V2.1.5.0036` | `3560f48` | Phase 3 close : rapport d'audit de phase et checkpoint versionné enregistrés; entrée en Phase 4 conditionnée par la Task 4.0. |
 | 2026-08-24 | `V2.1.5.0035` | `2e86fd9` | Task 3.6 exécutée et cochée : surface de réparation des invocations `Outdated`, confirmation d'impact avant évolution d'interface et gate de build fermé jusqu'à réparation complète. Phase 3 terminée côté code. |
 | 2026-08-24 | `V2.1.5.0034` | `4202a70` | Task 3.5 exécutée et cochée : validation fail-closed de la frontière presse-papier page ↔ fenêtre rapide, dialogue de diagnostics et variante `Coller sans liaisons` sans promotion ni référence orpheline. |
