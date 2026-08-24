@@ -8,7 +8,7 @@ Document version: `V2.1.5.0040`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0040` | `PENDING` | Couverture Task 4.3 : semantique portable du runtime partage, injection rejetee sans ecriture, isolation des mappings et cleanup idempotent. |
+| 2026-08-24 | `V2.1.5.0040` | `d98d753` | Couverture Task 4.3 : semantique portable du runtime partage, injection rejetee sans ecriture, isolation des mappings et cleanup idempotent. |
 | 2026-08-24 | `V2.1.5.0039` | `4f690ea` | Couverture Task 4.2 : compilation deterministe, isolation entre definitions, gate structurel sans artefact et validation package des registres. |
 | 2026-08-24 | `V2.1.5.0038` | `5953265` | Couverture Task 4.1 : exhaustivite du catalogue, interdits d'identifiants et mutation independante de chaque declencheur. |
 | 2026-08-24 | `V2.1.5.0035` | `2e86fd9` | Couverture Task 3.6 : liste de reparation, navigation non mutante, reparation unitaire annulable, confirmation d'impact et gate de build ferme jusqu'a reparation complete. |

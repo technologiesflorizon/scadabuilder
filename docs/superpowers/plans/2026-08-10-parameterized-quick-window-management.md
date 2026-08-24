@@ -8,7 +8,7 @@ Document version: `V2.1.5.0040`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0040` | `PENDING` | Task 4.3 exécutée et cochée : runtime partagé portable sans overlay, injection rejetée avant souscription, conformance et preuve industrielle régénérées; capacités toujours `Blocked`. |
+| 2026-08-24 | `V2.1.5.0040` | `d98d753` | Task 4.3 exécutée et cochée : runtime partagé portable sans overlay, injection rejetée avant souscription, conformance et preuve industrielle régénérées; capacités toujours `Blocked`. |
 | 2026-08-24 | `V2.1.5.0039` | `4f690ea` | Task 4.2 exécutée et cochée : compilation déterministe des définitions et invocations, contenu namespacé, validation package et gate structurel d'export sans bypass. |
 | 2026-08-24 | `V2.1.5.0038` | `b1ec4cd` | Task 4.1 exécutée et cochée : 13 capacités granulaires enregistrées `Blocked`, analyse par déclencheur propre, index de conformance et matrice régénérés. |
 | 2026-08-24 | `V2.1.5.0037` | `c4f7391` | Task 4.0 exécutée et cochée : contrat package et layout déployé des Fenêtres rapides figés avant toute compilation, vérifiés contre le code TF100Web réel. |
