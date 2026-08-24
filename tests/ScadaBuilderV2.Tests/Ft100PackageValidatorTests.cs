@@ -309,4 +309,149 @@ public sealed class Ft100PackageValidatorTests
     private static string UnboundHtml() => """
         <!doctype html><html><body><div id="ft100-page"><div id="ft100-page__table_001"><table></table></div></div></body></html>
         """;
+
+    [TestMethod]
+    public void QuickWindowRegistriesAreValidatedAgainstTheirContentFiles()
+    {
+        var root = QuickWindowPackage(out var packageDirectory);
+        try
+        {
+            var result = Ft100PackageValidator.ValidatePackageDirectory(packageDirectory);
+
+            Assert.IsTrue(
+                result.Errors.All(issue => !issue.Code.StartsWith("quick-window", StringComparison.Ordinal)),
+                "A contractual quick-window package must raise no quick-window error: " +
+                string.Join(", ", result.Errors.Select(issue => issue.Code)));
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
+    [TestMethod]
+    public void AQuickWindowWithoutItsContentFilesIsRejected()
+    {
+        var root = QuickWindowPackage(out var packageDirectory);
+        try
+        {
+            File.Delete(Path.Combine(packageDirectory, "qw-a1b2c3d4", "qw-a1b2c3d4.html"));
+
+            var result = Ft100PackageValidator.ValidatePackageDirectory(packageDirectory);
+
+            Assert.IsTrue(result.Errors.Any(issue => issue.Code == "quick-window-missing-html"));
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
+    [TestMethod]
+    public void AnInvocationTargetingAnUndeclaredDefinitionIsRejected()
+    {
+        var root = QuickWindowPackage(out var packageDirectory, invocationDefinitionKey: "00000000-0000-0000-0000-000000000000");
+        try
+        {
+            var result = Ft100PackageValidator.ValidatePackageDirectory(packageDirectory);
+
+            Assert.IsTrue(result.Errors.Any(issue => issue.Code == "quick-window-invocation-target-missing"));
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
+    [TestMethod]
+    public void AQuickWindowShippedOutsideItsContractualPathIsRejected()
+    {
+        var root = QuickWindowPackage(out var packageDirectory, relativePath: "quick-windows/qw-a1b2c3d4.html");
+        try
+        {
+            var result = Ft100PackageValidator.ValidatePackageDirectory(packageDirectory);
+
+            Assert.IsTrue(
+                result.Errors.Any(issue => issue.Code == "quick-window-path-not-contractual"),
+                "Nesting under a grouping directory collapses at deployment and must be refused.");
+        }
+        finally
+        {
+            Directory.Delete(root, recursive: true);
+        }
+    }
+
+    private static string QuickWindowPackage(
+        out string packageDirectory,
+        string? invocationDefinitionKey = null,
+        string? relativePath = null)
+    {
+        var root = Path.Combine(Path.GetTempPath(), "scada-quick-window-package", Guid.NewGuid().ToString("N"));
+        packageDirectory = Path.Combine(root, Ft100SceneExporter.ProjectPackageDirectoryName);
+        Directory.CreateDirectory(packageDirectory);
+
+        const string ns = "qw-a1b2c3d4";
+        const string definitionKey = "a1b2c3d4-1111-4222-8333-aaaaaaaaaaaa";
+        var html = relativePath ?? $"{ns}/{ns}.html";
+        var css = $"{ns}/css/{ns}.css";
+
+        Directory.CreateDirectory(Path.Combine(packageDirectory, "win00003"));
+        File.WriteAllText(
+            Path.Combine(packageDirectory, "win00003", "win00003.html"),
+            "<!doctype html><html><body><div id=\"ft100-win00003\" data-scada-width=\"1920\" data-scada-height=\"1080\"></div></body></html>");
+        Directory.CreateDirectory(Path.Combine(packageDirectory, "win00003", "css"));
+        File.WriteAllText(Path.Combine(packageDirectory, "win00003", "css", "win00003.css"), "#ft100-win00003 { position: relative; }");
+
+        Directory.CreateDirectory(Path.Combine(packageDirectory, ns));
+        Directory.CreateDirectory(Path.Combine(packageDirectory, ns, "css"));
+        File.WriteAllText(
+            Path.Combine(packageDirectory, ns, $"{ns}.html"),
+            $"<!doctype html><html><body><div id=\"ft100-{ns}\"></div></body></html>");
+        File.WriteAllText(Path.Combine(packageDirectory, ns, "css", $"{ns}.css"), $"#ft100-{ns} {{ position: relative; }}");
+
+        var manifest = $$"""
+{
+  "Name": "QuickWindowPackage",
+  "ManifestVersion": "2.3",
+  "HomePageId": "win00003",
+  "Pages": [
+    {
+      "Id": "win00003",
+      "Name": "win00003",
+      "Type": "Default",
+      "IncludeInBuild": true,
+      "IsHome": true,
+      "RelativePath": "win00003/win00003.html",
+      "Width": 1920,
+      "Height": 1080
+    }
+  ],
+  "QuickWindows": [
+    {
+      "DefinitionKey": "{{definitionKey}}",
+      "Code": "moteur",
+      "DisplayName": "Moteur",
+      "InterfaceVersion": 1,
+      "Namespace": "{{ns}}",
+      "RelativePath": "{{html}}",
+      "CssRelativePath": "{{css}}",
+      "Width": 480,
+      "Height": 320,
+      "InterfaceMembers": [],
+      "PresentationDefaults": { "Position": "Center", "Backdrop": true }
+    }
+  ],
+  "QuickWindowInvocations": [
+    {
+      "InvocationKey": "cccccccc-dddd-eeee-ffff-000011112222",
+      "DefinitionKey": "{{invocationDefinitionKey ?? definitionKey}}",
+      "InterfaceVersion": 1,
+      "Bindings": []
+    }
+  ]
+}
+""";
+        File.WriteAllText(Path.Combine(packageDirectory, "manifest.json"), manifest);
+        return root;
+    }
 }

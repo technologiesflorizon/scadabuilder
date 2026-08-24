@@ -250,14 +250,28 @@ public sealed partial class Ft100SceneExporter
                 manifestProfile));
         }
 
+        // Unreachable from the product while quick-window capabilities are Blocked: the gate above rejects
+        // the export first. The compilation stays wired so Phase 6 promotion needs no new export path.
+        var quickWindows = QuickWindows.QuickWindowCompiler.Compile(project);
+        foreach (var file in quickWindows.Files)
+        {
+            var htmlPath = Path.Combine(packageDirectory, file.RelativeHtmlPath.Replace('/', Path.DirectorySeparatorChar));
+            var cssPath = Path.Combine(packageDirectory, file.RelativeCssPath.Replace('/', Path.DirectorySeparatorChar));
+            Directory.CreateDirectory(Path.GetDirectoryName(htmlPath)!);
+            Directory.CreateDirectory(Path.GetDirectoryName(cssPath)!);
+            await File.WriteAllTextAsync(htmlPath, file.Html, Encoding.UTF8, cancellationToken);
+            await File.WriteAllTextAsync(cssPath, file.Css, Encoding.UTF8, cancellationToken);
+        }
+
         var manifestWarnings = pageResults
             .SelectMany(page => page.Warnings)
+            .Concat(quickWindows.Warnings)
             .Distinct(StringComparer.Ordinal)
             .ToList();
         var manifestPath = Path.Combine(packageDirectory, "manifest.json");
         await File.WriteAllTextAsync(
             manifestPath,
-            BuildProjectManifest(project, exportedScenes, manifestWarnings, runtimeCapabilities, runtimeSha256, manifestProfile),
+            BuildProjectManifest(project, exportedScenes, manifestWarnings, runtimeCapabilities, runtimeSha256, manifestProfile, quickWindows),
             Encoding.UTF8,
             cancellationToken);
 
@@ -296,6 +310,10 @@ public sealed partial class Ft100SceneExporter
         ArgumentNullException.ThrowIfNull(project);
         ArgumentNullException.ThrowIfNull(pages);
         ArgumentException.ThrowIfNullOrWhiteSpace(archivePath);
+
+        // The structural gate runs before any path is created: a blocked capability leaves zero artifact,
+        // not an empty staging directory. ExportProjectAsync repeats the same check on its own inputs.
+        EnsureProjectExportable(project, pages, manifestProfile);
 
         var fullArchivePath = Path.GetFullPath(archivePath);
         if (!string.Equals(Path.GetExtension(fullArchivePath), ProjectArchiveExtension, StringComparison.OrdinalIgnoreCase))
@@ -1995,7 +2013,8 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
         List<string> warnings,
         ScadaRuntimeCapabilityAnalysis runtimeCapabilities,
         string runtimeSha256,
-        Ft100ManifestProfile manifestProfile)
+        Ft100ManifestProfile manifestProfile,
+        QuickWindows.Ft100QuickWindowCompilation? quickWindows = null)
     {
         var tagCatalog = project.TagCatalog;
         var homePageId = project.EffectiveHomePageId;
@@ -2010,6 +2029,7 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
             .Select(group => group.First())
             .Select(BuildRuntimeAction)
             .ToArray();
+        var compilation = quickWindows ?? QuickWindows.Ft100QuickWindowCompilation.Empty;
         var manifest = new
         {
             Name = project.Name,
@@ -2022,16 +2042,32 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
             Tags = project.TagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>()
         };
 
-        return SerializeManifest(manifest, BuildRuntimeContract(runtimeCapabilities, runtimeSha256, manifestProfile));
+        return SerializeManifest(manifest, BuildRuntimeContract(runtimeCapabilities, runtimeSha256, manifestProfile), compilation);
     }
 
-    private static string SerializeManifest(object manifest, Ft100RuntimeContractManifest? runtimeContract)
+    /// <summary>
+    /// Serializes the manifest and appends the optional registries.
+    /// </summary>
+    /// <remarks>
+    /// The quick-window registries are appended only when the project carries at least one definition, so a
+    /// project without quick windows keeps a byte-identical manifest. They never enter `Pages`: a quick
+    /// window is not a page (package contract section 12).
+    /// </remarks>
+    private static string SerializeManifest(
+        object manifest,
+        Ft100RuntimeContractManifest? runtimeContract,
+        QuickWindows.Ft100QuickWindowCompilation? quickWindows = null)
     {
         var root = JsonSerializer.SerializeToNode(manifest, ManifestJsonOptions)?.AsObject()
             ?? throw new InvalidOperationException("FT100 manifest serialization returned no JSON object.");
         if (runtimeContract is not null)
         {
             root["RuntimeContract"] = JsonSerializer.SerializeToNode(runtimeContract, ManifestJsonOptions);
+        }
+        if (quickWindows is { IsEmpty: false })
+        {
+            root["QuickWindows"] = JsonSerializer.SerializeToNode(quickWindows.Definitions, ManifestJsonOptions);
+            root["QuickWindowInvocations"] = JsonSerializer.SerializeToNode(quickWindows.Invocations, ManifestJsonOptions);
         }
         return root.ToJsonString(ManifestJsonOptions);
     }
@@ -2054,6 +2090,28 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
         Ft100ManifestProfile.Compatibility21 => "2.1",
         _ => throw new ArgumentOutOfRangeException(nameof(manifestProfile), manifestProfile, "Unknown FT100 manifest profile.")
     };
+
+    /// <summary>
+    /// Runs the runtime-capability gate on a project and its pages before any file or directory is created.
+    /// </summary>
+    /// <remarks>
+    /// There is no bypass: no parameter, environment variable, hidden profile or conditional branch may let a
+    /// product path compile or archive while a required capability is `Blocked`.
+    ///
+    /// Decisions: DEC-0047, DEC-0050.
+    /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowExporterTests.cs.
+    /// </remarks>
+    private static void EnsureProjectExportable(
+        ScadaProject project,
+        IReadOnlyList<Ft100ProjectPageExportInput> pages,
+        Ft100ManifestProfile manifestProfile)
+    {
+        var projection = PageRuntimeIdentityResolver.Project(project, pages.Select(page => page.Scene).ToArray());
+        var exportedScenes = projection.Scenes.Where(scene => scene.IncludeInBuild).ToArray();
+        EnsureRuntimeCapabilitiesExportable(
+            ScadaRuntimeCapabilityAnalyzer.Analyze(projection.Project, exportedScenes),
+            manifestProfile);
+    }
 
     private static void EnsureRuntimeCapabilitiesExportable(
         ScadaRuntimeCapabilityAnalysis analysis,

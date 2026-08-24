@@ -19,6 +19,14 @@
     <ProjectReference Include="..\ScadaBuilderV2.Domain\ScadaBuilderV2.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- QuickWindowCompiler is internal on purpose: no product path may compile a package while its
+         capabilities are Blocked. Tests reach it only to build the non-shippable fixture. -->
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+      <_Parameter1>ScadaBuilderV2.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>

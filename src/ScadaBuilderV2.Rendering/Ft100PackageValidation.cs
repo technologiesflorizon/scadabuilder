@@ -132,6 +132,7 @@ public static partial class Ft100PackageValidator
 
             ValidateHomePage(manifest.RootElement, pagesById, issues);
             ValidateRuntimePageTargets(manifest.RootElement, pagesById, issues);
+            ValidateQuickWindows(fullPackageDirectory, manifest.RootElement, pagesById, issues);
             foreach (var page in pages)
             {
                 ValidatePage(fullPackageDirectory, page, pagesById, manifestVersion, tags, issues);
@@ -142,6 +143,135 @@ public static partial class Ft100PackageValidator
 
         return new Ft100PackageValidationResult(issues);
     }
+
+
+    /// <summary>
+    /// Validates the quick-window registries and their content files against the frozen package contract.
+    /// </summary>
+    /// <remarks>
+    /// A quick window travels as its own top-level `qw-&lt;key8&gt;` directory and never as a page: its id may
+    /// not appear in `Pages`, its CSS file name must stay unique because deployment flattens `scada/css/`, and
+    /// every invocation must target a declared definition.
+    ///
+    /// Decisions: DEC-0050.
+    /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md §12.
+    /// Tests: tests/ScadaBuilderV2.Tests/Ft100PackageValidatorTests.cs.
+    /// </remarks>
+    private static void ValidateQuickWindows(
+        string packageDirectory,
+        JsonElement root,
+        IReadOnlyDictionary<string, ValidatedPage> pagesById,
+        List<Ft100PackageValidationIssue> issues)
+    {
+        if (!root.TryGetProperty("QuickWindows", out var definitions) || definitions.ValueKind != JsonValueKind.Array)
+        {
+            if (root.TryGetProperty("QuickWindowInvocations", out var orphanInvocations) &&
+                orphanInvocations.ValueKind == JsonValueKind.Array &&
+                orphanInvocations.GetArrayLength() > 0)
+            {
+                issues.Add(Error(
+                    "quick-window-invocation-without-registry",
+                    "QuickWindowInvocations is present while QuickWindows is missing."));
+            }
+
+            return;
+        }
+
+        var declaredKeys = new HashSet<string>(StringComparer.Ordinal);
+        var namespaces = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var definition in definitions.EnumerateArray())
+        {
+            var key = ReadText(definition, "DefinitionKey");
+            var ns = ReadText(definition, "Namespace");
+            if (string.IsNullOrWhiteSpace(key) || string.IsNullOrWhiteSpace(ns))
+            {
+                issues.Add(Error("quick-window-identity-missing", "Every quick window requires a DefinitionKey and a Namespace."));
+                continue;
+            }
+
+            if (!declaredKeys.Add(key))
+            {
+                issues.Add(Error("quick-window-duplicate-key", $"DefinitionKey '{key}' is declared twice."));
+            }
+
+            if (!namespaces.Add(ns))
+            {
+                issues.Add(Error("quick-window-duplicate-namespace", $"Namespace '{ns}' is declared twice."));
+            }
+
+            if (pagesById.ContainsKey(ns))
+            {
+                issues.Add(Error(
+                    "quick-window-collides-with-page",
+                    $"Quick window '{ns}' collides with a compiled page id."));
+            }
+
+            var relativeHtml = ReadText(definition, "RelativePath");
+            var relativeCss = ReadText(definition, "CssRelativePath");
+            if (relativeHtml != $"{ns}/{ns}.html" || relativeCss != $"{ns}/css/{ns}.css")
+            {
+                issues.Add(Error(
+                    "quick-window-path-not-contractual",
+                    $"Quick window '{ns}' must ship as {ns}/{ns}.html with {ns}/css/{ns}.css."));
+                continue;
+            }
+
+            var htmlPath = Path.Combine(packageDirectory, relativeHtml.Replace('/', Path.DirectorySeparatorChar));
+            var cssPath = Path.Combine(packageDirectory, relativeCss.Replace('/', Path.DirectorySeparatorChar));
+            if (!File.Exists(htmlPath))
+            {
+                issues.Add(Error("quick-window-missing-html", $"Quick window '{ns}' has no HTML at {relativeHtml}."));
+                continue;
+            }
+
+            if (!File.Exists(cssPath))
+            {
+                issues.Add(Error("quick-window-missing-css", $"Quick window '{ns}' has no CSS at {relativeCss}."));
+            }
+
+            var html = File.ReadAllText(htmlPath);
+            if (!html.Contains($"id=\"ft100-{ns}\"", StringComparison.Ordinal))
+            {
+                issues.Add(Error("quick-window-missing-root", $"Quick window '{ns}' has no ft100-{ns} root element."));
+            }
+        }
+
+        if (!root.TryGetProperty("QuickWindowInvocations", out var invocations) || invocations.ValueKind != JsonValueKind.Array)
+        {
+            return;
+        }
+
+        var invocationKeys = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var invocation in invocations.EnumerateArray())
+        {
+            var invocationKey = ReadText(invocation, "InvocationKey");
+            var definitionKey = ReadText(invocation, "DefinitionKey");
+            if (string.IsNullOrWhiteSpace(invocationKey))
+            {
+                issues.Add(Error("quick-window-invocation-key-missing", "Every invocation requires an InvocationKey."));
+                continue;
+            }
+
+            if (!invocationKeys.Add(invocationKey))
+            {
+                issues.Add(Error("quick-window-duplicate-invocation", $"InvocationKey '{invocationKey}' is declared twice."));
+            }
+
+            if (!declaredKeys.Contains(definitionKey))
+            {
+                issues.Add(Error(
+                    "quick-window-invocation-target-missing",
+                    $"Invocation '{invocationKey}' targets undeclared definition '{definitionKey}'."));
+            }
+        }
+    }
+
+    private static string ReadText(JsonElement element, string propertyName) =>
+        element.ValueKind == JsonValueKind.Object &&
+        element.TryGetProperty(propertyName, out var value) &&
+        value.ValueKind == JsonValueKind.String
+            ? value.GetString() ?? string.Empty
+            : string.Empty;
 
     private static JsonDocument? ReadManifest(string manifestPath, List<Ft100PackageValidationIssue> issues)
     {
