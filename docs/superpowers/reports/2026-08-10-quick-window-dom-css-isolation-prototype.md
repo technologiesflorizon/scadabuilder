@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: PASS — gate Phase 0 corrigé et validé dans les deux hosts
-Document version: `V2.1.5.0031`
+Document version: `V2.1.5.0032`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0032` | `PENDING` | Leg WebView2 réel rejoué sur Node `24.15.0` (`PASS`, hash gelé inchangé, WebView2 Runtime `151.0.4129.101`); le harnais lit désormais l'épinglage depuis `.nvmrc`. Leg TF100Web toujours à rejouer. |
 | 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | Ré-épinglage du moteur sur Node `24.15.x` (`DEC-0051`) : fixture et hash gelés inchangés, leg Node rejoué `PASS` sur `v24.15.0`; legs WebView2 réel et TF100Web à rejouer. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Remplacement des preuves simulées par des assertions DOM réelles, exécution WebView2 réelle, exécution Edge/TF100Web réelle, 100 cycles et hash gelé strict. |
 | 2026-08-11 | `V2.1.5.0019` | `b353e37` | Rapport initial déclaré PASS; invalidé par l’audit correctif du 2026-08-13 parce qu’il utilisait un host simulé, des assertions permissives et une version Node non conforme. |
@@ -18,7 +19,9 @@ Le moteur épinglé passe de Node `20.18.x` à `24.15.x`. Les preuves ci-dessous
 
 Le leg Node headless a été rejoué le 2026-08-24 sur `v24.15.0`. Résultat `PASS` avec le même hash de fixture gelée `be4db555a46e20d74cf0a60be38ea6919eb51235c2668158b9e2abda1b10cde9`, ce qui montre que les invariants `FR-020` et `FR-026` ne dépendent pas de la version majeure du moteur.
 
-Restent à rejouer sur le moteur épinglé, avant l'entrée en Phase 4 : le leg WebView2 réel côté Builder et le leg Edge/TF100Web. Tant qu'ils portent `v20.18.1` dans leur bloc `versions`, la règle de non-divergence entre les rapports Phase 0 et Phase 7 n'est pas satisfaite.
+Le leg WebView2 réel côté Builder a été rejoué le 2026-08-24 par `tools/QuickWindowIsolationPrototype.App` : `PASS`, hash de fixture gelée identique, Node `v24.15.0`, WebView2 SDK `1.0.3967.48` et Runtime Evergreen `151.0.4129.101`. Le harnais ne code plus la version épinglée en dur : il la dérive de `.nvmrc`, de sorte qu'un futur ré-épinglage ne demande aucune modification de code.
+
+Reste à rejouer avant l'entrée en Phase 4 : le leg Edge/TF100Web, qui vit dans le dépôt TF100Web sur la branche `codex/quick-window-v1`. Sa fixture y est déjà alignée sur la révision `1.0.2` et le hash gelé `be4db555a46e20d74cf0a60be38ea6919eb51235c2668158b9e2abda1b10cde9`. La copie locale `artifacts/quick-window-isolation/tf100web.json` est celle de l'exécution simulée du 2026-08-11, invalidée par l'audit : elle ne constitue pas une preuve et doit être remplacée par une exécution Edge réelle sur le moteur épinglé. `pytest` n'est pas installé dans l'environnement Python courant, ce qui bloque cette exécution.
 
 ## 1. Décision
 

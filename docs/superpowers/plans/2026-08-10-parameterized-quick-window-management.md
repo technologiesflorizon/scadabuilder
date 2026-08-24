@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
-Document version: `V2.1.5.0031`
+Document version: `V2.1.5.0032`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0032` | `PENDING` | Leg WebView2 réel du gate Phase 0 rejoué sur Node `24.15.0` (`PASS`, hash gelé inchangé); le harnais dérive l'épinglage de `.nvmrc`. Seul le leg Edge/TF100Web reste à rejouer avant la Phase 4. |
 | 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | Ré-épinglage du moteur Node de `20.18.x` vers `24.15.x` (`DEC-0051`) : fixture Phase 0 inchangée et rejouée sur `v24.15.0` avec le même hash gelé; les legs WebView2 réel et TF100Web restent à rejouer avant la Phase 4. |
 | 2026-08-23 | `V2.1.5.0030` | `724e621` | Task 3.4 exécutée et cochée : module runtime hôte adapté du prototype gelé, aperçu d'instance editor-only avec chrome minimal, banc d'essai transitoire et bundle d'aperçu séparé du bundle exporté. |
 | 2026-08-23 | `V2.1.5.0029` | `9795cce` | Task 3.3 exécutée et cochée : commande `OpenQuickWindow` avec cible définition, `CloseQuickWindow(Self)` dans un contenu, onglet conditionnel `Liaisons`, grille typée `FR-UI-18`/`FR-UI-19` et statut `Outdated` bloquant l'export. |
@@ -31,7 +32,7 @@ Document version: `V2.1.5.0031`
 
 ## État d’exécution audité au 2026-08-21
 
-- [x] Phase 0: fixture `1.0.2` gelée, hash commun, Node `20.18.1`, WebView2 réel et Edge/TF100Web réel. Ré-épinglée sur Node `24.15.0` le 2026-08-24 (`DEC-0051`) : fixture et hash inchangés, leg Node rejoué `PASS`; les legs WebView2 réel et TF100Web doivent être rejoués avant la Phase 4.
+- [x] Phase 0: fixture `1.0.2` gelée, hash commun, Node `20.18.1`, WebView2 réel et Edge/TF100Web réel. Ré-épinglée sur Node `24.15.0` le 2026-08-24 (`DEC-0051`) : fixture et hash inchangés, legs Node headless et WebView2 réel rejoués `PASS`; seul le leg Edge/TF100Web doit encore être rejoué avant la Phase 4.
 - [x] Phase 1.1: modèle, interface locale, présentation bornée et validation de domaine.
 - [x] Phase 1.2: invocations/version/interface, bindings typés, anti-injection et fermeture contextuelle.
 - [x] Phase 1.3: anciens command kinds popup refusés; résidus legacy isolés; commandes QuickWindow masquées de l’UI courante.

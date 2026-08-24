@@ -273,16 +273,36 @@ public partial class MainWindow : Window
         var revision = root.GetProperty("prototypeRevision").GetString();
         var evidenceHash = root.GetProperty("prototypeHash").GetString();
         var nodeVersion = root.GetProperty("versions").GetProperty("node").GetString();
+        var pinnedPrefix = LoadPinnedNodePrefix(repoRoot);
         if (!string.Equals(overall, "PASS", StringComparison.Ordinal)
             || !string.Equals(revision, "1.0.2", StringComparison.Ordinal)
             || !string.Equals(evidenceHash, prototypeHash, StringComparison.Ordinal)
             || nodeVersion is null
-            || !nodeVersion.StartsWith("v20.18.", StringComparison.Ordinal))
+            || !nodeVersion.StartsWith(pinnedPrefix, StringComparison.Ordinal))
         {
-            throw new InvalidOperationException("Exact-Node evidence does not match PrototypeRevision 1.0.2, the current prototype hash, and Node 20.18.x.");
+            throw new InvalidOperationException(
+                $"Exact-Node evidence does not match PrototypeRevision 1.0.2, the current prototype hash, and Node {pinnedPrefix}x.");
         }
 
         return nodeVersion;
+    }
+
+    /// <summary>
+    /// Reads the pinned engine prefix from `.nvmrc` so a re-pin never requires editing this harness.
+    /// </summary>
+    /// <remarks>Decisions: DEC-0050, DEC-0051.</remarks>
+    private static string LoadPinnedNodePrefix(string repoRoot)
+    {
+        var nvmrcPath = Path.Combine(repoRoot, ".nvmrc");
+        if (!File.Exists(nvmrcPath))
+            throw new InvalidOperationException($"Missing pinned engine file: {nvmrcPath}");
+
+        var pinned = File.ReadAllText(nvmrcPath).Trim();
+        var parts = pinned.Split('.');
+        if (parts.Length < 2)
+            throw new InvalidOperationException($"Pinned engine '{pinned}' is not a major.minor.patch version.");
+
+        return $"v{parts[0]}.{parts[1]}.";
     }
 
     private async Task WriteFailureAsync(string detail)
