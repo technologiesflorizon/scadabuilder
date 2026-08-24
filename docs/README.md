@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.5.0032`
+Document version: `V2.1.5.0033`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0033` | `PENDING` | Gate Phase 0 entièrement rejoué sur le moteur épinglé Node `24.15.x`; fixture vendorisée TF100Web réalignée sur le hash gelé. |
 | 2026-08-24 | `V2.1.5.0032` | `1fd1d14` | Leg WebView2 réel du gate Phase 0 rejoué sur le moteur épinglé Node `24.15.0`; leg Edge/TF100Web encore ouvert. |
 | 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | `DEC-0051` : moteur Node ré-épinglé de `20.18.x` vers `24.15.x`; fixture Phase 0 et hash gelés inchangés, leg Node rejoué `PASS`. |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Task 3.4 Fenetres rapides livree : module runtime hote adapte du prototype gele, apercu d'instance editor-only avec chrome minimal et banc d'essai dont les valeurs ne sont jamais exportees. |

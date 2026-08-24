@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: PASS — gate Phase 0 corrigé et validé dans les deux hosts
-Document version: `V2.1.5.0032`
+Document version: `V2.1.5.0033`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0033` | `PENDING` | Leg Edge/TF100Web rejoué sur le moteur épinglé (`PASS`, révision `1.0.2`, 100 cycles, un poller, Edge `151.0.4129.101`); dérive de la fixture vendorisée corrigée (CRLF et espaces de fin) et épinglage LF ajouté des deux côtés. |
 | 2026-08-24 | `V2.1.5.0032` | `1fd1d14` | Leg WebView2 réel rejoué sur Node `24.15.0` (`PASS`, hash gelé inchangé, WebView2 Runtime `151.0.4129.101`); le harnais lit désormais l'épinglage depuis `.nvmrc`. Leg TF100Web toujours à rejouer. |
 | 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | Ré-épinglage du moteur sur Node `24.15.x` (`DEC-0051`) : fixture et hash gelés inchangés, leg Node rejoué `PASS` sur `v24.15.0`; legs WebView2 réel et TF100Web à rejouer. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Remplacement des preuves simulées par des assertions DOM réelles, exécution WebView2 réelle, exécution Edge/TF100Web réelle, 100 cycles et hash gelé strict. |
@@ -21,7 +22,9 @@ Le leg Node headless a été rejoué le 2026-08-24 sur `v24.15.0`. Résultat `PA
 
 Le leg WebView2 réel côté Builder a été rejoué le 2026-08-24 par `tools/QuickWindowIsolationPrototype.App` : `PASS`, hash de fixture gelée identique, Node `v24.15.0`, WebView2 SDK `1.0.3967.48` et Runtime Evergreen `151.0.4129.101`. Le harnais ne code plus la version épinglée en dur : il la dérive de `.nvmrc`, de sorte qu'un futur ré-épinglage ne demande aucune modification de code.
 
-Reste à rejouer avant l'entrée en Phase 4 : le leg Edge/TF100Web, qui vit dans le dépôt TF100Web sur la branche `codex/quick-window-v1`. Sa fixture y est déjà alignée sur la révision `1.0.2` et le hash gelé `be4db555a46e20d74cf0a60be38ea6919eb51235c2668158b9e2abda1b10cde9`. La copie locale `artifacts/quick-window-isolation/tf100web.json` est celle de l'exécution simulée du 2026-08-11, invalidée par l'audit : elle ne constitue pas une preuve et doit être remplacée par une exécution Edge réelle sur le moteur épinglé. `pytest` n'est pas installé dans l'environnement Python courant, ce qui bloque cette exécution.
+Le leg Edge/TF100Web a été rejoué le 2026-08-24 sur la branche `codex/quick-window-v1` du dépôt TF100Web : `PASS`, révision `1.0.2`, 100 cycles, un seul poller, Node `v24.15.0`, Edge `151.0.4129.101` en `--headless=new`. L'artefact `artifacts/quick-window-isolation/tf100web.json` est désormais cette capture réelle et remplace l'exécution simulée du 2026-08-11 qu'avait invalidée l'audit.
+
+Ce rejeu a révélé une fragilité du gel, indépendante du ré-épinglage : la fixture vendorisée dans TF100Web ne produisait plus le hash gelé pour deux raisons sans rapport avec son contenu. Le checkout la convertissait en CRLF alors que le gate hache des octets, et `README.md` avait perdu les deux espaces de fin de deux sauts de ligne markdown lors de la vendorisation. Les deux dépôts épinglent maintenant le répertoire de fixture en LF via `.gitattributes` et `README.md` est redevenu identique octet pour octet, de sorte que le hash gelé tienne dans tout clone au lieu de tenir par accident de l'arbre de travail local. Le hash gelé `be4db555a46e20d74cf0a60be38ea6919eb51235c2668158b9e2abda1b10cde9` est inchangé.
 
 ## 1. Décision
 

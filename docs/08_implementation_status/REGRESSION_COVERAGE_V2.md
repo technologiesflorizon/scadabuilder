@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active regression coverage map
-Document version: `V2.1.5.0031`
+Document version: `V2.1.5.0033`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0033` | `PENDING` | Les trois legs du gate Phase 0 sont rejoués sur le moteur épinglé; épinglage LF de la fixture ajouté des deux côtés. |
 | 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | Épinglage du moteur de vérification aligné sur Node `24.15.x` (`DEC-0051`). |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Couverture Task 3.4 : apercu d'instance namespace, chrome minimal, bundle d'apercu separe de l'export, generations monotones, confinement de la materialisation et semantique hote verifiee en Node. |
 | 2026-08-23 | `V2.1.5.0029` | `012135d` | Couverture Task 3.3 : kinds offerts par surface, onglet conditionnel, colonnes et sources typees, statuts, `Outdated` bloquant et transitions d'invocation. |

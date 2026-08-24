@@ -1,0 +1,5 @@
+# The frozen quick-window isolation fixture is hashed byte for byte by the Phase 0 gate
+# (DEC-0050, DEC-0051). Its checkout must stay LF on every platform and in every clone,
+# otherwise the frozen SHA-256 changes for a line-ending reason and the gate fails while
+# the fixture content is in fact identical.
+tools/prototypes/quick-window-dom-css-isolation/** text eol=lf
