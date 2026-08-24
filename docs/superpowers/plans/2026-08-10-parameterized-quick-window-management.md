@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
-Document version: `V2.1.5.0039`
+Document version: `V2.1.5.0040`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0040` | `PENDING` | Task 4.3 exécutée et cochée : runtime partagé portable sans overlay, injection rejetée avant souscription, conformance et preuve industrielle régénérées; capacités toujours `Blocked`. |
 | 2026-08-24 | `V2.1.5.0039` | `4f690ea` | Task 4.2 exécutée et cochée : compilation déterministe des définitions et invocations, contenu namespacé, validation package et gate structurel d'export sans bypass. |
 | 2026-08-24 | `V2.1.5.0038` | `b1ec4cd` | Task 4.1 exécutée et cochée : 13 capacités granulaires enregistrées `Blocked`, analyse par déclencheur propre, index de conformance et matrice régénérés. |
 | 2026-08-24 | `V2.1.5.0037` | `c4f7391` | Task 4.0 exécutée et cochée : contrat package et layout déployé des Fenêtres rapides figés avant toute compilation, vérifiés contre le code TF100Web réel. |
@@ -57,7 +58,8 @@ Document version: `V2.1.5.0039`
 - [x] Phase 4.0: contrat package Fenêtre rapide figé avant compilation (`PENDING`).
 - [x] Phase 4.1: capacités granulaires `Blocked` et analyse exhaustive (`b1ec4cd`).
 - [x] Phase 4.2: compilation déterministe et gate structurel d'export (`PENDING`).
-- [ ] Phases 4.3 à 7: non démarrées.
+- [x] Phase 4.3: runtime partagé Fenêtre rapide livré inerte (`PENDING`).
+- [ ] Phases 4.4 à 7: non démarrées.
 
 Audit du 2026-08-21: la spec a été étendue par `FR-030..036` et `FR-UI-23..26`. Le plan ajoute en conséquence Task 2.4, Task 3.5, Task 3.6, Task 4.0 et Task 5.4. La Phase 0 n'est pas rouverte: la composition header/pied et la coexistence legacy n'existent que dans un host composé réel et sont donc prouvées en Phase 5 contre TF100Web, sans invalider le hash de fixture gelé.
 
@@ -789,15 +791,15 @@ dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWi
 - Consumes: registres manifest, `InvocationKey`, contexte résolu par host.
 - Produces: sémantique portable open/close, résolution locale, indisponibilité de ports et hooks de cycle host-owned.
 
-- [ ] Ne pas créer l’overlay/chrome dans le runtime partagé; déléguer open/close/focus/montage au host adapter versionné.
-- [ ] Implémenter ports optionnels/required validés, états/commandes/expressions avec scope instance et cleanup idempotent; rejeter `Literal`/`Expression` d’injection (`<script>`,`../`,`#...`) avant souscription et prouver qu’aucune écriture n’est émise.
-- [ ] Ajouter probes exacts, deux invocations M101/M102, stale hydration, cross-write rejection, profondeur 3 / cycle rejetés, injection rejetée et hash partagé; garder les statuts `Blocked`.
-- [ ] Commit: `feat: add shared quick window runtime`.
+- [x] Ne pas créer l’overlay/chrome dans le runtime partagé; déléguer open/close/focus/montage au host adapter versionné.
+- [x] Implémenter ports optionnels/required validés, états/commandes/expressions avec scope instance et cleanup idempotent; rejeter `Literal`/`Expression` d’injection (`<script>`,`../`,`#...`) avant souscription et prouver qu’aucune écriture n’est émise.
+- [x] Ajouter probes exacts, deux invocations M101/M102, stale hydration, cross-write rejection, profondeur 3 / cycle rejetés, injection rejetée et hash partagé; garder les statuts `Blocked`.
+- [x] Commit: `feat: add shared quick window runtime` (`PENDING`).
 
 **Vérification:**
 
 ```bash
-node --test src/ScadaBuilderV2.Rendering/Runtime/tests
+npm --prefix tests/runtime-js test
 dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~Runtime"
 ```
 

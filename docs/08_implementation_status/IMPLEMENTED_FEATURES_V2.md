@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active implementation status
-Document version: `V2.1.5.0039`
+Document version: `V2.1.5.0040`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0040` | `PENDING` | Runtime partage Fenetre rapide : resolution des registres et des ports types, rejet d'injection avant souscription, ecriture limitee a l'instance, cleanup idempotent; overlay et chrome delegues au host. |
 | 2026-08-24 | `V2.1.5.0039` | `4f690ea` | Compilation deterministe des Fenetres rapides : registres ordonnes, contenu namespace sous `qw-<key8>`, validation package et gate structurel d'export sans bypass. |
 | 2026-08-24 | `V2.1.5.0038` | `5953265` | Capacites Fenetre rapide enregistrees et analysees : 13 identifiants granulaires, tous `Blocked`, chacun derive de son propre declencheur; aucun identifiant parapluie. |
 | 2026-08-24 | `V2.1.5.0035` | `2e86fd9` | Surface de reparation `FR-UI-24` livree : liste des invocations `Outdated`, navigation vers l'appelant, reliaison port par port et confirmation d'impact avant toute evolution d'interface. Phase 3 authoring terminee. |

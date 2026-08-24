@@ -2,12 +2,13 @@
 
 Date: 2026-07-30
 Status: Active runtime package contract
-Document version: `V2.1.5.0037`
+Document version: `V2.1.5.0040`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0040` | `PENDING` | `quick-window-runtime.js` entre dans le bundle runtime exporte, inerte tant que les capacites restent `Blocked`; le hash du runtime et les octets du package changent en consequence. |
 | 2026-08-24 | `V2.1.5.0037` | `c4f7391` | Task 4.0 : layout package et layout déployé des Fenêtres rapides figés avant toute compilation, vérifiés contre `scada_package.py`, `scada_builder_composition.py` et `deploy_scada_builder.py`. |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Module runtime `quick-window-host.js` ajoute pour l'apercu editeur uniquement : il n'entre pas dans le bundle runtime exporte tant que les capacites `quick-window.*` restent `Blocked`. |
 | 2026-07-30 | `V2.1.5.0002` | `0168f2f` | Les formes SVG générées exposent des cibles sémantiques de fond/bordure; le runtime applique les effets sur `fill`/`stroke` visibles et conserve le repli wrapper. |
@@ -322,6 +323,16 @@ Each entry carries `Row`, `Column`, unscoped `TargetId = <normalized-table-id>__
 TF100Web commits through `33c5846` preserve `TableCellBindings` through composition, inject mapping metadata on the `<td>`, collect resolved mappings in the shared cache, reuse the existing input without destructive `replaceChildren`, and negotiate manifest 2.3 before atomic replacement. Builder validation accepts table bindings in 2.2/2.3 and rejects them in 2.1; the remote server must receive this TF100Web branch before the 2.3 package.
 
 Polling, POST feedback, focus/Enter/blur/Escape and permission guards are implemented through the same target-agnostic runtime path. Their operation against real industrial mappings and PLC feedback remains a delivery gate until an explicitly authorized TF100Web environment is available.
+
+## 11b. Shared Quick Window Runtime Module
+
+Le bundle runtime exporte `scada-runtime.<hash>.js` contient desormais `quick-window-runtime.js`. Le module est **portable et inerte** : il n'ouvre aucune fenetre par lui-meme et aucune capacite `quick-window.*` n'est declarable tant qu'elle reste `Blocked`.
+
+Frontiere de responsabilite : le runtime partage resout les registres, les ports types, valide les ports requis, rejette l'injection avant toute souscription, evalue etats et commandes dans le scope de l'instance, refuse toute ecriture croisee et nettoie de facon idempotente. L'overlay, le chrome, le focus et le montage appartiennent a l'adaptateur host versionne, atteint par l'enveloppe d'intention runtime existante (`openQuickWindow`, `closeQuickWindow`).
+
+`CloseQuickWindow` ne cible que `Self` : le runtime resout l'instance proprietaire de l'element appelant via l'attribut `data-qw-inst`. L'hydratation obsolete est detectee par definition, et un cycle est signale comme cycle meme lorsque la meme chaine depasse aussi la profondeur autorisee.
+
+Consequence de transport : ajouter un module change le hash du runtime, donc les octets de tout `.sb2`. Le paquet de conformance et la preuve d'acceptation industrielle sont regeneres deliberement lors de ce changement.
 
 ## 12. Quick Window Package And Deployed Layout (Manifest 2.3)
 

@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active known gaps register
-Document version: `V2.1.5.0039`
+Document version: `V2.1.5.0040`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0040` | `PENDING` | Task 4.3 close; le runtime partage est livre inerte et l'adaptateur host reel reste a implementer en Phase 5. |
 | 2026-08-24 | `V2.1.5.0039` | `4f690ea` | Task 4.2 close; la compilation reste inatteignable depuis le produit tant que les capacites sont `Blocked`, par conception. |
 | 2026-08-24 | `V2.1.5.0038` | `5953265` | Task 4.1 close; les 13 capacites restent `Blocked` et aucune n'est promue avant la Phase 6. |
 | 2026-08-24 | `V2.1.5.0037` | `c4f7391` | Task 4.0 close; `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` de TF100Web ne connaît aucune capacité `quick-window.*`, prérequis explicite de la Phase 6. |
