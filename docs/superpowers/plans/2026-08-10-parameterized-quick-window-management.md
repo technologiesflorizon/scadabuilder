@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
-Document version: `V2.1.5.0034`
+Document version: `V2.1.5.0035`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0035` | `PENDING` | Task 3.6 exécutée et cochée : surface de réparation des invocations `Outdated`, confirmation d'impact avant évolution d'interface et gate de build fermé jusqu'à réparation complète. Phase 3 terminée côté code. |
 | 2026-08-24 | `V2.1.5.0034` | `4202a70` | Task 3.5 exécutée et cochée : validation fail-closed de la frontière presse-papier page ↔ fenêtre rapide, dialogue de diagnostics et variante `Coller sans liaisons` sans promotion ni référence orpheline. |
 | 2026-08-24 | `V2.1.5.0033` | `85e088d` | Gate Phase 0 entièrement rejoué sur Node `24.15.0` : les trois legs `PASS` avec le hash gelé inchangé; fixture vendorisée TF100Web réalignée octet pour octet et épinglée en LF des deux côtés. |
 | 2026-08-24 | `V2.1.5.0032` | `1fd1d14` | Leg WebView2 réel du gate Phase 0 rejoué sur Node `24.15.0` (`PASS`, hash gelé inchangé); le harnais dérive l'épinglage de `.nvmrc`. Seul le leg Edge/TF100Web reste à rejouer avant la Phase 4. |
@@ -47,7 +48,8 @@ Document version: `V2.1.5.0034`
 - [x] Phase 3.3: commandes appelantes Fenêtre rapide, onglet conditionnel `Liaisons`, sources typées et statut `Outdated` (`9795cce`).
 - [x] Phase 3.4: aperçu d'instance editor-only, gestionnaire hôte partagé et banc d'essai transitoire (`724e621`).
 - [x] Phase 3.5: frontière presse-papier et duplication inter-contextes validées fail-closed (`dae5b89`).
-- [ ] Phases 3.6 à 7: non démarrées.
+- [x] Phase 3.6: surface de réparation des invocations `Outdated` et confirmation d'impact (`1d4604d`).
+- [ ] Phases 4 à 7: non démarrées. Le rapport d'audit de Phase 3 et l'entrée de checkpoint restent à produire.
 
 Audit du 2026-08-21: la spec a été étendue par `FR-030..036` et `FR-UI-23..26`. Le plan ajoute en conséquence Task 2.4, Task 3.5, Task 3.6, Task 4.0 et Task 5.4. La Phase 0 n'est pas rouverte: la composition header/pied et la coexistence legacy n'existent que dans un host composé réel et sont donc prouvées en Phase 5 contre TF100Web, sans invalider le hash de fixture gelé.
 
@@ -666,11 +668,11 @@ dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWi
 - Consumes: statut `Outdated` et diagnostics de Task 2.4.
 - Produces: liste des invocations à réparer, navigation vers l'appelant et reliaison explicite port par port.
 
-- [ ] Afficher pour chaque définition ses invocations `Outdated` avec page, élément appelant et motif d'incompatibilité (`FR-UI-24`).
-- [ ] Permettre la navigation vers l'appelant et la reliaison port par port; aucune réparation automatique ni en masse silencieuse.
-- [ ] Confirmer explicitement toute modification d'interface qui rendra des invocations `Outdated`, en affichant leur nombre avant application.
-- [ ] Tester que la réparation est undoable et que le build redevient vert uniquement lorsque toutes les invocations sont réparées.
-- [ ] Commit: `feat: repair outdated quick window invocations`.
+- [x] Afficher pour chaque définition ses invocations `Outdated` avec page, élément appelant et motif d'incompatibilité (`FR-UI-24`).
+- [x] Permettre la navigation vers l'appelant et la reliaison port par port; aucune réparation automatique ni en masse silencieuse.
+- [x] Confirmer explicitement toute modification d'interface qui rendra des invocations `Outdated`, en affichant leur nombre avant application.
+- [x] Tester que la réparation est undoable et que le build redevient vert uniquement lorsque toutes les invocations sont réparées.
+- [x] Commit: `feat: repair outdated quick window invocations` (`1d4604d`).
 
 **Vérification:**
 

@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.5.0034`
+Document version: `V2.1.5.0035`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0035` | `PENDING` | Task 3.6 Fenetres rapides livree : surface de reparation des invocations `Outdated`, confirmation d'impact avant modification d'interface et gate de build ferme jusqu'a reparation complete. Phase 3 terminee. |
 | 2026-08-24 | `V2.1.5.0034` | `4202a70` | Task 3.5 Fenetres rapides livree : frontiere presse-papier page/fenetre rapide validee fail-closed, refus par defaut et variante `Coller sans liaisons`. |
 | 2026-08-24 | `V2.1.5.0033` | `85e088d` | Gate Phase 0 entièrement rejoué sur le moteur épinglé Node `24.15.x`; fixture vendorisée TF100Web réalignée sur le hash gelé. |
 | 2026-08-24 | `V2.1.5.0032` | `1fd1d14` | Leg WebView2 réel du gate Phase 0 rejoué sur le moteur épinglé Node `24.15.0`; leg Edge/TF100Web encore ouvert. |

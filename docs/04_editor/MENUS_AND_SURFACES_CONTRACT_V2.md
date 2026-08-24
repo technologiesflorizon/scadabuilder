@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active editor menu and surface contract
-Document version: `V2.1.5.0034`
+Document version: `V2.1.5.0035`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0035` | `PENDING` | Surface de reparation des invocations `Outdated` : liste page/appelant/commande/motif, navigation vers l'appelant et reliaison port par port. |
 | 2026-08-24 | `V2.1.5.0034` | `4202a70` | Dialogue de collage refuse : liste objet/propriete/reference/motif et deux issues seulement, `Annuler` ou `Coller sans liaisons`. |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Banc d'essai Fenetre rapide : valeurs et titre temporaires, ouverture d'une instance d'apercu editor-only et fermeture explicite. |
 | 2026-08-23 | `V2.1.5.0029` | `012135d` | Onglet conditionnel `Liaisons` du dialogue Proprietes : grille typee nom/famille/type/source/valeur/statut, selecteurs contextuels et banniere `Outdated`. |
@@ -89,6 +90,14 @@ Le refus est le comportement par defaut. Le dialogue de collage refuse liste cha
 `Coller sans liaisons` retire chaque reference fautive et laisse la propriete `Non lie`. Rien n'est reecrit, remappe ni promu automatiquement en membre d'Interface locale, et le collage reste une transition unique annulable dans le contexte cible.
 
 Sont egalement refuses : un port appartenant a une autre definition, une reference qui ne resout nulle part dans une fenetre rapide, une invocation dont la definition cible a disparu et une invocation deja possedee par un autre appelant, une invocation ne pouvant jamais etre partagee entre deux appelants.
+
+## Surface de reparation des invocations Outdated
+
+Le panneau `Interface locale` expose l'action `Reparer les invocations`. Elle ouvre une surface qui liste, pour la definition active, chaque invocation laissee `Outdated` par une evolution d'Interface locale avec sa page, son element appelant, sa commande, le couple de versions et le motif exact d'incompatibilite.
+
+L'operateur y navigue vers l'appelant, ou relie l'invocation port par port au moyen de la meme grille de liaisons typees que l'onglet `Liaisons`. Aucune reparation automatique ni en masse silencieuse n'existe : une invocation est reparee a la fois, le realignement n'a lieu que lorsque plus rien ne casse, et chaque reparation est une transition unique annulable de la pile de workspace.
+
+Toute modification d'Interface locale qui rendrait des invocations `Outdated` est confirmee au prealable : le nombre d'invocations impactees et leurs appelants sont affiches avant application, et un refus laisse la definition inchangee. Build et export restent bloques tant qu'une seule invocation reste a reparer.
 
 ## 1. Contract
 
