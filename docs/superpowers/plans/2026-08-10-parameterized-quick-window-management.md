@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
-Document version: `V2.1.5.0035`
+Document version: `V2.1.5.0036`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-24 | `V2.1.5.0036` | `PENDING` | Phase 3 close : rapport d'audit de phase et checkpoint versionné enregistrés; entrée en Phase 4 conditionnée par la Task 4.0. |
 | 2026-08-24 | `V2.1.5.0035` | `2e86fd9` | Task 3.6 exécutée et cochée : surface de réparation des invocations `Outdated`, confirmation d'impact avant évolution d'interface et gate de build fermé jusqu'à réparation complète. Phase 3 terminée côté code. |
 | 2026-08-24 | `V2.1.5.0034` | `4202a70` | Task 3.5 exécutée et cochée : validation fail-closed de la frontière presse-papier page ↔ fenêtre rapide, dialogue de diagnostics et variante `Coller sans liaisons` sans promotion ni référence orpheline. |
 | 2026-08-24 | `V2.1.5.0033` | `85e088d` | Gate Phase 0 entièrement rejoué sur Node `24.15.0` : les trois legs `PASS` avec le hash gelé inchangé; fixture vendorisée TF100Web réalignée octet pour octet et épinglée en LF des deux côtés. |
@@ -49,7 +50,8 @@ Document version: `V2.1.5.0035`
 - [x] Phase 3.4: aperçu d'instance editor-only, gestionnaire hôte partagé et banc d'essai transitoire (`724e621`).
 - [x] Phase 3.5: frontière presse-papier et duplication inter-contextes validées fail-closed (`dae5b89`).
 - [x] Phase 3.6: surface de réparation des invocations `Outdated` et confirmation d'impact (`1d4604d`).
-- [ ] Phases 4 à 7: non démarrées. Le rapport d'audit de Phase 3 et l'entrée de checkpoint restent à produire.
+- [x] Phase 3 close: rapport d'audit `docs/superpowers/reports/2026-08-24-quick-window-phase-3-audit.md` et entrée `phase 3` dans `tools/quick-window/checkpoints.json`.
+- [ ] Phases 4 à 7: non démarrées.
 
 Audit du 2026-08-21: la spec a été étendue par `FR-030..036` et `FR-UI-23..26`. Le plan ajoute en conséquence Task 2.4, Task 3.5, Task 3.6, Task 4.0 et Task 5.4. La Phase 0 n'est pas rouverte: la composition header/pied et la coexistence legacy n'existent que dans un host composé réel et sont donc prouvées en Phase 5 contre TF100Web, sans invalider le hash de fixture gelé.
 
