@@ -8,7 +8,7 @@ Document version: `V2.1.5.0033`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0033` | `PENDING` | Leg Edge/TF100Web rejoué sur le moteur épinglé (`PASS`, révision `1.0.2`, 100 cycles, un poller, Edge `151.0.4129.101`); dérive de la fixture vendorisée corrigée (CRLF et espaces de fin) et épinglage LF ajouté des deux côtés. |
+| 2026-08-24 | `V2.1.5.0033` | `85e088d` | Leg Edge/TF100Web rejoué sur le moteur épinglé (`PASS`, révision `1.0.2`, 100 cycles, un poller, Edge `151.0.4129.101`); dérive de la fixture vendorisée corrigée (CRLF et espaces de fin) et épinglage LF ajouté des deux côtés. |
 | 2026-08-24 | `V2.1.5.0032` | `1fd1d14` | Leg WebView2 réel rejoué sur Node `24.15.0` (`PASS`, hash gelé inchangé, WebView2 Runtime `151.0.4129.101`); le harnais lit désormais l'épinglage depuis `.nvmrc`. Leg TF100Web toujours à rejouer. |
 | 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | Ré-épinglage du moteur sur Node `24.15.x` (`DEC-0051`) : fixture et hash gelés inchangés, leg Node rejoué `PASS` sur `v24.15.0`; legs WebView2 réel et TF100Web à rejouer. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Remplacement des preuves simulées par des assertions DOM réelles, exécution WebView2 réelle, exécution Edge/TF100Web réelle, 100 cycles et hash gelé strict. |

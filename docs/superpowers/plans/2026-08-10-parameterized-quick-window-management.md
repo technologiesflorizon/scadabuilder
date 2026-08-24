@@ -8,7 +8,7 @@ Document version: `V2.1.5.0033`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0033` | `PENDING` | Gate Phase 0 entièrement rejoué sur Node `24.15.0` : les trois legs `PASS` avec le hash gelé inchangé; fixture vendorisée TF100Web réalignée octet pour octet et épinglée en LF des deux côtés. |
+| 2026-08-24 | `V2.1.5.0033` | `85e088d` | Gate Phase 0 entièrement rejoué sur Node `24.15.0` : les trois legs `PASS` avec le hash gelé inchangé; fixture vendorisée TF100Web réalignée octet pour octet et épinglée en LF des deux côtés. |
 | 2026-08-24 | `V2.1.5.0032` | `1fd1d14` | Leg WebView2 réel du gate Phase 0 rejoué sur Node `24.15.0` (`PASS`, hash gelé inchangé); le harnais dérive l'épinglage de `.nvmrc`. Seul le leg Edge/TF100Web reste à rejouer avant la Phase 4. |
 | 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | Ré-épinglage du moteur Node de `20.18.x` vers `24.15.x` (`DEC-0051`) : fixture Phase 0 inchangée et rejouée sur `v24.15.0` avec le même hash gelé; les legs WebView2 réel et TF100Web restent à rejouer avant la Phase 4. |
 | 2026-08-23 | `V2.1.5.0030` | `724e621` | Task 3.4 exécutée et cochée : module runtime hôte adapté du prototype gelé, aperçu d'instance editor-only avec chrome minimal, banc d'essai transitoire et bundle d'aperçu séparé du bundle exporté. |
