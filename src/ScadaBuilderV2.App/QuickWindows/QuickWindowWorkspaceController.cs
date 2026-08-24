@@ -69,6 +69,14 @@ public interface IQuickWindowWorkspaceHost
     /// </summary>
     Task<QuickWindowPasteDecision> ResolveQuickWindowPasteAsync(QuickWindowClipboardAnalysis analysis);
 
+    /// <summary>
+    /// Asks the operator to confirm an interface change that will leave invocations `Outdated`, showing how
+    /// many are impacted before anything is applied (FR-UI-24).
+    /// </summary>
+    Task<bool> ConfirmInterfaceVersionImpactAsync(
+        QuickWindowDefinition definition,
+        IReadOnlyList<QuickWindowOutdatedInvocation> impacted);
+
     /// <summary>Reports one workspace status message.</summary>
     void ReportQuickWindowStatus(string message);
 }
@@ -263,7 +271,7 @@ public sealed class QuickWindowWorkspaceController(
             definition.EffectiveInterfaceMembers);
         if (member is null) return null;
 
-        return ApplyMembers(
+        return await ApplyMembersAsync(
             snapshot,
             definition,
             definition.EffectiveInterfaceMembers.Append(member).ToArray(),
@@ -287,7 +295,7 @@ public sealed class QuickWindowWorkspaceController(
             definition.EffectiveInterfaceMembers);
         if (member is null) return null;
 
-        return ApplyMembers(
+        return await ApplyMembersAsync(
             snapshot,
             definition,
             Replace(definition, member),
@@ -295,7 +303,7 @@ public sealed class QuickWindowWorkspaceController(
     }
 
     /// <summary>Applies one inline table edit of a common member property (FR-UI-16).</summary>
-    public QuickWindowWorkspaceMutation? ApplyInlineInterfaceEdit(
+    public async Task<QuickWindowWorkspaceMutation?> ApplyInlineInterfaceEditAsync(
         PageWorkspaceSnapshot snapshot,
         Guid definitionKey,
         QuickWindowInterfaceMember member)
@@ -313,7 +321,7 @@ public sealed class QuickWindowWorkspaceController(
             return null;
         }
 
-        return ApplyMembers(
+        return await ApplyMembersAsync(
             snapshot,
             definition,
             Replace(definition, member),
@@ -338,7 +346,7 @@ public sealed class QuickWindowWorkspaceController(
             return null;
         }
 
-        return ApplyMembers(
+        return await ApplyMembersAsync(
             snapshot,
             definition,
             definition.EffectiveInterfaceMembers.Where(item => item.MemberKey != memberKey).ToArray(),
@@ -470,10 +478,100 @@ public sealed class QuickWindowWorkspaceController(
         definitions.ListOutdatedInvocations(snapshot, definitionKey);
 
     /// <summary>
+    /// Repairs one outdated invocation with the bindings the operator relinked port by port. The realignment
+    /// happens only when nothing breaks any more; there is no automatic nor silent bulk repair (FR-UI-24).
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0050, FR-032, FR-UI-24.
+    /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowInterfaceVersioningTests.cs.
+    /// </remarks>
+    public QuickWindowWorkspaceMutation RepairInvocation(
+        PageWorkspaceSnapshot snapshot,
+        Guid invocationKey,
+        IReadOnlyList<QuickWindowBinding> bindings)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var mutation = invocations.Repair(snapshot, invocationKey, bindings ?? []);
+        if (mutation.Result.Status == CommandResultStatus.Succeeded)
+        {
+            if (mutation.AffectedDefinitionKey is { } definitionKey) LoadInterface(mutation.After, definitionKey);
+            host.ReportQuickWindowStatus("Invocation réparée et réalignée sur l'interface courante.");
+            return mutation;
+        }
+
+        var reason = mutation.Result.Diagnostics.FirstOrDefault()?.Message ?? mutation.Result.Message;
+        host.ReportQuickWindowStatus($"Réparation refusée : {reason}");
+        return mutation;
+    }
+
+    /// <summary>Produces a non-mutating navigation result towards the caller of one invocation (FR-UI-24).</summary>
+    public QuickWindowWorkspaceMutation? NavigateToInvocation(PageWorkspaceSnapshot snapshot, Guid invocationKey)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var invocation = snapshot.Project.EffectiveQuickWindowInvocations
+            .FirstOrDefault(item => item.InvocationKey == invocationKey);
+        if (invocation is null)
+        {
+            host.ReportQuickWindowStatus("Cette invocation n'existe plus.");
+            return null;
+        }
+
+        var usage = new QuickWindowUsage(
+            QuickWindowUsageKind.PageCommand,
+            invocation.DefinitionKey,
+            invocation.InvocationKey,
+            invocation.OwnerPageKey,
+            null,
+            invocation.OwnerElementId,
+            invocation.OwnerCommandId,
+            $"Project.QuickWindowInvocations[{invocation.InvocationKey}]");
+        var result = CommandResult.NoChange(
+            "Appelant de l'invocation sélectionné.",
+            pageToSelectKey: invocation.OwnerPageKey,
+            pageToOpenKey: invocation.OwnerPageKey);
+        return new QuickWindowWorkspaceMutation(
+            snapshot,
+            snapshot,
+            result,
+            "navigate to quick-window invocation",
+            invocation.DefinitionKey,
+            invocation.InvocationKey,
+            usage);
+    }
+
+    /// <summary>
+    /// Returns the invocations that the candidate interface would leave `Outdated`, before anything is
+    /// applied, so the operator can be shown their exact count (FR-UI-24).
+    /// </summary>
+    public static IReadOnlyList<QuickWindowOutdatedInvocation> PreviewOutdatedImpact(
+        PageWorkspaceSnapshot snapshot,
+        QuickWindowDefinition current,
+        QuickWindowDefinition candidate)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        ArgumentNullException.ThrowIfNull(current);
+        ArgumentNullException.ThrowIfNull(candidate);
+        return snapshot.Project.EffectiveQuickWindowInvocations
+            .Where(invocation => invocation.DefinitionKey == candidate.DefinitionKey)
+            .Select(invocation => (invocation, reasons: QuickWindowInterfaceCompatibility.BreakingReasonsFor(current, candidate, invocation)))
+            .Where(entry => entry.reasons.Count > 0)
+            .Select(entry => new QuickWindowOutdatedInvocation(
+                entry.invocation.InvocationKey,
+                candidate.DefinitionKey,
+                candidate.InterfaceVersion,
+                entry.invocation.InterfaceVersion,
+                entry.invocation.OwnerPageKey,
+                entry.invocation.OwnerElementId,
+                entry.invocation.OwnerCommandId,
+                entry.reasons))
+            .ToArray();
+    }
+
+    /// <summary>
     /// Prepares one interface transition: the local interface version is incremented only when the public
     /// contract actually changed, so a private edit or a rename never invalidates a persisted invocation.
     /// </summary>
-    private QuickWindowWorkspaceMutation ApplyMembers(
+    private async Task<QuickWindowWorkspaceMutation?> ApplyMembersAsync(
         PageWorkspaceSnapshot snapshot,
         QuickWindowDefinition current,
         IReadOnlyList<QuickWindowInterfaceMember> members,
@@ -484,6 +582,14 @@ public sealed class QuickWindowWorkspaceController(
         if (QuickWindowInterfaceCompatibility.Classify(current, candidate).RequiresVersionIncrement)
         {
             candidate = candidate with { InterfaceVersion = current.InterfaceVersion + 1 };
+        }
+
+        // No interface change silently outdates an invocation: the impacted count is shown first (FR-UI-24).
+        var impacted = PreviewOutdatedImpact(snapshot, current, candidate);
+        if (impacted.Count > 0 && !await host.ConfirmInterfaceVersionImpactAsync(current, impacted))
+        {
+            host.ReportQuickWindowStatus($"Modification annulée : {impacted.Count} invocation(s) seraient à réparer.");
+            return null;
         }
 
         var mutation = definitions.Update(snapshot, candidate, confirmReferencedMemberRemoval);

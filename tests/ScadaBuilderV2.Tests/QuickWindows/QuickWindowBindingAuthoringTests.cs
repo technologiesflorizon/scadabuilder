@@ -333,6 +333,18 @@ public sealed class QuickWindowBindingAuthoringTests
         public Task<QuickWindowPasteDecision> ResolveQuickWindowPasteAsync(QuickWindowClipboardAnalysis analysis) =>
             Task.FromResult(QuickWindowPasteDecision.Cancel);
 
+        public List<IReadOnlyList<QuickWindowOutdatedInvocation>> ImpactConfirmations { get; } = [];
+
+        public bool ConfirmInterfaceVersionImpact { get; init; } = true;
+
+        public Task<bool> ConfirmInterfaceVersionImpactAsync(
+            QuickWindowDefinition definition,
+            IReadOnlyList<QuickWindowOutdatedInvocation> impacted)
+        {
+            ImpactConfirmations.Add(impacted);
+            return Task.FromResult(ConfirmInterfaceVersionImpact);
+        }
+
         public void ReportQuickWindowStatus(string message) => Statuses.Add(message);
     }
 

@@ -340,6 +340,18 @@ public sealed class QuickWindowClipboardTests
             return Task.FromResult(PasteDecision);
         }
 
+        public List<IReadOnlyList<QuickWindowOutdatedInvocation>> ImpactConfirmations { get; } = [];
+
+        public bool ConfirmInterfaceVersionImpact { get; init; } = true;
+
+        public Task<bool> ConfirmInterfaceVersionImpactAsync(
+            QuickWindowDefinition definition,
+            IReadOnlyList<QuickWindowOutdatedInvocation> impacted)
+        {
+            ImpactConfirmations.Add(impacted);
+            return Task.FromResult(ConfirmInterfaceVersionImpact);
+        }
+
         public void ReportQuickWindowStatus(string message) => Statuses.Add(message);
     }
 

@@ -44,6 +44,9 @@ public partial class QuickWindowInterfacePanel : UserControl
     /// <summary>Raised when one inline table edit produced a new candidate member.</summary>
     public event EventHandler<QuickWindowInterfaceMemberViewModel>? MemberInlineEdited;
 
+    /// <summary>Raised when the operator opens the repair surface of the outdated invocations (FR-UI-24).</summary>
+    public event EventHandler? RepairInvocationsRequested;
+
     /// <summary>Binds the panel to the local interface of the active definition.</summary>
     public void Bind(QuickWindowInterfacePanelViewModel viewModel)
     {
@@ -82,6 +85,12 @@ public partial class QuickWindowInterfacePanel : UserControl
             NavigateToUsageRequested?.Invoke(this, member);
         }
 
+        e.Handled = true;
+    }
+
+    private void OnRepairInvocationsClick(object sender, RoutedEventArgs e)
+    {
+        RepairInvocationsRequested?.Invoke(this, EventArgs.Empty);
         e.Handled = true;
     }
 

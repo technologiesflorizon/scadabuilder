@@ -1,3 +1,4 @@
+using ScadaBuilderV2.App.QuickWindows;
 using ScadaBuilderV2.Application.Commands;
 using ScadaBuilderV2.Application.Pages;
 using ScadaBuilderV2.Application.QuickWindows;
@@ -9,8 +10,11 @@ using ScadaBuilderV2.Domain.Scenes;
 namespace ScadaBuilderV2.Tests.QuickWindows;
 
 /// <summary>
-/// Covers the local-interface versioning transitions and the derived `Outdated` invocation status.
-/// Decisions: DEC-0050, FR-032, FR-UI-24. Plan: Task 2.4.
+/// Covers the local-interface versioning transitions, the derived `Outdated` invocation status and the
+/// repair surface: listing with page, caller and reason, navigation, explicit port-by-port relinking, the
+/// confirmation shown before an interface change outdates invocations, and the build gate that clears only
+/// once every invocation is repaired.
+/// Decisions: DEC-0050, FR-032, FR-UI-24. Plan: Tasks 2.4 and 3.6.
 /// </summary>
 [TestClass]
 public sealed class QuickWindowInterfaceVersioningTests
@@ -227,6 +231,251 @@ public sealed class QuickWindowInterfaceVersioningTests
         Assert.AreEqual(1, outdated[0].InvocationInterfaceVersion);
         Assert.AreEqual(2, outdated[0].DefinitionInterfaceVersion);
         Assert.IsTrue(outdated[0].Reasons.Count > 0);
+    }
+
+    [TestMethod]
+    public void TheRepairSurfaceListsEachOutdatedInvocationWithItsCallerAndReason()
+    {
+        var member = Member("Run");
+        var required = Member("Speed", QuickWindowDataType.Integer, required: true);
+        var definition = Definition("motor", members: [member, required], interfaceVersion: 2);
+        var invocation = Caller(definition, QuickWindowBinding.FromTag(member.MemberKey, "motor.run")) with
+        {
+            InterfaceVersion = 1
+        };
+        var snapshot = Snapshot(definition, invocation);
+        var controller = new QuickWindowWorkspaceController(new RepairHost());
+
+        var outdated = controller.ListOutdatedInvocations(snapshot, definition.DefinitionKey);
+
+        Assert.AreEqual(1, outdated.Count);
+        var row = new QuickWindowRepairRowViewModel(outdated[0], "page");
+        Assert.AreEqual("page", row.PageLabel);
+        Assert.AreEqual("caller", row.OwnerElementId);
+        Assert.AreEqual("open", row.OwnerCommandId);
+        Assert.AreEqual("v1 → v2", row.VersionLabel);
+        StringAssert.Contains(row.ReasonLabel, "Speed");
+    }
+
+    [TestMethod]
+    public void NavigatingToACallerSelectsItsPageWithoutMutatingAnything()
+    {
+        var member = Member("Run");
+        var definition = Definition("motor", members: [member], interfaceVersion: 2);
+        var invocation = Caller(definition, QuickWindowBinding.FromTag(member.MemberKey, "motor.run")) with
+        {
+            InterfaceVersion = 1
+        };
+        var snapshot = Snapshot(definition, invocation);
+        var controller = new QuickWindowWorkspaceController(new RepairHost());
+
+        var navigation = controller.NavigateToInvocation(snapshot, invocation.InvocationKey);
+
+        Assert.IsNotNull(navigation);
+        Assert.IsFalse(navigation!.Result.Changed);
+        Assert.AreEqual(PageKeyFor("page"), navigation.Result.PageToOpenKey);
+        Assert.AreEqual("caller", navigation.UsageToNavigate?.ElementId);
+        Assert.IsNull(controller.NavigateToInvocation(snapshot, Guid.NewGuid()));
+    }
+
+    [TestMethod]
+    public void TheBuildGateClearsOnlyWhenEveryInvocationIsRepaired()
+    {
+        var member = Member("Run");
+        var required = Member("Speed", QuickWindowDataType.Integer, required: true);
+        var definition = Definition("motor", members: [member, required], interfaceVersion: 2);
+        var first = Caller(definition, QuickWindowBinding.FromTag(member.MemberKey, "motor.run")) with
+        {
+            InterfaceVersion = 1
+        };
+        var second = Caller(definition, QuickWindowBinding.FromTag(member.MemberKey, "motor.run")) with
+        {
+            InterfaceVersion = 1,
+            OwnerElementId = "caller-2"
+        };
+        var snapshot = Snapshot(definition, first, second);
+        var controller = new QuickWindowWorkspaceController(new RepairHost());
+        var bindings = new[]
+        {
+            QuickWindowBinding.FromTag(member.MemberKey, "motor.run"),
+            QuickWindowBinding.FromLiteral(required.MemberKey, "12")
+        };
+
+        var afterFirst = controller.RepairInvocation(snapshot, first.InvocationKey, bindings);
+        Assert.AreEqual(CommandResultStatus.Succeeded, afterFirst.Result.Status);
+        Assert.AreEqual(
+            1,
+            controller.ListOutdatedInvocations(afterFirst.After, definition.DefinitionKey).Count,
+            "repairing one invocation never repairs the others in bulk");
+        Assert.IsTrue(
+            ScadaProjectBuildValidator.Validate(afterFirst.After.Project, [Page("page")])
+                .Any(issue => issue.Code == "quick-window.interface-version-incompatible"),
+            "the build gate stays closed while one invocation is still outdated");
+
+        var afterSecond = controller.RepairInvocation(afterFirst.After, second.InvocationKey, bindings);
+
+        Assert.AreEqual(CommandResultStatus.Succeeded, afterSecond.Result.Status);
+        Assert.AreEqual(0, controller.ListOutdatedInvocations(afterSecond.After, definition.DefinitionKey).Count);
+        Assert.IsFalse(
+            ScadaProjectBuildValidator.Validate(afterSecond.After.Project, [Page("page")])
+                .Any(issue => issue.Code == "quick-window.interface-version-incompatible"),
+            "the build gate clears only once every invocation is repaired");
+    }
+
+    [TestMethod]
+    public void ARepairIsOneUndoableTransitionOfTheSingleWorkspaceStack()
+    {
+        var member = Member("Run");
+        var required = Member("Speed", QuickWindowDataType.Integer, required: true);
+        var definition = Definition("motor", members: [member, required], interfaceVersion: 2);
+        var invocation = Caller(definition, QuickWindowBinding.FromTag(member.MemberKey, "motor.run")) with
+        {
+            InterfaceVersion = 1
+        };
+        var snapshot = Snapshot(definition, invocation);
+        var controller = new QuickWindowWorkspaceController(new RepairHost());
+
+        var repaired = controller.RepairInvocation(
+            snapshot,
+            invocation.InvocationKey,
+            [
+                QuickWindowBinding.FromTag(member.MemberKey, "motor.run"),
+                QuickWindowBinding.FromLiteral(required.MemberKey, "12")
+            ]);
+
+        Assert.AreSame(snapshot, repaired.Before, "the before snapshot stays the reversible baseline");
+        Assert.AreEqual(1, repaired.Before.Project.EffectiveQuickWindowInvocations.First().InterfaceVersion);
+        Assert.AreEqual(2, repaired.After.Project.EffectiveQuickWindowInvocations.First().InterfaceVersion);
+    }
+
+    [TestMethod]
+    public async Task AnInterfaceChangeThatOutdatesInvocationsIsConfirmedWithTheirCountFirst()
+    {
+        var member = Member("Run");
+        var definition = Definition("motor", members: [member]);
+        var invocation = Caller(definition, QuickWindowBinding.FromTag(member.MemberKey, "motor.run"));
+        var snapshot = Snapshot(definition, invocation);
+
+        var declining = new RepairHost { ConfirmInterfaceVersionImpact = false };
+        var cancelled = await new QuickWindowWorkspaceController(declining).ApplyInlineInterfaceEditAsync(
+            snapshot,
+            definition.DefinitionKey,
+            member with { DataType = QuickWindowDataType.Integer });
+
+        Assert.IsNull(cancelled, "an interface change is never applied when the operator refuses its impact");
+        Assert.AreEqual(1, declining.ImpactConfirmations.Count);
+        Assert.AreEqual(1, declining.ImpactConfirmations[0].Count, "the impacted invocation count is shown before applying");
+
+        var accepting = new RepairHost { ConfirmInterfaceVersionImpact = true };
+        var applied = await new QuickWindowWorkspaceController(accepting).ApplyInlineInterfaceEditAsync(
+            snapshot,
+            definition.DefinitionKey,
+            member with { DataType = QuickWindowDataType.Integer });
+
+        Assert.IsNotNull(applied);
+        Assert.AreEqual(CommandResultStatus.Succeeded, applied!.Result.Status);
+        Assert.AreEqual(2, applied.After.Project.EffectiveQuickWindows.Single().InterfaceVersion);
+    }
+
+    [TestMethod]
+    public void AnInterfaceChangeThatBreaksNothingNeverInterruptsTheOperator()
+    {
+        var member = Member("Run");
+        var definition = Definition("motor", members: [member]);
+        var invocation = Caller(definition, QuickWindowBinding.FromTag(member.MemberKey, "motor.run"));
+        var snapshot = Snapshot(definition, invocation);
+
+        var impact = QuickWindowWorkspaceController.PreviewOutdatedImpact(
+            snapshot,
+            definition,
+            definition with { InterfaceMembers = [member with { Name = "RunFeedback" }] });
+
+        Assert.AreEqual(0, impact.Count, "a rename breaks no invocation");
+    }
+
+    [TestMethod]
+    public void TheRepairSurfaceExposesItsColumnsAndItsExplicitActions()
+    {
+        var xaml = ReadAppFile(Path.Combine("QuickWindows", "QuickWindowInvocationRepairDialog.xaml"));
+
+        foreach (var column in new[] { "Page", "Élément appelant", "Commande", "Interface", "Motif" })
+        {
+            StringAssert.Contains(xaml, $"Header=\"{column}\"");
+        }
+
+        StringAssert.Contains(xaml, "x:Name=\"NavigateToCallerButton\"");
+        StringAssert.Contains(xaml, "x:Name=\"RepairInvocationButton\"");
+        StringAssert.Contains(xaml, "QuickWindowBindingsEditor x:Name=\"RepairBindingsEditor\"");
+
+        var panel = ReadAppFile(Path.Combine("QuickWindows", "QuickWindowInterfacePanel.xaml"));
+        StringAssert.Contains(panel, "x:Name=\"RepairInvocationsButton\"");
+
+        var dialog = ReadAppFile(Path.Combine("QuickWindows", "QuickWindowInvocationRepairDialog.xaml.cs"));
+        Assert.IsFalse(
+            dialog.Contains("RepairAll", StringComparison.Ordinal),
+            "no automatic nor silent bulk repair may exist");
+    }
+
+    private sealed class RepairHost : IQuickWindowWorkspaceHost
+    {
+        public List<string> Statuses { get; } = [];
+
+        public List<IReadOnlyList<QuickWindowOutdatedInvocation>> ImpactConfirmations { get; } = [];
+
+        public bool ConfirmInterfaceVersionImpact { get; init; } = true;
+
+        public Task ActivateQuickWindowAsync(QuickWindowEditorContext context, QuickWindowDefinition definition) => Task.CompletedTask;
+
+        public Task<string?> RequestQuickWindowNameAsync(string title, string proposedName) => Task.FromResult<string?>(proposedName);
+
+        public Task<bool> ConfirmQuickWindowDeletionAsync(QuickWindowDefinition definition, IReadOnlyList<QuickWindowUsage> usages) =>
+            Task.FromResult(usages.Count == 0);
+
+        public Task<QuickWindowInterfaceMember?> RequestInterfaceMemberAsync(
+            string title,
+            QuickWindowInterfaceMemberDraft draft,
+            IReadOnlyList<QuickWindowInterfaceMember> siblings) => Task.FromResult<QuickWindowInterfaceMember?>(null);
+
+        public Task<bool> ConfirmInterfaceMemberDeletionAsync(
+            QuickWindowInterfaceMember member,
+            IReadOnlyList<QuickWindowUsage> usages) => Task.FromResult(false);
+
+        public Task<QuickWindowPasteDecision> ResolveQuickWindowPasteAsync(QuickWindowClipboardAnalysis analysis) =>
+            Task.FromResult(QuickWindowPasteDecision.Cancel);
+
+        public Task<bool> ConfirmInterfaceVersionImpactAsync(
+            QuickWindowDefinition definition,
+            IReadOnlyList<QuickWindowOutdatedInvocation> impacted)
+        {
+            ImpactConfirmations.Add(impacted);
+            return Task.FromResult(ConfirmInterfaceVersionImpact);
+        }
+
+        public void ReportQuickWindowStatus(string message) => Statuses.Add(message);
+    }
+
+    private static QuickWindowInvocation Caller(QuickWindowDefinition definition, params QuickWindowBinding[] bindings) =>
+        new(
+            Guid.NewGuid(),
+            definition.DefinitionKey,
+            bindings,
+            InterfaceVersion: definition.InterfaceVersion,
+            OwnerPageKey: PageKeyFor("page"),
+            OwnerElementId: "caller",
+            OwnerCommandId: "open");
+
+    private static string ReadAppFile(string relativePath)
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            var candidate = Path.Combine(directory.FullName, "src", "ScadaBuilderV2.App", relativePath);
+            if (File.Exists(candidate)) return File.ReadAllText(candidate);
+            directory = directory.Parent;
+        }
+
+        Assert.Fail($"Unable to locate src/ScadaBuilderV2.App/{relativePath}.");
+        return string.Empty;
     }
 
     private static PageWorkspaceSnapshot Snapshot(QuickWindowDefinition definition, params QuickWindowInvocation[] invocations)

@@ -126,7 +126,7 @@ public sealed class QuickWindowInterfaceAuthoringTests
         var controller = new QuickWindowWorkspaceController(host);
         var snapshot = Snapshot();
 
-        var renamed = controller.ApplyInlineInterfaceEdit(
+        var renamed = await controller.ApplyInlineInterfaceEditAsync(
             snapshot,
             DefinitionKey,
             Member(RunningKey, "RunningState", QuickWindowInterfaceFamily.ReadState, QuickWindowMemberAccess.Read, required: true));
@@ -137,7 +137,7 @@ public sealed class QuickWindowInterfaceAuthoringTests
         Assert.AreEqual(1, afterRename.InterfaceVersion, "renaming a member never changes the public contract");
         Assert.AreEqual("RunningState", afterRename.EffectiveInterfaceMembers.Single(member => member.MemberKey == RunningKey).Name);
 
-        var retyped = controller.ApplyInlineInterfaceEdit(
+        var retyped = await controller.ApplyInlineInterfaceEditAsync(
             renamed.After,
             DefinitionKey,
             Member(RunningKey, "RunningState", QuickWindowInterfaceFamily.ReadState, QuickWindowMemberAccess.Read, required: true) with
@@ -151,12 +151,12 @@ public sealed class QuickWindowInterfaceAuthoringTests
     }
 
     [TestMethod]
-    public void InlineEditIsRefusedWhenItBreaksADomainRule()
+    public async Task InlineEditIsRefusedWhenItBreaksADomainRuleAsync()
     {
         var host = new RecordingHost();
         var controller = new QuickWindowWorkspaceController(host);
 
-        var refused = controller.ApplyInlineInterfaceEdit(
+        var refused = await controller.ApplyInlineInterfaceEditAsync(
             Snapshot(),
             DefinitionKey,
             Member(RunningKey, "Setpoint", QuickWindowInterfaceFamily.ReadState, QuickWindowMemberAccess.Read));
@@ -378,6 +378,18 @@ public sealed class QuickWindowInterfaceAuthoringTests
 
         public Task<QuickWindowPasteDecision> ResolveQuickWindowPasteAsync(QuickWindowClipboardAnalysis analysis) =>
             Task.FromResult(QuickWindowPasteDecision.Cancel);
+
+        public List<IReadOnlyList<QuickWindowOutdatedInvocation>> ImpactConfirmations { get; } = [];
+
+        public bool ConfirmInterfaceVersionImpact { get; init; } = true;
+
+        public Task<bool> ConfirmInterfaceVersionImpactAsync(
+            QuickWindowDefinition definition,
+            IReadOnlyList<QuickWindowOutdatedInvocation> impacted)
+        {
+            ImpactConfirmations.Add(impacted);
+            return Task.FromResult(ConfirmInterfaceVersionImpact);
+        }
 
         public void ReportQuickWindowStatus(string message) => Statuses.Add(message);
     }

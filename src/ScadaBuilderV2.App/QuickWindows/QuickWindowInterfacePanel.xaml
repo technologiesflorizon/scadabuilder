@@ -66,11 +66,20 @@
             <Button x:Name="DeleteMemberButton"
                     MinHeight="30"
                     Padding="10,2"
-                    Margin="0,0,0,6"
+                    Margin="0,0,8,6"
                     Content="Supprimer"
                     ToolTip="Supprimer le membre"
                     IsEnabled="{Binding HasSelection}"
                     Click="OnDeleteMemberClick"/>
+            <Button x:Name="RepairInvocationsButton"
+                    MinHeight="30"
+                    Padding="10,2"
+                    Margin="0,0,0,6"
+                    Content="Réparer les invocations"
+                    ToolTip="Relier port par port les invocations laissées Outdated par une évolution d'interface"
+                    Foreground="#B3261E"
+                    FontWeight="SemiBold"
+                    Click="OnRepairInvocationsClick"/>
         </WrapPanel>
 
         <DataGrid x:Name="InterfaceMembersDataGrid"
