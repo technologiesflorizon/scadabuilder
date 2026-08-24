@@ -374,6 +374,7 @@ public sealed partial class Ft100SceneExporter
         "action-dispatcher.js",
         "input-edit-guard.js",
         "confirmation-modal.js",
+        "quick-window-runtime.js",
         "scada-runtime.js"
     ];
 

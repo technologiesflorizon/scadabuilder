@@ -13,6 +13,13 @@
   var _localValues = {};
 
   /**
+   * Subscription bookkeeping keyed by owner. It creates no second poller and no second cache: the shared
+   * bridge stays the only reader, and the map exists so an owner can drop exactly its own subscriptions
+   * when it is disposed.
+   */
+  var _subscriptionsByOwner = {};
+
+  /**
    * Returns the cached value for a tag, or undefined if not cached.
    *
    * @param {string} tagId  - Tag identifier.
@@ -88,10 +95,62 @@
 
   window.ScadaRuntime = window.ScadaRuntime || {};
 
+  /**
+   * Records that an owner reads a tag through the shared bridge.
+   *
+   * @param {string} tagId  - Tag identifier.
+   * @param {string} owner  - Owner id, typically a quick-window RuntimeInstanceId.
+   */
+  function subscribe(tagId, owner) {
+    if (!tagId || !owner) {
+      return false;
+    }
+    var owned = _subscriptionsByOwner[owner] || (_subscriptionsByOwner[owner] = []);
+    if (owned.indexOf(tagId) < 0) {
+      owned.push(tagId);
+    }
+    return true;
+  }
+
+  /**
+   * Drops every subscription of one owner. Calling it twice is a no-op.
+   *
+   * @param {string} owner - Owner id.
+   */
+  function unsubscribeAll(owner) {
+    if (!owner || !Object.prototype.hasOwnProperty.call(_subscriptionsByOwner, owner)) {
+      return 0;
+    }
+    var count = _subscriptionsByOwner[owner].length;
+    delete _subscriptionsByOwner[owner];
+    return count;
+  }
+
+  /**
+   * Returns the tags currently read by one owner, or every owner when none is given.
+   *
+   * @param {string} [owner] - Owner id.
+   */
+  function subscriptions(owner) {
+    if (owner) {
+      return (_subscriptionsByOwner[owner] || []).slice();
+    }
+    var all = {};
+    for (var key in _subscriptionsByOwner) {
+      if (Object.prototype.hasOwnProperty.call(_subscriptionsByOwner, key)) {
+        all[key] = _subscriptionsByOwner[key].slice();
+      }
+    }
+    return all;
+  }
+
   window.ScadaRuntime.TagBridge = {
     getTagValue: getTagValue,
     writeTag: writeTag,
     setTagValue: setTagValue,
-    setValues: setValues
+    setValues: setValues,
+    subscribe: subscribe,
+    unsubscribeAll: unsubscribeAll,
+    subscriptions: subscriptions
   };
 })();

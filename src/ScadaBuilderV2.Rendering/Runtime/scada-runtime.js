@@ -104,8 +104,23 @@
 
   window.ScadaRuntime = window.ScadaRuntime || {};
 
+  /**
+   * Loads the quick-window registries of a deployed manifest into the shared runtime.
+   * Quick-window capabilities stay Blocked: this only indexes what a host may later resolve.
+   *
+   * @param {object} manifest - Deployed manifest object.
+   */
+  function loadQuickWindowRegistries(manifest) {
+    if (window.ScadaRuntime && window.ScadaRuntime.QuickWindow &&
+        typeof window.ScadaRuntime.QuickWindow.loadRegistries === 'function') {
+      return window.ScadaRuntime.QuickWindow.loadRegistries(manifest);
+    }
+    return { definitions: 0, invocations: 0 };
+  }
+
   window.ScadaRuntime.version = _version;
   window.ScadaRuntime.initPage = initPage;
   window.ScadaRuntime.disposePage = disposePage;
   window.ScadaRuntime.onTagValuesChanged = onTagValuesChanged;
+  window.ScadaRuntime.loadQuickWindowRegistries = loadQuickWindowRegistries;
 })();

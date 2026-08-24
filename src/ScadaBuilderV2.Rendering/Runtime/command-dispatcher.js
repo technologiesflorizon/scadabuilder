@@ -186,6 +186,35 @@
         return cmd.targetPageId
           ? _dispatchIntent(cmd.kind, cmd, { pageId: cmd.targetPageId, options: cmd.popupOptions })
           : false;
+      case 'openQuickWindow': {
+        // The shared runtime resolves and validates; the host owns overlay, chrome and focus.
+        var quickWindow = window.ScadaRuntime && window.ScadaRuntime.QuickWindow;
+        if (!quickWindow || !cmd.quickWindowInvocationKey) {
+          _diagnose('quick-window-unavailable', cmd, cmd.quickWindowInvocationKey || '');
+          return false;
+        }
+        var opened = quickWindow.open(cmd.quickWindowInvocationKey, {
+          parentInstanceId: quickWindow.instanceOf(element)
+        });
+        if (!opened.ok) {
+          _diagnose('quick-window-rejected', cmd, opened.code);
+        }
+        return opened.ok === true;
+      }
+      case 'closeQuickWindow': {
+        var host = window.ScadaRuntime && window.ScadaRuntime.QuickWindow;
+        if (!host) {
+          _diagnose('quick-window-unavailable', cmd, 'self');
+          return false;
+        }
+        // CloseQuickWindow only ever targets Self: the instance owning the caller element.
+        var selfId = host.instanceOf(element);
+        if (!selfId) {
+          _diagnose('quick-window-self-missing', cmd, '');
+          return false;
+        }
+        return host.close(selfId).ok === true;
+      }
       case 'openUrl':
         return cmd.url
           ? _dispatchIntent('openUrl', cmd, { url: cmd.url, newTab: cmd.newTab === true })
