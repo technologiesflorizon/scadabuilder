@@ -8,7 +8,7 @@ Document version: `V2.1.5.0034`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0034` | `PENDING` | Dialogue de collage refuse : liste objet/propriete/reference/motif et deux issues seulement, `Annuler` ou `Coller sans liaisons`. |
+| 2026-08-24 | `V2.1.5.0034` | `4202a70` | Dialogue de collage refuse : liste objet/propriete/reference/motif et deux issues seulement, `Annuler` ou `Coller sans liaisons`. |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Banc d'essai Fenetre rapide : valeurs et titre temporaires, ouverture d'une instance d'apercu editor-only et fermeture explicite. |
 | 2026-08-23 | `V2.1.5.0029` | `012135d` | Onglet conditionnel `Liaisons` du dialogue Proprietes : grille typee nom/famille/type/source/valeur/statut, selecteurs contextuels et banniere `Outdated`. |
 | 2026-08-23 | `V2.1.5.0028` | `2fd6c72` | Panneau `Interface locale` : substitution du `Catalogue Tags` dans le contexte Fenêtre rapide, tableau unique groupé public/privé, filtres par famille, statut de liaison et compteurs d'usages. |
