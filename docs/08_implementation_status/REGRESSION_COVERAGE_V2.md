@@ -8,7 +8,7 @@ Document version: `V2.1.5.0031`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0031` | `PENDING` | Épinglage du moteur de vérification aligné sur Node `24.15.x` (`DEC-0051`). |
+| 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | Épinglage du moteur de vérification aligné sur Node `24.15.x` (`DEC-0051`). |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Couverture Task 3.4 : apercu d'instance namespace, chrome minimal, bundle d'apercu separe de l'export, generations monotones, confinement de la materialisation et semantique hote verifiee en Node. |
 | 2026-08-23 | `V2.1.5.0029` | `012135d` | Couverture Task 3.3 : kinds offerts par surface, onglet conditionnel, colonnes et sources typees, statuts, `Outdated` bloquant et transitions d'invocation. |
 | 2026-08-23 | `V2.1.5.0028` | `2fd6c72` | Couverture Task 3.2 : panneau `Interface locale`, filtres, édition inline versionnée, usages/navigation, suppression confirmée et catalogue de sélecteurs local. |

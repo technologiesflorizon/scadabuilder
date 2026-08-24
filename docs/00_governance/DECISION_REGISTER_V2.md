@@ -8,7 +8,7 @@ Document version: `V2.1.5.0031`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0031` | `PENDING` | Ajout de `DEC-0051` : le moteur Node épinglé passe de `20.18.x` à `24.15.x`; la fixture Phase 0 et son hash restent gelés et le leg Node est rejoué sur `v24.15.0`. |
+| 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | Ajout de `DEC-0051` : le moteur Node épinglé passe de `20.18.x` à `24.15.x`; la fixture Phase 0 et son hash restent gelés et le leg Node est rejoué sur `v24.15.0`. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | `DEC-0050` Task 3.1 implémentée : shell d'authoring, contexte borné, duplication et projection canvas editor-only; capacités toujours `Blocked`. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | `DEC-0050` Task 2.4 implémentée : Interface locale versionnée, invocations `Outdated` dérivées et réparation explicite; capacités toujours `Blocked`. |
 | 2026-08-21 | `V2.1.5.0023` | `b0159f9` | `DEC-0050` étendue par `FR-030..036` et `FR-UI-23..26` : composition header/pied, presse-papier inter-contextes, Interface locale versionnée, duplication de définition, bibliothèque Element+, portée undo/redo et isolation vis-à-vis des popups legacy. |
@@ -121,7 +121,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-08-24 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `cd61f0e`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A

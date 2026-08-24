@@ -8,7 +8,7 @@ Document version: `V2.1.5.0031`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0031` | `PENDING` | `DEC-0051` : moteur Node ré-épinglé de `20.18.x` vers `24.15.x`; fixture Phase 0 et hash gelés inchangés, leg Node rejoué `PASS`. |
+| 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | `DEC-0051` : moteur Node ré-épinglé de `20.18.x` vers `24.15.x`; fixture Phase 0 et hash gelés inchangés, leg Node rejoué `PASS`. |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Task 3.4 Fenetres rapides livree : module runtime hote adapte du prototype gele, apercu d'instance editor-only avec chrome minimal et banc d'essai dont les valeurs ne sont jamais exportees. |
 | 2026-08-23 | `V2.1.5.0029` | `012135d` | Task 3.3 Fenetres rapides livree : commande `OpenQuickWindow` avec cible definition, `CloseQuickWindow(Self)` dans un contenu, onglet conditionnel `Liaisons` et grille de liaisons typees avec statut `Outdated`. |
 | 2026-08-23 | `V2.1.5.0028` | `2fd6c72` | Task 3.2 Fenêtres rapides livrée : éditeur `Interface locale` substitué au catalogue de tags, tableau unique groupé et filtré, édition inline et dialogue commun, compteurs d'usages avec navigation et suppression référencée confirmée. |

@@ -8,7 +8,7 @@ Document version: `V2.1.5.0031`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0031` | `PENDING` | Ré-épinglage du moteur Node de `20.18.x` vers `24.15.x` (`DEC-0051`) : fixture Phase 0 inchangée et rejouée sur `v24.15.0` avec le même hash gelé; les legs WebView2 réel et TF100Web restent à rejouer avant la Phase 4. |
+| 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | Ré-épinglage du moteur Node de `20.18.x` vers `24.15.x` (`DEC-0051`) : fixture Phase 0 inchangée et rejouée sur `v24.15.0` avec le même hash gelé; les legs WebView2 réel et TF100Web restent à rejouer avant la Phase 4. |
 | 2026-08-23 | `V2.1.5.0030` | `724e621` | Task 3.4 exécutée et cochée : module runtime hôte adapté du prototype gelé, aperçu d'instance editor-only avec chrome minimal, banc d'essai transitoire et bundle d'aperçu séparé du bundle exporté. |
 | 2026-08-23 | `V2.1.5.0029` | `9795cce` | Task 3.3 exécutée et cochée : commande `OpenQuickWindow` avec cible définition, `CloseQuickWindow(Self)` dans un contenu, onglet conditionnel `Liaisons`, grille typée `FR-UI-18`/`FR-UI-19` et statut `Outdated` bloquant l'export. |
 | 2026-08-23 | `V2.1.5.0028` | `fafdf53` | Task 3.2 exécutée et cochée : panneau `Interface locale` substitué au catalogue de tags, tableau unique groupé avec filtres, édition inline et dialogue commun, compteurs d'usages avec navigation, suppression référencée confirmée et sélecteurs restreints aux membres locaux. |
