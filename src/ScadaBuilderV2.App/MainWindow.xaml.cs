@@ -2191,7 +2191,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
             return;
         }
 
-        _sceneClipboard.Copy(selectedElements);
+        _sceneClipboard.Copy(selectedElements, CurrentClipboardOrigin);
 
         var deletedSnapshots = selectedElements
             .Select(element => new DeletedSceneObjectSnapshot(
@@ -2213,7 +2213,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
         SetStatus($"{deletedSnapshots.Length} objet(s) coupe(s). Undo disponible. Presse-papier mis a jour.");
     }
 
-    private void PasteClipboard()
+    private async Task PasteClipboardAsync()
     {
         if (_activeScene is null || !_sceneClipboard.HasContent)
         {
@@ -2221,7 +2221,10 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
             return;
         }
 
-        var pasted = _sceneClipboard.Content!
+        var accepted = await PrepareQuickWindowPasteAsync(_sceneClipboard.Content!);
+        if (accepted is null) return;
+
+        var pasted = accepted
             .Select(element => CloneWithNewIds(element, 20, 20))
             .ToArray();
 
@@ -6407,7 +6410,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
-        _sceneClipboard.Copy(selectedElements);
+        _sceneClipboard.Copy(selectedElements, CurrentClipboardOrigin);
         SetStatus($"{selectedElements.Count} objet(s) copie(s).");
     }
 
@@ -7472,7 +7475,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 _ = CutSelectionAsync();
                 break;
             case "clipboard.paste":
-                PasteClipboard();
+                _ = PasteClipboardAsync();
                 break;
             case "history.undo":
                 _ = UndoLastSceneOperationAsync();

@@ -2,11 +2,13 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using ScadaBuilderV2.App.QuickWindows;
+using ScadaBuilderV2.Application.Clipboard;
 using ScadaBuilderV2.Application.Commands;
 using ScadaBuilderV2.Application.Pages;
 using ScadaBuilderV2.Application.QuickWindows;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.QuickWindows;
+using ScadaBuilderV2.Domain.Scenes;
 using ScadaBuilderV2.Rendering;
 
 namespace ScadaBuilderV2.App;
@@ -525,6 +527,36 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
             MessageBoxImage.Warning) == MessageBoxResult.Yes;
         return Task.FromResult(confirmed);
     }
+
+    /// <inheritdoc />
+    public Task<QuickWindowPasteDecision> ResolveQuickWindowPasteAsync(QuickWindowClipboardAnalysis analysis)
+    {
+        ArgumentNullException.ThrowIfNull(analysis);
+        var dialog = new QuickWindowPasteDiagnosticsDialog(analysis) { Owner = this };
+        dialog.ShowDialog();
+        return Task.FromResult(dialog.Decision);
+    }
+
+    /// <summary>
+    /// Validates one clipboard payload against the active surface before it is inserted, and returns the
+    /// objects the caller may actually paste. A boundary-crossing payload is refused by default.
+    /// </summary>
+    private async Task<IReadOnlyList<ScadaElement>?> PrepareQuickWindowPasteAsync(IReadOnlyList<ScadaElement> elements)
+    {
+        var target = _hostedQuickWindowDefinition is { } definition
+            ? QuickWindowClipboardTarget.ForQuickWindow(definition)
+            : QuickWindowClipboardTarget.ForPage();
+        var existingIds = _activeScene is null
+            ? new HashSet<string>(StringComparer.Ordinal)
+            : _activeScene.Elements.Select(element => element.Id).ToHashSet(StringComparer.Ordinal);
+        var plan = await QuickWindowWorkspace.PreparePasteAsync(elements, target, _modernProject, existingIds);
+        return plan.IsAllowed ? plan.Elements : null;
+    }
+
+    /// <summary>Gets the clipboard origin of the active authoring surface.</summary>
+    private SceneClipboardOrigin CurrentClipboardOrigin => _hostedQuickWindowKey is { } definitionKey
+        ? SceneClipboardOrigin.ForQuickWindow(definitionKey)
+        : SceneClipboardOrigin.ForPage(_activeSceneTab?.PageKey);
 
     /// <inheritdoc />
     public void ReportQuickWindowStatus(string message) => SetStatus(message);

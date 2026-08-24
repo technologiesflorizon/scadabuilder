@@ -1,9 +1,37 @@
 using ScadaBuilderV2.Application.Commands;
 using ScadaBuilderV2.Application.Pages;
 using ScadaBuilderV2.Application.QuickWindows;
+using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.QuickWindows;
+using ScadaBuilderV2.Domain.Scenes;
 
 namespace ScadaBuilderV2.App.QuickWindows;
+
+/// <summary>Operator decision on a paste that crosses the page ↔ quick-window boundary (FR-UI-23).</summary>
+public enum QuickWindowPasteDecision
+{
+    /// <summary>Nothing is pasted.</summary>
+    Cancel = 0,
+
+    /// <summary>Every refused reference is removed and the properties stay unbound.</summary>
+    PasteWithoutBindings = 1
+}
+
+/// <summary>One prepared paste after the fail-closed boundary analysis.</summary>
+/// <param name="Elements">The objects to insert, already stripped when the operator accepted it.</param>
+/// <param name="Analysis">The refused references found by the validator.</param>
+/// <param name="Decision">What the operator chose when the analysis refused the payload.</param>
+public sealed record QuickWindowPastePlan(
+    IReadOnlyList<ScadaElement> Elements,
+    QuickWindowClipboardAnalysis Analysis,
+    QuickWindowPasteDecision Decision)
+{
+    /// <summary>Gets whether the caller may insert <see cref="Elements"/>.</summary>
+    public bool IsAllowed => Decision != QuickWindowPasteDecision.Cancel;
+
+    /// <summary>Gets whether references were removed to make the paste acceptable.</summary>
+    public bool WasStripped => IsAllowed && !Analysis.IsAllowed;
+}
 
 /// <summary>Visual callback boundary between the quick-window workspace and the WPF shell.</summary>
 /// <remarks>
@@ -34,6 +62,12 @@ public interface IQuickWindowWorkspaceHost
     Task<bool> ConfirmInterfaceMemberDeletionAsync(
         QuickWindowInterfaceMember member,
         IReadOnlyList<QuickWindowUsage> usages);
+
+    /// <summary>
+    /// Shows the refused references of a boundary-crossing paste and returns the operator decision.
+    /// Only `Annuler` and `Coller sans liaisons` may be offered (FR-UI-23).
+    /// </summary>
+    Task<QuickWindowPasteDecision> ResolveQuickWindowPasteAsync(QuickWindowClipboardAnalysis analysis);
 
     /// <summary>Reports one workspace status message.</summary>
     void ReportQuickWindowStatus(string message);
@@ -355,6 +389,39 @@ public sealed class QuickWindowWorkspaceController(
     {
         ArgumentNullException.ThrowIfNull(snapshot);
         return invocations.DeleteCaller(snapshot, pageKey, elementId);
+    }
+
+    /// <summary>
+    /// Validates one paste, duplication or library instantiation against its target context and returns the
+    /// prepared plan. A payload crossing the page ↔ quick-window boundary is refused by default; the operator
+    /// may only cancel or accept the `Coller sans liaisons` variant (FR-031, FR-034, FR-UI-23).
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0050, FR-031, FR-034, FR-UI-23.
+    /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowClipboardTests.cs.
+    /// </remarks>
+    public async Task<QuickWindowPastePlan> PreparePasteAsync(
+        IReadOnlyList<ScadaElement> elements,
+        QuickWindowClipboardTarget target,
+        ScadaProject? project,
+        IReadOnlySet<string>? targetElementIds = null)
+    {
+        ArgumentNullException.ThrowIfNull(elements);
+        ArgumentNullException.ThrowIfNull(target);
+        var analysis = QuickWindowClipboardValidator.Analyze(elements, target, project, targetElementIds);
+        if (analysis.IsAllowed)
+            return new QuickWindowPastePlan(elements, analysis, QuickWindowPasteDecision.PasteWithoutBindings);
+
+        var decision = await host.ResolveQuickWindowPasteAsync(analysis);
+        if (decision == QuickWindowPasteDecision.Cancel)
+        {
+            host.ReportQuickWindowStatus($"Collage annulé : {analysis.Issues.Count} référence(s) non résoluble(s) dans ce contexte.");
+            return new QuickWindowPastePlan([], analysis, QuickWindowPasteDecision.Cancel);
+        }
+
+        var stripped = QuickWindowClipboardValidator.StripRefusedReferences(elements, analysis);
+        host.ReportQuickWindowStatus($"Collé sans liaisons : {analysis.Issues.Count} référence(s) retirée(s), propriétés laissées Non lié.");
+        return new QuickWindowPastePlan(stripped, analysis, decision);
     }
 
     /// <summary>Lists every invocation binding that references one interface member (FR-UI-17).</summary>

@@ -330,6 +330,9 @@ public sealed class QuickWindowBindingAuthoringTests
             QuickWindowInterfaceMember member,
             IReadOnlyList<QuickWindowUsage> usages) => Task.FromResult(false);
 
+        public Task<QuickWindowPasteDecision> ResolveQuickWindowPasteAsync(QuickWindowClipboardAnalysis analysis) =>
+            Task.FromResult(QuickWindowPasteDecision.Cancel);
+
         public void ReportQuickWindowStatus(string message) => Statuses.Add(message);
     }
 

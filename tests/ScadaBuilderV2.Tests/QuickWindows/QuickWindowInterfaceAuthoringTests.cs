@@ -376,6 +376,9 @@ public sealed class QuickWindowInterfaceAuthoringTests
             return Task.FromResult(ConfirmMemberDeletion);
         }
 
+        public Task<QuickWindowPasteDecision> ResolveQuickWindowPasteAsync(QuickWindowClipboardAnalysis analysis) =>
+            Task.FromResult(QuickWindowPasteDecision.Cancel);
+
         public void ReportQuickWindowStatus(string message) => Statuses.Add(message);
     }
 

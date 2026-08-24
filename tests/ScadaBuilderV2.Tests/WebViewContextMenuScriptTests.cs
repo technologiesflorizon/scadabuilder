@@ -1644,9 +1644,13 @@ public sealed class WebViewContextMenuScriptTests
         var handlerBody = source[handlerStart..handlerEnd];
 
         StringAssert.Contains(handlerBody, "case \"clipboard.paste\":");
-        StringAssert.Contains(handlerBody, "PasteClipboard();");
+        StringAssert.Contains(handlerBody, "PasteClipboardAsync();");
 
-        StringAssert.Contains(source, "private void PasteClipboard()");
+        StringAssert.Contains(source, "private async Task PasteClipboardAsync()");
+        StringAssert.Contains(
+            source,
+            "await PrepareQuickWindowPasteAsync(_sceneClipboard.Content!)",
+            "the paste path must go through the fail-closed quick-window boundary validation.");
         StringAssert.Contains(source, "CloneWithNewIds(element, 20, 20)");
 
         var cloneStart = source.IndexOf("private static ScadaElement CloneWithNewIds(", StringComparison.Ordinal);
