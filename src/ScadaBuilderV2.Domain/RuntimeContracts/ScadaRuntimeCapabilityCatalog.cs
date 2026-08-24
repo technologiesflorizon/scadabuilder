@@ -212,6 +212,38 @@ public static class ScadaRuntimeCapabilityCatalog
     /// <summary>Gets the pressed button behavior capability.</summary>
     public static ScadaRuntimeCapability ButtonPressed { get; } = Capability("button.pressed", ScadaRuntimeCapabilityOwner.PackageTransport);
 
+    /// <summary>Gets the quick-window definition transport capability.</summary>
+    /// <remarks>
+    /// Every quick-window capability starts `Blocked` and is promoted one by one, with Builder, shared
+    /// runtime and TF100Web evidence plus a conformance probe carrying exactly that id. No umbrella id such
+    /// as `quick-window.v1` may exist, and no `command.toggle-quick-window` is created.
+    ///
+    /// Decisions: DEC-0047, DEC-0050.
+    /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §10.2.
+    /// Tests: tests/ScadaBuilderV2.Tests/RuntimeContracts/ScadaRuntimeCapabilityCatalogTests.cs.
+    /// </remarks>
+    public static ScadaRuntimeCapability QuickWindowDefinition { get; } = Blocked("quick-window.definition", ScadaRuntimeCapabilityOwner.PackageTransport);
+    /// <summary>Gets the typed local-interface capability of a quick-window definition.</summary>
+    public static ScadaRuntimeCapability QuickWindowLocalInterfaceTyped { get; } = Blocked("quick-window.local-interface.typed", ScadaRuntimeCapabilityOwner.SharedRuntime);
+    /// <summary>Gets the typed port binding capability of a quick-window invocation.</summary>
+    public static ScadaRuntimeCapability QuickWindowPortBinding { get; } = Blocked("quick-window.port-binding", ScadaRuntimeCapabilityOwner.SharedRuntime);
+    /// <summary>Gets the required public port capability.</summary>
+    public static ScadaRuntimeCapability QuickWindowPortRequired { get; } = Blocked("quick-window.port.required", ScadaRuntimeCapabilityOwner.SharedRuntime);
+    /// <summary>Gets the parent-port forwarding capability, outside the first vertical slice.</summary>
+    public static ScadaRuntimeCapability QuickWindowParentPortBinding { get; } = Blocked("quick-window.binding.parent-port", ScadaRuntimeCapabilityOwner.SharedRuntime);
+    /// <summary>Gets the single-instance-per-definition host policy capability.</summary>
+    public static ScadaRuntimeCapability QuickWindowSinglePerDefinition { get; } = Blocked("quick-window.instance.single-per-definition", ScadaRuntimeCapabilityOwner.Tf100WebHost);
+    /// <summary>Gets the host-owned lifecycle capability.</summary>
+    public static ScadaRuntimeCapability QuickWindowHostOwnedLifecycle { get; } = Blocked("quick-window.lifecycle.host-owned", ScadaRuntimeCapabilityOwner.Tf100WebHost);
+    /// <summary>Gets the scoped DOM root capability.</summary>
+    public static ScadaRuntimeCapability QuickWindowScopedDomRoot { get; } = Blocked("quick-window.dom.scoped-root", ScadaRuntimeCapabilityOwner.Tf100WebHost);
+    /// <summary>Gets the two-level nesting capability, outside the first vertical slice.</summary>
+    public static ScadaRuntimeCapability QuickWindowNestingDepth2 { get; } = Blocked("quick-window.nesting.depth-2", ScadaRuntimeCapabilityOwner.Tf100WebHost);
+    /// <summary>Gets the host backdrop presentation capability.</summary>
+    public static ScadaRuntimeCapability QuickWindowBackdrop { get; } = Blocked("quick-window.presentation.backdrop", ScadaRuntimeCapabilityOwner.Tf100WebHost);
+    /// <summary>Gets the legacy fragment adapter capability, outside the first vertical slice.</summary>
+    public static ScadaRuntimeCapability QuickWindowLegacyFragmentAdapter { get; } = Blocked("quick-window.legacy-fragment-adapter", ScadaRuntimeCapabilityOwner.Tf100WebHost);
+
     /// <summary>Gets every unique capability in stable ordinal order.</summary>
     public static IReadOnlyList<ScadaRuntimeCapability> All { get; } = CollectAll();
 
@@ -245,7 +277,11 @@ public static class ScadaRuntimeCapabilityCatalog
             TableReadBinding, TableWriteBinding, DistinctTableWriteBinding,
             StateRules, StateReadVariable, StateQualityFallback, StateDefaultEffect,
             CommandConfirmation, ActionCondition, ActionConditionGroup, PopupOptions,
-            ButtonDisabled, ButtonHover, ButtonPressed
+            ButtonDisabled, ButtonHover, ButtonPressed,
+            QuickWindowDefinition, QuickWindowLocalInterfaceTyped, QuickWindowPortBinding,
+            QuickWindowPortRequired, QuickWindowParentPortBinding, QuickWindowSinglePerDefinition,
+            QuickWindowHostOwnedLifecycle, QuickWindowScopedDomRoot, QuickWindowNestingDepth2,
+            QuickWindowBackdrop, QuickWindowLegacyFragmentAdapter
         });
 
         return values
@@ -312,6 +348,19 @@ public static class ScadaRuntimeCapabilityCatalog
             id.StartsWith("popup.", StringComparison.Ordinal))
         {
             return ["<page-id>/<page-id>.html:action-registry", "scada-runtime.<hash>.js"];
+        }
+        // Quick windows travel as their own top-level qw-<key8> directory plus the manifest registries.
+        // See docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md section 12.
+        if (id.StartsWith("quick-window.", StringComparison.Ordinal))
+        {
+            return
+            [
+                "manifest.json:QuickWindows",
+                "manifest.json:QuickWindowInvocations",
+                "qw-<key8>/qw-<key8>.html",
+                "qw-<key8>/css/qw-<key8>.css",
+                "scada-runtime.<hash>.js"
+            ];
         }
         return ["manifest.json"];
     }

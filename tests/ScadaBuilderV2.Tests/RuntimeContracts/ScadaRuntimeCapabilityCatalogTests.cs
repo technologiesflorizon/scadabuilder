@@ -128,4 +128,71 @@ public sealed class ScadaRuntimeCapabilityCatalogTests
 
     private static string Surface<T>() where T : struct, Enum =>
         $"{typeof(T).Name}={string.Join(',', Enum.GetNames<T>())}";
+
+    [TestMethod]
+    public void EveryApprovedQuickWindowCapabilityIsRegisteredBlockedWithNoUmbrellaId()
+    {
+        string[] approved =
+        [
+            "command.close-quick-window",
+            "command.open-quick-window",
+            "quick-window.binding.parent-port",
+            "quick-window.definition",
+            "quick-window.dom.scoped-root",
+            "quick-window.instance.single-per-definition",
+            "quick-window.legacy-fragment-adapter",
+            "quick-window.lifecycle.host-owned",
+            "quick-window.local-interface.typed",
+            "quick-window.nesting.depth-2",
+            "quick-window.port-binding",
+            "quick-window.port.required",
+            "quick-window.presentation.backdrop"
+        ];
+
+        var registered = ScadaRuntimeCapabilityCatalog.All
+            .Where(capability =>
+                capability.Id.StartsWith("quick-window.", StringComparison.Ordinal) ||
+                capability.Id.EndsWith("-quick-window", StringComparison.Ordinal))
+            .ToArray();
+
+        CollectionAssert.AreEqual(
+            approved,
+            registered.Select(capability => capability.Id).ToArray(),
+            "The catalog must register exactly the capabilities approved by the specification, no more and no less.");
+        Assert.IsTrue(
+            registered.All(capability => capability.Status == ScadaRuntimeCapabilityStatus.Blocked),
+            "Every quick-window capability starts Blocked until its own Phase 6 promotion.");
+        Assert.IsTrue(
+            registered.All(capability => capability.FixtureId == $"blocked:{capability.Id}"),
+            "A blocked capability carries its own fixture id, never a shared one.");
+    }
+
+    [TestMethod]
+    public void NoUmbrellaOrRetiredQuickWindowIdentifierExists()
+    {
+        var ids = ScadaRuntimeCapabilityCatalog.All.Select(capability => capability.Id).ToHashSet(StringComparer.Ordinal);
+
+        foreach (var forbidden in new[]
+                 {
+                     "quick-window.v1",
+                     "quick-window",
+                     "command.toggle-quick-window",
+                     "quick-window.all"
+                 })
+        {
+            Assert.IsFalse(ids.Contains(forbidden), $"'{forbidden}' must never exist as a capability id.");
+        }
+    }
+
+    [TestMethod]
+    public void QuickWindowCapabilitiesDeclareTheirOwnPackageArtifacts()
+    {
+        foreach (var capability in ScadaRuntimeCapabilityCatalog.All
+                     .Where(item => item.Id.StartsWith("quick-window.", StringComparison.Ordinal)))
+        {
+            CollectionAssert.Contains(capability.Artifacts.ToArray(), "manifest.json:QuickWindows");
+            CollectionAssert.Contains(capability.Artifacts.ToArray(), "manifest.json:QuickWindowInvocations");
+            CollectionAssert.Contains(capability.Artifacts.ToArray(), "qw-<key8>/qw-<key8>.html");
+        }
+    }
 }

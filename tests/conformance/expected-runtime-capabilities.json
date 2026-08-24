@@ -1557,6 +1557,116 @@
       "ExpectedDiagnostic": "popup.size.small"
     },
     {
+      "CapabilityId": "quick-window.binding.parent-port",
+      "FixtureId": "blocked:quick-window.binding.parent-port",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "quick-window.binding.parent-port"
+    },
+    {
+      "CapabilityId": "quick-window.definition",
+      "FixtureId": "blocked:quick-window.definition",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "quick-window.definition"
+    },
+    {
+      "CapabilityId": "quick-window.dom.scoped-root",
+      "FixtureId": "blocked:quick-window.dom.scoped-root",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "quick-window.dom.scoped-root"
+    },
+    {
+      "CapabilityId": "quick-window.instance.single-per-definition",
+      "FixtureId": "blocked:quick-window.instance.single-per-definition",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "quick-window.instance.single-per-definition"
+    },
+    {
+      "CapabilityId": "quick-window.legacy-fragment-adapter",
+      "FixtureId": "blocked:quick-window.legacy-fragment-adapter",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "quick-window.legacy-fragment-adapter"
+    },
+    {
+      "CapabilityId": "quick-window.lifecycle.host-owned",
+      "FixtureId": "blocked:quick-window.lifecycle.host-owned",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "quick-window.lifecycle.host-owned"
+    },
+    {
+      "CapabilityId": "quick-window.local-interface.typed",
+      "FixtureId": "blocked:quick-window.local-interface.typed",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "quick-window.local-interface.typed"
+    },
+    {
+      "CapabilityId": "quick-window.nesting.depth-2",
+      "FixtureId": "blocked:quick-window.nesting.depth-2",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "quick-window.nesting.depth-2"
+    },
+    {
+      "CapabilityId": "quick-window.port-binding",
+      "FixtureId": "blocked:quick-window.port-binding",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "quick-window.port-binding"
+    },
+    {
+      "CapabilityId": "quick-window.port.required",
+      "FixtureId": "blocked:quick-window.port.required",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "quick-window.port.required"
+    },
+    {
+      "CapabilityId": "quick-window.presentation.backdrop",
+      "FixtureId": "blocked:quick-window.presentation.backdrop",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "quick-window.presentation.backdrop"
+    },
+    {
       "CapabilityId": "shape.alarm-beacon",
       "FixtureId": "conformance:shape.alarm-beacon",
       "Status": "Supported",

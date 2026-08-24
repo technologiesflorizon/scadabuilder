@@ -2,6 +2,7 @@ using ScadaBuilderV2.Domain.ElementEvents.Expressions;
 using ScadaBuilderV2.Domain.ElementEvents.Command;
 using ScadaBuilderV2.Domain.ElementEvents.State;
 using ScadaBuilderV2.Domain.Projects;
+using ScadaBuilderV2.Domain.QuickWindows;
 using ScadaBuilderV2.Domain.RuntimeContracts;
 using ScadaBuilderV2.Domain.Scenes;
 
@@ -60,9 +61,80 @@ public static class ScadaRuntimeCapabilityAnalyzer
             }
         }
 
+        AnalyzeQuickWindows(capabilities, project);
+
         return new ScadaRuntimeCapabilityAnalysis(capabilities.Values
             .OrderBy(capability => capability.Id, StringComparer.Ordinal)
             .ToArray());
+    }
+
+    /// <summary>
+    /// Derives the granular quick-window capabilities, each from its own trigger. Nothing is inferred from
+    /// another capability and no umbrella id exists, so a capability may only be promoted with evidence that
+    /// carries exactly its own id.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0047, DEC-0050.
+    /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §10.2.
+    /// Tests: tests/ScadaBuilderV2.Tests/RuntimeContracts/ScadaRuntimeCapabilityAnalyzerTests.cs.
+    /// </remarks>
+    private static void AnalyzeQuickWindows(
+        IDictionary<string, ScadaRuntimeCapability> capabilities,
+        ScadaProject project)
+    {
+        var definitions = project.EffectiveQuickWindows;
+        if (definitions.Count == 0)
+        {
+            return;
+        }
+
+        // One exported definition is enough for transport, host lifecycle and scoped DOM root.
+        Add(capabilities, ScadaRuntimeCapabilityCatalog.QuickWindowDefinition);
+        Add(capabilities, ScadaRuntimeCapabilityCatalog.QuickWindowSinglePerDefinition);
+        Add(capabilities, ScadaRuntimeCapabilityCatalog.QuickWindowHostOwnedLifecycle);
+        Add(capabilities, ScadaRuntimeCapabilityCatalog.QuickWindowScopedDomRoot);
+
+        foreach (var definition in definitions)
+        {
+            var members = definition.EffectiveInterfaceMembers;
+            if (members.Count > 0)
+            {
+                Add(capabilities, ScadaRuntimeCapabilityCatalog.QuickWindowLocalInterfaceTyped);
+            }
+
+            if (members.Any(member => member.IsPublic && member.Required))
+            {
+                Add(capabilities, ScadaRuntimeCapabilityCatalog.QuickWindowPortRequired);
+            }
+
+            if (definition.EffectivePresentation.Backdrop)
+            {
+                Add(capabilities, ScadaRuntimeCapabilityCatalog.QuickWindowBackdrop);
+            }
+
+            // A definition whose own content opens another definition is depth-2 nesting.
+            if (Flatten(definition.EffectiveContent.EffectiveElements)
+                .SelectMany(element => element.EffectiveCommandConfig.Commands)
+                .Any(command => command.Kind == ScadaCommandKind.OpenQuickWindow))
+            {
+                Add(capabilities, ScadaRuntimeCapabilityCatalog.QuickWindowNestingDepth2);
+            }
+        }
+
+        foreach (var invocation in project.EffectiveQuickWindowInvocations)
+        {
+            var bindings = invocation.Bindings ?? [];
+            if (bindings.Count > 0)
+            {
+                // An explicit absence is still a persisted binding decision.
+                Add(capabilities, ScadaRuntimeCapabilityCatalog.QuickWindowPortBinding);
+            }
+
+            if (bindings.Any(binding => binding.SourceKind == QuickWindowBindingSourceKind.ParentPort))
+            {
+                Add(capabilities, ScadaRuntimeCapabilityCatalog.QuickWindowParentPortBinding);
+            }
+        }
     }
 
     private static void AddComposition(
