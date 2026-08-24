@@ -8,7 +8,7 @@ Document version: `V2.1.5.0036`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0036` | `PENDING` | Audit de clôture de la Phase 3 : tâches 3.1 à 3.6, ré-épinglage du moteur `DEC-0051` et rejeu des trois legs du gate Phase 0. |
+| 2026-08-24 | `V2.1.5.0036` | `3560f48` | Audit de clôture de la Phase 3 : tâches 3.1 à 3.6, ré-épinglage du moteur `DEC-0051` et rejeu des trois legs du gate Phase 0. |
 
 ## 1. Portée et conclusion
 

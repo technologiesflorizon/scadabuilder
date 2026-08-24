@@ -8,7 +8,7 @@ Document version: `V2.1.5.0036`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0036` | `PENDING` | Phase 3 close : rapport d'audit de phase et checkpoint versionné enregistrés; entrée en Phase 4 conditionnée par la Task 4.0. |
+| 2026-08-24 | `V2.1.5.0036` | `3560f48` | Phase 3 close : rapport d'audit de phase et checkpoint versionné enregistrés; entrée en Phase 4 conditionnée par la Task 4.0. |
 | 2026-08-24 | `V2.1.5.0035` | `2e86fd9` | Task 3.6 exécutée et cochée : surface de réparation des invocations `Outdated`, confirmation d'impact avant évolution d'interface et gate de build fermé jusqu'à réparation complète. Phase 3 terminée côté code. |
 | 2026-08-24 | `V2.1.5.0034` | `4202a70` | Task 3.5 exécutée et cochée : validation fail-closed de la frontière presse-papier page ↔ fenêtre rapide, dialogue de diagnostics et variante `Coller sans liaisons` sans promotion ni référence orpheline. |
 | 2026-08-24 | `V2.1.5.0033` | `85e088d` | Gate Phase 0 entièrement rejoué sur Node `24.15.0` : les trois legs `PASS` avec le hash gelé inchangé; fixture vendorisée TF100Web réalignée octet pour octet et épinglée en LF des deux côtés. |
