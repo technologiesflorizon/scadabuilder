@@ -8,7 +8,7 @@ Document version: `V2.1.5.0038`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0038` | `PENDING` | Task 4.1 close; les 13 capacites restent `Blocked` et aucune n'est promue avant la Phase 6. |
+| 2026-08-24 | `V2.1.5.0038` | `5953265` | Task 4.1 close; les 13 capacites restent `Blocked` et aucune n'est promue avant la Phase 6. |
 | 2026-08-24 | `V2.1.5.0037` | `c4f7391` | Task 4.0 close; `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` de TF100Web ne connaît aucune capacité `quick-window.*`, prérequis explicite de la Phase 6. |
 | 2026-08-24 | `V2.1.5.0036` | `3560f48` | Phase 3 formellement close (audit + checkpoint); la Phase 4 demarre par la Task 4.0, gate bloquant exigeant TF100Web. |
 | 2026-08-24 | `V2.1.5.0035` | `2e86fd9` | Task 3.6 QuickWindow fermee : la Phase 3 authoring est complete cote code; restent le rapport d'audit de phase, l'entree de checkpoint, puis les Phases 4 a 7. |

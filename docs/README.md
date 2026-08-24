@@ -8,7 +8,7 @@ Document version: `V2.1.5.0038`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0038` | `PENDING` | Task 4.1 : 13 capacites granulaires Fenetre rapide enregistrees `Blocked` avec analyse par declencheur propre; matrice generee et index de conformance regeneres. |
+| 2026-08-24 | `V2.1.5.0038` | `5953265` | Task 4.1 : 13 capacites granulaires Fenetre rapide enregistrees `Blocked` avec analyse par declencheur propre; matrice generee et index de conformance regeneres. |
 | 2026-08-24 | `V2.1.5.0037` | `c4f7391` | Task 4.0 : contrat package et layout déployé des Fenêtres rapides figés avant toute compilation; capacités TF100Web encore inconnues côté runtime. |
 | 2026-08-24 | `V2.1.5.0036` | `3560f48` | Phase 3 Fenetres rapides cloturee : rapport d'audit de phase publie et checkpoint versionne enregistre; capacites toujours `Blocked`. |
 | 2026-08-24 | `V2.1.5.0035` | `2e86fd9` | Task 3.6 Fenetres rapides livree : surface de reparation des invocations `Outdated`, confirmation d'impact avant modification d'interface et gate de build ferme jusqu'a reparation complete. Phase 3 terminee. |
