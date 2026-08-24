@@ -8,7 +8,7 @@ Document version: `V2.1.5.0039`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-24 | `V2.1.5.0039` | `PENDING` | Gate structurel d'export : la validation de capacites precede toute creation de repertoire, et un projet a capacite `Blocked` ne laisse aucun artefact. |
+| 2026-08-24 | `V2.1.5.0039` | `4f690ea` | Gate structurel d'export : la validation de capacites precede toute creation de repertoire, et un projet a capacite `Blocked` ne laisse aucun artefact. |
 | 2026-08-24 | `V2.1.5.0037` | `c4f7391` | Task 4.0 : projection build/export des Fenêtres rapides documentée, artefacts editor-only exclus et gate fail-closed rappelé. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Gate build/export explicite pour les invocations `Outdated`, levé uniquement par réparation explicite. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Gate build/export QuickWindow Phase 2 : erreurs required/mapping/type/accès/version/graphe/profil/présentation/injection et capacité bloquée, sans fabriquer de liaison. |
