@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.5.0042`
+Document version: `V2.1.5.0043`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-25 | `V2.1.5.0043` | `PENDING` | Verification sous WSL : la suite Django de TF100Web s'execute, le blocage `fcntl` est leve; le prerequis reel de la Phase 5 est un serveur MySQL local. |
 | 2026-08-25 | `V2.1.5.0042` | `3e87e33` | Phase 4 Fenetres rapides cloturee : rapport d'audit publie et checkpoint versionne enregistre; capacites toujours `Blocked`. |
 | 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Task 4.4 : premier round-trip reel Builder -> package -> TF100Web execute et verrouille par hash; Phase 4 terminee, capacites toujours `Blocked`. |
 | 2026-08-24 | `V2.1.5.0040` | `d98d753` | Task 4.3 : runtime partage Fenetre rapide livre inerte, sans overlay ni chrome; conformance et preuve industrielle regenerees deliberement. |
