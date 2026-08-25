@@ -8,7 +8,7 @@ Document version: `V2.1.5.0043`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-25 | `V2.1.5.0043` | `PENDING` | Requalification du blocage Phase 5 : Django s'execute sous WSL; restent un serveur MySQL local et six echecs preexistants de `tests_scada_package`. |
+| 2026-08-25 | `V2.1.5.0043` | `94f1a2b` | Requalification du blocage Phase 5 : Django s'execute sous WSL; restent un serveur MySQL local et six echecs preexistants de `tests_scada_package`. |
 | 2026-08-25 | `V2.1.5.0042` | `3e87e33` | Phase 4 formellement close (audit + checkpoint); la Phase 5 est bloquee tant que la suite Django de TF100Web ne peut pas s'executer sur ce poste. |
 | 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Task 4.4 close et Phase 4 terminee; l'adaptateur host TF100Web, le service du contenu et la promotion de capacites restent ouverts (Phases 5 et 6). |
 | 2026-08-24 | `V2.1.5.0040` | `d98d753` | Task 4.3 close; le runtime partage est livre inerte et l'adaptateur host reel reste a implementer en Phase 5. |
