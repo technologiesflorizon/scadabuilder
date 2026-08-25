@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active known gaps register
-Document version: `V2.1.5.0043`
+Document version: `V2.1.5.0044`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-25 | `V2.1.5.0044` | `PENDING` | Prerequis MySQL leve : les suites Django adossees a la base passent sous WSL; il ne reste que le contenu fonctionnel de la Phase 5. |
 | 2026-08-25 | `V2.1.5.0043` | `94f1a2b` | Requalification du blocage Phase 5 : Django s'execute sous WSL; restent un serveur MySQL local et six echecs preexistants de `tests_scada_package`. |
 | 2026-08-25 | `V2.1.5.0042` | `3e87e33` | Phase 4 formellement close (audit + checkpoint); la Phase 5 est bloquee tant que la suite Django de TF100Web ne peut pas s'executer sur ce poste. |
 | 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Task 4.4 close et Phase 4 terminee; l'adaptateur host TF100Web, le service du contenu et la promotion de capacites restent ouverts (Phases 5 et 6). |
@@ -106,7 +107,7 @@ Document version: `V2.1.5.0043`
 24. `DEC-0049` est implémentée et validée par build et tests ciblés. Le parcours interactif WPF complet (créer, modifier, changer de projet avec les trois choix dirty, fermer et rouvrir un récent) reste à exécuter sur une copie isolée avant promotion opérateur.
 27. La Phase 3 authoring est close : rapport `docs/superpowers/reports/2026-08-24-quick-window-phase-3-audit.md` et entrée `phase 3` dans `tools/quick-window/checkpoints.json`. Les Phases 4 à 7 restent entièrement ouvertes et toutes les capacités `quick-window.*` restent `Blocked`. Les deux dépôts portent des commits locaux non poussés.
 
-28. La Phase 4 est close : rapport `docs/superpowers/reports/2026-08-25-quick-window-phase-4-audit.md` et entrée `phase 4` dans `tools/quick-window/checkpoints.json`. Deux points restent ouverts avant la Phase 5. D'abord l'infrastructure de test : la suite Django s'exécute bien sous WSL Ubuntu — le blocage `fcntl` ne valait que pour l'interpréteur Windows — mais `tests_scada_deploy` et `tests_scada_page_composition` exigent un serveur MySQL sur `localhost:3306` avec les identifiants de développement de `tf100web/settings.py`, sinon elles échouent sur `OperationalError`. `frontend.tests_scada_package` tourne sans base et présente 5 échecs et 1 erreur **préexistants**, vérifiés identiques avec les changements Fenêtre rapide mis de côté; ils sont à traiter pour eux-mêmes. Ensuite le contenu de la Phase 5 elle-même : ingestion des registres, chargeur de fragment par namespace avec résolution du CSS aplati, `openQuickWindow`/`closeQuickWindow` ajoutés aux `acceptedKinds` de l'adaptateur host, services d'overlay et de cycle de vie, et appel de `loadQuickWindowRegistries` par la vue. `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` ne doit pas être étendu avant la Phase 6.
+28. La Phase 4 est close : rapport `docs/superpowers/reports/2026-08-25-quick-window-phase-4-audit.md` et entrée `phase 4` dans `tools/quick-window/checkpoints.json`. L'infrastructure de test est complète : la suite Django s'exécute sous WSL Ubuntu — le blocage `fcntl` ne valait que pour l'interpréteur Windows — et le serveur MySQL présent dans la distribution satisfait les suites adossées à la base. `frontend.tests_scada_deploy` et `frontend.tests_scada_page_composition` passent 39/39. Le compte `root@localhost` de ce serveur utilise `auth_socket`, donc les tests doivent être lancés sous l'utilisateur `root` de WSL (`wsl -u root`), qui s'authentifie par la socket Unix; le mot de passe de `tf100web/settings.py` est alors ignoré. `frontend.tests_scada_package` présente 5 échecs et 1 erreur **préexistants**, identiques avec ou sans base et identiques avec les changements Fenêtre rapide mis de côté; ils portent sur des attentes d'assets et de déploiement sans rapport avec ce chantier et sont à traiter pour eux-mêmes. Reste donc uniquement le contenu de la Phase 5 : ingestion des registres, chargeur de fragment par namespace avec résolution du CSS aplati, `openQuickWindow`/`closeQuickWindow` ajoutés aux `acceptedKinds` de l'adaptateur host, services d'overlay et de cycle de vie, et appel de `loadQuickWindowRegistries` par la vue. `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` ne doit pas être étendu avant la Phase 6.
 
 26. `DEC-0051` a ré-épinglé le moteur de vérification sur Node `24.15.x`. Les trois legs du gate Phase 0 — Node headless, WebView2 réel et Edge/TF100Web — sont rejoués `PASS` sur `v24.15.0` avec le hash de fixture gelé inchangé, et la fixture vendorisée dans TF100Web est réalignée octet pour octet (LF épinglé, espaces de fin restaurés). La lacune d'épinglage est fermée. Le dépôt TF100Web porte ces corrections sur `codex/quick-window-v1` sans push.
 

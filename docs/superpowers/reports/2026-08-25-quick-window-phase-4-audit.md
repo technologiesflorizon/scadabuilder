@@ -2,12 +2,13 @@
 
 Date: 2026-08-25
 Status: PASS — Phase 4 conforme; Phase 5 non démarrée et capacités toujours `Blocked`
-Document version: `V2.1.5.0043`
+Document version: `V2.1.5.0044`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-25 | `V2.1.5.0044` | `PENDING` | MySQL disponible sous WSL : les suites Django adossees a la base passent; le dernier prerequis d'infrastructure de la Phase 5 est leve. |
 | 2026-08-25 | `V2.1.5.0043` | `94f1a2b` | Correction : la suite Django de TF100Web s'exécute sous WSL; le blocage `fcntl` est levé et le reste à faire est requalifié. |
 | 2026-08-25 | `V2.1.5.0042` | `3e87e33` | Audit de clôture de la Phase 4 : contrat package figé, capacités enregistrées, compilation déterministe, runtime partagé et round-trip package exécuté. |
 
@@ -63,7 +64,8 @@ Environnement : .NET SDK 8.0.26, Node `v24.15.0` conforme à l'épinglage `24.15
 ## 6. Reste à faire avant la Phase 5
 
 - **Exécution Django : résolue par WSL.** Le blocage `fcntl` relevé initialement ne vaut que pour l'interpréteur Windows. Sous WSL Ubuntu, la chaîne d'import se résout et `manage.py test frontend.tests_scada_package` s'exécute : 55 tests, 5 échecs et 1 erreur **préexistants**, identiques lorsque les changements Fenêtre rapide sont mis de côté (`git stash`). Ces six échecs concernent des attentes d'assets et de déploiement sans rapport avec ce chantier et doivent être traités pour eux-mêmes.
-- **Reste bloqué : les suites adossées à la base.** `frontend.tests_scada_deploy` et `frontend.tests_scada_page_composition` sont des `TestCase` Django et exigent un serveur MySQL sur `localhost:3306` avec les identifiants de développement codés dans `tf100web/settings.py`. Sans ce service, elles échouent sur `OperationalError` avant d'exécuter la moindre assertion. C'est le prérequis d'infrastructure réel de la Phase 5, à la place du blocage `fcntl` initialement supposé.
+- **Suites adossées à la base : levées.** Le serveur MySQL de la distribution WSL est actif et satisfait le prérequis. `frontend.tests_scada_deploy` et `frontend.tests_scada_page_composition` passent **39/39**, base de test `test_tf100` créée puis détruite par le runner. Un détail d'exécution compte : `root@localhost` est configuré en `auth_socket`, donc une connexion TCP avec le mot de passe de `tf100web/settings.py` est refusée (`1698`); les suites doivent être lancées sous l'utilisateur `root` de WSL (`wsl -u root`), qui s'authentifie par la socket Unix. Le serveur héberge d'autres bases applicatives, que le runner Django ne touche pas.
+- **Aucune infrastructure ne bloque plus la Phase 5.** Les six échecs de `frontend.tests_scada_package` sont identiques avec et sans base : ils ne dépendent pas du serveur et restent à traiter pour eux-mêmes.
 - **Environnements Python sous WSL.** Le dépôt TF100Web embarque déjà `.venv-wsl` (Django 4.2.16, sans `pytest`). Un second environnement `~/.venvs/tf100web` a été créé pour cette vérification avec `requirements.txt` complet plus `pytest`; il est jetable et peut être supprimé.
 - **Outils Windows absents sous WSL.** Deux tests échouent sous WSL faute d'outil installé dans la distribution : le leg Edge de la Phase 0 pointe le chemin Windows de `msedge.exe`, et le handshake runtime exige `node`. Les deux passent sous Windows. Aucun n'est un échec de logique.
 - **Ce que TF100Web doit encore recevoir.** L'ingestion des registres `QuickWindows[]`/`QuickWindowInvocations[]`, un chargeur de fragment par namespace avec résolution du CSS aplati, l'ajout de `openQuickWindow`/`closeQuickWindow` aux `acceptedKinds` de l'adaptateur host existant avec sortie avant le garde `validPageId`, les services d'overlay et de cycle de vie, et l'appel de `ScadaRuntime.loadQuickWindowRegistries(manifest)` par la vue.
