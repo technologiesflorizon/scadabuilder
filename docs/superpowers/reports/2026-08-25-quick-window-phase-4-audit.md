@@ -8,7 +8,7 @@ Document version: `V2.1.5.0042`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-25 | `V2.1.5.0042` | `PENDING` | Audit de clôture de la Phase 4 : contrat package figé, capacités enregistrées, compilation déterministe, runtime partagé et round-trip package exécuté. |
+| 2026-08-25 | `V2.1.5.0042` | `3e87e33` | Audit de clôture de la Phase 4 : contrat package figé, capacités enregistrées, compilation déterministe, runtime partagé et round-trip package exécuté. |
 
 ## 1. Portée et conclusion
 
