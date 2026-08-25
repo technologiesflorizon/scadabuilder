@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
-Document version: `V2.1.5.0045`
+Document version: `V2.1.5.0046`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-25 | `V2.1.5.0046` | `PENDING` | Task 5.2 exécutée : adaptateur host, gestionnaire SinglePerDefinition, service du fragment par namespace et invalidation de navigation. |
 | 2026-08-25 | `V2.1.5.0045` | `40e300a` | Task 5.1 exécutée : TF100Web valide et ingère les registres 2.3, fail-closed avant activation et déploiement. |
 | 2026-08-25 | `V2.1.5.0042` | `3e87e33` | Phase 4 close : rapport d'audit de phase et checkpoint versionné enregistrés; entrée en Phase 5 conditionnée par la levée du blocage Django de TF100Web. |
 | 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Task 4.4 exécutée et cochée : paquet de handshake généré par le harnais protégé, ingéré par l'intake de production TF100Web et exécuté par le runtime embarqué. Phase 4 terminée. |
@@ -65,7 +66,8 @@ Document version: `V2.1.5.0045`
 - [x] Phase 4.4: round-trip package réel exécuté dans TF100Web (`PENDING`, TF100Web `efebd43`).
 - [x] Phase 4 close: rapport d'audit `docs/superpowers/reports/2026-08-25-quick-window-phase-4-audit.md` et entrée `phase 4` dans `tools/quick-window/checkpoints.json`.
 - [x] Phase 5.1: registres 2.3 validés et ingérés par TF100Web (TF100Web `20998ab`).
-- [ ] Phases 5.2 à 7: non démarrées.
+- [x] Phase 5.2: host TF100Web et SinglePerDefinition (TF100Web `2562bcd`).
+- [ ] Phases 5.3 à 7: non démarrées.
 
 Audit du 2026-08-21: la spec a été étendue par `FR-030..036` et `FR-UI-23..26`. Le plan ajoute en conséquence Task 2.4, Task 3.5, Task 3.6, Task 4.0 et Task 5.4. La Phase 0 n'est pas rouverte: la composition header/pied et la coexistence legacy n'existent que dans un host composé réel et sont donc prouvées en Phase 5 contre TF100Web, sans invalider le hash de fixture gelé.
 
@@ -865,9 +867,12 @@ python -m pytest frontend/tests_scada_package.py frontend/tests_scada_deploy.py 
 
 ### Task 5.2: Implémenter l’adaptateur host et le gestionnaire SinglePerDefinition
 
-**Files:**
-- Modify: `F:\Projet\Git\TF100Web\templates\frontend\scada_builder.html`
-- Modify: `F:\Projet\Git\TF100Web\static\asset\css\templates\frontend\scada_builder.css`
+**Files:** *(corrigés à l'implémentation: `scada_builder.html`/`scada_builder.css` sont la page d'administration des projets, pas la page runtime qui héberge `#scada-host`)*
+- Modify: `F:\Projet\Git\TF100Web\templates\frontend\station\visualisation.html`
+- Modify: `F:\Projet\Git\TF100Web\static\asset\css\templates\frontend\station\_visualisation_import_style.css`
+- Modify: `F:\Projet\Git\TF100Web\static\asset\js\station\visualisation_import.js`
+- Modify: `F:\Projet\Git\TF100Web\frontend\scada_builder_composition.py`, `frontend\views.py`, `frontend\urls.py`
+- Create: `F:\Projet\Git\TF100Web\frontend\tests_scada_quick_window_host.py`
 - Create: `F:\Projet\Git\TF100Web\static\asset\js\quick-window-host.js`
 - Modify: `F:\Projet\Git\TF100Web\frontend\tests_runtime_js\host-adapter.test.mjs`
 - Create: `F:\Projet\Git\TF100Web\frontend\tests_runtime_js\quick-window-host.test.mjs`
@@ -877,17 +882,21 @@ python -m pytest frontend/tests_scada_package.py frontend/tests_scada_deploy.py 
 - Consumes: runtime partagé, contenu compilé, cache/hydratation/navigation existants.
 - Produces: cadre host-owned, backdrop, focus, viewport, instance unique, dispose et invalidation navigation/déploiement/session.
 
-- [ ] Porter exactement la stratégie validée en phase 0; les queries restent root-scoped et le cache/poller/pont existants restent uniques.
-- [ ] Implémenter `X`, `Escape`, `Self`, même invocation => front, invocation différente => close/recreate, scrolling interne et fermeture sur navigation.
-- [ ] Tester 100 cycles, fuite nulle, hydratation générationnelle, permissions d’écriture et absence de cross-mapping.
-- [ ] Rejouer les races de Phase 0 contre le vrai host: double-clic/open concurrent, navigation pendant montage, close pendant hydration, open pendant dispose, invalidation de session/déploiement et callbacks tardifs. Vérifier une génération active maximum, dispose idempotent et aucun changement DOM/historique après invalidation.
-- [ ] Commit: `feat: host quick windows in TF100Web`.
+- [x] Porter exactement la stratégie validée en phase 0; les queries restent root-scoped et le cache/poller/pont existants restent uniques.
+- [x] Implémenter `X`, `Escape`, `Self`, même invocation => front, invocation différente => close/recreate, scrolling interne et fermeture sur navigation.
+- [x] Tester 100 cycles, fuite nulle, hydratation générationnelle, permissions d’écriture et absence de cross-mapping.
+- [x] Rejouer les races de Phase 0 contre le vrai host: double-clic/open concurrent, navigation pendant montage, close pendant hydration, open pendant dispose, invalidation de session/déploiement et callbacks tardifs. Vérifier une génération active maximum, dispose idempotent et aucun changement DOM/historique après invalidation.
+- [x] Commit: `feat: host quick windows in TF100Web` (TF100Web `2562bcd`).
 
 **Vérification:**
 
 ```bash
 python -m pytest frontend/tests_scada_quick_window_host.py -q   # exécuté dans F:\Projet\Git\TF100Web
+node --test frontend/tests_runtime_js/quick-window-host.test.mjs
+python manage.py test frontend.tests_scada_package frontend.tests_scada_quick_window_host
 ```
+
+Les gardes de route de la vue de fragment exigent le graphe d'applications Django: elles vivent dans `frontend/tests_scada_package.py` et se lancent par `manage.py test`, `tests_scada_quick_window_host.py` restant exécutable sous `pytest`.
 
 ### Task 5.3: Exécuter la conformance cross-runtime et déployer TF100Web
 

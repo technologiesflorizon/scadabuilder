@@ -2,12 +2,13 @@
 
 Date: 2026-07-30
 Status: Active runtime package contract
-Document version: `V2.1.5.0045`
+Document version: `V2.1.5.0046`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-25 | `V2.1.5.0046` | `PENDING` | Host TF100Web des Fenetres rapides : intentions, service du fragment par namespace et cycle de vie SinglePerDefinition (section 12.7). |
 | 2026-08-25 | `V2.1.5.0045` | `40e300a` | Ingestion TF100Web des registres Fenetre rapide : validation fail-closed avant activation et deploiement (section 12.6). |
 | 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Round-trip package Fenetre rapide execute dans TF100Web : intake de production accepte le paquet et le runtime embarque execute les scenarios. |
 | 2026-08-24 | `V2.1.5.0040` | `d98d753` | `quick-window-runtime.js` entre dans le bundle runtime exporte, inerte tant que les capacites restent `Blocked`; le hash du runtime et les octets du package changent en consequence. |
@@ -460,4 +461,23 @@ Avertissements (`warnings`, non bloquants) :
 `load_quick_window_registries(package_root, manifest)` est le point d'ingestion : dès qu'une erreur est relevée, elle renvoie des registres **vides**, de sorte qu'aucun appelant ne peut monter un contenu que ce module a refusé. `load_scada_builder_package` expose le résultat sous `quick_windows` et `quick_window_invocations`.
 
 L'upload admin refuse en outre les entrées de type lien d'une archive (`unsafe archive link`) avant toute écriture, et un package refusé ne remplace jamais le projet actif : `import_project_from_zip` détruit sa destination et n'active rien.
+
+### 12.7 Host TF100Web et service du fragment (Phase 5.2)
+
+Le montage d'une Fenêtre rapide appartient au host, pas au chemin de composition : `load_composed_page` reste inchangée, conformément à §12.3.
+
+**Intentions.** `openQuickWindow` et `closeQuickWindow` rejoignent les `acceptedKinds` de l'adaptateur existant `createTf100ScadaRuntimeHostAdapter` et sont traitées **avant** le garde `validPageId` : une Fenêtre rapide porte un namespace, jamais un `pageId`. L'adaptateur refuse un `runtimeInstanceId` hors forme `qw-inst-<n>-qw-<key8>`, un namespace hors forme `qw-<key8>`, et tout couple de chemins qui n'est pas exactement `<ns>/<ns>.html` + `<ns>/css/<ns>.css` — aucune intention ne peut donc diriger le chargeur hors de son propre répertoire. Une intention issue d'une page démontée reste refusée par le garde `stale-page-intent` déjà en place.
+
+**Service du fragment.** `frontend/scada_builder_composition.load_quick_window_fragment(static_root, namespace)` sert un fragment par namespace, derrière la vue `frontend_scada_quick_window_fragment` gardée comme `scada_package_page` (déploiement industriel + station `SCADA_BUILDER_2`). Fail-closed : **seul** un namespace déclaré dans le registre `QuickWindows` déployé est servi. Un répertoire `qw-*` laissé sur disque par une génération antérieure reste inatteignable, et un namespace hors forme est refusé avant tout accès disque. La feuille de style renvoyée est `<ns>.css`, conformément à l'aplatissement de `scada/css/` figé en §12.2. Aucune liaison n'est injectée : celles d'une Fenêtre rapide viennent du registre `QuickWindowInvocations` résolu par le runtime partagé, jamais des objets de page.
+
+**Host.** `static/asset/js/quick-window-host.js` porte la stratégie figée en Phase 0 : une racine DOM standard par instance portant le triplet `[data-qw-def][data-qw-inv][data-qw-inst]`, des requêtes relatives à cette racine, des générations monotones avec rejet d'hydratation obsolète, et un nettoyage idempotent. Le host possède le cadre, le backdrop unique — dont le clic ne ferme rien —, le focus initial et piégé, la contrainte de viewport et le défilement interne. Il ne possède aucune sémantique portable : résolution, ports, souscriptions et écritures restent dans le runtime du paquet, atteint par `mountInstance` et `disposeInstance`.
+
+**SinglePerDefinition.** Une même invocation déjà vivante est ramenée au premier plan sans rien recréer, et le contexte que le runtime venait de créer pour la demande refusée est libéré immédiatement. Une invocation différente de la même définition ferme puis recrée : jamais deux cadres pour une définition. Fermer un parent ferme d'abord tout ce qui a été ouvert au-dessus.
+
+**Invalidation.** Toute navigation invalide toutes les instances vivantes, avant même le chargement de la page suivante — pas seulement une navigation qui change la page de corps, contrairement aux popups. `X`, `Escape` et la commande `Close Self` empruntent le même chemin de disposition.
+
+**Registres.** Les registres déployés sont remis au runtime par `ScadaRuntime.loadQuickWindowRegistries(manifest)`, résolu paresseusement à la première ouverture : le runtime du paquet est un script `defer` et n'existe pas encore quand le fichier host s'exécute. Un échec laisse les Fenêtres rapides inertes, jamais à moitié câblées.
+
+Aucune capacité n'est promue par cette tâche : `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` reste inchangé et un paquet déclarant une capacité `quick-window.*` reste refusé (§12.5).
+
 
