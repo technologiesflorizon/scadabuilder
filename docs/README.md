@@ -8,7 +8,7 @@ Document version: `V2.1.5.0046`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-25 | `V2.1.5.0046` | `PENDING` | Task 5.2 : adaptateur host TF100Web et gestionnaire SinglePerDefinition livres; capacites toujours `Blocked`. |
+| 2026-08-25 | `V2.1.5.0046` | `705077c` | Task 5.2 : adaptateur host TF100Web et gestionnaire SinglePerDefinition livres; capacites toujours `Blocked`. |
 | 2026-08-25 | `V2.1.5.0045` | `40e300a` | Task 5.1 : TF100Web ingere et refuse fail-closed les registres Fenetre rapide du manifest 2.3 avant activation et deploiement. |
 | 2026-08-25 | `V2.1.5.0044` | `c3cfce9` | MySQL disponible sous WSL : les suites Django adossees a la base passent (39/39); le dernier prerequis d'infrastructure de la Phase 5 est leve. |
 | 2026-08-25 | `V2.1.5.0043` | `94f1a2b` | Verification sous WSL : la suite Django de TF100Web s'execute, le blocage `fcntl` est leve; le prerequis reel de la Phase 5 est un serveur MySQL local. |

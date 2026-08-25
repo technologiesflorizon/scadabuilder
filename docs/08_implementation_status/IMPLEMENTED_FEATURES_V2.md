@@ -8,7 +8,7 @@ Document version: `V2.1.5.0046`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-25 | `V2.1.5.0046` | `PENDING` | TF100Web monte les Fenetres rapides : adaptateur host, gestionnaire SinglePerDefinition et service du fragment par namespace. |
+| 2026-08-25 | `V2.1.5.0046` | `705077c` | TF100Web monte les Fenetres rapides : adaptateur host, gestionnaire SinglePerDefinition et service du fragment par namespace. |
 | 2026-08-25 | `V2.1.5.0045` | `40e300a` | TF100Web ingere les registres Fenetre rapide du manifest 2.3 et les refuse fail-closed avant activation et deploiement. |
 | 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Round-trip Builder -> package -> TF100Web execute : intake de production, registres hors `Pages` et scenarios runtime verts avant tout code host. Phase 4 terminee. |
 | 2026-08-24 | `V2.1.5.0040` | `d98d753` | Runtime partage Fenetre rapide : resolution des registres et des ports types, rejet d'injection avant souscription, ecriture limitee a l'instance, cleanup idempotent; overlay et chrome delegues au host. |

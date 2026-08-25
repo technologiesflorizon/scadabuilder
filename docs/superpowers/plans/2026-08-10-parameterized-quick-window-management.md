@@ -8,7 +8,7 @@ Document version: `V2.1.5.0046`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-25 | `V2.1.5.0046` | `PENDING` | Task 5.2 exécutée : adaptateur host, gestionnaire SinglePerDefinition, service du fragment par namespace et invalidation de navigation. |
+| 2026-08-25 | `V2.1.5.0046` | `705077c` | Task 5.2 exécutée : adaptateur host, gestionnaire SinglePerDefinition, service du fragment par namespace et invalidation de navigation. |
 | 2026-08-25 | `V2.1.5.0045` | `40e300a` | Task 5.1 exécutée : TF100Web valide et ingère les registres 2.3, fail-closed avant activation et déploiement. |
 | 2026-08-25 | `V2.1.5.0042` | `3e87e33` | Phase 4 close : rapport d'audit de phase et checkpoint versionné enregistrés; entrée en Phase 5 conditionnée par la levée du blocage Django de TF100Web. |
 | 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Task 4.4 exécutée et cochée : paquet de handshake généré par le harnais protégé, ingéré par l'intake de production TF100Web et exécuté par le runtime embarqué. Phase 4 terminée. |
