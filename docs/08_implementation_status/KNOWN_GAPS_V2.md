@@ -8,7 +8,7 @@ Document version: `V2.1.5.0045`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-25 | `V2.1.5.0045` | `PENDING` | Task 5.1 livree : ingestion et validation fail-closed des registres cote TF100Web; le chargeur de fragment et l'adaptateur host restent ouverts. |
+| 2026-08-25 | `V2.1.5.0045` | `40e300a` | Task 5.1 livree : ingestion et validation fail-closed des registres cote TF100Web; le chargeur de fragment et l'adaptateur host restent ouverts. |
 | 2026-08-25 | `V2.1.5.0044` | `c3cfce9` | Prerequis MySQL leve : les suites Django adossees a la base passent sous WSL; il ne reste que le contenu fonctionnel de la Phase 5. |
 | 2026-08-25 | `V2.1.5.0043` | `94f1a2b` | Requalification du blocage Phase 5 : Django s'execute sous WSL; restent un serveur MySQL local et six echecs preexistants de `tests_scada_package`. |
 | 2026-08-25 | `V2.1.5.0042` | `3e87e33` | Phase 4 formellement close (audit + checkpoint); la Phase 5 est bloquee tant que la suite Django de TF100Web ne peut pas s'executer sur ce poste. |

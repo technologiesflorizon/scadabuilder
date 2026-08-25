@@ -8,7 +8,7 @@ Document version: `V2.1.5.0045`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-25 | `V2.1.5.0045` | `PENDING` | Task 5.1 exécutée : TF100Web valide et ingère les registres 2.3, fail-closed avant activation et déploiement. |
+| 2026-08-25 | `V2.1.5.0045` | `40e300a` | Task 5.1 exécutée : TF100Web valide et ingère les registres 2.3, fail-closed avant activation et déploiement. |
 | 2026-08-25 | `V2.1.5.0042` | `3e87e33` | Phase 4 close : rapport d'audit de phase et checkpoint versionné enregistrés; entrée en Phase 5 conditionnée par la levée du blocage Django de TF100Web. |
 | 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Task 4.4 exécutée et cochée : paquet de handshake généré par le harnais protégé, ingéré par l'intake de production TF100Web et exécuté par le runtime embarqué. Phase 4 terminée. |
 | 2026-08-24 | `V2.1.5.0040` | `d98d753` | Task 4.3 exécutée et cochée : runtime partagé portable sans overlay, injection rejetée avant souscription, conformance et preuve industrielle régénérées; capacités toujours `Blocked`. |

@@ -8,7 +8,7 @@ Document version: `V2.1.5.0045`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-25 | `V2.1.5.0045` | `PENDING` | Couverture Task 5.1 : ingestion et refus fail-closed des registres Fenetre rapide cote TF100Web. |
+| 2026-08-25 | `V2.1.5.0045` | `40e300a` | Couverture Task 5.1 : ingestion et refus fail-closed des registres Fenetre rapide cote TF100Web. |
 | 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Couverture Task 4.4 : generation verrouillee du paquet de handshake et son execution reelle dans TF100Web. |
 | 2026-08-24 | `V2.1.5.0040` | `d98d753` | Couverture Task 4.3 : semantique portable du runtime partage, injection rejetee sans ecriture, isolation des mappings et cleanup idempotent. |
 | 2026-08-24 | `V2.1.5.0039` | `4f690ea` | Couverture Task 4.2 : compilation deterministe, isolation entre definitions, gate structurel sans artefact et validation package des registres. |

@@ -8,7 +8,7 @@ Document version: `V2.1.5.0045`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-25 | `V2.1.5.0045` | `PENDING` | Ingestion TF100Web des registres Fenetre rapide : validation fail-closed avant activation et deploiement (section 12.6). |
+| 2026-08-25 | `V2.1.5.0045` | `40e300a` | Ingestion TF100Web des registres Fenetre rapide : validation fail-closed avant activation et deploiement (section 12.6). |
 | 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Round-trip package Fenetre rapide execute dans TF100Web : intake de production accepte le paquet et le runtime embarque execute les scenarios. |
 | 2026-08-24 | `V2.1.5.0040` | `d98d753` | `quick-window-runtime.js` entre dans le bundle runtime exporte, inerte tant que les capacites restent `Blocked`; le hash du runtime et les octets du package changent en consequence. |
 | 2026-08-24 | `V2.1.5.0037` | `c4f7391` | Task 4.0 : layout package et layout déployé des Fenêtres rapides figés avant toute compilation, vérifiés contre `scada_package.py`, `scada_builder_composition.py` et `deploy_scada_builder.py`. |
