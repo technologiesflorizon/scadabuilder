@@ -8,7 +8,7 @@ Document version: `V2.1.5.0047`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-25 | `V2.1.5.0047` | `PENDING` | Couverture Task 5.3 : conformance cross-runtime, SLA d'ouverture chaude, canary et rollback. |
+| 2026-08-25 | `V2.1.5.0047` | `dce0941` | Couverture Task 5.3 : conformance cross-runtime, SLA d'ouverture chaude, canary et rollback. |
 | 2026-08-25 | `V2.1.5.0046` | `705077c` | Couverture Task 5.2 : host TF100Web, cycle de vie SinglePerDefinition et service du fragment par namespace. |
 | 2026-08-25 | `V2.1.5.0045` | `40e300a` | Couverture Task 5.1 : ingestion et refus fail-closed des registres Fenetre rapide cote TF100Web. |
 | 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Couverture Task 4.4 : generation verrouillee du paquet de handshake et son execution reelle dans TF100Web. |

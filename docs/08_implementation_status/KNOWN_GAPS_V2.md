@@ -8,7 +8,7 @@ Document version: `V2.1.5.0047`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-25 | `V2.1.5.0047` | `PENDING` | Task 5.3 partiellement close : conformance, canary et rollback verts; soak 24 h et deploiement production restent a decider. |
+| 2026-08-25 | `V2.1.5.0047` | `dce0941` | Task 5.3 partiellement close : conformance, canary et rollback verts; soak 24 h et deploiement production restent a decider. |
 | 2026-08-25 | `V2.1.5.0046` | `705077c` | Task 5.2 livree : host TF100Web et SinglePerDefinition; restent la conformance cross-runtime et la composition header/pied. |
 | 2026-08-25 | `V2.1.5.0045` | `40e300a` | Task 5.1 livree : ingestion et validation fail-closed des registres cote TF100Web; le chargeur de fragment et l'adaptateur host restent ouverts. |
 | 2026-08-25 | `V2.1.5.0044` | `c3cfce9` | Prerequis MySQL leve : les suites Django adossees a la base passent sous WSL; il ne reste que le contenu fonctionnel de la Phase 5. |
