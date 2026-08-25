@@ -8,7 +8,7 @@ Document version: `V2.1.5.0044`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-25 | `V2.1.5.0044` | `PENDING` | MySQL disponible sous WSL : les suites Django adossees a la base passent; le dernier prerequis d'infrastructure de la Phase 5 est leve. |
+| 2026-08-25 | `V2.1.5.0044` | `c3cfce9` | MySQL disponible sous WSL : les suites Django adossees a la base passent; le dernier prerequis d'infrastructure de la Phase 5 est leve. |
 | 2026-08-25 | `V2.1.5.0043` | `94f1a2b` | Correction : la suite Django de TF100Web s'exécute sous WSL; le blocage `fcntl` est levé et le reste à faire est requalifié. |
 | 2026-08-25 | `V2.1.5.0042` | `3e87e33` | Audit de clôture de la Phase 4 : contrat package figé, capacités enregistrées, compilation déterministe, runtime partagé et round-trip package exécuté. |
 

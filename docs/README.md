@@ -8,7 +8,7 @@ Document version: `V2.1.5.0044`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-25 | `V2.1.5.0044` | `PENDING` | MySQL disponible sous WSL : les suites Django adossees a la base passent (39/39); le dernier prerequis d'infrastructure de la Phase 5 est leve. |
+| 2026-08-25 | `V2.1.5.0044` | `c3cfce9` | MySQL disponible sous WSL : les suites Django adossees a la base passent (39/39); le dernier prerequis d'infrastructure de la Phase 5 est leve. |
 | 2026-08-25 | `V2.1.5.0043` | `94f1a2b` | Verification sous WSL : la suite Django de TF100Web s'execute, le blocage `fcntl` est leve; le prerequis reel de la Phase 5 est un serveur MySQL local. |
 | 2026-08-25 | `V2.1.5.0042` | `3e87e33` | Phase 4 Fenetres rapides cloturee : rapport d'audit publie et checkpoint versionne enregistre; capacites toujours `Blocked`. |
 | 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Task 4.4 : premier round-trip reel Builder -> package -> TF100Web execute et verrouille par hash; Phase 4 terminee, capacites toujours `Blocked`. |
