@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.5.0046`
+Document version: `V2.1.5.0047`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-25 | `V2.1.5.0047` | `PENDING` | Task 5.3 : conformance cross-runtime des Fenetres rapides, epreuves canary et rollback; soak et production restent a decider. |
 | 2026-08-25 | `V2.1.5.0046` | `705077c` | Task 5.2 : adaptateur host TF100Web et gestionnaire SinglePerDefinition livres; capacites toujours `Blocked`. |
 | 2026-08-25 | `V2.1.5.0045` | `40e300a` | Task 5.1 : TF100Web ingere et refuse fail-closed les registres Fenetre rapide du manifest 2.3 avant activation et deploiement. |
 | 2026-08-25 | `V2.1.5.0044` | `c3cfce9` | MySQL disponible sous WSL : les suites Django adossees a la base passent (39/39); le dernier prerequis d'infrastructure de la Phase 5 est leve. |

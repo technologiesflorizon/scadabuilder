@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
-Document version: `V2.1.5.0046`
+Document version: `V2.1.5.0047`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-25 | `V2.1.5.0047` | `PENDING` | Task 5.3 : conformance cross-runtime, SLA, canary et rollback exécutés; soak 24 h et production restent à décider. |
 | 2026-08-25 | `V2.1.5.0046` | `705077c` | Task 5.2 exécutée : adaptateur host, gestionnaire SinglePerDefinition, service du fragment par namespace et invalidation de navigation. |
 | 2026-08-25 | `V2.1.5.0045` | `40e300a` | Task 5.1 exécutée : TF100Web valide et ingère les registres 2.3, fail-closed avant activation et déploiement. |
 | 2026-08-25 | `V2.1.5.0042` | `3e87e33` | Phase 4 close : rapport d'audit de phase et checkpoint versionné enregistrés; entrée en Phase 5 conditionnée par la levée du blocage Django de TF100Web. |
@@ -67,7 +68,8 @@ Document version: `V2.1.5.0046`
 - [x] Phase 4 close: rapport d'audit `docs/superpowers/reports/2026-08-25-quick-window-phase-4-audit.md` et entrée `phase 4` dans `tools/quick-window/checkpoints.json`.
 - [x] Phase 5.1: registres 2.3 validés et ingérés par TF100Web (TF100Web `20998ab`).
 - [x] Phase 5.2: host TF100Web et SinglePerDefinition (TF100Web `2562bcd`).
-- [ ] Phases 5.3 à 7: non démarrées.
+- [~] Phase 5.3: conformance cross-runtime, canary et rollback verts (TF100Web `9304355`); soak 24 h et déploiement production non exécutés, décision humaine requise.
+- [ ] Phases 5.4 à 7: non démarrées.
 
 Audit du 2026-08-21: la spec a été étendue par `FR-030..036` et `FR-UI-23..26`. Le plan ajoute en conséquence Task 2.4, Task 3.5, Task 3.6, Task 4.0 et Task 5.4. La Phase 0 n'est pas rouverte: la composition header/pied et la coexistence legacy n'existent que dans un host composé réel et sont donc prouvées en Phase 5 contre TF100Web, sans invalider le hash de fixture gelé.
 
@@ -910,21 +912,24 @@ Les gardes de route de la vue de fragment exigent le graphe d'applications Djang
 - Consumes: même `.sb2`, index d’attentes et runtime SHA-256.
 - Produces: preuve exécutable de chaque capacité incluse, canary isolé, rollback éprouvé et version déployée vérifiée.
 
-- [ ] Exécuter suites Builder/Node/TF100Web, mutation d’une capacité à la fois, preview/host equivalence et package déterministe.
-- [ ] **Canary/staging obligatoire:** déployer d’abord le package dans une instance TF100Web non industrielle utilisant un `STATIC_ROOT` distinct. Réutiliser `deploy_package_to_static(package_dir, canary_static_root)` et une configuration de station de test; ne pas remplacer `STATIC_ROOT/scada` actif. Vérifier commit, génération, registre de capacités et SHA effectivement servis.
-- [ ] Exécuter sur le canary la conformance complète, les races, 100 cycles, les SLA p95 et un soak d’au moins 24 h sans erreur QuickWindow, croissance mémoire ni impact sur les pages 2.1/2.2/2.3 existantes.
-- [ ] Éprouver le rollback avant production: conserver l’archive `.sb2`, le SHA et la génération known-good; redéployer ce package dans le canary, vérifier retour des pages/runtime/hash et documenter le temps de restauration. Le rollback production est un redéploiement atomique du package known-good, jamais une édition manuelle de `STATIC_ROOT`.
-- [ ] Après autorisation distincte, déployer TF100Web en production. Effectuer un smoke read-only, surveiller erreurs et métriques, puis conserver la possibilité de redéployer immédiatement le package known-good.
+- [x] Exécuter suites Builder/Node/TF100Web, mutation d’une capacité à la fois, preview/host equivalence et package déterministe.
+- [x] **Canary/staging obligatoire:** déployer d’abord le package dans une instance TF100Web non industrielle utilisant un `STATIC_ROOT` distinct. Réutiliser `deploy_package_to_static(package_dir, canary_static_root)` et une configuration de station de test; ne pas remplacer `STATIC_ROOT/scada` actif. Vérifier commit, génération, registre de capacités et SHA effectivement servis.
+- [~] Exécuter sur le canary la conformance complète, les races, 100 cycles, les SLA p95 et un soak d’au moins 24 h sans erreur QuickWindow, croissance mémoire ni impact sur les pages 2.1/2.2/2.3 existantes.
+- [x] Éprouver le rollback avant production: conserver l’archive `.sb2`, le SHA et la génération known-good; redéployer ce package dans le canary, vérifier retour des pages/runtime/hash et documenter le temps de restauration. Le rollback production est un redéploiement atomique du package known-good, jamais une édition manuelle de `STATIC_ROOT`.
+- [ ] Après autorisation distincte, déployer TF100Web en production. *(non exécuté: décision humaine requise)* Effectuer un smoke read-only, surveiller erreurs et métriques, puis conserver la possibilité de redéployer immédiatement le package known-good.
 - [ ] Ne promouvoir aucune capacité et ne passer à Phase 6 qu’après canary/soak/rollback verts et preuve du déploiement production capable. Si production échoue, redéployer known-good et garder toutes les capacités Builder `Blocked`.
-- [ ] Commit: `test: prove quick window host conformance`.
+- [x] Commit: `test: prove quick window host conformance` (TF100Web `9304355`).
 
 **Vérification:**
 
 ```bash
 dotnet test ScadaBuilderV2.sln --no-restore
-node --test src/ScadaBuilderV2.Rendering/Runtime/tests
-python -m pytest frontend -q   # exécuté dans F:\Projet\Git\TF100Web
+npm --prefix tests/runtime-js test
+python manage.py test frontend   # exécuté dans F:\Projet\Git\TF100Web
+node --test frontend/tests_runtime_js/quick-window-cross-runtime-harness.mjs   # via la suite de conformance
 ```
+
+`src/ScadaBuilderV2.Rendering/Runtime/tests` n'existe pas: les suites Node du Builder se lancent par `npm --prefix tests/runtime-js test`. Côté TF100Web, `pytest` ne configure pas Django: les suites adossées au graphe d'applications passent par `manage.py test`.
 
 ### Task 5.4: Prouver la composition header/pied et la coexistence legacy
 

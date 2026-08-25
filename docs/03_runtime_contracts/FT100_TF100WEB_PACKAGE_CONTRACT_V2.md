@@ -2,12 +2,13 @@
 
 Date: 2026-07-30
 Status: Active runtime package contract
-Document version: `V2.1.5.0046`
+Document version: `V2.1.5.0047`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-25 | `V2.1.5.0047` | `PENDING` | Conformance cross-runtime des Fenetres rapides, mesure de SLA, epreuves canary et rollback (section 12.8). |
 | 2026-08-25 | `V2.1.5.0046` | `705077c` | Host TF100Web des Fenetres rapides : intentions, service du fragment par namespace et cycle de vie SinglePerDefinition (section 12.7). |
 | 2026-08-25 | `V2.1.5.0045` | `40e300a` | Ingestion TF100Web des registres Fenetre rapide : validation fail-closed avant activation et deploiement (section 12.6). |
 | 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Round-trip package Fenetre rapide execute dans TF100Web : intake de production accepte le paquet et le runtime embarque execute les scenarios. |
@@ -479,5 +480,20 @@ Le montage d'une Fenêtre rapide appartient au host, pas au chemin de compositio
 **Registres.** Les registres déployés sont remis au runtime par `ScadaRuntime.loadQuickWindowRegistries(manifest)`, résolu paresseusement à la première ouverture : le runtime du paquet est un script `defer` et n'existe pas encore quand le fichier host s'exécute. Un échec laisse les Fenêtres rapides inertes, jamais à moitié câblées.
 
 Aucune capacité n'est promue par cette tâche : `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` reste inchangé et un paquet déclarant une capacité `quick-window.*` reste refusé (§12.5).
+
+### 12.8 Conformance cross-runtime, canary et rollback (Phase 5.3)
+
+**Preuve cross-runtime.** `frontend/tests_runtime_js/quick-window-cross-runtime-harness.mjs` démarre, dans un même contexte, le runtime partagé **embarqué dans le `.sb2`** et l'asset host de production `static/asset/js/quick-window-host.js` — ni l'un ni l'autre n'est une copie. Il émet une preuve lisible par machine (`tf100web-quick-window-cross-runtime-v1`) couvrant huit scénarios : montage par le runtime empaqueté, remplacement d'invocation sans fuite de mapping, `Close Self` libérant cadre, backdrop et souscriptions, port requis non lié refusé avant tout cadre, liaison altérée rejetée avant souscription, profondeur 2 atteignable avec troisième niveau refusé, invalidation de navigation, et 100 cycles sans fuite d'écouteur. La preuve porte aussi les percentiles d'ouverture chaude.
+
+**Mesure de SLA.** Le harnais mesure `request → Active` sur 100 ouvertures chaudes et le test échoue au-delà du seuil de Phase 0 `p95 ≤ 500 ms`. Cette mesure s'exécute **sans moteur de rendu** : elle prouve l'absence de coût algorithmique dans le couple runtime + host, jamais le temps perçu dans un navigateur, qui appartient au soak.
+
+**Fixture de conformance re-vendorisée.** Le paquet, son SHA-256 et l'index de capacités sont régénérés par le générateur Builder puis copiés à l'identique dans TF100Web. L'index régénéré porte les treize capacités `quick-window.*`, toutes `Blocked` : le garde de déploiement de production prouve désormais le refus de chacune, une à la fois.
+
+**Capacités retirées.** `DEC-0050` a retiré `command.open-popup`, `command.close-popup` et `command.toggle-popup` du catalogue Builder. TF100Web continue de les accepter pour que les paquets exportés avant la décision restent déployables : l'assertion de conformance devient « les capacités requises sont un sous-ensemble des capacités supportées », l'ensemble retiré étant nommé explicitement. Supporter plus que ce que le Builder exige est sûr; exiger plus que ce que TF100Web supporte ne l'est pas.
+
+**Canary et rollback.** Les deux épreuves visent un `STATIC_ROOT` canary créé pour le test et réutilisent `deploy_package_to_static`, le chemin de production : le `STATIC_ROOT/scada` actif n'est jamais touché. Le canary vérifie génération, runtime réellement servi, registres transportés intacts et contenu adressable après aplatissement du CSS. Le rollback est un **redéploiement du paquet known-good**, jamais une édition manuelle : il retire tout artefact de Fenêtre rapide et restaure runtime et pages known-good. Procédure complète : `deploy/developpement/quick_window_canary_runbook.md` (dépôt TF100Web).
+
+**Non exécuté.** Le soak d'au moins 24 h et le déploiement en production exigent une décision humaine distincte. Aucune capacité n'est promue : `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` reste inchangé.
+
 
 
