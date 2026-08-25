@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
-Document version: `V2.1.5.0041`
+Document version: `V2.1.5.0042`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-25 | `V2.1.5.0042` | `PENDING` | Phase 4 close : rapport d'audit de phase et checkpoint versionné enregistrés; entrée en Phase 5 conditionnée par la levée du blocage Django de TF100Web. |
 | 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Task 4.4 exécutée et cochée : paquet de handshake généré par le harnais protégé, ingéré par l'intake de production TF100Web et exécuté par le runtime embarqué. Phase 4 terminée. |
 | 2026-08-24 | `V2.1.5.0040` | `d98d753` | Task 4.3 exécutée et cochée : runtime partagé portable sans overlay, injection rejetée avant souscription, conformance et preuve industrielle régénérées; capacités toujours `Blocked`. |
 | 2026-08-24 | `V2.1.5.0039` | `4f690ea` | Task 4.2 exécutée et cochée : compilation déterministe des définitions et invocations, contenu namespacé, validation package et gate structurel d'export sans bypass. |
@@ -61,6 +62,7 @@ Document version: `V2.1.5.0041`
 - [x] Phase 4.2: compilation déterministe et gate structurel d'export (`PENDING`).
 - [x] Phase 4.3: runtime partagé Fenêtre rapide livré inerte (`PENDING`).
 - [x] Phase 4.4: round-trip package réel exécuté dans TF100Web (`PENDING`, TF100Web `efebd43`).
+- [x] Phase 4 close: rapport d'audit `docs/superpowers/reports/2026-08-25-quick-window-phase-4-audit.md` et entrée `phase 4` dans `tools/quick-window/checkpoints.json`.
 - [ ] Phases 5 à 7: non démarrées.
 
 Audit du 2026-08-21: la spec a été étendue par `FR-030..036` et `FR-UI-23..26`. Le plan ajoute en conséquence Task 2.4, Task 3.5, Task 3.6, Task 4.0 et Task 5.4. La Phase 0 n'est pas rouverte: la composition header/pied et la coexistence legacy n'existent que dans un host composé réel et sont donc prouvées en Phase 5 contre TF100Web, sans invalider le hash de fixture gelé.

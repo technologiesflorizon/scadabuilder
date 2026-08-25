@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active known gaps register
-Document version: `V2.1.5.0041`
+Document version: `V2.1.5.0042`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-25 | `V2.1.5.0042` | `PENDING` | Phase 4 formellement close (audit + checkpoint); la Phase 5 est bloquee tant que la suite Django de TF100Web ne peut pas s'executer sur ce poste. |
 | 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Task 4.4 close et Phase 4 terminee; l'adaptateur host TF100Web, le service du contenu et la promotion de capacites restent ouverts (Phases 5 et 6). |
 | 2026-08-24 | `V2.1.5.0040` | `d98d753` | Task 4.3 close; le runtime partage est livre inerte et l'adaptateur host reel reste a implementer en Phase 5. |
 | 2026-08-24 | `V2.1.5.0039` | `4f690ea` | Task 4.2 close; la compilation reste inatteignable depuis le produit tant que les capacites sont `Blocked`, par conception. |
@@ -103,6 +104,8 @@ Document version: `V2.1.5.0041`
 
 24. `DEC-0049` est implémentée et validée par build et tests ciblés. Le parcours interactif WPF complet (créer, modifier, changer de projet avec les trois choix dirty, fermer et rouvrir un récent) reste à exécuter sur une copie isolée avant promotion opérateur.
 27. La Phase 3 authoring est close : rapport `docs/superpowers/reports/2026-08-24-quick-window-phase-3-audit.md` et entrée `phase 3` dans `tools/quick-window/checkpoints.json`. Les Phases 4 à 7 restent entièrement ouvertes et toutes les capacités `quick-window.*` restent `Blocked`. Les deux dépôts portent des commits locaux non poussés.
+
+28. La Phase 4 est close : rapport `docs/superpowers/reports/2026-08-25-quick-window-phase-4-audit.md` et entrée `phase 4` dans `tools/quick-window/checkpoints.json`. Deux points restent ouverts avant la Phase 5. D'abord un blocage d'environnement : la suite Django de TF100Web ne s'exécute pas sur ce poste parce que `protocol/opcua_browse.py` importe `fcntl`, module Unix uniquement, alors que les preuves de Phase 5 passent par Django. Ensuite le contenu de la Phase 5 elle-même : ingestion des registres, chargeur de fragment par namespace avec résolution du CSS aplati, `openQuickWindow`/`closeQuickWindow` ajoutés aux `acceptedKinds` de l'adaptateur host, services d'overlay et de cycle de vie, et appel de `loadQuickWindowRegistries` par la vue. `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` ne doit pas être étendu avant la Phase 6.
 
 26. `DEC-0051` a ré-épinglé le moteur de vérification sur Node `24.15.x`. Les trois legs du gate Phase 0 — Node headless, WebView2 réel et Edge/TF100Web — sont rejoués `PASS` sur `v24.15.0` avec le hash de fixture gelé inchangé, et la fixture vendorisée dans TF100Web est réalignée octet pour octet (LF épinglé, espaces de fin restaurés). La lacune d'épinglage est fermée. Le dépôt TF100Web porte ces corrections sur `codex/quick-window-v1` sans push.
 
