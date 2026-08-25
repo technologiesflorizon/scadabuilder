@@ -2,12 +2,13 @@
 
 Date: 2026-07-30
 Status: Active runtime package contract
-Document version: `V2.1.5.0040`
+Document version: `V2.1.5.0041`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-25 | `V2.1.5.0041` | `PENDING` | Round-trip package Fenetre rapide execute dans TF100Web : intake de production accepte le paquet et le runtime embarque execute les scenarios. |
 | 2026-08-24 | `V2.1.5.0040` | `d98d753` | `quick-window-runtime.js` entre dans le bundle runtime exporte, inerte tant que les capacites restent `Blocked`; le hash du runtime et les octets du package changent en consequence. |
 | 2026-08-24 | `V2.1.5.0037` | `c4f7391` | Task 4.0 : layout package et layout déployé des Fenêtres rapides figés avant toute compilation, vérifiés contre `scada_package.py`, `scada_builder_composition.py` et `deploy_scada_builder.py`. |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Module runtime `quick-window-host.js` ajoute pour l'apercu editeur uniquement : il n'entre pas dans le bundle runtime exporte tant que les capacites `quick-window.*` restent `Blocked`. |
@@ -333,6 +334,16 @@ Frontiere de responsabilite : le runtime partage resout les registres, les ports
 `CloseQuickWindow` ne cible que `Self` : le runtime resout l'instance proprietaire de l'element appelant via l'attribut `data-qw-inst`. L'hydratation obsolete est detectee par definition, et un cycle est signale comme cycle meme lorsque la meme chaine depasse aussi la profondeur autorisee.
 
 Consequence de transport : ajouter un module change le hash du runtime, donc les octets de tout `.sb2`. Le paquet de conformance et la preuve d'acceptation industrielle sont regeneres deliberement lors de ce changement.
+
+## 11c. Executed Round Trip Evidence
+
+Le paquet `quick-window-runtime-handshake.sb2` est la preuve executable du contrat de la section 12. Il est produit uniquement par le harnais interne protege du Builder, verrouille par SHA-256 et vendorise a l'identique dans TF100Web.
+
+Cote TF100Web, l'intake de production l'accepte reellement : `validate_scada_manifest_contract` retourne `2.3` et `validate_scada_builder_package` ne signale aucune erreur. Les registres voyagent hors de `Pages`, chaque definition possede son repertoire `qw-<key8>` et sa racine `ft100-<ns>`, et les regles de deploiement gardent chaque fichier adressable une fois le CSS aplati par nom.
+
+Le runtime partage embarque **dans ce paquet** execute ensuite les scenarios : ouverture M101, remplacement par M102 sans toucher au mapping precedent, `Close Self`, port requis non lie refuse sans souscription ni intention host, snapshot obsolete rejete au montage, ecriture croisee refusee, et `Page -> A -> B` atteignable alors qu'un troisieme niveau est refuse.
+
+Le paquet ne declare aucune capacite `quick-window.*` : c'est exactement ce qu'un package strict 2.3 peut declarer tant que toutes restent `Blocked`. Ce checkpoint doit etre rejoue a chaque changement de manifest, de compilateur, de runtime ou de parser.
 
 ## 12. Quick Window Package And Deployed Layout (Manifest 2.3)
 
