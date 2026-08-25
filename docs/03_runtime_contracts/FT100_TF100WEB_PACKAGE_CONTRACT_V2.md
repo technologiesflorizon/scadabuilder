@@ -8,7 +8,7 @@ Document version: `V2.1.5.0041`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-25 | `V2.1.5.0041` | `PENDING` | Round-trip package Fenetre rapide execute dans TF100Web : intake de production accepte le paquet et le runtime embarque execute les scenarios. |
+| 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Round-trip package Fenetre rapide execute dans TF100Web : intake de production accepte le paquet et le runtime embarque execute les scenarios. |
 | 2026-08-24 | `V2.1.5.0040` | `d98d753` | `quick-window-runtime.js` entre dans le bundle runtime exporte, inerte tant que les capacites restent `Blocked`; le hash du runtime et les octets du package changent en consequence. |
 | 2026-08-24 | `V2.1.5.0037` | `c4f7391` | Task 4.0 : layout package et layout déployé des Fenêtres rapides figés avant toute compilation, vérifiés contre `scada_package.py`, `scada_builder_composition.py` et `deploy_scada_builder.py`. |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Module runtime `quick-window-host.js` ajoute pour l'apercu editeur uniquement : il n'entre pas dans le bundle runtime exporte tant que les capacites `quick-window.*` restent `Blocked`. |

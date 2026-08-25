@@ -8,7 +8,7 @@ Document version: `V2.1.5.0041`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-25 | `V2.1.5.0041` | `PENDING` | Round-trip Builder -> package -> TF100Web execute : intake de production, registres hors `Pages` et scenarios runtime verts avant tout code host. Phase 4 terminee. |
+| 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Round-trip Builder -> package -> TF100Web execute : intake de production, registres hors `Pages` et scenarios runtime verts avant tout code host. Phase 4 terminee. |
 | 2026-08-24 | `V2.1.5.0040` | `d98d753` | Runtime partage Fenetre rapide : resolution des registres et des ports types, rejet d'injection avant souscription, ecriture limitee a l'instance, cleanup idempotent; overlay et chrome delegues au host. |
 | 2026-08-24 | `V2.1.5.0039` | `4f690ea` | Compilation deterministe des Fenetres rapides : registres ordonnes, contenu namespace sous `qw-<key8>`, validation package et gate structurel d'export sans bypass. |
 | 2026-08-24 | `V2.1.5.0038` | `5953265` | Capacites Fenetre rapide enregistrees et analysees : 13 identifiants granulaires, tous `Blocked`, chacun derive de son propre declencheur; aucun identifiant parapluie. |

@@ -8,7 +8,7 @@ Document version: `V2.1.5.0041`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-08-25 | `V2.1.5.0041` | `PENDING` | Task 4.4 close et Phase 4 terminee; l'adaptateur host TF100Web, le service du contenu et la promotion de capacites restent ouverts (Phases 5 et 6). |
+| 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Task 4.4 close et Phase 4 terminee; l'adaptateur host TF100Web, le service du contenu et la promotion de capacites restent ouverts (Phases 5 et 6). |
 | 2026-08-24 | `V2.1.5.0040` | `d98d753` | Task 4.3 close; le runtime partage est livre inerte et l'adaptateur host reel reste a implementer en Phase 5. |
 | 2026-08-24 | `V2.1.5.0039` | `4f690ea` | Task 4.2 close; la compilation reste inatteignable depuis le produit tant que les capacites sont `Blocked`, par conception. |
 | 2026-08-24 | `V2.1.5.0038` | `5953265` | Task 4.1 close; les 13 capacites restent `Blocked` et aucune n'est promue avant la Phase 6. |
