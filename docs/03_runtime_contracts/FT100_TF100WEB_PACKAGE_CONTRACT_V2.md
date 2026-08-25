@@ -2,12 +2,13 @@
 
 Date: 2026-07-30
 Status: Active runtime package contract
-Document version: `V2.1.5.0041`
+Document version: `V2.1.5.0045`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-08-25 | `V2.1.5.0045` | `PENDING` | Ingestion TF100Web des registres Fenetre rapide : validation fail-closed avant activation et deploiement (section 12.6). |
 | 2026-08-25 | `V2.1.5.0041` | `5ae5ff4` | Round-trip package Fenetre rapide execute dans TF100Web : intake de production accepte le paquet et le runtime embarque execute les scenarios. |
 | 2026-08-24 | `V2.1.5.0040` | `d98d753` | `quick-window-runtime.js` entre dans le bundle runtime exporte, inerte tant que les capacites restent `Blocked`; le hash du runtime et les octets du package changent en consequence. |
 | 2026-08-24 | `V2.1.5.0037` | `c4f7391` | Task 4.0 : layout package et layout déployé des Fenêtres rapides figés avant toute compilation, vérifiés contre `scada_package.py`, `scada_builder_composition.py` et `deploy_scada_builder.py`. |
@@ -422,4 +423,41 @@ Ces formes sont celles que valide déjà le handshake exécutable TF100Web `fron
 L'ensemble `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` de `frontend/scada_package.py` **ne contient pas** `command.open-quick-window` ni `command.close-quick-window` — il contient encore les capacités popup legacy `command.open-popup`, `command.close-popup` et `command.toggle-popup`. Un package déclarant une capacité Fenêtre rapide est donc aujourd'hui rejeté avec `unsupported-runtime-capabilities:…`, comportement fail-closed vérifié par `test_deploy_rejects_unknown_capability_before_replacing_active_package`.
 
 L'extension de cet ensemble côté TF100Web est un prérequis de la promotion de Phase 6, jamais une conséquence de la compilation de Phase 4. Tant qu'elle n'est pas faite, un `.sb2` contenant des Fenêtres rapides ne peut déclarer aucune capacité `quick-window.*` en `RequiredCapabilities`.
+
+
+### 12.6 Ingestion TF100Web des registres (Phase 5.1)
+
+`frontend/scada_package.py` valide désormais les deux registres **avant** qu'un package puisse être activé ou déployé. La fonction `quick_window_registry_errors(package_root, manifest)` est appelée par `validate_scada_manifest_contract` — le garde pré-déploiement de `deploy_package_to_static` — et par `validate_scada_builder_package`, le garde de l'upload admin.
+
+Un package ne portant **aucun** registre reste accepté tel quel : tout `.sb2` produit avant l'existence des Fenêtres rapides demeure valide.
+
+Refus (`errors`, fail-closed) :
+
+| Condition | Code |
+| --- | --- |
+| Registre présent sur un profil 2.1 ou 2.2 | `quick-window-requires-manifest-2.3:<version>` |
+| `QuickWindowInvocations` sans `QuickWindows` | `quick-window-invocation-without-registry` |
+| Registre qui n'est pas un tableau | `quick-window-registry-invalid`, `quick-window-invocation-registry-invalid` |
+| `DefinitionKey` ou `Namespace` absent | `quick-window-identity-missing:<index>` |
+| Namespace hors forme `qw-<8 hex>` | `quick-window-namespace-not-contractual:<ns>` |
+| Namespace non dérivé de la clé | `quick-window-namespace-mismatch:<key>` |
+| Clé, namespace ou invocation dupliqués | `quick-window-duplicate-key`, `quick-window-duplicate-namespace`, `quick-window-duplicate-invocation` |
+| Namespace collisionnant un id de page compilée | `quick-window-collides-with-page:<ns>` |
+| Chemin non contractuel ou remontée hors package | `quick-window-path-not-contractual:<ns>`, `quick-window-path-unsafe:<ns>` |
+| HTML/CSS absent, illisible, ou racine `ft100-<ns>` absente | `quick-window-missing-html`, `quick-window-missing-css`, `quick-window-unreadable-html`, `quick-window-missing-root` |
+| Interface invalide, version d'interface non entière ou < 1 | `quick-window-interface-invalid:<ns>`, `quick-window-interface-version-invalid:<ns>` |
+| Membre invalide, dupliqué, ou famille/type/accès inconnu | `quick-window-member-invalid`, `quick-window-duplicate-member`, `quick-window-member-family-unsupported`, `quick-window-member-datatype-unsupported`, `quick-window-member-access-unsupported` |
+| Ordre déterministe rompu | `quick-window-registry-unsorted`, `quick-window-invocation-registry-unsorted`, `quick-window-members-unsorted:<ns>`, `quick-window-bindings-unsorted:<inv>` |
+| Invocation sans clé, ou visant une définition non déclarée | `quick-window-invocation-key-missing:<index>`, `quick-window-invocation-target-missing:<inv>:<def>` |
+| Invocation alignée sur une autre version d'interface | `quick-window-invocation-version-mismatch:<inv>` |
+| Liaison invalide, dupliquée, sur un membre absent, de source inconnue, ou `Tag` sans `TagId` | `quick-window-binding-invalid`, `quick-window-duplicate-binding`, `quick-window-binding-member-missing`, `quick-window-binding-source-unsupported`, `quick-window-binding-tag-missing` |
+
+Avertissements (`warnings`, non bloquants) :
+
+- `quick-window-required-unbound:<inv>:<member>` — un port requis non lié reste **transportable** : le runtime partagé refuse déjà cette invocation au montage, fail-closed. Le refuser au transport contredirait le paquet de handshake, qui embarque délibérément ce scénario.
+- `quick-window-unreferenced-definition:<key>` — définition déclarée qu'aucune invocation ne cible.
+
+`load_quick_window_registries(package_root, manifest)` est le point d'ingestion : dès qu'une erreur est relevée, elle renvoie des registres **vides**, de sorte qu'aucun appelant ne peut monter un contenu que ce module a refusé. `load_scada_builder_package` expose le résultat sous `quick_windows` et `quick_window_invocations`.
+
+L'upload admin refuse en outre les entrées de type lien d'une archive (`unsafe archive link`) avant toute écriture, et un package refusé ne remplace jamais le projet actif : `import_project_from_zip` détruit sa destination et n'active rien.
 
