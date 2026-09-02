@@ -1,13 +1,14 @@
 # Fenêtres rapides paramétrées - Plan d’implémentation
 
 Date: 2026-08-10
-Status: Active implementation plan - phases 0 to 2 complete; phase 2 reopened by Task 2.4; phase 3 pending
-Document version: `V2.1.5.0047`
+Status: Active implementation plan - phases 0 to 4 closed; phase 5 in progress (5.1, 5.2 done; 5.3 soak running since 2026-09-02, production deployment undecided); phases 5.4 to 7 not started
+Document version: `V2.1.5.0048`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-02 | `V2.1.5.0048` | `49b6d71` | Task 5.3 outillée et soak lancé : paquet de charge élargi, alimentateur Redis, harnais d'endurance et canary WSL réel; suites des deux dépôts rejouées vertes. Limites actées ci-dessous. |
 | 2026-08-25 | `V2.1.5.0047` | `dce0941` | Task 5.3 : conformance cross-runtime, SLA, canary et rollback exécutés; soak 24 h et production restent à décider. |
 | 2026-08-25 | `V2.1.5.0046` | `705077c` | Task 5.2 exécutée : adaptateur host, gestionnaire SinglePerDefinition, service du fragment par namespace et invalidation de navigation. |
 | 2026-08-25 | `V2.1.5.0045` | `40e300a` | Task 5.1 exécutée : TF100Web valide et ingère les registres 2.3, fail-closed avant activation et déploiement. |
@@ -68,8 +69,39 @@ Document version: `V2.1.5.0047`
 - [x] Phase 4 close: rapport d'audit `docs/superpowers/reports/2026-08-25-quick-window-phase-4-audit.md` et entrée `phase 4` dans `tools/quick-window/checkpoints.json`.
 - [x] Phase 5.1: registres 2.3 validés et ingérés par TF100Web (TF100Web `20998ab`).
 - [x] Phase 5.2: host TF100Web et SinglePerDefinition (TF100Web `2562bcd`).
-- [~] Phase 5.3: conformance cross-runtime, canary et rollback verts (TF100Web `9304355`); soak 24 h et déploiement production non exécutés, décision humaine requise.
+- [~] Phase 5.3: conformance cross-runtime, canary et rollback verts (TF100Web `9304355`); outillage du soak livré et soak 24 h **en cours** depuis le 2026-09-02 12:59 (Builder `49b6d71`, TF100Web `ef3ecde`); déploiement production non exécuté, décision humaine requise.
 - [ ] Phases 5.4 à 7: non démarrées.
+
+### Limites actées du soak du 2026-09-02
+
+Le soak tourne sur un canary WSL réel (`127.0.0.1:8010`, base `tf100_canary` dédiée, `STATIC_ROOT`
+distinct, paquet `quick-window-soak.sb2` SHA `f0647722`, génération `ad35f17a`). Quatre choses qu'il
+ne prouvera pas, à reprendre telles quelles dans le rapport de phase plutôt qu'à découvrir après coup:
+
+- **Écriture non éprouvée.** `StationMappingWriteView` attaque le driver de protocole en direct et en
+  synchrone; sans PLC, toute écriture échoue au driver. Seul le chemin d'échec est exercé. Conforme à
+  la posture read-only que le plan impose déjà, mais le chemin nominal reste non couvert.
+- **Aucune page 2.1/2.2/2.3 sur ce canary.** La base est neuve et ne porte qu'une station
+  `SCADA_BUILDER_2`. Le critère « aucun impact sur les pages existantes » est donc dégénéré: il prouve
+  qu'une page se compose encore après 24 h, pas l'absence d'impact sur des pages historiques absentes.
+- **Chemin clic → commande → intention hors couverture.** `Ft100SceneExporter` refuse à l'export tout
+  projet portant une commande `OpenQuickWindow` tant que les capacités sont `Blocked` (gate de la
+  Task 4.2). Aucune page appelante cliquable ne peut donc exister avant la Phase 6, et le harnais entre
+  par `ScadaRuntime.QuickWindow.open()`, sous la frontière d'intention. Ce n'est pas un contournement:
+  le gate est respecté, et la couverture manquante est une conséquence de l'ordonnancement du plan.
+- **Cookies relâchés.** `SESSION_COOKIE_SECURE` et `CSRF_COOKIE_SECURE` valent `True` sans condition
+  dans `settings.py`; le canary les neutralise pour du HTTP sur boucle locale. Concession de transport,
+  orthogonale à l'endurance.
+
+### Écart constaté hors périmètre: titre de fenêtre rapide (`FR-UI-03`)
+
+Le manifeste compilé porte `PresentationDefaults.Title: null`, et le host rend
+`intent.title || presentation.Title || ""`: la barre de titre du runtime déployé est **vide**.
+`QuickWindowPresentationDefaults.EffectiveTitle(displayName)` implémente pourtant le repli sur
+`DisplayName`, mais seul l'aperçu Builder l'utilise (`QuickWindowPreviewProjection`);
+`QuickWindowCompiler` sérialise le `Title` brut. L'aperçu affiche donc « Pompe » là où le déploiement
+n'affiche rien. Aucun test ne l'assertait. Non corrigé: la correction touche le compilateur et
+régénérerait la fixture de handshake gelée, ce qui relève d'une décision délibérée.
 
 Audit du 2026-08-21: la spec a été étendue par `FR-030..036` et `FR-UI-23..26`. Le plan ajoute en conséquence Task 2.4, Task 3.5, Task 3.6, Task 4.0 et Task 5.4. La Phase 0 n'est pas rouverte: la composition header/pied et la coexistence legacy n'existent que dans un host composé réel et sont donc prouvées en Phase 5 contre TF100Web, sans invalider le hash de fixture gelé.
 
@@ -914,11 +946,12 @@ Les gardes de route de la vue de fragment exigent le graphe d'applications Djang
 
 - [x] Exécuter suites Builder/Node/TF100Web, mutation d’une capacité à la fois, preview/host equivalence et package déterministe.
 - [x] **Canary/staging obligatoire:** déployer d’abord le package dans une instance TF100Web non industrielle utilisant un `STATIC_ROOT` distinct. Réutiliser `deploy_package_to_static(package_dir, canary_static_root)` et une configuration de station de test; ne pas remplacer `STATIC_ROOT/scada` actif. Vérifier commit, génération, registre de capacités et SHA effectivement servis.
-- [~] Exécuter sur le canary la conformance complète, les races, 100 cycles, les SLA p95 et un soak d’au moins 24 h sans erreur QuickWindow, croissance mémoire ni impact sur les pages 2.1/2.2/2.3 existantes.
+- [~] Exécuter sur le canary la conformance complète, les races, 100 cycles, les SLA p95 et un soak d’au moins 24 h sans erreur QuickWindow, croissance mémoire ni impact sur les pages 2.1/2.2/2.3 existantes. *(conformance, races, cycles et SLA harnais faits; soak 24 h lancé le 2026-09-02 12:59 sur canary WSL réel, p95 chaud navigateur mesuré à 150 ms sur run de validation; voir les limites actées en tête de document.)*
 - [x] Éprouver le rollback avant production: conserver l’archive `.sb2`, le SHA et la génération known-good; redéployer ce package dans le canary, vérifier retour des pages/runtime/hash et documenter le temps de restauration. Le rollback production est un redéploiement atomique du package known-good, jamais une édition manuelle de `STATIC_ROOT`.
 - [ ] Après autorisation distincte, déployer TF100Web en production. *(non exécuté: décision humaine requise)* Effectuer un smoke read-only, surveiller erreurs et métriques, puis conserver la possibilité de redéployer immédiatement le package known-good.
 - [ ] Ne promouvoir aucune capacité et ne passer à Phase 6 qu’après canary/soak/rollback verts et preuve du déploiement production capable. Si production échoue, redéployer known-good et garder toutes les capacités Builder `Blocked`.
 - [x] Commit: `test: prove quick window host conformance` (TF100Web `9304355`).
+- [x] Outillage du soak: paquet de charge élargi (Builder `49b6d71`), alimentateur Redis, harnais d'endurance, réglages/urls/middleware du canary et suites associées (TF100Web `ef3ecde`).
 
 **Vérification:**
 
