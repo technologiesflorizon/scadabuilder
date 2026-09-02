@@ -20,6 +20,35 @@ $builderRoot = "F:\Groupe AMR\SCADA_AMR_GROUP\SCADA_BUILDER_V2"
 $tf100Root   = "F:\Projet\Git\TF100Web"
 $checkpointFile = Join-Path $builderRoot "tools/quick-window/checkpoints.json"
 
+# Branches attendues. Un checkpoint est une preuve de rollback: enregistrer le HEAD d'une autre
+# branche est pire que ne rien enregistrer, parce que rien ne le signale a la lecture.
+$expectedBuilderBranch = "codex/GestionFenetreRapide"
+$expectedTf100Branch   = "codex/quick-window-v1"
+
+<#
+.SYNOPSIS
+  Resout le repertoire ou la branche attendue est effectivement checkoutee.
+.DESCRIPTION
+  Le checkout principal peut etre sur un tout autre chantier - il l'etait le 2026-09-02, sur
+  chantier/lorawan-wm1302 - pendant que le travail vit dans un worktree. `git worktree list`
+  donne la reponse; sans correspondance la fonction retourne $null et l'appelant echoue.
+#>
+function Resolve-WorktreeForBranch($root, $branch) {
+  $current = (& git -C $root branch --show-current 2>$null)
+  if ($current -and $current.Trim() -eq $branch) { return $root }
+
+  $lines = & git -C $root worktree list --porcelain 2>$null
+  $path = $null
+  foreach ($line in $lines) {
+    if ($line -like "worktree *") { $path = $line.Substring(9).Trim() }
+    elseif ($line -like "branch *") {
+      $found = $line.Substring(7).Trim() -replace "^refs/heads/", ""
+      if ($found -eq $branch -and $path) { return $path }
+    }
+  }
+  return $null
+}
+
 function Get-GitInfo($root) {
   $head = & git -C $root rev-parse HEAD 2>$null
   $branch = & git -C $root branch --show-current 2>$null
@@ -27,8 +56,28 @@ function Get-GitInfo($root) {
   return @{ head = $head.Trim(); branch = $branch.Trim(); status = $status.Trim() }
 }
 
+$builderRoot = Resolve-WorktreeForBranch $builderRoot $expectedBuilderBranch
+if (-not $builderRoot) {
+  throw "Aucun checkout ni worktree sur '$expectedBuilderBranch' cote Builder: checkpoint refuse."
+}
+$tf100Resolved = Resolve-WorktreeForBranch $tf100Root $expectedTf100Branch
+if (-not $tf100Resolved) {
+  throw "Aucun checkout ni worktree sur '$expectedTf100Branch' cote TF100Web: checkpoint refuse."
+}
+$tf100Root = $tf100Resolved
+
 $builder = Get-GitInfo $builderRoot
 $tf100   = Get-GitInfo $tf100Root
+
+# Un worktree sale rend le HEAD non reproductible, donc inutilisable comme point de reprise.
+if ($builder.status -notmatch "^## [^
+]+$") {
+  throw "Worktree Builder non propre; un checkpoint doit pointer un etat reproductible."
+}
+if ($tf100.status -notmatch "^## [^
+]+$") {
+  throw "Worktree TF100Web non propre; un checkpoint doit pointer un etat reproductible."
+}
 
 $entry = [ordered]@{
   phase = $Phase
@@ -73,4 +122,4 @@ if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir -Force | Ou
 $data | ConvertTo-Json -Depth 6 | Set-Content -Path $checkpointFile -Encoding utf8
 Write-Host "Checkpoint $Phase enregistre dans $checkpointFile" -ForegroundColor Green
 Write-Host "  Builder: $($builder.branch) $($builder.head)" 
-Write-Host "  TF100Web: $($tf100.branch) $($tf100.head)"
+Write-Host "  TF100Web: $($tf100.branch) $($tf100.head)  ($tf100Root)"
