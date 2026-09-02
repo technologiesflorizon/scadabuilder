@@ -1,13 +1,14 @@
 # Fenêtres rapides paramétrées - Plan d’implémentation
 
 Date: 2026-08-10
-Status: Active implementation plan - phases 0 to 4 closed; phase 5 in progress (5.1, 5.2 done; 5.3 soak running since 2026-09-02, production deployment undecided); phases 5.4 to 7 not started
-Document version: `V2.1.5.0048`
+Status: Active implementation plan - phases 0 to 4 closed; phase 5 in progress (5.1, 5.2 done; 5.3 soak running since 2026-09-02, production deployment undecided); 5.4 proofs done except one traversal direction; phases 6 to 7 not started
+Document version: `V2.1.5.0049`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-02 | `V2.1.5.0049` | `744075d` | Task 5.4 quasi close : composition et isolation legacy prouvées; un chemin Fragment de substitution réel découvert et corrigé (`load_composed_page` composait un namespace `qw-*` comme page). Sens 2 du refus de traversée non prouvé. |
 | 2026-09-02 | `V2.1.5.0048` | `49b6d71` | Task 5.3 outillée et soak lancé : paquet de charge élargi, alimentateur Redis, harnais d'endurance et canary WSL réel; suites des deux dépôts rejouées vertes. Limites actées ci-dessous. |
 | 2026-08-25 | `V2.1.5.0047` | `dce0941` | Task 5.3 : conformance cross-runtime, SLA, canary et rollback exécutés; soak 24 h et production restent à décider. |
 | 2026-08-25 | `V2.1.5.0046` | `705077c` | Task 5.2 exécutée : adaptateur host, gestionnaire SinglePerDefinition, service du fragment par namespace et invalidation de navigation. |
@@ -977,13 +978,13 @@ node --test frontend/tests_runtime_js/quick-window-cross-runtime-harness.mjs   #
 
 > La Phase 0 n'est pas rejouée pour ces cas: ils n'existent que dans un host composé réel. Le hash de fixture gelé reste valide et ces preuves appartiennent au host.
 
-- [ ] Prouver qu'une invocation portée par un Element+ d'une page `Header` ou `Footer` ouvre son instance dans la racine host de la page composée, au-dessus du header/contenu/pied (`FR-030`).
-- [ ] Prouver qu'aucune instance n'est possédée par un fragment header/pied et qu'un seul gestionnaire existe par racine composée.
-- [ ] Prouver que la navigation ferme la chaîne complète, y compris une fenêtre ouverte depuis un header persistant, avant de résoudre la nouvelle page; aucune liaison de la génération précédente ne survit.
-- [ ] Prouver que l'invalidation de session/déploiement ferme la chaîne sans écriture ni mutation d'historique.
-- [ ] Monter une page portant simultanément un popup `Fragment` legacy et une Fenêtre rapide (`FR-036`): backdrops distincts, bandes de z-order distinctes, pièges de focus distincts, `dispose` non croisé.
-- [ ] Prouver le refus de traversée: un contenu de Fenêtre rapide n'ouvre pas de popup legacy et un popup legacy n'ouvre pas de Fenêtre rapide.
-- [ ] Commit TF100Web: `test: prove quick window composition and legacy isolation`.
+- [x] Prouver qu'une invocation portée par un Element+ d'une page `Header` ou `Footer` ouvre son instance dans la racine host de la page composée, au-dessus du header/contenu/pied (`FR-030`).
+- [x] Prouver qu'aucune instance n'est possédée par un fragment header/pied et qu'un seul gestionnaire existe par racine composée. *(a révélé un défaut réel: `load_composed_page` composait un namespace `qw-*` comme page — chemin Fragment de substitution atteignable en 200 sur déploiement réel; corrigé par un garde sur le registre.)*
+- [x] Prouver que la navigation ferme la chaîne complète, y compris une fenêtre ouverte depuis un header persistant, avant de résoudre la nouvelle page; aucune liaison de la génération précédente ne survit.
+- [x] Prouver que l'invalidation de session/déploiement ferme la chaîne sans écriture ni mutation d'historique.
+- [x] Monter une page portant simultanément un popup `Fragment` legacy et une Fenêtre rapide (`FR-036`): backdrops distincts, bandes de z-order distinctes, pièges de focus distincts, `dispose` non croisé. *(bandes 10000/10500/10600 assertées contre le CSS et le JS livrés; le piège de focus de la fenêtre rapide est prouvé borné à son cadre, l'existence d'un piège propre au popup legacy n'est pas affirmée.)*
+- [~] Prouver le refus de traversée: un contenu de Fenêtre rapide n'ouvre pas de popup legacy et un popup legacy n'ouvre pas de Fenêtre rapide. *(sens 1 couvert: `DEC-0050` retire les command kinds popup côté Builder (Phase 1.3) et le host charge par namespace seul, jamais par un chemin choisi par l'intention. Sens 2 non prouvé: le contenu d'un popup legacy est monté puis normalisé comme tout fragment, et une intention `openQuickWindow` émise depuis lui porte un `sourcePageId` monté — rien n'a été trouvé qui la refuse. À traiter.)*
+- [x] Commit TF100Web: `test: prove quick window composition and legacy isolation` (TF100Web `744075d`).
 
 **Vérification:**
 
