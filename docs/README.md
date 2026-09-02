@@ -8,7 +8,7 @@ Document version: `V2.1.5.0052`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-02 | `V2.1.5.0052` | `PENDING` | Preparation de la Phase 6 : inventaire des treize capacites par couche, arithmetique de version et outillage verifies; deux ecarts relevees dans l'enonce. Rien n'est promu. |
+| 2026-09-02 | `V2.1.5.0052` | `9aa93ac` | Preparation de la Phase 6 : inventaire des treize capacites par couche, arithmetique de version et outillage verifies; deux ecarts relevees dans l'enonce. Rien n'est promu. |
 | 2026-09-02 | `V2.1.5.0051` | `ea54079` | Audit de Phase 5 ouvert pendant la phase; enregistreur de checkpoint rendu fail-closed sur la branche et la proprete des worktrees. |
 | 2026-09-02 | `V2.1.5.0050` | `2c3f451` | Task 5.4 close : composition et isolation legacy prouvees; traversee popup legacy vers Fenetre rapide refusee fail-closed. |
 | 2026-09-02 | `V2.1.5.0049` | `fbb1079` | Task 5.4 : chemin Fragment de substitution reel decouvert et corrige; `load_composed_page` composait un namespace `qw-*` comme page. |

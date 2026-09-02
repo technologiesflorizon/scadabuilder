@@ -8,7 +8,7 @@ Document version: `V2.1.5.0052`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-02 | `V2.1.5.0052` | `PENDING` | Note de préparation : inventaire des treize capacités par couche, arithmétique de version, vérification de l'outillage, et deux écarts constatés dans l'énoncé de la Phase 6. |
+| 2026-09-02 | `V2.1.5.0052` | `9aa93ac` | Note de préparation : inventaire des treize capacités par couche, arithmétique de version, vérification de l'outillage, et deux écarts constatés dans l'énoncé de la Phase 6. |
 
 ## 1. Ce que ce document est, et n'est pas
 

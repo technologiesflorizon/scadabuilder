@@ -8,7 +8,7 @@ Document version: `V2.1.5.0052`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-02 | `V2.1.5.0052` | `PENDING` | Préparation de la Phase 6 : inventaire des treize capacités par couche, arithmétique de version et outillage vérifiés. Deux écarts relevés dans l'énoncé — `nesting.depth-2` est livrée et prouvée, et la Task 6.2 suppose un gate temporaire qui n'existe pas. Rien n'est promu. |
+| 2026-09-02 | `V2.1.5.0052` | `9aa93ac` | Préparation de la Phase 6 : inventaire des treize capacités par couche, arithmétique de version et outillage vérifiés. Deux écarts relevés dans l'énoncé — `nesting.depth-2` est livrée et prouvée, et la Task 6.2 suppose un gate temporaire qui n'existe pas. Rien n'est promu. |
 | 2026-09-02 | `V2.1.5.0051` | `db2105e` | Audit de Phase 5 ouvert (`docs/superpowers/reports/2026-09-02-quick-window-phase-5-audit.md`), conclusion suspendue au verdict du soak; enregistreur de checkpoint rendu fail-closed sur la branche et la propreté des worktrees. |
 | 2026-09-02 | `V2.1.5.0050` | `70d7e02` | Task 5.4 close : refus de traversée sens 2 implémenté et prouvé; une intention de Fenêtre rapide émise depuis un popup legacy atteignait le host, désormais refusée fail-closed. |
 | 2026-09-02 | `V2.1.5.0049` | `744075d` | Task 5.4 quasi close : composition et isolation legacy prouvées; un chemin Fragment de substitution réel découvert et corrigé (`load_composed_page` composait un namespace `qw-*` comme page). Sens 2 du refus de traversée non prouvé. |
