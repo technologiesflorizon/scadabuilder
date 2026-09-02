@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 4 closed; phase 5 in progress (5.1, 5.2 done; 5.3 soak running since 2026-09-02, production deployment undecided); 5.4 closed; phases 6 to 7 not started
-Document version: `V2.1.5.0050`
+Document version: `V2.1.5.0051`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-02 | `V2.1.5.0051` | `db2105e` | Audit de Phase 5 ouvert (`docs/superpowers/reports/2026-09-02-quick-window-phase-5-audit.md`), conclusion suspendue au verdict du soak; enregistreur de checkpoint rendu fail-closed sur la branche et la propreté des worktrees. |
 | 2026-09-02 | `V2.1.5.0050` | `70d7e02` | Task 5.4 close : refus de traversée sens 2 implémenté et prouvé; une intention de Fenêtre rapide émise depuis un popup legacy atteignait le host, désormais refusée fail-closed. |
 | 2026-09-02 | `V2.1.5.0049` | `744075d` | Task 5.4 quasi close : composition et isolation legacy prouvées; un chemin Fragment de substitution réel découvert et corrigé (`load_composed_page` composait un namespace `qw-*` comme page). Sens 2 du refus de traversée non prouvé. |
 | 2026-09-02 | `V2.1.5.0048` | `49b6d71` | Task 5.3 outillée et soak lancé : paquet de charge élargi, alimentateur Redis, harnais d'endurance et canary WSL réel; suites des deux dépôts rejouées vertes. Limites actées ci-dessous. |
