@@ -2,12 +2,17 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.5.0047`
+Document version: `V2.1.5.0052`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-02 | `V2.1.5.0052` | `PENDING` | Preparation de la Phase 6 : inventaire des treize capacites par couche, arithmetique de version et outillage verifies; deux ecarts relevees dans l'enonce. Rien n'est promu. |
+| 2026-09-02 | `V2.1.5.0051` | `ea54079` | Audit de Phase 5 ouvert pendant la phase; enregistreur de checkpoint rendu fail-closed sur la branche et la proprete des worktrees. |
+| 2026-09-02 | `V2.1.5.0050` | `2c3f451` | Task 5.4 close : composition et isolation legacy prouvees; traversee popup legacy vers Fenetre rapide refusee fail-closed. |
+| 2026-09-02 | `V2.1.5.0049` | `fbb1079` | Task 5.4 : chemin Fragment de substitution reel decouvert et corrige; `load_composed_page` composait un namespace `qw-*` comme page. |
+| 2026-09-02 | `V2.1.5.0048` | `cdaf03f` | Task 5.3 outillee et soak 24 h lance : paquet de charge elargi, alimentateur Redis, harnais d'endurance et canary WSL reel. |
 | 2026-08-25 | `V2.1.5.0047` | `dce0941` | Task 5.3 : conformance cross-runtime des Fenetres rapides, epreuves canary et rollback; soak et production restent a decider. |
 | 2026-08-25 | `V2.1.5.0046` | `705077c` | Task 5.2 : adaptateur host TF100Web et gestionnaire SinglePerDefinition livres; capacites toujours `Blocked`. |
 | 2026-08-25 | `V2.1.5.0045` | `40e300a` | Task 5.1 : TF100Web ingere et refuse fail-closed les registres Fenetre rapide du manifest 2.3 avant activation et deploiement. |
