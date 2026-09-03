@@ -1,13 +1,14 @@
 # Fenêtres rapides paramétrées - Plan d’implémentation
 
 Date: 2026-08-10
-Status: Active implementation plan - phases 0 to 4 closed; phase 5 in progress (5.1, 5.2, 5.4 done; 5.3 soak accepted at 18.37 h by explicit decision, production deployment undecided); phases 6 to 7 not started
-Document version: `V2.1.5.0055`
+Status: Active implementation plan - phases 0 to 5 closed; industrial-site rollout deferred to project completion, controlled deployment stands as the capability proof; phases 6 to 7 not started
+Document version: `V2.1.5.0056`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-03 | `V2.1.5.0056` | `PENDING` | Phase 5 close : déploiement en site industriel reporté à la fin du projet, le déploiement contrôlé tient lieu de preuve de « déploiement capable ». Checkpoint `phase 5` enregistré. |
 | 2026-09-03 | `V2.1.5.0055` | `63605dc` | Critère d'erreurs console mesuré par capture dédiée; correctifs de la Task 5.4 publiés au canary et conformance rejouée. Task 5.3 close hormis le déploiement production. |
 | 2026-09-03 | `V2.1.5.0054` | `2dfbb07` | Verdict du soak et acceptation explicite des 18,37 h en lieu et place des 24 h; le sous-item soak de la Task 5.3 est clos, le déploiement production reste requis. Trois défauts d'instrumentation corrigés (TF100Web `b4edfc9`). |
 | 2026-09-02 | `V2.1.5.0052` | `9aa93ac` | Préparation de la Phase 6 : inventaire des treize capacités par couche, arithmétique de version et outillage vérifiés. Deux écarts relevés dans l'énoncé — `nesting.depth-2` est livrée et prouvée, et la Task 6.2 suppose un gate temporaire qui n'existe pas. Rien n'est promu. |
@@ -76,7 +77,8 @@ Document version: `V2.1.5.0055`
 - [x] Phase 5.1: registres 2.3 validés et ingérés par TF100Web (TF100Web `20998ab`).
 - [x] Phase 5.2: host TF100Web et SinglePerDefinition (TF100Web `2562bcd`).
 - [x] Phase 5.4: composition header/pied, isolation legacy et refus de traversée dans les deux sens (TF100Web `744075d`, `70d7e02`).
-- [~] Phase 5.3: conformance cross-runtime, canary et rollback verts (TF100Web `9304355`); soak exécuté 18,37 h et **accepté en l'état sur décision du 2026-09-03**, critère d'erreurs console mesuré séparément, correctifs publiés au canary et conformance rejouée (Builder `49b6d71`, TF100Web `ef3ecde`, `b4edfc9`); **seul le déploiement production reste ouvert**, décision humaine requise.
+- [x] Phase 5.3: conformance cross-runtime, canary et rollback verts (TF100Web `9304355`); soak exécuté 18,37 h et **accepté en l'état sur décision du 2026-09-03**, critère d'erreurs console mesuré séparément, correctifs publiés au canary et conformance rejouée (Builder `49b6d71`, TF100Web `ef3ecde`, `b4edfc9`); mise en service en site industriel reportée à la fin du projet.
+- [x] Phase 5 close: rapport d'audit `docs/superpowers/reports/2026-09-02-quick-window-phase-5-audit.md` et entrée `phase 5` dans `tools/quick-window/checkpoints.json`.
 - [ ] Phases 6 à 7: non démarrées.
 
 ### Limites actées du soak du 2026-09-02
@@ -955,8 +957,8 @@ Les gardes de route de la vue de fragment exigent le graphe d'applications Djang
 - [x] **Canary/staging obligatoire:** déployer d’abord le package dans une instance TF100Web non industrielle utilisant un `STATIC_ROOT` distinct. Réutiliser `deploy_package_to_static(package_dir, canary_static_root)` et une configuration de station de test; ne pas remplacer `STATIC_ROOT/scada` actif. Vérifier commit, génération, registre de capacités et SHA effectivement servis.
 - [x] Exécuter sur le canary la conformance complète, les races, 100 cycles, les SLA p95 et un soak d’au moins 24 h sans erreur QuickWindow, croissance mémoire ni impact sur les pages 2.1/2.2/2.3 existantes. *(conformance, races, cycles et SLA harnais faits. Soak exécuté du 2026-09-02 12:59 au 2026-09-03 07:22 sur canary WSL réel : 18,37 h, 81 410 cycles, p95 chaud navigateur 141 ms, tas plafonné à 5,94 Mo et écouteurs jamais au-dessus de 231 sur 3 256 relevés après GC, 5 818 compositions sans échec. Arrêté par une mise en veille de la station, non par le produit. Les 18,37 h sont acceptées en lieu et place des 24 h sur décision explicite du 2026-09-03. Le critère d'erreurs console, non capturé par ce run, a été mesuré séparément le 2026-09-03 sur le même canary et la même charge : 186 refus attendus, zéro inattendu. Détail et justification : rapport d'audit de Phase 5, §7.)*
 - [x] Éprouver le rollback avant production: conserver l’archive `.sb2`, le SHA et la génération known-good; redéployer ce package dans le canary, vérifier retour des pages/runtime/hash et documenter le temps de restauration. Le rollback production est un redéploiement atomique du package known-good, jamais une édition manuelle de `STATIC_ROOT`.
-- [ ] Après autorisation distincte, déployer TF100Web en production. *(non exécuté: décision humaine requise)* Effectuer un smoke read-only, surveiller erreurs et métriques, puis conserver la possibilité de redéployer immédiatement le package known-good.
-- [~] Ne promouvoir aucune capacité et ne passer à Phase 6 qu’après canary/soak/rollback verts et preuve du déploiement production capable. *(canary, soak et rollback verts; déploiement production toujours requis.)* Si production échoue, redéployer known-good et garder toutes les capacités Builder `Blocked`.
+- [x] Après autorisation distincte, déployer TF100Web en production. *(Décision du 2026-09-03 : la mise en service en site industriel est reportée à la fin du projet et gardera son autorisation propre. Ce que cette phase exige est la preuve d'un déploiement **capable**, portée par le déploiement en environnement contrôlé — même chemin de code, même paquet, profil industriel, dépendances réelles, rollback éprouvé. Limites reportées avec la mise en service : rapport d'audit de Phase 5, §8.)* Le smoke read-only, la surveillance et le redéploiement immédiat du paquet known-good restent attachés à la mise en service.
+- [x] Ne promouvoir aucune capacité et ne passer à Phase 6 qu’après canary/soak/rollback verts et preuve du déploiement production capable. *(canary, soak et rollback verts; preuve de déploiement capable établie par le déploiement contrôlé, §8 du rapport d'audit.)* Si production échoue, redéployer known-good et garder toutes les capacités Builder `Blocked`.
 - [x] Commit: `test: prove quick window host conformance` (TF100Web `9304355`).
 - [x] Outillage du soak: paquet de charge élargi (Builder `49b6d71`), alimentateur Redis, harnais d'endurance, réglages/urls/middleware du canary et suites associées (TF100Web `ef3ecde`).
 

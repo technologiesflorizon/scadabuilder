@@ -1,13 +1,14 @@
 # Audit d'implémentation Fenêtres rapides — Phase 5
 
 Date: 2026-09-02
-Status: 5.1, 5.2 et 5.4 closes; 5.3 close hormis le déploiement production — soak accepté sur décision (§7.6), critère d'erreurs mesuré (§7.7), correctifs publiés au canary (§7.8); capacités toujours `Blocked`
-Document version: `V2.1.5.0055`
+Status: **Phase 5 close.** Les quatre tâches sont satisfaites; le déploiement en site industriel est reporté à la fin du projet et le déploiement en environnement contrôlé tient lieu de preuve de capacité (§8). Capacités toujours `Blocked` — leur promotion est l'objet de la Phase 6.
+Document version: `V2.1.5.0056`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-03 | `V2.1.5.0056` | `PENDING` | Phase 5 close : le déploiement en site industriel est reporté à la fin du projet, le déploiement contrôlé tient lieu de preuve de « déploiement capable » au sens du plan. Checkpoint de Phase 5 enregistré. |
 | 2026-09-03 | `V2.1.5.0055` | `63605dc` | Critère d'erreurs console mesuré par capture dédiée (186 refus attendus, zéro inattendu); correctifs de la Task 5.4 publiés au canary et vérifiés en place; conformance rejouée. Correction : les critères de fuite sont plats et plafonnés, pas décroissants — la lecture précédente prenait une phase d'oscillation pour une tendance. |
 | 2026-09-03 | `V2.1.5.0054` | `82ea206` | Acceptation explicite du soak de 18,37 h en lieu et place des 24 h du runbook; la Task 5.3 est close sur cette décision. La preuve mesurée n'est pas modifiée. |
 | 2026-09-03 | `V2.1.5.0053` | `8e61306` | Verdict du soak : quatre critères de qualité verts sur 18,37 h, durée insuffisante, critère d'erreurs non mesuré. Trois défauts d'instrumentation trouvés par le run et corrigés. Le soak reste à refaire. |
@@ -25,11 +26,11 @@ Sur les quatre tâches:
 
 Aucune capacité n'est promue. Les treize identifiants `quick-window.*` restent `Blocked`, et le paquet de soak, comme celui de handshake, n'en déclare aucune.
 
-**Le déploiement production n'est pas exécuté** et reste soumis à une autorisation distincte.
+**Le déploiement en site industriel n'est pas exécuté** : il est reporté à la fin du projet et gardera son autorisation propre. Ce que le plan exige à ce stade est la preuve d'un *déploiement capable*, et c'est le déploiement en environnement contrôlé qui la porte (§8).
 
 ## 2. Preuves d'exécution
 
-Exécutions des 2026-09-02 et 2026-09-03, Builder `2c3f451` (`codex/GestionFenetreRapide`) et TF100Web `b4edfc9` (`codex/quick-window-v1`).
+Exécutions des 2026-09-02 et 2026-09-03, Builder `codex/GestionFenetreRapide` et TF100Web `b4edfc9` (`codex/quick-window-v1`). Les suites ci-dessous ont toutes été rejouées le 2026-09-03.
 
 | Vérification | Commande | Résultat |
 | --- | --- | --- |
@@ -37,8 +38,9 @@ Exécutions des 2026-09-02 et 2026-09-03, Builder `2c3f451` (`codex/GestionFenet
 | Runtime JS Builder | `npm --prefix tests/runtime-js test` | 80/80 |
 | Runtime JS TF100Web | `node --test frontend/tests_runtime_js/*.test.mjs` | 97/97 (87 + 10 de reprise de soak) |
 | Soak, run du 2026-09-02 | `--rebuild artifacts/quick-window-soak/2026-09-02T16-59-43-926Z/samples.jsonl` | `FAIL` : 4 critères verts, durée 18,37 h, erreurs non mesurées |
-| Suites Fenêtres rapides TF100Web | `pytest frontend/tests_scada_quick_window_*.py` | 37 + 11 subtests |
-| Conformance cross-runtime | `manage.py test frontend.tests_runtime_conformance` | 14 OK, 1 skipped |
+| Suites Fenêtres rapides TF100Web | `manage.py test frontend.tests_scada_quick_window_*` | 41, 1 skip opt-in, OK |
+| Conformance cross-runtime | `manage.py test frontend.tests_runtime_conformance` | 14 OK, 1 skipped — rejouée après publication des correctifs |
+| Capture des erreurs console | `--rebuild artifacts/quick-window-errorcapture/2026-09-03T20-54-32-015Z/samples.jsonl` | 186 refus attendus, **zéro inattendu** |
 | Fixture gelée, SHA croisé | `sha256sum` des deux dépôts | `ea82aef5…` identique |
 | Gate documentaire | `tools/docs/verify-docs.ps1` | Errors: 0 (121 warnings préexistants) |
 | Résolution du checkpoint | `Resolve-WorktreeForBranch` sur les deux dépôts | Builder et worktree TF100Web trouvés, branche inconnue refusée |
@@ -206,10 +208,33 @@ Publiés puis vérifiés contre le déploiement réel, non contre un test :
 
 Conformance cross-runtime rejouée après publication : 14 tests, 1 skip opt-in, OK.
 
-## 8. Reste à faire avant la Phase 6
+## 8. Décision : ce qui tient lieu de preuve de déploiement capable
+
+**Décidé le 2026-09-03 par le propriétaire du projet.** Le déploiement en site industriel ne peut pas avoir lieu tant que le projet n'est pas terminé; il est reporté à cette échéance et gardera son autorisation propre. Le déploiement exécuté en environnement contrôlé tient lieu de preuve.
+
+Ce que le plan demande à ce stade, dans ses propres termes, est « preuve du **déploiement capable** » — pas la preuve d'une mise en service. La distinction est portée par le texte, pas par la décision.
+
+Ce que le déploiement contrôlé partage avec une mise en production, et qui fait la preuve :
+
+- **Le même chemin de code.** `deploy_scada_builder` lit `settings.STATIC_ROOT`; pointer cette valeur sur un répertoire de canary est *toute* la différence. Aucune branche de déploiement spécifique n'est empruntée.
+- **Le même paquet**, `f0647722`, déployé à la génération `ad35f17a`, servi par les mêmes vues de composition et de fragment que la production.
+- **`TF100_DEPLOYMENT_PROFILE = "industrial"`**, donc les mêmes règles d'authentification et de profil qu'un site réel.
+- **Les mêmes dépendances réelles** : MySQL, Redis, un navigateur réel, et le préfixe de proxy inverse émulé à l'identique.
+- **Le rollback éprouvé** : redéploiement atomique du paquet known-good, vérifié, avec temps de restauration mesuré.
+
+Ce que la décision n'achète pas, et qui reste vrai — les limites du §7.5 tiennent telles quelles :
+
+- **Aucun automate.** Le chemin d'écriture n'est exercé que par son échec.
+- **Aucune page 2.1/2.2/2.3 historique** sur ce canary : le critère de non-régression y est dégénéré.
+- **Cookies relâchés** pour du HTTP sur boucle locale.
+- **Aucun opérateur réel**, aucune charge d'exploitation.
+
+Ces quatre points sont ceux que la mise en service devra lever, et ils sont reportés avec elle.
+
+## 9. Reste à faire avant la Phase 6
 
 - [x] ~~Soak 24 h~~ — clos par la décision du §7.6 : le run de 18,37 h est accepté en l'état, sans reprise.
 - [ ] `tools/quick-window/record-checkpoint.ps1 -Phase 5`, les deux worktrees propres.
 - [x] ~~Publier au canary les corrections de `visualisation_import.js` et `scada_builder_composition.py`, puis rejouer la conformance.~~ Fait le 2026-09-03, vérifié contre le déploiement réel (§7.8).
-- [ ] Déploiement production, sur autorisation distincte, avec smoke read-only et possibilité de redéploiement immédiat du paquet known-good.
+- [x] ~~Déploiement production~~ — reporté à la fin du projet par la décision du §8; le déploiement contrôlé porte la preuve de capacité. La mise en service gardera son autorisation propre, avec smoke read-only et redéploiement immédiat du paquet known-good.
 - [ ] Décider du sort de l'écart `FR-UI-03`.

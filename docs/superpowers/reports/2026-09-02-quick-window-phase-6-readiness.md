@@ -2,12 +2,13 @@
 
 Date: 2026-09-02
 Status: PRÉPARATION — aucune capacité promue, aucun gate levé, aucun bump `feature` effectué
-Document version: `V2.1.5.0054`
+Document version: `V2.1.5.0056`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-03 | `V2.1.5.0056` | `PENDING` | Quatre des six préconditions satisfaites : soak, checkpoint, correctifs canary et déploiement. Restent les deux décisions de capacité. |
 | 2026-09-03 | `V2.1.5.0054` | `82ea206` | Précondition du soak marquée satisfaite sur décision explicite; les cinq autres restent ouvertes. |
 | 2026-09-02 | `V2.1.5.0052` | `9aa93ac` | Note de préparation : inventaire des treize capacités par couche, arithmétique de version, vérification de l'outillage, et deux écarts constatés dans l'énoncé de la Phase 6. |
 
@@ -75,14 +76,14 @@ Il ne doit être effectué qu'au moment de la promotion, et seulement si aucune 
 
 ## 6. Préconditions avant d'exécuter la Phase 6
 
-Toutes doivent être vraies. Une l'est aujourd'hui, sur décision; les cinq autres restent ouvertes.
+Toutes doivent être vraies. **Quatre le sont**; il reste deux décisions, et elles portent sur des capacités, pas sur des preuves manquantes.
 
 - [x] Soak — **satisfait sur décision** du 2026-09-03 : le run de 18,37 h est accepté en lieu et place des 24 h du runbook, quatre critères verts, critère d'erreurs non mesuré et non requalifié (audit de Phase 5, §7.6). La preuve mesurée reste `FAIL` telle qu'écrite.
-- [ ] Checkpoint `-Phase 5` enregistré, les deux worktrees propres.
-- [ ] Correctifs de `visualisation_import.js` et `scada_builder_composition.py` publiés au canary, conformance rejouée.
-- [ ] Déploiement production exécuté sur autorisation distincte, avec smoke read-only et rollback disponible.
-- [ ] Décision explicite sur `nesting.depth-2` (§3).
-- [ ] Décision sur l'écart `FR-UI-03` (barre de titre vide), qui régénère la fixture de handshake gelée.
+- [x] Checkpoint `-Phase 5` enregistré, les deux worktrees propres.
+- [x] Correctifs de `visualisation_import.js` et `scada_builder_composition.py` publiés au canary, conformance rejouée et les deux portes vérifiées contre le déploiement réel (audit §7.8).
+- [x] Preuve de **déploiement capable** établie par le déploiement en environnement contrôlé; la mise en service en site industriel est reportée à la fin du projet et gardera son autorisation propre (décision du 2026-09-03, audit §8).
+- [ ] **Décision explicite sur `nesting.depth-2`** (§3) — la seule qui change ce que la Phase 6 promeut.
+- [ ] Décision sur l'écart `FR-UI-03` (barre de titre vide), qui régénère la fixture de handshake gelée. N'empêche techniquement aucune promotion; à trancher avant la fin du projet.
 
 ## 7. Ordre d'exécution proposé
 
