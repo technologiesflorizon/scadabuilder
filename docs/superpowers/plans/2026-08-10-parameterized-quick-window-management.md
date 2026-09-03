@@ -8,7 +8,7 @@ Document version: `V2.1.5.0054`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-03 | `V2.1.5.0054` | `PENDING` | Verdict du soak et acceptation explicite des 18,37 h en lieu et place des 24 h; le sous-item soak de la Task 5.3 est clos, le déploiement production reste requis. Trois défauts d'instrumentation corrigés (TF100Web `b4edfc9`). |
+| 2026-09-03 | `V2.1.5.0054` | `2dfbb07` | Verdict du soak et acceptation explicite des 18,37 h en lieu et place des 24 h; le sous-item soak de la Task 5.3 est clos, le déploiement production reste requis. Trois défauts d'instrumentation corrigés (TF100Web `b4edfc9`). |
 | 2026-09-02 | `V2.1.5.0052` | `9aa93ac` | Préparation de la Phase 6 : inventaire des treize capacités par couche, arithmétique de version et outillage vérifiés. Deux écarts relevés dans l'énoncé — `nesting.depth-2` est livrée et prouvée, et la Task 6.2 suppose un gate temporaire qui n'existe pas. Rien n'est promu. |
 | 2026-09-02 | `V2.1.5.0051` | `db2105e` | Audit de Phase 5 ouvert (`docs/superpowers/reports/2026-09-02-quick-window-phase-5-audit.md`), conclusion suspendue au verdict du soak; enregistreur de checkpoint rendu fail-closed sur la branche et la propreté des worktrees. |
 | 2026-09-02 | `V2.1.5.0050` | `70d7e02` | Task 5.4 close : refus de traversée sens 2 implémenté et prouvé; une intention de Fenêtre rapide émise depuis un popup legacy atteignait le host, désormais refusée fail-closed. |
