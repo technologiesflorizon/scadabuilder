@@ -8,7 +8,7 @@ Document version: `V2.1.5.0055`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-03 | `V2.1.5.0055` | `PENDING` | Critère d'erreurs console mesuré par capture dédiée (186 refus attendus, zéro inattendu); correctifs de la Task 5.4 publiés au canary et vérifiés en place; conformance rejouée. Correction : les critères de fuite sont plats et plafonnés, pas décroissants — la lecture précédente prenait une phase d'oscillation pour une tendance. |
+| 2026-09-03 | `V2.1.5.0055` | `63605dc` | Critère d'erreurs console mesuré par capture dédiée (186 refus attendus, zéro inattendu); correctifs de la Task 5.4 publiés au canary et vérifiés en place; conformance rejouée. Correction : les critères de fuite sont plats et plafonnés, pas décroissants — la lecture précédente prenait une phase d'oscillation pour une tendance. |
 | 2026-09-03 | `V2.1.5.0054` | `82ea206` | Acceptation explicite du soak de 18,37 h en lieu et place des 24 h du runbook; la Task 5.3 est close sur cette décision. La preuve mesurée n'est pas modifiée. |
 | 2026-09-03 | `V2.1.5.0053` | `8e61306` | Verdict du soak : quatre critères de qualité verts sur 18,37 h, durée insuffisante, critère d'erreurs non mesuré. Trois défauts d'instrumentation trouvés par le run et corrigés. Le soak reste à refaire. |
 | 2026-09-02 | `V2.1.5.0051` | `70d7e02` | Ouverture de l'audit de Phase 5 : 5.1, 5.2 et 5.4 conformes; 5.3 outillée et soak lancé; deux défauts réels trouvés et corrigés. La conclusion reste suspendue au verdict du soak. |
