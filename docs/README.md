@@ -8,7 +8,7 @@ Document version: `V2.1.5.0056`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-03 | `V2.1.5.0056` | `PENDING` | Phase 5 close : mise en service en site industriel reportee a la fin du projet, le deploiement controle tient lieu de preuve de deploiement capable. |
+| 2026-09-03 | `V2.1.5.0056` | `5716000` | Phase 5 close : mise en service en site industriel reportee a la fin du projet, le deploiement controle tient lieu de preuve de deploiement capable. |
 | 2026-09-03 | `V2.1.5.0055` | `63605dc` | Critere d'erreurs console mesure par capture dediee; correctifs de la Task 5.4 publies au canary et conformance rejouee; correction de lecture sur les criteres de fuite (plats et plafonnes, non decroissants). |
 | 2026-09-03 | `V2.1.5.0054` | `82ea206` | Soak de 18,37 h accepte sur decision explicite en lieu et place des 24 h; sous-item soak de la Task 5.3 clos, deploiement production toujours requis. La preuve mesuree n'est pas modifiee. |
 | 2026-09-03 | `V2.1.5.0053` | `8e61306` | Verdict du soak : quatre criteres verts sur 18,37 h, duree insuffisante et critere d'erreurs non mesure; trois defauts d'instrumentation corriges. Le soak reste a refaire. |

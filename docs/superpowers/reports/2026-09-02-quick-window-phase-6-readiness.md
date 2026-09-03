@@ -8,7 +8,7 @@ Document version: `V2.1.5.0056`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-03 | `V2.1.5.0056` | `PENDING` | Quatre des six préconditions satisfaites : soak, checkpoint, correctifs canary et déploiement. Restent les deux décisions de capacité. |
+| 2026-09-03 | `V2.1.5.0056` | `5716000` | Quatre des six préconditions satisfaites : soak, checkpoint, correctifs canary et déploiement. Restent les deux décisions de capacité. |
 | 2026-09-03 | `V2.1.5.0054` | `82ea206` | Précondition du soak marquée satisfaite sur décision explicite; les cinq autres restent ouvertes. |
 | 2026-09-02 | `V2.1.5.0052` | `9aa93ac` | Note de préparation : inventaire des treize capacités par couche, arithmétique de version, vérification de l'outillage, et deux écarts constatés dans l'énoncé de la Phase 6. |
 

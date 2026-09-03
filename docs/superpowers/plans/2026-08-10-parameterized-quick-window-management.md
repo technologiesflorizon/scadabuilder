@@ -8,7 +8,7 @@ Document version: `V2.1.5.0056`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-03 | `V2.1.5.0056` | `PENDING` | Phase 5 close : déploiement en site industriel reporté à la fin du projet, le déploiement contrôlé tient lieu de preuve de « déploiement capable ». Checkpoint `phase 5` enregistré. |
+| 2026-09-03 | `V2.1.5.0056` | `5716000` | Phase 5 close : déploiement en site industriel reporté à la fin du projet, le déploiement contrôlé tient lieu de preuve de « déploiement capable ». Checkpoint `phase 5` enregistré. |
 | 2026-09-03 | `V2.1.5.0055` | `63605dc` | Critère d'erreurs console mesuré par capture dédiée; correctifs de la Task 5.4 publiés au canary et conformance rejouée. Task 5.3 close hormis le déploiement production. |
 | 2026-09-03 | `V2.1.5.0054` | `2dfbb07` | Verdict du soak et acceptation explicite des 18,37 h en lieu et place des 24 h; le sous-item soak de la Task 5.3 est clos, le déploiement production reste requis. Trois défauts d'instrumentation corrigés (TF100Web `b4edfc9`). |
 | 2026-09-02 | `V2.1.5.0052` | `9aa93ac` | Préparation de la Phase 6 : inventaire des treize capacités par couche, arithmétique de version et outillage vérifiés. Deux écarts relevés dans l'énoncé — `nesting.depth-2` est livrée et prouvée, et la Task 6.2 suppose un gate temporaire qui n'existe pas. Rien n'est promu. |
