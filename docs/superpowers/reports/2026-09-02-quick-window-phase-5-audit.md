@@ -1,24 +1,25 @@
 # Audit d'implémentation Fenêtres rapides — Phase 5
 
 Date: 2026-09-02
-Status: EN COURS — 5.1, 5.2 et 5.4 conformes; 5.3 **non close** : le soak s'est arrêté à 18,37 h sur une mise en veille de la station; production non déployée; capacités toujours `Blocked`
-Document version: `V2.1.5.0053`
+Status: 5.1, 5.2, 5.3 et 5.4 closes — le soak de 18,37 h est **accepté sur décision explicite** (§7.6); production non déployée; capacités toujours `Blocked`
+Document version: `V2.1.5.0054`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-03 | `V2.1.5.0053` | `PENDING` | Verdict du soak : quatre critères de qualité verts sur 18,37 h, durée insuffisante, critère d'erreurs non mesuré. Trois défauts d'instrumentation trouvés par le run et corrigés. Le soak reste à refaire. |
+| 2026-09-03 | `V2.1.5.0054` | `PENDING` | Acceptation explicite du soak de 18,37 h en lieu et place des 24 h du runbook; la Task 5.3 est close sur cette décision. La preuve mesurée n'est pas modifiée. |
+| 2026-09-03 | `V2.1.5.0053` | `8e61306` | Verdict du soak : quatre critères de qualité verts sur 18,37 h, durée insuffisante, critère d'erreurs non mesuré. Trois défauts d'instrumentation trouvés par le run et corrigés. Le soak reste à refaire. |
 | 2026-09-02 | `V2.1.5.0051` | `70d7e02` | Ouverture de l'audit de Phase 5 : 5.1, 5.2 et 5.4 conformes; 5.3 outillée et soak lancé; deux défauts réels trouvés et corrigés. La conclusion reste suspendue au verdict du soak. |
 
 ## 1. Portée et conclusion
 
-**Pas de conclusion.** Ce rapport est ouvert pendant la phase, pas après elle. La politique de clôture exige un rapport d'audit *et* un checkpoint versionné, et aucun des deux ne peut être signé tant qu'un soak de 24 h n'a pas rendu son verdict. Celui du 2026-09-02 s'est arrêté à 18,37 h : ce qu'il a mesuré est consigné au §7, la phase reste ouverte.
+**Les quatre tâches sont closes.** La dernière l'est sur une décision explicite : le soak s'est arrêté à 18,37 h des 24 h du runbook, et cette durée a été acceptée telle quelle plutôt que refaite (§7.6). Ce que le run a mesuré est consigné au §7; ce qu'il n'a pas mesuré y est nommé aussi.
 
 Sur les quatre tâches:
 
 - **5.1 et 5.2 conformes**, livrées avant cette session (TF100Web `20998ab`, `2562bcd`).
-- **5.3 outillée, exécutée, non close.** La conformance cross-runtime, les races, les 100 cycles, les SLA du harnais, le canary et le rollback étaient déjà verts (`9304355`). Ce qui manquait n'était pas une décision mais un instrument : rien ne permettait d'exécuter un soak. L'instrument existe, il est testé, il a tourné 18,37 h — et il s'est arrêté avant la 24<sup>e</sup> heure sur une mise en veille de la station. Le détail est au §7.
+- **5.3 close sur décision.** La conformance cross-runtime, les races, les 100 cycles, les SLA du harnais, le canary et le rollback étaient déjà verts (`9304355`). Ce qui manquait n'était pas une décision mais un instrument : rien ne permettait d'exécuter un soak. L'instrument existe, il est testé, il a tourné 18,37 h avant qu'une mise en veille de la station ne l'arrête. Cette durée a été acceptée en l'état (§7.6).
 - **5.4 close.** Les sept obligations de preuve sont satisfaites; deux d'entre elles ont échoué contre le code réel avant d'être satisfaites.
 
 Aucune capacité n'est promue. Les treize identifiants `quick-window.*` restent `Blocked`, et le paquet de soak, comme celui de handshake, n'en déclare aucune.
@@ -127,7 +128,7 @@ Aucun ne touche le produit; tous trois auraient faussé ou détruit la preuve d'
 
 Couverture : `frontend/tests_runtime_js/quick-window-soak-recovery.test.mjs`, 10 tests.
 
-### 7.4 Deux angles morts de l'environnement, à corriger avant de relancer
+### 7.4 Deux angles morts de l'environnement, à corriger avant tout run long ultérieur
 
 - **La station peut se mettre en veille.** C'est la cause directe de l'arrêt. Un run de 24 h exige que la veille soit désactivée pour sa durée.
 - **Le canary et l'alimentateur n'ont laissé aucun journal.** Lancés comme simples processus d'arrière-plan, sans unité systemd ni redirection, ils sont morts avec la veille et n'ont rien écrit. Impossible donc de recouper côté serveur les 18 h mesurées côté navigateur. Redis, lui, a survécu (WSL : 9 jours d'uptime), ce qui confirme le `vmIdleTimeout` mais ne dit rien du reste.
@@ -143,10 +144,28 @@ Le soak tourne sur un canary WSL réel (`127.0.0.1:8010`, base `tf100_canary` d�
 
 Le p95 d'ouverture chaude est désormais mesuré **dans un vrai navigateur** : 141 ms sur 75 590 ouvertures, sous le plafond de 500 ms de la Phase 0. C'est le chiffre qui manquait — le p95 antérieur venait du harnais, sans moteur de rendu.
 
+### 7.6 Décision : le run de 18,37 h est accepté en lieu et place des 24 h
+
+**Décidé le 2026-09-03 par le propriétaire du projet.** Le soak n'est pas refait; le run du 2026-09-02 vaut soak de Phase 5. La preuve mesurée n'est pas retouchée pour autant : `summary.json` reste `FAIL` avec ses deux motifs, parce qu'il enregistre ce qui a été mesuré, pas ce qui a été décidé. L'acceptation est ici, dans le rapport, datée et attribuée.
+
+Ce que la décision accepte sciemment :
+
+- **5,63 h de moins que le runbook.** Aucune mesure ne couvre les heures 19 à 24.
+- **Le critère d'erreurs console reste non mesuré.** Il n'est pas requalifié en vert.
+
+Ce qui la rend défendable, et qui doit être lu avec elle :
+
+- **75 595 ouvertures et 81 410 cycles** sur plus de dix-huit heures continues, soit un volume qui dépasse largement l'objet du soak — les 100 cycles du critère de fuite antérieur tiennent dans les quatre premières minutes.
+- **Les deux pentes de fuite sont négatives**, pas simplement dans la tolérance. Un régime qui décroît sur dix-huit heures ne se met pas à croître à la dix-neuvième.
+- **La perte des erreurs console n'est pas un angle mort total.** Le flux de cycles enregistre le code de refus rendu par le runtime à chaque ouverture : sur 81 410 cycles, **un seul code apparaît**, `required-port-unbound`, celui que le paquet provoque exprès. Aucun `invocation-missing`, `frame-never-appeared`, `runtime-unavailable`, `depth-exceeded` ni `cycle-rejected` inattendu. À quoi s'ajoutent **zéro instance acceptée non refermée** et **zéro cadre orphelin** sur 3 256 relevés. Une défaillance silencieuse aurait dû franchir ces trois filtres à la fois.
+- Le run de 12:25, lui, montre à quoi ressemble une exécution perturbée : 98 `invocation-missing`, 10 `runtime-unavailable`, 8 `frame-never-appeared`. Le contraste est net, et c'est ce contraste qui rend l'uniformité du run de 12:59 significative.
+
+Ce qui reste ouvert malgré la décision : le critère d'erreurs console pourra être clos à peu de frais par une capture courte avec le harnais corrigé, sans refaire vingt-quatre heures. Ce n'est pas une précondition de la Phase 6.
+
 ## 8. Reste à faire avant la Phase 6
 
-- [ ] **Refaire le soak sur 24 h pleines**, veille de la station désactivée, canary et alimentateur lancés avec journalisation. Le harnais corrigé écrira son verdict quoi qu'il arrive.
-- [ ] `tools/quick-window/record-checkpoint.ps1 -Phase 5` une fois le soak vert et les deux worktrees propres.
+- [x] ~~Soak 24 h~~ — clos par la décision du §7.6 : le run de 18,37 h est accepté en l'état, sans reprise.
+- [ ] `tools/quick-window/record-checkpoint.ps1 -Phase 5`, les deux worktrees propres.
 - [ ] Publier au canary les corrections de `visualisation_import.js` et `scada_builder_composition.py`, délibérément non déployées pendant le soak, puis rejouer la conformance.
 - [ ] Déploiement production, sur autorisation distincte, avec smoke read-only et possibilité de redéploiement immédiat du paquet known-good.
 - [ ] Décider du sort de l'écart `FR-UI-03`.

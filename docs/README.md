@@ -2,13 +2,14 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.5.0053`
+Document version: `V2.1.5.0054`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-03 | `V2.1.5.0053` | `PENDING` | Verdict du soak : quatre criteres verts sur 18,37 h, duree insuffisante et critere d'erreurs non mesure; trois defauts d'instrumentation corriges. Le soak reste a refaire. |
+| 2026-09-03 | `V2.1.5.0054` | `PENDING` | Soak de 18,37 h accepte sur decision explicite en lieu et place des 24 h; Task 5.3 close. La preuve mesuree n'est pas modifiee. |
+| 2026-09-03 | `V2.1.5.0053` | `8e61306` | Verdict du soak : quatre criteres verts sur 18,37 h, duree insuffisante et critere d'erreurs non mesure; trois defauts d'instrumentation corriges. Le soak reste a refaire. |
 | 2026-09-02 | `V2.1.5.0052` | `9aa93ac` | Preparation de la Phase 6 : inventaire des treize capacites par couche, arithmetique de version et outillage verifies; deux ecarts relevees dans l'enonce. Rien n'est promu. |
 | 2026-09-02 | `V2.1.5.0051` | `ea54079` | Audit de Phase 5 ouvert pendant la phase; enregistreur de checkpoint rendu fail-closed sur la branche et la proprete des worktrees. |
 | 2026-09-02 | `V2.1.5.0050` | `2c3f451` | Task 5.4 close : composition et isolation legacy prouvees; traversee popup legacy vers Fenetre rapide refusee fail-closed. |

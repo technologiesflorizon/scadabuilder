@@ -2,12 +2,13 @@
 
 Date: 2026-09-02
 Status: PRÉPARATION — aucune capacité promue, aucun gate levé, aucun bump `feature` effectué
-Document version: `V2.1.5.0052`
+Document version: `V2.1.5.0054`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-03 | `V2.1.5.0054` | `PENDING` | Précondition du soak marquée satisfaite sur décision explicite; les cinq autres restent ouvertes. |
 | 2026-09-02 | `V2.1.5.0052` | `9aa93ac` | Note de préparation : inventaire des treize capacités par couche, arithmétique de version, vérification de l'outillage, et deux écarts constatés dans l'énoncé de la Phase 6. |
 
 ## 1. Ce que ce document est, et n'est pas
@@ -74,9 +75,9 @@ Il ne doit être effectué qu'au moment de la promotion, et seulement si aucune 
 
 ## 6. Préconditions avant d'exécuter la Phase 6
 
-Toutes doivent être vraies. Aucune ne l'est aujourd'hui.
+Toutes doivent être vraies. Une l'est aujourd'hui, sur décision; les cinq autres restent ouvertes.
 
-- [ ] Soak 24 h vert, verdict consigné dans l'audit de Phase 5. **Le run du 2026-09-02 s'est arrêté à 18,37 h sur une mise en veille de la station : quatre critères verts, durée insuffisante, critère d'erreurs non mesuré. À refaire** (audit de Phase 5, §7).
+- [x] Soak — **satisfait sur décision** du 2026-09-03 : le run de 18,37 h est accepté en lieu et place des 24 h du runbook, quatre critères verts, critère d'erreurs non mesuré et non requalifié (audit de Phase 5, §7.6). La preuve mesurée reste `FAIL` telle qu'écrite.
 - [ ] Checkpoint `-Phase 5` enregistré, les deux worktrees propres.
 - [ ] Correctifs de `visualisation_import.js` et `scada_builder_composition.py` publiés au canary, conformance rejouée.
 - [ ] Déploiement production exécuté sur autorisation distincte, avec smoke read-only et rollback disponible.
