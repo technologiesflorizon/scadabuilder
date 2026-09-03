@@ -76,7 +76,7 @@ Il ne doit être effectué qu'au moment de la promotion, et seulement si aucune 
 
 Toutes doivent être vraies. Aucune ne l'est aujourd'hui.
 
-- [ ] Soak 24 h vert, verdict consigné dans l'audit de Phase 5.
+- [ ] Soak 24 h vert, verdict consigné dans l'audit de Phase 5. **Le run du 2026-09-02 s'est arrêté à 18,37 h sur une mise en veille de la station : quatre critères verts, durée insuffisante, critère d'erreurs non mesuré. À refaire** (audit de Phase 5, §7).
 - [ ] Checkpoint `-Phase 5` enregistré, les deux worktrees propres.
 - [ ] Correctifs de `visualisation_import.js` et `scada_builder_composition.py` publiés au canary, conformance rejouée.
 - [ ] Déploiement production exécuté sur autorisation distincte, avec smoke read-only et rollback disponible.
