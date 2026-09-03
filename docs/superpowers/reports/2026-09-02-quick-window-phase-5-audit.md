@@ -1,13 +1,14 @@
 # Audit d'implémentation Fenêtres rapides — Phase 5
 
 Date: 2026-09-02
-Status: 5.1, 5.2, 5.3 et 5.4 closes — le soak de 18,37 h est **accepté sur décision explicite** (§7.6); production non déployée; capacités toujours `Blocked`
-Document version: `V2.1.5.0054`
+Status: 5.1, 5.2 et 5.4 closes; 5.3 close hormis le déploiement production — soak accepté sur décision (§7.6), critère d'erreurs mesuré (§7.7), correctifs publiés au canary (§7.8); capacités toujours `Blocked`
+Document version: `V2.1.5.0055`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-03 | `V2.1.5.0055` | `PENDING` | Critère d'erreurs console mesuré par capture dédiée (186 refus attendus, zéro inattendu); correctifs de la Task 5.4 publiés au canary et vérifiés en place; conformance rejouée. Correction : les critères de fuite sont plats et plafonnés, pas décroissants — la lecture précédente prenait une phase d'oscillation pour une tendance. |
 | 2026-09-03 | `V2.1.5.0054` | `82ea206` | Acceptation explicite du soak de 18,37 h en lieu et place des 24 h du runbook; la Task 5.3 est close sur cette décision. La preuve mesurée n'est pas modifiée. |
 | 2026-09-03 | `V2.1.5.0053` | `8e61306` | Verdict du soak : quatre critères de qualité verts sur 18,37 h, durée insuffisante, critère d'erreurs non mesuré. Trois défauts d'instrumentation trouvés par le run et corrigés. Le soak reste à refaire. |
 | 2026-09-02 | `V2.1.5.0051` | `70d7e02` | Ouverture de l'audit de Phase 5 : 5.1, 5.2 et 5.4 conformes; 5.3 outillée et soak lancé; deux défauts réels trouvés et corrigés. La conclusion reste suspendue au verdict du soak. |
@@ -100,23 +101,31 @@ Reconstruit depuis le flux d'échantillons (`--rebuild`), écrit dans `artifacts
 | Critère | Résultat | Mesure |
 | --- | --- | --- |
 | Latence d'ouverture chaude | **Vert** | p95 **141 ms** sur 75 590 ouvertures, plafond 500 ms; p50 34 ms, p99 144 ms, max 2022 ms |
-| Absence de croissance mémoire | **Vert** | tas médian **−19,3 %** entre premier et dernier quart (5,51 → 4,45 Mo), pente négative |
-| Absence de fuite d'écouteurs | **Vert** | **231 → 165** écouteurs entre quarts, sur 3 256 échantillons après GC forcée |
+| Absence de croissance mémoire | **Vert** | tas **plafonné à 5,94 Mo** sur 3 256 relevés après GC forcée; moyennes par tiers 4,99 / 4,97 / 4,63 Mo |
+| Absence de fuite d'écouteurs | **Vert** | écouteurs **jamais au-dessus de 231**; moyennes par tiers 195,8 / 194,7 / 179,3 |
 | Pages 2.1/2.2/2.3 intactes | **Vert** | **5 818** vérifications, aucune page non composée |
-| Absence d'erreur QuickWindow | **Non mesuré** | voir §7.2 |
+| Absence d'erreur QuickWindow | **Vert, mesuré séparément** | non capturé pendant ce run (§7.2), mesuré le 2026-09-03 sur le même canary et la même charge (§7.7) |
 | Durée | **Rouge** | 18,37 h sur 24 h |
 
 Volumétrie : 90 541 enregistrements, aucun malformé, 81 410 cycles mesurés (hors 56 cycles de chauffe), **75 595 ouvertures acceptées** et **5 815 refus, tous `required-port-unbound`** — le refus que le paquet de soak est fait pour provoquer. Aucun autre code de refus n'apparaît de la première heure à la dernière, et le compteur de cadres orphelins est resté à zéro sur toute la durée.
 
 La queue de latence, que le p95 masque et qui est le seul endroit où quelque chose bouge : p99,9 à 153 ms, p99,99 à 267 ms, et **deux ouvertures seulement au-dessus du plafond de 500 ms sur 75 595** (0,003 %). L'une à 705 ms, deux secondes avant la mise en veille — c'est la veille. L'autre à 2022 ms le 2026-09-02 à 22:17, isolée et inexpliquée : à surveiller au prochain run, pas à écarter. Les fermetures ne bougent pas du tout (p50 1 ms, p99 2 ms, max 41 ms).
 
-Les deux critères de fuite ne sont pas seulement dans la tolérance, ils sont **négatifs** : le tas et les écouteurs décroissent entre le premier et le dernier quart. Ce n'est pas une fuite contenue, c'est un régime stable atteint après la chauffe.
+**Sur les deux critères de fuite, la formulation demande une précision** — le premier jet de ce rapport parlait de « décroissance », ce que les données ne soutiennent pas. Le comparateur de quarts a rendu −19,3 % de tas et −66 écouteurs, mais ces deux chiffres sont des artefacts de phase, pas des tendances.
 
-### 7.2 Le critère d'erreurs n'a pas été mesuré, et n'est pas déclaré vert
+Les écouteurs ne varient pas continûment : ils ne prennent que des **multiples de 33** — 132 (890 relevés), 165 (629), 198 (99), 231 (1 632) — parce que chaque cadre vivant en installe trente-trois. La série oscille donc entre quatre paliers au gré de la page courante et du nombre de cadres vivants à l'instant du prélèvement, et comparer deux quarts revient à comparer deux phases de cette oscillation. Le tas se comporte de la même façon, par marches d'environ 0,5 Mo.
+
+Ce que les données disent réellement est plus fort qu'une décroissance : sur 18,37 heures et 3 256 relevés après collecte forcée, **les écouteurs n'ont jamais dépassé 231 et le tas jamais 5,94 Mo**. Les moyennes par tiers sont plates (195,8 / 194,7 / 179,3 écouteurs; 4,99 / 4,97 / 4,63 Mo). Une fuite ne se cache pas sous un plafond tenu dix-huit heures durant.
+
+**Limite de l'arithmétique du verdict, à connaître avant de lire un run court.** `headTailMedians` compare le premier et le dernier quart, ce qui suppose une série dominée par sa tendance. Sur une série oscillante, un run assez long moyenne la phase — 3 256 relevés le font — mais un run court ne le fait pas : la capture de 38 min du §7.7 rend « +40,3 % de tas » et « +66 écouteurs » sur exactement le même déploiement et la même charge, sans qu'il ne se passe rien d'autre qu'un décalage de phase. Les seuils n'ont pas été modifiés — ils sont ceux sur lesquels le verdict accepté repose — mais un critère de plafond serait plus robuste qu'une comparaison de quarts, et c'est à considérer avant le prochain run long.
+
+### 7.2 Le critère d'erreurs n'a pas été mesuré par ce run
 
 Le pilote accumulait les erreurs console en mémoire et ne les écrivait qu'à la toute fin. Un run qui n'atteint pas sa fin les perd entièrement — c'est exactement ce qui s'est produit. Le flux contient donc 5 815 cycles refusés et **aucun enregistrement d'erreur**, ce qui se lirait naïvement comme « aucune erreur inattendue ».
 
-Ce serait transformer une absence de preuve en assurance. Le reconstructeur refuse désormais cette lecture : un flux portant des refus sans le moindre enregistrement d'erreur fait échouer le critère avec la raison « non mesuré ». Le verdict du run est en conséquence `FAIL`, sur ce critère et sur la durée.
+Ce serait transformer une absence de preuve en assurance. Le reconstructeur refuse désormais cette lecture : un flux portant des refus sans le moindre enregistrement d'erreur fait échouer le critère avec la raison « non mesuré ». Le verdict du run reste donc `FAIL` sur ce critère et sur la durée, et n'a pas été retouché.
+
+Le critère lui-même a été mesuré séparément le 2026-09-03 (§7.7). Cela ne mesure pas rétroactivement les 18,37 heures — rien ne le peut — mais mesure la même charge sur le même déploiement.
 
 ### 7.3 Trois défauts d'instrumentation, trouvés par le run et corrigés
 
@@ -156,16 +165,51 @@ Ce que la décision accepte sciemment :
 Ce qui la rend défendable, et qui doit être lu avec elle :
 
 - **75 595 ouvertures et 81 410 cycles** sur plus de dix-huit heures continues, soit un volume qui dépasse largement l'objet du soak — les 100 cycles du critère de fuite antérieur tiennent dans les quatre premières minutes.
-- **Les deux pentes de fuite sont négatives**, pas simplement dans la tolérance. Un régime qui décroît sur dix-huit heures ne se met pas à croître à la dix-neuvième.
-- **La perte des erreurs console n'est pas un angle mort total.** Le flux de cycles enregistre le code de refus rendu par le runtime à chaque ouverture : sur 81 410 cycles, **un seul code apparaît**, `required-port-unbound`, celui que le paquet provoque exprès. Aucun `invocation-missing`, `frame-never-appeared`, `runtime-unavailable`, `depth-exceeded` ni `cycle-rejected` inattendu. À quoi s'ajoutent **zéro instance acceptée non refermée** et **zéro cadre orphelin** sur 3 256 relevés. Une défaillance silencieuse aurait dû franchir ces trois filtres à la fois.
+- **Les deux critères de fuite sont plafonnés, pas seulement dans la tolérance** : sur 3 256 relevés après collecte forcée, les écouteurs n'ont jamais dépassé 231 et le tas jamais 5,94 Mo, moyennes par tiers plates. Un plafond tenu dix-huit heures ne se met pas à céder à la dix-neuvième.
+- **La perte des erreurs console a depuis été comblée par une mesure directe** (§7.7), et n'était de toute façon pas un angle mort total. Le flux de cycles enregistre le code de refus rendu par le runtime à chaque ouverture : sur 81 410 cycles, **un seul code apparaît**, `required-port-unbound`, celui que le paquet provoque exprès. Aucun `invocation-missing`, `frame-never-appeared`, `runtime-unavailable`, `depth-exceeded` ni `cycle-rejected` inattendu. À quoi s'ajoutent **zéro instance acceptée non refermée** et **zéro cadre orphelin** sur 3 256 relevés. Une défaillance silencieuse aurait dû franchir ces trois filtres à la fois.
 - Le run de 12:25, lui, montre à quoi ressemble une exécution perturbée : 98 `invocation-missing`, 10 `runtime-unavailable`, 8 `frame-never-appeared`. Le contraste est net, et c'est ce contraste qui rend l'uniformité du run de 12:59 significative.
 
 Ce qui reste ouvert malgré la décision : le critère d'erreurs console pourra être clos à peu de frais par une capture courte avec le harnais corrigé, sans refaire vingt-quatre heures. Ce n'est pas une précondition de la Phase 6.
+
+### 7.7 Capture des erreurs console du 2026-09-03
+
+Le critère laissé non mesuré au §7.2 a été mesuré par une capture dédiée, sur le canary et la charge du soak. Ce n'est pas une reprise du soak et cela ne rejuge pas ses 18,37 heures : c'est la mesure de ce que le runtime écrit en console sous cette charge.
+
+Conditions : canary `127.0.0.1:8010`, paquet `f0647722`, génération `ad35f17a` — inchangés — mais **avec les deux correctifs de la Task 5.4 désormais publiés**, ce qui n'était pas le cas pendant le soak. Le déploiement est donc strictement plus contraint, pas moins. Port de débogage 9361, harnais corrigé (`b4edfc9`).
+
+Résultat sur 38 min, du 20:54:42Z au 21:32:35Z :
+
+| Critère | Résultat | Mesure |
+| --- | --- | --- |
+| **Absence d'erreur QuickWindow** | **Vert** | **186 enregistrements d'erreur, tous des refus attendus, zéro inattendu** |
+| Latence d'ouverture chaude | Vert | p95 155 ms sur 2 560 cycles |
+| Pages 2.1/2.2/2.3 intactes | Vert | 186 vérifications, aucun échec |
+| Critères de fuite | Non concluants sur 38 min | artefact de phase, voir §7.1 |
+
+Les 186 enregistrements portent tous le même texte, `SCADA quick-window required-port-unbound`, sur l'invocation que le paquet dote délibérément d'un port requis non lié. Aucun autre message n'a été émis en trente-huit minutes.
+
+**La chaîne de reprise a fait sa preuve sur un cas réel.** Le run a été tué net avant son échéance; il n'a donc écrit aucun résumé, exactement le scénario du §7.3. `--rebuild` a reconstruit le verdict depuis les 3 091 enregistrements du flux, sans perte et sans ligne malformée. Le processus tué n'a laissé derrière lui ni harnais orphelin ni processus Edge.
+
+Journalisation côté serveur, angle mort du §7.4 désormais fermé : `artifacts/canary-django.log` ne porte aucune erreur sur une route Fenêtre rapide. Les seuls `500` sont les 103 appels à `api_network/lan/pending`, endpoint réseau sans rapport et absent de ce canary minimal; les seuls `404` sont deux `favicon.ico`.
+
+### 7.8 Correctifs de la Task 5.4 publiés au canary et vérifiés en place
+
+Publiés puis vérifiés contre le déploiement réel, non contre un test :
+
+| Appel sur `/srv/tf100-canary/static` | Résultat |
+| --- | --- |
+| `load_composed_page("win00054")` | composée |
+| `load_composed_page("qw-50000001")` | **refusée** — renvoyait `200` et servait un fragment avant le correctif |
+| `load_composed_page("../../etc")` | refusée |
+| `load_quick_window_fragment("qw-50000001")` | servie |
+| `load_quick_window_fragment("win00054")` | refusée |
+
+Conformance cross-runtime rejouée après publication : 14 tests, 1 skip opt-in, OK.
 
 ## 8. Reste à faire avant la Phase 6
 
 - [x] ~~Soak 24 h~~ — clos par la décision du §7.6 : le run de 18,37 h est accepté en l'état, sans reprise.
 - [ ] `tools/quick-window/record-checkpoint.ps1 -Phase 5`, les deux worktrees propres.
-- [ ] Publier au canary les corrections de `visualisation_import.js` et `scada_builder_composition.py`, délibérément non déployées pendant le soak, puis rejouer la conformance.
+- [x] ~~Publier au canary les corrections de `visualisation_import.js` et `scada_builder_composition.py`, puis rejouer la conformance.~~ Fait le 2026-09-03, vérifié contre le déploiement réel (§7.8).
 - [ ] Déploiement production, sur autorisation distincte, avec smoke read-only et possibilité de redéploiement immédiat du paquet known-good.
 - [ ] Décider du sort de l'écart `FR-UI-03`.

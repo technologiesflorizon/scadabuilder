@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 4 closed; phase 5 in progress (5.1, 5.2, 5.4 done; 5.3 soak accepted at 18.37 h by explicit decision, production deployment undecided); phases 6 to 7 not started
-Document version: `V2.1.5.0054`
+Document version: `V2.1.5.0055`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-03 | `V2.1.5.0055` | `PENDING` | Critère d'erreurs console mesuré par capture dédiée; correctifs de la Task 5.4 publiés au canary et conformance rejouée. Task 5.3 close hormis le déploiement production. |
 | 2026-09-03 | `V2.1.5.0054` | `2dfbb07` | Verdict du soak et acceptation explicite des 18,37 h en lieu et place des 24 h; le sous-item soak de la Task 5.3 est clos, le déploiement production reste requis. Trois défauts d'instrumentation corrigés (TF100Web `b4edfc9`). |
 | 2026-09-02 | `V2.1.5.0052` | `9aa93ac` | Préparation de la Phase 6 : inventaire des treize capacités par couche, arithmétique de version et outillage vérifiés. Deux écarts relevés dans l'énoncé — `nesting.depth-2` est livrée et prouvée, et la Task 6.2 suppose un gate temporaire qui n'existe pas. Rien n'est promu. |
 | 2026-09-02 | `V2.1.5.0051` | `db2105e` | Audit de Phase 5 ouvert (`docs/superpowers/reports/2026-09-02-quick-window-phase-5-audit.md`), conclusion suspendue au verdict du soak; enregistreur de checkpoint rendu fail-closed sur la branche et la propreté des worktrees. |
@@ -75,7 +76,7 @@ Document version: `V2.1.5.0054`
 - [x] Phase 5.1: registres 2.3 validés et ingérés par TF100Web (TF100Web `20998ab`).
 - [x] Phase 5.2: host TF100Web et SinglePerDefinition (TF100Web `2562bcd`).
 - [x] Phase 5.4: composition header/pied, isolation legacy et refus de traversée dans les deux sens (TF100Web `744075d`, `70d7e02`).
-- [~] Phase 5.3: conformance cross-runtime, canary et rollback verts (TF100Web `9304355`); soak exécuté 18,37 h et **accepté en l'état sur décision du 2026-09-03** (Builder `49b6d71`, TF100Web `ef3ecde`, `b4edfc9`); déploiement production non exécuté, décision humaine requise.
+- [~] Phase 5.3: conformance cross-runtime, canary et rollback verts (TF100Web `9304355`); soak exécuté 18,37 h et **accepté en l'état sur décision du 2026-09-03**, critère d'erreurs console mesuré séparément, correctifs publiés au canary et conformance rejouée (Builder `49b6d71`, TF100Web `ef3ecde`, `b4edfc9`); **seul le déploiement production reste ouvert**, décision humaine requise.
 - [ ] Phases 6 à 7: non démarrées.
 
 ### Limites actées du soak du 2026-09-02
@@ -952,10 +953,10 @@ Les gardes de route de la vue de fragment exigent le graphe d'applications Djang
 
 - [x] Exécuter suites Builder/Node/TF100Web, mutation d’une capacité à la fois, preview/host equivalence et package déterministe.
 - [x] **Canary/staging obligatoire:** déployer d’abord le package dans une instance TF100Web non industrielle utilisant un `STATIC_ROOT` distinct. Réutiliser `deploy_package_to_static(package_dir, canary_static_root)` et une configuration de station de test; ne pas remplacer `STATIC_ROOT/scada` actif. Vérifier commit, génération, registre de capacités et SHA effectivement servis.
-- [x] Exécuter sur le canary la conformance complète, les races, 100 cycles, les SLA p95 et un soak d’au moins 24 h sans erreur QuickWindow, croissance mémoire ni impact sur les pages 2.1/2.2/2.3 existantes. *(conformance, races, cycles et SLA harnais faits. Soak exécuté du 2026-09-02 12:59 au 2026-09-03 07:22 sur canary WSL réel : 18,37 h, 81 410 cycles, p95 chaud navigateur 141 ms, tas et écouteurs en décroissance, 5 818 compositions sans échec. Arrêté par une mise en veille de la station, non par le produit. Les 18,37 h sont acceptées en lieu et place des 24 h sur décision explicite du 2026-09-03; le critère d'erreurs console n'a pas été mesuré et n'est pas requalifié. Détail et justification : rapport d'audit de Phase 5, §7.)*
+- [x] Exécuter sur le canary la conformance complète, les races, 100 cycles, les SLA p95 et un soak d’au moins 24 h sans erreur QuickWindow, croissance mémoire ni impact sur les pages 2.1/2.2/2.3 existantes. *(conformance, races, cycles et SLA harnais faits. Soak exécuté du 2026-09-02 12:59 au 2026-09-03 07:22 sur canary WSL réel : 18,37 h, 81 410 cycles, p95 chaud navigateur 141 ms, tas plafonné à 5,94 Mo et écouteurs jamais au-dessus de 231 sur 3 256 relevés après GC, 5 818 compositions sans échec. Arrêté par une mise en veille de la station, non par le produit. Les 18,37 h sont acceptées en lieu et place des 24 h sur décision explicite du 2026-09-03. Le critère d'erreurs console, non capturé par ce run, a été mesuré séparément le 2026-09-03 sur le même canary et la même charge : 186 refus attendus, zéro inattendu. Détail et justification : rapport d'audit de Phase 5, §7.)*
 - [x] Éprouver le rollback avant production: conserver l’archive `.sb2`, le SHA et la génération known-good; redéployer ce package dans le canary, vérifier retour des pages/runtime/hash et documenter le temps de restauration. Le rollback production est un redéploiement atomique du package known-good, jamais une édition manuelle de `STATIC_ROOT`.
 - [ ] Après autorisation distincte, déployer TF100Web en production. *(non exécuté: décision humaine requise)* Effectuer un smoke read-only, surveiller erreurs et métriques, puis conserver la possibilité de redéployer immédiatement le package known-good.
-- [ ] Ne promouvoir aucune capacité et ne passer à Phase 6 qu’après canary/soak/rollback verts et preuve du déploiement production capable. Si production échoue, redéployer known-good et garder toutes les capacités Builder `Blocked`.
+- [~] Ne promouvoir aucune capacité et ne passer à Phase 6 qu’après canary/soak/rollback verts et preuve du déploiement production capable. *(canary, soak et rollback verts; déploiement production toujours requis.)* Si production échoue, redéployer known-good et garder toutes les capacités Builder `Blocked`.
 - [x] Commit: `test: prove quick window host conformance` (TF100Web `9304355`).
 - [x] Outillage du soak: paquet de charge élargi (Builder `49b6d71`), alimentateur Redis, harnais d'endurance, réglages/urls/middleware du canary et suites associées (TF100Web `ef3ecde`).
 
