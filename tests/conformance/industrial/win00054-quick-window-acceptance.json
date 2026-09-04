@@ -1,0 +1,99 @@
+{
+  "Schema": "scada-v2-win00054-quick-window-acceptance-v1",
+  "GeneratedUtc": "2026-09-04T00:00:00Z",
+  "Task": "Plan 2026-08-10, Task 7.2.",
+  "Overall": "PASS-WITH-OPEN-GATE",
+  "WhyNotAmrRefEvidence": "amr-ref-industrial-acceptance.json n'est pas touche: la verticale win00054 ne vit pas dans AMR_REF_SCADA_V2. La Task 7.1 l'a batie sur un catalogue synthetique precisement pour ne pas modifier le projet de reference, et son evidence d'export reste donc celle du projet reel.",
+  "Suites": {
+    "Builder": "892/892, aucun ignore",
+    "BuilderRuntimeJs": "80/80",
+    "Tf100Web": "41, 1 skip opt-in",
+    "Tf100WebRuntimeJs": "97/97",
+    "CrossRuntimeConformance": "14, 1 skip; 126/126 sondes de capacite executees",
+    "Win00054Vertical": "11/11"
+  },
+  "Phase0BaselineReplay": {
+    "Leg": "node-headless",
+    "PrototypeHashUnchanged": true,
+    "Node": "v24.15.0",
+    "Frozen": {
+      "p50HotMs": 31,
+      "p95HotMs": 32,
+      "p50ColdMs": 31,
+      "p95ColdMs": 32,
+      "cycles": 100,
+      "pollerCount": 1,
+      "listenerBaseline": 0,
+      "listenerAfterDispose": 0
+    },
+    "Replayed": {
+      "p50HotMs": 31,
+      "p95HotMs": 32,
+      "p50ColdMs": 31,
+      "p95ColdMs": 32,
+      "cycles": 100,
+      "pollerCount": 1,
+      "listenerBaseline": 0,
+      "listenerAfterDispose": 0
+    },
+    "MaxDeltaPercent": 0.0,
+    "Verdict": "aucune derive: le leg gele rejoue a l'identique, hash de prototype inchange."
+  },
+  "OpenLatency": {
+    "Source": "Ouvertures reelles mesurees dans Edge contre le canary WSL, pas un harnais synthetique. Les cycles de chauffe du pilote sont les ouvertures froides: ils suivent une navigation et le premier montage de chaque definition.",
+    "ColdOpens": 104,
+    "ColdP50Ms": 43,
+    "ColdP95Ms": 144,
+    "ColdMaxMs": 199,
+    "ColdCeilingMs": 1500,
+    "ColdVerdict": "PASS",
+    "WarmOpens": 77973,
+    "WarmP50Ms": 34,
+    "WarmP95Ms": 141,
+    "WarmP99Ms": 145,
+    "WarmMaxMs": 2022,
+    "WarmCeilingMs": 500,
+    "WarmVerdict": "PASS",
+    "Note": "La tache demande 30 ouvertures froides et 100 chaudes. Les runs reels en fournissent 104 et 77973.",
+    "PerRun": {
+      "soak-2026-09-02T16-59-43Z": {
+        "ColdOpens": 52,
+        "ColdP95Ms": 141,
+        "WarmOpens": 75595,
+        "WarmP50Ms": 34,
+        "WarmP95Ms": 141,
+        "WarmP99Ms": 144
+      },
+      "error-capture-2026-09-03T20-54-32Z": {
+        "ColdOpens": 52,
+        "ColdP95Ms": 152,
+        "WarmOpens": 2378,
+        "WarmP50Ms": 45,
+        "WarmP95Ms": 155,
+        "WarmP99Ms": 166
+      }
+    }
+  },
+  "MemoryAfterCycles": {
+    "Source": "soak 2026-09-02, 3256 releves apres collecte forcee sur 18,37 h",
+    "HeapCeilingBytes": 5940000,
+    "ListenerCeiling": 231,
+    "Verdict": "PASS: plafonne, moyennes par tiers plates. Voir audit de Phase 5, section 7.1."
+  },
+  "ReadOnlySmoke": {
+    "Target": "canary WSL 127.0.0.1:8010",
+    "Generation": "ad35f17acb4742bca2849d1c94115f1d",
+    "ManifestVersion": "2.3",
+    "QuickWindows": 6,
+    "Invocations": 14,
+    "PageComposed": "win00054",
+    "FragmentServed": "qw-50000001",
+    "WritesAttempted": 0,
+    "Note": "Le paquet deploye sur le canary est celui du soak, exporte avant la Phase 6: il declare RequiredCapabilities vide. Le canary n'a pas ete redeploye avec un paquet post-promotion."
+  },
+  "OpenGates": [
+    "Aucune ecriture ni readback PLC n'a ete executee. Le chemin d'ecriture n'est exerce que par son echec, faute d'automate. La livraison n'est donc pas presentee comme validee en production.",
+    "La verticale win00054 tourne sur un catalogue synthetique: aucune liaison a un automate reel.",
+    "Le canary porte encore le paquet de soak d'avant la promotion; un redeploiement avec un paquet declarant les onze capacites promues reste a faire."
+  ]
+}

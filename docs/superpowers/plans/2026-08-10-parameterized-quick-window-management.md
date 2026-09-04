@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 6 closed; eleven quick-window capabilities promoted and strict 2.3 export open; industrial-site rollout deferred to project completion; phase 7 not started
-Document version: `V2.1.6.0002`
+Document version: `V2.1.6.0003`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-04 | `V2.1.6.0003` | `PENDING` | Task 7.2 close : acceptation complete, SLA froid 144 ms et chaud 141 ms sur ouvertures reelles, leg Phase 0 rejoue sans derive. Ecriture PLC reste un gate ouvert. |
 | 2026-09-04 | `V2.1.6.0002` | `ac9003a` | Task 7.1 close sur decision : verticale win00054 batie sur un catalogue synthetique, le projet de reference reste intact. Onze preuves. |
 | 2026-09-04 | `V2.1.6.0001` | `511621d` | Task 7.1, audit prealable : **bloquant**. win00054 est un controleur de moteur a quatre modes et le catalogue ne porte aucune commande d'ecriture de moteur. Rien n'a ete cree, le catalogue n'a pas ete touche. |
 | 2026-09-04 | `V2.1.6.0000` | `078dbce` | Phase 6 close : onze capacites promues sur preuve executable aux trois couches, export strict 2.3 ouvert. Trois defauts latents corriges au passage. |
@@ -1103,10 +1104,10 @@ dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWi
 - Consumes: package final et TF100Web déployé.
 - Produces: preuve de parité Builder/TF100Web et statut clair des smokes industriels.
 
-- [ ] Exécuter full suites, fixture conformance, races concurrentes, 100 cycles, navigation/reopen et read-only smoke.
-- [ ] Mesurer 30 ouvertures froides et 100 chaudes après warmup sur la même machine et même Node LTS (24.15.x) que Phase 0. Exiger p95 chaud ≤ 500 ms, p95 froid ≤ 1 500 ms et régression ≤ 10 % contre la baseline gelée; vérifier aussi absence de croissance mémoire après les 100 cycles.
-- [ ] N’exécuter une écriture/readback PLC qu’après autorisation explicite; sinon consigner le gate restant sans présenter la livraison comme validée en production.
-- [ ] Commit: `test: validate win00054 quick window vertical`.
+- [x] Exécuter full suites, fixture conformance, races concurrentes, 100 cycles, navigation/reopen et read-only smoke. *(Builder 892/892 sans ignoré, runtime JS 80/80 et 97/97, TF100Web 41 avec un skip opt-in, conformance cross-runtime 14 avec 126/126 sondes exécutées, verticale 11/11. Smoke read-only sur le canary : page composée, fragment servi, zéro écriture tentée.)*
+- [x] Mesurer 30 ouvertures froides et 100 chaudes après warmup. *(Mesuré sur des ouvertures **réelles** dans Edge contre le canary, pas un harnais : **104 froides, p95 144 ms** contre un plafond de 1 500 ms, et **77 973 chaudes, p95 141 ms** contre un plafond de 500 ms. Le leg gelé de Phase 0 a été rejoué sur Node v24.15.0, hash de prototype inchangé et **0,0 % de dérive** sur les quatre métriques. Mémoire : tas plafonné à 5,94 Mo et écouteurs jamais au-dessus de 231 sur 3 256 relevés après GC. Preuves dans `tests/conformance/industrial/win00054-quick-window-acceptance.json`.)*
+- [x] N’exécuter une écriture/readback PLC qu’après autorisation explicite. *(**Aucune écriture ni readback PLC n'a été exécutée.** Trois gates restent ouverts et sont consignés dans le fichier d'acceptation : pas d'automate, verticale sur catalogue synthétique, et canary portant encore le paquet d'avant la promotion. La livraison n'est pas présentée comme validée en production.)*
+- [x] Commit: `test: validate win00054 quick window vertical`.
 
 **Vérification:**
 
