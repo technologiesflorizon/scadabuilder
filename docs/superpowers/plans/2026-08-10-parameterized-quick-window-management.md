@@ -8,7 +8,7 @@ Document version: `V2.1.6.0003`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-04 | `V2.1.6.0003` | `PENDING` | Task 7.2 close : acceptation complete, SLA froid 144 ms et chaud 141 ms sur ouvertures reelles, leg Phase 0 rejoue sans derive. Ecriture PLC reste un gate ouvert. |
+| 2026-09-04 | `V2.1.6.0003` | `58b6018` | Task 7.2 close : acceptation complete, SLA froid 144 ms et chaud 141 ms sur ouvertures reelles, leg Phase 0 rejoue sans derive. Ecriture PLC reste un gate ouvert. |
 | 2026-09-04 | `V2.1.6.0002` | `ac9003a` | Task 7.1 close sur decision : verticale win00054 batie sur un catalogue synthetique, le projet de reference reste intact. Onze preuves. |
 | 2026-09-04 | `V2.1.6.0001` | `511621d` | Task 7.1, audit prealable : **bloquant**. win00054 est un controleur de moteur a quatre modes et le catalogue ne porte aucune commande d'ecriture de moteur. Rien n'a ete cree, le catalogue n'a pas ete touche. |
 | 2026-09-04 | `V2.1.6.0000` | `078dbce` | Phase 6 close : onze capacites promues sur preuve executable aux trois couches, export strict 2.3 ouvert. Trois defauts latents corriges au passage. |
