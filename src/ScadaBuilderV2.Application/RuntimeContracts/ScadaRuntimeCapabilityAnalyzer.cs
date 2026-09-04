@@ -96,6 +96,17 @@ public static class ScadaRuntimeCapabilityAnalyzer
 
         foreach (var definition in definitions)
         {
+            // A definition's content is exported and executed exactly like a page's. Walking it here is what
+            // makes the gate honest about the whole package: without it, every element kind, shape, state
+            // rule, expression and command living inside a quick window was invisible to the analysis, so a
+            // definition could carry a Blocked capability and strict export would wave it through. It also
+            // makes `command.close-quick-window` detectable at all, since that command is only ever valid
+            // inside a definition.
+            foreach (var element in Flatten(definition.EffectiveContent.EffectiveElements))
+            {
+                AnalyzeElement(capabilities, element);
+            }
+
             var members = definition.EffectiveInterfaceMembers;
             if (members.Count > 0)
             {

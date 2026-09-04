@@ -251,7 +251,7 @@ public sealed class ScadaRuntimeCapabilityAnalyzerTests
     }
 
     [TestMethod]
-    public void EveryRequiredQuickWindowCapabilityStaysBlockedAndKeepsExportClosed()
+    public void APromotedQuickWindowProjectNoLongerBlocksStrictExport()
     {
         var member = QuickWindowMemberFixture("Speed", required: true);
         var definition = QuickWindowDefinitionFixture(members: [member]);
@@ -264,12 +264,29 @@ public sealed class ScadaRuntimeCapabilityAnalyzerTests
 
         Assert.IsTrue(quickWindow.Length > 0);
         Assert.IsTrue(
-            quickWindow.All(capability => capability.Status == ScadaRuntimeCapabilityStatus.Blocked),
-            "no quick-window capability may be Supported before its Phase 6 promotion");
-        Assert.IsTrue(
-            analysis.BlockedCapabilities.Select(capability => capability.Id).ToHashSet(StringComparer.Ordinal)
-                .IsSupersetOf(quickWindow.Select(capability => capability.Id)),
-            "every quick-window capability is reported as blocking strict export");
+            quickWindow.All(capability => capability.Status == ScadaRuntimeCapabilityStatus.Supported),
+            "this project only uses capabilities promoted in Phase 6");
+        Assert.AreEqual(0, analysis.BlockedCapabilities.Count,
+            "nothing here should still be closing strict export");
+    }
+
+    [TestMethod]
+    public void AParentPortBindingStillBlocksStrictExportAfterThePhase6Promotion()
+    {
+        // The promotion was deliberately partial. This is the half that stayed shut, and the test that
+        // says so: parent-port forwarding is implemented in the Builder and the runtime, but no deployed
+        // package has ever exercised it, so it has no host evidence and must keep the gate closed.
+        var parent = QuickWindowMemberFixture("Speed", required: true);
+        var definition = QuickWindowDefinitionFixture(members: [parent]);
+        var project = QuickWindowProject(
+            definition,
+            QuickWindowInvocationFixture(definition, QuickWindowBinding.FromParentPort(parent.MemberKey, parent.MemberKey)));
+
+        var analysis = ScadaRuntimeCapabilityAnalyzer.Analyze(project, []);
+
+        CollectionAssert.Contains(
+            analysis.BlockedCapabilities.Select(capability => capability.Id).ToArray(),
+            "quick-window.binding.parent-port");
     }
 
     private static string[] QuickWindowIds(ScadaRuntimeCapabilityAnalysis analysis) => analysis.RequiredCapabilities

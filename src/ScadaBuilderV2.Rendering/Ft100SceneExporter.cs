@@ -2192,28 +2192,60 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
         };
     }
 
+    /// <summary>
+    /// Projects the runtime command config carried by `data-scada-command-config`.
+    /// </summary>
+    /// <remarks>
+    /// `QuickWindowInvocationKey` is appended only when the command actually has one. It is the durable
+    /// identity that tells the runtime *which* quick window a command opens — `command-dispatcher.js`
+    /// refuses an `openQuickWindow` command without it, so a package exported without this key carries
+    /// buttons that can never open anything — but writing it as `null` on every other command would move
+    /// the bytes of every package ever exported, including the locked industrial evidence, for a property
+    /// those packages have no use for. `TargetPageKey` stays absent either way: that one is editor
+    /// identity, not contract identity.
+    /// </remarks>
     private static object BuildRuntimeCommandConfig(ScadaElementCommandConfig config)
     {
         return new
         {
-            Commands = config.Commands.Select(command => new
-            {
-                command.Id,
-                command.Name,
-                command.Enabled,
-                command.Trigger,
-                command.Kind,
-                command.Confirmation,
-                command.WriteTagId,
-                command.ReadTagId,
-                command.WriteMode,
-                command.OnValue,
-                command.OffValue,
-                command.FixedValue,
-                command.TargetPageId,
-                command.Url,
-                command.NewTab
-            }).ToArray()
+            Commands = config.Commands.Select(command => command.QuickWindowInvocationKey is { } invocationKey
+                ? new
+                {
+                    command.Id,
+                    command.Name,
+                    command.Enabled,
+                    command.Trigger,
+                    command.Kind,
+                    command.Confirmation,
+                    command.WriteTagId,
+                    command.ReadTagId,
+                    command.WriteMode,
+                    command.OnValue,
+                    command.OffValue,
+                    command.FixedValue,
+                    command.TargetPageId,
+                    command.Url,
+                    command.NewTab,
+                    QuickWindowInvocationKey = invocationKey.ToString("D")
+                }
+                : (object)new
+                {
+                    command.Id,
+                    command.Name,
+                    command.Enabled,
+                    command.Trigger,
+                    command.Kind,
+                    command.Confirmation,
+                    command.WriteTagId,
+                    command.ReadTagId,
+                    command.WriteMode,
+                    command.OnValue,
+                    command.OffValue,
+                    command.FixedValue,
+                    command.TargetPageId,
+                    command.Url,
+                    command.NewTab
+                }).ToArray()
         };
     }
 

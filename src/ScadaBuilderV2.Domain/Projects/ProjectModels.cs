@@ -1075,16 +1075,40 @@ public static class ScadaProjectBuildValidator
                 SuggestedFix: "Target manifest profile 2.3; profiles 2.1 and 2.2 fail closed."));
         }
 
-        if (containsQuickWindows &&
-            (ScadaRuntimeCapabilityCatalog.CommandKinds[ElementEvents.Command.ScadaCommandKind.OpenQuickWindow].Status != ScadaRuntimeCapabilityStatus.Supported ||
-             ScadaRuntimeCapabilityCatalog.CommandKinds[ElementEvents.Command.ScadaCommandKind.CloseQuickWindow].Status != ScadaRuntimeCapabilityStatus.Supported))
+        // The build gate names the capabilities this layer can see for itself. The exporter runs the full
+        // analysis and is the authority; this is the earlier, cheaper refusal that keeps a project from
+        // reaching an export it cannot pass. Domain may read the catalog but not the Application analyzer,
+        // so the triggers listed here are the locally visible ones and nothing is inferred.
+        var blockedQuickWindowCapabilities = new List<ScadaRuntimeCapability>();
+        if (containsQuickWindows)
+        {
+            foreach (var capability in new[]
+                     {
+                         ScadaRuntimeCapabilityCatalog.CommandKinds[ElementEvents.Command.ScadaCommandKind.OpenQuickWindow],
+                         ScadaRuntimeCapabilityCatalog.CommandKinds[ElementEvents.Command.ScadaCommandKind.CloseQuickWindow],
+                         ScadaRuntimeCapabilityCatalog.QuickWindowDefinition
+                     })
+            {
+                if (capability.Status != ScadaRuntimeCapabilityStatus.Supported) blockedQuickWindowCapabilities.Add(capability);
+            }
+
+            if (invs.Any(invocation => (invocation.Bindings ?? []).Any(binding => binding.SourceKind == QuickWindows.QuickWindowBindingSourceKind.ParentPort))
+                && ScadaRuntimeCapabilityCatalog.QuickWindowParentPortBinding.Status != ScadaRuntimeCapabilityStatus.Supported)
+            {
+                blockedQuickWindowCapabilities.Add(ScadaRuntimeCapabilityCatalog.QuickWindowParentPortBinding);
+            }
+        }
+
+        if (blockedQuickWindowCapabilities.Count > 0)
         {
             issues.Add(new ScadaBuildValidationIssue(
                 ScadaBuildValidationSeverity.Error,
                 "quick-window.capability-unsupported",
-                "QuickWindow build/export capabilities remain blocked until Builder, shared runtime and TF100Web conformance are promoted together.",
+                "QuickWindow capabilities still blocked for this project: "
+                    + string.Join(", ", blockedQuickWindowCapabilities.Select(capability => capability.Id))
+                    + ". A capability is promoted only with Builder, shared runtime and TF100Web evidence together.",
                 PropertyPath: "RuntimeCapabilities",
-                SuggestedFix: "Keep authoring data saved but do not build/export until the QuickWindow capability set is Supported."));
+                SuggestedFix: "Keep authoring data saved but do not build/export until every capability this project uses is Supported."));
         }
 
         // Validate each definition

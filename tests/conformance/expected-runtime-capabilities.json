@@ -2,7 +2,7 @@
   "Schema": "scada-v2-runtime-conformance-v2",
   "ContractVersion": "1.0",
   "PackageFile": "scada-v2-runtime-conformance.sb2",
-  "PackageSha256": "6144c903b97494a63dbcf51a66e2c8e0aca6c5ce98a2d902ae66d1a2794bb42d",
+  "PackageSha256": "ed18e648a7729b81e83cecb7e57fa0aa0edb4dffcfa906cd58904abc19a7626f",
   "Fixtures": [
     {
       "CapabilityId": "action.close-popup",
@@ -434,13 +434,16 @@
     },
     {
       "CapabilityId": "command.close-quick-window",
-      "FixtureId": "blocked:command.close-quick-window",
-      "Status": "Blocked",
-      "PageId": null,
-      "InitialValues": null,
+      "FixtureId": "conformance:command.close-quick-window",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
       "Gesture": "dispatch-command",
-      "ExpectedResult": "strict-export-rejected",
-      "ExpectedDiagnostic": "command.close-quick-window"
+      "ExpectedResult": "probe:command.close-quick-window",
+      "ExpectedDiagnostic": null
     },
     {
       "CapabilityId": "command.confirmation",
@@ -470,13 +473,16 @@
     },
     {
       "CapabilityId": "command.open-quick-window",
-      "FixtureId": "blocked:command.open-quick-window",
-      "Status": "Blocked",
-      "PageId": null,
-      "InitialValues": null,
+      "FixtureId": "conformance:command.open-quick-window",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
       "Gesture": "dispatch-command",
-      "ExpectedResult": "strict-export-rejected",
-      "ExpectedDiagnostic": "command.open-quick-window"
+      "ExpectedResult": "probe:command.open-quick-window",
+      "ExpectedDiagnostic": null
     },
     {
       "CapabilityId": "command.open-url",
@@ -1568,33 +1574,42 @@
     },
     {
       "CapabilityId": "quick-window.definition",
-      "FixtureId": "blocked:quick-window.definition",
-      "Status": "Blocked",
-      "PageId": null,
-      "InitialValues": null,
+      "FixtureId": "conformance:quick-window.definition",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
       "Gesture": "load-page",
-      "ExpectedResult": "strict-export-rejected",
-      "ExpectedDiagnostic": "quick-window.definition"
+      "ExpectedResult": "probe:quick-window.definition",
+      "ExpectedDiagnostic": null
     },
     {
       "CapabilityId": "quick-window.dom.scoped-root",
-      "FixtureId": "blocked:quick-window.dom.scoped-root",
-      "Status": "Blocked",
-      "PageId": null,
-      "InitialValues": null,
+      "FixtureId": "conformance:quick-window.dom.scoped-root",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
       "Gesture": "load-page",
-      "ExpectedResult": "strict-export-rejected",
-      "ExpectedDiagnostic": "quick-window.dom.scoped-root"
+      "ExpectedResult": "probe:quick-window.dom.scoped-root",
+      "ExpectedDiagnostic": null
     },
     {
       "CapabilityId": "quick-window.instance.single-per-definition",
-      "FixtureId": "blocked:quick-window.instance.single-per-definition",
-      "Status": "Blocked",
-      "PageId": null,
-      "InitialValues": null,
+      "FixtureId": "conformance:quick-window.instance.single-per-definition",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
       "Gesture": "load-page",
-      "ExpectedResult": "strict-export-rejected",
-      "ExpectedDiagnostic": "quick-window.instance.single-per-definition"
+      "ExpectedResult": "probe:quick-window.instance.single-per-definition",
+      "ExpectedDiagnostic": null
     },
     {
       "CapabilityId": "quick-window.legacy-fragment-adapter",
@@ -1608,63 +1623,81 @@
     },
     {
       "CapabilityId": "quick-window.lifecycle.host-owned",
-      "FixtureId": "blocked:quick-window.lifecycle.host-owned",
-      "Status": "Blocked",
-      "PageId": null,
-      "InitialValues": null,
+      "FixtureId": "conformance:quick-window.lifecycle.host-owned",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
       "Gesture": "load-page",
-      "ExpectedResult": "strict-export-rejected",
-      "ExpectedDiagnostic": "quick-window.lifecycle.host-owned"
+      "ExpectedResult": "probe:quick-window.lifecycle.host-owned",
+      "ExpectedDiagnostic": null
     },
     {
       "CapabilityId": "quick-window.local-interface.typed",
-      "FixtureId": "blocked:quick-window.local-interface.typed",
-      "Status": "Blocked",
-      "PageId": null,
-      "InitialValues": null,
+      "FixtureId": "conformance:quick-window.local-interface.typed",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
       "Gesture": "load-page",
-      "ExpectedResult": "strict-export-rejected",
-      "ExpectedDiagnostic": "quick-window.local-interface.typed"
+      "ExpectedResult": "probe:quick-window.local-interface.typed",
+      "ExpectedDiagnostic": null
     },
     {
       "CapabilityId": "quick-window.nesting.depth-2",
-      "FixtureId": "blocked:quick-window.nesting.depth-2",
-      "Status": "Blocked",
-      "PageId": null,
-      "InitialValues": null,
+      "FixtureId": "conformance:quick-window.nesting.depth-2",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
       "Gesture": "load-page",
-      "ExpectedResult": "strict-export-rejected",
-      "ExpectedDiagnostic": "quick-window.nesting.depth-2"
+      "ExpectedResult": "probe:quick-window.nesting.depth-2",
+      "ExpectedDiagnostic": null
     },
     {
       "CapabilityId": "quick-window.port-binding",
-      "FixtureId": "blocked:quick-window.port-binding",
-      "Status": "Blocked",
-      "PageId": null,
-      "InitialValues": null,
+      "FixtureId": "conformance:quick-window.port-binding",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
       "Gesture": "load-page",
-      "ExpectedResult": "strict-export-rejected",
-      "ExpectedDiagnostic": "quick-window.port-binding"
+      "ExpectedResult": "probe:quick-window.port-binding",
+      "ExpectedDiagnostic": null
     },
     {
       "CapabilityId": "quick-window.port.required",
-      "FixtureId": "blocked:quick-window.port.required",
-      "Status": "Blocked",
-      "PageId": null,
-      "InitialValues": null,
+      "FixtureId": "conformance:quick-window.port.required",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
       "Gesture": "load-page",
-      "ExpectedResult": "strict-export-rejected",
-      "ExpectedDiagnostic": "quick-window.port.required"
+      "ExpectedResult": "probe:quick-window.port.required",
+      "ExpectedDiagnostic": null
     },
     {
       "CapabilityId": "quick-window.presentation.backdrop",
-      "FixtureId": "blocked:quick-window.presentation.backdrop",
-      "Status": "Blocked",
-      "PageId": null,
-      "InitialValues": null,
+      "FixtureId": "conformance:quick-window.presentation.backdrop",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
       "Gesture": "load-page",
-      "ExpectedResult": "strict-export-rejected",
-      "ExpectedDiagnostic": "quick-window.presentation.backdrop"
+      "ExpectedResult": "probe:quick-window.presentation.backdrop",
+      "ExpectedDiagnostic": null
     },
     {
       "CapabilityId": "shape.alarm-beacon",

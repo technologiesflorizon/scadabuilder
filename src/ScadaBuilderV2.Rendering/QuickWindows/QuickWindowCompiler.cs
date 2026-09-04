@@ -113,7 +113,6 @@ internal static class QuickWindowCompiler
         Key(invocation.DefinitionKey),
         invocation.InterfaceVersion,
         invocation.EffectiveTitleOverride,
-        invocation.OwnerPageKey is { } pageKey ? Key(pageKey) : null,
         invocation.OwnerElementId,
         invocation.OwnerCommandId,
         (invocation.Bindings ?? [])

@@ -98,8 +98,8 @@ public sealed class LegacyPopupResidueTests
         {
             var cap = all.FirstOrDefault(c => c.Id == qwId);
             Assert.IsNotNull(cap, $"QuickWindow capability {qwId} should exist");
-            // Must be Blocked until Phase 6
-            Assert.AreEqual(ScadaBuilderV2.Domain.RuntimeContracts.ScadaRuntimeCapabilityStatus.Blocked, cap!.Status);
+            // Promoted in Phase 6 on its own three-layer evidence, never on a legacy popup's.
+            Assert.AreEqual(ScadaBuilderV2.Domain.RuntimeContracts.ScadaRuntimeCapabilityStatus.Supported, cap!.Status);
             // Ensure legacy not used as proof: their fixture ids are distinct
             Assert.IsFalse(cap.FixtureId.Contains("popup"), "QuickWindow fixture must not contain popup");
         }

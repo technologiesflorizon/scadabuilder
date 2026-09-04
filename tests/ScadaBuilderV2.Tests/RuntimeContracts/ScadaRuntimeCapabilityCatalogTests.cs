@@ -159,12 +159,39 @@ public sealed class ScadaRuntimeCapabilityCatalogTests
             approved,
             registered.Select(capability => capability.Id).ToArray(),
             "The catalog must register exactly the capabilities approved by the specification, no more and no less.");
-        Assert.IsTrue(
-            registered.All(capability => capability.Status == ScadaRuntimeCapabilityStatus.Blocked),
-            "Every quick-window capability starts Blocked until its own Phase 6 promotion.");
-        Assert.IsTrue(
-            registered.All(capability => capability.FixtureId == $"blocked:{capability.Id}"),
-            "A blocked capability carries its own fixture id, never a shared one.");
+        // Phase 6 promoted eleven of the thirteen. The two that stay Blocked do so for different reasons:
+        // parent-port forwarding is implemented but no deployed package exercises it, and the legacy
+        // fragment adapter has no implementation at all. Naming them here means a future promotion has to
+        // come and delete a line, rather than slip through a predicate.
+        string[] stillBlocked =
+        [
+            "quick-window.binding.parent-port",
+            "quick-window.legacy-fragment-adapter"
+        ];
+
+        CollectionAssert.AreEqual(
+            stillBlocked,
+            registered
+                .Where(capability => capability.Status == ScadaRuntimeCapabilityStatus.Blocked)
+                .Select(capability => capability.Id)
+                .ToArray(),
+            "Exactly the two unproven quick-window capabilities stay Blocked.");
+
+        foreach (var capability in registered)
+        {
+            if (capability.Status == ScadaRuntimeCapabilityStatus.Blocked)
+            {
+                Assert.AreEqual($"blocked:{capability.Id}", capability.FixtureId,
+                    "A blocked capability carries its own fixture id, never a shared one.");
+                continue;
+            }
+
+            Assert.AreEqual($"conformance:{capability.Id}", capability.FixtureId, capability.Id);
+            // The three-layer rule is what a promotion is: Builder, shared runtime and host, each with at
+            // least one suite that names this capability.
+            Assert.IsTrue(capability.Evidence.IsComplete,
+                $"{capability.Id} was promoted without evidence at all three layers.");
+        }
     }
 
     [TestMethod]

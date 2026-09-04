@@ -146,7 +146,7 @@ Couverture : `frontend/tests_runtime_js/quick-window-soak-recovery.test.mjs`, 10
 
 ### 7.5 Limites actées du dispositif
 
-Le soak tourne sur un canary WSL réel (`127.0.0.1:8010`, base `tf100_canary` dédiée, `STATIC_ROOT` distinct, paquet SHA `f0647722`, génération `ad35f17a`). Quatre choses qu'il ne prouvera pas, à lire avec son verdict :
+Le soak tourne sur un canary WSL réel (`127.0.0.1:8010`, base `tf100_canary` dédiée, `STATIC_ROOT` distinct, paquet SHA `f0647722`, génération `ad35f17a`). *Le paquet de soak a été régénéré le 2026-09-04 par la Phase 6 — `OwnerPageKey` a quitté le manifeste — et vaut désormais `513e01e3`. Le run consigné ici a bien tourné contre `f0647722`; c'est ce SHA qui fait foi pour lui.* Quatre choses qu'il ne prouvera pas, à lire avec son verdict :
 
 - **Écriture non éprouvée.** Sans PLC, `StationMappingWriteView` échoue au driver; seul le chemin d'échec est exercé.
 - **Aucune page 2.1/2.2/2.3 sur ce canary.** Le critère de non-régression sur les pages existantes est dégénéré : il prouve qu'une page se compose encore après 24 h, pas l'absence d'impact sur des pages historiques absentes.

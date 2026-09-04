@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active known gaps register
-Document version: `V2.1.5.0047`
+Document version: `V2.1.6.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-04 | `V2.1.6.0000` | `PENDING` | Phase 6 : onze capacites Fenetre rapide promues, deux restent bloquees. Trois defauts latents du chemin d'export corriges. |
 | 2026-08-25 | `V2.1.5.0047` | `dce0941` | Task 5.3 partiellement close : conformance, canary et rollback verts; soak 24 h et deploiement production restent a decider. |
 | 2026-08-25 | `V2.1.5.0046` | `705077c` | Task 5.2 livree : host TF100Web et SinglePerDefinition; restent la conformance cross-runtime et la composition header/pied. |
 | 2026-08-25 | `V2.1.5.0045` | `40e300a` | Task 5.1 livree : ingestion et validation fail-closed des registres cote TF100Web; le chargeur de fragment et l'adaptateur host restent ouverts. |
@@ -111,6 +112,12 @@ Document version: `V2.1.5.0047`
 27. La Phase 3 authoring est close : rapport `docs/superpowers/reports/2026-08-24-quick-window-phase-3-audit.md` et entrée `phase 3` dans `tools/quick-window/checkpoints.json`. Les Phases 4 à 7 restent entièrement ouvertes et toutes les capacités `quick-window.*` restent `Blocked`. Les deux dépôts portent des commits locaux non poussés.
 
 28. La Phase 4 est close : rapport `docs/superpowers/reports/2026-08-25-quick-window-phase-4-audit.md` et entrée `phase 4` dans `tools/quick-window/checkpoints.json`. L'infrastructure de test est complète : la suite Django s'exécute sous WSL Ubuntu — le blocage `fcntl` ne valait que pour l'interpréteur Windows — et le serveur MySQL présent dans la distribution satisfait les suites adossées à la base. `frontend.tests_scada_deploy` et `frontend.tests_scada_page_composition` passent 39/39. Le compte `root@localhost` de ce serveur utilise `auth_socket`, donc les tests doivent être lancés sous l'utilisateur `root` de WSL (`wsl -u root`), qui s'authentifie par la socket Unix; le mot de passe de `tf100web/settings.py` est alors ignoré. `frontend.tests_scada_package` présente 5 échecs et 1 erreur **préexistants**, identiques avec ou sans base et identiques avec les changements Fenêtre rapide mis de côté; ils portent sur des attentes d'assets et de déploiement sans rapport avec ce chantier et sont à traiter pour eux-mêmes. Les Tasks 5.1 à 5.3 sont livrées : TF100Web ingère les registres `QuickWindows[]`/`QuickWindowInvocations[]` et les refuse fail-closed avant activation et déploiement (`quick_window_registry_errors`, contrat §12.6) et les monte derrière son propre adaptateur host, avec le gestionnaire SinglePerDefinition et le service du fragment par namespace (contrat §12.7). La conformance cross-runtime, l'épreuve canary et l'épreuve de rollback sont vertes (contrat §12.8). **Deux étapes de la Task 5.3 restent ouvertes et exigent une décision humaine :** le soak d'au moins 24 h sur le canary et le déploiement en production, tous deux décrits sans être exécutés dans `deploy/developpement/quick_window_canary_runbook.md` (dépôt TF100Web). La Phase 6 ne peut pas s'ouvrir avant. Reste le contenu restant de la Phase 5 : ingestion des registres, chargeur de fragment par namespace avec résolution du CSS aplati, `openQuickWindow`/`closeQuickWindow` ajoutés aux `acceptedKinds` de l'adaptateur host, services d'overlay et de cycle de vie, et appel de `loadQuickWindowRegistries` par la vue. `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` ne doit pas être étendu avant la Phase 6.
+
+29. **La Phase 6 est close** (2026-09-04). Onze capacités `quick-window.*` sont `Supported`, prouvées par 126 sondes exécutables côté TF100Web contre le paquet de conformance réellement exporté; `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` les contient désormais. **Deux restent `Blocked`, pour des raisons différentes :** `quick-window.binding.parent-port` est implémentée côté Builder et runtime mais aucun paquet déployé ne l'exerce, donc elle n'a pas de preuve host; `quick-window.legacy-fragment-adapter` n'a aucune implémentation nulle part. Un projet qui les touche est refusé avant qu'aucun répertoire d'export n'existe.
+
+30. Trois défauts latents du chemin d'export ont été trouvés en ouvrant ce chemin pour la première fois, et corrigés : `OwnerPageKey` était exporté alors que la validation de paquet interdit toute propriété `*PageKey`; `quickWindowInvocationKey` n'était pas sérialisé, si bien qu'un paquet exporté aurait porté des commandes d'ouverture inertes; et l'analyseur de capacités ne regardait pas le contenu des définitions, laissant tout ce qu'une fenêtre rapide embarque hors du gate. Aucun n'était visible tant que les capacités bloquaient l'export.
+
+31. **Écart connu non corrigé : `FR-UI-03`.** Le compilateur sérialise `PresentationDefaults.Title` brut, donc la barre de titre du runtime déployé est vide là où l'aperçu Builder affiche le `DisplayName`. `QuickWindowPresentationDefaults.EffectiveTitle` implémente pourtant le repli, et le compilateur l'applique déjà à la scène. Report délibéré : la correction régénère les fixtures gelées.
 
 26. `DEC-0051` a ré-épinglé le moteur de vérification sur Node `24.15.x`. Les trois legs du gate Phase 0 — Node headless, WebView2 réel et Edge/TF100Web — sont rejoués `PASS` sur `v24.15.0` avec le hash de fixture gelé inchangé, et la fixture vendorisée dans TF100Web est réalignée octet pour octet (LF épinglé, espaces de fin restaurés). La lacune d'épinglage est fermée. Le dépôt TF100Web porte ces corrections sur `codex/quick-window-v1` sans push.
 

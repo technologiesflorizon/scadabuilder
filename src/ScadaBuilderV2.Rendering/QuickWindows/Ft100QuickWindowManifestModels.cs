@@ -70,16 +70,23 @@ public sealed record Ft100QuickWindowBinding(
 /// <param name="DefinitionKey">Target definition.</param>
 /// <param name="InterfaceVersion">Interface version this invocation was aligned on.</param>
 /// <param name="TitleOverride">Optional per-invocation title.</param>
-/// <param name="OwnerPageKey">Caller page, when the invocation is attached.</param>
 /// <param name="OwnerElementId">Caller element id.</param>
 /// <param name="OwnerCommandId">Caller command id.</param>
 /// <param name="Bindings">Typed bindings, ordered by member key.</param>
+/// <remarks>
+/// The caller page carries no key here. `QuickWindowInvocation.OwnerPageKey` is an authoring identity the
+/// editor needs and the runtime does not: the host opens by `InvocationKey`, and everywhere else the
+/// manifest addresses a page by its textual `Id`, never by a Guid. Exporting it leaked an editor artifact
+/// with no consumer, which `Ft100PackageValidation.ValidateNoInternalPageKeys` forbids for every other
+/// `*PageKey` — the two rules had simply never met, because no package carrying quick windows could be
+/// exported while the capabilities were Blocked. `OwnerElementId` and `OwnerCommandId` still say where an
+/// invocation was called from.
+/// </remarks>
 public sealed record Ft100QuickWindowInvocationEntry(
     string InvocationKey,
     string DefinitionKey,
     int InterfaceVersion,
     string? TitleOverride,
-    string? OwnerPageKey,
     string? OwnerElementId,
     string? OwnerCommandId,
     IReadOnlyList<Ft100QuickWindowBinding> Bindings);

@@ -13,13 +13,27 @@ public sealed class QuickWindowBuildValidationTests
     [TestMethod]
     public void ProjectOnlyValidationStillAppliesQuickWindowBuildGate()
     {
-        var definition = Definition("motor");
+        // Phase 6 promoted eleven capabilities, so a project that stays inside them no longer trips the
+        // gate. The gate itself must stay armed for what was not promoted, and must name it.
+        var member = Member("Run", QuickWindowInterfaceFamily.ReadState, QuickWindowDataType.Boolean, QuickWindowMemberAccess.Read);
+        var definition = Definition("motor", members: [member]);
         var page = Page("page");
-        var project = Project(page, [definition], []);
 
-        var issues = ScadaProjectBuildValidator.Validate(project);
+        var clean = ScadaProjectBuildValidator.Validate(Project(page, [definition], []));
+        Assert.IsFalse(
+            clean.Any(issue => issue.Code == "quick-window.capability-unsupported"),
+            "a project on promoted capabilities alone must not be gated");
 
-        Assert.IsTrue(issues.Any(issue => issue.Code == "quick-window.capability-unsupported"));
+        var forwarding = new QuickWindowInvocation(
+            Guid.NewGuid(),
+            definition.DefinitionKey,
+            [QuickWindowBinding.FromParentPort(member.MemberKey, member.MemberKey)],
+            InterfaceVersion: 1);
+        var gated = ScadaProjectBuildValidator.Validate(Project(page, [definition], [forwarding]));
+
+        var issue = gated.SingleOrDefault(item => item.Code == "quick-window.capability-unsupported");
+        Assert.IsNotNull(issue, "a parent-port binding must still be refused at build time");
+        StringAssert.Contains(issue!.Message, "quick-window.binding.parent-port");
     }
 
     [TestMethod]
@@ -42,7 +56,6 @@ public sealed class QuickWindowBuildValidationTests
 
         Assert.IsTrue(buildIssues.Any(issue => issue.Code == "quick-window.required-missing" && issue.Severity == ScadaBuildValidationSeverity.Error));
         Assert.IsTrue(buildIssues.Any(issue => issue.Code == "quick-window.profile-unsupported"));
-        Assert.IsTrue(buildIssues.Any(issue => issue.Code == "quick-window.capability-unsupported"));
         Assert.IsTrue(authoringIssues.Any(issue => issue.Code == "quick-window.binding.required-missing" && issue.Severity == ScadaBuildValidationSeverity.Warning));
         Assert.AreSame(beforeBindings, invocation.Bindings);
         Assert.AreEqual(0, invocation.Bindings.Count);

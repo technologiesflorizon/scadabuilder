@@ -21,6 +21,20 @@ internal static class ScadaV2RuntimeConformanceProjectFactory
     public const string FooterPageId = "conformance-footer";
     public const string FragmentPageId = "conformance-fragment";
 
+    // Fixed keys, because the conformance package must export byte-identically on every machine and a
+    // generated Guid would move the archive hash on each run.
+    private static readonly Guid MainPageKey = Guid.Parse("c0170000-0000-4000-8000-000000000000");
+    private static readonly Guid OuterDefinitionKey = Guid.Parse("c0170001-0000-4000-8000-000000000001");
+    private static readonly Guid InnerDefinitionKey = Guid.Parse("c0170002-0000-4000-8000-000000000002");
+    private static readonly Guid OuterState = Guid.Parse("c0170011-0000-4000-8000-000000000011");
+    private static readonly Guid OuterSetpoint = Guid.Parse("c0170012-0000-4000-8000-000000000012");
+    private static readonly Guid OuterLabel = Guid.Parse("c0170013-0000-4000-8000-000000000013");
+    private static readonly Guid OuterCount = Guid.Parse("c0170014-0000-4000-8000-000000000014");
+    private static readonly Guid InnerState = Guid.Parse("c0170021-0000-4000-8000-000000000021");
+    private static readonly Guid InnerDetail = Guid.Parse("c0170022-0000-4000-8000-000000000022");
+    private static readonly Guid OuterInvocationKey = Guid.Parse("c0170031-0000-4000-8000-000000000031");
+    private static readonly Guid InnerInvocationKey = Guid.Parse("c0170032-0000-4000-8000-000000000032");
+
     public static ScadaV2RuntimeConformanceProject Create()
     {
         var main = BuildMainScene();
@@ -44,6 +58,9 @@ internal static class ScadaV2RuntimeConformanceProjectFactory
         var project = ScadaProject.CreateDefault(ProjectName) with
         {
             HomePageId = MainPageId,
+            // Quick windows only travel in manifest 2.3; profiles 2.1 and 2.2 fail closed and the default
+            // 2.0 refuses them outright. The conformance project must therefore declare 2.3 to carry them.
+            ManifestVersion = "2.3",
             Scenes = scenes.Select(scene => new ScadaSceneReference(
                 scene.Id,
                 scene.Title,
@@ -61,7 +78,9 @@ internal static class ScadaV2RuntimeConformanceProjectFactory
                     new ScadaTagDefinition("conformance.tag.number", "Number", Datatype: "Float", Writeable: false),
                     new ScadaTagDefinition("conformance.tag.write", "Write", Datatype: "Float", Writeable: true)
                 ],
-                "generated-conformance-tags.json")
+                "generated-conformance-tags.json"),
+            QuickWindows = [BuildOuterQuickWindow(), BuildInnerQuickWindow()],
+            QuickWindowInvocations = BuildQuickWindowInvocations()
         };
 
         return new ScadaV2RuntimeConformanceProject(
@@ -145,12 +164,126 @@ internal static class ScadaV2RuntimeConformanceProjectFactory
 
         return ScadaScene.CreateEmpty(MainPageId, "Runtime Conformance", new CanvasSize(1280, 900)) with
         {
+            PageKey = MainPageKey,
             HeaderPageId = HeaderPageId,
             FooterPageId = FooterPageId,
             Elements = elements,
             Actions = [new ScadaActionDefinition("action-navigate", ScadaActionKind.Navigate, TargetPageId: MainPageId)]
         };
     }
+
+    /// <summary>
+    /// Builds the outer quick window, which carries every promoted definition-side capability at once.
+    /// </summary>
+    /// <remarks>
+    /// Four things are deliberate. Its interface holds a required public member, which is the only trigger
+    /// for `quick-window.port.required`. Its presentation keeps the backdrop, the only trigger for
+    /// `quick-window.presentation.backdrop`. Its own content carries an `OpenQuickWindow` command, which is
+    /// what makes the chain two levels deep and the only trigger for `quick-window.nesting.depth-2`. And no
+    /// binding anywhere in this project is `ParentPort`, so `quick-window.binding.parent-port` stays out of
+    /// the analysis and keeps its Blocked status honest.
+    /// </remarks>
+    private static QuickWindowDefinition BuildOuterQuickWindow() =>
+        new(
+            OuterDefinitionKey,
+            "conformance-outer",
+            "Conformance Outer",
+            InterfaceVersion: 1,
+            new VisualContent(
+                new CanvasSize(520, 360),
+                Elements:
+                [
+                    ScadaElement.CreateText("outer-title", "Outer", 12, 12),
+                    ScadaElement.CreateInputNumeric("outer-value", "Value", 12, 60, isReadOnly: true),
+                    ScadaElement.CreateButton("outer-open-inner", "Open inner", 12, 280) with
+                    {
+                        CommandConfig = new ScadaElementCommandConfig(
+                        [
+                            new ScadaCommandBinding(
+                                "outer-open-inner-command",
+                                "Open inner",
+                                true,
+                                ScadaCommandTrigger.OnClick,
+                                ScadaCommandKind.OpenQuickWindow,
+                                QuickWindowInvocationKey: InnerInvocationKey)
+                        ])
+                    }
+                ]),
+            [
+                new QuickWindowInterfaceMember(OuterState, "State", QuickWindowInterfaceFamily.ReadState,
+                    QuickWindowDataType.Boolean, QuickWindowMemberAccess.Read, Required: true),
+                new QuickWindowInterfaceMember(OuterSetpoint, "Setpoint", QuickWindowInterfaceFamily.WriteCommand,
+                    QuickWindowDataType.Decimal, QuickWindowMemberAccess.Write),
+                new QuickWindowInterfaceMember(OuterLabel, "Label", QuickWindowInterfaceFamily.PublicParameter,
+                    QuickWindowDataType.String, QuickWindowMemberAccess.Read),
+                new QuickWindowInterfaceMember(OuterCount, "Count", QuickWindowInterfaceFamily.ReadState,
+                    QuickWindowDataType.Integer, QuickWindowMemberAccess.Read)
+            ],
+            new QuickWindowPresentationDefaults(Title: "Conformance Outer"));
+
+    /// <summary>Builds the inner quick window, the second level of the nesting chain.</summary>
+    private static QuickWindowDefinition BuildInnerQuickWindow() =>
+        new(
+            InnerDefinitionKey,
+            "conformance-inner",
+            "Conformance Inner",
+            InterfaceVersion: 1,
+            new VisualContent(
+                new CanvasSize(360, 240),
+                Elements:
+                [
+                    ScadaElement.CreateText("inner-title", "Inner", 8, 8),
+                    ScadaElement.CreateInputNumeric("inner-value", "Value", 8, 48, isReadOnly: true),
+                    ScadaElement.CreateButton("inner-close", "Close", 8, 180) with
+                    {
+                        CommandConfig = new ScadaElementCommandConfig(
+                        [
+                            new ScadaCommandBinding(
+                                "inner-close-command",
+                                "Close",
+                                true,
+                                ScadaCommandTrigger.OnClick,
+                                ScadaCommandKind.CloseQuickWindow)
+                        ])
+                    }
+                ]),
+            [
+                new QuickWindowInterfaceMember(InnerState, "State", QuickWindowInterfaceFamily.ReadState,
+                    QuickWindowDataType.Boolean, QuickWindowMemberAccess.Read),
+                new QuickWindowInterfaceMember(InnerDetail, "Detail", QuickWindowInterfaceFamily.ReadState,
+                    QuickWindowDataType.Decimal, QuickWindowMemberAccess.Read)
+            ],
+            new QuickWindowPresentationDefaults(Title: "Conformance Inner"));
+
+    /// <summary>Builds both invocations, every binding tag-sourced so no parent-port capability is required.</summary>
+    private static IReadOnlyList<QuickWindowInvocation> BuildQuickWindowInvocations() =>
+    [
+        new QuickWindowInvocation(
+            OuterInvocationKey,
+            OuterDefinitionKey,
+            [
+                QuickWindowBinding.FromTag(OuterState, "conformance.tag.bool"),
+                QuickWindowBinding.FromTag(OuterSetpoint, "conformance.tag.write"),
+                // Literal rather than tag: the conformance tag catalog carries no integer tag, and a second
+                // binding source kind is worth more here than a third tag-sourced one.
+                QuickWindowBinding.FromLiteral(OuterCount, "3")
+            ],
+            InterfaceVersion: 1,
+            OwnerPageKey: null,
+            OwnerElementId: "commands-all",
+            OwnerCommandId: "kind-open-quick-window"),
+        new QuickWindowInvocation(
+            InnerInvocationKey,
+            InnerDefinitionKey,
+            [
+                QuickWindowBinding.FromTag(InnerState, "conformance.tag.bool"),
+                QuickWindowBinding.FromTag(InnerDetail, "conformance.tag.number")
+            ],
+            InterfaceVersion: 1,
+            OwnerPageKey: null,
+            OwnerElementId: "outer-open-inner",
+            OwnerCommandId: "outer-open-inner-command")
+    ];
 
     private static ScadaElement BuildStateElement()
     {
@@ -228,7 +361,12 @@ internal static class ScadaV2RuntimeConformanceProjectFactory
             new ScadaCommandBinding("write-fixed", "Fixed", true, ScadaCommandTrigger.OnClick,
                 ScadaCommandKind.WriteTag, WriteTagId: "conformance.tag.write", WriteMode: ScadaWriteMode.SetFixed, FixedValue: "12.5"),
             new ScadaCommandBinding("write-input", "Input", true, ScadaCommandTrigger.OnClick,
-                ScadaCommandKind.WriteTag, WriteTagId: "conformance.tag.write", WriteMode: ScadaWriteMode.SetFromInput)
+                ScadaCommandKind.WriteTag, WriteTagId: "conformance.tag.write", WriteMode: ScadaWriteMode.SetFromInput),
+            // The caller half of the quick-window vertical. Only the open command belongs on a page:
+            // CloseQuickWindow is valid solely inside a definition's own content, so it lives in the inner
+            // window below, which is also where a real close button lives.
+            new ScadaCommandBinding("kind-open-quick-window", "Open quick window", true, ScadaCommandTrigger.OnClick,
+                ScadaCommandKind.OpenQuickWindow, QuickWindowInvocationKey: OuterInvocationKey)
         ]);
 
         return ScadaElement.CreateButton("commands-all", "Commands", 0, 0) with

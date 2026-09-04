@@ -18,6 +18,25 @@ namespace ScadaBuilderV2.Domain.RuntimeContracts;
 /// </remarks>
 public static class ScadaRuntimeCapabilityCatalog
 {
+    // Named evidence for the quick-window vertical promoted in Phase 6. The generic baseline is not good
+    // enough here: the three-layer rule exists so that a promotion cites the suites that actually exercise
+    // the capability, and these are they.
+    private static readonly ScadaRuntimeCapabilityEvidence QuickWindowEvidence = new(
+        [
+            "tests/ScadaBuilderV2.Tests/RuntimeContracts/RuntimeConformancePackageTests.cs",
+            "tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowCompilerTests.cs",
+            "tests/ScadaBuilderV2.Tests/RuntimeContracts/ScadaRuntimeCapabilityAnalyzerTests.cs"
+        ],
+        [
+            "tests/runtime-js/quick-window-runtime.test.mjs",
+            "tests/runtime-js/quick-window-host-adapter.test.mjs"
+        ],
+        [
+            "frontend/tests_runtime_conformance.py",
+            "frontend/tests_runtime_js/quick-window-cross-runtime-harness.mjs",
+            "frontend/tests_runtime_js/quick-window-composition-isolation.test.mjs"
+        ]);
+
     private static readonly ScadaRuntimeCapabilityEvidence BaselineEvidence = new(
         ["tests/ScadaBuilderV2.Tests/RuntimeContracts/RuntimeConformancePackageTests.cs"],
         ["tests/runtime-js", "tests/ScadaBuilderV2.Tests/Runtime/RuntimeJsModulesTests.cs"],
@@ -102,12 +121,12 @@ public static class ScadaRuntimeCapabilityCatalog
         EnumCapabilities<ScadaCommandTrigger>(value => $"command.trigger.{ToKebabCase(value.ToString())}", ScadaRuntimeCapabilityOwner.SharedRuntime);
 
     /// <summary>Gets capabilities keyed by command kind.</summary>
-    /// <remarks>DEC-0050 retires popup kinds; new quick-window kinds start Blocked until Phase 6 promotion.</remarks>
+    /// <remarks>DEC-0050 retires popup kinds; the quick-window kinds were promoted in Phase 6 on three-layer evidence.</remarks>
     public static IReadOnlyDictionary<ScadaCommandKind, ScadaRuntimeCapability> CommandKinds { get; } = Map(
         (ScadaCommandKind.WriteTag, Capability("command.write-tag", ScadaRuntimeCapabilityOwner.SharedRuntime)),
         (ScadaCommandKind.Navigate, Capability("command.navigate", ScadaRuntimeCapabilityOwner.SharedRuntime)),
-        (ScadaCommandKind.OpenQuickWindow, Blocked("command.open-quick-window", ScadaRuntimeCapabilityOwner.SharedRuntime)),
-        (ScadaCommandKind.CloseQuickWindow, Blocked("command.close-quick-window", ScadaRuntimeCapabilityOwner.SharedRuntime)),
+        (ScadaCommandKind.OpenQuickWindow, Promoted("command.open-quick-window", ScadaRuntimeCapabilityOwner.SharedRuntime)),
+        (ScadaCommandKind.CloseQuickWindow, Promoted("command.close-quick-window", ScadaRuntimeCapabilityOwner.SharedRuntime)),
         (ScadaCommandKind.OpenUrl, Capability("command.open-url", ScadaRuntimeCapabilityOwner.SharedRuntime)),
         (ScadaCommandKind.Back, Capability("command.back", ScadaRuntimeCapabilityOwner.SharedRuntime)));
 
@@ -222,25 +241,25 @@ public static class ScadaRuntimeCapabilityCatalog
     /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §10.2.
     /// Tests: tests/ScadaBuilderV2.Tests/RuntimeContracts/ScadaRuntimeCapabilityCatalogTests.cs.
     /// </remarks>
-    public static ScadaRuntimeCapability QuickWindowDefinition { get; } = Blocked("quick-window.definition", ScadaRuntimeCapabilityOwner.PackageTransport);
+    public static ScadaRuntimeCapability QuickWindowDefinition { get; } = Promoted("quick-window.definition", ScadaRuntimeCapabilityOwner.PackageTransport);
     /// <summary>Gets the typed local-interface capability of a quick-window definition.</summary>
-    public static ScadaRuntimeCapability QuickWindowLocalInterfaceTyped { get; } = Blocked("quick-window.local-interface.typed", ScadaRuntimeCapabilityOwner.SharedRuntime);
+    public static ScadaRuntimeCapability QuickWindowLocalInterfaceTyped { get; } = Promoted("quick-window.local-interface.typed", ScadaRuntimeCapabilityOwner.SharedRuntime);
     /// <summary>Gets the typed port binding capability of a quick-window invocation.</summary>
-    public static ScadaRuntimeCapability QuickWindowPortBinding { get; } = Blocked("quick-window.port-binding", ScadaRuntimeCapabilityOwner.SharedRuntime);
+    public static ScadaRuntimeCapability QuickWindowPortBinding { get; } = Promoted("quick-window.port-binding", ScadaRuntimeCapabilityOwner.SharedRuntime);
     /// <summary>Gets the required public port capability.</summary>
-    public static ScadaRuntimeCapability QuickWindowPortRequired { get; } = Blocked("quick-window.port.required", ScadaRuntimeCapabilityOwner.SharedRuntime);
+    public static ScadaRuntimeCapability QuickWindowPortRequired { get; } = Promoted("quick-window.port.required", ScadaRuntimeCapabilityOwner.SharedRuntime);
     /// <summary>Gets the parent-port forwarding capability, outside the first vertical slice.</summary>
     public static ScadaRuntimeCapability QuickWindowParentPortBinding { get; } = Blocked("quick-window.binding.parent-port", ScadaRuntimeCapabilityOwner.SharedRuntime);
     /// <summary>Gets the single-instance-per-definition host policy capability.</summary>
-    public static ScadaRuntimeCapability QuickWindowSinglePerDefinition { get; } = Blocked("quick-window.instance.single-per-definition", ScadaRuntimeCapabilityOwner.Tf100WebHost);
+    public static ScadaRuntimeCapability QuickWindowSinglePerDefinition { get; } = Promoted("quick-window.instance.single-per-definition", ScadaRuntimeCapabilityOwner.Tf100WebHost);
     /// <summary>Gets the host-owned lifecycle capability.</summary>
-    public static ScadaRuntimeCapability QuickWindowHostOwnedLifecycle { get; } = Blocked("quick-window.lifecycle.host-owned", ScadaRuntimeCapabilityOwner.Tf100WebHost);
+    public static ScadaRuntimeCapability QuickWindowHostOwnedLifecycle { get; } = Promoted("quick-window.lifecycle.host-owned", ScadaRuntimeCapabilityOwner.Tf100WebHost);
     /// <summary>Gets the scoped DOM root capability.</summary>
-    public static ScadaRuntimeCapability QuickWindowScopedDomRoot { get; } = Blocked("quick-window.dom.scoped-root", ScadaRuntimeCapabilityOwner.Tf100WebHost);
-    /// <summary>Gets the two-level nesting capability, outside the first vertical slice.</summary>
-    public static ScadaRuntimeCapability QuickWindowNestingDepth2 { get; } = Blocked("quick-window.nesting.depth-2", ScadaRuntimeCapabilityOwner.Tf100WebHost);
+    public static ScadaRuntimeCapability QuickWindowScopedDomRoot { get; } = Promoted("quick-window.dom.scoped-root", ScadaRuntimeCapabilityOwner.Tf100WebHost);
+    /// <summary>Gets the two-level nesting capability, delivered and promoted in Phase 6.</summary>
+    public static ScadaRuntimeCapability QuickWindowNestingDepth2 { get; } = Promoted("quick-window.nesting.depth-2", ScadaRuntimeCapabilityOwner.Tf100WebHost);
     /// <summary>Gets the host backdrop presentation capability.</summary>
-    public static ScadaRuntimeCapability QuickWindowBackdrop { get; } = Blocked("quick-window.presentation.backdrop", ScadaRuntimeCapabilityOwner.Tf100WebHost);
+    public static ScadaRuntimeCapability QuickWindowBackdrop { get; } = Promoted("quick-window.presentation.backdrop", ScadaRuntimeCapabilityOwner.Tf100WebHost);
     /// <summary>Gets the legacy fragment adapter capability, outside the first vertical slice.</summary>
     public static ScadaRuntimeCapability QuickWindowLegacyFragmentAdapter { get; } = Blocked("quick-window.legacy-fragment-adapter", ScadaRuntimeCapabilityOwner.Tf100WebHost);
 
@@ -309,6 +328,10 @@ public static class ScadaRuntimeCapabilityCatalog
 
     private static ScadaRuntimeCapability Blocked(string id, ScadaRuntimeCapabilityOwner owner) =>
         Capability(id, owner, ScadaRuntimeCapabilityStatus.Blocked);
+
+    /// <summary>A quick-window capability promoted in Phase 6, carrying its own three-layer evidence.</summary>
+    private static ScadaRuntimeCapability Promoted(string id, ScadaRuntimeCapabilityOwner owner) =>
+        Capability(id, owner, ScadaRuntimeCapabilityStatus.Supported, QuickWindowEvidence);
 
     private static IReadOnlyDictionary<T, ScadaRuntimeCapability> Map<T>(
         params (T Key, ScadaRuntimeCapability Capability)[] entries) where T : notnull =>

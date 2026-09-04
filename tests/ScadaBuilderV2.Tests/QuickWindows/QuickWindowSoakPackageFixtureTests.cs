@@ -43,6 +43,26 @@ public sealed class QuickWindowSoakPackageFixtureTests
     private const string FixtureName = "quick-window-soak.sb2";
     private const string HashName = "quick-window-soak.sha256";
 
+    /// <summary>The one line ending a frozen fixture may contain, whatever the checkout did to this file.</summary>
+    private const string LineFeed = "\n";
+
+    /// <summary>
+    /// Writes fixture text with LF endings, whatever the checkout did to this source file.
+    /// </summary>
+    /// <remarks>
+    /// A C# raw string literal carries the line endings of the file it is written in, and this repository
+    /// runs with `core.autocrlf=true`. The frozen package therefore depended on how the clone was made:
+    /// generated on an LF checkout it holds LF, recompiled on a CRLF checkout it holds CRLF, and the gate
+    /// fails for a line-ending reason while the content is identical. That is the failure `.gitattributes`
+    /// already pins `eol=lf` to prevent for the isolation prototype; here it is closed in code instead, so
+    /// no clone setting can reopen it.
+    ///
+    /// It went unnoticed because the assembly was not recompiled for months: the test kept asserting an
+    /// artifact built from a checkout nobody had since reproduced.
+    /// </remarks>
+    private static void WriteFixtureText(string path, string content, UTF8Encoding encoding) =>
+        File.WriteAllText(path, content.ReplaceLineEndings(LineFeed), encoding);
+
     private static readonly Guid PumpDefinition = Guid.Parse("50000001-1111-4111-8111-a00000000001");
     private static readonly Guid MotorDefinition = Guid.Parse("50000002-1111-4111-8111-a00000000002");
     private static readonly Guid ValveDefinition = Guid.Parse("50000003-1111-4111-8111-a00000000003");
@@ -315,7 +335,7 @@ public sealed class QuickWindowSoakPackageFixtureTests
     {
         var pageDirectory = Path.Combine(packageDirectory, pageId);
         Directory.CreateDirectory(Path.Combine(pageDirectory, "css"));
-        File.WriteAllText(
+        WriteFixtureText(
             Path.Combine(pageDirectory, $"{pageId}.html"),
             $"""
             <!doctype html>
@@ -332,7 +352,7 @@ public sealed class QuickWindowSoakPackageFixtureTests
 
             """,
             new UTF8Encoding(false));
-        File.WriteAllText(
+        WriteFixtureText(
             Path.Combine(pageDirectory, "css", $"{pageId}.css"),
             $"#ft100-{pageId}.ft100-scada-scene {{ position: relative; width: 1920px; height: 1080px; }}\n",
             new UTF8Encoding(false));

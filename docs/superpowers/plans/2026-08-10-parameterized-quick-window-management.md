@@ -1,13 +1,14 @@
 # Fenêtres rapides paramétrées - Plan d’implémentation
 
 Date: 2026-08-10
-Status: Active implementation plan - phases 0 to 5 closed; industrial-site rollout deferred to project completion, controlled deployment stands as the capability proof; phases 6 to 7 not started
-Document version: `V2.1.5.0056`
+Status: Active implementation plan - phases 0 to 6 closed; eleven quick-window capabilities promoted and strict 2.3 export open; industrial-site rollout deferred to project completion; phase 7 not started
+Document version: `V2.1.6.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-04 | `V2.1.6.0000` | `PENDING` | Phase 6 close : onze capacites promues sur preuve executable aux trois couches, export strict 2.3 ouvert. Trois defauts latents corriges au passage. |
 | 2026-09-03 | `V2.1.5.0056` | `5716000` | Phase 5 close : déploiement en site industriel reporté à la fin du projet, le déploiement contrôlé tient lieu de preuve de « déploiement capable ». Checkpoint `phase 5` enregistré. |
 | 2026-09-03 | `V2.1.5.0055` | `63605dc` | Critère d'erreurs console mesuré par capture dédiée; correctifs de la Task 5.4 publiés au canary et conformance rejouée. Task 5.3 close hormis le déploiement production. |
 | 2026-09-03 | `V2.1.5.0054` | `2dfbb07` | Verdict du soak et acceptation explicite des 18,37 h en lieu et place des 24 h; le sous-item soak de la Task 5.3 est clos, le déploiement production reste requis. Trois défauts d'instrumentation corrigés (TF100Web `b4edfc9`). |
@@ -79,7 +80,9 @@ Document version: `V2.1.5.0056`
 - [x] Phase 5.4: composition header/pied, isolation legacy et refus de traversée dans les deux sens (TF100Web `744075d`, `70d7e02`).
 - [x] Phase 5.3: conformance cross-runtime, canary et rollback verts (TF100Web `9304355`); soak exécuté 18,37 h et **accepté en l'état sur décision du 2026-09-03**, critère d'erreurs console mesuré séparément, correctifs publiés au canary et conformance rejouée (Builder `49b6d71`, TF100Web `ef3ecde`, `b4edfc9`); mise en service en site industriel reportée à la fin du projet.
 - [x] Phase 5 close: rapport d'audit `docs/superpowers/reports/2026-09-02-quick-window-phase-5-audit.md` et entrée `phase 5` dans `tools/quick-window/checkpoints.json`.
-- [ ] Phases 6 à 7: non démarrées.
+- [x] Phase 6.1: onze capacités promues sur preuve exécutable aux trois couches; `binding.parent-port` et `legacy-fragment-adapter` restent `Blocked`, faute de preuve host pour l'une et d'implémentation pour l'autre.
+- [x] Phase 6.2: export strict 2.3 ouvert pour les capacités promues, refusé fail-closed pour les autres, sans modification du gate — il était générique et piloté par le catalogue, comme la note de préparation le disait.
+- [ ] Phase 7: non démarrée.
 
 ### Limites actées du soak du 2026-09-02
 
@@ -1019,10 +1022,10 @@ python -m pytest frontend/tests_scada_quick_window_composition.py -q   # exécut
 - Consumes: commits/preuves Builder, runtime, TF100Web et SHA déployé.
 - Produces: `Supported` seulement pour les capacités de la verticale prouvées aux trois couches.
 
-- [ ] Laisser `quick-window.binding.parent-port`, `quick-window.nesting.depth-2` et `quick-window.legacy-fragment-adapter` bloqués/hors export tant qu’ils ne sont pas livrés.
-- [ ] Exécuter `tools/RuntimeCapabilityMatrixGenerator` et le gate stale.
-- [ ] Puisque cette promotion introduit la première capacité QuickWindow livrable, calculer un bump `feature` depuis la valeur courante de `VERSION` avec `python C:\Users\mathi\.codex\skills\scada-builder-v2-versioning\scripts\bump_scada_v2_version.py <current> feature`, remettre l’itération à `0000` et synchroniser seulement les documents propriétaires touchés. Ne pas effectuer ce bump si une capacité, le canary, le déploiement ou l’export reste bloqué.
-- [ ] Commit: `feat: promote proven quick window capabilities`.
+- [x] Laisser `quick-window.binding.parent-port` et `quick-window.legacy-fragment-adapter` bloqués/hors export tant qu’ils ne sont pas livrés. *(`nesting.depth-2` était visée par cette consigne mais elle est livrée et prouvée aux trois couches; elle a été promue sur décision explicite du 2026-09-03.)*
+- [x] Exécuter `tools/RuntimeCapabilityMatrixGenerator` et le gate stale.
+- [x] Puisque cette promotion introduit la première capacité QuickWindow livrable, calculer un bump `feature` depuis la valeur courante de `VERSION` avec `python C:\Users\mathi\.codex\skills\scada-builder-v2-versioning\scripts\bump_scada_v2_version.py <current> feature`, remettre l’itération à `0000` et synchroniser seulement les documents propriétaires touchés. Ne pas effectuer ce bump si une capacité, le canary, le déploiement ou l’export reste bloqué.
+- [x] Commit: `feat: promote proven quick window capabilities`.
 
 **Vérification:**
 
@@ -1043,9 +1046,9 @@ dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~Runtime
 - Consumes: capacités Supported et profil de déploiement capable.
 - Produces: export Builder activé uniquement pour le contrat prouvé.
 
-- [ ] Retirer le gate temporaire uniquement pour les variantes Supported; maintenir le rejet de toute variante Blocked ou host incompatible.
-- [ ] Tester export/rejet, hash, déterminisme, aucune donnée test/editor-only et aucune géométrie de chrome host dans le contenu.
-- [ ] Commit: `feat: enable strict quick window export`.
+- [x] Retirer le gate temporaire uniquement pour les variantes Supported; maintenir le rejet de toute variante Blocked ou host incompatible. *(Aucun gate temporaire n'existait : `EnsureRuntimeCapabilitiesExportable` est générique et piloté par le catalogue. Rien n'a été retiré; le gate de build a en revanche été rendu spécifique, il nomme désormais les capacités encore bloquées au lieu de tester deux genres de commande.)*
+- [x] Tester export/rejet, hash, déterminisme, aucune donnée test/editor-only et aucune géométrie de chrome host dans le contenu. *(Un projet sur capacités promues s'exporte; un projet liant un port parent est refusé avant qu'aucun répertoire n'existe.)*
+- [x] Commit: `feat: enable strict quick window export`.
 
 **Vérification:**
 

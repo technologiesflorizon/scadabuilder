@@ -2,12 +2,13 @@
 
 Date: 2026-07-30
 Status: Active runtime package contract
-Document version: `V2.1.5.0047`
+Document version: `V2.1.6.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-04 | `V2.1.6.0000` | `PENDING` | Phase 6 : onze capacites Fenetre rapide promues. `OwnerPageKey` retire du manifeste (identite d'editeur), `quickWindowInvocationKey` ajoute a la commande appelante, et `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` etendu aux onze promues. |
 | 2026-08-25 | `V2.1.5.0047` | `dce0941` | Conformance cross-runtime des Fenetres rapides, mesure de SLA, epreuves canary et rollback (section 12.8). |
 | 2026-08-25 | `V2.1.5.0046` | `705077c` | Host TF100Web des Fenetres rapides : intentions, service du fragment par namespace et cycle de vie SinglePerDefinition (section 12.7). |
 | 2026-08-25 | `V2.1.5.0045` | `40e300a` | Ingestion TF100Web des registres Fenetre rapide : validation fail-closed avant activation et deploiement (section 12.6). |
@@ -412,9 +413,13 @@ Les deux registres sont des tableaux de la racine du `manifest.json`, en **Pasca
 
 `QuickWindows[]` : `DefinitionKey`, `Code`, `DisplayName`, `InterfaceVersion`, `Content`, `InterfaceMembers[]`, `PresentationDefaults`. Chaque membre porte `MemberKey`, `Name`, `Family`, `DataType`, `Access`, `Required`, `DefaultValue`, `Description`.
 
-`QuickWindowInvocations[]` : `InvocationKey`, `DefinitionKey`, `Bindings[]`, `TitleOverride`, `InterfaceVersion`, `OwnerPageKey`, `OwnerElementId`, `OwnerCommandId`.
+`QuickWindowInvocations[]` : `InvocationKey`, `DefinitionKey`, `Bindings[]`, `TitleOverride`, `InterfaceVersion`, `OwnerElementId`, `OwnerCommandId`.
+
+**`OwnerPageKey` n'est pas exporté** (Phase 6). C'est une identité d'éditeur : le manifeste désigne partout ailleurs une page par son `Id` textuel, jamais par un Guid, et aucun runtime ne lisait ce champ. `Ft100PackageValidation.ValidateNoInternalPageKeys` interdit d'ailleurs toute propriété se terminant par `PageKey` dans un manifeste — la règle et le compilateur se contredisaient sans jamais se rencontrer, aucun package portant des fenêtres rapides n'ayant pu s'exporter tant que les capacités étaient `Blocked`. `OwnerElementId` et `OwnerCommandId` suffisent à dire d'où une ouverture provient.
 
 Ces formes sont celles que valide déjà le handshake exécutable TF100Web `frontend/tests_scada_quick_window_contract_handshake.py` sur sa fixture figée.
+
+**Commande appelante.** Une commande `openQuickWindow` porte `quickWindowInvocationKey` dans son `data-scada-command-config` (camelCase runtime), et c'est la seule chose qui dit au runtime *quelle* fenêtre ouvrir : `command-dispatcher.js` refuse la commande sans elle. La propriété n'est écrite que lorsqu'elle existe, de sorte qu'un package sans fenêtre rapide garde des octets inchangés. `TargetPageKey` reste absent de cette projection : identité d'éditeur, comme `OwnerPageKey`.
 
 **Ordre déterministe.** `QuickWindows[]` est trié par `DefinitionKey`; `QuickWindowInvocations[]` est trié par `InvocationKey`; `InterfaceMembers[]` est trié par `MemberKey`; `Bindings[]` est trié par `MemberKey`. Deux compilations du même projet produisent des octets identiques.
 
@@ -422,7 +427,7 @@ Ces formes sont celles que valide déjà le handshake exécutable TF100Web `fron
 
 `validate_scada_manifest_contract` rejette le package **avant tout déploiement** si `RuntimeContract.RequiredCapabilities` contient une capacité inconnue, non triée ou dupliquée, ou si `RuntimeSha256` ne correspond pas à l'unique `scada-runtime.<hash8>.js`.
 
-L'ensemble `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` de `frontend/scada_package.py` **ne contient pas** `command.open-quick-window` ni `command.close-quick-window` — il contient encore les capacités popup legacy `command.open-popup`, `command.close-popup` et `command.toggle-popup`. Un package déclarant une capacité Fenêtre rapide est donc aujourd'hui rejeté avec `unsupported-runtime-capabilities:…`, comportement fail-closed vérifié par `test_deploy_rejects_unknown_capability_before_replacing_active_package`.
+Depuis la Phase 6, `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` de `frontend/scada_package.py` contient les **onze** capacités promues, `command.open-quick-window` et `command.close-quick-window` comprises. Les capacités popup legacy y restent, inchangées. Les **deux** capacités non promues — `quick-window.binding.parent-port` et `quick-window.legacy-fragment-adapter` — en sont absentes : un package qui les déclare est rejeté avec `unsupported-runtime-capabilities:…`, comportement fail-closed vérifié par `test_deploy_rejects_unknown_capability_before_replacing_active_package`.
 
 L'extension de cet ensemble côté TF100Web est un prérequis de la promotion de Phase 6, jamais une conséquence de la compilation de Phase 4. Tant qu'elle n'est pas faite, un `.sb2` contenant des Fenêtres rapides ne peut déclarer aucune capacité `quick-window.*` en `RequiredCapabilities`.
 

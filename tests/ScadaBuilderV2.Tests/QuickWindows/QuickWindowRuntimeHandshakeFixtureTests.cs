@@ -36,6 +36,31 @@ public sealed class QuickWindowRuntimeHandshakeFixtureTests
     private const string FixtureName = "quick-window-runtime-handshake.sb2";
     private const string HashName = "quick-window-runtime-handshake.sha256";
 
+    /// <summary>The TF100Web branch that carries the quick-window work, and therefore the vendored copy.</summary>
+    private const string ExpectedTf100Branch = "codex/quick-window-v1";
+
+    private static readonly char[] LineSeparators = ['\r', '\n'];
+
+    /// <summary>The one line ending a frozen fixture may contain, whatever the checkout did to this file.</summary>
+    private const string LineFeed = "\n";
+
+    /// <summary>
+    /// Writes fixture text with LF endings, whatever the checkout did to this source file.
+    /// </summary>
+    /// <remarks>
+    /// A C# raw string literal carries the line endings of the file it is written in, and this repository
+    /// runs with `core.autocrlf=true`. The frozen package therefore depended on how the clone was made:
+    /// generated on an LF checkout it holds LF, recompiled on a CRLF checkout it holds CRLF, and the gate
+    /// fails for a line-ending reason while the content is identical. That is the failure `.gitattributes`
+    /// already pins `eol=lf` to prevent for the isolation prototype; here it is closed in code instead, so
+    /// no clone setting can reopen it.
+    ///
+    /// It went unnoticed because the assembly was not recompiled for months: the test kept asserting an
+    /// artifact built from a checkout nobody had since reproduced.
+    /// </remarks>
+    private static void WriteFixtureText(string path, string content, UTF8Encoding encoding) =>
+        File.WriteAllText(path, content.ReplaceLineEndings(LineFeed), encoding);
+
     private static readonly Guid DefinitionA = Guid.Parse("a1b2c3d4-1111-4222-8333-aaaaaaaaaaaa");
     private static readonly Guid DefinitionB = Guid.Parse("e5f6a7b8-2222-4333-8444-bbbbbbbbbbbb");
     private static readonly Guid RunningKey = Guid.Parse("11112222-3333-4444-5555-666677778888");
@@ -94,19 +119,84 @@ public sealed class QuickWindowRuntimeHandshakeFixtureTests
     {
         var repositoryRoot = FindRepositoryRoot();
         var builderFixture = Path.Combine(repositoryRoot, "tests", "conformance", FixtureName);
-        var vendored = Path.Combine("F:", "Projet", "Git", "TF100Web", "frontend", "test_fixtures", FixtureName);
-
         Assert.IsTrue(File.Exists(builderFixture), "the Builder fixture must exist");
-        if (!File.Exists(vendored))
+
+        var tf100Root = ResolveTf100WebWorktree();
+        if (tf100Root is null)
         {
             Assert.Inconclusive("TF100Web is not available on this machine; the vendored copy cannot be compared.");
             return;
         }
 
+        var vendored = Path.Combine(tf100Root, "frontend", "test_fixtures", FixtureName);
+        Assert.IsTrue(File.Exists(vendored),
+            $"TF100Web is checked out on {ExpectedTf100Branch} at {tf100Root} but carries no vendored fixture.");
+
         CollectionAssert.AreEqual(
             File.ReadAllBytes(builderFixture),
             File.ReadAllBytes(vendored),
             "both repositories must execute the identical handshake artifact");
+    }
+
+    /// <summary>
+    /// Resolves the TF100Web checkout or worktree that actually carries the quick-window branch.
+    /// </summary>
+    /// <remarks>
+    /// The main checkout is routinely on another site, and it was on 2026-09-02: comparing against it made
+    /// this test permanently inconclusive, so the one assertion that keeps both repositories on the same
+    /// bytes never ran. `git worktree list` answers the real question — where is this branch checked out —
+    /// and returning null only when git or the repository is absent keeps the skip for a machine that has
+    /// no TF100Web at all, not for a machine whose checkout merely wandered off.
+    ///
+    /// Mirrors Resolve-WorktreeForBranch in tools/quick-window/record-checkpoint.ps1.
+    /// </remarks>
+    private static string? ResolveTf100WebWorktree()
+    {
+        var root = Environment.GetEnvironmentVariable("TF100WEB_ROOT")
+            ?? Path.Combine("F:", "Projet", "Git", "TF100Web");
+        if (!Directory.Exists(root)) return null;
+
+        string output;
+        try
+        {
+            using var process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = "git",
+                ArgumentList = { "-C", root, "worktree", "list", "--porcelain" },
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
+            });
+            if (process is null) return null;
+            output = process.StandardOutput.ReadToEnd();
+            process.WaitForExit(30_000);
+            if (process.ExitCode != 0) return null;
+        }
+        catch (Exception)
+        {
+            // No git on PATH, or no repository here. Either way there is nothing to compare against.
+            return null;
+        }
+
+        string? candidate = null;
+        foreach (var line in output.Split(LineSeparators, StringSplitOptions.RemoveEmptyEntries))
+        {
+            var trimmed = line.Trim();
+            if (trimmed.StartsWith("worktree ", StringComparison.Ordinal))
+            {
+                candidate = trimmed[9..].Trim();
+            }
+            else if (trimmed.StartsWith("branch ", StringComparison.Ordinal) && candidate is not null)
+            {
+                var branch = trimmed[7..].Trim();
+                if (branch.StartsWith("refs/heads/", StringComparison.Ordinal)) branch = branch[11..];
+                if (string.Equals(branch, ExpectedTf100Branch, StringComparison.Ordinal)) return candidate;
+            }
+        }
+
+        Assert.Fail($"TF100Web exists at {root} but no checkout or worktree carries {ExpectedTf100Branch}; "
+            + "the vendored fixture cannot be compared against the wrong branch.");
+        return null;
     }
 
     [TestMethod]
@@ -155,7 +245,7 @@ public sealed class QuickWindowRuntimeHandshakeFixtureTests
         // artifact rather than a registry-only fixture.
         var pageDirectory = Path.Combine(packageDirectory, "win00054");
         Directory.CreateDirectory(Path.Combine(pageDirectory, "css"));
-        File.WriteAllText(
+        WriteFixtureText(
             Path.Combine(pageDirectory, "win00054.html"),
             """
             <!doctype html>
@@ -172,7 +262,7 @@ public sealed class QuickWindowRuntimeHandshakeFixtureTests
 
             """,
             new UTF8Encoding(false));
-        File.WriteAllText(
+        WriteFixtureText(
             Path.Combine(pageDirectory, "css", "win00054.css"),
             "#ft100-win00054.ft100-scada-scene { position: relative; width: 1920px; height: 1080px; }\n",
             new UTF8Encoding(false));

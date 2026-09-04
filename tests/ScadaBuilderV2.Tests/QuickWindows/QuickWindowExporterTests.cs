@@ -126,7 +126,7 @@ public sealed class QuickWindowExporterTests
     }
 
     [TestMethod]
-    public async Task AProjectWithQuickWindowsLeavesZeroArtifactWhileTheCapabilitiesAreBlocked()
+    public async Task AProjectUsingOnlyPromotedQuickWindowCapabilitiesExports()
     {
         var root = TemporaryRoot();
         try
@@ -134,10 +134,36 @@ public sealed class QuickWindowExporterTests
             var archivePath = Path.Combine(root, "export", "package.sb2");
             var exporter = new Ft100SceneExporter();
 
-            var failure = await Assert.ThrowsExceptionAsync<InvalidOperationException>(() =>
-                exporter.ExportProjectArchiveAsync(Project(), [new Ft100ProjectPageExportInput(CallerScene(), null)], archivePath));
+            var result = await exporter.ExportProjectArchiveAsync(
+                Project(), [new Ft100ProjectPageExportInput(CallerScene(), null)], archivePath);
 
-            StringAssert.Contains(failure.Message, "quick-window.definition");
+            Assert.IsTrue(result.Validation.IsValid,
+                string.Join("; ", result.Validation.Errors.Select(error => error.Message)));
+            Assert.IsTrue(File.Exists(archivePath), "a project on promoted capabilities produces its archive");
+        }
+        finally
+        {
+            if (Directory.Exists(root)) Directory.Delete(root, recursive: true);
+        }
+    }
+
+    [TestMethod]
+    public async Task AProjectTouchingAStillBlockedQuickWindowCapabilityLeavesZeroArtifact()
+    {
+        // The promotion was partial, and this is the half that stayed shut. Parent-port forwarding has no
+        // host evidence, so a project that forwards a parent port must still be refused before anything is
+        // written -- not merely fail validation after producing a package.
+        var root = TemporaryRoot();
+        try
+        {
+            var archivePath = Path.Combine(root, "export", "package.sb2");
+            var exporter = new Ft100SceneExporter();
+
+            var failure = await Assert.ThrowsExceptionAsync<InvalidOperationException>(() =>
+                exporter.ExportProjectArchiveAsync(
+                    ParentPortProject(), [new Ft100ProjectPageExportInput(CallerScene(), null)], archivePath));
+
+            StringAssert.Contains(failure.Message, "quick-window.binding.parent-port");
             Assert.IsFalse(File.Exists(archivePath), "a blocked export writes no archive");
             Assert.IsFalse(
                 Directory.Exists(Path.Combine(root, "export")),
@@ -159,7 +185,7 @@ public sealed class QuickWindowExporterTests
             var exporter = new Ft100SceneExporter();
 
             await Assert.ThrowsExceptionAsync<InvalidOperationException>(() =>
-                exporter.ExportProjectAsync(Project(), [new Ft100ProjectPageExportInput(CallerScene(), null)], exportDirectory));
+                exporter.ExportProjectAsync(ParentPortProject(), [new Ft100ProjectPageExportInput(CallerScene(), null)], exportDirectory));
 
             Assert.IsFalse(Directory.Exists(exportDirectory), "the staging directory is created after the gate, never before");
         }
@@ -170,31 +196,32 @@ public sealed class QuickWindowExporterTests
     }
 
     [TestMethod]
-    public void EveryQuickWindowCapabilityIndependentlyKeepsTheStrictExportClosed()
+    public void EveryPromotedQuickWindowCapabilityIsRequiredAndOpensStrictExport()
     {
-        var triggers = new (string Capability, ScadaProject Project)[]
-        {
-            ("quick-window.definition", Project()),
-            ("quick-window.local-interface.typed", Project()),
-            ("quick-window.port.required", Project()),
-            ("quick-window.port-binding", Project()),
-            ("quick-window.presentation.backdrop", Project()),
-            ("quick-window.instance.single-per-definition", Project()),
-            ("quick-window.lifecycle.host-owned", Project()),
-            ("quick-window.dom.scoped-root", Project())
-        };
+        string[] promoted =
+        [
+            "quick-window.definition",
+            "quick-window.local-interface.typed",
+            "quick-window.port.required",
+            "quick-window.port-binding",
+            "quick-window.presentation.backdrop",
+            "quick-window.instance.single-per-definition",
+            "quick-window.lifecycle.host-owned",
+            "quick-window.dom.scoped-root"
+        ];
 
-        foreach (var (capability, project) in triggers)
-        {
-            var analysis = ScadaRuntimeCapabilityAnalyzer.Analyze(project, [CallerScene()]);
-            var blocked = analysis.BlockedCapabilities.Select(item => item.Id).ToArray();
+        var analysis = ScadaRuntimeCapabilityAnalyzer.Analyze(Project(), [CallerScene()]);
+        var required = analysis.RequiredCapabilities.ToDictionary(item => item.Id, StringComparer.Ordinal);
 
-            CollectionAssert.Contains(blocked, capability, $"'{capability}' must keep strict export closed.");
-            Assert.IsTrue(
-                analysis.RequiredCapabilities
-                    .Single(item => item.Id == capability).Status == ScadaRuntimeCapabilityStatus.Blocked,
-                $"'{capability}' must stay Blocked until its own promotion.");
+        foreach (var capability in promoted)
+        {
+            Assert.IsTrue(required.TryGetValue(capability, out var entry),
+                $"'{capability}' must still be derived from this project.");
+            Assert.AreEqual(ScadaRuntimeCapabilityStatus.Supported, entry!.Status, capability);
         }
+
+        Assert.AreEqual(0, analysis.BlockedCapabilities.Count,
+            "a project on promoted capabilities alone leaves nothing closing strict export");
     }
 
     [TestMethod]
@@ -282,6 +309,12 @@ public sealed class QuickWindowExporterTests
             [
                 new ScadaSceneReference(scene.Id, scene.Title, $"{scene.Id}/{scene.Id}.html", PageKey: scene.PageKey, PageCode: scene.EffectivePageCode)
             ],
+            // A tag binding is only validatable against a catalog. Before Phase 6 the capability gate
+            // refused this project long before the binding was reached, so the omission never showed.
+            TagCatalog = new ScadaTagCatalog(
+                "quick-window-export-tags-v1",
+                [new ScadaTagDefinition("motor.run", "Motor running", Datatype: "Boolean", Writeable: false)],
+                "generated-quick-window-export-tags.json"),
             QuickWindows = [Definition(OtherDefinitionKey, "pompe"), Definition(DefinitionKey, "moteur")],
             QuickWindowInvocations =
             [
@@ -300,6 +333,23 @@ public sealed class QuickWindowExporterTests
         };
     }
 
+
+    /// <summary>Builds the same project with one parent-port binding, the capability Phase 6 left Blocked.</summary>
+    private static ScadaProject ParentPortProject()
+    {
+        var project = Project();
+        var invocation = project.QuickWindowInvocations![0];
+        return project with
+        {
+            QuickWindowInvocations =
+            [
+                invocation with
+                {
+                    Bindings = [.. invocation.Bindings!, QuickWindowBinding.FromParentPort(RunningKey, SpeedKey)]
+                }
+            ]
+        };
+    }
     private static string ReadRenderingFile(string relativePath)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

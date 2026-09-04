@@ -1,13 +1,14 @@
 # Préparation de la Phase 6 — promotion des capacités et export
 
 Date: 2026-09-02
-Status: PRÉPARATION — aucune capacité promue, aucun gate levé, aucun bump `feature` effectué
-Document version: `V2.1.5.0056`
+Status: EXÉCUTÉE le 2026-09-04 — onze capacités promues, export strict 2.3 ouvert, bump `feature` `V2.1.6.0000`. Voir §8 pour ce que l'exécution a démenti.
+Document version: `V2.1.6.0000`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-04 | `V2.1.6.0000` | `PENDING` | Phase 6 executee : la note de preparation devient l'historique de ce qui a ete promu et de ce qui ne l'a pas ete. |
 | 2026-09-03 | `V2.1.5.0056` | `5716000` | Quatre des six préconditions satisfaites : soak, checkpoint, correctifs canary et déploiement. Restent les deux décisions de capacité. |
 | 2026-09-03 | `V2.1.5.0054` | `82ea206` | Précondition du soak marquée satisfaite sur décision explicite; les cinq autres restent ouvertes. |
 | 2026-09-02 | `V2.1.5.0052` | `9aa93ac` | Note de préparation : inventaire des treize capacités par couche, arithmétique de version, vérification de l'outillage, et deux écarts constatés dans l'énoncé de la Phase 6. |
@@ -85,7 +86,36 @@ Toutes doivent être vraies. **Quatre le sont**; il reste deux décisions, et el
 - [ ] **Décision explicite sur `nesting.depth-2`** (§3) — la seule qui change ce que la Phase 6 promeut.
 - [ ] Décision sur l'écart `FR-UI-03` (barre de titre vide), qui régénère la fixture de handshake gelée. N'empêche techniquement aucune promotion; à trancher avant la fin du projet.
 
-## 7. Ordre d'exécution proposé
+## 7. Ce que l'exécution a confirmé, et ce qu'elle a démenti
+
+L'inventaire du §2 s'est vérifié : onze capacités promues, `binding.parent-port` et `legacy-fragment-adapter`
+laissées bloquées, et `nesting.depth-2` promue sur décision explicite après constat qu'elle était livrée.
+
+La prévision du §3 sur la Task 6.2 s'est vérifiée aussi : **aucun gate temporaire n'existait**, rien n'a été
+retiré de `Ft100SceneExporter.cs`, et l'export s'est ouvert de lui-même dès que les capacités sont passées à
+`Supported`.
+
+Ce que la note n'avait pas vu, et que seule l'exécution pouvait révéler — parce que ces défauts vivaient tous
+dans le chemin qu'aucun paquet ne pouvait emprunter tant que les capacités étaient bloquées :
+
+1. **Le compilateur exportait `OwnerPageKey`**, une identité d'éditeur que `ValidateNoInternalPageKeys`
+   interdit pour toute autre propriété `*PageKey`. Les deux règles se contredisaient sans jamais se
+   rencontrer. Retiré; `OwnerElementId` et `OwnerCommandId` suffisent.
+2. **L'exportateur ne sérialisait pas `quickWindowInvocationKey`.** `command-dispatcher.js` refuse une commande
+   `openQuickWindow` sans elle : tout paquet exporté aurait porté des boutons incapables d'ouvrir quoi que ce
+   soit. Ajouté, et seulement quand la commande en a une, pour ne pas déplacer les octets des paquets sans
+   fenêtre rapide — l'évidence industrielle verrouillée en dépend.
+3. **L'analyseur de capacités ne regardait jamais le contenu des définitions.** Éléments, formes, règles
+   d'état et commandes embarqués dans une fenêtre rapide échappaient au gate, alors que le paquet les exporte
+   et que le runtime les exécute. Une définition pouvait donc porter une capacité `Blocked` sans que l'export
+   ne le voie. Corrigé; c'est aussi ce qui rend `command.close-quick-window` détectable, cette commande
+   n'étant valide qu'à l'intérieur d'une définition.
+
+Deux défauts d'outillage, sans rapport avec la Phase 6 mais découverts en la conduisant, sont documentés dans
+l'audit de Phase 5 : la dépendance des fixtures gelées aux fins de ligne du checkout, et la comparaison
+inter-dépôts qui se déclarait `Inconclusive` en permanence faute de résoudre le bon worktree.
+
+## 8. Ordre d'exécution proposé
 
 1. Mettre à jour les onze (ou douze, selon la décision `depth-2`) entrées du catalogue de `Blocked` à `Supported`; laisser `binding.parent-port` et `legacy-fragment-adapter` bloquées.
 2. Mettre à jour `expected-runtime-capabilities.json` et la fixture de capacités TF100Web correspondante.
