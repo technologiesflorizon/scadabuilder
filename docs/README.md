@@ -8,7 +8,7 @@ Document version: `V2.1.6.0002`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-04 | `V2.1.6.0002` | `PENDING` | Task 7.1 close : verticale moteur win00054 sur catalogue synthetique, projet de reference intact. |
+| 2026-09-04 | `V2.1.6.0002` | `ac9003a` | Task 7.1 close : verticale moteur win00054 sur catalogue synthetique, projet de reference intact. |
 | 2026-09-04 | `V2.1.6.0001` | `511621d` | Task 7.1 bloquee a l'audit : le projet de reference ne porte aucune commande d'ecriture de moteur. |
 | 2026-09-04 | `V2.1.6.0000` | `078dbce` | Phase 6 : promotion de onze capacites Fenetre rapide et ouverture de l'export strict 2.3. Deux capacites restent bloquees, faute de preuve. |
 | 2026-09-03 | `V2.1.5.0056` | `5716000` | Phase 5 close : mise en service en site industriel reportee a la fin du projet, le deploiement controle tient lieu de preuve de deploiement capable. |
