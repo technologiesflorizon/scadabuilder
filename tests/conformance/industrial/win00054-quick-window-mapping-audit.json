@@ -1,0 +1,284 @@
+{
+  "Schema": "scada-v2-win00054-quick-window-mapping-audit-v1",
+  "GeneratedUtc": "2026-09-04T00:00:00Z",
+  "Task": "Plan 2026-08-10, Task 7.1, premier point: auditer avant de creer.",
+  "Verdict": "BLOCKED",
+  "VerdictSummary": "L'inventaire operateur de win00054 est un controleur de moteur a quatre modes. Le TagCatalog du projet ne porte aucune commande d'ecriture de moteur: les onze mappings de moteur sont des etats de contacteur en lecture seule. Deux jeux complets et compatibles pour la verticale telle qu'elle est specifiee n'existent donc pas. Rien n'a ete cree et le catalogue n'a pas ete modifie.",
+  "OperatorInventory": {
+    "Source": "projects/AMR_REF_SCADA_V2/scenes/win00054.scene.json (32 elements, tous LegacyStatic) et .studio/imports/studio_win00054_20260804_145141.ft1",
+    "Note": "La scene n'a jamais ete convertie en Element+: aucun element ne porte de liaison, de regle d'etat ni de commande. L'import legacy ne reference aucun mapping. L'inventaire ci-dessous est donc purement visuel, ce que la tache demande.",
+    "Title": "Moteur",
+    "NameField": {
+      "ElementId": "legacy_1",
+      "Text": "NOM DU MOTEUR",
+      "Interpretation": "parametre d'affichage par invocation, equivalent de MotorName"
+    },
+    "Buttons": [
+      {
+        "ElementId": "legacy_27",
+        "Label": "AUTO",
+        "Bounds": [
+          15,
+          38,
+          99,
+          40
+        ]
+      },
+      {
+        "ElementId": "legacy_22",
+        "Label": "ARRET",
+        "Bounds": [
+          134,
+          38,
+          111,
+          40
+        ]
+      },
+      {
+        "ElementId": "legacy_12",
+        "Label": "MAN",
+        "Bounds": [
+          15,
+          85,
+          99,
+          40
+        ]
+      },
+      {
+        "ElementId": "legacy_17",
+        "Label": "DEPART",
+        "Bounds": [
+          132,
+          84,
+          111,
+          40
+        ]
+      },
+      {
+        "ElementId": "legacy_2",
+        "Label": "(sans texte)",
+        "Bounds": [
+          82,
+          141,
+          108,
+          35
+        ],
+        "Interpretation": "bouton bas, candidat fermeture"
+      }
+    ],
+    "States": "Quatre modes exclusifs: AUTO, ARRET, MAN, DEPART."
+  },
+  "MotorMappingsFound": {
+    "Count": 11,
+    "AllReadOnly": true,
+    "WriteableCount": 0,
+    "Tags": [
+      {
+        "MappingId": "tf100.mapping.192",
+        "DisplayName": "Noeud1_N15_00_Commande_MC_140",
+        "KeywordType": "SIGNAL",
+        "Datatype": "Booléen",
+        "Writeable": false,
+        "Enabled": true,
+        "Device": "NX102 systeme refrigération",
+        "Protocol": "NX102 OPC UA",
+        "Role": "etat de contacteur moteur, lecture seule",
+        "ConfirmedBy": "TagCatalog du projet, KeywordType SIGNAL"
+      },
+      {
+        "MappingId": "tf100.mapping.193",
+        "DisplayName": "Noeud1_N15_01_Commande_MC_1A",
+        "KeywordType": "SIGNAL",
+        "Datatype": "Booléen",
+        "Writeable": false,
+        "Enabled": true,
+        "Device": "NX102 systeme refrigération",
+        "Protocol": "NX102 OPC UA",
+        "Role": "etat de contacteur moteur, lecture seule",
+        "ConfirmedBy": "TagCatalog du projet, KeywordType SIGNAL"
+      },
+      {
+        "MappingId": "tf100.mapping.194",
+        "DisplayName": "Noeud1_N15_02_Commande_MC_1B",
+        "KeywordType": "SIGNAL",
+        "Datatype": "Booléen",
+        "Writeable": false,
+        "Enabled": true,
+        "Device": "NX102 systeme refrigération",
+        "Protocol": "NX102 OPC UA",
+        "Role": "etat de contacteur moteur, lecture seule",
+        "ConfirmedBy": "TagCatalog du projet, KeywordType SIGNAL"
+      },
+      {
+        "MappingId": "tf100.mapping.195",
+        "DisplayName": "Noeud1_N15_03_Commande_MC_120A",
+        "KeywordType": "SIGNAL",
+        "Datatype": "Booléen",
+        "Writeable": false,
+        "Enabled": true,
+        "Device": "NX102 systeme refrigération",
+        "Protocol": "NX102 OPC UA",
+        "Role": "etat de contacteur moteur, lecture seule",
+        "ConfirmedBy": "TagCatalog du projet, KeywordType SIGNAL"
+      },
+      {
+        "MappingId": "tf100.mapping.196",
+        "DisplayName": "Noeud1_N15_04_Commande_MC_120C",
+        "KeywordType": "SIGNAL",
+        "Datatype": "Booléen",
+        "Writeable": false,
+        "Enabled": true,
+        "Device": "NX102 systeme refrigération",
+        "Protocol": "NX102 OPC UA",
+        "Role": "etat de contacteur moteur, lecture seule",
+        "ConfirmedBy": "TagCatalog du projet, KeywordType SIGNAL"
+      },
+      {
+        "MappingId": "tf100.mapping.197",
+        "DisplayName": "Noeud1_N15_05_Commande_MC_120B",
+        "KeywordType": "SIGNAL",
+        "Datatype": "Booléen",
+        "Writeable": false,
+        "Enabled": true,
+        "Device": "NX102 systeme refrigération",
+        "Protocol": "NX102 OPC UA",
+        "Role": "etat de contacteur moteur, lecture seule",
+        "ConfirmedBy": "TagCatalog du projet, KeywordType SIGNAL"
+      },
+      {
+        "MappingId": "tf100.mapping.198",
+        "DisplayName": "Noeud1_N15_06_Commande_MC_110",
+        "KeywordType": "SIGNAL",
+        "Datatype": "Booléen",
+        "Writeable": false,
+        "Enabled": true,
+        "Device": "NX102 systeme refrigération",
+        "Protocol": "NX102 OPC UA",
+        "Role": "etat de contacteur moteur, lecture seule",
+        "ConfirmedBy": "TagCatalog du projet, KeywordType SIGNAL"
+      },
+      {
+        "MappingId": "tf100.mapping.199",
+        "DisplayName": "Noeud1_N15_08_Commande_MC_51B",
+        "KeywordType": "SIGNAL",
+        "Datatype": "Booléen",
+        "Writeable": false,
+        "Enabled": true,
+        "Device": "NX102 systeme refrigération",
+        "Protocol": "NX102 OPC UA",
+        "Role": "etat de contacteur moteur, lecture seule",
+        "ConfirmedBy": "TagCatalog du projet, KeywordType SIGNAL"
+      },
+      {
+        "MappingId": "tf100.mapping.200",
+        "DisplayName": "Noeud1_N15_09_Commande_MC_58A",
+        "KeywordType": "SIGNAL",
+        "Datatype": "Booléen",
+        "Writeable": false,
+        "Enabled": true,
+        "Device": "NX102 systeme refrigération",
+        "Protocol": "NX102 OPC UA",
+        "Role": "etat de contacteur moteur, lecture seule",
+        "ConfirmedBy": "TagCatalog du projet, KeywordType SIGNAL"
+      },
+      {
+        "MappingId": "tf100.mapping.201",
+        "DisplayName": "Noeud1_N15_10_Commande_MC_58B",
+        "KeywordType": "SIGNAL",
+        "Datatype": "Booléen",
+        "Writeable": false,
+        "Enabled": true,
+        "Device": "NX102 systeme refrigération",
+        "Protocol": "NX102 OPC UA",
+        "Role": "etat de contacteur moteur, lecture seule",
+        "ConfirmedBy": "TagCatalog du projet, KeywordType SIGNAL"
+      },
+      {
+        "MappingId": "tf100.mapping.202",
+        "DisplayName": "Noeud1_N15_11_Commande_MC_135",
+        "KeywordType": "SIGNAL",
+        "Datatype": "Booléen",
+        "Writeable": false,
+        "Enabled": true,
+        "Device": "NX102 systeme refrigération",
+        "Protocol": "NX102 OPC UA",
+        "Role": "etat de contacteur moteur, lecture seule",
+        "ConfirmedBy": "TagCatalog du projet, KeywordType SIGNAL"
+      }
+    ],
+    "Conclusion": "Aucun mapping d'ecriture n'existe pour un moteur. Aucune commande AUTO, MAN, DEPART ou ARRET n'est presente dans le catalogue, ni sous ces noms ni sous le prefixe MC. La famille COMMANDE ne contient que les prefixes YL, Evap et BP."
+  },
+  "CompleteSetsAvailableInstead": {
+    "Family": "Evaporateurs, degivrage",
+    "Count": 14,
+    "WhyItQualifies": "Chaque unite n de 1 a 14 porte une lecture booleenne et une ecriture booleenne, toutes deux deja utilisees et verrouillees dans l'evidence industrielle.",
+    "Sets": [
+      {
+        "Role": "jeu 1 (equivalent M101)",
+        "Unit": "Evaporateur 1",
+        "Mappings": [
+          {
+            "MappingId": "tf100.mapping.615",
+            "DisplayName": "Evap1_defrostActif",
+            "KeywordType": "SIGNAL",
+            "Datatype": "Booléen",
+            "Writeable": false,
+            "Enabled": true,
+            "Device": "NX102 systeme réfrigération",
+            "Protocol": "NX102 OPC UA",
+            "Role": "lecture booleenne, etat de degivrage",
+            "ConfirmedBy": "projects/AMR_REF_SCADA_V2/scenes/win00012_modern_no_legacy.scene.json + tests/conformance/industrial/amr-ref-industrial-acceptance.json"
+          },
+          {
+            "MappingId": "tf100.mapping.629",
+            "DisplayName": "BP_E1_Deg",
+            "KeywordType": "COMMANDE",
+            "Datatype": "Booléen",
+            "Writeable": true,
+            "Enabled": true,
+            "Device": "NX102 systeme réfrigération",
+            "Protocol": "NX102 OPC UA",
+            "Role": "commande d'ecriture, depart manuel",
+            "ConfirmedBy": "projects/AMR_REF_SCADA_V2/scenes/win00012_modern_no_legacy.scene.json + tests/conformance/industrial/amr-ref-industrial-acceptance.json"
+          }
+        ]
+      },
+      {
+        "Role": "jeu 2 (equivalent M102)",
+        "Unit": "Evaporateur 2",
+        "Mappings": [
+          {
+            "MappingId": "tf100.mapping.616",
+            "DisplayName": "Evap2_defrostActif",
+            "KeywordType": "SIGNAL",
+            "Datatype": "Booléen",
+            "Writeable": false,
+            "Enabled": true,
+            "Device": "NX102 systeme réfrigération",
+            "Protocol": "NX102 OPC UA",
+            "Role": "lecture booleenne, etat de degivrage",
+            "ConfirmedBy": "projects/AMR_REF_SCADA_V2/scenes/win00012_modern_no_legacy.scene.json + tests/conformance/industrial/amr-ref-industrial-acceptance.json"
+          },
+          {
+            "MappingId": "tf100.mapping.630",
+            "DisplayName": "BP_E2_Deg",
+            "KeywordType": "COMMANDE",
+            "Datatype": "Booléen",
+            "Writeable": true,
+            "Enabled": true,
+            "Device": "NX102 systeme réfrigération",
+            "Protocol": "NX102 OPC UA",
+            "Role": "commande d'ecriture, depart manuel",
+            "ConfirmedBy": "projects/AMR_REF_SCADA_V2/scenes/win00012_modern_no_legacy.scene.json + tests/conformance/industrial/amr-ref-industrial-acceptance.json"
+          }
+        ]
+      }
+    ],
+    "SemanticMismatch": "Ces jeux portent une seule ecriture booleenne, la ou l'inventaire de win00054 demande quatre boutons de mode exclusifs. Lier quatre modes a une seule ecriture booleenne inventerait une semantique que ni la scene ni le catalogue ne portent."
+  },
+  "DecisionRequired": [
+    "Option A: construire la verticale sur un evaporateur, avec deux boutons reels (depart manuel et fermeture) au lieu de quatre modes. La forme suit alors le mapping confirme, pas l'inventaire de win00054.",
+    "Option B: ajouter au TagCatalog les commandes de moteur manquantes, ce qui exige une source d'autorite externe. La tache l'interdit explicitement sans decision.",
+    "Option C: reporter la Task 7.1 jusqu'a ce qu'un projet de reference porte un moteur complet."
+  ]
+}

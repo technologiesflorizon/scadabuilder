@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 6 closed; eleven quick-window capabilities promoted and strict 2.3 export open; industrial-site rollout deferred to project completion; phase 7 not started
-Document version: `V2.1.6.0000`
+Document version: `V2.1.6.0001`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-04 | `V2.1.6.0001` | `PENDING` | Task 7.1, audit prealable : **bloquant**. win00054 est un controleur de moteur a quatre modes et le catalogue ne porte aucune commande d'ecriture de moteur. Rien n'a ete cree, le catalogue n'a pas ete touche. |
 | 2026-09-04 | `V2.1.6.0000` | `078dbce` | Phase 6 close : onze capacites promues sur preuve executable aux trois couches, export strict 2.3 ouvert. Trois defauts latents corriges au passage. |
 | 2026-09-03 | `V2.1.5.0056` | `5716000` | Phase 5 close : déploiement en site industriel reporté à la fin du projet, le déploiement contrôlé tient lieu de preuve de « déploiement capable ». Checkpoint `phase 5` enregistré. |
 | 2026-09-03 | `V2.1.5.0055` | `63605dc` | Critère d'erreurs console mesuré par capture dédiée; correctifs de la Task 5.4 publiés au canary et conformance rejouée. Task 5.3 close hormis le déploiement production. |
@@ -1077,7 +1078,8 @@ dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWi
 - Consumes: inventaire visuel/fonctionnel `win00054` comme référence de conception et mappings existants confirmés séparément dans le `TagCatalog` du projet.
 - Produces: une définition quatre boutons/quatre états/close, interface minimale et deux invocations moteur indépendantes.
 
-- [ ] **Auditer avant de créer:** lire la scène/import `win00054` uniquement pour dresser l’inventaire opérateur des quatre boutons/quatre états et lire `project.json.TagCatalog` pour sélectionner deux jeux de mappings. Pour chaque mapping, consigner id, nom, datatype, accès, enabled, source de confirmation et rôle M101/M102 dans `win00054-quick-window-mapping-audit.json`. Si deux jeux complets et compatibles ne sont pas présents, bloquer la tâche; ne rien inventer et ne pas modifier le catalogue silencieusement.
+- [x] **Auditer avant de créer.** Fait le 2026-09-04, verdict **`BLOCKED`** consigné dans `tests/conformance/industrial/win00054-quick-window-mapping-audit.json`. L'inventaire opérateur est un contrôleur de moteur à quatre modes — AUTO, ARRÊT, MAN, DEPART — avec un champ « NOM DU MOTEUR ». Le `TagCatalog` porte onze mappings de moteur, **tous en lecture seule** : ce sont des états de contacteur `Noeud1_N15_xx_Commande_MC_*`, et aucune commande d'écriture de moteur n'existe, sous aucun nom. Deux jeux complets et compatibles pour cette verticale n'existent donc pas. Rien n'a été créé et le catalogue n'a pas été modifié, conformément à la consigne.
+- [ ] **Décision requise avant de poursuivre la Task 7.1.** Le catalogue porte en revanche quatorze jeux complets d'évaporateurs — lecture booléenne `Evap<n>_defrostActif` et écriture booléenne `BP_E<n>_Deg`, confirmés en usage par `win00012_modern_no_legacy` et verrouillés dans l'évidence industrielle. Bâtir la verticale dessus change la forme : deux boutons réels au lieu de quatre modes. Les trois options sont décrites dans le fichier d'audit.
 - [ ] Créer la `QuickWindowDefinition` sur un canvas vide et redessiner explicitement son contenu Element+ selon l’inventaire. « Canvas vide » signifie aucune conversion/copie de géométrie, logique, événement ou mapping depuis la scène/Fragment; cela n’interdit pas de référencer ensuite des tags déjà validés du catalogue projet.
 - [ ] Lier lecture booléenne, commande écriture, `MotorName` et `Precision` aux ids approuvés par l’audit; les deux invocations sont nouvelles et indépendantes même si leurs sources existent déjà dans le catalogue.
 - [ ] Tester save/reopen, required/optional, focus/recreate, cross-read/write, undo/redo et preview/export.
