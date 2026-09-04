@@ -2,7 +2,7 @@
   "Schema": "scada-v2-win00054-quick-window-mapping-audit-v1",
   "GeneratedUtc": "2026-09-04T00:00:00Z",
   "Task": "Plan 2026-08-10, Task 7.1, premier point: auditer avant de creer.",
-  "Verdict": "BLOCKED",
+  "Verdict": "BLOCKED-RESOLVED-BY-SYNTHETIC-CATALOG",
   "VerdictSummary": "L'inventaire operateur de win00054 est un controleur de moteur a quatre modes. Le TagCatalog du projet ne porte aucune commande d'ecriture de moteur: les onze mappings de moteur sont des etats de contacteur en lecture seule. Deux jeux complets et compatibles pour la verticale telle qu'elle est specifiee n'existent donc pas. Rien n'a ete cree et le catalogue n'a pas ete modifie.",
   "OperatorInventory": {
     "Source": "projects/AMR_REF_SCADA_V2/scenes/win00054.scene.json (32 elements, tous LegacyStatic) et .studio/imports/studio_win00054_20260804_145141.ft1",
@@ -280,5 +280,19 @@
     "Option A: construire la verticale sur un evaporateur, avec deux boutons reels (depart manuel et fermeture) au lieu de quatre modes. La forme suit alors le mapping confirme, pas l'inventaire de win00054.",
     "Option B: ajouter au TagCatalog les commandes de moteur manquantes, ce qui exige une source d'autorite externe. La tache l'interdit explicitement sans decision.",
     "Option C: reporter la Task 7.1 jusqu'a ce qu'un projet de reference porte un moteur complet."
-  ]
+  ],
+  "Resolution": {
+    "DecidedUtc": "2026-09-04T00:00:00Z",
+    "DecidedBy": "proprietaire du projet",
+    "Option": "Option D, hors des trois listees: batir la verticale sur un catalogue synthetique.",
+    "Rationale": "Le projet est en phase de developpement. Un catalogue synthetique permet de suivre l'inventaire operateur reel de win00054 - quatre modes exclusifs - sans inventer d'entrees dans le catalogue faisant autorite.",
+    "WhereItLives": "tests/ScadaBuilderV2.Tests/QuickWindows/Win00054QuickWindowIntegrationTests.cs",
+    "Guardrails": [
+      "AMR_REF_SCADA_V2 n'est pas modifie: ni son project.json, ni ses scenes, ni son catalogue.",
+      "Les identifiants portent le prefixe 'synthetic.motor.' et jamais 'tf100.mapping.', de sorte qu'un tag synthetique ne peut pas etre confondu avec un mapping reel ni deploye par accident.",
+      "Le schema du catalogue est 'scada-v2-win00054-synthetic-tags-v1', distinct de tout catalogue importe."
+    ],
+    "WhatItProves": "La chaine complete: dessin sur canvas vide selon l'inventaire, interface typee a huit membres, deux invocations aux liaisons disjointes, persistance et reouverture, gate required/optional, analyse de capacites sans capacite bloquee, recreation d'instance par le host, apercu editeur isole du paquet, et export portant les deux invocations.",
+    "WhatItDoesNotProve": "Aucune liaison a l'automate reel. La Task 7.2 ne peut pas presenter cette verticale comme validee en production, et l'ecriture PLC reste un gate ouvert."
+  }
 }

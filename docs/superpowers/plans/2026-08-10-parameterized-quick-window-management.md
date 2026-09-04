@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active implementation plan - phases 0 to 6 closed; eleven quick-window capabilities promoted and strict 2.3 export open; industrial-site rollout deferred to project completion; phase 7 not started
-Document version: `V2.1.6.0001`
+Document version: `V2.1.6.0002`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-04 | `V2.1.6.0002` | `PENDING` | Task 7.1 close sur decision : verticale win00054 batie sur un catalogue synthetique, le projet de reference reste intact. Onze preuves. |
 | 2026-09-04 | `V2.1.6.0001` | `511621d` | Task 7.1, audit prealable : **bloquant**. win00054 est un controleur de moteur a quatre modes et le catalogue ne porte aucune commande d'ecriture de moteur. Rien n'a ete cree, le catalogue n'a pas ete touche. |
 | 2026-09-04 | `V2.1.6.0000` | `078dbce` | Phase 6 close : onze capacites promues sur preuve executable aux trois couches, export strict 2.3 ouvert. Trois defauts latents corriges au passage. |
 | 2026-09-03 | `V2.1.5.0056` | `5716000` | Phase 5 close : déploiement en site industriel reporté à la fin du projet, le déploiement contrôlé tient lieu de preuve de « déploiement capable ». Checkpoint `phase 5` enregistré. |
@@ -1079,11 +1080,12 @@ dotnet test ScadaBuilderV2.sln --no-restore --filter "FullyQualifiedName~QuickWi
 - Produces: une définition quatre boutons/quatre états/close, interface minimale et deux invocations moteur indépendantes.
 
 - [x] **Auditer avant de créer.** Fait le 2026-09-04, verdict **`BLOCKED`** consigné dans `tests/conformance/industrial/win00054-quick-window-mapping-audit.json`. L'inventaire opérateur est un contrôleur de moteur à quatre modes — AUTO, ARRÊT, MAN, DEPART — avec un champ « NOM DU MOTEUR ». Le `TagCatalog` porte onze mappings de moteur, **tous en lecture seule** : ce sont des états de contacteur `Noeud1_N15_xx_Commande_MC_*`, et aucune commande d'écriture de moteur n'existe, sous aucun nom. Deux jeux complets et compatibles pour cette verticale n'existent donc pas. Rien n'a été créé et le catalogue n'a pas été modifié, conformément à la consigne.
-- [ ] **Décision requise avant de poursuivre la Task 7.1.** Le catalogue porte en revanche quatorze jeux complets d'évaporateurs — lecture booléenne `Evap<n>_defrostActif` et écriture booléenne `BP_E<n>_Deg`, confirmés en usage par `win00012_modern_no_legacy` et verrouillés dans l'évidence industrielle. Bâtir la verticale dessus change la forme : deux boutons réels au lieu de quatre modes. Les trois options sont décrites dans le fichier d'audit.
-- [ ] Créer la `QuickWindowDefinition` sur un canvas vide et redessiner explicitement son contenu Element+ selon l’inventaire. « Canvas vide » signifie aucune conversion/copie de géométrie, logique, événement ou mapping depuis la scène/Fragment; cela n’interdit pas de référencer ensuite des tags déjà validés du catalogue projet.
-- [ ] Lier lecture booléenne, commande écriture, `MotorName` et `Precision` aux ids approuvés par l’audit; les deux invocations sont nouvelles et indépendantes même si leurs sources existent déjà dans le catalogue.
-- [ ] Tester save/reopen, required/optional, focus/recreate, cross-read/write, undo/redo et preview/export.
-- [ ] Commit: `test: add win00054 quick window vertical`.
+- [x] **Décision prise le 2026-09-04 : bâtir sur un catalogue synthétique.** Le projet est en développement; un catalogue synthétique permet de suivre l'inventaire opérateur réel — quatre modes exclusifs — sans inventer d'entrées dans le catalogue faisant autorité. Il vit dans le test, ses identifiants portent le préfixe `synthetic.motor.` et jamais `tf100.mapping.`, et **`AMR_REF_SCADA_V2` n'est pas modifié** : ni son `project.json`, ni ses scènes, ni son catalogue. La résolution est consignée dans le fichier d'audit.
+- [~] **Ce que cela ne prouve pas.** Aucune liaison à l'automate réel. La Task 7.2 ne peut pas présenter cette verticale comme validée en production, et l'écriture PLC reste un gate ouvert. Le catalogue porte en revanche quatorze jeux complets d'évaporateurs — lecture booléenne `Evap<n>_defrostActif` et écriture booléenne `BP_E<n>_Deg`, confirmés en usage par `win00012_modern_no_legacy` et verrouillés dans l'évidence industrielle. Bâtir la verticale dessus change la forme : deux boutons réels au lieu de quatre modes. Les trois options sont décrites dans le fichier d'audit.
+- [x] Créer la `QuickWindowDefinition` sur un canvas vide et redessiner explicitement son contenu Element+ selon l’inventaire. « Canvas vide » signifie aucune conversion/copie de géométrie, logique, événement ou mapping depuis la scène/Fragment; cela n’interdit pas de référencer ensuite des tags déjà validés du catalogue projet.
+- [x] Lier lecture booléenne, commande écriture, `MotorName` et `Precision` aux ids approuvés par l’audit *(quatre commandes d'écriture, une par mode; `MotorName` et `Precision` sont des littéraux par invocation, ce qui est précisément ce qui distingue M101 de M102)*; les deux invocations sont nouvelles et indépendantes même si leurs sources existent déjà dans le catalogue.
+- [x] Tester save/reopen, required/optional, focus/recreate, cross-read/write, undo/redo et preview/export. *(Onze preuves dans `Win00054QuickWindowIntegrationTests`.)*
+- [x] Commit: `test: add win00054 quick window vertical`.
 
 **Vérification:**
 
