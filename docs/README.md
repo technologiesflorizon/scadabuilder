@@ -8,7 +8,7 @@ Document version: `V2.1.6.0000`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-04 | `V2.1.6.0000` | `PENDING` | Phase 6 : promotion de onze capacites Fenetre rapide et ouverture de l'export strict 2.3. Deux capacites restent bloquees, faute de preuve. |
+| 2026-09-04 | `V2.1.6.0000` | `078dbce` | Phase 6 : promotion de onze capacites Fenetre rapide et ouverture de l'export strict 2.3. Deux capacites restent bloquees, faute de preuve. |
 | 2026-09-03 | `V2.1.5.0056` | `5716000` | Phase 5 close : mise en service en site industriel reportee a la fin du projet, le deploiement controle tient lieu de preuve de deploiement capable. |
 | 2026-09-03 | `V2.1.5.0055` | `63605dc` | Critere d'erreurs console mesure par capture dediee; correctifs de la Task 5.4 publies au canary et conformance rejouee; correction de lecture sur les criteres de fuite (plats et plafonnes, non decroissants). |
 | 2026-09-03 | `V2.1.5.0054` | `82ea206` | Soak de 18,37 h accepte sur decision explicite en lieu et place des 24 h; sous-item soak de la Task 5.3 clos, deploiement production toujours requis. La preuve mesuree n'est pas modifiee. |

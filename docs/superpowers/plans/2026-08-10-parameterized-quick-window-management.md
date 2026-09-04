@@ -8,7 +8,7 @@ Document version: `V2.1.6.0000`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-04 | `V2.1.6.0000` | `PENDING` | Phase 6 close : onze capacites promues sur preuve executable aux trois couches, export strict 2.3 ouvert. Trois defauts latents corriges au passage. |
+| 2026-09-04 | `V2.1.6.0000` | `078dbce` | Phase 6 close : onze capacites promues sur preuve executable aux trois couches, export strict 2.3 ouvert. Trois defauts latents corriges au passage. |
 | 2026-09-03 | `V2.1.5.0056` | `5716000` | Phase 5 close : déploiement en site industriel reporté à la fin du projet, le déploiement contrôlé tient lieu de preuve de « déploiement capable ». Checkpoint `phase 5` enregistré. |
 | 2026-09-03 | `V2.1.5.0055` | `63605dc` | Critère d'erreurs console mesuré par capture dédiée; correctifs de la Task 5.4 publiés au canary et conformance rejouée. Task 5.3 close hormis le déploiement production. |
 | 2026-09-03 | `V2.1.5.0054` | `2dfbb07` | Verdict du soak et acceptation explicite des 18,37 h en lieu et place des 24 h; le sous-item soak de la Task 5.3 est clos, le déploiement production reste requis. Trois défauts d'instrumentation corrigés (TF100Web `b4edfc9`). |

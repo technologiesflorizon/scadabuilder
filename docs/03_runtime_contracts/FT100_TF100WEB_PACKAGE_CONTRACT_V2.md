@@ -8,7 +8,7 @@ Document version: `V2.1.6.0000`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-04 | `V2.1.6.0000` | `PENDING` | Phase 6 : onze capacites Fenetre rapide promues. `OwnerPageKey` retire du manifeste (identite d'editeur), `quickWindowInvocationKey` ajoute a la commande appelante, et `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` etendu aux onze promues. |
+| 2026-09-04 | `V2.1.6.0000` | `078dbce` | Phase 6 : onze capacites Fenetre rapide promues. `OwnerPageKey` retire du manifeste (identite d'editeur), `quickWindowInvocationKey` ajoute a la commande appelante, et `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` etendu aux onze promues. |
 | 2026-08-25 | `V2.1.5.0047` | `dce0941` | Conformance cross-runtime des Fenetres rapides, mesure de SLA, epreuves canary et rollback (section 12.8). |
 | 2026-08-25 | `V2.1.5.0046` | `705077c` | Host TF100Web des Fenetres rapides : intentions, service du fragment par namespace et cycle de vie SinglePerDefinition (section 12.7). |
 | 2026-08-25 | `V2.1.5.0045` | `40e300a` | Ingestion TF100Web des registres Fenetre rapide : validation fail-closed avant activation et deploiement (section 12.6). |
