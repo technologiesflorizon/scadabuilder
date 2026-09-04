@@ -79,6 +79,25 @@
                             "nvmrc":  "24.15.0",
                             "enginesNode":  "24.15.x",
                             "notes":  "Phase 5 complete: tasks 5.1-5.4 green. Soak ran 18.37 h on a real WSL canary (81 410 cycles, 75 595 opens, p95 141 ms in a real browser, listeners never above 231 and heap never above 5.94 MB across 3 256 post-GC samples, 5 818 page compositions without a failure, one refusal code throughout and it is the designed one); the 18.37 h are accepted in place of 24 h by explicit decision of 2026-09-03. Console-error criterion measured separately on the same canary and workload: 186 designed refusals, zero unexpected. Task 5.4 fixes published to the canary and verified against the deployment. Industrial-site rollout deferred to project completion; the controlled deployment carries the proof of a capable deployment. Suites: Builder 878 passed 1 skipped, Builder runtime-js 80/80, TF100Web runtime-js 97/97, TF100Web quick-window 41 with one opt-in skip, cross-runtime conformance 14 with one skip, verify-docs 0 errors. All 13 quick-window capabilities remain Blocked."
+                        },
+                        {
+                            "phase":  "6",
+                            "timestampUtc":  "2026-09-04T17:13:28.7422043Z",
+                            "builder":  {
+                                            "branch":  "codex/GestionFenetreRapide",
+                                            "status":  "## codex/GestionFenetreRapide...origin/codex/GestionFenetreRapide [ahead 20]",
+                                            "head":  "1ca93cef8f106848dbbeecb2311a066a42d68588"
+                                        },
+                            "tf100web":  {
+                                             "branch":  "codex/quick-window-v1",
+                                             "status":  "## codex/quick-window-v1...origin/codex/quick-window-v1 [ahead 6]",
+                                             "head":  "49701bb20aa4bb5b6febbe4dcb07546149185876"
+                                         },
+                            "dotnetSdk":  "10.0.302",
+                            "nodeInstalled":  "v24.15.0",
+                            "nvmrc":  "24.15.0",
+                            "enginesNode":  "24.15.x",
+                            "notes":  "Phase 6 complete: eleven quick-window capabilities promoted on three-layer evidence, strict 2.3 export open. binding.parent-port and legacy-fragment-adapter stay Blocked - no host evidence for the first, no implementation anywhere for the second - and a project touching either is refused before any export directory exists. nesting.depth-2 promoted on explicit decision of 2026-09-03 after it was found delivered and proven. Three latent defects of the export path found and fixed: OwnerPageKey was exported against the package validation rule, quickWindowInvocationKey was never serialized so open commands would have been inert, and the capability analyzer never looked inside definition content. Suites: Builder 881/881 with no skip, Builder runtime-js 80/80, TF100Web 41 with one opt-in skip, TF100Web runtime-js 97/97, cross-runtime conformance 14 with one skip and 126/126 executable capability probes, handshake contract 10/10, verify-docs 0 errors. Feature bump V2.1.5.0056 to V2.1.6.0000."
                         }
                     ]
 }

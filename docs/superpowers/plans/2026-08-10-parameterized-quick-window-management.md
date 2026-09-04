@@ -82,6 +82,7 @@ Document version: `V2.1.6.0000`
 - [x] Phase 5 close: rapport d'audit `docs/superpowers/reports/2026-09-02-quick-window-phase-5-audit.md` et entrée `phase 5` dans `tools/quick-window/checkpoints.json`.
 - [x] Phase 6.1: onze capacités promues sur preuve exécutable aux trois couches; `binding.parent-port` et `legacy-fragment-adapter` restent `Blocked`, faute de preuve host pour l'une et d'implémentation pour l'autre.
 - [x] Phase 6.2: export strict 2.3 ouvert pour les capacités promues, refusé fail-closed pour les autres, sans modification du gate — il était générique et piloté par le catalogue, comme la note de préparation le disait.
+- [x] Phase 6 close: la note `docs/superpowers/reports/2026-09-02-quick-window-phase-6-readiness.md` porte le relevé de ce qui a été promu, de ce qui ne l'a pas été et de ce que l'exécution a démenti; entrée `phase 6` dans `tools/quick-window/checkpoints.json`.
 - [ ] Phase 7: non démarrée.
 
 ### Limites actées du soak du 2026-09-02
