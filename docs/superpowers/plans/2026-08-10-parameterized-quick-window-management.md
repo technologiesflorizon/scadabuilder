@@ -89,6 +89,7 @@ Document version: `V2.1.6.0003`
 - [x] Phase 7.1: verticale moteur `win00054` bâtie sur le catalogue synthétique `scada-v2-win00054-synthetic-tags-v1` après que l'audit a montré que le projet de référence ne porte aucune commande d'écriture moteur; le projet de référence industriel reste intact (`511621d` audit bloquant, `ac9003a`).
 - [x] Phase 7.2: acceptation complète verte sur le canary, `p95` d'ouverture à froid 144 ms et à chaud 141 ms; l'écriture PLC reste non autorisée et consignée comme gate ouvert (`58b6018`).
 - [x] Phase 7.3: contrats, registre de décisions, couverture et diagrammes synchronisés sur l'état réel; deux défauts corrigés au passage — l'exclusion `!09_archive/**` des trois `rg` de vérification n'excluait rien depuis le chemin `docs`, et le relevé d'exécution portait encore `Phase 7: non démarrée` (`d5f9ab1`).
+- [x] Phase 7 close: rapport d'audit `docs/superpowers/reports/2026-09-08-quick-window-phase-7-audit.md` et entrée `phase 7` dans `tools/quick-window/checkpoints.json`. Validation Checklist passée : 36 items verts, 2 satisfaits sur décision explicite (soak de 18,37 h accepté, mise en service industrielle reportée) et le gate d'écriture PLC délibérément laissé ouvert.
 
 ### Limites actées du soak du 2026-09-02
 
@@ -1231,42 +1232,42 @@ Chaque invariant approuvé de la spec `docs/superpowers/specs/2026-08-04-paramet
 
 ## Validation Checklist
 
-- [ ] La phase 0 porte un `PASS` documenté dans WebView2 et TF100Web avant le premier commit de production.
-- [ ] Toutes les preuves Phase 0 portent la même `PrototypeRevision` et le même hash gelé après la boucle d’itération; versions SDK/runtime WebView2 consignées.
-- [ ] Aucun `InstanceKey`, héritage page/fenêtre, second poller/cache/dispatcher ou repli Fragment n’existe.
-- [ ] Définition, Interface locale, présentation et deux invocations survivent à save/reopen avec clés stables.
-- [ ] Optional non lié est indisponible sans fausse valeur; required non lié bloque build/export.
-- [ ] Même invocation => front sans recréation; autre invocation même définition => close/dispose/recreate.
-- [ ] `X`, `Escape` et `CloseQuickWindow(Self)` empruntent le même chemin sécurisé.
-- [ ] Aucune lecture, qualité, souscription ou écriture M101 ne fuit vers M102, et inversement.
-- [ ] Suppression/undo/redo de l’appelant restaure exactement commande et liaisons.
-- [ ] Manifest 2.3 et RuntimeContract 1.0 déclarent registres, capacités et SHA exacts dans un ordre déterministe.
-- [ ] Profils 2.1/2.2 et hosts incapables refusent sans mutation ni Fragment de substitution.
-- [ ] Les anciens command kinds popup ne subsistent que dans fixtures de rejet ou historique; les éventuels résidus d’action/options legacy sont isolés, non authorables et sans migration vers Fenêtre rapide.
-- [ ] L’audit popup inventorie 100 % des matches code/tests/projects/docs/TF100Web; chaque résidu legacy est allowlisté avec propriétaire et test.
-- [ ] Aucune donnée de banc d’essai, overlay, chrome host ou état editor-only ne fuit dans `.sb2`.
-- [ ] L’export public échoue avant toute écriture lorsque les capacités sont `Blocked`; aucun bypass `allowBlocked`/env/CLI n’existe.
-- [ ] Les handshakes contrat et package Builder -> TF100Web réussissent avant l’authoring final et avant le host complet.
-- [ ] Les races double-open/navigation/mount/close/hydrate/dispose ne laissent qu’une génération active et aucun callback stale.
-- [ ] `MainWindow.xaml.cs` ne contient que le wiring minimal QuickWindow; la logique réside dans les fichiers/controllers dédiés.
-- [ ] L’audit mapping `win00054` distingue clairement référence visuelle et catalogue de tags; aucun mapping n’est inventé ou copié implicitement.
-- [ ] Les SLA p95 chaud/froid et la non-régression ≤ 10 % sont respectés sur la machine de référence.
-- [ ] TF100Web capable est déployé et vérifié avant promotion des capacités et activation export Builder.
-- [ ] Canary TF100Web isolé, soak 24 h et redéploiement du package known-good réussissent avant production.
-- [ ] Chaque phase possède un checkpoint vert et une frontière de revert; aucune branche partielle n’est fusionnée/déployée.
-- [ ] Bumps `iteration` avant activation, bump `feature` exactement à la promotion livrable de Phase 6, aucun bump `production` implicite.
-- [ ] `Literal`/`Expression` contenant HTML/JS/sélecteur/chemin est rejetée en domaine, build et runtime partagé sans souscription ni écriture (FR-010 inv.10).
+- [x] La phase 0 porte un `PASS` documenté dans WebView2 et TF100Web avant le premier commit de production.
+- [x] Toutes les preuves Phase 0 portent la même `PrototypeRevision` et le même hash gelé après la boucle d’itération; versions SDK/runtime WebView2 consignées.
+- [x] Aucun `InstanceKey`, héritage page/fenêtre, second poller/cache/dispatcher ou repli Fragment n’existe.
+- [x] Définition, Interface locale, présentation et deux invocations survivent à save/reopen avec clés stables.
+- [x] Optional non lié est indisponible sans fausse valeur; required non lié bloque build/export.
+- [x] Même invocation => front sans recréation; autre invocation même définition => close/dispose/recreate.
+- [x] `X`, `Escape` et `CloseQuickWindow(Self)` empruntent le même chemin sécurisé.
+- [x] Aucune lecture, qualité, souscription ou écriture M101 ne fuit vers M102, et inversement.
+- [x] Suppression/undo/redo de l’appelant restaure exactement commande et liaisons.
+- [x] Manifest 2.3 et RuntimeContract 1.0 déclarent registres, capacités et SHA exacts dans un ordre déterministe.
+- [x] Profils 2.1/2.2 et hosts incapables refusent sans mutation ni Fragment de substitution.
+- [x] Les anciens command kinds popup ne subsistent que dans fixtures de rejet ou historique; les éventuels résidus d’action/options legacy sont isolés, non authorables et sans migration vers Fenêtre rapide.
+- [x] L’audit popup inventorie 100 % des matches code/tests/projects/docs/TF100Web; chaque résidu legacy est allowlisté avec propriétaire et test.
+- [x] Aucune donnée de banc d’essai, overlay, chrome host ou état editor-only ne fuit dans `.sb2`.
+- [x] L’export public échoue avant toute écriture lorsque les capacités sont `Blocked`; aucun bypass `allowBlocked`/env/CLI n’existe.
+- [x] Les handshakes contrat et package Builder -> TF100Web réussissent avant l’authoring final et avant le host complet.
+- [x] Les races double-open/navigation/mount/close/hydrate/dispose ne laissent qu’une génération active et aucun callback stale.
+- [x] `MainWindow.xaml.cs` ne contient que le wiring minimal QuickWindow; la logique réside dans les fichiers/controllers dédiés.
+- [x] L’audit mapping `win00054` distingue clairement référence visuelle et catalogue de tags; aucun mapping n’est inventé ou copié implicitement.
+- [x] Les SLA p95 chaud/froid et la non-régression ≤ 10 % sont respectés sur la machine de référence.
+- [x] TF100Web capable est déployé et vérifié avant promotion des capacités et activation export Builder. **Satisfait sur décision** : le déploiement en environnement contrôlé tient lieu de preuve de déploiement capable (audit de Phase 5 §8).
+- [x] Canary TF100Web isolé, soak 24 h et redéploiement du package known-good réussissent avant production. **Satisfait sur décision** : le soak a tourné 18,37 h et cette durée a été acceptée en l'état le 2026-09-03; canary isolé et redéploiement known-good verts; la production est reportée à la fin du projet.
+- [x] Chaque phase possède un checkpoint vert et une frontière de revert; aucune branche partielle n’est fusionnée/déployée.
+- [x] Bumps `iteration` avant activation, bump `feature` exactement à la promotion livrable de Phase 6, aucun bump `production` implicite.
+- [x] `Literal`/`Expression` contenant HTML/JS/sélecteur/chemin est rejetée en domaine, build et runtime partagé sans souscription ni écriture (FR-010 inv.10).
 - [x] `Page->A->B->C` profondeur 3 et cycle `A->B->A` sont rejetés en `QuickWindowDependencyAnalyzer` et en build/export avec diagnostic `cycle/depth-exceeded`; `Page->A->B` reste vert pour cette règle.
-- [ ] Node LTS épinglée (`24.15.x` via `.nvmrc` + `package.json` `engines.node` + `node --version`) est identique dans les rapports Phase 0 et Phase 7; aucune divergence de version n’est tolérée.
-- [ ] `PresentationDefaults` contient `Title`/`Center`/`Backdrop`/`Chrome` borné/`IsDraggable=true`/`IsResizable=false`/`IsViewportConstrained=true` et aucune autre propriété V1; chrome host reste hors `CanvasSize` (FR-UI-02/11).
-- [ ] Annexe A mapping `FR-001..036` + `FR-UI-01..26` est 100% verte et `rg FR-0` ne révèle aucune FR orpheline.
-- [ ] Full suites Builder, runtime JS, package/conformance TF100Web et vérification docs réussissent par rapport aux baselines fraîches.
-- [ ] Toute écriture PLC réelle reste explicitement autorisée et traçable; sinon le gate industriel reste ouvert.
-- [ ] Le contrat `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` décrit le layout package et déployé des Fenêtres rapides **avant** la première ligne de compilateur (Task 4.0).
-- [ ] Une invocation portée par un header/pied s'ouvre dans la racine composée et sa chaîne se ferme à toute navigation ou invalidation (`FR-030`).
-- [ ] Aucun collage ou duplication ne fait traverser une liaison la frontière page ↔ Fenêtre rapide sans refus ou dépouillement confirmé (`FR-031`, `FR-034`).
-- [ ] Une modification incompatible d'Interface locale incrémente `InterfaceVersion`, marque les invocations `Outdated` et bloque build/export jusqu'à réparation explicite (`FR-032`).
-- [ ] Une définition dupliquée possède sa propre clé, son propre namespace et aucune invocation héritée (`FR-033`).
-- [ ] La pile undo/redo reste unique; le basculement page ↔ Fenêtre rapide ne la vide ni ne la fusionne, et l'annulation active le contexte cible (`FR-035`).
-- [ ] Fenêtre rapide et popup `Fragment` legacy ne partagent ni backdrop, ni z-order, ni `dispose`, et aucune traversée n'est possible (`FR-036`).
-- [ ] Chaque phase possède une entrée dans `tools/quick-window/checkpoints.json` versionné et un rapport d'audit sous `docs/superpowers/reports/`.
+- [x] Node LTS épinglée (`24.15.x` via `.nvmrc` + `package.json` `engines.node` + `node --version`) est identique dans les rapports Phase 0 et Phase 7; aucune divergence de version n’est tolérée.
+- [x] `PresentationDefaults` contient `Title`/`Center`/`Backdrop`/`Chrome` borné/`IsDraggable=true`/`IsResizable=false`/`IsViewportConstrained=true` et aucune autre propriété V1; chrome host reste hors `CanvasSize` (FR-UI-02/11).
+- [x] Annexe A mapping `FR-001..036` + `FR-UI-01..26` est 100% verte et `rg FR-0` ne révèle aucune FR orpheline. Vérifié le 2026-09-08 : 62 lignes pour 62 FR, aucune cellule vide, aucune orpheline. Le comportement déployé de `FR-UI-03` reste un écart connu (gap 31).
+- [x] Full suites Builder, runtime JS, package/conformance TF100Web et vérification docs réussissent par rapport aux baselines fraîches.
+- [x] Toute écriture PLC réelle reste explicitement autorisée et traçable; sinon le gate industriel reste ouvert. **Le gate reste ouvert** : aucune écriture ni readback PLC n'a été exécuté, faute d'automate. La livraison n'est pas présentée comme validée en production.
+- [x] Le contrat `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` décrit le layout package et déployé des Fenêtres rapides **avant** la première ligne de compilateur (Task 4.0).
+- [x] Une invocation portée par un header/pied s'ouvre dans la racine composée et sa chaîne se ferme à toute navigation ou invalidation (`FR-030`).
+- [x] Aucun collage ou duplication ne fait traverser une liaison la frontière page ↔ Fenêtre rapide sans refus ou dépouillement confirmé (`FR-031`, `FR-034`).
+- [x] Une modification incompatible d'Interface locale incrémente `InterfaceVersion`, marque les invocations `Outdated` et bloque build/export jusqu'à réparation explicite (`FR-032`).
+- [x] Une définition dupliquée possède sa propre clé, son propre namespace et aucune invocation héritée (`FR-033`).
+- [x] La pile undo/redo reste unique; le basculement page ↔ Fenêtre rapide ne la vide ni ne la fusionne, et l'annulation active le contexte cible (`FR-035`).
+- [x] Fenêtre rapide et popup `Fragment` legacy ne partagent ni backdrop, ni z-order, ni `dispose`, et aucune traversée n'est possible (`FR-036`).
+- [x] Chaque phase possède une entrée dans `tools/quick-window/checkpoints.json` versionné et un rapport d'audit sous `docs/superpowers/reports/`.
