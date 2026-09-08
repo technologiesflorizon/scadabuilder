@@ -91,7 +91,9 @@ public sealed record ScadaProject(
     ScadaTagCatalog? TagCatalog = null,
     Guid? HomePageKey = null,
     IReadOnlyList<QuickWindowDefinition>? QuickWindows = null,
-    IReadOnlyList<QuickWindowInvocation>? QuickWindowInvocations = null)
+    IReadOnlyList<QuickWindowInvocation>? QuickWindowInvocations = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    int? FormatVersion = null)
 {
     [JsonIgnore]
     public IReadOnlyList<ScadaSceneReference> Pages => Scenes;
@@ -107,6 +109,14 @@ public sealed record ScadaProject(
     /// <summary>Gets the effective quick window invocations, empty when not persisted.</summary>
     [JsonIgnore]
     public IReadOnlyList<QuickWindowInvocation> EffectiveQuickWindowInvocations => QuickWindowInvocations ?? Array.Empty<QuickWindowInvocation>();
+
+    /// <summary>Gets the persisted format generation; an absent field means generation zero.</summary>
+    /// <remarks>
+    /// Never serialised while null, so every project written before this mechanism existed keeps its exact
+    /// bytes. Contracts: 2026-09-08-project-format-versioning-and-converters-design.md C1, C10.
+    /// </remarks>
+    [JsonIgnore]
+    public int EffectiveFormatVersion => FormatVersion ?? 0;
 
     [JsonIgnore]
     public Guid? EffectiveHomePageKey => ResolveHomePageKey(Scenes, HomePageKey, HomePageId);
@@ -175,13 +185,23 @@ public sealed record ScadaTagCatalog(
     string Schema,
     IReadOnlyList<ScadaTagDefinition> Tags,
     string? SourceFileName = null,
-    DateTimeOffset? ImportedAtUtc = null)
+    DateTimeOffset? ImportedAtUtc = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    int? FormatVersion = null)
 {
     /// <summary>
     /// Gets the number of imported tags available to authoring surfaces.
     /// </summary>
     [JsonIgnore]
     public int Count => Tags.Count;
+
+    /// <summary>Gets the persisted format generation; an absent field means generation zero.</summary>
+    /// <remarks>
+    /// Never serialised while null, so every catalog written before this mechanism existed keeps its exact
+    /// bytes. Contracts: 2026-09-08-project-format-versioning-and-converters-design.md C1, C10.
+    /// </remarks>
+    [JsonIgnore]
+    public int EffectiveFormatVersion => FormatVersion ?? 0;
 }
 
 /// <summary>
