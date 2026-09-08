@@ -2,12 +2,13 @@
 
 Date: 2026-09-08
 Status: Design approuvé en portée, non implémenté
-Document version: `V2.1.6.0009`
+Document version: `V2.1.6.0010`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-08 | `V2.1.6.0010` | `PENDING` | C5 ramenée à deux issues sur décision : convertir ou ne pas ouvrir. Le mode consultation en lecture seule sort du périmètre, les écarts entre générations étant trop nombreux pour qu'une session à moitié migrée soit fidèle. |
 | 2026-09-08 | `V2.1.6.0009` | `06dd83e` | Création : versionnement de format par module, refus vers l'arrière, registre de convertisseurs chaînés et conversion consentie avec sauvegarde. Chantier C, prérequis des icônes interactives. |
 
 ## 1. Problème
@@ -61,7 +62,7 @@ Les preuves industrielles gelées et les fixtures de conformance dépendent d'oc
 4. Convertir sous consentement, avec sauvegarde, et dire clairement que l'opération ne se défait pas.
 5. Donner aux chantiers suivants — dessin, parties adressables — un mécanisme de contrat versionné déjà éprouvé.
 
-Non-objectifs : convertir un projet vers une version **antérieure**; réparer un artefact corrompu; convertir automatiquement sans intervention humaine.
+Non-objectifs : convertir un projet vers une version **antérieure**; réparer un artefact corrompu; convertir automatiquement sans intervention humaine; ouvrir un projet non converti en lecture seule.
 
 ## 4. Décisions approuvées
 
@@ -97,9 +98,11 @@ Avant toute écriture, le pipeline vérifie que la chaîne est complète, sans t
 
 L'ouverture d'un artefact de génération inférieure produit un **plan de conversion** présenté à l'opérateur : les modules touchés, la chaîne de versions, ce que chaque étape change en une phrase, et le chemin de la sauvegarde.
 
-Trois issues, comme partout ailleurs dans le produit : `Convertir`, `Ouvrir sans convertir`, `Annuler`.
+**Deux issues seulement : `Convertir` ou `Annuler`.** Annuler n'ouvre pas le projet.
 
-`Ouvrir sans convertir` charge la migration en mémoire selon D6, sans jamais l'écrire, et **désactive la sauvegarde** avec une raison explicite. C'est le mode consultation : on regarde sans risquer d'écrire une forme hybride.
+Il n'y a pas de mode consultation en lecture seule. La tentation existe — regarder un vieux projet sans le convertir — mais les écarts entre générations sont trop nombreux pour qu'une session à moitié migrée soit fidèle à ce que l'opérateur croit voir. Un troisième état signifierait aussi que chaque chemin d'écriture du produit — sauvegarde de projet, sauvegarde de scène, export, publication de composant — doit connaître et respecter une interdiction, ce qui multiplie les endroits où l'oubli d'un seul recrée précisément la perte de données du §1.1.
+
+Le mode lecture seule reste explicitement hors périmètre; il pourra être rouvert quand les générations auront cessé de diverger.
 
 ### C6 — La sauvegarde est automatique et précède l'écriture
 
@@ -181,9 +184,9 @@ Convertir deux fois un même artefact produit des octets identiques. Convertir s
 
 Aucune écriture convertie n'a lieu sans sauvegarde préalable réussie. Une sauvegarde existante n'est pas écrasée.
 
-### 6.5 Consultation
+### 6.5 Refus de conversion
 
-`Ouvrir sans convertir` n'écrit rien, jamais, y compris par un chemin indirect — sauvegarde automatique, sauvegarde de scène, export.
+`Annuler` n'ouvre pas le projet : la session précédente reste exactement dans son état, et aucun artefact n'est touché. Il n'existe aucun chemin par lequel un projet de génération inférieure devienne actif sans avoir été converti.
 
 ## 7. Tests et validation
 
@@ -192,7 +195,8 @@ Aucune écriture convertie n'a lieu sans sauvegarde préalable réussie. Une sau
 - Chaîne complète, chaîne trouée, chevauchement.
 - Idempotence et détermination octet à octet.
 - Sauvegarde créée avant écriture; échec de sauvegarde annulant la conversion; sauvegarde existante non écrasée.
-- Mode consultation : sauvegarde et export refusés avec raison.
+- Refuser la conversion n'ouvre pas le projet et ne modifie aucun fichier.
+- Aucun chemin d'activation n'accepte un artefact de génération inférieure non converti.
 - Chaque convertisseur : cas figé d'entrée, sortie attendue.
 - Les fixtures gelées et les paquets de conformance restent identiques.
 
