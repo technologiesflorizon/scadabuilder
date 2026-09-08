@@ -54,14 +54,23 @@ public sealed class ConversionDialogContractTests
         // dialog derives it from `FilePath` the same way `ArtifactBackupWriter` does, and says plainly that a
         // numbered suffix is used when a backup already exists, because the exact name depends on what is on
         // disk at write time and showing a name we cannot guarantee would be a lie.
+        //
+        // A source-contract test is only as strong as the string it searches for. Checking for a topic word
+        // ("{0}.bak", "suffixe numéroté") is satisfied by any sentence that mentions the topic, including one
+        // that says the opposite of what the design requires - rebinding the format string to the wrong
+        // property, or writing "aucun suffixe numéroté n'est utilisé", would still pass. Both assertions below
+        // instead pin the whole claim as it must appear in the markup.
         StringAssert.Contains(
             xaml,
-            "{0}.bak",
-            "the plan must show the derived backup path per entry, not just the source file.");
+            "{Binding FilePath, StringFormat={}{0}.bak}",
+            "the shown backup path must be bound to FilePath itself - binding the same format string to a "
+            + "different property (Module, ToVersion, ...) must fail this assertion.");
         StringAssert.Contains(
             xaml,
-            "suffixe numéroté",
-            "the dialog must say plainly that the shown backup path may not be the exact one written.");
+            "un suffixe numéroté est utilisé si une sauvegarde existe déjà",
+            "must state the claim itself, not just mention the topic - reversing it to \"aucun suffixe "
+            + "numéroté n'est utilisé\" would be a lie the dialog would tell the operator, and must not "
+            + "satisfy this assertion.");
     }
 
     private static string ReadAppFile(string relativePath)
