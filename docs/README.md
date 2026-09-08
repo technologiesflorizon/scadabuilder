@@ -8,7 +8,7 @@ Document version: `V2.1.6.0008`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0008` | `PENDING` | Cycle de vie des projets audité et corrigé : frontière d'erreur, activation tout-ou-rien, sauvegarde bloquante et accueil conforme à D11/D12. |
+| 2026-09-08 | `V2.1.6.0008` | `77d955d` | Cycle de vie des projets audité et corrigé : frontière d'erreur, activation tout-ou-rien, sauvegarde bloquante et accueil conforme à D11/D12. |
 | 2026-09-08 | `V2.1.6.0007` | `01da6b5` | Implémentation considérée terminée sous réserve d'un essai réel avec automate; le gate d'écriture PLC reste ouvert jusque-là. |
 | 2026-09-08 | `V2.1.6.0006` | `8074d0a` | `FR-UI-03` corrigé : titre par défaut porté jusqu'au manifeste, deux fixtures gelées régénérées et re-vendorisées. |
 | 2026-09-08 | `V2.1.6.0005` | `ec5f1e9` | Phase 7 close et plan Fenêtres rapides terminé : rapport d'audit, checkpoint versionné et Validation Checklist passée; le gate d'écriture PLC reste ouvert. |

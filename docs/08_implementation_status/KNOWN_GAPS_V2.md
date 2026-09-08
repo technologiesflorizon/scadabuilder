@@ -8,7 +8,7 @@ Document version: `V2.1.6.0008`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0008` | `PENDING` | Audit `DEC-0049` : treize écarts du cycle de vie des projets corrigés, dont trois sérieux. L'écart 24 se réduit au parcours interactif WPF. |
+| 2026-09-08 | `V2.1.6.0008` | `77d955d` | Audit `DEC-0049` : treize écarts du cycle de vie des projets corrigés, dont trois sérieux. L'écart 24 se réduit au parcours interactif WPF. |
 | 2026-09-08 | `V2.1.6.0007` | `01da6b5` | Décision : implémentation considérée terminée sous réserve d'un essai réel avec automate; ce que cet essai doit couvrir est consigné à l'entrée 32. |
 | 2026-09-08 | `V2.1.6.0006` | `8074d0a` | `FR-UI-03` corrigé : le manifeste porte désormais le `DisplayName` comme titre par défaut. L'écart 31 est fermé. |
 | 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Entrées 27 et 28 datées et marquées supersédées : elles décrivaient au présent des phases depuis closes. |

@@ -8,7 +8,7 @@ Document version: `V2.1.6.0008`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0008` | `PENDING` | Couverture du cycle de vie des projets : coordinateur et contrats de shell. |
+| 2026-09-08 | `V2.1.6.0008` | `77d955d` | Couverture du cycle de vie des projets : coordinateur et contrats de shell. |
 | 2026-09-08 | `V2.1.6.0006` | `8074d0a` | Couverture des deux branches de resolution du titre, la branche de repli n'etant compilee par aucun artefact gele. |
 | 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Couverture des Phases 6 et 7 ajoutée; compteurs de conformance recalés sur 126 sondes, 46 capacités bloquées et l'index à 172 entrées. |
 | 2026-08-25 | `V2.1.5.0047` | `dce0941` | Couverture Task 5.3 : conformance cross-runtime, SLA d'ouverture chaude, canary et rollback. |
