@@ -309,7 +309,7 @@ public sealed class BackwardRefusalTests
     {
         var projectPath = WriteProject(
             ScadaFormatGeneration.Project + 1,
-            extraJson: """"QuickWindowInvocations":[{"InvocationKey":"11111111-1111-1111-1111-111111111111"}],""");
+            extraJson: "\"QuickWindowInvocations\":[{\"InvocationKey\":\"11111111-1111-1111-1111-111111111111\"}],");
         var before = await File.ReadAllTextAsync(projectPath);
 
         var repository = new ProjectWorkspaceRepository(
@@ -1952,7 +1952,12 @@ Expected: PASS, 5 tests.
 
 Dans `ScadaFormatGeneration`, `Project = 1`.
 
-`ProjectWorkspaceRepository` reçoit le registre et le coordinateur par constructeur. Dans `OpenAsync`, après le refus vers l'arrière et **avant** `ReadWorkspaceSnapshotFromProjectRootAsync` :
+`ProjectWorkspaceRepository` reçoit le registre et le coordinateur par constructeur, **tous deux obligatoires**. Cela casse chaque site d'appel à deux arguments et **les deux doivent être mis à jour dans cette tâche** :
+
+- `src/ScadaBuilderV2.App/MainWindow.xaml.cs`, où le dépôt est construit dans le constructeur de la fenêtre : lui passer un registre portant `ProjectGeneration1Converter` et un `ConversionCoordinator` brané sur `WpfConversionConsent(this)`.
+- `tests/ScadaBuilderV2.Tests/Formats/BackwardRefusalTests.cs`, créé en T1 avec des constructions à deux arguments.
+
+Des paramètres optionnels seraient plus faciles à introduire et c'est précisément pourquoi il ne faut pas : le produit compilerait avec la conversion désactivée en silence, ce qui est le trou que ce chantier existe pour fermer. Dans `OpenAsync`, après le refus vers l'arrière et **avant** `ReadWorkspaceSnapshotFromProjectRootAsync` :
 
 ```csharp
         if (declaredGeneration < ScadaFormatGeneration.Project)
@@ -2151,7 +2156,7 @@ Expected: PASS, 2 tests.
 - [ ] **Step 5: Suite complète, documentation, commit**
 
 Run: `dotnet test ScadaBuilderV2.sln --no-restore`
-Expected: 955/955.
+Expected: 956/956.
 
 Run: `powershell -ExecutionPolicy Bypass -File tools/docs/verify-docs.ps1`
 Expected: `Errors: 0`, 121 avertissements.
