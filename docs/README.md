@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.6.0008`
+Document version: `V2.1.6.0009`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-08 | `V2.1.6.0009` | `PENDING` | Design du versionnement de format et des convertisseurs (chantier C), prerequis des icones interactives. Trois defauts verifies, dont une perte de donnees active sur les Fenetres rapides. |
 | 2026-09-08 | `V2.1.6.0008` | `77d955d` | Cycle de vie des projets audité et corrigé : frontière d'erreur, activation tout-ou-rien, sauvegarde bloquante et accueil conforme à D11/D12. |
 | 2026-09-08 | `V2.1.6.0007` | `01da6b5` | Implémentation considérée terminée sous réserve d'un essai réel avec automate; le gate d'écriture PLC reste ouvert jusque-là. |
 | 2026-09-08 | `V2.1.6.0006` | `8074d0a` | `FR-UI-03` corrigé : titre par défaut porté jusqu'au manifeste, deux fixtures gelées régénérées et re-vendorisées. |
