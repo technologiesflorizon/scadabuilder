@@ -1,0 +1,99 @@
+<Window x:Class="ScadaBuilderV2.App.Projects.ConversionPlanDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Conversion de format requise"
+        Width="640"
+        SizeToContent="Height"
+        MaxHeight="620"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        Background="{StaticResource PanelBrush}">
+    <Window.Resources>
+        <SolidColorBrush x:Key="InkBrush" Color="#0F2A30"/>
+        <SolidColorBrush x:Key="MutedBrush" Color="#4E6A71"/>
+        <SolidColorBrush x:Key="PanelBrush" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="SurfaceBrush" Color="#F4F8F6"/>
+        <SolidColorBrush x:Key="BorderBrushSoft" Color="#1A0F2A30"/>
+        <SolidColorBrush x:Key="WarningBrush" Color="#6A4300"/>
+    </Window.Resources>
+    <DockPanel Background="{StaticResource PanelBrush}">
+        <StackPanel DockPanel.Dock="Top" Margin="26,24,26,12">
+            <TextBlock Text="Ce projet doit être converti avant d'être ouvert."
+                       FontSize="18" FontWeight="SemiBold"
+                       TextWrapping="Wrap"
+                       Foreground="{StaticResource InkBrush}"/>
+            <TextBlock Margin="0,10,0,0"
+                       TextWrapping="Wrap"
+                       Foreground="{StaticResource WarningBrush}"
+                       Text="La conversion ne se défait pas. Une sauvegarde de chaque fichier est écrite avant toute modification; c'est le seul retour possible."/>
+        </StackPanel>
+
+        <Border DockPanel.Dock="Bottom"
+                Background="{StaticResource SurfaceBrush}"
+                BorderBrush="{StaticResource BorderBrushSoft}"
+                BorderThickness="0,1,0,0"
+                Padding="20,16">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="ConvertButton"
+                        Content="Convertir"
+                        MinWidth="140" MinHeight="34" Margin="6,0"
+                        IsDefault="True"
+                        Click="OnConvertClick"/>
+                <Button x:Name="CancelButton"
+                        Content="Ne pas ouvrir"
+                        MinWidth="140" MinHeight="34" Margin="6,0"
+                        IsCancel="True"
+                        Click="OnCancelClick"/>
+            </StackPanel>
+        </Border>
+
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="26,0,26,12">
+            <StackPanel>
+                <ItemsControl x:Name="PlanItems">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="{StaticResource BorderBrushSoft}"
+                                    BorderThickness="1" CornerRadius="4"
+                                    Padding="12" Margin="0,4">
+                                <StackPanel>
+                                    <TextBlock FontWeight="SemiBold" Foreground="{StaticResource InkBrush}">
+                                        <Run Text="{Binding Module, Mode=OneWay}"/>
+                                        <Run Text=" — format "/>
+                                        <Run Text="{Binding FromVersion, Mode=OneWay}"/>
+                                        <Run Text=" vers "/>
+                                        <Run Text="{Binding ToVersion, Mode=OneWay}"/>
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding FilePath}"
+                                               FontSize="11"
+                                               TextTrimming="CharacterEllipsis"
+                                               ToolTip="{Binding FilePath}"
+                                               Foreground="{StaticResource MutedBrush}"/>
+                                    <TextBlock FontSize="11"
+                                               TextTrimming="CharacterEllipsis"
+                                               Foreground="{StaticResource MutedBrush}">
+                                        <Run Text="Sauvegarde : "/>
+                                        <Run Text="{Binding FilePath, StringFormat={}{0}.bak}"/>
+                                    </TextBlock>
+                                    <ItemsControl ItemsSource="{Binding StepDescriptions}" Margin="0,6,0,0">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Text="{Binding}" FontSize="12"
+                                                           Foreground="{StaticResource InkBrush}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <TextBlock Margin="4,10,4,0"
+                           FontSize="11" FontStyle="Italic"
+                           TextWrapping="Wrap"
+                           Foreground="{StaticResource MutedBrush}"
+                           Text="Le chemin de sauvegarde affiché ci-dessus est celui qui sera utilisé si aucune sauvegarde n'existe déjà pour ce fichier; un suffixe numéroté est utilisé si une sauvegarde existe déjà, pour ne jamais en écraser une."/>
+            </StackPanel>
+        </ScrollViewer>
+    </DockPanel>
+</Window>
