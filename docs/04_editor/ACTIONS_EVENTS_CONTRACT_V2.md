@@ -2,7 +2,7 @@
 
 Date: 2026-08-13
 Status: Active editor/runtime actions contract
-Document version: `V2.1.5.0021`
+Document version: `V2.1.6.0004`
 
 > **DEPRECATED (2026-07-07):** `SetClass`/`RemoveClass`/`ToggleClass`/`WriteTag` (legacy)
 > action kinds and the border/visual-effect authoring described in §3, §8, §9 have been
@@ -18,6 +18,7 @@ Document version: `V2.1.5.0021`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-08 | `V2.1.6.0004` | `PENDING` | Les commandes QuickWindow ne sont plus inertes : `command.open-quick-window` et `command.close-quick-window` sont `Supported` depuis la Phase 6. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Les commandes QuickWindow de Phase 1 restent inertes et sont exclues du dialogue de commande de page jusqu’à la surface dédiée de Phase 3. |
 | 2026-08-10 | `V2.1.5.0017` | `fc5b333` | `DEC-0050` supersède le contrat popup Fragment de `DEC-0019`, `DEC-0020` et `DEC-0022`; les actions et options restantes deviennent des résidus de décommissionnement, sans migration vers les Fenêtres rapides. |
 | 2026-07-16 | `V2.1.4.0053` | `bcec075` | `DEC-0047` : les 9 actions objet utilisent ActionDispatcher, conditions partagees, ordre/propagation et page scope. |
@@ -64,7 +65,7 @@ Le baseline ci-dessous decrit le contrat historique encore valide pour ses famil
 13. Legacy border/class actions are deprecated and removed from the active domain. Model-backed `StateConfig` owns visual effects.
 15. Model-backed display states are evaluated continuously by the shared runtime and may combine color-filter effects with `TextContent`; generated text and button labels expose the same `[data-scada-text]` target.
 16. Model-backed commands execute through the shared `CommandDispatcher`. Toggle reads `ReadTagId` (or `WriteTagId`) from the shared TF100Web snapshot and writes through the existing bridge; appearance follows the confirmed subsequent snapshot.
-17. `OpenQuickWindow` et `CloseQuickWindow` existent comme contrats persistants de Phase 1, mais ne sont pas proposés par le dialogue de commande général. `CloseQuickWindow` est valide uniquement dans le contenu d’une définition et cible implicitement `Self`. La surface d’authoring dédiée appartient à la Phase 3 et toutes les capacités associées restent `Blocked`.
+17. `OpenQuickWindow` et `CloseQuickWindow` ne sont pas proposés par le dialogue de commande général : leur surface d’authoring dédiée est celle de la Phase 3. `CloseQuickWindow` est valide uniquement dans le contenu d’une définition et cible implicitement `Self`; `OpenQuickWindow` porte un `QuickWindowInvocationKey` et n’a jamais de cible page. Depuis la Phase 6, `command.open-quick-window` et `command.close-quick-window` sont `Supported` et exportables en manifest 2.3; `quick-window.binding.parent-port` et `quick-window.legacy-fragment-adapter` sont les deux seules capacités du module qui restent `Blocked`.
 
 ## 3. Event Registry
 

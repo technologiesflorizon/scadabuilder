@@ -2,12 +2,13 @@
 
 Date: 2026-07-30
 Status: Active runtime package contract
-Document version: `V2.1.6.0000`
+Document version: `V2.1.6.0004`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-08 | `V2.1.6.0004` | `PENDING` | Sections 12.5, 12.7 et 12.8 recalées sur l'après-Phase 6, soak et déploiement contrôlé consignés comme décidés, et le flow de paquet porte enfin la branche Fenêtre rapide jusqu'au host. |
 | 2026-09-04 | `V2.1.6.0000` | `078dbce` | Phase 6 : onze capacites Fenetre rapide promues. `OwnerPageKey` retire du manifeste (identite d'editeur), `quickWindowInvocationKey` ajoute a la commande appelante, et `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` etendu aux onze promues. |
 | 2026-08-25 | `V2.1.5.0047` | `dce0941` | Conformance cross-runtime des Fenetres rapides, mesure de SLA, epreuves canary et rollback (section 12.8). |
 | 2026-08-25 | `V2.1.5.0046` | `705077c` | Host TF100Web des Fenetres rapides : intentions, service du fragment par namespace et cycle de vie SinglePerDefinition (section 12.7). |
@@ -286,6 +287,17 @@ flowchart TD
   RootManifest --> BuilderGate[Builder 2.3 capability and runtime hash gate]
   BuilderGate --> CapabilityGate[TF100Web capability negotiation gate]
   CapabilityGate --> Init
+  Exporter --> QwRegistries[root manifest QuickWindows and QuickWindowInvocations]
+  Exporter --> QwContent[qw-key8/qw-key8.html and qw-key8/css/qw-key8.css]
+  QwRegistries --> RootManifest
+  QwContent --> Sb2
+  QwRegistries --> TF100Web
+  QwContent --> DeployQw[TF100Web scada/pages/qw-key8 with flattened css]
+  DeployQw --> QwHost[TF100Web quick-window-host.js SinglePerDefinition]
+  TF100Web --> QwHost
+  QwHost --> QwMount[Packaged runtime mountInstance and disposeInstance]
+  QwMount --> StateCommand
+  NavigationEpoch --> QwHost
   PageHtml -. inline scripts outside extracted root remain excluded .-> Gap[Legacy action parity gap]
 ```
 
@@ -429,7 +441,7 @@ Ces formes sont celles que valide déjà le handshake exécutable TF100Web `fron
 
 Depuis la Phase 6, `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` de `frontend/scada_package.py` contient les **onze** capacités promues, `command.open-quick-window` et `command.close-quick-window` comprises. Les capacités popup legacy y restent, inchangées. Les **deux** capacités non promues — `quick-window.binding.parent-port` et `quick-window.legacy-fragment-adapter` — en sont absentes : un package qui les déclare est rejeté avec `unsupported-runtime-capabilities:…`, comportement fail-closed vérifié par `test_deploy_rejects_unknown_capability_before_replacing_active_package`.
 
-L'extension de cet ensemble côté TF100Web est un prérequis de la promotion de Phase 6, jamais une conséquence de la compilation de Phase 4. Tant qu'elle n'est pas faite, un `.sb2` contenant des Fenêtres rapides ne peut déclarer aucune capacité `quick-window.*` en `RequiredCapabilities`.
+L'extension de cet ensemble côté TF100Web était le prérequis de la promotion, jamais une conséquence de la compilation de Phase 4; elle a été faite à la Phase 6 et pas avant. Un `.sb2` contenant des Fenêtres rapides déclare désormais les onze capacités promues en `RequiredCapabilities`, et celles-là seules : en déclarer une des deux autres le fait rejeter avant tout déploiement.
 
 
 ### 12.6 Ingestion TF100Web des registres (Phase 5.1)
@@ -484,7 +496,7 @@ Le montage d'une Fenêtre rapide appartient au host, pas au chemin de compositio
 
 **Registres.** Les registres déployés sont remis au runtime par `ScadaRuntime.loadQuickWindowRegistries(manifest)`, résolu paresseusement à la première ouverture : le runtime du paquet est un script `defer` et n'existe pas encore quand le fichier host s'exécute. Un échec laisse les Fenêtres rapides inertes, jamais à moitié câblées.
 
-Aucune capacité n'est promue par cette tâche : `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` reste inchangé et un paquet déclarant une capacité `quick-window.*` reste refusé (§12.5).
+Aucune capacité n'a été promue par cette tâche : à la Phase 5.2, `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` restait inchangé et tout paquet déclarant une capacité `quick-window.*` était refusé. La promotion appartient à la Phase 6; l'état courant est celui de §12.5.
 
 ### 12.8 Conformance cross-runtime, canary et rollback (Phase 5.3)
 
@@ -492,13 +504,13 @@ Aucune capacité n'est promue par cette tâche : `SUPPORTED_SCADA_RUNTIME_CAPABI
 
 **Mesure de SLA.** Le harnais mesure `request → Active` sur 100 ouvertures chaudes et le test échoue au-delà du seuil de Phase 0 `p95 ≤ 500 ms`. Cette mesure s'exécute **sans moteur de rendu** : elle prouve l'absence de coût algorithmique dans le couple runtime + host, jamais le temps perçu dans un navigateur, qui appartient au soak.
 
-**Fixture de conformance re-vendorisée.** Le paquet, son SHA-256 et l'index de capacités sont régénérés par le générateur Builder puis copiés à l'identique dans TF100Web. L'index régénéré porte les treize capacités `quick-window.*`, toutes `Blocked` : le garde de déploiement de production prouve désormais le refus de chacune, une à la fois.
+**Fixture de conformance re-vendorisée.** Le paquet, son SHA-256 et l'index de capacités sont régénérés par le générateur Builder puis copiés à l'identique dans TF100Web. À la Phase 5.3, l'index régénéré portait les treize capacités `quick-window.*`, toutes `Blocked`, et le garde de déploiement prouvait le refus de chacune, une à la fois. Depuis la Phase 6, le paquet de conformance porte une verticale Fenêtre rapide réelle : onze de ces capacités y sont exercées par une sonde exécutable et les deux autres restent refusées par le même garde.
 
 **Capacités retirées.** `DEC-0050` a retiré `command.open-popup`, `command.close-popup` et `command.toggle-popup` du catalogue Builder. TF100Web continue de les accepter pour que les paquets exportés avant la décision restent déployables : l'assertion de conformance devient « les capacités requises sont un sous-ensemble des capacités supportées », l'ensemble retiré étant nommé explicitement. Supporter plus que ce que le Builder exige est sûr; exiger plus que ce que TF100Web supporte ne l'est pas.
 
 **Canary et rollback.** Les deux épreuves visent un `STATIC_ROOT` canary créé pour le test et réutilisent `deploy_package_to_static`, le chemin de production : le `STATIC_ROOT/scada` actif n'est jamais touché. Le canary vérifie génération, runtime réellement servi, registres transportés intacts et contenu adressable après aplatissement du CSS. Le rollback est un **redéploiement du paquet known-good**, jamais une édition manuelle : il retire tout artefact de Fenêtre rapide et restaure runtime et pages known-good. Procédure complète : `deploy/developpement/quick_window_canary_runbook.md` (dépôt TF100Web).
 
-**Non exécuté.** Le soak d'au moins 24 h et le déploiement en production exigent une décision humaine distincte. Aucune capacité n'est promue : `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` reste inchangé.
+**Décidé depuis.** Le soak a été exécuté sur 18,37 h et accepté par décision explicite en lieu et place des 24 h du runbook. La mise en service en site industriel est reportée à la fin du projet : le déploiement contrôlé décrit ci-dessus tient lieu de preuve de déploiement capable. La promotion des capacités a suivi à la Phase 6 (§12.5).
 
 
 

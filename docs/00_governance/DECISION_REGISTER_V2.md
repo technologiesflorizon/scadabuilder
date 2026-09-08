@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active authoritative decision register
-Document version: `V2.1.5.0031`
+Document version: `V2.1.6.0004`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-08 | `V2.1.6.0004` | `PENDING` | `DEC-0050` synchronisée sur l'état réel : Phases 0 à 7 livrées, onze capacités promues et deux encore `Blocked`, trois défauts latents du chemin d'export corrigés. Dernier `PENDING` réel de `DEC-0045` résolu vers `0168f2f`. |
 | 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | Ajout de `DEC-0051` : le moteur Node épinglé passe de `20.18.x` à `24.15.x`; la fixture Phase 0 et son hash restent gelés et le leg Node est rejoué sur `v24.15.0`. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | `DEC-0050` Task 3.1 implémentée : shell d'authoring, contexte borné, duplication et projection canvas editor-only; capacités toujours `Blocked`. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | `DEC-0050` Task 2.4 implémentée : Interface locale versionnée, invocations `Outdated` dérivées et réparation explicite; capacités toujours `Blocked`. |
@@ -173,11 +174,15 @@ La première tranche est une verticale `win00054` couvrant modèle, persistance,
 
 Implementation status:
 
-La Phase 0 d’isolation DOM/CSS est validée avec la fixture gelée `1.0.2` dans WebView2 et TF100Web. La Phase 1 fournit les contrats Domain/persistance et le handshake cross-repository, tous inertes. La Phase 2 fournit les services Application de définition/invocation, l’analyse des usages/cycles/profondeur, l’historique workspace atomique et la validation build/export fail-closed. L'audit du 2026-08-21 a rouvert la Phase 2 par une Task 2.4, maintenant implémentée : transitions d'Interface locale classées par clé stable, réalignement par invocation, statut `Outdated` dérivé et réparation explicite. La Task 3.1 livre ensuite le shell d'authoring : groupe projet distinct, contexte d'éditeur borné masquant les commandes page-only, duplication indépendante, portée d'historique `QuickWindow` sur la pile unique et projection canvas editor-only en lecture seule. Les Tasks 3.2 à 3.6, 4.0 et 5.4 restent ouvertes. Toutes les capacités Fenêtre rapide demeurent `Blocked` et aucun comportement WPF, preview, export ou host n’est déclaré implémenté.
+Les Phases 0 à 7 sont livrées. Phase 0 : isolation DOM/CSS validée sur la fixture gelée `1.0.2` dans WebView2 et TF100Web. Phases 1 et 2 : contrats Domain/persistance, handshake cross-repository, services Application de définition/invocation, analyse des usages/cycles/profondeur, historique workspace atomique, validation build/export fail-closed et versionnement d'Interface locale avec statut `Outdated` dérivé et réparation explicite. Phase 3 : shell d'authoring, éditeur d'Interface locale, onglet `Liaisons` conditionnel, aperçu d'instance editor-only, frontière presse-papier et surface de réparation. Phase 4 : compilation déterministe, gate structurel d'export sans bypass et runtime partagé livré inerte. Phase 5 : ingestion TF100Web des registres, host `SinglePerDefinition` et service du fragment par namespace, conformance cross-runtime, canary et rollback; le soak a été exécuté sur 18,37 h et accepté par décision explicite en lieu et place des 24 h du runbook, et la mise en service en site industriel est reportée à la fin du projet, le déploiement contrôlé tenant lieu de preuve de déploiement capable.
+
+Phase 6 : onze des treize capacités approuvées sont promues `Supported` et l'export strict 2.3 est ouvert. **Deux restent `Blocked`, pour des raisons distinctes** : `quick-window.binding.parent-port` est implémentée côté Builder et runtime partagé mais aucun paquet déployé ne l'exerce, donc elle n'a aucune preuve host; `quick-window.legacy-fragment-adapter` n'a aucune implémentation nulle part. Ouvrir le chemin d'export pour la première fois a révélé trois défauts latents, tous corrigés : `OwnerPageKey` était exporté contre `ValidateNoInternalPageKeys`, `quickWindowInvocationKey` n'était pas sérialisé — un paquet exporté aurait donc porté des commandes d'ouverture inertes — et l'analyseur de capacités n'inspectait pas le contenu des définitions.
+
+Phase 7 : la verticale moteur `win00054` est exécutée sur un catalogue de tags synthétique, le projet de référence industriel restant intact, faute de commande d'écriture moteur dans son catalogue réel. `FR-UI-03` — repli de la barre de titre déployée sur le `DisplayName` — est un écart connu délibérément reporté, consigné dans `docs/08_implementation_status/KNOWN_GAPS_V2.md`.
 
 Regression coverage:
 
-Les preuves Phases 0 à 2 sont référencées dans `docs/08_implementation_status/REGRESSION_COVERAGE_V2.md` et le rapport d’audit du 2026-08-13. Les preuves WPF produit, preview/export, runtime partagé et host TF100Web restent à créer dans les Phases 3 à 7.
+Les preuves des Phases 0 à 7 sont référencées dans `docs/08_implementation_status/REGRESSION_COVERAGE_V2.md` et dans les rapports d'audit de phase sous `docs/superpowers/reports/`. La preuve cross-runtime n'est pas une copie : c'est le `.sb2` réellement exporté, dont TF100Web exécute 126 sondes `probe:<capability-id>` et refuse une à une les 46 capacités `Blocked`.
 
 ### DEC-0049 - Cycle de vie autonome des projets V2
 
@@ -1497,7 +1502,7 @@ The manifest remains compatible and no scene migration, synthetic cell element, 
 
 Implementation status:
 
-Implemented initially in SCADA Builder V2 commit `de37a35` and TF100Web commit `9d5d400`; explicit SVG effect targeting is implemented in SCADA Builder V2 `V2.1.5.0002` (`PENDING`) without a TF100Web code change.
+Implemented initially in SCADA Builder V2 commit `de37a35` and TF100Web commit `9d5d400`; explicit SVG effect targeting is implemented in SCADA Builder V2 `V2.1.5.0002` (`0168f2f`) without a TF100Web code change.
 
 Regression coverage:
 

@@ -86,7 +86,9 @@ Document version: `V2.1.6.0003`
 - [x] Phase 6.1: onze capacités promues sur preuve exécutable aux trois couches; `binding.parent-port` et `legacy-fragment-adapter` restent `Blocked`, faute de preuve host pour l'une et d'implémentation pour l'autre.
 - [x] Phase 6.2: export strict 2.3 ouvert pour les capacités promues, refusé fail-closed pour les autres, sans modification du gate — il était générique et piloté par le catalogue, comme la note de préparation le disait.
 - [x] Phase 6 close: la note `docs/superpowers/reports/2026-09-02-quick-window-phase-6-readiness.md` porte le relevé de ce qui a été promu, de ce qui ne l'a pas été et de ce que l'exécution a démenti; entrée `phase 6` dans `tools/quick-window/checkpoints.json`.
-- [ ] Phase 7: non démarrée.
+- [x] Phase 7.1: verticale moteur `win00054` bâtie sur le catalogue synthétique `scada-v2-win00054-synthetic-tags-v1` après que l'audit a montré que le projet de référence ne porte aucune commande d'écriture moteur; le projet de référence industriel reste intact (`511621d` audit bloquant, `ac9003a`).
+- [x] Phase 7.2: acceptation complète verte sur le canary, `p95` d'ouverture à froid 144 ms et à chaud 141 ms; l'écriture PLC reste non autorisée et consignée comme gate ouvert (`58b6018`).
+- [x] Phase 7.3: contrats, registre de décisions, couverture et diagrammes synchronisés sur l'état réel; deux défauts corrigés au passage — l'exclusion `!09_archive/**` des trois `rg` de vérification n'excluait rien depuis le chemin `docs`, et le relevé d'exécution portait encore `Phase 7: non démarrée` (`PENDING`).
 
 ### Limites actées du soak du 2026-09-02
 
@@ -436,7 +438,7 @@ Scanner séparément code, tests, projets JSON, fixtures de conformance, runtime
 ```powershell
 rg -n "OpenPopup|TogglePopup|ClosePopup|MountFragment|ScadaPopupOptions|popup\.options|command\.(open|close|toggle)-popup" src tests tools
 Get-ChildItem projects -Recurse -File -Filter *.json | Select-String -Pattern 'OpenPopup|TogglePopup|ClosePopup|MountFragment|ScadaPopupOptions|popup.options'
-rg -n "OpenPopup|TogglePopup|ClosePopup|MountFragment|ScadaPopupOptions|popup\.options|command\.(open|close|toggle)-popup" docs --glob '!09_archive/**'
+rg -n "OpenPopup|TogglePopup|ClosePopup|MountFragment|ScadaPopupOptions|popup\.options|command\.(open|close|toggle)-popup" docs --glob '!**/09_archive/**'
 rg -n "OpenPopup|TogglePopup|ClosePopup|MountFragment|ScadaPopupOptions|popup\.options|command\.(open|close|toggle)-popup" docs/09_archive
 rg -n "OpenPopup|TogglePopup|ClosePopup|MountFragment|ScadaPopupOptions|popup\.options|command\.(open|close|toggle)-popup" "F:\Projet\Git\TF100Web\frontend"
 ```
@@ -1133,15 +1135,15 @@ python -m pytest frontend -q   # exécuté dans F:\Projet\Git\TF100Web
 - Consumes: code/tests/commits et statut réel du déploiement.
 - Produces: documentation propriétaire synchronisée, diagrammes à jour et version itérative finale.
 
-- [ ] Documenter uniquement les capacités réellement Supported; garder nesting/legacy adapter/copie/présentation avancée comme gaps ou tranches futures.
-- [ ] Mettre à jour diagrammes modèle, build/export et cycle host; remplacer les `PENDING` appropriés par des commits existants sans auto-référence impossible.
-- [ ] Appliquer la politique de version du plan: si Phase 6 a réellement activé la première capacité QuickWindow livrable, le bump feature a déjà été effectué à cette frontière; Task 7.3 calcule seulement le prochain bump iteration avec `python C:\Users\mathi\.codex\skills\scada-builder-v2-versioning\scripts\bump_scada_v2_version.py <current> iteration`. Si Phase 6 n’a pas été franchie, rester en bumps iteration et ne jamais annoncer la feature comme livrée. Synchroniser ensuite tous les documents touchés.
-- [ ] Exécuter:
+- [x] Documenter uniquement les capacités réellement Supported; garder nesting/legacy adapter/copie/présentation avancée comme gaps ou tranches futures.
+- [x] Mettre à jour diagrammes modèle, build/export et cycle host; remplacer les `PENDING` appropriés par des commits existants sans auto-référence impossible.
+- [x] Appliquer la politique de version du plan: si Phase 6 a réellement activé la première capacité QuickWindow livrable, le bump feature a déjà été effectué à cette frontière; Task 7.3 calcule seulement le prochain bump iteration avec `python C:\Users\mathi\.codex\skills\scada-builder-v2-versioning\scripts\bump_scada_v2_version.py <current> iteration`. Si Phase 6 n’a pas été franchie, rester en bumps iteration et ne jamais annoncer la feature comme livrée. Synchroniser ensuite tous les documents touchés.
+- [x] Exécuter:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File tools/docs/verify-docs.ps1
-rg -n "index\.html|08_web_modernized|source_html" docs --glob '!09_archive/**'
-rg -n "Open[ ]Decisions|Open Technical Questions" docs --glob '!09_archive/**'
+rg -n "index\.html|08_web_modernized|source_html" docs --glob '!**/09_archive/**'
+rg -n "Open[ ]Decisions|Open Technical Questions" docs --glob '!**/09_archive/**'
 rg -n "OpenPopup|TogglePopup|ClosePopup|MountFragment|ScadaPopupOptions|command\.(open|close|toggle)-popup|popup\.options" docs/03_runtime_contracts docs/04_editor docs/08_implementation_status docs/10_generated
 rg -n "PENDING" docs/README.md docs/00_governance docs/03_runtime_contracts docs/04_editor docs/08_implementation_status docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md docs/superpowers/plans/2026-08-10-parameterized-quick-window-management.md
 dotnet test ScadaBuilderV2.sln --no-restore
@@ -1149,7 +1151,7 @@ dotnet test ScadaBuilderV2.sln --no-restore
 
 Expected: `verify-docs` valide séparément les métadonnées `Document version`/`Historique des changements`; chaque commande `rg` possède un signal unique. Les matches legacy actifs sont expliqués/allowlistés, les `PENDING` sont examinés comme dette de commit et la documentation reste cohérente avec les gates réels.
 
-- [ ] Commit: `docs: record quick window v1 implementation`.
+- [x] Commit: `docs: record quick window v1 implementation`.
 
 ---
 

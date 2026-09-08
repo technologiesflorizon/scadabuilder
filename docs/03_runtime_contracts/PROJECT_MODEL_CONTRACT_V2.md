@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active project model contract
-Document version: `V2.1.5.0026`
+Document version: `V2.1.6.0004`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-08 | `V2.1.6.0004` | `PENDING` | Le profil 2.3 est productible : les gates des Phases 3 à 6 sont franchis et le fail-closed ne porte plus que sur les deux capacités non promues. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Versionnement de l'Interface locale : réalignement par invocation, statut `Outdated` dérivé et liaisons jamais réécrites. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 : mutations Application coordonnent projet, scène appelante, commande et invocation; l’historique restaure le snapshot complet sans I/O. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Contrat de persistance QuickWindow Phase 1 : fichiers autoritaires séparés, manifest sans duplication et profils antérieurs fail-closed. |
@@ -67,7 +68,7 @@ Element numeric data keeps compatibility fields for older projects, but active a
 
 Une définition porte un `VisualContent` borné, sa version d’interface, ses membres locaux et ses defaults de présentation. Les invocations restent portées par le projet et les commandes appelantes au moyen d’un `InvocationKey`, d’un `QuickWindowDefinitionKey` et d’une `InterfaceVersion`; l’identité runtime n’est jamais persistée. Les membres privés ne sont pas bindables par une invocation.
 
-Les fichiers sont ordonnés de façon déterministe et remplacés atomiquement après écriture temporaire, flush et validation. Un projet historique sans Fenêtre rapide se recharge sans migration et ne doit pas être réécrit. Une définition inline sans fichier autoritaire est refusée au lieu d’être migrée implicitement. Les profils manifest 2.1/2.2 refusent toute présence QuickWindow; le profil 2.3 ne devient productible qu’après les gates des Phases 3 à 6.
+Les fichiers sont ordonnés de façon déterministe et remplacés atomiquement après écriture temporaire, flush et validation. Un projet historique sans Fenêtre rapide se recharge sans migration et ne doit pas être réécrit. Une définition inline sans fichier autoritaire est refusée au lieu d’être migrée implicitement. Les profils manifest 2.1/2.2 refusent toute présence QuickWindow. Les gates des Phases 3 à 6 sont franchis : le profil 2.3 est productible et exporte les onze capacités `quick-window.*` promues `Supported`. Le gate reste fail-closed sur les deux capacités encore `Blocked` — `quick-window.binding.parent-port` et `quick-window.legacy-fragment-adapter` — : un projet qui en déclenche une est refusé avant qu’aucun répertoire d’export n’existe.
 
 L'Interface locale est versionnée par clé stable. Renommer un membre ou modifier un membre privé n'exige aucun increment de `InterfaceVersion` et ne casse aucune invocation. Ajouter, retirer ou modifier le contrat typé d'un membre public l'exige. Lors de la mutation, chaque invocation encore compatible est réalignée sur la nouvelle version sans que ses liaisons soient réécrites; une invocation cassée conserve sa version et ses liaisons et devient `Outdated`. Ce statut est dérivé du couple de versions : aucun champ de statut n'est persisté et aucun quatrième identifiant n'est introduit.
 
