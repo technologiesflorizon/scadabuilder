@@ -8,7 +8,7 @@ Document version: `V2.1.6.0010`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0010` | `PENDING` | Création : décisions arrêtées pour les chantiers A (outils de dessin) et B (parties adressables et instances), propositions non confirmées et points non tranchés séparés. |
+| 2026-09-08 | `V2.1.6.0010` | `c7acf1e` | Création : décisions arrêtées pour les chantiers A (outils de dessin) et B (parties adressables et instances), propositions non confirmées et points non tranchés séparés. |
 
 ## 0. Ce que ce document est, et n'est pas
 
