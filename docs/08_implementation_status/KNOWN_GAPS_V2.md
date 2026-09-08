@@ -8,7 +8,7 @@ Document version: `V2.1.6.0007`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0007` | `PENDING` | Décision : implémentation considérée terminée sous réserve d'un essai réel avec automate; ce que cet essai doit couvrir est consigné à l'entrée 32. |
+| 2026-09-08 | `V2.1.6.0007` | `01da6b5` | Décision : implémentation considérée terminée sous réserve d'un essai réel avec automate; ce que cet essai doit couvrir est consigné à l'entrée 32. |
 | 2026-09-08 | `V2.1.6.0006` | `8074d0a` | `FR-UI-03` corrigé : le manifeste porte désormais le `DisplayName` comme titre par défaut. L'écart 31 est fermé. |
 | 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Entrées 27 et 28 datées et marquées supersédées : elles décrivaient au présent des phases depuis closes. |
 | 2026-09-04 | `V2.1.6.0000` | `078dbce` | Phase 6 : onze capacites Fenetre rapide promues, deux restent bloquees. Trois defauts latents du chemin d'export corriges. |

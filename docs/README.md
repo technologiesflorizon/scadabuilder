@@ -8,7 +8,7 @@ Document version: `V2.1.6.0007`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0007` | `PENDING` | Implémentation considérée terminée sous réserve d'un essai réel avec automate; le gate d'écriture PLC reste ouvert jusque-là. |
+| 2026-09-08 | `V2.1.6.0007` | `01da6b5` | Implémentation considérée terminée sous réserve d'un essai réel avec automate; le gate d'écriture PLC reste ouvert jusque-là. |
 | 2026-09-08 | `V2.1.6.0006` | `8074d0a` | `FR-UI-03` corrigé : titre par défaut porté jusqu'au manifeste, deux fixtures gelées régénérées et re-vendorisées. |
 | 2026-09-08 | `V2.1.6.0005` | `ec5f1e9` | Phase 7 close et plan Fenêtres rapides terminé : rapport d'audit, checkpoint versionné et Validation Checklist passée; le gate d'écriture PLC reste ouvert. |
 | 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Task 7.3 : contrats, registre de décisions, couverture et diagrammes synchronisés sur l'état réel des Phases 6 et 7. |
