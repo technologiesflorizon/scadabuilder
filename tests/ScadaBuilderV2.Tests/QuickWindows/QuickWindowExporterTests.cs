@@ -109,6 +109,69 @@ public sealed class QuickWindowExporterTests
         Assert.AreEqual("Literal", invocation.Bindings.Single(binding => binding.MemberKey == SpeedKey.ToString("D")).SourceKind);
     }
 
+    /// <summary>
+    /// `FR-UI-03`: a definition with no explicit title is titled by its `DisplayName`, in the manifest
+    /// and not only in the Builder preview.
+    /// </summary>
+    /// <remarks>
+    /// This is the case every fixture missed. The conformance factory gives both of its definitions an
+    /// explicit `Title`, so the fallback branch was never compiled by any frozen artifact and the
+    /// deployed title bar stayed empty while the preview showed the name. The deployed host resolves
+    /// `intent.title || presentation.Title || ""` and owns no fallback of its own, so a null here is
+    /// an empty title bar, not a host default.
+    /// </remarks>
+    [TestMethod]
+    public void ADefinitionWithoutAnExplicitTitleIsTitledByItsDisplayNameInTheManifest()
+    {
+        var project = Project();
+        project = project with
+        {
+            QuickWindows =
+            [
+                Definition(OtherDefinitionKey, "pompe"),
+                Definition(DefinitionKey, "moteur") with
+                {
+                    DisplayName = "Moteur de convoyeur",
+                    PresentationDefaults = new QuickWindowPresentationDefaults()
+                }
+            ]
+        };
+
+        var compilation = QuickWindowCompiler.Compile(project);
+
+        var fallback = compilation.Definitions.Single(entry => entry.Code == "moteur");
+        Assert.AreEqual("Moteur de convoyeur", fallback.DisplayName);
+        Assert.AreEqual(
+            "Moteur de convoyeur",
+            fallback.PresentationDefaults.Title,
+            "a definition without an explicit title must carry its DisplayName into the manifest; the host has no fallback.");
+    }
+
+    /// <summary>An explicit presentation title still wins over the `DisplayName`.</summary>
+    [TestMethod]
+    public void AnExplicitPresentationTitleIsNotReplacedByTheDisplayName()
+    {
+        var project = Project();
+        project = project with
+        {
+            QuickWindows =
+            [
+                Definition(OtherDefinitionKey, "pompe"),
+                Definition(DefinitionKey, "moteur") with
+                {
+                    DisplayName = "Moteur de convoyeur",
+                    PresentationDefaults = new QuickWindowPresentationDefaults(Title: "Convoyeur principal")
+                }
+            ]
+        };
+
+        var compilation = QuickWindowCompiler.Compile(project);
+
+        var explicitTitle = compilation.Definitions.Single(entry => entry.Code == "moteur");
+        Assert.AreEqual("Convoyeur principal", explicitTitle.PresentationDefaults.Title);
+        Assert.AreEqual("Moteur de convoyeur", explicitTitle.DisplayName);
+    }
+
     [TestMethod]
     public void CompiledContentCarriesNoEditorOnlyArtifact()
     {

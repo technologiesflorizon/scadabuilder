@@ -72,7 +72,7 @@ internal static class QuickWindowCompiler
                     .OrderBy(member => member.MemberKey)
                     .Select(ToManifestMember)
                     .ToArray(),
-                ToManifestPresentation(definition.EffectivePresentation)));
+                ToManifestPresentation(definition.EffectivePresentation, definition.DisplayName)));
         }
 
         var invocations = project.EffectiveQuickWindowInvocations
@@ -97,8 +97,22 @@ internal static class QuickWindowCompiler
         member.DefaultValue,
         member.Description);
 
-    private static Ft100QuickWindowPresentation ToManifestPresentation(QuickWindowPresentationDefaults presentation) => new(
-        presentation.Title,
+    /// <summary>Compiles the bounded presentation defaults of one definition into manifest shape.</summary>
+    /// <remarks>
+    /// The title is resolved here, not in the host. `FR-UI-03` gives a definition without an explicit
+    /// title the `DisplayName` as its title, and that fallback is portable semantics: the deployed host
+    /// reads `intent.title || presentation.Title || ""`, so a null here left the title bar empty while
+    /// the Builder preview showed the name. The scene built above already used `EffectiveTitle`; only
+    /// this projection dropped it.
+    ///
+    /// Decisions: DEC-0050.
+    /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md §12.4.
+    /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowExporterTests.cs.
+    /// </remarks>
+    private static Ft100QuickWindowPresentation ToManifestPresentation(
+        QuickWindowPresentationDefaults presentation,
+        string displayName) => new(
+        presentation.EffectiveTitle(displayName),
         presentation.Position.ToString(),
         presentation.Backdrop,
         presentation.IsDraggable,

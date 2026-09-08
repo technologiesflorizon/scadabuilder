@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active known gaps register
-Document version: `V2.1.6.0004`
+Document version: `V2.1.6.0006`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-08 | `V2.1.6.0006` | `PENDING` | `FR-UI-03` corrigé : le manifeste porte désormais le `DisplayName` comme titre par défaut. L'écart 31 est fermé. |
 | 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Entrées 27 et 28 datées et marquées supersédées : elles décrivaient au présent des phases depuis closes. |
 | 2026-09-04 | `V2.1.6.0000` | `078dbce` | Phase 6 : onze capacites Fenetre rapide promues, deux restent bloquees. Trois defauts latents du chemin d'export corriges. |
 | 2026-08-25 | `V2.1.5.0047` | `dce0941` | Task 5.3 partiellement close : conformance, canary et rollback verts; soak 24 h et deploiement production restent a decider. |
@@ -118,7 +119,7 @@ Document version: `V2.1.6.0004`
 
 30. Trois défauts latents du chemin d'export ont été trouvés en ouvrant ce chemin pour la première fois, et corrigés : `OwnerPageKey` était exporté alors que la validation de paquet interdit toute propriété `*PageKey`; `quickWindowInvocationKey` n'était pas sérialisé, si bien qu'un paquet exporté aurait porté des commandes d'ouverture inertes; et l'analyseur de capacités ne regardait pas le contenu des définitions, laissant tout ce qu'une fenêtre rapide embarque hors du gate. Aucun n'était visible tant que les capacités bloquaient l'export.
 
-31. **Écart connu non corrigé : `FR-UI-03`.** Le compilateur sérialise `PresentationDefaults.Title` brut, donc la barre de titre du runtime déployé est vide là où l'aperçu Builder affiche le `DisplayName`. `QuickWindowPresentationDefaults.EffectiveTitle` implémente pourtant le repli, et le compilateur l'applique déjà à la scène. Report délibéré : la correction régénère les fixtures gelées.
+31. **`FR-UI-03` est corrigé** (2026-09-08). Le compilateur sérialisait `PresentationDefaults.Title` brut : une définition sans titre explicite arrivait au manifeste avec `Title: null`, et comme le host résout `intent.title || presentation.Title || ""` sans repli propre, la barre de titre déployée était vide là où l'aperçu Builder affichait le `DisplayName`. Le compilateur applique désormais `EffectiveTitle(displayName)`, la même règle qu'il appliquait déjà à la scène. **Pourquoi aucun gate ne l'a vu :** les deux définitions de la fabrique de conformance portent un `Title` explicite, donc la branche de repli n'était compilée par aucun artefact gelé. Le paquet de soak, lui, l'exerçait — ses quatre définitions ont tourné 18,37 h sur le canary **sans aucun titre**. Deux tests couvrent maintenant les deux branches, et les fixtures `quick-window-runtime-handshake.sb2` et `quick-window-soak.sb2` sont régénérées et re-vendorisées.
 
 26. `DEC-0051` a ré-épinglé le moteur de vérification sur Node `24.15.x`. Les trois legs du gate Phase 0 — Node headless, WebView2 réel et Edge/TF100Web — sont rejoués `PASS` sur `v24.15.0` avec le hash de fixture gelé inchangé, et la fixture vendorisée dans TF100Web est réalignée octet pour octet (LF épinglé, espaces de fin restaurés). La lacune d'épinglage est fermée. Le dépôt TF100Web porte ces corrections sur `codex/quick-window-v1` sans push.
 

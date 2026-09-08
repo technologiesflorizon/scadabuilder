@@ -2,12 +2,13 @@
 
 Date: 2026-07-30
 Status: Active runtime package contract
-Document version: `V2.1.6.0004`
+Document version: `V2.1.6.0006`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-08 | `V2.1.6.0006` | `PENDING` | Section 12.4 : la résolution du titre à trois niveaux est figee et appartient a la compilation; le champ manifest n'est jamais vide pour une definition nommee. |
 | 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Sections 12.5, 12.7 et 12.8 recalées sur l'après-Phase 6, soak et déploiement contrôlé consignés comme décidés, et le flow de paquet porte enfin la branche Fenêtre rapide jusqu'au host. |
 | 2026-09-04 | `V2.1.6.0000` | `078dbce` | Phase 6 : onze capacites Fenetre rapide promues. `OwnerPageKey` retire du manifeste (identite d'editeur), `quickWindowInvocationKey` ajoute a la commande appelante, et `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` etendu aux onze promues. |
 | 2026-08-25 | `V2.1.5.0047` | `dce0941` | Conformance cross-runtime des Fenetres rapides, mesure de SLA, epreuves canary et rollback (section 12.8). |
@@ -432,6 +433,8 @@ Les deux registres sont des tableaux de la racine du `manifest.json`, en **Pasca
 Ces formes sont celles que valide déjà le handshake exécutable TF100Web `frontend/tests_scada_quick_window_contract_handshake.py` sur sa fixture figée.
 
 **Commande appelante.** Une commande `openQuickWindow` porte `quickWindowInvocationKey` dans son `data-scada-command-config` (camelCase runtime), et c'est la seule chose qui dit au runtime *quelle* fenêtre ouvrir : `command-dispatcher.js` refuse la commande sans elle. La propriété n'est écrite que lorsqu'elle existe, de sorte qu'un package sans fenêtre rapide garde des octets inchangés. `TargetPageKey` reste absent de cette projection : identité d'éditeur, comme `OwnerPageKey`.
+
+**Résolution du titre.** Le titre se résout à trois niveaux, et la résolution appartient à la compilation, pas au host : `QuickWindowInvocation.TitleOverride` l'emporte, sinon `PresentationDefaults.Title`, sinon le `DisplayName` de la définition. Le compilateur écrit ce dernier repli dans `PresentationDefaults.Title` du manifeste, de sorte que ce champ n'est **jamais vide** pour une définition nommée. Le host déployé lit `intent.title || presentation.Title || ""` et ne possède aucun repli propre : un `null` à cet endroit est une barre de titre vide, pas un défaut du host (`FR-UI-03`).
 
 **Ordre déterministe.** `QuickWindows[]` est trié par `DefinitionKey`; `QuickWindowInvocations[]` est trié par `InvocationKey`; `InterfaceMembers[]` est trié par `MemberKey`; `Bindings[]` est trié par `MemberKey`. Deux compilations du même projet produisent des octets identiques.
 
