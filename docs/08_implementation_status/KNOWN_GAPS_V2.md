@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active known gaps register
-Document version: `V2.1.6.0006`
+Document version: `V2.1.6.0007`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-08 | `V2.1.6.0007` | `PENDING` | Décision : implémentation considérée terminée sous réserve d'un essai réel avec automate; ce que cet essai doit couvrir est consigné à l'entrée 32. |
 | 2026-09-08 | `V2.1.6.0006` | `8074d0a` | `FR-UI-03` corrigé : le manifeste porte désormais le `DisplayName` comme titre par défaut. L'écart 31 est fermé. |
 | 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Entrées 27 et 28 datées et marquées supersédées : elles décrivaient au présent des phases depuis closes. |
 | 2026-09-04 | `V2.1.6.0000` | `078dbce` | Phase 6 : onze capacites Fenetre rapide promues, deux restent bloquees. Trois defauts latents du chemin d'export corriges. |
@@ -120,6 +121,8 @@ Document version: `V2.1.6.0006`
 30. Trois défauts latents du chemin d'export ont été trouvés en ouvrant ce chemin pour la première fois, et corrigés : `OwnerPageKey` était exporté alors que la validation de paquet interdit toute propriété `*PageKey`; `quickWindowInvocationKey` n'était pas sérialisé, si bien qu'un paquet exporté aurait porté des commandes d'ouverture inertes; et l'analyseur de capacités ne regardait pas le contenu des définitions, laissant tout ce qu'une fenêtre rapide embarque hors du gate. Aucun n'était visible tant que les capacités bloquaient l'export.
 
 31. **`FR-UI-03` est corrigé** (2026-09-08). Le compilateur sérialisait `PresentationDefaults.Title` brut : une définition sans titre explicite arrivait au manifeste avec `Title: null`, et comme le host résout `intent.title || presentation.Title || ""` sans repli propre, la barre de titre déployée était vide là où l'aperçu Builder affichait le `DisplayName`. Le compilateur applique désormais `EffectiveTitle(displayName)`, la même règle qu'il appliquait déjà à la scène. **Pourquoi aucun gate ne l'a vu :** les deux définitions de la fabrique de conformance portent un `Title` explicite, donc la branche de repli n'était compilée par aucun artefact gelé. Le paquet de soak, lui, l'exerçait — ses quatre définitions ont tourné 18,37 h sur le canary **sans aucun titre**. Deux tests couvrent maintenant les deux branches, et les fixtures `quick-window-runtime-handshake.sb2` et `quick-window-soak.sb2` sont régénérées et re-vendorisées.
+
+32. **L'implémentation est considérée terminée sous réserve d'un essai réel** (décision du 2026-09-08). Un déploiement avec automate est prévu dans les jours qui suivent; c'est la seule épreuve qui puisse fermer le gate d'écriture PLC, laissé délibérément ouvert à la clôture de la Phase 7. **Trois choses que cet essai doit couvrir, et qu'aucune suite ne peut couvrir à sa place :** (a) le chemin d'écriture nominal — `StationMappingWriteView` exige un `RegisterMapping` `enabled` **et** `writeable`, un pilote dont `capabilities.supports_write` est vrai, et une permission `remote_control` ou `visualisation_config`; sans automate seuls les refus `mapping_read_only`, `driver_read_only` et `write_exception` ont jamais tourné; (b) l'**absence de readback** — la vue renvoie `ok: True` avec la valeur qu'on lui a donnée sans relire l'automate, donc l'apparence confirmée d'un bouton de Fenêtre rapide dépend du snapshot de poller suivant (`DEC-0044`), jamais de la réponse d'écriture; (c) le **coût d'un cycle connect/write/disconnect par appel**, l'écriture étant synchrone et le pilote déconnecté après chaque écriture — une commande Momentary en fait donc deux. L'essai est aussi l'occasion de fermer l'écart du canary : il faut déployer un paquet exporté **après** la Phase 6, sans quoi la négociation de capacités ne sera toujours éprouvée que par le refus, jamais par l'acceptation. Enfin, le projet d'essai ne doit porter **aucune liaison ParentPort** : `quick-window.binding.parent-port` reste `Blocked` et l'export serait refusé avant tout artefact.
 
 26. `DEC-0051` a ré-épinglé le moteur de vérification sur Node `24.15.x`. Les trois legs du gate Phase 0 — Node headless, WebView2 réel et Edge/TF100Web — sont rejoués `PASS` sur `v24.15.0` avec le hash de fixture gelé inchangé, et la fixture vendorisée dans TF100Web est réalignée octet pour octet (LF épinglé, espaces de fin restaurés). La lacune d'épinglage est fermée. Le dépôt TF100Web porte ces corrections sur `codex/quick-window-v1` sans push.
 
