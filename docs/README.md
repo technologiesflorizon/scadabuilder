@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.6.0013`
+Document version: `V2.1.6.0014`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-08 | `V2.1.6.0014` | `PENDING` | Tâche 3 du chantier C : contrat de convertisseur (`IArtifactConverter`), registre et chaîne de conversion. La validation à l'enregistrement refuse les ambiguïtés (deux convertisseurs depuis la même génération) et les descentes impossibles. |
 | 2026-09-08 | `V2.1.6.0013` | `baf42e4` | Tâche 2 du chantier C : champs `FormatVersion` sur projet, scène et catalogue de tags. Jamais sérialisés tant que nuls, donc les artefacts figés restent byte-identiques. |
 | 2026-09-08 | `V2.1.6.0012` | `225b0b5` | Tâche 1 du chantier C : `OpenAsync` refuse un projet dont la génération de format dépasse ce que le binaire comprend, avant toute désérialisation. Ferme la perte de données des Fenêtres rapides sur ouverture par un binaire antérieur. |
 | 2026-09-08 | `V2.1.6.0011` | `b7cd56a` | Plan d'implementation du chantier C en huit taches; correction de la spec : le .sep porte deja SchemaVersion et est raccorde au registre au lieu d'etre double. |
