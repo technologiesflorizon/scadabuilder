@@ -8,7 +8,7 @@ Document version: `V2.1.6.0015`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0015` | `PENDING` | Tâche 5 du chantier C : plan de conversion, sauvegarde et coordinateur (`ConversionCoordinator`). L'ordre refuse une chaîne incomplète avant de demander le consentement, ne demande rien pour un artefact déjà courant, et un refus arrête la transition; la sauvegarde `.bak` numérotée précède toute conversion et ne remplace jamais une sauvegarde existante. |
+| 2026-09-08 | `V2.1.6.0015` | `1935e99` | Tâche 5 du chantier C : plan de conversion, sauvegarde et coordinateur (`ConversionCoordinator`). L'ordre refuse une chaîne incomplète avant de demander le consentement, ne demande rien pour un artefact déjà courant, et un refus arrête la transition; la sauvegarde `.bak` numérotée précède toute conversion et ne remplace jamais une sauvegarde existante. |
 | 2026-09-08 | `V2.1.6.0014` | `f3008dc` | Tâche 3 du chantier C : contrat de convertisseur (`IArtifactConverter`), registre et chaîne de conversion. La validation à l'enregistrement refuse les ambiguïtés (deux convertisseurs depuis la même génération) et les descentes impossibles. |
 | 2026-09-08 | `V2.1.6.0013` | `baf42e4` | Tâche 2 du chantier C : champs `FormatVersion` sur projet, scène et catalogue de tags. Jamais sérialisés tant que nuls, donc les artefacts figés restent byte-identiques. |
 | 2026-09-08 | `V2.1.6.0012` | `225b0b5` | Tâche 1 du chantier C : `OpenAsync` refuse un projet dont la génération de format dépasse ce que le binaire comprend, avant toute désérialisation. Ferme la perte de données des Fenêtres rapides sur ouverture par un binaire antérieur. |
