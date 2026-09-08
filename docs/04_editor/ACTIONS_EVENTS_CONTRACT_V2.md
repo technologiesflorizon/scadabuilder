@@ -18,7 +18,7 @@ Document version: `V2.1.6.0004`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0004` | `PENDING` | Les commandes QuickWindow ne sont plus inertes : `command.open-quick-window` et `command.close-quick-window` sont `Supported` depuis la Phase 6. |
+| 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Les commandes QuickWindow ne sont plus inertes : `command.open-quick-window` et `command.close-quick-window` sont `Supported` depuis la Phase 6. |
 | 2026-08-13 | `V2.1.5.0021` | `b353e37` | Les commandes QuickWindow de Phase 1 restent inertes et sont exclues du dialogue de commande de page jusqu’à la surface dédiée de Phase 3. |
 | 2026-08-10 | `V2.1.5.0017` | `fc5b333` | `DEC-0050` supersède le contrat popup Fragment de `DEC-0019`, `DEC-0020` et `DEC-0022`; les actions et options restantes deviennent des résidus de décommissionnement, sans migration vers les Fenêtres rapides. |
 | 2026-07-16 | `V2.1.4.0053` | `bcec075` | `DEC-0047` : les 9 actions objet utilisent ActionDispatcher, conditions partagees, ordre/propagation et page scope. |

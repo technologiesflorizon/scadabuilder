@@ -88,7 +88,7 @@ Document version: `V2.1.6.0003`
 - [x] Phase 6 close: la note `docs/superpowers/reports/2026-09-02-quick-window-phase-6-readiness.md` porte le relevé de ce qui a été promu, de ce qui ne l'a pas été et de ce que l'exécution a démenti; entrée `phase 6` dans `tools/quick-window/checkpoints.json`.
 - [x] Phase 7.1: verticale moteur `win00054` bâtie sur le catalogue synthétique `scada-v2-win00054-synthetic-tags-v1` après que l'audit a montré que le projet de référence ne porte aucune commande d'écriture moteur; le projet de référence industriel reste intact (`511621d` audit bloquant, `ac9003a`).
 - [x] Phase 7.2: acceptation complète verte sur le canary, `p95` d'ouverture à froid 144 ms et à chaud 141 ms; l'écriture PLC reste non autorisée et consignée comme gate ouvert (`58b6018`).
-- [x] Phase 7.3: contrats, registre de décisions, couverture et diagrammes synchronisés sur l'état réel; deux défauts corrigés au passage — l'exclusion `!09_archive/**` des trois `rg` de vérification n'excluait rien depuis le chemin `docs`, et le relevé d'exécution portait encore `Phase 7: non démarrée` (`PENDING`).
+- [x] Phase 7.3: contrats, registre de décisions, couverture et diagrammes synchronisés sur l'état réel; deux défauts corrigés au passage — l'exclusion `!09_archive/**` des trois `rg` de vérification n'excluait rien depuis le chemin `docs`, et le relevé d'exécution portait encore `Phase 7: non démarrée` (`d5f9ab1`).
 
 ### Limites actées du soak du 2026-09-02
 

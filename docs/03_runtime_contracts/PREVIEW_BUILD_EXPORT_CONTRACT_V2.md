@@ -8,7 +8,7 @@ Document version: `V2.1.6.0004`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0004` | `PENDING` | Onze capacités `quick-window.*` déclarables `Required` depuis la Phase 6; l'absence de `quick-window-host.js` du bundle exporté est requalifiée comme une question de propriété de module, non de statut de capacité. |
+| 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Onze capacités `quick-window.*` déclarables `Required` depuis la Phase 6; l'absence de `quick-window-host.js` du bundle exporté est requalifiée comme une question de propriété de module, non de statut de capacité. |
 | 2026-08-24 | `V2.1.5.0039` | `4f690ea` | Gate structurel d'export : la validation de capacites precede toute creation de repertoire, et un projet a capacite `Blocked` ne laisse aucun artefact. |
 | 2026-08-24 | `V2.1.5.0037` | `c4f7391` | Task 4.0 : projection build/export des Fenêtres rapides documentée, artefacts editor-only exclus et gate fail-closed rappelé. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Gate build/export explicite pour les invocations `Outdated`, levé uniquement par réparation explicite. |

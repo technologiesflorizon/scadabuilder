@@ -8,7 +8,7 @@ Document version: `V2.1.6.0004`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0004` | `PENDING` | Task 7.3 : contrats, registre de décisions, couverture et diagrammes synchronisés sur l'état réel des Phases 6 et 7. |
+| 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Task 7.3 : contrats, registre de décisions, couverture et diagrammes synchronisés sur l'état réel des Phases 6 et 7. |
 | 2026-09-04 | `V2.1.6.0003` | `58b6018` | Task 7.2 close : acceptation complete verte, ecriture PLC toujours non autorisee et consignee comme gate ouvert. |
 | 2026-09-04 | `V2.1.6.0002` | `ac9003a` | Task 7.1 close : verticale moteur win00054 sur catalogue synthetique, projet de reference intact. |
 | 2026-09-04 | `V2.1.6.0001` | `511621d` | Task 7.1 bloquee a l'audit : le projet de reference ne porte aucune commande d'ecriture de moteur. |

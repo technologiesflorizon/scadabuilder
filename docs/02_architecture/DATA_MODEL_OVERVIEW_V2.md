@@ -8,7 +8,7 @@ Document version: `V2.1.6.0004`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0004` | `PENDING` | Les Fenêtres rapides entrent dans le diagramme de modèle : définitions, Interface locale, invocations et liaisons typées. |
+| 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Les Fenêtres rapides entrent dans le diagramme de modèle : définitions, Interface locale, invocations et liaisons typées. |
 | 2026-07-14 | `V2.1.2.0011` | `50b2ad9` | Ajout du modèle de page moderne, des clés internes, de la provenance, du snapshot workspace et des diagnostics structurés. |
 | 2026-06-17 | `V2.1.2.0010` | `5302022` | Ajout de la relation conditionnelle entre action runtime et tag importe. |
 | 2026-06-17 | `V2.1.2.0009` | `7e3610c` | Ajout des relations `ReadTagId` et `WriteTagId` sur les donnees Element+. |

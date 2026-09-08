@@ -8,7 +8,7 @@ Document version: `V2.1.6.0004`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0004` | `PENDING` | Entrées 27 et 28 datées et marquées supersédées : elles décrivaient au présent des phases depuis closes. |
+| 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Entrées 27 et 28 datées et marquées supersédées : elles décrivaient au présent des phases depuis closes. |
 | 2026-09-04 | `V2.1.6.0000` | `078dbce` | Phase 6 : onze capacites Fenetre rapide promues, deux restent bloquees. Trois defauts latents du chemin d'export corriges. |
 | 2026-08-25 | `V2.1.5.0047` | `dce0941` | Task 5.3 partiellement close : conformance, canary et rollback verts; soak 24 h et deploiement production restent a decider. |
 | 2026-08-25 | `V2.1.5.0046` | `705077c` | Task 5.2 livree : host TF100Web et SinglePerDefinition; restent la conformance cross-runtime et la composition header/pied. |
