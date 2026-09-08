@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active project model contract
-Document version: `V2.1.6.0004`
+Document version: `V2.1.6.0012`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-08 | `V2.1.6.0012` | `PENDING` | `DEC-0049` D5 implémentée : `OpenAsync` refuse un `project.json` dont la génération de format dépasse `ScadaFormatGeneration.Project`, avant toute désérialisation. |
 | 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Le profil 2.3 est productible : les gates des Phases 3 à 6 sont franchis et le fail-closed ne porte plus que sur les deux capacités non promues. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Versionnement de l'Interface locale : réalignement par invocation, statut `Outdated` dérivé et liaisons jamais réécrites. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 : mutations Application coordonnent projet, scène appelante, commande et invocation; l’historique restaure le snapshot complet sans I/O. |
@@ -92,7 +93,15 @@ All enabled tags are exposed for `Lire valeur` authoring. `Ecrire valeur` may ta
 
 `ScadaProject.Scenes` remains authoritative for page inventory and metadata. Native pages do not require imported HTML; imported Wonderware projections remain optional provenance-backed inputs. A new `Default` page starts with `IncludeInBuild = false`.
 
-## 5. Related Tests
+## 5. Backward Format Refusal
+
+`DEC-0049` D5 is implemented. Chaque module persisté (`project.json`, une scène, le catalogue de tags, un composant `.sep`) porte une génération de format entière et indépendante, exposée par `ScadaFormatGeneration` (`Domain/Projects/ScadaFormatGeneration.cs`). L'absence du champ dans un fichier vaut génération zéro : tout artefact écrit avant ce mécanisme reste lisible sans être réécrit.
+
+`ProjectWorkspaceRepository.OpenAsync` lit la génération déclarée du fichier `project.json` avant toute désérialisation, via `ArtifactFormatVersionReader.ReadFormatVersion` (`Infrastructure/ModernProjects/ArtifactFormatVersionReader.cs`), qui parcourt le document JSON brut sans jamais matérialiser un `ScadaProject`. Si la génération déclarée dépasse `ScadaFormatGeneration.Project`, l'ouverture est refusée avant toute activation : le diagnostic `project.format-too-new` est retourné et aucun `ProjectLoadCandidate` n'est produit. Le fichier n'est ni lu au-delà de ce pré-scan, ni réécrit.
+
+Ce refus ferme une perte de données réelle : un binaire antérieur à `DEC-0050` Phase 1 ignorait silencieusement `QuickWindows`/`QuickWindowInvocations` inconnus à la désérialisation et les réécrivait absents dès la première sauvegarde. Avec le refus, un binaire qui ne comprend pas un fichier ne peut plus l'altérer.
+
+## 6. Related Tests
 
 1. `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`
 2. `tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`
@@ -102,3 +111,5 @@ All enabled tags are exposed for `Lire valeur` authoring. `Ecrire valeur` may ta
 6. `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowDomainTests.cs`
 7. `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowBindingTests.cs`
 8. `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowStoreTests.cs`
+9. `tests/ScadaBuilderV2.Tests/Formats/ArtifactFormatVersionReaderTests.cs`
+10. `tests/ScadaBuilderV2.Tests/Formats/BackwardRefusalTests.cs`

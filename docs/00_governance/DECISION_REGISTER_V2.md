@@ -213,6 +213,8 @@ Regression coverage:
 
 Implémentée dans `ProjectLifecycleInfrastructureTests`, `ProjectLifecycleCoordinatorTests`, `ProjectLifecycleShellContractTests`, `RibbonCommandCatalogTests` et les contrats d’extraction WPF. L'audit du 2026-09-08 a porté la couverture de 9 à 27 tests : le coordinateur couvre désormais la création, le refus de sauvegarde qui abandonne la transition, la distinction entre annulation et erreur, et le verrou non réentrant; les contrats de shell verrouillent la frontière d'erreur du dispatcher, l'activation tout-ou-rien, la libération du document d'aperçu à la fermeture, les trois verbes de D9 et le contenu de l'accueil exigé par D11 et D12. Le smoke interactif WPF reste une validation manuelle.
 
+Le volet « version plus récente refusée avec diagnostics » de D5 est désormais implémenté : `OpenAsync` lit la génération de format déclarée d'un `project.json` via `ArtifactFormatVersionReader`, sans désérialiser, et refuse toute génération supérieure à `ScadaFormatGeneration.Project` avec le diagnostic `project.format-too-new`, avant qu'un `ProjectLoadCandidate` ne soit produit. Couvert par `tests/ScadaBuilderV2.Tests/Formats/ArtifactFormatVersionReaderTests.cs` et `tests/ScadaBuilderV2.Tests/Formats/BackwardRefusalTests.cs`.
+
 ### DEC-0048 - Direction artistique versionnee pour modernisation d'ecran
 
 Status: Active
