@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active authoritative decision register
-Document version: `V2.1.6.0004`
+Document version: `V2.1.6.0008`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-08 | `V2.1.6.0008` | `PENDING` | `DEC-0049` auditée décision par décision; couverture portée de 9 à 27 tests et treize écarts corrigés. |
 | 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | `DEC-0050` synchronisée sur l'état réel : Phases 0 à 7 livrées, onze capacités promues et deux encore `Blocked`, trois défauts latents du chemin d'export corrigés. Dernier `PENDING` réel de `DEC-0045` résolu vers `0168f2f`. |
 | 2026-08-24 | `V2.1.5.0031` | `cd61f0e` | Ajout de `DEC-0051` : le moteur Node épinglé passe de `20.18.x` à `24.15.x`; la fixture Phase 0 et son hash restent gelés et le leg Node est rejoué sur `v24.15.0`. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | `DEC-0050` Task 3.1 implémentée : shell d'authoring, contexte borné, duplication et projection canvas editor-only; capacités toujours `Blocked`. |
@@ -210,7 +211,7 @@ La racine du logiciel ne choisit plus le projet actif. Scènes, librairie, impor
 
 Regression coverage:
 
-Implémentée dans `ProjectLifecycleInfrastructureTests`, `ProjectLifecycleCoordinatorTests`, `RibbonCommandCatalogTests` et les contrats d’extraction WPF. Le build solution et les tests ciblés sont verts; le smoke interactif WPF reste une validation manuelle.
+Implémentée dans `ProjectLifecycleInfrastructureTests`, `ProjectLifecycleCoordinatorTests`, `ProjectLifecycleShellContractTests`, `RibbonCommandCatalogTests` et les contrats d’extraction WPF. L'audit du 2026-09-08 a porté la couverture de 9 à 27 tests : le coordinateur couvre désormais la création, le refus de sauvegarde qui abandonne la transition, la distinction entre annulation et erreur, et le verrou non réentrant; les contrats de shell verrouillent la frontière d'erreur du dispatcher, l'activation tout-ou-rien, la libération du document d'aperçu à la fermeture, les trois verbes de D9 et le contenu de l'accueil exigé par D11 et D12. Le smoke interactif WPF reste une validation manuelle.
 
 ### DEC-0048 - Direction artistique versionnee pour modernisation d'ecran
 

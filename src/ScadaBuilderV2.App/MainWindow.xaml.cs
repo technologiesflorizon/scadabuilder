@@ -153,6 +153,13 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
 
     public ObservableCollection<RecentProjectEntry> RecentProjects { get; } = [];
 
+    /// <summary>What the unsaved-changes dialog says will happen once the answer is given.</summary>
+    private string _pendingTransitionDescription = "poursuit l'opération";
+
+    /// <summary>Projects found next to the executable that have never been opened from this machine.</summary>
+    public ObservableCollection<RecentProjectEntry> DiscoveredProjects { get; } = [];
+
+
     public PagesPanelViewModel PagesPanel => _pagesPanel;
 
     public PagePropertiesViewModel PageProperties => _pageProperties;
@@ -229,8 +236,8 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
     {
         try
         {
-            await RegisterDiscoveredProjectsAsync();
             await RefreshRecentProjectsAsync();
+            await RefreshDiscoveredProjectsAsync();
             ShowProjectWelcome();
             if (!_diagnosticsPanel.HasIssues) DiagnosticsAnchorable.Hide();
         }
@@ -256,32 +263,44 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
     async Task<ProjectCloseDecision> IProjectLifecycleHost.RequestCloseDecisionAsync(CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        var result = MessageBox.Show(
-            this,
-            $"Le projet « {_modernProject?.Name ?? "Projet"} » contient des modifications non sauvegardées.{Environment.NewLine}{Environment.NewLine}Voulez-vous les enregistrer?",
-            "Modifications non sauvegardées",
-            MessageBoxButton.YesNoCancel,
-            MessageBoxImage.Warning);
-        return await Task.FromResult(result switch
+        var dialog = new UnsavedChangesDialog(
+            _modernProject?.Name ?? string.Empty,
+            _pendingTransitionDescription)
         {
-            MessageBoxResult.Yes => ProjectCloseDecision.Save,
-            MessageBoxResult.No => ProjectCloseDecision.Discard,
-            _ => ProjectCloseDecision.Cancel
-        });
+            Owner = this
+        };
+        dialog.ShowDialog();
+        return await Task.FromResult(dialog.Decision);
     }
 
-    async Task IProjectLifecycleHost.SaveActiveProjectAsync(CancellationToken cancellationToken)
+    /// <summary>Persists the active project and reports whether the snapshot actually reached disk.</summary>
+    /// <remarks>
+    /// The boolean is what lets the coordinator abort a transition after a refused save. Swallowing the
+    /// failure here would hand it back a success and destroy the work the operator asked to keep.
+    /// </remarks>
+    async Task<bool> IProjectLifecycleHost.SaveActiveProjectAsync(CancellationToken cancellationToken)
     {
         if (_modernProject is null || _activeProjectLocation is null)
         {
-            throw new InvalidOperationException("Aucun projet actif à sauvegarder.");
+            SetStatus("Aucun projet actif à sauvegarder.");
+            return false;
         }
-        SaveActiveTabTransientState();
-        _pageWorkspaceController.ReplaceProject(_modernProject);
-        await _pageWorkspaceController.SaveAsync(cancellationToken);
-        _modernProject = _pageWorkspaceController.Project ?? _modernProject;
-        _activeSceneDirty = false;
-        SetStatus($"Projet sauvegardé: {_modernProject.Name}");
+
+        try
+        {
+            SaveActiveTabTransientState();
+            _pageWorkspaceController.ReplaceProject(_modernProject);
+            await _pageWorkspaceController.SaveAsync(cancellationToken);
+            _modernProject = _pageWorkspaceController.Project ?? _modernProject;
+            _activeSceneDirty = false;
+            SetStatus($"Projet sauvegardé: {_modernProject.Name}");
+            return true;
+        }
+        catch (Exception exception) when (exception is not OperationCanceledException)
+        {
+            SetStatus($"Échec de la sauvegarde: {exception.Message}");
+            return false;
+        }
     }
 
     async Task IProjectLifecycleHost.ActivateProjectAsync(
@@ -292,6 +311,25 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
         cancellationToken.ThrowIfCancellationRequested();
         await CloseActiveProjectCoreAsync();
 
+        try
+        {
+            await ActivateProjectCoreAsync(candidate, cancellationToken);
+        }
+        catch (Exception exception) when (exception is not OperationCanceledException)
+        {
+            // D8 forbids leaving a session that is neither empty nor active. The candidate was already
+            // validated by the repository, so a failure here is environmental - a page that will not open, a
+            // library that will not enumerate. Fall all the way back to the empty state rather than showing a
+            // project that is only half wired, and name the project that failed.
+            await CloseActiveProjectCoreAsync();
+            ShowProjectWelcome();
+            throw new ProjectActivationException(candidate.Location.ProjectFilePath, exception);
+        }
+    }
+
+    /// <summary>Builds the active session for one validated candidate.</summary>
+    private async Task ActivateProjectCoreAsync(ProjectLoadCandidate candidate, CancellationToken cancellationToken)
+    {
         _activeProjectLocation = candidate.Location;
         _repositoryRoot = candidate.Location.ProjectRoot;
         _importedSourceBaseRoot = candidate.Location.ImportedSourceBaseRoot;
@@ -341,14 +379,12 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
         ShowProjectWelcome();
     }
 
+    /// <summary>Tears the active session down to the empty state described by D10.</summary>
     private Task CloseActiveProjectCoreAsync()
     {
         StopElementLibraryWatcher();
-        foreach (var tab in _pageWorkspaceController.OpenTabs)
-        {
-            tab.History.Clear();
-        }
         _pageWorkspaceController.Reset();
+        ReleasePreviewDocument();
         _activeProjectLocation = null;
         _repositoryRoot = null;
         _importedSourceBaseRoot = null;
@@ -386,25 +422,39 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
         {
             RecentProjects.Add(entry);
         }
-        ReopenLastProjectButton.IsEnabled = RecentProjects.Any(entry => entry.IsAvailable);
+
+        // D11 names the project in the button: `Rouvrir <dernier projet>`. A generic label forces the operator
+        // to read the list below to find out what the button would actually open.
+        var target = RecentProjects.FirstOrDefault(entry => entry.IsAvailable);
+        ReopenLastProjectButton.IsEnabled = target is not null;
+        ReopenLastProjectText.Text = target is null
+            ? "Aucun projet récent"
+            : $"Rouvrir {target.DisplayName}";
+        // The heading must not stand over nothing on a first launch, so the empty state replaces the list
+        // rather than sitting under an empty one.
+        RecentProjectsList.Visibility = RecentProjects.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+        NoRecentProjectsText.Visibility = RecentProjects.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    private async Task RegisterDiscoveredProjectsAsync()
+    /// <summary>Lists the projects discovered next to the executable, without touching the recents.</summary>
+    /// <remarks>
+    /// D12 rule 2 admits an entry only after a successful creation or opening. Recording a discovered
+    /// manifest broke that rule in a way the operator could see: `Rouvrir le dernier` pointed at a project
+    /// they had never opened. Discovery is a convenience on the welcome screen, so it is surfaced as its own
+    /// list and only reaches the recents once the project is actually opened.
+    /// </remarks>
+    private async Task RefreshDiscoveredProjectsAsync()
     {
-        if (_recentProjectStore.IsInitialized)
-        {
-            return;
-        }
-
-        var existingRecents = await _recentProjectStore.ReadAsync();
-        var knownPaths = existingRecents
+        DiscoveredProjects.Clear();
+        var known = (await _recentProjectStore.ReadAsync())
             .Select(entry => Path.GetFullPath(entry.ProjectFilePath))
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
         foreach (var manifestPath in _existingProjectDiscovery.Discover(
                      AppContext.BaseDirectory,
                      Directory.GetCurrentDirectory()))
         {
-            if (!knownPaths.Add(manifestPath))
+            if (known.Contains(manifestPath))
             {
                 continue;
             }
@@ -422,13 +472,15 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
             catch (Exception exception) when (
                 exception is IOException or UnauthorizedAccessException or InvalidDataException or JsonException)
             {
-                // A discoverable but unreadable manifest remains visible and will fail closed when opened.
+                // A discoverable but unreadable manifest stays listed and will fail closed when opened.
             }
 
-            await _recentProjectStore.RecordAsync(
-                new ProjectWorkspaceLocation(projectRoot, manifestPath),
-                displayName);
+            DiscoveredProjects.Add(new RecentProjectEntry(displayName, manifestPath, DateTimeOffset.MinValue));
         }
+
+        DiscoveredProjectsSection.Visibility = DiscoveredProjects.Count == 0
+            ? Visibility.Collapsed
+            : Visibility.Visible;
     }
 
     private void ShowProjectWelcome()
@@ -570,6 +622,27 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
         SetStatus($"Document page charge: {pageReference.EffectivePageCode} ({sourceKind})");
     }
 
+    /// <summary>Returns the preview host to the welcome state, dropping the closed project's document.</summary>
+    /// <remarks>
+    /// D10 step 6 replaces the WebView by the welcome state. Hiding it is not replacing it: the previous
+    /// project's DOM, its scripts and its timers stayed alive behind a collapsed control until the next
+    /// navigation, so a closed project outlived its own session.
+    /// </remarks>
+    private void ReleasePreviewDocument()
+    {
+        _webMessageHooked = false;
+        try
+        {
+            PreviewWebView.CoreWebView2?.Navigate("about:blank");
+        }
+        catch (Exception exception) when (
+            exception is InvalidOperationException or ObjectDisposedException or COMException)
+        {
+            // The control may not have a core instance yet, or may already be tearing down. Either way the
+            // document we wanted to drop does not exist, which is the outcome we were after.
+        }
+    }
+
     private void SetPreviewPlaceholder(string message)
     {
         ActivePageText.Text = _activeSceneTab?.Page.EffectivePageCode ?? "-";
@@ -707,7 +780,14 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
 
         e.Cancel = true;
         SaveActiveTabTransientState();
-        if (!await _projectLifecycleCoordinator.CloseAsync())
+        _pendingTransitionDescription = "ferme l'application";
+        var close = await _projectLifecycleCoordinator.CloseAsync();
+        if (close.HasBlockingError)
+        {
+            PresentProjectRepositoryFailure(close);
+            return;
+        }
+        if (close.Diagnostics.Count > 0)
         {
             SetStatus("Fermeture annulée: le projet actif demeure ouvert.");
             return;
@@ -6878,6 +6958,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private async Task CreateProjectInteractiveAsync()
     {
+        _pendingTransitionDescription = "crée le nouveau projet";
         var initialParent = await _recentProjectStore.ReadCreationParentAsync();
         var dialog = new CreateProjectDialog(initialParent) { Owner = this };
         if (dialog.ShowDialog() != true || dialog.Result is null)
@@ -6887,10 +6968,13 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
 
         var result = await _projectLifecycleCoordinator.CreateAsync(dialog.Result);
-        if (!result.IsSuccess &&
-            !result.Diagnostics.Any(issue => issue.Code == "project.transition-cancelled"))
+        if (result.HasBlockingError)
         {
             PresentProjectRepositoryFailure(result);
+        }
+        else if (!result.IsSuccess)
+        {
+            SetStatus("Création annulée: le projet actif demeure ouvert.");
         }
     }
 
@@ -6914,11 +6998,29 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
     private async Task OpenProjectPathAsync(string projectFilePath)
     {
+        _pendingTransitionDescription = "ouvre le projet demandé";
         var result = await _projectLifecycleCoordinator.OpenAsync(projectFilePath);
-        if (!result.IsSuccess &&
-            !result.Diagnostics.Any(issue => issue.Code == "project.transition-cancelled"))
+        if (result.HasBlockingError)
         {
             PresentProjectRepositoryFailure(result);
+        }
+        else if (!result.IsSuccess)
+        {
+            SetStatus("Ouverture annulée: le projet actif demeure ouvert.");
+        }
+    }
+
+    private async Task CloseProjectInteractiveAsync()
+    {
+        _pendingTransitionDescription = "ferme le projet";
+        var result = await _projectLifecycleCoordinator.CloseAsync();
+        if (result.HasBlockingError)
+        {
+            PresentProjectRepositoryFailure(result);
+        }
+        else if (result.Diagnostics.Count > 0)
+        {
+            SetStatus("Fermeture annulée: le projet actif demeure ouvert.");
         }
     }
 
@@ -6933,20 +7035,57 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         await OpenProjectPathAsync(entry.ProjectFilePath);
     }
 
+    /// <summary>Runs one lifecycle gesture behind an error boundary.</summary>
+    /// <remarks>
+    /// These handlers are `async void`, so nothing observes the task they return: an unhandled exception goes
+    /// straight to the dispatcher and closes the application. A disk that fills, a revoked permission or a
+    /// corrupted recent entry are ordinary outcomes of this flow and must surface as a message, not a crash.
+    /// </remarks>
+    private async Task RunProjectGestureAsync(string gesture, Func<Task> action)
+    {
+        try
+        {
+            await action();
+        }
+        catch (ProjectActivationException exception)
+        {
+            PresentProjectFailure(
+                $"{gesture} impossible",
+                "Le projet n'a pas pu être activé et l'éditeur est revenu à l'accueil." +
+                $"{Environment.NewLine}{Environment.NewLine}{exception.InnerMessage}");
+        }
+        catch (OperationCanceledException)
+        {
+            SetStatus($"{gesture}: opération annulée.");
+        }
+        catch (Exception exception)
+        {
+            PresentProjectFailure($"{gesture} impossible", exception.Message);
+        }
+    }
+
+    private void PresentProjectFailure(string title, string message)
+    {
+        MessageBox.Show(this, message, title, MessageBoxButton.OK, MessageBoxImage.Error);
+        SetStatus($"{title}: {message}");
+    }
+
     private async void OnWelcomeNewProjectClick(object sender, RoutedEventArgs e) =>
-        await CreateProjectInteractiveAsync();
+        await RunProjectGestureAsync("Création de projet", CreateProjectInteractiveAsync);
 
     private async void OnWelcomeOpenProjectClick(object sender, RoutedEventArgs e) =>
-        await OpenProjectInteractiveAsync();
+        await RunProjectGestureAsync("Ouverture de projet", OpenProjectInteractiveAsync);
 
     private async void OnWelcomeReopenLastClick(object sender, RoutedEventArgs e) =>
-        await ReopenLastProjectAsync();
+        await RunProjectGestureAsync("Réouverture du dernier projet", ReopenLastProjectAsync);
 
     private async void OnRecentProjectOpenClick(object sender, RoutedEventArgs e)
     {
         if (sender is FrameworkElement { Tag: RecentProjectEntry entry } && entry.IsAvailable)
         {
-            await OpenProjectPathAsync(entry.ProjectFilePath);
+            await RunProjectGestureAsync(
+                "Ouverture de projet",
+                () => OpenProjectPathAsync(entry.ProjectFilePath));
         }
     }
 
@@ -6956,9 +7095,23 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         {
             return;
         }
-        await _recentProjectStore.RemoveAsync(entry.ProjectFilePath);
-        await RefreshRecentProjectsAsync();
-        SetStatus($"Projet retiré des récents: {entry.DisplayName}");
+        await RunProjectGestureAsync("Retrait du projet récent", async () =>
+        {
+            await _recentProjectStore.RemoveAsync(entry.ProjectFilePath);
+            await RefreshRecentProjectsAsync();
+            await RefreshDiscoveredProjectsAsync();
+            SetStatus($"Projet retiré des récents: {entry.DisplayName}");
+        });
+    }
+
+    private async void OnDiscoveredProjectOpenClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { Tag: RecentProjectEntry entry })
+        {
+            await RunProjectGestureAsync(
+                "Ouverture de projet",
+                () => OpenProjectPathAsync(entry.ProjectFilePath));
+        }
     }
 
     private void RegisterPageApplicationCommands()
@@ -7299,7 +7452,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 await OpenProjectInteractiveAsync();
                 break;
             case "project.close":
-                await _projectLifecycleCoordinator.CloseAsync();
+                await CloseProjectInteractiveAsync();
                 break;
             case "project.reopen-last":
                 await ReopenLastProjectAsync();

@@ -85,10 +85,182 @@ public sealed class ProjectLifecycleCoordinatorTests
 
         var closed = await coordinator.CloseAsync();
 
-        Assert.IsTrue(closed);
+        Assert.IsFalse(closed.HasBlockingError);
+        Assert.AreEqual(0, closed.Diagnostics.Count);
         Assert.AreEqual(0, host.SaveCount);
         Assert.AreEqual(1, host.CloseCount);
     }
+
+    /// <summary>A refused save aborts the transition instead of destroying the work it was meant to keep.</summary>
+    /// <remarks>
+    /// The operator answered `Enregistrer` precisely to keep the changes. Before this gate the coordinator
+    /// ignored the outcome and replaced the session anyway, so a full disk or a revoked permission silently
+    /// discarded exactly what the answer was protecting.
+    /// </remarks>
+    [TestMethod]
+    public async Task OpenAsync_SaveRefused_KeepsCurrentProjectAndReportsAnError()
+    {
+        var host = new StubHost
+        {
+            HasActiveProject = true,
+            HasUnsavedChanges = true,
+            CloseDecision = ProjectCloseDecision.Save,
+            SaveSucceeds = false
+        };
+        var repository = new StubRepository { OpenResult = Success(CreateCandidate()) };
+        var coordinator = new ProjectLifecycleCoordinator(repository, new StubRecentStore(), host);
+
+        var result = await coordinator.OpenAsync(@"C:\Projects\Test\project.json");
+
+        Assert.IsTrue(result.HasBlockingError);
+        Assert.AreEqual("project.save-refused", result.Diagnostics.Single().Code);
+        Assert.AreEqual(1, host.SaveCount);
+        Assert.AreEqual(0, host.ActivationCount, "the session must not be replaced after a refused save");
+        Assert.AreEqual(0, host.CloseCount);
+    }
+
+    [TestMethod]
+    public async Task CloseAsync_SaveRefused_KeepsProjectOpenAndSaysWhy()
+    {
+        var host = new StubHost
+        {
+            HasActiveProject = true,
+            HasUnsavedChanges = true,
+            CloseDecision = ProjectCloseDecision.Save,
+            SaveSucceeds = false
+        };
+        var coordinator = new ProjectLifecycleCoordinator(new StubRepository(), new StubRecentStore(), host);
+
+        var result = await coordinator.CloseAsync();
+
+        Assert.IsTrue(result.HasBlockingError);
+        Assert.AreEqual("project.save-refused", result.Diagnostics.Single().Code);
+        Assert.AreEqual(0, host.CloseCount);
+    }
+
+    /// <summary>A cancellation is not an error: the operator already knows what they chose.</summary>
+    [TestMethod]
+    public async Task CloseAsync_Cancelled_ReportsAWarningRatherThanAnError()
+    {
+        var host = new StubHost
+        {
+            HasActiveProject = true,
+            HasUnsavedChanges = true,
+            CloseDecision = ProjectCloseDecision.Cancel
+        };
+        var coordinator = new ProjectLifecycleCoordinator(new StubRepository(), new StubRecentStore(), host);
+
+        var result = await coordinator.CloseAsync();
+
+        Assert.IsFalse(result.HasBlockingError);
+        Assert.AreEqual("project.transition-cancelled", result.Diagnostics.Single().Code);
+        Assert.AreEqual(0, host.CloseCount);
+    }
+
+    /// <summary>An impossible creation request never costs the operator a decision about the open project.</summary>
+    [TestMethod]
+    public async Task CreateAsync_InvalidRequest_NeverAsksAboutUnsavedChanges()
+    {
+        var repository = new StubRepository
+        {
+            CreationValidation =
+            [
+                new ScadaBuildValidationIssue(
+                    ScadaBuildValidationSeverity.Error,
+                    "project.create-target-exists",
+                    "Le dossier cible existe déjà.")
+            ]
+        };
+        var host = new StubHost { HasActiveProject = true, HasUnsavedChanges = true };
+        var coordinator = new ProjectLifecycleCoordinator(repository, new StubRecentStore(), host);
+
+        var result = await coordinator.CreateAsync(CreateRequest());
+
+        Assert.IsTrue(result.HasBlockingError);
+        Assert.AreEqual(0, host.DecisionRequestCount, "the request was already known to be impossible");
+        Assert.AreEqual(0, repository.CreateCallCount);
+        Assert.AreEqual(0, host.ActivationCount);
+    }
+
+    [TestMethod]
+    public async Task CreateAsync_DirtySessionCancelled_CreatesNothing()
+    {
+        var repository = new StubRepository { CreateResult = Success(CreateCandidate()) };
+        var host = new StubHost
+        {
+            HasActiveProject = true,
+            HasUnsavedChanges = true,
+            CloseDecision = ProjectCloseDecision.Cancel
+        };
+        var coordinator = new ProjectLifecycleCoordinator(repository, new StubRecentStore(), host);
+
+        var result = await coordinator.CreateAsync(CreateRequest());
+
+        Assert.IsFalse(result.IsSuccess);
+        Assert.AreEqual("project.transition-cancelled", result.Diagnostics.Single().Code);
+        Assert.AreEqual(0, repository.CreateCallCount, "D4 leaves neither a partial project nor a recent entry");
+        Assert.AreEqual(0, host.ActivationCount);
+    }
+
+    [TestMethod]
+    public async Task CreateAsync_CleanSession_ActivatesAndRecordsTheRecentEntry()
+    {
+        var repository = new StubRepository { CreateResult = Success(CreateCandidate()) };
+        var recents = new StubRecentStore();
+        var host = new StubHost();
+        var coordinator = new ProjectLifecycleCoordinator(repository, recents, host);
+
+        var result = await coordinator.CreateAsync(CreateRequest());
+
+        Assert.IsTrue(result.IsSuccess);
+        Assert.AreEqual(1, host.ActivationCount);
+        Assert.AreEqual(1, recents.RecordCount);
+        Assert.AreEqual(0, host.DecisionRequestCount);
+    }
+
+    /// <summary>A second transition started while one is running is refused, not queued.</summary>
+    [TestMethod]
+    public async Task ATransitionStartedWhileAnotherRunsIsRefusedAsBusy()
+    {
+        var gate = new TaskCompletionSource();
+        var host = new StubHost { ActivationGate = gate.Task };
+        var repository = new StubRepository { OpenResult = Success(CreateCandidate()) };
+        var coordinator = new ProjectLifecycleCoordinator(repository, new StubRecentStore(), host);
+
+        var first = coordinator.OpenAsync(@"C:\Projects\Test\project.json");
+        var second = await coordinator.OpenAsync(@"C:\Projects\Other\project.json");
+
+        Assert.IsTrue(second.HasBlockingError);
+        Assert.AreEqual("project.transition-busy", second.Diagnostics.Single().Code);
+
+        gate.SetResult();
+        Assert.IsTrue((await first).IsSuccess);
+        Assert.AreEqual(1, host.ActivationCount);
+    }
+
+    [TestMethod]
+    public async Task CloseAsync_WithoutActiveProject_IsASuccessfulNoOp()
+    {
+        var host = new StubHost { HasActiveProject = false };
+        var coordinator = new ProjectLifecycleCoordinator(new StubRepository(), new StubRecentStore(), host);
+
+        var result = await coordinator.CloseAsync();
+
+        Assert.IsFalse(result.HasBlockingError);
+        Assert.AreEqual(0, host.CloseCount);
+        Assert.AreEqual(0, host.DecisionRequestCount);
+    }
+
+    private static CreateProjectRequest CreateRequest() =>
+        new(
+            "Projet test",
+            @"C:\Projects",
+            "projet-test",
+            "win00001",
+            "Page principale",
+            CanvasSize.DefaultDesktop,
+            ResponsiveMode.Fixed,
+            AuthoringMode.DesktopFirst);
 
     private static ProjectLoadCandidate CreateCandidate()
     {
@@ -107,11 +279,19 @@ public sealed class ProjectLifecycleCoordinatorTests
     {
         public ProjectRepositoryResult OpenResult { get; init; } = Failure("not-configured");
         public ProjectRepositoryResult CreateResult { get; init; } = Failure("not-configured");
+        public IReadOnlyList<ScadaBuildValidationIssue> CreationValidation { get; init; } = [];
+        public int CreateCallCount { get; private set; }
+
+        public IReadOnlyList<ScadaBuildValidationIssue> ValidateCreation(CreateProjectRequest request) =>
+            CreationValidation;
 
         public Task<ProjectRepositoryResult> CreateAsync(
             CreateProjectRequest request,
-            CancellationToken cancellationToken = default) =>
-            Task.FromResult(CreateResult);
+            CancellationToken cancellationToken = default)
+        {
+            CreateCallCount++;
+            return Task.FromResult(CreateResult);
+        }
 
         public Task<ProjectRepositoryResult> OpenAsync(
             string projectFilePath,
@@ -165,17 +345,25 @@ public sealed class ProjectLifecycleCoordinatorTests
             return Task.FromResult(CloseDecision);
         }
 
-        public Task SaveActiveProjectAsync(CancellationToken cancellationToken)
+        public bool SaveSucceeds { get; init; } = true;
+
+        public Task<bool> SaveActiveProjectAsync(CancellationToken cancellationToken)
         {
             SaveCount++;
-            return Task.CompletedTask;
+            return Task.FromResult(SaveSucceeds);
         }
 
-        public Task ActivateProjectAsync(ProjectLoadCandidate candidate, CancellationToken cancellationToken)
+        /// <summary>Held open by the non-reentrancy test so a second transition overlaps the first.</summary>
+        public Task? ActivationGate { get; init; }
+
+        public async Task ActivateProjectAsync(ProjectLoadCandidate candidate, CancellationToken cancellationToken)
         {
+            if (ActivationGate is not null)
+            {
+                await ActivationGate;
+            }
             ActivationCount++;
             ActivatedCandidate = candidate;
-            return Task.CompletedTask;
         }
 
         public Task CloseActiveProjectAsync(CancellationToken cancellationToken)

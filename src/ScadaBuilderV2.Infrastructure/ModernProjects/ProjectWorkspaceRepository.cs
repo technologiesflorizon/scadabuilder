@@ -16,6 +16,18 @@ public sealed class ProjectWorkspaceRepository(
     ReferenceProjectCompatibilityLocator compatibilityLocator) : IProjectWorkspaceRepository
 {
     /// <inheritdoc />
+    public IReadOnlyList<ScadaBuildValidationIssue> ValidateCreation(CreateProjectRequest request)
+    {
+        var validation = ProjectWorkspacePathPolicy.ValidateCreation(request);
+        return validation.ProjectRoot is null && validation.Diagnostics.Count == 0
+            ? [new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                "project.create-target-unresolved",
+                "Le chemin du projet n'a pas pu être résolu.")]
+            : validation.Diagnostics;
+    }
+
+    /// <inheritdoc />
     public async Task<ProjectRepositoryResult> CreateAsync(
         CreateProjectRequest request,
         CancellationToken cancellationToken = default)
