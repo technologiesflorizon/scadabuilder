@@ -84,6 +84,10 @@ public sealed class ArtifactConverterRegistry
             steps.Add(step);
             current = step.ToVersion;
         }
-        return new ConversionChain(module, fromVersion, toVersion, steps, null);
+        if (current == toVersion)
+        {
+            return new ConversionChain(module, fromVersion, toVersion, steps, null);
+        }
+        return new ConversionChain(module, fromVersion, toVersion, steps, toVersion);
     }
 }

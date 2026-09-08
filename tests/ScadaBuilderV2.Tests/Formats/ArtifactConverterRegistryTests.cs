@@ -112,4 +112,63 @@ public sealed class ArtifactConverterRegistryTests
 
         Assert.AreEqual("[0->1][1->2]", document["Steps"]!.GetValue<string>());
     }
+
+    /// <summary>A converter with equal from and to versions is rejected: nothing happens, ever.</summary>
+    [TestMethod]
+    public void AConverterWithEqualFromAndToVersionsIsRejectedAtRegistration()
+    {
+        var registry = new ArtifactConverterRegistry();
+
+        var thrown = Assert.ThrowsException<InvalidOperationException>(
+            () => registry.Register(new Step(ArtifactModule.Project, 1, 1)));
+
+        StringAssert.Contains(thrown.Message, "Project");
+        StringAssert.Contains(thrown.Message, "1");
+    }
+
+    /// <summary>A converter with descending versions is rejected: the data cannot be recovered.</summary>
+    [TestMethod]
+    public void AConverterWithDescendingVersionsIsRejectedAtRegistration()
+    {
+        var registry = new ArtifactConverterRegistry();
+
+        var thrown = Assert.ThrowsException<InvalidOperationException>(
+            () => registry.Register(new Step(ArtifactModule.Scene, 3, 2)));
+
+        StringAssert.Contains(thrown.Message, "Scene");
+        StringAssert.Contains(thrown.Message, "3");
+        StringAssert.Contains(thrown.Message, "2");
+    }
+
+    /// <summary>Applying an incomplete chain throws and does not mutate the document.</summary>
+    [TestMethod]
+    public void ApplyingAnIncompleteChainThrowsAndDoesNotMutateTheDocument()
+    {
+        var registry = new ArtifactConverterRegistry();
+        registry.Register(new Step(ArtifactModule.Project, 0, 1));
+        // 1 -> 2 is missing.
+        registry.Register(new Step(ArtifactModule.Project, 2, 3));
+
+        var chain = registry.ResolveChain(ArtifactModule.Project, 0, 3);
+        var document = new JsonObject { ["Initial"] = "value" };
+
+        var thrown = Assert.ThrowsException<InvalidOperationException>(
+            () => chain.Apply(document));
+
+        StringAssert.Contains(thrown.Message, "1");
+        Assert.AreEqual("value", document["Initial"]!.GetValue<string>(), "the document must not be mutated by a failed apply.");
+    }
+
+    /// <summary>A converter spanning multiple steps that overshoots the requested target is incomplete.</summary>
+    [TestMethod]
+    public void AConverterOvershoottingTheTargetIsIncomplete()
+    {
+        var registry = new ArtifactConverterRegistry();
+        registry.Register(new Step(ArtifactModule.Project, 0, 3));
+
+        var chain = registry.ResolveChain(ArtifactModule.Project, 0, 2);
+
+        Assert.IsFalse(chain.IsComplete);
+        Assert.AreEqual(2, chain.MissingFromVersion);
+    }
 }
