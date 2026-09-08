@@ -8,7 +8,7 @@ Document version: `V2.1.6.0006`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0006` | `PENDING` | `FR-UI-03` corrigé : le manifeste porte désormais le `DisplayName` comme titre par défaut. L'écart 31 est fermé. |
+| 2026-09-08 | `V2.1.6.0006` | `8074d0a` | `FR-UI-03` corrigé : le manifeste porte désormais le `DisplayName` comme titre par défaut. L'écart 31 est fermé. |
 | 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Entrées 27 et 28 datées et marquées supersédées : elles décrivaient au présent des phases depuis closes. |
 | 2026-09-04 | `V2.1.6.0000` | `078dbce` | Phase 6 : onze capacites Fenetre rapide promues, deux restent bloquees. Trois defauts latents du chemin d'export corriges. |
 | 2026-08-25 | `V2.1.5.0047` | `dce0941` | Task 5.3 partiellement close : conformance, canary et rollback verts; soak 24 h et deploiement production restent a decider. |

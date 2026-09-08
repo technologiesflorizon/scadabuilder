@@ -8,7 +8,7 @@ Document version: `V2.1.6.0006`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0006` | `PENDING` | Section 12.4 : la résolution du titre à trois niveaux est figee et appartient a la compilation; le champ manifest n'est jamais vide pour une definition nommee. |
+| 2026-09-08 | `V2.1.6.0006` | `8074d0a` | Section 12.4 : la résolution du titre à trois niveaux est figee et appartient a la compilation; le champ manifest n'est jamais vide pour une definition nommee. |
 | 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Sections 12.5, 12.7 et 12.8 recalées sur l'après-Phase 6, soak et déploiement contrôlé consignés comme décidés, et le flow de paquet porte enfin la branche Fenêtre rapide jusqu'au host. |
 | 2026-09-04 | `V2.1.6.0000` | `078dbce` | Phase 6 : onze capacites Fenetre rapide promues. `OwnerPageKey` retire du manifeste (identite d'editeur), `quickWindowInvocationKey` ajoute a la commande appelante, et `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` etendu aux onze promues. |
 | 2026-08-25 | `V2.1.5.0047` | `dce0941` | Conformance cross-runtime des Fenetres rapides, mesure de SLA, epreuves canary et rollback (section 12.8). |
