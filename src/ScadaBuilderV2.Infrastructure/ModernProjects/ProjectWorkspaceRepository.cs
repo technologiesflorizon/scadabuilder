@@ -121,25 +121,25 @@ public sealed class ProjectWorkspaceRepository(
             return new ProjectRepositoryResult(null, validation.Diagnostics);
         }
 
-        var declaredGeneration = ArtifactFormatVersionReader.ReadFormatVersion(
-            File.Exists(validation.Location.ProjectFilePath)
-                ? File.ReadAllText(validation.Location.ProjectFilePath)
-                : null);
-        if (declaredGeneration > ScadaFormatGeneration.Project)
-        {
-            // A binary that does not understand a file must never be able to rewrite it. Deserialising here
-            // would drop the properties it does not know, and the first save would write them away.
-            return new ProjectRepositoryResult(null, [new ScadaBuildValidationIssue(
-                ScadaBuildValidationSeverity.Error,
-                "project.format-too-new",
-                $"Ce projet est au format {declaredGeneration}; cette version de SCADA Builder comprend le format "
-                + $"{ScadaFormatGeneration.Project}. Ouvrez-le avec une version plus récente : l'ouvrir ici "
-                + "risquerait d'en supprimer ce qu'elle ne sait pas lire.",
-                SuggestedFix: "Mettre SCADA Builder à jour.")]);
-        }
-
         try
         {
+            var declaredGeneration = ArtifactFormatVersionReader.ReadFormatVersion(
+                File.Exists(validation.Location.ProjectFilePath)
+                    ? File.ReadAllText(validation.Location.ProjectFilePath)
+                    : null);
+            if (declaredGeneration > ScadaFormatGeneration.Project)
+            {
+                // A binary that does not understand a file must never be able to rewrite it. Deserialising here
+                // would drop the properties it does not know, and the first save would write them away.
+                return new ProjectRepositoryResult(null, [new ScadaBuildValidationIssue(
+                    ScadaBuildValidationSeverity.Error,
+                    "project.format-too-new",
+                    $"Ce projet est au format {declaredGeneration}; cette version de SCADA Builder comprend le format "
+                    + $"{ScadaFormatGeneration.Project}. Ouvrez-le avec une version plus récente : l'ouvrir ici "
+                    + "risquerait d'en supprimer ce qu'elle ne sait pas lire.",
+                    SuggestedFix: "Mettre SCADA Builder à jour.")]);
+            }
+
             var snapshot = await store.ReadWorkspaceSnapshotFromProjectRootAsync(
                 validation.Location.ProjectRoot,
                 cancellationToken: cancellationToken);

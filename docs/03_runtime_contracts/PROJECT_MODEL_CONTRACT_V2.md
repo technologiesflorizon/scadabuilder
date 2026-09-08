@@ -8,7 +8,7 @@ Document version: `V2.1.6.0012`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0012` | `PENDING` | `DEC-0049` D5 implémentée : `OpenAsync` refuse un `project.json` dont la génération de format dépasse `ScadaFormatGeneration.Project`, avant toute désérialisation. |
+| 2026-09-08 | `V2.1.6.0012` | `225b0b5` | `DEC-0049` D5 implémentée : `OpenAsync` refuse un `project.json` dont la génération de format dépasse `ScadaFormatGeneration.Project`, avant toute désérialisation. |
 | 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Le profil 2.3 est productible : les gates des Phases 3 à 6 sont franchis et le fail-closed ne porte plus que sur les deux capacités non promues. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Versionnement de l'Interface locale : réalignement par invocation, statut `Outdated` dérivé et liaisons jamais réécrites. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 : mutations Application coordonnent projet, scène appelante, commande et invocation; l’historique restaure le snapshot complet sans I/O. |
