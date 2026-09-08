@@ -2,12 +2,13 @@
 
 Date: 2026-09-08
 Status: Design approuvé en portée, non implémenté
-Document version: `V2.1.6.0010`
+Document version: `V2.1.6.0011`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-08 | `V2.1.6.0011` | `PENDING` | Correction : le `.sep` porte déjà `SchemaVersion`. C1 le raccorde au registre au lieu de lui ajouter un champ parallèle; trois modules seulement reçoivent un `FormatVersion` neuf. |
 | 2026-09-08 | `V2.1.6.0010` | `c7acf1e` | C5 ramenée à deux issues sur décision : convertir ou ne pas ouvrir. Le mode consultation en lecture seule sort du périmètre, les écarts entre générations étant trop nombreux pour qu'une session à moitié migrée soit fidèle. |
 | 2026-09-08 | `V2.1.6.0009` | `06dd83e` | Création : versionnement de format par module, refus vers l'arrière, registre de convertisseurs chaînés et conversion consentie avec sauvegarde. Chantier C, prérequis des icônes interactives. |
 
@@ -45,7 +46,7 @@ Ce binaire ne peut pas faire mieux : sans version de format, il n'a aucun moyen 
 
 ### 2.2 Ce qui manque
 
-- Un champ de version de format, sur chacun des quatre artefacts persistés : projet, scène, composant `.sep`, catalogue de tags.
+- Un champ de version de format sur **trois** des quatre artefacts persistés : projet, scène, catalogue de tags. Le `.sep` en porte déjà un — `ElementStudioComponentMetadata.CurrentSchemaVersion`, avec son schéma nommé : il est **raccordé** au registre, jamais doublé par un champ parallèle qui créerait deux vérités sur le même fichier.
 - Un registre de convertisseurs et la composition d'une chaîne.
 - Une surface de consentement, et la sauvegarde qui l'accompagne.
 - La séparation entre profil d'export et capacité déclarée du projet, aujourd'hui confondus dans `ManifestVersion`.
@@ -68,7 +69,9 @@ Non-objectifs : convertir un projet vers une version **antérieure**; réparer u
 
 ### C1 — Une version de format par module, pas une pour tout
 
-Chaque artefact persisté porte son propre entier `FormatVersion` : `project.json`, chaque scène, chaque `.sep`, le catalogue de tags. Un module évolue sans forcer les autres, et un convertisseur ne connaît que son module.
+Chaque artefact persisté porte sa propre version de format. Un module évolue sans forcer les autres, et un convertisseur ne connaît que son module.
+
+Trois modules reçoivent un entier `FormatVersion` nouveau : `project.json`, chaque scène, le catalogue de tags. Le quatrième, le composant `.sep`, en porte déjà un : `ElementStudioComponentMetadata.SchemaVersion`, accompagné de `Schema`. Ce champ existant devient la version de format du module `.sep` et le registre s'y adosse tel quel. Ajouter un `FormatVersion` à côté créerait deux numéros pour un seul fichier, et la question « lequel fait foi » n'a pas de bonne réponse.
 
 L'absence du champ vaut **génération 0** : tout l'existant est en génération 0 sans être réécrit.
 
