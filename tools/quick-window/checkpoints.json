@@ -98,6 +98,25 @@
                             "nvmrc":  "24.15.0",
                             "enginesNode":  "24.15.x",
                             "notes":  "Phase 6 complete: eleven quick-window capabilities promoted on three-layer evidence, strict 2.3 export open. binding.parent-port and legacy-fragment-adapter stay Blocked - no host evidence for the first, no implementation anywhere for the second - and a project touching either is refused before any export directory exists. nesting.depth-2 promoted on explicit decision of 2026-09-03 after it was found delivered and proven. Three latent defects of the export path found and fixed: OwnerPageKey was exported against the package validation rule, quickWindowInvocationKey was never serialized so open commands would have been inert, and the capability analyzer never looked inside definition content. Suites: Builder 881/881 with no skip, Builder runtime-js 80/80, TF100Web 41 with one opt-in skip, TF100Web runtime-js 97/97, cross-runtime conformance 14 with one skip and 126/126 executable capability probes, handshake contract 10/10, verify-docs 0 errors. Feature bump V2.1.5.0056 to V2.1.6.0000."
+                        },
+                        {
+                            "phase":  "7",
+                            "timestampUtc":  "2026-09-08T09:55:55.2136983Z",
+                            "builder":  {
+                                            "branch":  "codex/GestionFenetreRapide",
+                                            "status":  "## codex/GestionFenetreRapide...origin/codex/GestionFenetreRapide [ahead 30]",
+                                            "head":  "ec5f1e9d596c158efff840f358efef4b6cadd61c"
+                                        },
+                            "tf100web":  {
+                                             "branch":  "codex/quick-window-v1",
+                                             "status":  "## codex/quick-window-v1...origin/codex/quick-window-v1 [ahead 6]",
+                                             "head":  "49701bb20aa4bb5b6febbe4dcb07546149185876"
+                                         },
+                            "dotnetSdk":  "10.0.302",
+                            "nodeInstalled":  "v24.15.0",
+                            "nvmrc":  "24.15.0",
+                            "enginesNode":  "24.15.x",
+                            "notes":  "Phase 7 complete and the plan is finished. 7.1 blocked on its own audit - the reference project\u0027s TagCatalog carries no motor write command, only read-only contactor states - then built on the synthetic catalog scada-v2-win00054-synthetic-tags-v1, leaving AMR_REF_SCADA_V2 untouched. 7.2 acceptance green: Phase 0 baseline replayed at 0.0 percent drift with the prototype hash unchanged, cold open p95 144 ms over 104 real opens and warm p95 141 ms over 77973, memory capped at 5.94 MB and 231 listeners. 7.3 synchronised six contracts, the decision register, coverage and three diagrams; it also found that the plan\u0027s own three rg checks excluded the archive with a glob matching nothing from the docs path, and that the execution list still read Phase 7 non demarree. Validation Checklist passed: 36 items green, 2 satisfied on explicit decision - the 18.37 h soak accepted in place of 24 h, and industrial rollout deferred to project end with the controlled deployment as the deployment-capable proof - and the real PLC write gate deliberately left open. Suites: Builder 892/892 no skip, Builder runtime-js 80/80, TF100Web quick-window 46/46, TF100Web runtime-js 97/97, cross-runtime conformance 14 with one opt-in skip and 126/126 executable probes, deploy and composition 41/41, verify-docs 0 errors, 0 resolvable PENDING. Known gaps unchanged: FR-UI-03 deployed title fallback, the canary still carrying a pre-promotion package with empty RequiredCapabilities, binding.parent-port and legacy-fragment-adapter still Blocked, and the five pre-existing tests_scada_package failures. Iteration bump V2.1.6.0004 to V2.1.6.0005."
                         }
                     ]
 }

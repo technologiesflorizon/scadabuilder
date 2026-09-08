@@ -8,7 +8,7 @@ Document version: `V2.1.6.0005`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0005` | `PENDING` | Clôture de la Phase 7 : rapport d'audit et checkpoint versionné. Validation Checklist passée et consignée item par item. |
+| 2026-09-08 | `V2.1.6.0005` | `ec5f1e9` | Clôture de la Phase 7 : rapport d'audit et checkpoint versionné. Validation Checklist passée et consignée item par item. |
 
 ## 1. Portée et conclusion
 
