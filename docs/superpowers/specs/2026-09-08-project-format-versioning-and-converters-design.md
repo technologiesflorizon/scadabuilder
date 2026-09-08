@@ -8,7 +8,7 @@ Document version: `V2.1.6.0011`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0011` | `PENDING` | Correction : le `.sep` porte déjà `SchemaVersion`. C1 le raccorde au registre au lieu de lui ajouter un champ parallèle; trois modules seulement reçoivent un `FormatVersion` neuf. |
+| 2026-09-08 | `V2.1.6.0011` | `b7cd56a` | Correction : le `.sep` porte déjà `SchemaVersion`. C1 le raccorde au registre au lieu de lui ajouter un champ parallèle; trois modules seulement reçoivent un `FormatVersion` neuf. |
 | 2026-09-08 | `V2.1.6.0010` | `c7acf1e` | C5 ramenée à deux issues sur décision : convertir ou ne pas ouvrir. Le mode consultation en lecture seule sort du périmètre, les écarts entre générations étant trop nombreux pour qu'une session à moitié migrée soit fidèle. |
 | 2026-09-08 | `V2.1.6.0009` | `06dd83e` | Création : versionnement de format par module, refus vers l'arrière, registre de convertisseurs chaînés et conversion consentie avec sauvegarde. Chantier C, prérequis des icônes interactives. |
 

@@ -8,7 +8,7 @@ Document version: `V2.1.6.0011`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0011` | `PENDING` | Création : huit tâches, du refus vers l'arrière livré seul jusqu'au retrait du second rôle de `ManifestVersion`. |
+| 2026-09-08 | `V2.1.6.0011` | `b7cd56a` | Création : huit tâches, du refus vers l'arrière livré seul jusqu'au retrait du second rôle de `ManifestVersion`. |
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 

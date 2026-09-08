@@ -8,7 +8,7 @@ Document version: `V2.1.6.0011`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-08 | `V2.1.6.0011` | `PENDING` | Plan d'implementation du chantier C en huit taches; correction de la spec : le .sep porte deja SchemaVersion et est raccorde au registre au lieu d'etre double. |
+| 2026-09-08 | `V2.1.6.0011` | `b7cd56a` | Plan d'implementation du chantier C en huit taches; correction de la spec : le .sep porte deja SchemaVersion et est raccorde au registre au lieu d'etre double. |
 | 2026-09-08 | `V2.1.6.0010` | `c7acf1e` | Pre-spec des icones interactives : decisions arretees, propositions non confirmees et points non tranches separes. C5 du chantier C ramenee a convertir ou ne pas ouvrir. |
 | 2026-09-08 | `V2.1.6.0009` | `06dd83e` | Design du versionnement de format et des convertisseurs (chantier C), prerequis des icones interactives. Trois defauts verifies, dont une perte de donnees active sur les Fenetres rapides. |
 | 2026-09-08 | `V2.1.6.0008` | `77d955d` | Cycle de vie des projets audité et corrigé : frontière d'erreur, activation tout-ou-rien, sauvegarde bloquante et accueil conforme à D11/D12. |
