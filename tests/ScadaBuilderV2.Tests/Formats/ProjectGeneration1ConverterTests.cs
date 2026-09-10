@@ -1,3 +1,4 @@
+using System.IO;
 using System.Text.Json.Nodes;
 using ScadaBuilderV2.Application.Formats;
 using ScadaBuilderV2.Domain.Projects;
@@ -124,5 +125,23 @@ public sealed class ProjectGeneration1ConverterTests
         var key = document["Scenes"]![0]!["PageKey"]!.GetValue<string>();
 
         Assert.AreEqual("e6ce2175-1047-5dbc-ac17-fdaa0840b615", key);
+    }
+
+    /// <summary>
+    /// Fix round 2 of the Task 7 review: <c>PageKeyFactory.CreateDeterministic</c> throws an unfiltered
+    /// <see cref="ArgumentException"/> on a blank project name, the same as it does on a blank page code.
+    /// A truncated or hand-edited <c>project.json</c> with no <c>Name</c> is invalid data, not a caller-bug
+    /// signal, so it must surface as <see cref="InvalidDataException"/> — a type
+    /// <c>ProjectWorkspaceRepository.OpenAsync</c>'s catch filter already handles.
+    /// </summary>
+    [TestMethod]
+    public void AMissingProjectNameFailsConversionWithInvalidDataException()
+    {
+        var exception = Assert.ThrowsException<InvalidDataException>(() =>
+            Converter.Convert(JsonNode.Parse("""
+            {"Scenes":[{"Id":"win00001","PageCode":"win00001"}]}
+            """)!));
+
+        StringAssert.Contains(exception.Message, "Name");
     }
 }

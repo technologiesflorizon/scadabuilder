@@ -47,6 +47,17 @@ public sealed class ProjectGeneration1Converter : IArtifactConverter
         {
             var projectName = document["Name"]?.GetValue<string>() ?? "";
 
+            // Same reasoning as the per-page code guard below: PageKeyFactory.CreateDeterministic throws an
+            // unfiltered ArgumentException on a blank name, which is a caller-bug signal everywhere else it is
+            // called but is invalid data here — a truncated or hand-edited project.json with no Name is
+            // exactly the input the backward-refusal gate exists to handle gracefully. Checked once, before
+            // the scene loop, because it is a property of the document, not of any one page.
+            if (string.IsNullOrWhiteSpace(projectName))
+            {
+                throw new InvalidDataException(
+                    "Conversion projet impossible : le manifeste projet ne porte aucun nom (\"Name\").");
+            }
+
             var index = 0;
             foreach (var scene in scenes.OfType<JsonObject>())
             {
