@@ -8,7 +8,7 @@ Document version: `V2.1.6.0018`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-10 | `V2.1.6.0018` | `PENDING` | Tâche 8 du chantier de versionnement de format : `ManifestVersion` perd son rôle d'autorisation de contenu pour les Fenêtres rapides. `ValidateQuickWindows` ne compare plus contre `"2.3"`; le catalogue de capacités reste seul juge de ce qu'un projet peut contenir, quel que soit le profil négocié. |
+| 2026-09-10 | `V2.1.6.0018` | `02de468` | Tâche 8 du chantier de versionnement de format : `ManifestVersion` perd son rôle d'autorisation de contenu pour les Fenêtres rapides. `ValidateQuickWindows` ne compare plus contre `"2.3"`; le catalogue de capacités reste seul juge de ce qu'un projet peut contenir, quel que soit le profil négocié. |
 | 2026-09-10 | `V2.1.6.0017` | `f5589e9` | `ProjectGeneration1Converter` (Tâche 7 du chantier C) écrit `PageKey` avec la même dérivation que `PageKeyFactory.CreateDeterministic` (GUID v5, bits de version/variante posés) plutôt qu'une dérivation SHA-256 brute incompatible. `ModernProjectMigration` reste le normaliseur d'identité du store, appelé aux écritures et à la construction en mémoire; le convertisseur ne fait que régler l'identité une fois, dans le fichier, à l'ouverture. |
 | 2026-09-08 | `V2.1.6.0013` | `baf42e4` | Les trois modules (projet, scène, catalogue) portent les champs `FormatVersion` et `EffectiveFormatVersion`. Jamais sérialisés tant que nuls, donc les artefacts figés demeurent byte-identiques. |
 | 2026-09-08 | `V2.1.6.0012` | `225b0b5` | `DEC-0049` D5 implémentée : `OpenAsync` refuse un `project.json` dont la génération de format dépasse `ScadaFormatGeneration.Project`, avant toute désérialisation. |
