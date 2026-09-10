@@ -37,6 +37,31 @@ public sealed class QuickWindowBuildValidationTests
     }
 
     [TestMethod]
+    public void ContentIsAuthorisedByCapabilityStatusEvenWhenManifestVersionNeverBecame23()
+    {
+        // ScadaProject.ManifestVersion defaults to "2.0" (ProjectModels.cs) and nothing in src/ ever assigns
+        // it "2.3" - that string is only ever written into the exported manifest artifact, a different thing
+        // (Ft100SceneExporter.ManifestVersion(Ft100ManifestProfile)). Before Task 8 of the 2026-09-08
+        // format-versioning chantier, ValidateQuickWindows compared this field against "2.3" directly, so
+        // this exact project - "2.0", one Supported-capability definition, one invocation, real quick-window
+        // content - was refused as an Error on every real project the instant it carried quick windows. This
+        // exercises the actual authorisation path end to end, not a catalog constant in isolation.
+        var member = Member("Run", QuickWindowInterfaceFamily.ReadState, QuickWindowDataType.Boolean, QuickWindowMemberAccess.Read);
+        var definition = Definition("motor", members: [member]);
+        var invocation = Invocation(Guid.NewGuid(), definition.DefinitionKey);
+        var page = Page("page");
+
+        var issues = ScadaProjectBuildValidator.Validate(Project(page, [definition], [invocation], manifestVersion: "2.0"));
+
+        Assert.IsFalse(
+            issues.Any(issue => issue.Code == "quick-window.profile-unsupported"),
+            "this error code no longer exists in the product; ManifestVersion does not authorise content.");
+        Assert.IsFalse(
+            issues.Any(issue => issue.Code == "quick-window.capability-unsupported"),
+            "quick-window.definition, OpenQuickWindow and CloseQuickWindow are Supported, so the catalog allows this content regardless of ManifestVersion.");
+    }
+
+    [TestMethod]
     public void BuildValidationSeparatesAuthoringWarningsFromErrorsAndNeverCreatesDefaults()
     {
         var member = Member("Run", QuickWindowInterfaceFamily.ReadState, QuickWindowDataType.Boolean, QuickWindowMemberAccess.Read, required: true);

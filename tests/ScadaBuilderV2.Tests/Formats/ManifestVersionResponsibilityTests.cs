@@ -13,8 +13,14 @@ namespace ScadaBuilderV2.Tests.Formats;
 public sealed class ManifestVersionResponsibilityTests
 {
     [TestMethod]
-    public void QuickWindowsAreAllowedBecauseTheirCapabilityIsSupported()
+    public void QuickWindowDefinitionCapabilityIsCatalogedAsSupported()
     {
+        // This only names the catalog fact the authorisation path reads - it passes whether or not
+        // ValidateQuickWindows actually consults the catalog, so it proves a precondition, not the
+        // authorisation itself. The end-to-end proof - a project on a non-"2.3" ManifestVersion, carrying
+        // real quick-window content, cleared by ScadaProjectBuildValidator.Validate because this capability
+        // is Supported - is
+        // QuickWindowBuildValidationTests.ContentIsAuthorisedByCapabilityStatusEvenWhenManifestVersionNeverBecame23.
         Assert.AreEqual(
             ScadaRuntimeCapabilityStatus.Supported,
             ScadaRuntimeCapabilityCatalog.QuickWindowDefinition.Status,
