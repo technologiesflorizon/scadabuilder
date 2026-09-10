@@ -49,10 +49,24 @@ public sealed class QuickWindowBuildValidationTests
         var member = Member("Run", QuickWindowInterfaceFamily.ReadState, QuickWindowDataType.Boolean, QuickWindowMemberAccess.Read);
         var definition = Definition("motor", members: [member]);
         var invocation = Invocation(Guid.NewGuid(), definition.DefinitionKey);
+
+        // Positive anchor (round 2 of review): the two Assert.IsFalse below are pure absence assertions - if a
+        // future edit made Project(...) hand ValidateQuickWindows an empty QuickWindows/QuickWindowInvocations
+        // pair (a swapped parameter, say), containsQuickWindows would be false, the capability check would be
+        // skipped, both codes would still be absent, and this test would pass while covering nothing. A second
+        // invocation whose DefinitionKey matches no definition forces the validator to have actually iterated
+        // `EffectiveQuickWindowInvocations` against `EffectiveQuickWindows` (ProjectModels.cs, the
+        // `foreach (var inv in invs)` loop: `defs.FirstOrDefault(d => d.DefinitionKey == inv.DefinitionKey)`
+        // is null, so it emits `quick-window.invocation-definition-missing`) - a diagnostic no validator that
+        // skipped this content, or that never looked at DefinitionKey at all, could produce.
+        var orphanInvocation = Invocation(Guid.NewGuid(), Guid.NewGuid());
         var page = Page("page");
 
-        var issues = ScadaProjectBuildValidator.Validate(Project(page, [definition], [invocation], manifestVersion: "2.0"));
+        var issues = ScadaProjectBuildValidator.Validate(Project(page, [definition], [invocation, orphanInvocation], manifestVersion: "2.0"));
 
+        Assert.IsTrue(
+            issues.Any(issue => issue.Code == "quick-window.invocation-definition-missing"),
+            "positive anchor: the validator must have actually iterated invocations against definitions.");
         Assert.IsFalse(
             issues.Any(issue => issue.Code == "quick-window.profile-unsupported"),
             "this error code no longer exists in the product; ManifestVersion does not authorise content.");
