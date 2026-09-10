@@ -8,7 +8,7 @@ Document version: `V2.1.6.0017`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-10 | `V2.1.6.0017` | `PENDING` | Tâche 7 du chantier C close, re-cadrée par les Rulings 16 et 17 du contrôleur : le convertisseur projet 0 → 1 règle l'identité de page une fois, dans le fichier, avec la dérivation `PageKeyFactory.CreateDeterministic` (et non une dérivation SHA-256 incompatible); la suppression des règles de `ModernProjectMigration` promise par le brief est retirée, ce normaliseur restant nécessaire aux écritures et à la construction en mémoire. |
+| 2026-09-10 | `V2.1.6.0017` | `f5589e9` | Tâche 7 du chantier C close, re-cadrée par les Rulings 16 et 17 du contrôleur : le convertisseur projet 0 → 1 règle l'identité de page une fois, dans le fichier, avec la dérivation `PageKeyFactory.CreateDeterministic` (et non une dérivation SHA-256 incompatible); la suppression des règles de `ModernProjectMigration` promise par le brief est retirée, ce normaliseur restant nécessaire aux écritures et à la construction en mémoire. |
 | 2026-09-08 | `V2.1.6.0012` | `37bf604` | `DEC-0049` : le volet refus vers l'arrière de D5 est marqué implémenté dans la couverture de régression. |
 | 2026-09-08 | `V2.1.6.0008` | `77d955d` | `DEC-0049` auditée décision par décision; couverture portée de 9 à 27 tests et treize écarts corrigés. |
 | 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | `DEC-0050` synchronisée sur l'état réel : Phases 0 à 7 livrées, onze capacités promues et deux encore `Blocked`, trois défauts latents du chemin d'export corrigés. Dernier `PENDING` réel de `DEC-0045` résolu vers `0168f2f`. |

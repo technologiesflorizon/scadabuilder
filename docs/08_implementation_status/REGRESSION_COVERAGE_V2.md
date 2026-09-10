@@ -8,7 +8,7 @@ Document version: `V2.1.6.0017`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-10 | `V2.1.6.0017` | `PENDING` | Couverture du convertisseur projet 0 → 1 (`ProjectGeneration1ConverterTests`) étendue par deux tests : accord exact avec `PageKeyFactory.CreateDeterministic`, et clés distinctes pour deux codes de page distincts. |
+| 2026-09-10 | `V2.1.6.0017` | `f5589e9` | Couverture du convertisseur projet 0 → 1 (`ProjectGeneration1ConverterTests`) étendue par deux tests : accord exact avec `PageKeyFactory.CreateDeterministic`, et clés distinctes pour deux codes de page distincts. |
 | 2026-09-08 | `V2.1.6.0008` | `77d955d` | Couverture du cycle de vie des projets : coordinateur et contrats de shell. |
 | 2026-09-08 | `V2.1.6.0006` | `8074d0a` | Couverture des deux branches de resolution du titre, la branche de repli n'etant compilee par aucun artefact gele. |
 | 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Couverture des Phases 6 et 7 ajoutée; compteurs de conformance recalés sur 126 sondes, 46 capacités bloquées et l'index à 172 entrées. |
