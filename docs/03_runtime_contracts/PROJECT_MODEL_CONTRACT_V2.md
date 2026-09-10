@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active project model contract
-Document version: `V2.1.6.0017`
+Document version: `V2.1.6.0018`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-10 | `V2.1.6.0018` | `PENDING` | Tâche 8 du chantier de versionnement de format : `ManifestVersion` perd son rôle d'autorisation de contenu pour les Fenêtres rapides. `ValidateQuickWindows` ne compare plus contre `"2.3"`; le catalogue de capacités reste seul juge de ce qu'un projet peut contenir, quel que soit le profil négocié. |
 | 2026-09-10 | `V2.1.6.0017` | `f5589e9` | `ProjectGeneration1Converter` (Tâche 7 du chantier C) écrit `PageKey` avec la même dérivation que `PageKeyFactory.CreateDeterministic` (GUID v5, bits de version/variante posés) plutôt qu'une dérivation SHA-256 brute incompatible. `ModernProjectMigration` reste le normaliseur d'identité du store, appelé aux écritures et à la construction en mémoire; le convertisseur ne fait que régler l'identité une fois, dans le fichier, à l'ouverture. |
 | 2026-09-08 | `V2.1.6.0013` | `baf42e4` | Les trois modules (projet, scène, catalogue) portent les champs `FormatVersion` et `EffectiveFormatVersion`. Jamais sérialisés tant que nuls, donc les artefacts figés demeurent byte-identiques. |
 | 2026-09-08 | `V2.1.6.0012` | `225b0b5` | `DEC-0049` D5 implémentée : `OpenAsync` refuse un `project.json` dont la génération de format dépasse `ScadaFormatGeneration.Project`, avant toute désérialisation. |
@@ -71,7 +72,9 @@ Element numeric data keeps compatibility fields for older projects, but active a
 
 Une définition porte un `VisualContent` borné, sa version d’interface, ses membres locaux et ses defaults de présentation. Les invocations restent portées par le projet et les commandes appelantes au moyen d’un `InvocationKey`, d’un `QuickWindowDefinitionKey` et d’une `InterfaceVersion`; l’identité runtime n’est jamais persistée. Les membres privés ne sont pas bindables par une invocation.
 
-Les fichiers sont ordonnés de façon déterministe et remplacés atomiquement après écriture temporaire, flush et validation. Un projet historique sans Fenêtre rapide se recharge sans migration et ne doit pas être réécrit. Une définition inline sans fichier autoritaire est refusée au lieu d’être migrée implicitement. Les profils manifest 2.1/2.2 refusent toute présence QuickWindow. Les gates des Phases 3 à 6 sont franchis : le profil 2.3 est productible et exporte les onze capacités `quick-window.*` promues `Supported`. Le gate reste fail-closed sur les deux capacités encore `Blocked` — `quick-window.binding.parent-port` et `quick-window.legacy-fragment-adapter` — : un projet qui en déclenche une est refusé avant qu’aucun répertoire d’export n’existe.
+Les fichiers sont ordonnés de façon déterministe et remplacés atomiquement après écriture temporaire, flush et validation. Un projet historique sans Fenêtre rapide se recharge sans migration et ne doit pas être réécrit. Une définition inline sans fichier autoritaire est refusée au lieu d’être migrée implicitement. Les gates des Phases 3 à 6 sont franchis : le profil 2.3 est productible et exporte les onze capacités `quick-window.*` promues `Supported`. Le gate reste fail-closed sur les deux capacités encore `Blocked` — `quick-window.binding.parent-port` et `quick-window.legacy-fragment-adapter` — : un projet qui en déclenche une est refusé avant qu’aucun répertoire d’export n’existe.
+
+`ManifestVersion` ne porte plus qu'un rôle : le profil d'export négocié avec TF100Web. Ce n'est plus lui qui autorise la présence de contenu Fenêtre rapide dans un projet — le catalogue de capacités (`ScadaRuntimeCapabilityCatalog`) est la seule autorité sur ce qu'un projet peut contenir, via le même gate fail-closed ci-dessus. La comparaison de chaîne contre `"2.3"` qui refusait autrefois toute Fenêtre rapide sous un `ManifestVersion` différent a été retirée de `ValidateQuickWindows` (Tâche 8 du chantier de versionnement de format, 2026-09-08).
 
 L'Interface locale est versionnée par clé stable. Renommer un membre ou modifier un membre privé n'exige aucun increment de `InterfaceVersion` et ne casse aucune invocation. Ajouter, retirer ou modifier le contrat typé d'un membre public l'exige. Lors de la mutation, chaque invocation encore compatible est réalignée sur la nouvelle version sans que ses liaisons soient réécrites; une invocation cassée conserve sa version et ses liaisons et devient `Outdated`. Ce statut est dérivé du couple de versions : aucun champ de statut n'est persisté et aucun quatrième identifiant n'est introduit.
 

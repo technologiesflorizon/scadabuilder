@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.6.0017`
+Document version: `V2.1.6.0018`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-10 | `V2.1.6.0018` | `PENDING` | Tâche 8 du chantier de versionnement de format : `ManifestVersion` perd son rôle de déclaration de contenu autorisé pour les Fenêtres rapides et garde uniquement son rôle de profil d'export négocié avec TF100Web. `ValidateQuickWindows` (`ProjectModels.cs`) ne compare plus contre `"2.3"`; le catalogue de capacités (`ScadaRuntimeCapabilityCatalog`) reste seul juge, via le gate fail-closed déjà existant. Voir `docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md`. |
 | 2026-09-10 | `V2.1.6.0017` | `f5589e9` | Tâche 7 du chantier C : convertisseur projet générations 0 → 1 (`ProjectGeneration1Converter`), branché dans `ProjectWorkspaceRepository.OpenAsync`. Il stamp `FormatVersion` et règle `PageKey` avec la dérivation `PageKeyFactory.CreateDeterministic` déjà utilisée ailleurs dans le produit (Ruling 17). La suppression de `ModernProjectMigration.NormalizeIdentity`/`ResolveTargetKey` promise par le brief est re-cadrée : ce normaliseur reste, car il est aussi appelé aux écritures et à une construction en mémoire sans fichier (Ruling 16); l'écart est consigné dans `KNOWN_GAPS_V2.md`. |
 | 2026-09-08 | `V2.1.6.0016` | `6bedf93` | Tâche 6 du chantier C : dialogue de conversion (`ConversionPlanDialog`) et adaptateur `WpfConversionConsent`. Deux issues seulement, « Convertir » ou « Ne pas ouvrir »; `Annuler` reste la décision par défaut donc fermer la fenêtre par toute autre voie n'ouvre pas le projet. Le plan montre chaque fichier, ses deux générations, ce que chaque étape change, et le chemin de sauvegarde dérivé (`<chemin>.bak`, avec suffixe numéroté si une sauvegarde existe déjà). |
 | 2026-09-08 | `V2.1.6.0015` | `1935e99` | Tâche 5 du chantier C : plan de conversion, sauvegarde et coordinateur (`ConversionCoordinator`). L'ordre refuse une chaîne incomplète avant de demander le consentement, ne demande rien pour un artefact déjà courant, et un refus arrête la transition; la sauvegarde `.bak` numérotée précède toute conversion et ne remplace jamais une sauvegarde existante. |

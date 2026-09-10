@@ -43,6 +43,9 @@ public sealed class QuickWindowBuildValidationTests
         var definition = Definition("motor", members: [member]);
         var invocation = new QuickWindowInvocation(Guid.NewGuid(), definition.DefinitionKey, [], InterfaceVersion: 1);
         var page = Page("page");
+        // Deliberately "2.2": before Task 8 of the 2026-09-08 format-versioning chantier, this alone tripped
+        // "quick-window.profile-unsupported". Content authorisation now comes from the capability catalog,
+        // not this field, so the same project on a "2.2" manifest still only reports the missing binding.
         var project = Project(page, [definition], [invocation], manifestVersion: "2.2");
         var beforeBindings = invocation.Bindings;
 
@@ -55,7 +58,9 @@ public sealed class QuickWindowBuildValidationTests
         var authoringIssues = new QuickWindowDependencyAnalyzer().Analyze(snapshot).Diagnostics;
 
         Assert.IsTrue(buildIssues.Any(issue => issue.Code == "quick-window.required-missing" && issue.Severity == ScadaBuildValidationSeverity.Error));
-        Assert.IsTrue(buildIssues.Any(issue => issue.Code == "quick-window.profile-unsupported"));
+        Assert.IsFalse(
+            buildIssues.Any(issue => issue.Code == "quick-window.profile-unsupported"),
+            "ManifestVersion no longer authorises quick-window content; the capability catalog does.");
         Assert.IsTrue(authoringIssues.Any(issue => issue.Code == "quick-window.binding.required-missing" && issue.Severity == ScadaBuildValidationSeverity.Warning));
         Assert.AreSame(beforeBindings, invocation.Bindings);
         Assert.AreEqual(0, invocation.Bindings.Count);

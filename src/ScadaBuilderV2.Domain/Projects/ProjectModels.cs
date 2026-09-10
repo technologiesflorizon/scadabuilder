@@ -1077,6 +1077,12 @@ public static class ScadaProjectBuildValidator
         }
     }
 
+    /// <summary>
+    /// Validates QuickWindow content against the capability catalog. The negotiated export profile field no
+    /// longer authorises content here - it is the export profile negotiated with TF100Web, nothing else. What
+    /// a project may contain is decided below, by the capability catalog alone: it carries the status, the
+    /// three-layer evidence and the fail-closed gate that a plain string comparison never could.
+    /// </summary>
     private static void ValidateQuickWindows(
         List<ScadaBuildValidationIssue> issues,
         ScadaProject project)
@@ -1084,16 +1090,6 @@ public static class ScadaProjectBuildValidator
         var defs = project.EffectiveQuickWindows;
         var invs = project.EffectiveQuickWindowInvocations;
         var containsQuickWindows = defs.Count > 0 || invs.Count > 0;
-        var profile = QuickWindowProfileCompatibility.Validate(project.ManifestVersion, containsQuickWindows);
-        if (!profile.IsCompatible)
-        {
-            issues.Add(new ScadaBuildValidationIssue(
-                ScadaBuildValidationSeverity.Error,
-                "quick-window.profile-unsupported",
-                $"Manifest profile '{project.ManifestVersion}' cannot carry QuickWindow definitions or invocations.",
-                PropertyPath: "Project.ManifestVersion",
-                SuggestedFix: "Target manifest profile 2.3; profiles 2.1 and 2.2 fail closed."));
-        }
 
         // The build gate names the capabilities this layer can see for itself. The exporter runs the full
         // analysis and is the authority; this is the earlier, cheaper refusal that keeps a project from
