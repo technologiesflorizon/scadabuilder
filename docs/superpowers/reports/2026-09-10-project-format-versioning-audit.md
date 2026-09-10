@@ -8,7 +8,7 @@ Document version: `V2.1.6.0020`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-10 | `V2.1.6.0020` | `PENDING` | Clôture du chantier de versionnement de format : rapport d'audit, sort de chaque règle de `ModernProjectMigration`, état des générations par module. |
+| 2026-09-10 | `V2.1.6.0020` | `d3be7da` | Clôture du chantier de versionnement de format : rapport d'audit, sort de chaque règle de `ModernProjectMigration`, état des générations par module. |
 
 ## 1. Portée et conclusion
 
@@ -16,7 +16,7 @@ Le chantier existe parce qu'aucun fichier de projet ne portait sa version de for
 
 **Ce défaut est fermé.** Un projet déclarant une génération supérieure à celle du binaire est refusé au lieu d'être réécrit.
 
-**24 commits**, `V2.1.6.0011` → `V2.1.6.0019`, suite de **912 à 968 tests sans skip**, `verify-docs` à `Errors: 0` et 121 avertissements du début à la fin, **zéro dérive de fixture gelée** (`git diff 3301329..HEAD -- '*.sep' '*.sb2' '*.sha256'` est vide).
+**25 commits**, `V2.1.6.0011` → `V2.1.6.0020`, suite de **912 à 968 tests sans skip**, `verify-docs` à `Errors: 0` et 121 avertissements du début à la fin, **zéro dérive de fixture gelée** (`git diff 3301329..HEAD -- '*.sep' '*.sb2' '*.sha256'` est vide).
 
 ## 2. Générations par module
 
