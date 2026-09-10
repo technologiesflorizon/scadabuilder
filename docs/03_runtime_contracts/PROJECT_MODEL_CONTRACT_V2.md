@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active project model contract
-Document version: `V2.1.6.0013`
+Document version: `V2.1.6.0017`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-10 | `V2.1.6.0017` | `PENDING` | `ProjectGeneration1Converter` (Tâche 7 du chantier C) écrit `PageKey` avec la même dérivation que `PageKeyFactory.CreateDeterministic` (GUID v5, bits de version/variante posés) plutôt qu'une dérivation SHA-256 brute incompatible. `ModernProjectMigration` reste le normaliseur d'identité du store, appelé aux écritures et à la construction en mémoire; le convertisseur ne fait que régler l'identité une fois, dans le fichier, à l'ouverture. |
 | 2026-09-08 | `V2.1.6.0013` | `baf42e4` | Les trois modules (projet, scène, catalogue) portent les champs `FormatVersion` et `EffectiveFormatVersion`. Jamais sérialisés tant que nuls, donc les artefacts figés demeurent byte-identiques. |
 | 2026-09-08 | `V2.1.6.0012` | `225b0b5` | `DEC-0049` D5 implémentée : `OpenAsync` refuse un `project.json` dont la génération de format dépasse `ScadaFormatGeneration.Project`, avant toute désérialisation. |
 | 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Le profil 2.3 est productible : les gates des Phases 3 à 6 sont franchis et le fail-closed ne porte plus que sur les deux capacités non promues. |
@@ -93,6 +94,8 @@ All enabled tags are exposed for `Lire valeur` authoring. `Ecrire valeur` may ta
 `DEC-0038` is implemented. Every page owns an immutable internal `PageKey`, a visible mutable `PageCode`, optional import provenance, and canonical internal home/composition/action references by key. Existing id fields remain readable during idempotent migration. The `.sb2` boundary resolves keys back to human page codes and never emits GUIDs.
 
 `ScadaProject.Scenes` remains authoritative for page inventory and metadata. Native pages do not require imported HTML; imported Wonderware projections remain optional provenance-backed inputs. A new `Default` page starts with `IncludeInBuild = false`.
+
+`ProjectGeneration1Converter` (project format generation 0 → 1) settles a keyless page's `PageKey` once, at open, using `PageKeyFactory.CreateDeterministic(projectName, pageCode)` — the exact derivation `PageWorkspaceController.CreateImportedPageReferences` already uses elsewhere, so a converted page carries the identity the rest of the product would have produced for it. `ModernProjectMigration.NormalizeIdentity`/`ResolveTargetKey` remain: they are the store's identity normalizer, exercised on every save and on in-memory construction from an import inventory, not only at load, so a once-at-open file converter cannot replace them (see `KNOWN_GAPS_V2.md`, entry on the re-scoped Task 7 deletion).
 
 ## 5. Backward Format Refusal
 

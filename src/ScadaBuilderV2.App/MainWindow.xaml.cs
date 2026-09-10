@@ -26,10 +26,12 @@ using ScadaBuilderV2.Domain.Elements;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
 using ScadaBuilderV2.Infrastructure.ElementStudio;
+using ScadaBuilderV2.Application.Formats;
 using ScadaBuilderV2.Application.Libraries;
 using ScadaBuilderV2.Application.Pages;
 using ScadaBuilderV2.Infrastructure.Libraries;
 using ScadaBuilderV2.Infrastructure.ModernProjects;
+using ScadaBuilderV2.Infrastructure.ModernProjects.Converters;
 using ScadaBuilderV2.Infrastructure.ReferenceProjects;
 using ScadaBuilderV2.Rendering;
 using ScadaBuilderV2.App.Pages;
@@ -168,9 +170,13 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
 
     public MainWindow()
     {
+        var artifactConverterRegistry = new ArtifactConverterRegistry();
+        artifactConverterRegistry.Register(new ProjectGeneration1Converter());
         _projectWorkspaceRepository = new ProjectWorkspaceRepository(
             _modernProjectStore,
-            new ReferenceProjectCompatibilityLocator());
+            new ReferenceProjectCompatibilityLocator(),
+            artifactConverterRegistry,
+            new ConversionCoordinator(artifactConverterRegistry, new WpfConversionConsent(this)));
         _projectLifecycleCoordinator = new ProjectLifecycleCoordinator(
             _projectWorkspaceRepository,
             _recentProjectStore,

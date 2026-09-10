@@ -1,3 +1,6 @@
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using ScadaBuilderV2.Application.Formats;
 using ScadaBuilderV2.Application.Pages;
 using ScadaBuilderV2.Application.Projects;
 using ScadaBuilderV2.Domain.Projects;
@@ -8,12 +11,16 @@ namespace ScadaBuilderV2.Infrastructure.ModernProjects;
 /// <summary>Creates and opens project workspaces rooted at user-selected locations.</summary>
 /// <remarks>
 /// Decisions: DEC-0049.
-/// Contracts: docs/superpowers/specs/2026-07-29-project-lifecycle-design.md.
-/// Tests: tests/ScadaBuilderV2.Tests/ProjectCreationIntegrationTests.cs, tests/ScadaBuilderV2.Tests/ProjectOpenIntegrationTests.cs.
+/// Contracts: docs/superpowers/specs/2026-07-29-project-lifecycle-design.md,
+/// docs/superpowers/specs/2026-09-08-project-format-versioning-and-converters-design.md C5, C6.
+/// Tests: tests/ScadaBuilderV2.Tests/ProjectCreationIntegrationTests.cs, tests/ScadaBuilderV2.Tests/ProjectOpenIntegrationTests.cs,
+/// tests/ScadaBuilderV2.Tests/Formats/BackwardRefusalTests.cs.
 /// </remarks>
 public sealed class ProjectWorkspaceRepository(
     ModernProjectStore store,
-    ReferenceProjectCompatibilityLocator compatibilityLocator) : IProjectWorkspaceRepository
+    ReferenceProjectCompatibilityLocator compatibilityLocator,
+    ArtifactConverterRegistry registry,
+    ConversionCoordinator conversions) : IProjectWorkspaceRepository
 {
     /// <inheritdoc />
     public IReadOnlyList<ScadaBuildValidationIssue> ValidateCreation(CreateProjectRequest request)
@@ -69,7 +76,11 @@ public sealed class ProjectWorkspaceRepository(
                 DefaultDevicePresets.All,
                 [page],
                 HomePageId: pageCode,
-                HomePageKey: pageKey);
+                HomePageKey: pageKey,
+                // A brand-new project is authored directly in the current shape - it never needs converting,
+                // so it is stamped at the current generation instead of being left at the implicit zero that
+                // would otherwise send it straight back through the conversion gate on its very next open.
+                FormatVersion: ScadaFormatGeneration.Project);
             var scene = ScadaScene.CreateEmpty(pageCode, pageTitle, request.CanvasSize) with
             {
                 PageKey = pageKey,
@@ -138,6 +149,39 @@ public sealed class ProjectWorkspaceRepository(
                     + $"{ScadaFormatGeneration.Project}. Ouvrez-le avec une version plus récente : l'ouvrir ici "
                     + "risquerait d'en supprimer ce qu'elle ne sait pas lire.",
                     SuggestedFix: "Mettre SCADA Builder à jour.")]);
+            }
+
+            if (declaredGeneration < ScadaFormatGeneration.Project)
+            {
+                var outcome = await conversions.PrepareAsync(
+                    [new ArtifactToConvert(
+                        ArtifactModule.Project,
+                        validation.Location.ProjectFilePath,
+                        declaredGeneration,
+                        ScadaFormatGeneration.Project)],
+                    cancellationToken);
+
+                if (!outcome.CanProceed)
+                {
+                    // C5: convert, or do not open. There is no path to a session on an unconverted artifact.
+                    return new ProjectRepositoryResult(null, outcome.Diagnostics);
+                }
+
+                foreach (var entry in outcome.Plan.Entries)
+                {
+                    // C6: the backup is the only way back, so it is written before anything is changed.
+                    ArtifactBackupWriter.CreateBackup(entry.FilePath);
+
+                    var document = JsonNode.Parse(await File.ReadAllTextAsync(entry.FilePath, cancellationToken))
+                        ?? throw new InvalidDataException($"Document illisible: {entry.FilePath}");
+                    var converted = registry
+                        .ResolveChain(entry.Module, entry.FromVersion, entry.ToVersion)
+                        .Apply(document);
+                    await File.WriteAllTextAsync(
+                        entry.FilePath,
+                        converted.ToJsonString(new JsonSerializerOptions { WriteIndented = true }),
+                        cancellationToken);
+                }
             }
 
             var snapshot = await store.ReadWorkspaceSnapshotFromProjectRootAsync(

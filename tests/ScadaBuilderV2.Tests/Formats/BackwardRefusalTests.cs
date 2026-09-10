@@ -1,8 +1,10 @@
 using System.IO;
 using System.Text.Json;
+using ScadaBuilderV2.Application.Formats;
 using ScadaBuilderV2.Application.Projects;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Infrastructure.ModernProjects;
+using ScadaBuilderV2.Infrastructure.ModernProjects.Converters;
 using ScadaBuilderV2.Infrastructure.ReferenceProjects;
 
 namespace ScadaBuilderV2.Tests.Formats;
@@ -35,7 +37,9 @@ public sealed class BackwardRefusalTests
         var projectPath = WriteProject(ScadaFormatGeneration.Project + 1);
         var repository = new ProjectWorkspaceRepository(
             new ModernProjectStore(),
-            new ReferenceProjectCompatibilityLocator());
+            new ReferenceProjectCompatibilityLocator(),
+            CreateRegistry(),
+            new ConversionCoordinator(CreateRegistry(), new AcceptingConsent()));
 
         var result = await repository.OpenAsync(projectPath);
 
@@ -52,7 +56,9 @@ public sealed class BackwardRefusalTests
         var projectPath = WriteProject(ScadaFormatGeneration.Project);
         var repository = new ProjectWorkspaceRepository(
             new ModernProjectStore(),
-            new ReferenceProjectCompatibilityLocator());
+            new ReferenceProjectCompatibilityLocator(),
+            CreateRegistry(),
+            new ConversionCoordinator(CreateRegistry(), new AcceptingConsent()));
 
         var result = await repository.OpenAsync(projectPath);
 
@@ -82,7 +88,9 @@ public sealed class BackwardRefusalTests
     {
         var repository = new ProjectWorkspaceRepository(
             new ModernProjectStore(),
-            new ReferenceProjectCompatibilityLocator());
+            new ReferenceProjectCompatibilityLocator(),
+            CreateRegistry(),
+            new ConversionCoordinator(CreateRegistry(), new AcceptingConsent()));
 
         var created = await repository.CreateAsync(new CreateProjectRequest(
             "Projet test",
@@ -130,7 +138,9 @@ public sealed class BackwardRefusalTests
         var projectPath = WriteProject(ScadaFormatGeneration.Project);
         var repository = new ProjectWorkspaceRepository(
             new ModernProjectStore(),
-            new ReferenceProjectCompatibilityLocator());
+            new ReferenceProjectCompatibilityLocator(),
+            CreateRegistry(),
+            new ConversionCoordinator(CreateRegistry(), new AcceptingConsent()));
 
         using (new FileStream(projectPath, FileMode.Open, FileAccess.Read, FileShare.None))
         {
@@ -140,6 +150,49 @@ public sealed class BackwardRefusalTests
             Assert.IsNull(result.Candidate);
             Assert.IsTrue(result.Diagnostics.Any(entry => entry.Code == "project.open-failed"));
         }
+    }
+
+    /// <summary>Contract 6.5: refusing the conversion leaves the project closed and untouched.</summary>
+    [TestMethod]
+    public async Task ARefusedConversionNeitherOpensTheProjectNorTouchesIt()
+    {
+        var projectPath = WriteProject(formatVersion: 0);
+        var before = await File.ReadAllTextAsync(projectPath);
+        var registry = new ArtifactConverterRegistry();
+        registry.Register(new ProjectGeneration1Converter());
+        var repository = new ProjectWorkspaceRepository(
+            new ModernProjectStore(),
+            new ReferenceProjectCompatibilityLocator(),
+            registry,
+            new ConversionCoordinator(registry, new DecliningConsent()));
+
+        var result = await repository.OpenAsync(projectPath);
+
+        Assert.IsFalse(result.IsSuccess);
+        Assert.IsNull(result.Candidate, "no candidate may be prepared from an unconverted artifact.");
+        Assert.AreEqual("project.conversion-declined", result.Diagnostics.Single().Code);
+        Assert.AreEqual(before, await File.ReadAllTextAsync(projectPath));
+        Assert.IsFalse(File.Exists(projectPath + ".bak"), "a refused conversion writes no backup either.");
+    }
+
+    private sealed class DecliningConsent : IConversionConsent
+    {
+        public Task<ConversionDecision> RequestAsync(ConversionPlan plan, CancellationToken cancellationToken)
+            => Task.FromResult(ConversionDecision.Cancel);
+    }
+
+    /// <summary>Always convert. The tests above exercise the version gate itself, not conversion refusal.</summary>
+    private sealed class AcceptingConsent : IConversionConsent
+    {
+        public Task<ConversionDecision> RequestAsync(ConversionPlan plan, CancellationToken cancellationToken)
+            => Task.FromResult(ConversionDecision.Convert);
+    }
+
+    private static ArtifactConverterRegistry CreateRegistry()
+    {
+        var registry = new ArtifactConverterRegistry();
+        registry.Register(new ProjectGeneration1Converter());
+        return registry;
     }
 
     private string WriteProject(int formatVersion)

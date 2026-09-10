@@ -16,7 +16,11 @@ namespace ScadaBuilderV2.Domain.Projects;
 public static class ScadaFormatGeneration
 {
     /// <summary>Generation of `project.json` understood by this binary.</summary>
-    public const int Project = 0;
+    /// <remarks>
+    /// Raised to 1 once `ProjectGeneration1Converter` existed to settle page identity; a project declaring 0
+    /// is converted or refused before it is ever read as a model.
+    /// </remarks>
+    public const int Project = 1;
 
     /// <summary>Generation of a persisted scene understood by this binary.</summary>
     public const int Scene = 0;
