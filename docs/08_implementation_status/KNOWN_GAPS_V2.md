@@ -8,7 +8,7 @@ Document version: `V2.1.6.0019`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-10 | `V2.1.6.0019` | `PENDING` | Nouvelle entrée 34 : la Tâche 8 du chantier de versionnement de format retire l'export non gardé pour `Compatibility21`/`Compatibility22`. |
+| 2026-09-10 | `V2.1.6.0019` | `6e4f4b6` | Nouvelle entrée 34 : la Tâche 8 du chantier de versionnement de format retire l'export non gardé pour `Compatibility21`/`Compatibility22`. |
 | 2026-09-10 | `V2.1.6.0017` | `f5589e9` | Nouvelle entrée 33 : la Tâche 7 du chantier C livre le stamp de génération de format, le refus vers l'arrière et le pipeline de conversion, mais pas la suppression du reniflage de forme qui motivait le chantier. `ModernProjectMigration` reste consigné comme écart ouvert, pas comme amélioration future. |
 | 2026-09-08 | `V2.1.6.0008` | `77d955d` | Audit `DEC-0049` : treize écarts du cycle de vie des projets corrigés, dont trois sérieux. L'écart 24 se réduit au parcours interactif WPF. |
 | 2026-09-08 | `V2.1.6.0007` | `01da6b5` | Décision : implémentation considérée terminée sous réserve d'un essai réel avec automate; ce que cet essai doit couvrir est consigné à l'entrée 32. |
