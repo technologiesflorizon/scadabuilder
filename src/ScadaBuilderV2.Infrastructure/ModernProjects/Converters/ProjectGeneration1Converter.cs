@@ -1,3 +1,4 @@
+using System.IO;
 using System.Text.Json.Nodes;
 using ScadaBuilderV2.Application.Formats;
 using ScadaBuilderV2.Domain.Projects;
@@ -46,8 +47,10 @@ public sealed class ProjectGeneration1Converter : IArtifactConverter
         {
             var projectName = document["Name"]?.GetValue<string>() ?? "";
 
+            var index = 0;
             foreach (var scene in scenes.OfType<JsonObject>())
             {
+                var position = index++;
                 var existing = scene["PageKey"]?.GetValue<string>();
                 if (!string.IsNullOrWhiteSpace(existing)
                     && Guid.TryParse(existing, out var parsed)
@@ -61,9 +64,25 @@ public sealed class ProjectGeneration1Converter : IArtifactConverter
                     ?? "";
 
                 // PageKeyFactory.CreateDeterministic throws ArgumentException on a blank project name or page
-                // code. That is intentional here: a page with no code has no identity to settle, and such a
-                // project was already unopenable before this converter existed. OpenAsync wraps conversion in
-                // a try/catch that turns this into a `project.open-failed` diagnostic rather than a crash.
+                // code, which would signal a caller bug anywhere else it is called. Here the blank value comes
+                // from the document being converted, not from a caller mistake: it is invalid data. Reject it
+                // as such, with InvalidDataException, so OpenAsync's existing catch filter
+                // (IOException/UnauthorizedAccessException/InvalidDataException/InvalidOperationException/
+                // JsonException) turns it into a `project.open-failed` diagnostic instead of letting an
+                // unfiltered ArgumentException propagate unhandled to the UI.
+                if (string.IsNullOrWhiteSpace(code))
+                {
+                    var title = scene["Title"]?.GetValue<string>();
+                    var identifier = scene["Id"]?.GetValue<string>();
+                    var descriptor = !string.IsNullOrWhiteSpace(identifier)
+                        ? $"Id='{identifier}'"
+                        : !string.IsNullOrWhiteSpace(title)
+                            ? $"Title='{title}'"
+                            : "aucun champ identifiant";
+                    throw new InvalidDataException(
+                        $"Conversion projet impossible : la page à l'index {position} ({descriptor}) ne porte aucun code de page.");
+                }
+
                 scene["PageKey"] = PageKeyFactory.CreateDeterministic(projectName, code).ToString("D");
             }
         }

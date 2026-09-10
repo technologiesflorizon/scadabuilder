@@ -85,19 +85,44 @@ public sealed class ProjectGeneration1ConverterTests
         Assert.AreEqual(expected, key);
     }
 
+    /// <summary>
+    /// This is the test that actually separates the correct derivation from the deleted <c>DeriveKey</c>: the
+    /// old, buggy derivation was a function of the page code alone and ignored the project name entirely, so
+    /// two pages with the same code but different project names would have collided under it. Two different
+    /// codes (the prior, non-discriminating version of this test) would have passed under either derivation
+    /// and guarded nothing.
+    /// </summary>
     [TestMethod]
-    public void TwoPagesWithDifferentCodesReceiveDifferentKeys()
+    public void TwoProjectsWithTheSamePageCodeReceiveDifferentKeys()
     {
-        var document = Converter.Convert(JsonNode.Parse("""
-        {"Name":"P","Scenes":[
-            {"Id":"win00001","PageCode":"win00001"},
-            {"Id":"win00002","PageCode":"win00002"}
-        ]}
-        """)!);
+        var first = Converter.Convert(JsonNode.Parse("""
+        {"Name":"Alpha","Scenes":[{"Id":"win00001","PageCode":"win00001"}]}
+        """)!)["Scenes"]![0]!["PageKey"]!.GetValue<string>();
 
-        var first = document["Scenes"]![0]!["PageKey"]!.GetValue<string>();
-        var second = document["Scenes"]![1]!["PageKey"]!.GetValue<string>();
+        var second = Converter.Convert(JsonNode.Parse("""
+        {"Name":"Beta","Scenes":[{"Id":"win00001","PageCode":"win00001"}]}
+        """)!)["Scenes"]![0]!["PageKey"]!.GetValue<string>();
 
         Assert.AreNotEqual(first, second);
+    }
+
+    /// <summary>
+    /// Pins the actual bytes <see cref="PageKeyFactory.CreateDeterministic"/> produces for one known
+    /// (project name, page code) pair. Nothing else in the repository pins this literal, and a conversion
+    /// writes the resulting identity permanently to disk: if the salt or byte layout of
+    /// <c>CreateDeterministic</c> ever changed, every already-converted project's page identity would shift
+    /// silently. Asserting against a hardcoded literal (computed once by actually running the code, not by
+    /// calling <c>CreateDeterministic</c> a second time) is what would catch that.
+    /// </summary>
+    [TestMethod]
+    public void AConvertedKeyMatchesThePinnedLiteralForAKnownNameAndCode()
+    {
+        var document = Converter.Convert(JsonNode.Parse("""
+        {"Name":"P","Scenes":[{"Id":"win00001","PageCode":"win00001"}]}
+        """)!);
+
+        var key = document["Scenes"]![0]!["PageKey"]!.GetValue<string>();
+
+        Assert.AreEqual("e6ce2175-1047-5dbc-ac17-fdaa0840b615", key);
     }
 }

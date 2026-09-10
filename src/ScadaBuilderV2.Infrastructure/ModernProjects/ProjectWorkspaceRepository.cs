@@ -169,14 +169,18 @@ public sealed class ProjectWorkspaceRepository(
 
                 foreach (var entry in outcome.Plan.Entries)
                 {
-                    // C6: the backup is the only way back, so it is written before anything is changed.
-                    ArtifactBackupWriter.CreateBackup(entry.FilePath);
-
                     var document = JsonNode.Parse(await File.ReadAllTextAsync(entry.FilePath, cancellationToken))
                         ?? throw new InvalidDataException($"Document illisible: {entry.FilePath}");
                     var converted = registry
                         .ResolveChain(entry.Module, entry.FromVersion, entry.ToVersion)
                         .Apply(document);
+
+                    // C6: the backup is the only way back, so it is written immediately before the file on
+                    // disk is modified. Converting in memory modifies nothing on disk; if that step throws
+                    // (e.g. a page with no identity to settle), no backup is left behind and the file is
+                    // untouched, so a retry does not accumulate orphaned numbered backups.
+                    ArtifactBackupWriter.CreateBackup(entry.FilePath);
+
                     await File.WriteAllTextAsync(
                         entry.FilePath,
                         converted.ToJsonString(new JsonSerializerOptions { WriteIndented = true }),
