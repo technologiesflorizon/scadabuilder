@@ -144,4 +144,42 @@ public sealed class ProjectGeneration1ConverterTests
 
         StringAssert.Contains(exception.Message, "Name");
     }
+
+    /// <summary>
+    /// Symmetric test for the round-1 fix: a page with neither <c>PageCode</c> nor <c>Id</c> has no identity to
+    /// settle. The guard must reject it with <see cref="InvalidDataException"/> (not the unfiltered
+    /// <see cref="ArgumentException"/> <see cref="PageKeyFactory.CreateDeterministic"/> would throw), and the
+    /// message must identify which page failed -- by index, and by whatever identifying field it does carry --
+    /// since that identification is what makes the guard useful in the field.
+    /// </summary>
+    [TestMethod]
+    public void APageWithNoCodeAndNoIdFailsConversionWithInvalidDataException()
+    {
+        var exception = Assert.ThrowsException<InvalidDataException>(() =>
+            Converter.Convert(JsonNode.Parse("""
+            {"Name":"P","Scenes":[{"Title":"Accueil"}]}
+            """)!));
+
+        StringAssert.Contains(exception.Message, "ne porte aucun code de page");
+        StringAssert.Contains(exception.Message, "index 0");
+        StringAssert.Contains(exception.Message, "Accueil");
+    }
+
+    /// <summary>
+    /// A distinct shape from the missing-field case above: the page carries a <c>PageCode</c> that is present
+    /// but blank. <c>PageCode ?? Id ?? ""</c> does not fall through to <c>Id</c> here because the value is not
+    /// null, so this exercises a different branch of the guard than the missing-field test does, and the
+    /// message must still identify the page -- here by <c>Id</c>, since one is present.
+    /// </summary>
+    [TestMethod]
+    public void APageWithAWhitespacePageCodeFailsConversionWithInvalidDataException()
+    {
+        var exception = Assert.ThrowsException<InvalidDataException>(() =>
+            Converter.Convert(JsonNode.Parse("""
+            {"Name":"P","Scenes":[{"Id":"win00002","PageCode":"   "}]}
+            """)!));
+
+        StringAssert.Contains(exception.Message, "ne porte aucun code de page");
+        StringAssert.Contains(exception.Message, "win00002");
+    }
 }
