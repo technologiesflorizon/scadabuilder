@@ -48,6 +48,18 @@ public sealed class BackwardRefusalTests
         var issue = result.Diagnostics.Single(entry => entry.Code == "project.format-too-new");
         StringAssert.Contains(issue.Message, (ScadaFormatGeneration.Project + 1).ToString());
         StringAssert.Contains(issue.Message, ScadaFormatGeneration.Project.ToString());
+
+        // Ruling 40: a binary refusing to open a project must not touch its directory at all, not merely
+        // leave `project.json` byte-identical. `AcquireWorkspaceLockAsync` creates `.studio/` and
+        // `workspace-save.lock` *before* it even checks whether a pending transaction exists, so calling
+        // recovery unconditionally on this path (as an earlier fix-round regression did) wrote both into a
+        // project this gate had just refused -- invisible to an assertion that only ever compared
+        // `project.json`. The positive anchor is the exact single-entry listing, not merely an absence of
+        // `.studio`: a weaker "no .studio" assertion would still pass if refusal wrote some other file.
+        CollectionAssert.AreEquivalent(
+            new[] { projectPath },
+            Directory.GetFileSystemEntries(root),
+            "a refused project's directory must contain exactly what it did before the refusal -- no lock file, no .studio/, nothing.");
     }
 
     [TestMethod]

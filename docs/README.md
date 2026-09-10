@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.6.0021`
+Document version: `V2.1.6.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-10 | `V2.1.6.0022` | `PENDING` | Tour 2 de la revue de branche du chantier de versionnement de format (rulings 40-43) : le recouvrement de transaction du tour 1 créait `.studio/`+le verrou dans un projet sur le point d'être refusé comme trop récent, contre C2 — déplacé à l'intérieur de la branche de conversion; spec §5.2/§5.4 et `PROJECT_MODEL_CONTRACT_V2.md` §5 corrigées (trois modules sur quatre n'ont en réalité aucun refus vers l'arrière, `KNOWN_GAPS_V2.md` entrée 35); rapport d'audit §8 corrigé (comptage exact, preuve empirique rapatriée). Voir `docs/superpowers/reports/2026-09-10-project-format-versioning-audit.md` §9. |
 | 2026-09-10 | `V2.1.6.0021` | `c1e5b6c` | Corrections de revue de branche du chantier de versionnement de format (rulings 34-39) : recouvrement de transaction avant la pré-lecture de génération, écriture de conversion atomique, convertisseur `Generation1` aligné sur `EffectivePageCode`, lecture JSON insensible à la casse, chemin de sauvegarde rapporté au diagnostic d'échec. Voir `docs/superpowers/reports/2026-09-10-project-format-versioning-audit.md` §6. |
 | 2026-09-10 | `V2.1.6.0020` | `d3be7da` | Clôture du chantier de versionnement de format et convertisseurs : rapport d'audit `docs/superpowers/reports/2026-09-10-project-format-versioning-audit.md`. Il consigne le sort de chaque règle de `ModernProjectMigration` (une reprise dans le fichier, cinq conservées avec leur raison), l'état des générations par module, et le fait que la suppression du reniflage de forme promise par le plan n'est pas livrée — re-cadrée et consignée à l'entrée 33. |
 | 2026-09-10 | `V2.1.6.0019` | `6e4f4b6` | Correction de suivi Tâche 8 (revue round 1) : trou résiduel consigné à l'entrée 34 de `docs/08_implementation_status/KNOWN_GAPS_V2.md` (Fenêtre rapide non gardée sous profils `Compatibility21`/`Compatibility22`) et clarification de `PROJECT_MODEL_CONTRACT_V2.md` sur la nature du défaut corrigé par la Tâche 8. |

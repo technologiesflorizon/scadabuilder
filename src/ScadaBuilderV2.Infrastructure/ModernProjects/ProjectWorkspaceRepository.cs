@@ -134,16 +134,6 @@ public sealed class ProjectWorkspaceRepository(
 
         try
         {
-            // Ruling 34: recovery must run before the version pre-read, not merely before the store's own
-            // normal load path. `ReadWorkspaceSnapshotFromProjectRootAsync` below also recovers on its way in
-            // (it always has), but by then a conversion may already have overwritten `project.json` in this
-            // method. An incomplete workspace-save transaction left over from an earlier interrupted save
-            // would then be rolled back onto that freshly-converted file, silently reverting the conversion
-            // the operator just consented to and reactivating the session on unconverted data -- exactly what
-            // spec §6.5 declares cannot exist. Recovery is idempotent, so running it here and again inside the
-            // later read is safe; it is a no-op the second time once nothing is pending.
-            await store.RecoverPendingTransactionsAsync(validation.Location.ProjectRoot, cancellationToken);
-
             var declaredGeneration = ArtifactFormatVersionReader.ReadFormatVersion(
                 File.Exists(validation.Location.ProjectFilePath)
                     ? File.ReadAllText(validation.Location.ProjectFilePath)
@@ -163,6 +153,20 @@ public sealed class ProjectWorkspaceRepository(
 
             if (declaredGeneration < ScadaFormatGeneration.Project)
             {
+                // Ruling 40 (fix round 2): recovery must run before the conversion write below, not before
+                // the version pre-read above. `AcquireWorkspaceLockAsync` creates `.studio/` and
+                // `workspace-save.lock` before it even checks whether a `transactions/` directory exists, so
+                // calling recovery unconditionally at the top of OpenAsync wrote those entries into every
+                // project opened -- including one about to be refused outright as `project.format-too-new`.
+                // C2: a binary that does not understand a file must never be able to rewrite it, and creating
+                // a lock file and a `.studio` directory in a refused project's tree is exactly that. Recovery
+                // is only needed when a conversion is actually about to be written, so it moves here, inside
+                // the branch that is about to convert -- C1 (an interrupted save transaction must not undo a
+                // consented conversion) is closed identically, and the refusal paths above no longer touch
+                // disk at all. Recovery is idempotent, so `ReadWorkspaceSnapshotFromProjectRootAsync` further
+                // down recovering again once nothing is pending remains a no-op.
+                await store.RecoverPendingTransactionsAsync(validation.Location.ProjectRoot, cancellationToken);
+
                 var outcome = await conversions.PrepareAsync(
                     [new ArtifactToConvert(
                         ArtifactModule.Project,
@@ -215,7 +219,13 @@ public sealed class ProjectWorkspaceRepository(
                         {
                             await using (var tempStream = new FileStream(
                                 tempPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, bufferSize: 4096, FileOptions.WriteThrough))
-                            await using (var writer = new StreamWriter(tempStream, System.Text.Encoding.UTF8))
+                            // Fix round 2: a plain System.Text.Encoding.UTF8 StreamWriter emits a UTF-8 BOM
+                            // (EF BB BF); the File.WriteAllTextAsync this replaced did not, and no other JSON
+                            // writer in this store does either (ModernProjectStore.SaveJsonAsync goes straight
+                            // through JsonSerializer.SerializeAsync onto the raw stream). A BOM-prefixed
+                            // project.json would be the one file in the project that silently disagreed with
+                            // every other artifact's encoding.
+                            await using (var writer = new StreamWriter(tempStream, new System.Text.UTF8Encoding(encoderShouldEmitUTF8Identifier: false)))
                             {
                                 await writer.WriteAsync(converted.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
                                 await writer.FlushAsync(cancellationToken);
@@ -226,9 +236,19 @@ public sealed class ProjectWorkspaceRepository(
                         }
                         catch
                         {
-                            if (File.Exists(tempPath))
+                            // Fix round 2: the cleanup delete must never replace the real failure. A locked or
+                            // already-vanished temp file would otherwise throw out of this catch and hide
+                            // whatever actually went wrong with the conversion write.
+                            try
                             {
-                                File.Delete(tempPath);
+                                if (File.Exists(tempPath))
+                                {
+                                    File.Delete(tempPath);
+                                }
+                            }
+                            catch (Exception cleanupException) when (cleanupException is IOException or UnauthorizedAccessException)
+                            {
+                                // Best-effort only: the original exception below is the one that must surface.
                             }
                             throw;
                         }

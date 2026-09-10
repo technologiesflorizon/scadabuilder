@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active project model contract
-Document version: `V2.1.6.0019`
+Document version: `V2.1.6.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-10 | `V2.1.6.0022` | `PENDING` | §5 corrigée : sa première phrase se lisait comme si les quatre modules persistés portaient un refus vers l'arrière en service. Seul `project.json` l'est effectivement; `Scene`, `TagCatalog` et `Component` portent le champ `FormatVersion` à l'aller-retour mais aucun code de production ne le lit pour refuser ou convertir. Trouvé au tour 2 de la revue de branche du chantier de versionnement de format, `KNOWN_GAPS_V2.md` entrée 35. |
 | 2026-09-10 | `V2.1.6.0019` | `6e4f4b6` | Correction de suivi Tâche 8 (revue round 1) : §2.2 précise que le retrait de la comparaison `ManifestVersion` corrige un blocage total latent de la fonctionnalité Fenêtre rapide, pas une réduction de portée. Le trou résiduel sous `Compatibility21`/`Compatibility22` est consigné à l'entrée 34 de `KNOWN_GAPS_V2.md`. |
 | 2026-09-10 | `V2.1.6.0018` | `02de468` | Tâche 8 du chantier de versionnement de format : `ManifestVersion` perd son rôle d'autorisation de contenu pour les Fenêtres rapides. `ValidateQuickWindows` ne compare plus contre `"2.3"`; le catalogue de capacités reste seul juge de ce qu'un projet peut contenir, quel que soit le profil négocié. **Corrige un défaut latent** : `ManifestVersion` valait `"2.0"` par défaut et n'était jamais mis à `"2.3"` nulle part dans `src/`, donc la comparaison retirée bloquait en `Error` tout projet réel portant une Fenêtre rapide, dès sa création — pas un simple rétrécissement de portée. |
 | 2026-09-10 | `V2.1.6.0017` | `f5589e9` | `ProjectGeneration1Converter` (Tâche 7 du chantier C) écrit `PageKey` avec la même dérivation que `PageKeyFactory.CreateDeterministic` (GUID v5, bits de version/variante posés) plutôt qu'une dérivation SHA-256 brute incompatible. `ModernProjectMigration` reste le normaliseur d'identité du store, appelé aux écritures et à la construction en mémoire; le convertisseur ne fait que régler l'identité une fois, dans le fichier, à l'ouverture. |
@@ -105,7 +106,7 @@ All enabled tags are exposed for `Lire valeur` authoring. `Ecrire valeur` may ta
 
 ## 5. Backward Format Refusal
 
-`DEC-0049` D5 is implemented. Chaque module persisté (`project.json`, une scène, le catalogue de tags, un composant `.sep`) porte une génération de format entière et indépendante, exposée par `ScadaFormatGeneration` (`Domain/Projects/ScadaFormatGeneration.cs`). L'absence du champ dans un fichier vaut génération zéro : tout artefact écrit avant ce mécanisme reste lisible sans être réécrit.
+`DEC-0049` D5 is implemented **for `project.json` only**. Chaque module persisté (`project.json`, une scène, le catalogue de tags, un composant `.sep`) porte un champ `FormatVersion` optionnel dans son enregistrement de domaine, exposé par `ScadaFormatGeneration` (`Domain/Projects/ScadaFormatGeneration.cs`) pour la génération courante attendue de chacun, et une scène/un catalogue de tags sérialise et désérialise ce champ à l'aller-retour. Mais **le refus n'est câblé que pour `project.json`** : `ProjectWorkspaceRepository.OpenAsync` est le seul site de production qui lit une génération déclarée et refuse. `ArtifactModule.Scene`, `.TagCatalog` et `.Component` n'ont aucune référence de production (`KNOWN_GAPS_V2.md` entrée 35) — rien ne construit jamais un `ArtifactToConvert` pour eux, et `ScadaScene.FormatVersion`/`ScadaTagCatalog.FormatVersion` ne sont lus par aucun code décisionnel. Un lecteur de cette section ne doit pas en conclure que les quatre modules sont gardés : trois sur quatre ne le sont pas aujourd'hui. L'absence du champ dans un fichier vaut génération zéro : tout artefact écrit avant ce mécanisme reste lisible sans être réécrit.
 
 `ProjectWorkspaceRepository.OpenAsync` lit la génération déclarée du fichier `project.json` avant toute désérialisation, via `ArtifactFormatVersionReader.ReadFormatVersion` (`Infrastructure/ModernProjects/ArtifactFormatVersionReader.cs`), qui parcourt le document JSON brut sans jamais matérialiser un `ScadaProject`. Si la génération déclarée dépasse `ScadaFormatGeneration.Project`, l'ouverture est refusée avant toute activation : le diagnostic `project.format-too-new` est retourné et aucun `ProjectLoadCandidate` n'est produit. Le fichier n'est ni lu au-delà de ce pré-scan, ni réécrit.
 

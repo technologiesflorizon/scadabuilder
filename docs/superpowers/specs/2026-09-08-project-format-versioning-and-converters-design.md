@@ -1,13 +1,14 @@
 # Spécification — Versionnement de format et convertisseurs
 
 Date: 2026-09-08
-Status: Implémenté (chantier C clos); corrigé par revue de branche (rulings 34-39)
-Document version: `V2.1.6.0021`
+Status: Implémenté (chantier C clos); corrigé par revue de branche (rulings 34-43)
+Document version: `V2.1.6.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-10 | `V2.1.6.0022` | `PENDING` | Revue de branche, tour 2 (rulings 40-43) : §5.4 corrigée (deux issues, pas trois; pas de mode consultation `DisabledReason`) et §5.2 corrigée (`ConversionCoordinator` ne écrit rien, `ConversionPlan` ne porte pas le chemin de sauvegarde) plutôt que la ligne Status seule; recouvrement de transaction déplacé de la tête d'`OpenAsync` vers l'intérieur de la branche de conversion, pour ne plus créer `.studio/`/le verrou dans un projet sur le point d'être refusé (N1/C2). Détail : `docs/superpowers/reports/2026-09-10-project-format-versioning-audit.md` §9. |
 | 2026-09-10 | `V2.1.6.0021` | `c1e5b6c` | Revue de branche : §2.1 (atomicité) et §6.5 (aucune session sur un artefact non converti) étaient toutes deux violées par l'implémentation réelle malgré une suite verte — recouvrement de transaction déplacé avant la pré-lecture de génération dans `ProjectWorkspaceRepository.OpenAsync`, écriture de conversion rendue atomique (fichier temporaire + renommage), et premier test bout-en-bout du chantier ouvrant réellement un projet génération 0. Détail : `.superpowers/sdd/2026-09-08-project-format-versioning-and-converters/branch-fix-report.md`. |
 | 2026-09-08 | `V2.1.6.0011` | `b7cd56a` | Correction : le `.sep` porte déjà `SchemaVersion`. C1 le raccorde au registre au lieu de lui ajouter un champ parallèle; trois modules seulement reçoivent un `FormatVersion` neuf. |
 | 2026-09-08 | `V2.1.6.0010` | `c7acf1e` | C5 ramenée à deux issues sur décision : convertir ou ne pas ouvrir. Le mode consultation en lecture seule sort du périmètre, les écarts entre générations étant trop nombreux pour qu'une session à moitié migrée soit fidèle. |
@@ -154,21 +155,41 @@ Une règle non reprise reste en place et est nommée dans le rapport de phase, a
 
 `ArtifactConverterRegistry` : enregistrement, résolution de chaîne, détection de trou et de chevauchement.
 
-`ConversionPlan` : les modules touchés, les chaînes, les libellés d'étape, les chemins de sauvegarde.
+`ConversionPlan` : les modules touchés, les chaînes, les libellés d'étape. Il ne porte pas le chemin de
+sauvegarde (Ruling 13, chantier d'origine) : celui-ci dépend de ce qui existe déjà sur disque au moment de
+l'écriture (suffixe numéroté par `ArtifactBackupWriter`), donc ne peut pas être connu au moment où le plan est
+construit. Le chemin **de base** (`FilePath + ".bak"`) est dérivé et affiché par le dialogue (§5.4); le chemin
+**réellement écrit** n'est connu qu'après l'exécution et n'est rapporté qu'en cas d'échec, dans le diagnostic
+`project.open-failed` (Ruling 39, revue de branche).
 
-`ConversionCoordinator` : refus vers l'arrière, calcul du plan, demande de consentement, exécution, écriture. Il ne connaît ni le disque ni l'interface.
+`ConversionCoordinator` : refus vers l'arrière (chaîne trouée), calcul du plan, demande de consentement. Il ne
+connaît ni le disque ni l'interface, et il **n'exécute ni n'écrit rien** : `PrepareAsync` retourne un
+`ConversionOutcome` que l'appelant applique ou non. L'exécution — lecture, application des convertisseurs,
+sauvegarde, écriture — vit en Infrastructure (§5.3), dans `ProjectWorkspaceRepository.OpenAsync`, pas ici.
 
 ### 5.3 Infrastructure
 
-Lecture du `FormatVersion` avant désérialisation complète, pour pouvoir refuser sans instancier un modèle qu'on ne comprend pas.
+Lecture du `FormatVersion` avant désérialisation complète, pour pouvoir refuser sans instancier un modèle qu'on
+ne comprend pas.
 
-Écriture des sauvegardes, et application des convertisseurs enregistrés.
+`ProjectWorkspaceRepository.OpenAsync` porte l'exécution que `ConversionCoordinator` ne fait pas : pour chaque
+entrée du plan accepté, lit le document (`JsonNode`, insensible à la casse des noms de propriété — Ruling 38),
+applique la chaîne de convertisseurs résolue par le registre, écrit la sauvegarde
+(`ArtifactBackupWriter.CreateBackup`, avant toute écriture convertie — C6), puis écrit le document converti de
+façon atomique (fichier temporaire adjacent, `FileOptions.WriteThrough`, puis `File.Move` — Ruling 35). La
+récupération d'une transaction de sauvegarde interrompue (`ModernProjectStore.RecoverPendingTransactionsAsync`)
+s'exécute juste avant cette boucle, à l'intérieur de la branche de conversion — pas avant, pour ne jamais créer
+le verrou de l'espace de travail dans un projet que le binaire s'apprête à refuser purement et simplement
+(Ruling 40, revue de branche : C2 interdit à un binaire qui ne comprend pas un fichier de le réécrire, y
+compris en y créant seulement un répertoire `.studio/` et un fichier de verrou).
 
 ### 5.4 App/WPF
 
-`ConversionPlanDialog` : le plan, les trois issues, l'irréversibilité, le chemin de sauvegarde.
-
-Désactivation de la sauvegarde en mode consultation, avec la raison portée par le mécanisme `DisabledReason` existant.
+`ConversionPlanDialog` : le plan, **deux issues** — convertir ou annuler (C5; le mode consultation en lecture
+seule est explicitement hors périmètre, verrouillé par
+`ConversionDialogContractTests.TheDialogOffersExactlyTwoOutcomes`) — l'irréversibilité, et le chemin de
+sauvegarde **de base** dérivé de `FilePath + ".bak"` (Ruling 13; le chemin réellement écrit peut porter un
+suffixe numéroté que seule l'exécution connaît).
 
 ## 6. Contrats de validation
 

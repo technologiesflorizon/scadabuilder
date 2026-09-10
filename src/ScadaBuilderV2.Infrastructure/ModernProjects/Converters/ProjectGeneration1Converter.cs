@@ -89,13 +89,14 @@ public sealed class ProjectGeneration1Converter : IArtifactConverter
                 // unfiltered ArgumentException propagate unhandled to the UI.
                 if (string.IsNullOrWhiteSpace(code))
                 {
+                    // Fix round 2: the Id='…' arm this descriptor used to try first is unreachable now that
+                    // `code` mirrors EffectivePageCode (Ruling 37) -- `code` is blank here only when both
+                    // PageCode and Id are blank, so `id` above can never be a non-blank value at this point.
+                    // Only Title remains as a possible identifying field.
                     var title = scene["Title"]?.GetValue<string>();
-                    var identifier = scene["Id"]?.GetValue<string>();
-                    var descriptor = !string.IsNullOrWhiteSpace(identifier)
-                        ? $"Id='{identifier}'"
-                        : !string.IsNullOrWhiteSpace(title)
-                            ? $"Title='{title}'"
-                            : "aucun champ identifiant";
+                    var descriptor = !string.IsNullOrWhiteSpace(title)
+                        ? $"Title='{title}'"
+                        : "aucun champ identifiant";
                     throw new InvalidDataException(
                         $"Conversion projet impossible : la page à l'index {position} ({descriptor}) ne porte aucun code de page.");
                 }

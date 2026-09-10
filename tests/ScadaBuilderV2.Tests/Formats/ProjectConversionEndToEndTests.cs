@@ -71,6 +71,16 @@ public sealed class ProjectConversionEndToEndTests
             ArtifactFormatVersionReader.ReadFormatVersion(convertedBytes),
             "the file on disk must now declare the current generation, not the generation it arrived at.");
 
+        // Fix round 2: File.ReadAllText[Async] silently strips a UTF-8 BOM, so nothing that reads the file
+        // back through it (including every other assertion in this test) can see one. Reading the raw bytes is
+        // the only way to catch a converted file gaining a BOM none of the store's other JSON writers emit.
+        var rawConvertedBytes = await File.ReadAllBytesAsync(projectPath);
+        CollectionAssert.AreNotEqual(
+            new byte[] { 0xEF, 0xBB, 0xBF },
+            rawConvertedBytes.Take(3).ToArray(),
+            "a converted project.json must not gain a UTF-8 BOM: no other JSON writer in this store emits one.");
+        Assert.AreEqual('{', (char)rawConvertedBytes[0], "positive anchor: the file starts with the JSON object itself, not a byte-order mark.");
+
         var backupPath = projectPath + ".bak";
         Assert.IsTrue(File.Exists(backupPath), "C7: the backup is the only way back.");
         Assert.AreEqual(generationZeroBytes, await File.ReadAllTextAsync(backupPath),
@@ -186,6 +196,53 @@ public sealed class ProjectConversionEndToEndTests
             "an already-converted project must not be rewritten again on the next open.");
         Assert.IsFalse(File.Exists(projectPath + ".bak.1"),
             "unbounded .bak.N accumulation is exactly the symptom of a converter that keeps missing the field.");
+    }
+
+    /// <summary>
+    /// Fix round 2 / item 3: the C3 residue. All three tests above build fixtures via <c>CreateAsync</c>, so
+    /// every scene already carries a <c>PageKey</c> and the converter's key-settling branch is <c>continue</c>d
+    /// every time -- the branch that actually writes a permanent page identity to disk was covered only at the
+    /// <c>JsonNode</c> unit level in <c>ProjectGeneration1ConverterTests</c>, never through the real open path.
+    /// This test strips <c>PageKey</c> from the scene (and the now-dangling <c>HomePageKey</c>, so the missing
+    /// key is the only unsettled identity in the fixture) before downgrading, so the converter's derivation
+    /// branch is the one that actually runs on this open.
+    /// </summary>
+    [TestMethod]
+    public async Task AProjectWithNoPageKeyGetsTheDeterministicKeySettledAndItSurvivesASaveAndReopen()
+    {
+        var projectPath = await CreateGenerationZeroProject();
+        var node = JsonNode.Parse(await File.ReadAllTextAsync(projectPath))!.AsObject();
+        var scene = node["Scenes"]!.AsArray()[0]!.AsObject();
+        scene.Remove("PageKey");
+        node.Remove("HomePageKey");
+        await File.WriteAllTextAsync(projectPath, node.ToJsonString(new JsonSerializerOptions { WriteIndented = true }));
+
+        var store = new ModernProjectStore();
+        var repository = new ProjectWorkspaceRepository(
+            store,
+            new ReferenceProjectCompatibilityLocator(),
+            CreateRegistry(),
+            new ConversionCoordinator(CreateRegistry(), new AcceptingConsent()));
+
+        var opened = await repository.OpenAsync(projectPath);
+        Assert.IsTrue(opened.IsSuccess, string.Join(Environment.NewLine, opened.Diagnostics.Select(i => i.Message)));
+
+        var page = opened.Candidate!.Snapshot.Project.Scenes.Single();
+        var expectedKey = PageKeyFactory.CreateDeterministic("Projet conversion e2e", "win00001");
+        Assert.AreEqual(expectedKey, page.PageKey,
+            "the settled key must be the same deterministic derivation PageKeyFactory produces everywhere else in the product, not an arbitrary new Guid.");
+        Assert.AreNotEqual(Guid.Empty, page.PageKey, "positive anchor: a real, non-empty key was actually settled.");
+
+        // Survives a save and reopen: the settled identity must not be an artifact of the open-time snapshot
+        // alone -- it has to be what gets persisted and read back, exactly as `MigrateProject` would treat any
+        // other already-keyed page.
+        var projectRoot = Path.GetDirectoryName(projectPath)!;
+        await store.SaveWorkspaceSnapshotToProjectRootAsync(projectRoot, opened.Candidate.Snapshot);
+
+        var reopened = await repository.OpenAsync(projectPath);
+        Assert.IsTrue(reopened.IsSuccess, string.Join(Environment.NewLine, reopened.Diagnostics.Select(i => i.Message)));
+        Assert.AreEqual(expectedKey, reopened.Candidate!.Snapshot.Project.Scenes.Single().PageKey,
+            "the settled key must survive a save and a fresh reopen unchanged.");
     }
 
     /// <summary>Creates a genuinely valid project via the real creation path, then downgrades it to generation zero on disk.</summary>

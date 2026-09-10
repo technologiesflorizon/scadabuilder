@@ -2,13 +2,14 @@
 
 Date: 2026-08-13
 Status: Active regression coverage map
-Document version: `V2.1.6.0017`
+Document version: `V2.1.6.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-10 | `V2.1.6.0017` | `f5589e9` | Couverture du convertisseur projet 0 → 1 (`ProjectGeneration1ConverterTests`) étendue par deux tests : accord exact avec `PageKeyFactory.CreateDeterministic`, et clés distinctes pour deux codes de page distincts. |
+| 2026-09-10 | `V2.1.6.0022` | `PENDING` | Trois lignes ajoutées à la carte de couverture pour le chantier de versionnement de format et convertisseurs (2026-09-08), dont les ~60 tests n'avaient aucune ligne : refus/chaîne/coordinateur, convertisseur projet 0→1 et conversion bout-en-bout, contrat du dialogue de conversion. Corrige aussi la ligne `V2.1.6.0017` ci-dessous, qui nomme `TwoPagesWithDifferentCodesReceiveDifferentKeys` — un test supprimé trois commits plus tard (`613b296`) parce qu'il ne discriminait rien, remplacé par `TwoProjectsWithTheSamePageCodeReceiveDifferentKeys`. |
+| 2026-09-10 | `V2.1.6.0017` | `f5589e9` | Couverture du convertisseur projet 0 → 1 (`ProjectGeneration1ConverterTests`) étendue par deux tests : accord exact avec `PageKeyFactory.CreateDeterministic`, et **`TwoPagesWithDifferentCodesReceiveDifferentKeys`, supprimé au commit `613b296`** (Ruling 17, chantier d'origine : deux codes différents passaient sous l'ancienne dérivation comme sous la nouvelle et ne discriminaient rien) **et remplacé par `TwoProjectsWithTheSamePageCodeReceiveDifferentKeys`** (même code, deux noms de projet, seule paire qui distingue la bonne dérivation de la mauvaise). Ligne corrigée le 2026-09-10 (`V2.1.6.0022`) — elle nommait encore le test supprimé. |
 | 2026-09-08 | `V2.1.6.0008` | `77d955d` | Couverture du cycle de vie des projets : coordinateur et contrats de shell. |
 | 2026-09-08 | `V2.1.6.0006` | `8074d0a` | Couverture des deux branches de resolution du titre, la branche de repli n'etant compilee par aucun artefact gele. |
 | 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Couverture des Phases 6 et 7 ajoutée; compteurs de conformance recalés sur 126 sondes, 46 capacités bloquées et l'index à 172 entrées. |
@@ -232,6 +233,9 @@ Les 67 tests QuickWindow/legacy-popup ciblés, les 4 tests de fixture conformanc
 | Studio Element+ re-edit from scene | `WebViewContextMenuScriptTests.cs`, `ElementStudioComponentToImportPackageMapperTests.cs`, `ElementStudioComponentNamingTests.cs` |
 | Studio source rendering | `ElementStudioSourceRenderingTests.cs` |
 | Legacy extraction | `LegacyElementDetectorTests.cs`, `LegacyAtomicElementDetectorTests.cs` |
+| Project format versioning and converters (`DEC-0049` D5, chantier 2026-09-08) — refusal, chain, coordinator | `ArtifactFormatVersionReaderTests.cs`, `ArtifactConverterRegistryTests.cs`, `ConversionCoordinatorTests.cs`, `ArtifactBackupWriterTests.cs`, `ComponentFormatVersionAccessorTests.cs`, `Formats/BackwardRefusalTests.cs` (newer-than-binary refusal, declined-conversion no-touch, refused project's directory unchanged — Ruling 40) |
+| Project format versioning and converters — generation-0→1 project converter and end-to-end conversion | `Formats/ProjectGeneration1ConverterTests.cs` (page-key settling, `PageKeyFactory.CreateDeterministic` parity, `EffectivePageCode`-shaped whitespace-PageCode fallback), `Formats/ProjectConversionEndToEndTests.cs` (a real generation-0 project on disk converts, opens, and is stable on reopen; a pending workspace-save transaction does not undo a consented conversion — Ruling 34/40; a lowercase `formatversion` key still converts without reconverting; a page with no `PageKey` gets it settled deterministically and it survives a save and reopen — C3) |
+| Conversion dialog contract | `ConversionDialogContractTests.cs` (exactly two outcomes — C5) |
 
 ## 3. Rule
 
