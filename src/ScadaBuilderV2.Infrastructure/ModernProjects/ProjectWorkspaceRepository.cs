@@ -153,20 +153,6 @@ public sealed class ProjectWorkspaceRepository(
 
             if (declaredGeneration < ScadaFormatGeneration.Project)
             {
-                // Ruling 40 (fix round 2): recovery must run before the conversion write below, not before
-                // the version pre-read above. `AcquireWorkspaceLockAsync` creates `.studio/` and
-                // `workspace-save.lock` before it even checks whether a `transactions/` directory exists, so
-                // calling recovery unconditionally at the top of OpenAsync wrote those entries into every
-                // project opened -- including one about to be refused outright as `project.format-too-new`.
-                // C2: a binary that does not understand a file must never be able to rewrite it, and creating
-                // a lock file and a `.studio` directory in a refused project's tree is exactly that. Recovery
-                // is only needed when a conversion is actually about to be written, so it moves here, inside
-                // the branch that is about to convert -- C1 (an interrupted save transaction must not undo a
-                // consented conversion) is closed identically, and the refusal paths above no longer touch
-                // disk at all. Recovery is idempotent, so `ReadWorkspaceSnapshotFromProjectRootAsync` further
-                // down recovering again once nothing is pending remains a no-op.
-                await store.RecoverPendingTransactionsAsync(validation.Location.ProjectRoot, cancellationToken);
-
                 var outcome = await conversions.PrepareAsync(
                     [new ArtifactToConvert(
                         ArtifactModule.Project,
@@ -178,8 +164,28 @@ public sealed class ProjectWorkspaceRepository(
                 if (!outcome.CanProceed)
                 {
                     // C5: convert, or do not open. There is no path to a session on an unconverted artifact.
+                    // Nothing above this point has touched disk (PrepareAsync resolves the chain from the
+                    // declared integer generation; it never reads project.json), and recovery has not run
+                    // yet either -- so a declined conversion, exactly like a too-new refusal, leaves the
+                    // project's directory untouched. Spec §6.5: "Annuler" n'ouvre pas le projet, et aucun
+                    // artefact n'est touché.
                     return new ProjectRepositoryResult(null, outcome.Diagnostics);
                 }
+
+                // Ruling 40 (fix round 2), corrected by Ruling 44 (fix round 3): recovery must run after the
+                // CanProceed gate, not merely after the version pre-read. Round 2 moved the call below the
+                // pre-read but still above PrepareAsync/CanProceed -- so on the path where the operator
+                // *declines* the conversion, AcquireWorkspaceLockAsync had still created `.studio/` and
+                // `workspace-save.lock`, and if a transaction was pending, RollbackTransaction had already
+                // replaced project.json *before the operator answered*. C2 (a binary that does not understand
+                // a file must never rewrite it) and spec §6.5 (a declined conversion touches nothing) both
+                // require recovery to wait until the operator has actually consented. Recovery is only needed
+                // when a conversion is genuinely about to be written, so it moves here, immediately before the
+                // write loop -- C1 (an interrupted save transaction must not undo a consented conversion)
+                // stays closed identically, and now both refusal paths (too-new above, declined here) leave
+                // the directory untouched. Recovery is idempotent, so `ReadWorkspaceSnapshotFromProjectRootAsync`
+                // further down recovering again once nothing is pending remains a no-op.
+                await store.RecoverPendingTransactionsAsync(validation.Location.ProjectRoot, cancellationToken);
 
                 string? lastBackupPath = null;
                 try

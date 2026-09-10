@@ -1,15 +1,16 @@
 # Spécification — Versionnement de format et convertisseurs
 
 Date: 2026-09-08
-Status: Implémenté (chantier C clos); corrigé par revue de branche (rulings 34-43)
-Document version: `V2.1.6.0022`
+Status: Implémenté (chantier C clos); corrigé par revue de branche (rulings 34-47)
+Document version: `V2.1.6.0023`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-10 | `V2.1.6.0023` | `PENDING` | Revue de branche, tour 3 (rulings 44-47) : recouvrement de transaction déplacé une seconde fois — sous la porte `CanProceed`, pas seulement dans la branche de conversion, pour qu'un opérateur qui refuse ne voie plus jamais son disque touché avant d'avoir répondu (Ruling 44, Critical). Détail : `docs/superpowers/reports/2026-09-10-project-format-versioning-audit.md` §10. |
 | 2026-09-10 | `V2.1.6.0022` | `240dcf6` | Revue de branche, tour 2 (rulings 40-43) : §5.4 corrigée (deux issues, pas trois; pas de mode consultation `DisabledReason`) et §5.2 corrigée (`ConversionCoordinator` ne écrit rien, `ConversionPlan` ne porte pas le chemin de sauvegarde) plutôt que la ligne Status seule; recouvrement de transaction déplacé de la tête d'`OpenAsync` vers l'intérieur de la branche de conversion, pour ne plus créer `.studio/`/le verrou dans un projet sur le point d'être refusé (N1/C2). Détail : `docs/superpowers/reports/2026-09-10-project-format-versioning-audit.md` §9. |
-| 2026-09-10 | `V2.1.6.0021` | `c1e5b6c` | Revue de branche : §2.1 (atomicité) et §6.5 (aucune session sur un artefact non converti) étaient toutes deux violées par l'implémentation réelle malgré une suite verte — recouvrement de transaction déplacé avant la pré-lecture de génération dans `ProjectWorkspaceRepository.OpenAsync`, écriture de conversion rendue atomique (fichier temporaire + renommage), et premier test bout-en-bout du chantier ouvrant réellement un projet génération 0. Détail : `.superpowers/sdd/2026-09-08-project-format-versioning-and-converters/branch-fix-report.md`. |
+| 2026-09-10 | `V2.1.6.0021` | `c1e5b6c` | Revue de branche : §2.1 (atomicité) et §6.5 (aucune session sur un artefact non converti) étaient toutes deux violées par l'implémentation réelle malgré une suite verte — écriture de conversion rendue atomique (fichier temporaire + renommage), et premier test bout-en-bout du chantier ouvrant réellement un projet génération 0. Recouvrement de transaction déplacé avant la pré-lecture de génération dans `ProjectWorkspaceRepository.OpenAsync` **(placement dépassé au tour 2, puis de nouveau au tour 3 — voir les lignes `V2.1.6.0022`/`V2.1.6.0023` ci-dessus et `docs/superpowers/reports/2026-09-10-project-format-versioning-audit.md` §10)**. |
 | 2026-09-08 | `V2.1.6.0011` | `b7cd56a` | Correction : le `.sep` porte déjà `SchemaVersion`. C1 le raccorde au registre au lieu de lui ajouter un champ parallèle; trois modules seulement reçoivent un `FormatVersion` neuf. |
 | 2026-09-08 | `V2.1.6.0010` | `c7acf1e` | C5 ramenée à deux issues sur décision : convertir ou ne pas ouvrir. Le mode consultation en lecture seule sort du périmètre, les écarts entre générations étant trop nombreux pour qu'une session à moitié migrée soit fidèle. |
 | 2026-09-08 | `V2.1.6.0009` | `06dd83e` | Création : versionnement de format par module, refus vers l'arrière, registre de convertisseurs chaînés et conversion consentie avec sauvegarde. Chantier C, prérequis des icônes interactives. |

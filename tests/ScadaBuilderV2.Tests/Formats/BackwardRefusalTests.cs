@@ -185,6 +185,16 @@ public sealed class BackwardRefusalTests
         Assert.AreEqual("project.conversion-declined", result.Diagnostics.Single().Code);
         Assert.AreEqual(before, await File.ReadAllTextAsync(projectPath));
         Assert.IsFalse(File.Exists(projectPath + ".bak"), "a refused conversion writes no backup either.");
+
+        // Ruling 46 (fix round 3): the byte-identical check on project.json above, and the .bak-absence check,
+        // both pass even if AcquireWorkspaceLockAsync had already created `.studio/` and `workspace-save.lock`
+        // before the operator answered -- exactly the regression this test's own name declares closed
+        // ("NorTouchesIt") but did not actually guard. The positive anchor is the exact single-entry listing,
+        // the same one BackwardRefusalTests already uses for the too-new refusal.
+        CollectionAssert.AreEquivalent(
+            new[] { projectPath },
+            Directory.GetFileSystemEntries(root),
+            "a declined conversion's directory must contain exactly what it did before the decline -- no lock file, no .studio/, nothing.");
     }
 
     private sealed class DecliningConsent : IConversionConsent

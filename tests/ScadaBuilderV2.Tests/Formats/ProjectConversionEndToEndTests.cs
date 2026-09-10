@@ -233,6 +233,20 @@ public sealed class ProjectConversionEndToEndTests
             "the settled key must be the same deterministic derivation PageKeyFactory produces everywhere else in the product, not an arbitrary new Guid.");
         Assert.AreNotEqual(Guid.Empty, page.PageKey, "positive anchor: a real, non-empty key was actually settled.");
 
+        // Ruling 47 (fix round 3): the two assertions above do not discriminate the converter from the
+        // in-memory normalizer it exists to make unnecessary. If the converter wrote nothing at all, PageKey
+        // would deserialize as Guid.Empty, and ModernProjectMigration.NormalizeIdentity -- exercised on every
+        // load, per Ruling 16 -- would derive the identical CreateDeterministic(name, code) key in memory
+        // before the snapshot is ever returned. Both assertions above would pass regardless of whether the
+        // converter ran. The converter's whole stated justification (ProjectGeneration1Converter's own
+        // remarks) is settling identity *in the file*, so that is what must be checked: read project.json off
+        // disk directly, after this first open and before the save/reopen below, and assert the key the
+        // converter wrote is the settled one.
+        var convertedNode = JsonNode.Parse(await File.ReadAllTextAsync(projectPath))!.AsObject();
+        var onDiskKey = convertedNode["Scenes"]!.AsArray()[0]!["PageKey"]!.GetValue<string>();
+        Assert.AreEqual(expectedKey.ToString("D"), onDiskKey,
+            "the converter must have settled the key in the file itself, not only in the loaded snapshot -- the normalizer alone would leave PageKey absent from disk.");
+
         // Survives a save and reopen: the settled identity must not be an artifact of the open-time snapshot
         // alone -- it has to be what gets persisted and read back, exactly as `MigrateProject` would treat any
         // other already-keyed page.
