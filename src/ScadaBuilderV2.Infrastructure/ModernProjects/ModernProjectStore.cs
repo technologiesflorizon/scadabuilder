@@ -395,6 +395,26 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         return Path.Combine(repositoryRoot, "SCADA_BUILDER_V2", "projects", "AMR_REF_SCADA_V2");
     }
 
+    /// <summary>Replays or rolls back any incomplete workspace-save transaction left under a project root.</summary>
+    /// <remarks>
+    /// Public entry point onto the store's own recovery so a caller that must read a consistent
+    /// <c>project.json</c> before this store's normal load path would run recovery itself — such as
+    /// <see cref="ProjectWorkspaceRepository"/>'s format-version pre-read, which runs before any conversion
+    /// decision and therefore before <see cref="LoadProjectFromRootAsync"/> ever gets a chance to recover — can
+    /// force it deterministically first. Recovery is idempotent: an interrupted transaction is fully replayed
+    /// or rolled back and its directory deleted, so calling this again from the normal load path once nothing
+    /// is pending is a no-op.
+    ///
+    /// Decisions: DEC-0049.
+    /// Contracts: docs/superpowers/specs/2026-09-08-project-format-versioning-and-converters-design.md §6.5.
+    /// Tests: tests/ScadaBuilderV2.Tests/Formats/ProjectConversionEndToEndTests.cs.
+    /// </remarks>
+    public async Task RecoverPendingTransactionsAsync(string projectRoot, CancellationToken cancellationToken = default)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectRoot);
+        await RecoverIncompleteTransactionsAsync(Path.GetFullPath(projectRoot), cancellationToken);
+    }
+
     private static PageWorkspaceSnapshot ValidateAndNormalizeSnapshot(
         string projectRoot,
         PageWorkspaceSnapshot snapshot)

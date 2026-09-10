@@ -166,20 +166,46 @@ public sealed class ProjectGeneration1ConverterTests
     }
 
     /// <summary>
-    /// A distinct shape from the missing-field case above: the page carries a <c>PageCode</c> that is present
-    /// but blank. <c>PageCode ?? Id ?? ""</c> does not fall through to <c>Id</c> here because the value is not
-    /// null, so this exercises a different branch of the guard than the missing-field test does, and the
-    /// message must still identify the page -- here by <c>Id</c>, since one is present.
+    /// Ruling 37: a distinct shape from the missing-field case above -- the page carries a <c>PageCode</c>
+    /// that is present but blank, and a valid <c>Id</c>. The domain's own fallback,
+    /// <c>ScadaSceneReference.EffectivePageCode</c> / <c>ScadaScene.EffectivePageCode</c>
+    /// (<c>string.IsNullOrWhiteSpace(PageCode) ? Id : PageCode</c>), opens this page fine on the base commit by
+    /// falling through to <c>Id</c>. The converter must mirror that exactly rather than use
+    /// <c>PageCode ?? Id ?? ""</c>, which does not fall through here because the value is not null: with the
+    /// old converter behaviour this page converted fine yet became permanently unopenable, since there is no
+    /// read-only mode to fall back to once conversion has run. This test now pins the correct behaviour --
+    /// conversion succeeds and the derived key is keyed off the <c>Id</c> fallback, the same value
+    /// <see cref="PageKeyFactory.CreateDeterministic"/> would be given anywhere else in the product for this
+    /// page's effective code.
     /// </summary>
     [TestMethod]
-    public void APageWithAWhitespacePageCodeFailsConversionWithInvalidDataException()
+    public void APageWithAWhitespacePageCodeFallsBackToIdLikeEffectivePageCodeDoes()
+    {
+        var document = Converter.Convert(JsonNode.Parse("""
+        {"Name":"P","Scenes":[{"Id":"win00002","PageCode":"   "}]}
+        """)!);
+
+        var key = document["Scenes"]![0]!["PageKey"]!.GetValue<string>();
+        var expected = PageKeyFactory.CreateDeterministic("P", "win00002").ToString("D");
+
+        Assert.AreEqual(expected, key, "a whitespace PageCode must fall back to Id, exactly like EffectivePageCode.");
+    }
+
+    /// <summary>
+    /// Symmetric to the fallback test above: both <c>PageCode</c> and <c>Id</c> are present but blank, so
+    /// there really is no identity to settle -- <c>EffectivePageCode</c> itself would resolve to an empty
+    /// string. This is the genuinely-both-blank case the <see cref="InvalidDataException"/> guard exists for.
+    /// </summary>
+    [TestMethod]
+    public void APageWithBothPageCodeAndIdBlankFailsConversionWithInvalidDataException()
     {
         var exception = Assert.ThrowsException<InvalidDataException>(() =>
             Converter.Convert(JsonNode.Parse("""
-            {"Name":"P","Scenes":[{"Id":"win00002","PageCode":"   "}]}
+            {"Name":"P","Scenes":[{"Id":"   ","PageCode":"   ","Title":"Accueil"}]}
             """)!));
 
         StringAssert.Contains(exception.Message, "ne porte aucun code de page");
-        StringAssert.Contains(exception.Message, "win00002");
+        StringAssert.Contains(exception.Message, "index 0");
+        StringAssert.Contains(exception.Message, "Accueil");
     }
 }

@@ -1,13 +1,14 @@
 # Spécification — Versionnement de format et convertisseurs
 
 Date: 2026-09-08
-Status: Design approuvé en portée, non implémenté
-Document version: `V2.1.6.0011`
+Status: Implémenté (chantier C clos); corrigé par revue de branche (rulings 34-39)
+Document version: `V2.1.6.0021`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-10 | `V2.1.6.0021` | `PENDING` | Revue de branche : §2.1 (atomicité) et §6.5 (aucune session sur un artefact non converti) étaient toutes deux violées par l'implémentation réelle malgré une suite verte — recouvrement de transaction déplacé avant la pré-lecture de génération dans `ProjectWorkspaceRepository.OpenAsync`, écriture de conversion rendue atomique (fichier temporaire + renommage), et premier test bout-en-bout du chantier ouvrant réellement un projet génération 0. Détail : `.superpowers/sdd/2026-09-08-project-format-versioning-and-converters/branch-fix-report.md`. |
 | 2026-09-08 | `V2.1.6.0011` | `b7cd56a` | Correction : le `.sep` porte déjà `SchemaVersion`. C1 le raccorde au registre au lieu de lui ajouter un champ parallèle; trois modules seulement reçoivent un `FormatVersion` neuf. |
 | 2026-09-08 | `V2.1.6.0010` | `c7acf1e` | C5 ramenée à deux issues sur décision : convertir ou ne pas ouvrir. Le mode consultation en lecture seule sort du périmètre, les écarts entre générations étant trop nombreux pour qu'une session à moitié migrée soit fidèle. |
 | 2026-09-08 | `V2.1.6.0009` | `06dd83e` | Création : versionnement de format par module, refus vers l'arrière, registre de convertisseurs chaînés et conversion consentie avec sauvegarde. Chantier C, prérequis des icônes interactives. |

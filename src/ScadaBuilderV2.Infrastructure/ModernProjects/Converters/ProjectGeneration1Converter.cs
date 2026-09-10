@@ -2,6 +2,7 @@ using System.IO;
 using System.Text.Json.Nodes;
 using ScadaBuilderV2.Application.Formats;
 using ScadaBuilderV2.Domain.Projects;
+using ScadaBuilderV2.Infrastructure.ModernProjects;
 
 namespace ScadaBuilderV2.Infrastructure.ModernProjects.Converters;
 
@@ -70,9 +71,14 @@ public sealed class ProjectGeneration1Converter : IArtifactConverter
                     continue;
                 }
 
-                var code = scene["PageCode"]?.GetValue<string>()
-                    ?? scene["Id"]?.GetValue<string>()
-                    ?? "";
+                // Mirrors ScadaSceneReference.EffectivePageCode / ScadaScene.EffectivePageCode exactly
+                // (ProjectModels.cs, ScadaSceneModels.cs): a present-but-blank PageCode falls through to Id,
+                // the same as it does everywhere else in the product. A plain `PageCode ?? Id ?? ""` does not
+                // do this -- a non-null whitespace PageCode short-circuits it and the page becomes permanently
+                // unopenable once converted, since there is no read-only mode to recover it in (Ruling 37).
+                var declaredPageCode = scene["PageCode"]?.GetValue<string>();
+                var id = scene["Id"]?.GetValue<string>();
+                var code = string.IsNullOrWhiteSpace(declaredPageCode) ? (id ?? "") : declaredPageCode;
 
                 // PageKeyFactory.CreateDeterministic throws ArgumentException on a blank project name or page
                 // code, which would signal a caller bug anywhere else it is called. Here the blank value comes
@@ -98,7 +104,14 @@ public sealed class ProjectGeneration1Converter : IArtifactConverter
             }
         }
 
-        document["FormatVersion"] = ToVersion;
+        // Written through the same field name the reader matches (Ruling 38): the reader matches
+        // case-insensitively, but this JsonObject indexer is case-sensitive, so a manifest carrying e.g.
+        // "formatversion" would otherwise gain a second, differently-cased "FormatVersion" property that the
+        // reader keeps overlooking -- re-converting the project on every open and accumulating unbounded
+        // ".bak.N" files. Using the reader's own constant here does not fix the case mismatch by itself (the
+        // repository's JSON parsing has to be case-insensitive too); it removes the second, independent risk
+        // of the literal drifting from the reader's field name.
+        document[ArtifactFormatVersionReader.FieldName] = ToVersion;
         return document;
     }
 }

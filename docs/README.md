@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.6.0020`
+Document version: `V2.1.6.0021`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-10 | `V2.1.6.0021` | `PENDING` | Corrections de revue de branche du chantier de versionnement de format (rulings 34-39) : recouvrement de transaction avant la pré-lecture de génération, écriture de conversion atomique, convertisseur `Generation1` aligné sur `EffectivePageCode`, lecture JSON insensible à la casse, chemin de sauvegarde rapporté au diagnostic d'échec. Voir `docs/superpowers/reports/2026-09-10-project-format-versioning-audit.md` §6. |
 | 2026-09-10 | `V2.1.6.0020` | `d3be7da` | Clôture du chantier de versionnement de format et convertisseurs : rapport d'audit `docs/superpowers/reports/2026-09-10-project-format-versioning-audit.md`. Il consigne le sort de chaque règle de `ModernProjectMigration` (une reprise dans le fichier, cinq conservées avec leur raison), l'état des générations par module, et le fait que la suppression du reniflage de forme promise par le plan n'est pas livrée — re-cadrée et consignée à l'entrée 33. |
 | 2026-09-10 | `V2.1.6.0019` | `6e4f4b6` | Correction de suivi Tâche 8 (revue round 1) : trou résiduel consigné à l'entrée 34 de `docs/08_implementation_status/KNOWN_GAPS_V2.md` (Fenêtre rapide non gardée sous profils `Compatibility21`/`Compatibility22`) et clarification de `PROJECT_MODEL_CONTRACT_V2.md` sur la nature du défaut corrigé par la Tâche 8. |
 | 2026-09-10 | `V2.1.6.0018` | `02de468` | Tâche 8 du chantier de versionnement de format : `ManifestVersion` perd son rôle de déclaration de contenu autorisé pour les Fenêtres rapides et garde uniquement son rôle de profil d'export négocié avec TF100Web. `ValidateQuickWindows` (`ProjectModels.cs`) ne compare plus contre `"2.3"`; le catalogue de capacités (`ScadaRuntimeCapabilityCatalog`) reste seul juge, via le gate fail-closed déjà existant. Voir `docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md`. |
