@@ -142,7 +142,17 @@
                         <StackPanel Orientation="Horizontal" Margin="0,4,0,4"><Image Source="{DynamicResource Icon.Property.Colors}" Width="16" Height="16" Margin="0,0,6,0"/><TextBlock Text="Couleurs" FontWeight="SemiBold"/></StackPanel>
                         <TextBlock Text="Couleur du texte" Margin="0,0,0,2"/>
                         <local:ColorPickerField x:Name="ForegroundColorPicker" ColorChanged="OnStylePreviewChanged" ToolTip="Couleur du texte"/>
-                        <TextBlock Text="Couleur d'arrière-plan" Margin="0,6,0,2"/>
+                        <DockPanel Margin="0,6,0,2">
+                            <TextBlock Text="Couleur d'arrière-plan" VerticalAlignment="Center"/>
+                            <CheckBox x:Name="BackgroundTransparentCheckBox"
+                                      Content="Transparent"
+                                      DockPanel.Dock="Right"
+                                      VerticalAlignment="Center"
+                                      Margin="8,0,0,0"
+                                      ToolTip="Fond entièrement transparent. L'objet reste cliquable : c'est la façon de créer une zone invisible qui porte des évènements."
+                                      Checked="OnBackgroundTransparentChanged"
+                                      Unchecked="OnBackgroundTransparentChanged"/>
+                        </DockPanel>
                         <local:ColorPickerField x:Name="BackgroundColorPicker" ColorChanged="OnStylePreviewChanged" ToolTip="Couleur d'arrière-plan"/>
                         <DockPanel Margin="0,0,0,2">
                             <TextBlock Text="Couleur de bordure" VerticalAlignment="Center"/>
