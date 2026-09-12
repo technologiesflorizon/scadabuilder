@@ -7,8 +7,7 @@
         MaxHeight="620"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
-        ShowInTaskbar="False"
-        Background="{StaticResource PanelBrush}">
+        ShowInTaskbar="False">
     <Window.Resources>
         <SolidColorBrush x:Key="InkBrush" Color="#0F2A30"/>
         <SolidColorBrush x:Key="MutedBrush" Color="#4E6A71"/>

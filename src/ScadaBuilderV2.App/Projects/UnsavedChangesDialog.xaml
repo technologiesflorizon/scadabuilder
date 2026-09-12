@@ -6,8 +6,7 @@
         MinWidth="470"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterOwner"
-        ShowInTaskbar="False"
-        Background="{StaticResource PanelBrush}">
+        ShowInTaskbar="False">
     <Window.Resources>
         <SolidColorBrush x:Key="InkBrush" Color="#0F2A30"/>
         <SolidColorBrush x:Key="MutedBrush" Color="#4E6A71"/>
@@ -16,7 +15,7 @@
         <SolidColorBrush x:Key="BorderBrushSoft" Color="#1A0F2A30"/>
         <SolidColorBrush x:Key="WarningBrush" Color="#6A4300"/>
     </Window.Resources>
-    <StackPanel Margin="0">
+    <StackPanel Margin="0" Background="{StaticResource PanelBrush}">
         <StackPanel Margin="28,26,28,20">
             <TextBlock x:Name="HeadlineText"
                        FontSize="18"

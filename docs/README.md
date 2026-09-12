@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.6.0023`
+Document version: `V2.1.6.0024`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-12 | `V2.1.6.0024` | `PENDING` | Correctif de test humain : `UnsavedChangesDialog` et `ConversionPlanDialog` posaient `Background="{StaticResource PanelBrush}"` sur l'élément `Window` alors que la clé est définie plus bas dans leur propre `Window.Resources`. XAML résout `StaticResource` à l'analyse en ne regardant que vers l'arrière, donc les deux fenêtres levaient au chargement et ne pouvaient pas s'ouvrir. La brosse descend sur l'élément enfant racine; un contrat de source balaie désormais tout `src/*.xaml` pour ce motif. |
 | 2026-09-10 | `V2.1.6.0023` | `f208456` | Tour 3 de la revue de branche du chantier de versionnement de format (rulings 44-47) : le recouvrement de transaction, déplacé au tour 2 dans la branche de conversion mais encore au-dessus de la porte `CanProceed`, touchait le disque avant même que l'opérateur ait répondu au dialogue de consentement, contre spec §6.5 — déplacé sous `CanProceed`; ligne de couverture corrigée pour la propriété qu'elle créditait sans assertion (`REGRESSION_COVERAGE_V2.md`); test du reste de C3 rendu discriminant en assertant la clé sur le fichier disque plutôt que sur le seul instantané chargé. Voir `docs/superpowers/reports/2026-09-10-project-format-versioning-audit.md` §10. |
 | 2026-09-10 | `V2.1.6.0022` | `240dcf6` | Tour 2 de la revue de branche du chantier de versionnement de format (rulings 40-43) : le recouvrement de transaction du tour 1 créait `.studio/`+le verrou dans un projet sur le point d'être refusé comme trop récent, contre C2 — déplacé à l'intérieur de la branche de conversion; spec §5.2/§5.4 et `PROJECT_MODEL_CONTRACT_V2.md` §5 corrigées (trois modules sur quatre n'ont en réalité aucun refus vers l'arrière, `KNOWN_GAPS_V2.md` entrée 35); rapport d'audit §8 corrigé (comptage exact, preuve empirique rapatriée). Voir `docs/superpowers/reports/2026-09-10-project-format-versioning-audit.md` §9. |
 | 2026-09-10 | `V2.1.6.0021` | `c1e5b6c` | Corrections de revue de branche du chantier de versionnement de format (rulings 34-39) : recouvrement de transaction avant la pré-lecture de génération, écriture de conversion atomique, convertisseur `Generation1` aligné sur `EffectivePageCode`, lecture JSON insensible à la casse, chemin de sauvegarde rapporté au diagnostic d'échec. Voir `docs/superpowers/reports/2026-09-10-project-format-versioning-audit.md` §6. |
