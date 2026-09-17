@@ -37,12 +37,54 @@ public sealed class QuickWindowBuildValidationTests
     }
 
     [TestMethod]
+    public void ContentIsAuthorisedByCapabilityStatusEvenWhenManifestVersionNeverBecame23()
+    {
+        // ScadaProject.ManifestVersion defaults to "2.0" (ProjectModels.cs) and nothing in src/ ever assigns
+        // it "2.3" - that string is only ever written into the exported manifest artifact, a different thing
+        // (Ft100SceneExporter.ManifestVersion(Ft100ManifestProfile)). Before Task 8 of the 2026-09-08
+        // format-versioning chantier, ValidateQuickWindows compared this field against "2.3" directly, so
+        // this exact project - "2.0", one Supported-capability definition, one invocation, real quick-window
+        // content - was refused as an Error on every real project the instant it carried quick windows. This
+        // exercises the actual authorisation path end to end, not a catalog constant in isolation.
+        var member = Member("Run", QuickWindowInterfaceFamily.ReadState, QuickWindowDataType.Boolean, QuickWindowMemberAccess.Read);
+        var definition = Definition("motor", members: [member]);
+        var invocation = Invocation(Guid.NewGuid(), definition.DefinitionKey);
+
+        // Positive anchor (round 2 of review): the two Assert.IsFalse below are pure absence assertions - if a
+        // future edit made Project(...) hand ValidateQuickWindows an empty QuickWindows/QuickWindowInvocations
+        // pair (a swapped parameter, say), containsQuickWindows would be false, the capability check would be
+        // skipped, both codes would still be absent, and this test would pass while covering nothing. A second
+        // invocation whose DefinitionKey matches no definition forces the validator to have actually iterated
+        // `EffectiveQuickWindowInvocations` against `EffectiveQuickWindows` (ProjectModels.cs, the
+        // `foreach (var inv in invs)` loop: `defs.FirstOrDefault(d => d.DefinitionKey == inv.DefinitionKey)`
+        // is null, so it emits `quick-window.invocation-definition-missing`) - a diagnostic no validator that
+        // skipped this content, or that never looked at DefinitionKey at all, could produce.
+        var orphanInvocation = Invocation(Guid.NewGuid(), Guid.NewGuid());
+        var page = Page("page");
+
+        var issues = ScadaProjectBuildValidator.Validate(Project(page, [definition], [invocation, orphanInvocation], manifestVersion: "2.0"));
+
+        Assert.IsTrue(
+            issues.Any(issue => issue.Code == "quick-window.invocation-definition-missing"),
+            "positive anchor: the validator must have actually iterated invocations against definitions.");
+        Assert.IsFalse(
+            issues.Any(issue => issue.Code == "quick-window.profile-unsupported"),
+            "this error code no longer exists in the product; ManifestVersion does not authorise content.");
+        Assert.IsFalse(
+            issues.Any(issue => issue.Code == "quick-window.capability-unsupported"),
+            "quick-window.definition, OpenQuickWindow and CloseQuickWindow are Supported, so the catalog allows this content regardless of ManifestVersion.");
+    }
+
+    [TestMethod]
     public void BuildValidationSeparatesAuthoringWarningsFromErrorsAndNeverCreatesDefaults()
     {
         var member = Member("Run", QuickWindowInterfaceFamily.ReadState, QuickWindowDataType.Boolean, QuickWindowMemberAccess.Read, required: true);
         var definition = Definition("motor", members: [member]);
         var invocation = new QuickWindowInvocation(Guid.NewGuid(), definition.DefinitionKey, [], InterfaceVersion: 1);
         var page = Page("page");
+        // Deliberately "2.2": before Task 8 of the 2026-09-08 format-versioning chantier, this alone tripped
+        // "quick-window.profile-unsupported". Content authorisation now comes from the capability catalog,
+        // not this field, so the same project on a "2.2" manifest still only reports the missing binding.
         var project = Project(page, [definition], [invocation], manifestVersion: "2.2");
         var beforeBindings = invocation.Bindings;
 
@@ -55,7 +97,9 @@ public sealed class QuickWindowBuildValidationTests
         var authoringIssues = new QuickWindowDependencyAnalyzer().Analyze(snapshot).Diagnostics;
 
         Assert.IsTrue(buildIssues.Any(issue => issue.Code == "quick-window.required-missing" && issue.Severity == ScadaBuildValidationSeverity.Error));
-        Assert.IsTrue(buildIssues.Any(issue => issue.Code == "quick-window.profile-unsupported"));
+        Assert.IsFalse(
+            buildIssues.Any(issue => issue.Code == "quick-window.profile-unsupported"),
+            "ManifestVersion no longer authorises quick-window content; the capability catalog does.");
         Assert.IsTrue(authoringIssues.Any(issue => issue.Code == "quick-window.binding.required-missing" && issue.Severity == ScadaBuildValidationSeverity.Warning));
         Assert.AreSame(beforeBindings, invocation.Bindings);
         Assert.AreEqual(0, invocation.Bindings.Count);

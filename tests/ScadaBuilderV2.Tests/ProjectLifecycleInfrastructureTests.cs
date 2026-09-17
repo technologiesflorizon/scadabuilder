@@ -1,7 +1,9 @@
 using System.Security.Cryptography;
+using ScadaBuilderV2.Application.Formats;
 using ScadaBuilderV2.Application.Projects;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Infrastructure.ModernProjects;
+using ScadaBuilderV2.Infrastructure.ModernProjects.Converters;
 using ScadaBuilderV2.Infrastructure.Shell;
 
 namespace ScadaBuilderV2.Tests;
@@ -174,8 +176,23 @@ public sealed class ProjectLifecycleInfrastructureTests
         }
     }
 
-    private static ProjectWorkspaceRepository CreateRepository() =>
-        new(new ModernProjectStore(), new ReferenceProjectCompatibilityLocator());
+    private static ProjectWorkspaceRepository CreateRepository()
+    {
+        var registry = new ArtifactConverterRegistry();
+        registry.Register(new ProjectGeneration1Converter());
+        return new ProjectWorkspaceRepository(
+            new ModernProjectStore(),
+            new ReferenceProjectCompatibilityLocator(),
+            registry,
+            new ConversionCoordinator(registry, new AcceptingConsent()));
+    }
+
+    /// <summary>Always convert. None of these tests exercise conversion refusal on their own terms.</summary>
+    private sealed class AcceptingConsent : IConversionConsent
+    {
+        public Task<ConversionDecision> RequestAsync(ConversionPlan plan, CancellationToken cancellationToken)
+            => Task.FromResult(ConversionDecision.Convert);
+    }
 
     private static string CreateTemporaryDirectory()
     {

@@ -860,7 +860,9 @@ public sealed record ScadaScene(
     PageOrigin? Origin = null,
     ImportProvenance? ImportProvenance = null,
     Guid? HeaderPageKey = null,
-    Guid? FooterPageKey = null)
+    Guid? FooterPageKey = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    int? FormatVersion = null)
 {
     /// <summary>Gets the human-visible page code, including compatibility fallback for pre-migration scenes.</summary>
     [JsonIgnore]
@@ -883,6 +885,14 @@ public sealed record ScadaScene(
     public IReadOnlySet<string> RemovedSourceIds => (RemovedSourceElementIds ?? Array.Empty<string>())
         .Where(id => !string.IsNullOrWhiteSpace(id))
         .ToHashSet(StringComparer.Ordinal);
+
+    /// <summary>Gets the persisted format generation; an absent field means generation zero.</summary>
+    /// <remarks>
+    /// Never serialised while null, so every scene written before this mechanism existed keeps its exact
+    /// bytes. Contracts: 2026-09-08-project-format-versioning-and-converters-design.md C1, C10.
+    /// </remarks>
+    [JsonIgnore]
+    public int EffectiveFormatVersion => FormatVersion ?? 0;
 
     public static ScadaScene CreateEmpty(string id, string title, CanvasSize canvasSize)
     {

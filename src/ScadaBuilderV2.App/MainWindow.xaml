@@ -32,6 +32,8 @@
         <SolidColorBrush x:Key="BorderBrushSoft" Color="#1A0F2A30"/>
         <SolidColorBrush x:Key="AccentBrush" Color="#90c030"/>
         <SolidColorBrush x:Key="AccentBlueBrush" Color="#2090a0"/>
+        <SolidColorBrush x:Key="SurfaceBrush" Color="#f4f8f6"/>
+        <SolidColorBrush x:Key="WarningBrush" Color="#6a4300"/>
 
         <Style TargetType="Button">
             <Setter Property="MinHeight" Value="32"/>
@@ -853,7 +855,7 @@
                     </Border>
                 </DockPanel>
                     <Border x:Name="WelcomePanel"
-                            Background="#F4F8F6"
+                            Background="{StaticResource SurfaceBrush}"
                             BorderBrush="{StaticResource BorderBrushSoft}"
                             BorderThickness="1"
                             Padding="28">
@@ -870,29 +872,58 @@
                                            TextAlignment="Center"
                                            Margin="0,8,0,24"/>
                                 <UniformGrid Columns="3" Margin="0,0,0,24">
-                                    <Button Content="Nouveau projet"
-                                            MinHeight="52"
+                                    <Button MinHeight="56"
                                             Margin="6"
-                                            Click="OnWelcomeNewProjectClick"/>
-                                    <Button Content="Ouvrir un projet"
-                                            MinHeight="52"
+                                            AutomationProperties.Name="Nouveau projet"
+                                            Click="OnWelcomeNewProjectClick">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Image Source="{StaticResource Icon.Project.New}"
+                                                   Width="18" Height="18" Margin="0,0,8,0"
+                                                   VerticalAlignment="Center"/>
+                                            <TextBlock Text="Nouveau projet" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
+                                    <Button MinHeight="56"
                                             Margin="6"
-                                            Click="OnWelcomeOpenProjectClick"/>
+                                            AutomationProperties.Name="Ouvrir un projet"
+                                            Click="OnWelcomeOpenProjectClick">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Image Source="{StaticResource Icon.Project.Open}"
+                                                   Width="18" Height="18" Margin="0,0,8,0"
+                                                   VerticalAlignment="Center"/>
+                                            <TextBlock Text="Ouvrir un projet" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
                                     <Button x:Name="ReopenLastProjectButton"
-                                            Content="Rouvrir le dernier"
-                                            MinHeight="52"
+                                            MinHeight="56"
                                             Margin="6"
-                                            Click="OnWelcomeReopenLastClick"/>
+                                            Click="OnWelcomeReopenLastClick">
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Image Source="{StaticResource Icon.Project.Open}"
+                                                   Width="18" Height="18" Margin="0,0,8,0"
+                                                   VerticalAlignment="Center"/>
+                                            <TextBlock x:Name="ReopenLastProjectText"
+                                                       Text="Aucun projet récent"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Button>
                                 </UniformGrid>
+
                                 <TextBlock Text="Projets récents"
                                            FontSize="17"
                                            FontWeight="SemiBold"
                                            Foreground="{StaticResource InkBrush}"
                                            Margin="6,0,6,8"/>
-                                <ItemsControl ItemsSource="{Binding RecentProjects}">
+                                <TextBlock x:Name="NoRecentProjectsText"
+                                           Text="Aucun projet n’a encore été ouvert depuis ce poste. Créez-en un, ou ouvrez un project.json existant."
+                                           TextWrapping="Wrap"
+                                           Foreground="{StaticResource MutedBrush}"
+                                           Margin="6,0,6,8"/>
+                                <ItemsControl x:Name="RecentProjectsList" ItemsSource="{Binding RecentProjects}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Border Background="White"
+                                            <Border Background="{StaticResource PanelBrush}"
                                                     BorderBrush="{StaticResource BorderBrushSoft}"
                                                     BorderThickness="1"
                                                     CornerRadius="4"
@@ -905,12 +936,34 @@
                                                         <ColumnDefinition Width="Auto"/>
                                                     </Grid.ColumnDefinitions>
                                                     <StackPanel>
-                                                        <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold"/>
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold"/>
+                                                            <!-- An unavailable entry must say why, not just grey a button. -->
+                                                            <TextBlock Text="Dossier introuvable"
+                                                                       FontSize="11"
+                                                                       Margin="8,1,0,0"
+                                                                       VerticalAlignment="Center"
+                                                                       Foreground="{StaticResource WarningBrush}">
+                                                                <TextBlock.Style>
+                                                                    <Style TargetType="TextBlock">
+                                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                                        <Style.Triggers>
+                                                                            <DataTrigger Binding="{Binding IsAvailable}" Value="False">
+                                                                                <Setter Property="Visibility" Value="Visible"/>
+                                                                            </DataTrigger>
+                                                                        </Style.Triggers>
+                                                                    </Style>
+                                                                </TextBlock.Style>
+                                                            </TextBlock>
+                                                        </StackPanel>
                                                         <TextBlock Text="{Binding ProjectFilePath}"
                                                                    Foreground="{StaticResource MutedBrush}"
                                                                    FontSize="11"
                                                                    TextTrimming="CharacterEllipsis"
                                                                    ToolTip="{Binding ProjectFilePath}"/>
+                                                        <TextBlock Foreground="{StaticResource MutedBrush}"
+                                                                   FontSize="11"
+                                                                   Text="{Binding LastOpenedUtc, StringFormat='Dernière ouverture: {0:dd/MM/yyyy HH:mm}', ConverterCulture=fr-CA}"/>
                                                     </StackPanel>
                                                     <Button Grid.Column="1"
                                                             Content="Ouvrir"
@@ -922,12 +975,57 @@
                                                             Content="Retirer"
                                                             MinWidth="72"
                                                             Tag="{Binding}"
+                                                            ToolTip="Retire l’entrée de la liste sans supprimer le projet sur le disque."
                                                             Click="OnRecentProjectRemoveClick"/>
                                                 </Grid>
                                             </Border>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
+
+                                <StackPanel x:Name="DiscoveredProjectsSection" Margin="0,20,0,0">
+                                    <TextBlock Text="Projets détectés près de l’application"
+                                               FontSize="17"
+                                               FontWeight="SemiBold"
+                                               Foreground="{StaticResource InkBrush}"
+                                               Margin="6,0,6,4"/>
+                                    <TextBlock Text="Jamais ouverts depuis ce poste. Ils rejoindront les récents une fois ouverts."
+                                               FontSize="11"
+                                               Foreground="{StaticResource MutedBrush}"
+                                               Margin="6,0,6,8"/>
+                                    <ItemsControl ItemsSource="{Binding DiscoveredProjects}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Background="{StaticResource PanelBrush}"
+                                                        BorderBrush="{StaticResource BorderBrushSoft}"
+                                                        BorderThickness="1"
+                                                        CornerRadius="4"
+                                                        Margin="6,3"
+                                                        Padding="10">
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <StackPanel>
+                                                            <TextBlock Text="{Binding DisplayName}" FontWeight="SemiBold"/>
+                                                            <TextBlock Text="{Binding ProjectFilePath}"
+                                                                       Foreground="{StaticResource MutedBrush}"
+                                                                       FontSize="11"
+                                                                       TextTrimming="CharacterEllipsis"
+                                                                       ToolTip="{Binding ProjectFilePath}"/>
+                                                        </StackPanel>
+                                                        <Button Grid.Column="1"
+                                                                Content="Ouvrir"
+                                                                MinWidth="76"
+                                                                Tag="{Binding}"
+                                                                Click="OnDiscoveredProjectOpenClick"/>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
                             </StackPanel>
                         </ScrollViewer>
                     </Border>

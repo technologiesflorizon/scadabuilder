@@ -34,7 +34,14 @@ public sealed record ProjectRepositoryResult(
     IReadOnlyList<ScadaBuildValidationIssue> Diagnostics)
 {
     /// <summary>Gets whether the operation produced an activatable project.</summary>
-    public bool IsSuccess => Candidate is not null && Diagnostics.All(issue => issue.Severity != ScadaBuildValidationSeverity.Error);
+    public bool IsSuccess => Candidate is not null && !HasBlockingError;
+
+    /// <summary>Gets whether the operation stopped on something the operator has to be told about.</summary>
+    /// <remarks>
+    /// A close produces no candidate, so `IsSuccess` cannot describe it. This separates the outcomes that
+    /// need an error dialog from a cancellation, which the operator already knows they chose.
+    /// </remarks>
+    public bool HasBlockingError => Diagnostics.Any(issue => issue.Severity == ScadaBuildValidationSeverity.Error);
 }
 
 /// <summary>Choice made when a project with unsaved changes is about to be replaced or closed.</summary>

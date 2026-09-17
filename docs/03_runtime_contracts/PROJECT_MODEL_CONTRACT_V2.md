@@ -2,12 +2,18 @@
 
 Date: 2026-08-13
 Status: Active project model contract
-Document version: `V2.1.6.0004`
+Document version: `V2.1.6.0022`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-10 | `V2.1.6.0022` | `240dcf6` | §5 corrigée : sa première phrase se lisait comme si les quatre modules persistés portaient un refus vers l'arrière en service. Seul `project.json` l'est effectivement; `Scene`, `TagCatalog` et `Component` portent le champ `FormatVersion` à l'aller-retour mais aucun code de production ne le lit pour refuser ou convertir. Trouvé au tour 2 de la revue de branche du chantier de versionnement de format, `KNOWN_GAPS_V2.md` entrée 35. |
+| 2026-09-10 | `V2.1.6.0019` | `6e4f4b6` | Correction de suivi Tâche 8 (revue round 1) : §2.2 précise que le retrait de la comparaison `ManifestVersion` corrige un blocage total latent de la fonctionnalité Fenêtre rapide, pas une réduction de portée. Le trou résiduel sous `Compatibility21`/`Compatibility22` est consigné à l'entrée 34 de `KNOWN_GAPS_V2.md`. |
+| 2026-09-10 | `V2.1.6.0018` | `02de468` | Tâche 8 du chantier de versionnement de format : `ManifestVersion` perd son rôle d'autorisation de contenu pour les Fenêtres rapides. `ValidateQuickWindows` ne compare plus contre `"2.3"`; le catalogue de capacités reste seul juge de ce qu'un projet peut contenir, quel que soit le profil négocié. **Corrige un défaut latent** : `ManifestVersion` valait `"2.0"` par défaut et n'était jamais mis à `"2.3"` nulle part dans `src/`, donc la comparaison retirée bloquait en `Error` tout projet réel portant une Fenêtre rapide, dès sa création — pas un simple rétrécissement de portée. |
+| 2026-09-10 | `V2.1.6.0017` | `f5589e9` | `ProjectGeneration1Converter` (Tâche 7 du chantier C) écrit `PageKey` avec la même dérivation que `PageKeyFactory.CreateDeterministic` (GUID v5, bits de version/variante posés) plutôt qu'une dérivation SHA-256 brute incompatible. `ModernProjectMigration` reste le normaliseur d'identité du store, appelé aux écritures et à la construction en mémoire; le convertisseur ne fait que régler l'identité une fois, dans le fichier, à l'ouverture. |
+| 2026-09-08 | `V2.1.6.0013` | `baf42e4` | Les trois modules (projet, scène, catalogue) portent les champs `FormatVersion` et `EffectiveFormatVersion`. Jamais sérialisés tant que nuls, donc les artefacts figés demeurent byte-identiques. |
+| 2026-09-08 | `V2.1.6.0012` | `225b0b5` | `DEC-0049` D5 implémentée : `OpenAsync` refuse un `project.json` dont la génération de format dépasse `ScadaFormatGeneration.Project`, avant toute désérialisation. |
 | 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Le profil 2.3 est productible : les gates des Phases 3 à 6 sont franchis et le fail-closed ne porte plus que sur les deux capacités non promues. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Versionnement de l'Interface locale : réalignement par invocation, statut `Outdated` dérivé et liaisons jamais réécrites. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 : mutations Application coordonnent projet, scène appelante, commande et invocation; l’historique restaure le snapshot complet sans I/O. |
@@ -68,7 +74,11 @@ Element numeric data keeps compatibility fields for older projects, but active a
 
 Une définition porte un `VisualContent` borné, sa version d’interface, ses membres locaux et ses defaults de présentation. Les invocations restent portées par le projet et les commandes appelantes au moyen d’un `InvocationKey`, d’un `QuickWindowDefinitionKey` et d’une `InterfaceVersion`; l’identité runtime n’est jamais persistée. Les membres privés ne sont pas bindables par une invocation.
 
-Les fichiers sont ordonnés de façon déterministe et remplacés atomiquement après écriture temporaire, flush et validation. Un projet historique sans Fenêtre rapide se recharge sans migration et ne doit pas être réécrit. Une définition inline sans fichier autoritaire est refusée au lieu d’être migrée implicitement. Les profils manifest 2.1/2.2 refusent toute présence QuickWindow. Les gates des Phases 3 à 6 sont franchis : le profil 2.3 est productible et exporte les onze capacités `quick-window.*` promues `Supported`. Le gate reste fail-closed sur les deux capacités encore `Blocked` — `quick-window.binding.parent-port` et `quick-window.legacy-fragment-adapter` — : un projet qui en déclenche une est refusé avant qu’aucun répertoire d’export n’existe.
+Les fichiers sont ordonnés de façon déterministe et remplacés atomiquement après écriture temporaire, flush et validation. Un projet historique sans Fenêtre rapide se recharge sans migration et ne doit pas être réécrit. Une définition inline sans fichier autoritaire est refusée au lieu d’être migrée implicitement. Les gates des Phases 3 à 6 sont franchis : le profil 2.3 est productible et exporte les onze capacités `quick-window.*` promues `Supported`. Le gate reste fail-closed sur les deux capacités encore `Blocked` — `quick-window.binding.parent-port` et `quick-window.legacy-fragment-adapter` — : un projet qui en déclenche une est refusé avant qu’aucun répertoire d’export n’existe.
+
+`ManifestVersion` ne porte plus qu'un rôle : le profil d'export négocié avec TF100Web. Ce n'est plus lui qui autorise la présence de contenu Fenêtre rapide dans un projet — le catalogue de capacités (`ScadaRuntimeCapabilityCatalog`) est la seule autorité sur ce qu'un projet peut contenir, via le même gate fail-closed ci-dessus. La comparaison de chaîne contre `"2.3"` qui refusait autrefois toute Fenêtre rapide sous un `ManifestVersion` différent a été retirée de `ValidateQuickWindows` (Tâche 8 du chantier de versionnement de format, 2026-09-08).
+
+**Ceci corrige un défaut latent, pas seulement une réduction de portée.** `ScadaProject.ManifestVersion` vaut `"2.0"` par défaut (`ProjectModels.cs`) et rien dans `src/` ne lui assigne jamais `"2.3"` — `ModernProjectStore.cs:52` réaffirme `"2.0"` quand le champ est vide, et le projet de référence porte `"2.0"`. `"2.3"` n'est écrit nulle part ailleurs que dans le manifeste **exporté**, un artefact distinct (`Ft100SceneExporter.ManifestVersion(Ft100ManifestProfile)`). Avant cette tâche, la comparaison retirée se déclenchait donc en `Error` (`quick-window.profile-unsupported`) sur **tout** projet réel portant du contenu Fenêtre rapide, dès sa création — ce n'était pas un gate fonctionnel réduit par cette tâche, c'était un blocage total et latent de la fonctionnalité que `DEC-0050` a livrée, qui ne s'est jamais manifesté seulement parce qu'aucun projet réel n'a encore porté de Fenêtre rapide.
 
 L'Interface locale est versionnée par clé stable. Renommer un membre ou modifier un membre privé n'exige aucun increment de `InterfaceVersion` et ne casse aucune invocation. Ajouter, retirer ou modifier le contrat typé d'un membre public l'exige. Lors de la mutation, chaque invocation encore compatible est réalignée sur la nouvelle version sans que ses liaisons soient réécrites; une invocation cassée conserve sa version et ses liaisons et devient `Outdated`. Ce statut est dérivé du couple de versions : aucun champ de statut n'est persisté et aucun quatrième identifiant n'est introduit.
 
@@ -92,7 +102,17 @@ All enabled tags are exposed for `Lire valeur` authoring. `Ecrire valeur` may ta
 
 `ScadaProject.Scenes` remains authoritative for page inventory and metadata. Native pages do not require imported HTML; imported Wonderware projections remain optional provenance-backed inputs. A new `Default` page starts with `IncludeInBuild = false`.
 
-## 5. Related Tests
+`ProjectGeneration1Converter` (project format generation 0 → 1) settles a keyless page's `PageKey` once, at open, using `PageKeyFactory.CreateDeterministic(projectName, pageCode)` — the exact derivation `PageWorkspaceController.CreateImportedPageReferences` already uses elsewhere, so a converted page carries the identity the rest of the product would have produced for it. `ModernProjectMigration.NormalizeIdentity`/`ResolveTargetKey` remain: they are the store's identity normalizer, exercised on every save and on in-memory construction from an import inventory, not only at load, so a once-at-open file converter cannot replace them (see `KNOWN_GAPS_V2.md`, entry on the re-scoped Task 7 deletion).
+
+## 5. Backward Format Refusal
+
+`DEC-0049` D5 is implemented **for `project.json` only**. Chaque module persisté (`project.json`, une scène, le catalogue de tags, un composant `.sep`) porte un champ `FormatVersion` optionnel dans son enregistrement de domaine, exposé par `ScadaFormatGeneration` (`Domain/Projects/ScadaFormatGeneration.cs`) pour la génération courante attendue de chacun, et une scène/un catalogue de tags sérialise et désérialise ce champ à l'aller-retour. Mais **le refus n'est câblé que pour `project.json`** : `ProjectWorkspaceRepository.OpenAsync` est le seul site de production qui lit une génération déclarée et refuse. `ArtifactModule.Scene`, `.TagCatalog` et `.Component` n'ont aucune référence de production (`KNOWN_GAPS_V2.md` entrée 35) — rien ne construit jamais un `ArtifactToConvert` pour eux, et `ScadaScene.FormatVersion`/`ScadaTagCatalog.FormatVersion` ne sont lus par aucun code décisionnel. Un lecteur de cette section ne doit pas en conclure que les quatre modules sont gardés : trois sur quatre ne le sont pas aujourd'hui. L'absence du champ dans un fichier vaut génération zéro : tout artefact écrit avant ce mécanisme reste lisible sans être réécrit.
+
+`ProjectWorkspaceRepository.OpenAsync` lit la génération déclarée du fichier `project.json` avant toute désérialisation, via `ArtifactFormatVersionReader.ReadFormatVersion` (`Infrastructure/ModernProjects/ArtifactFormatVersionReader.cs`), qui parcourt le document JSON brut sans jamais matérialiser un `ScadaProject`. Si la génération déclarée dépasse `ScadaFormatGeneration.Project`, l'ouverture est refusée avant toute activation : le diagnostic `project.format-too-new` est retourné et aucun `ProjectLoadCandidate` n'est produit. Le fichier n'est ni lu au-delà de ce pré-scan, ni réécrit.
+
+Ce refus ferme une perte de données réelle : un binaire antérieur à `DEC-0050` Phase 1 ignorait silencieusement `QuickWindows`/`QuickWindowInvocations` inconnus à la désérialisation et les réécrivait absents dès la première sauvegarde. Avec le refus, un binaire qui ne comprend pas un fichier ne peut plus l'altérer.
+
+## 6. Related Tests
 
 1. `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`
 2. `tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`
@@ -102,3 +122,5 @@ All enabled tags are exposed for `Lire valeur` authoring. `Ecrire valeur` may ta
 6. `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowDomainTests.cs`
 7. `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowBindingTests.cs`
 8. `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowStoreTests.cs`
+9. `tests/ScadaBuilderV2.Tests/Formats/ArtifactFormatVersionReaderTests.cs`
+10. `tests/ScadaBuilderV2.Tests/Formats/BackwardRefusalTests.cs`

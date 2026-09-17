@@ -360,6 +360,9 @@ public partial class ElementPropertiesDialog : Window
         AlignJustifyRadio.IsChecked = string.Equals(style.TextAlign, "Justify", StringComparison.OrdinalIgnoreCase);
         LetterSpacingTextBox.Text = style.LetterSpacing.ToString("0.##");
         LineHeightTextBox.Text = style.LineHeight.ToString("0.##");
+        var isBackgroundTransparent = string.Equals(style.Background, "Transparent", StringComparison.OrdinalIgnoreCase);
+        BackgroundTransparentCheckBox.IsChecked = isBackgroundTransparent;
+        BackgroundColorPicker.IsEnabled = !isBackgroundTransparent;
         var isBorderTransparent = string.Equals(style.BorderColor, "Transparent", StringComparison.OrdinalIgnoreCase);
         BorderTransparentCheckBox.IsChecked = isBorderTransparent;
         BorderColorPicker.IsEnabled = !isBorderTransparent;
@@ -402,6 +405,12 @@ public partial class ElementPropertiesDialog : Window
         UpdateDataConstraintState();
     }
 
+    private void OnBackgroundTransparentChanged(object sender, RoutedEventArgs e)
+    {
+        BackgroundColorPicker.IsEnabled = BackgroundTransparentCheckBox.IsChecked != true;
+        UpdateStylePreview();
+    }
+
     private void OnBorderTransparentChanged(object sender, RoutedEventArgs e)
     {
         BorderColorPicker.IsEnabled = BorderTransparentCheckBox.IsChecked != true;
@@ -439,7 +448,9 @@ public partial class ElementPropertiesDialog : Window
             : AlignJustifyRadio.IsChecked == true ? TextAlignment.Justify
             : TextAlignment.Left;
         StylePreviewText.Foreground = ToBrush(GetColorPickerValue(ForegroundColorPicker, "#0F2A30"));
-        StylePreviewBorder.Background = ToBrush(GetColorPickerValue(BackgroundColorPicker, "Transparent"));
+        StylePreviewBorder.Background = ToBrush(BackgroundTransparentCheckBox.IsChecked == true
+            ? "Transparent"
+            : GetColorPickerValue(BackgroundColorPicker, "Transparent"));
         StylePreviewBorder.BorderBrush = ToBrush(BorderTransparentCheckBox.IsChecked == true
             ? "Transparent"
             : GetColorPickerValue(BorderColorPicker, "#8AA0A6"));
@@ -550,7 +561,9 @@ public partial class ElementPropertiesDialog : Window
             FontFamily: GetComboBoxText(FontFamilyComboBox, "Segoe UI"),
             FontSize: Math.Max(6, fontSize),
             Foreground: GetColorPickerValue(ForegroundColorPicker, "#0F2A30"),
-            Background: GetColorPickerValue(BackgroundColorPicker, "#FFFFFF"),
+            Background: BackgroundTransparentCheckBox.IsChecked == true
+                ? "Transparent"
+                : GetColorPickerValue(BackgroundColorPicker, "#FFFFFF"),
             BorderColor: BorderTransparentCheckBox.IsChecked == true
                 ? "Transparent"
                 : GetColorPickerValue(BorderColorPicker, "#8AA0A6"),
