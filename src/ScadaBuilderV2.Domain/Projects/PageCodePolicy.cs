@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace ScadaBuilderV2.Domain.Projects;
@@ -60,6 +62,58 @@ public static partial class PageCodePolicy
         return new PageCodeValidationResult(errors.Count == 0, errors);
     }
 
+    /// <summary>
+    /// Derives a portable, valid page code from a free-form human-readable display name (accents, spaces
+    /// and capitals allowed in the input). The returned code always satisfies <see cref="Validate"/> in
+    /// isolation (no existing-codes/current-code check); callers that need project-wide uniqueness still
+    /// run the result through their own suffixing (see `QuickWindowWorkspaceController.ProposeCode`).
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0050, FR-UI-12.
+    /// Contracts: lower-case; diacritics stripped via Unicode `FormD` + `NonSpacingMark` filtering (not a
+    /// hand-written lookup table); any run of characters outside `[a-z0-9]` becomes a single `_`; leading
+    /// and trailing `_`/`-` are trimmed; a result that does not start with `a`-`z` (empty, or starting with
+    /// a digit) is prefixed with `fenetre`/`fenetre_`; the result is truncated to 64 characters with no
+    /// trailing `_` left by the cut.
+    /// Tests: tests/ScadaBuilderV2.Tests/PageIdentityTests.cs.
+    /// </remarks>
+    public static string DeriveCodeFromDisplayName(string? displayName)
+    {
+        const string FallbackPrefix = "fenetre";
+
+        var normalized = StripDiacritics((displayName ?? string.Empty).Trim().ToLowerInvariant());
+        normalized = NonPortableRunRegex().Replace(normalized, "_").Trim('_', '-');
+
+        if (normalized.Length == 0)
+        {
+            normalized = FallbackPrefix;
+        }
+        else if (normalized[0] < 'a' || normalized[0] > 'z')
+        {
+            normalized = $"{FallbackPrefix}_{normalized}";
+        }
+
+        if (normalized.Length > 64)
+        {
+            normalized = normalized[..64].TrimEnd('_', '-');
+        }
+
+        return normalized;
+    }
+
+    private static string StripDiacritics(string value)
+    {
+        var decomposed = value.Normalize(NormalizationForm.FormD);
+        var builder = new StringBuilder(decomposed.Length);
+        foreach (var c in decomposed)
+        {
+            if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                builder.Append(c);
+        }
+
+        return builder.ToString().Normalize(NormalizationForm.FormC);
+    }
+
     /// <summary>Proposes a deterministic unique code for a duplicated page.</summary>
     public static string SuggestDuplicateCode(string sourceCode, IEnumerable<string>? existingCodes = null)
     {
@@ -82,4 +136,7 @@ public static partial class PageCodePolicy
 
     [GeneratedRegex("^[a-z][a-z0-9_-]{0,63}$", RegexOptions.CultureInvariant)]
     private static partial Regex PageCodeRegex();
+
+    [GeneratedRegex("[^a-z0-9]+", RegexOptions.CultureInvariant)]
+    private static partial Regex NonPortableRunRegex();
 }

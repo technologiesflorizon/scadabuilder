@@ -36,6 +36,42 @@ public sealed class PageIdentityTests
         Assert.IsTrue(PageCodePolicy.Validate(duplicate).IsValid);
     }
 
+    /// <summary>
+    /// Pins the free-name-to-code derivation contract used by the quick-window naming front door: lower-case,
+    /// diacritics stripped by Unicode normalization, non-portable runs collapsed to one `_`, a `fenetre`
+    /// fallback prefix when the input carries no letter to start from, and a valid result in every case.
+    /// </summary>
+    [TestMethod]
+    public void DeriveCodeFromDisplayNameProducesPortableCodesForFreeNames()
+    {
+        Assert.AreEqual("fenetre_condenseur", PageCodePolicy.DeriveCodeFromDisplayName("Fenêtre Condenseur"));
+        Assert.AreEqual("popup_fan_2", PageCodePolicy.DeriveCodeFromDisplayName("Popup Fan #2"));
+        Assert.AreEqual("deja_vu", PageCodePolicy.DeriveCodeFromDisplayName("  Déjà  Vu  "));
+        Assert.AreEqual("fenetre_2_pompes", PageCodePolicy.DeriveCodeFromDisplayName("2 pompes"));
+        Assert.AreEqual("fenetre", PageCodePolicy.DeriveCodeFromDisplayName("___"));
+        Assert.AreEqual("fenetre", PageCodePolicy.DeriveCodeFromDisplayName(""));
+        Assert.AreEqual("fenetre", PageCodePolicy.DeriveCodeFromDisplayName("   "));
+        Assert.AreEqual("fenetre", PageCodePolicy.DeriveCodeFromDisplayName(null));
+    }
+
+    [TestMethod]
+    public void DeriveCodeFromDisplayNameAlwaysSatisfiesValidateInIsolation()
+    {
+        var samples = new[]
+        {
+            "Fenêtre Condenseur", "Popup Fan #2", "  Déjà  Vu  ", "2 pompes", "___", "", "   ", null,
+            "ÀÂÄÇÈÉÊËÎÏÔÖÙÛÜ", "9", "-", "a", "A", new string('É', 100), "Évaporateur n°1 — zone Ouest",
+            "  \t\n  ", "日本語", "😀 Fenêtre"
+        };
+
+        foreach (var sample in samples)
+        {
+            var code = PageCodePolicy.DeriveCodeFromDisplayName(sample);
+            var result = PageCodePolicy.Validate(code);
+            Assert.IsTrue(result.IsValid, $"'{sample ?? "<null>"}' derived '{code}' which failed Validate: {string.Join(", ", result.Errors)}");
+        }
+    }
+
     [TestMethod]
     public void ProjectMigrationIsIdempotentAndPreservesWonderwareProvenance()
     {

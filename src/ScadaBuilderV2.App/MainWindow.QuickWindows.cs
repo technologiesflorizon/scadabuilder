@@ -149,7 +149,18 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
             _ => null
         };
 
-        if (mutation is null || mutation.Result.Status != CommandResultStatus.Succeeded) return;
+        if (mutation is null) return;
+        if (mutation.Result.Status != CommandResultStatus.Succeeded)
+        {
+            // A definite cancellation (mutation is null) stays silent; a refusal must not, even though the
+            // workspace controller already reports one through ReportQuickWindowStatus for every command
+            // wired here today (FormatRefusal). This is the front door's own safety net against a future
+            // command that returns a failed mutation without reporting one.
+            var reason = mutation.Result.Diagnostics.FirstOrDefault()?.Message;
+            if (!string.IsNullOrWhiteSpace(reason)) SetStatus(reason);
+            return;
+        }
+
         await ApplyQuickWindowMutationAsync(mutation);
     }
 

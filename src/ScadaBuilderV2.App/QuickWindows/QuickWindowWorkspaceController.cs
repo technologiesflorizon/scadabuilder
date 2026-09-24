@@ -135,10 +135,11 @@ public sealed class QuickWindowWorkspaceController(
         var name = await host.RequestQuickWindowNameAsync("Nouvelle fenêtre rapide", ProposeCode(snapshot, "fenetre"));
         if (string.IsNullOrWhiteSpace(name)) return null;
 
-        var mutation = definitions.CreateEmpty(snapshot, name, name);
+        var code = ProposeCode(snapshot, PageCodePolicy.DeriveCodeFromDisplayName(name));
+        var mutation = definitions.CreateEmpty(snapshot, code, name);
         if (mutation.Result.Status != CommandResultStatus.Succeeded)
         {
-            host.ReportQuickWindowStatus("Création de la fenêtre rapide refusée.");
+            host.ReportQuickWindowStatus(FormatRefusal("Création de la fenêtre rapide refusée", mutation));
             return mutation;
         }
 
@@ -160,10 +161,11 @@ public sealed class QuickWindowWorkspaceController(
         var name = await host.RequestQuickWindowNameAsync("Dupliquer la fenêtre rapide", proposed);
         if (string.IsNullOrWhiteSpace(name)) return null;
 
-        var created = definitions.CreateEmpty(snapshot, name, name);
+        var code = ProposeCode(snapshot, PageCodePolicy.DeriveCodeFromDisplayName(name));
+        var created = definitions.CreateEmpty(snapshot, code, name);
         if (created.Result.Status != CommandResultStatus.Succeeded)
         {
-            host.ReportQuickWindowStatus("Duplication refusée.");
+            host.ReportQuickWindowStatus(FormatRefusal("Duplication refusée", created));
             return created;
         }
 
@@ -178,7 +180,7 @@ public sealed class QuickWindowWorkspaceController(
         var mutation = definitions.Update(created.After, filled);
         if (mutation.Result.Status != CommandResultStatus.Succeeded)
         {
-            host.ReportQuickWindowStatus("Duplication refusée.");
+            host.ReportQuickWindowStatus(FormatRefusal("Duplication refusée", mutation));
             return mutation;
         }
 
@@ -196,10 +198,10 @@ public sealed class QuickWindowWorkspaceController(
         var name = await host.RequestQuickWindowNameAsync("Renommer la fenêtre rapide", definition.DisplayName);
         if (string.IsNullOrWhiteSpace(name) || string.Equals(name, definition.DisplayName, StringComparison.Ordinal)) return null;
 
-        var mutation = definitions.Update(snapshot, definition with { Code = name, DisplayName = name });
+        var mutation = definitions.Update(snapshot, definition with { DisplayName = name });
         host.ReportQuickWindowStatus(mutation.Result.Status == CommandResultStatus.Succeeded
             ? $"Fenêtre rapide renommée en '{name}'."
-            : "Renommage refusé.");
+            : FormatRefusal("Renommage refusé", mutation));
         return mutation;
     }
 
@@ -630,6 +632,17 @@ public sealed class QuickWindowWorkspaceController(
 
     private static QuickWindowDefinition? Find(PageWorkspaceSnapshot snapshot, Guid definitionKey) =>
         snapshot.Project.EffectiveQuickWindows.FirstOrDefault(item => item.DefinitionKey == definitionKey);
+
+    /// <summary>Appends the first diagnostic reason to a French refusal prefix, when one is available.</summary>
+    /// <remarks>
+    /// Contracts: keeps the existing status prefix; falls back to `"{prefix}."` alone when the mutation
+    /// carries no diagnostic, so a validation path added later never regresses to a blank reason.
+    /// </remarks>
+    private static string FormatRefusal(string prefix, QuickWindowWorkspaceMutation mutation)
+    {
+        var reason = mutation.Result.Diagnostics.FirstOrDefault()?.Message;
+        return string.IsNullOrWhiteSpace(reason) ? $"{prefix}." : $"{prefix} : {reason}.";
+    }
 
     private static string ProposeCode(PageWorkspaceSnapshot snapshot, string seed)
     {
