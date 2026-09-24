@@ -44,6 +44,7 @@ using ScadaBuilderV2.Application.Tables;
 using ScadaBuilderV2.Application.Projects;
 using ScadaBuilderV2.Infrastructure.Shell;
 using ScadaBuilderV2.App.Projects;
+using ScadaBuilderV2.App.Shell;
 
 namespace ScadaBuilderV2.App;
 
@@ -61,6 +62,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
     private readonly ProjectWorkspaceRepository _projectWorkspaceRepository;
     private readonly RecentProjectStore _recentProjectStore = new();
     private readonly ExistingProjectDiscovery _existingProjectDiscovery = new();
+    private readonly BusyOverlayController _busyOverlay;
     private readonly ProjectLifecycleCoordinator _projectLifecycleCoordinator;
     private readonly PageSourceProjectionResolver _pageSourceProjectionResolver = new();
     private readonly PageWorkspaceController _pageWorkspaceController;
@@ -170,13 +172,14 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
 
     public MainWindow()
     {
+        _busyOverlay = new BusyOverlayController(ApplyBusyOverlayState);
         var artifactConverterRegistry = new ArtifactConverterRegistry();
         artifactConverterRegistry.Register(new ProjectGeneration1Converter());
         _projectWorkspaceRepository = new ProjectWorkspaceRepository(
             _modernProjectStore,
             new ReferenceProjectCompatibilityLocator(),
             artifactConverterRegistry,
-            new ConversionCoordinator(artifactConverterRegistry, new WpfConversionConsent(this)));
+            new ConversionCoordinator(artifactConverterRegistry, new WpfConversionConsent(this, _busyOverlay)));
         _projectLifecycleCoordinator = new ProjectLifecycleCoordinator(
             _projectWorkspaceRepository,
             _recentProjectStore,
@@ -6993,7 +6996,15 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             Multiselect = false,
             CheckFileExists = true
         };
-        if (dialog.ShowDialog(this) != true)
+
+        // Asking is not loading: a ring spinning behind the picker reads as a frozen application.
+        bool accepted;
+        using (_busyOverlay.Suspend())
+        {
+            accepted = dialog.ShowDialog(this) == true;
+        }
+
+        if (!accepted)
         {
             SetStatus("Ouverture de projet annulée.");
             return;
@@ -7030,9 +7041,13 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
     }
 
+    /// <summary>The recent entry a reopen gesture would activate, or <c>null</c> when there is none.</summary>
+    private RecentProjectEntry? FirstAvailableRecentProject() =>
+        RecentProjects.FirstOrDefault(item => item.IsAvailable);
+
     private async Task ReopenLastProjectAsync()
     {
-        var entry = RecentProjects.FirstOrDefault(item => item.IsAvailable);
+        var entry = FirstAvailableRecentProject();
         if (entry is null)
         {
             SetStatus("Aucun projet récent disponible.");
@@ -7041,16 +7056,28 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         await OpenProjectPathAsync(entry.ProjectFilePath);
     }
 
-    /// <summary>Runs one lifecycle gesture behind an error boundary.</summary>
+    /// <summary>Runs one lifecycle gesture behind an error boundary, under the busy veil.</summary>
     /// <remarks>
     /// These handlers are `async void`, so nothing observes the task they return: an unhandled exception goes
     /// straight to the dispatcher and closes the application. A disk that fills, a revoked permission or a
     /// corrupted recent entry are ordinary outcomes of this flow and must surface as a message, not a crash.
+    ///
+    /// The veil goes up inside the `try` and comes down in the `finally`, never in the happy path alone. A
+    /// gesture that throws would otherwise leave the window veiled and inert - the exact opposite of the
+    /// problem the veil exists to solve - and the error box raised by `PresentProjectFailure` would appear
+    /// behind it. Because `catch` runs before `finally`, the veil is still up while the message is composed
+    /// and down before the operator is asked to read anything.
+    ///
+    /// Tests: `tests/ScadaBuilderV2.Tests/ProjectLoadingOverlayContractTests.cs`.
     /// </remarks>
-    private async Task RunProjectGestureAsync(string gesture, Func<Task> action)
+    /// <param name="gesture">The user-facing label, also used by the failure and cancellation messages.</param>
+    /// <param name="action">The gesture itself.</param>
+    /// <param name="detail">The project name shown under the label, when the gesture already knows it.</param>
+    private async Task RunProjectGestureAsync(string gesture, Func<Task> action, string? detail = null)
     {
         try
         {
+            _busyOverlay.BeginBusy(gesture, detail);
             await action();
         }
         catch (ProjectActivationException exception)
@@ -7068,6 +7095,30 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         {
             PresentProjectFailure($"{gesture} impossible", exception.Message);
         }
+        finally
+        {
+            _busyOverlay.EndBusy();
+        }
+    }
+
+    /// <summary>Projects one busy state onto the shell's veil.</summary>
+    private void ApplyBusyOverlayState(BusyOverlayState state)
+    {
+        if (ProjectBusyOverlay is null)
+        {
+            return;
+        }
+
+        ProjectBusyLabelTextBlock.Text = string.IsNullOrWhiteSpace(state.Label)
+            ? string.Empty
+            : $"{state.Label}…";
+        ProjectBusyDetailTextBlock.Text = state.Detail ?? string.Empty;
+        ProjectBusyDetailTextBlock.Visibility = string.IsNullOrWhiteSpace(state.Detail)
+            ? Visibility.Collapsed
+            : Visibility.Visible;
+        ProjectBusyOverlay.Visibility = state.IsVisible
+            ? Visibility.Visible
+            : Visibility.Collapsed;
     }
 
     private void PresentProjectFailure(string title, string message)
@@ -7083,7 +7134,10 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         await RunProjectGestureAsync("Ouverture de projet", OpenProjectInteractiveAsync);
 
     private async void OnWelcomeReopenLastClick(object sender, RoutedEventArgs e) =>
-        await RunProjectGestureAsync("Réouverture du dernier projet", ReopenLastProjectAsync);
+        await RunProjectGestureAsync(
+            "Réouverture du dernier projet",
+            ReopenLastProjectAsync,
+            FirstAvailableRecentProject()?.DisplayName);
 
     private async void OnRecentProjectOpenClick(object sender, RoutedEventArgs e)
     {
@@ -7091,7 +7145,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         {
             await RunProjectGestureAsync(
                 "Ouverture de projet",
-                () => OpenProjectPathAsync(entry.ProjectFilePath));
+                () => OpenProjectPathAsync(entry.ProjectFilePath),
+                entry.DisplayName);
         }
     }
 
@@ -7101,13 +7156,16 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         {
             return;
         }
-        await RunProjectGestureAsync("Retrait du projet récent", async () =>
-        {
-            await _recentProjectStore.RemoveAsync(entry.ProjectFilePath);
-            await RefreshRecentProjectsAsync();
-            await RefreshDiscoveredProjectsAsync();
-            SetStatus($"Projet retiré des récents: {entry.DisplayName}");
-        });
+        await RunProjectGestureAsync(
+            "Retrait du projet récent",
+            async () =>
+            {
+                await _recentProjectStore.RemoveAsync(entry.ProjectFilePath);
+                await RefreshRecentProjectsAsync();
+                await RefreshDiscoveredProjectsAsync();
+                SetStatus($"Projet retiré des récents: {entry.DisplayName}");
+            },
+            entry.DisplayName);
     }
 
     private async void OnDiscoveredProjectOpenClick(object sender, RoutedEventArgs e)
@@ -7116,7 +7174,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         {
             await RunProjectGestureAsync(
                 "Ouverture de projet",
-                () => OpenProjectPathAsync(entry.ProjectFilePath));
+                () => OpenProjectPathAsync(entry.ProjectFilePath),
+                entry.DisplayName);
         }
     }
 

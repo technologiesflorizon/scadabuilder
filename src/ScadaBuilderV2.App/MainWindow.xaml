@@ -314,6 +314,7 @@
         </Style>
     </Window.Resources>
 
+    <Grid>
     <DockPanel LastChildFill="True">
         <Border DockPanel.Dock="Top"
                 Height="212"
@@ -1867,4 +1868,78 @@
             </avalonDock:LayoutRoot>
         </avalonDock:DockingManager>
     </DockPanel>
+
+        <!-- Voile de chargement des gestes projet : il couvre toute la fenetre, donc il gele
+             le ruban, les panneaux et le canvas d'un seul geste. -->
+        <Border x:Name="ProjectBusyOverlay"
+                Visibility="Collapsed"
+                Background="#8C0F2A30"
+                IsHitTestVisible="True"
+                Focusable="True"
+                Cursor="Wait">
+            <Border Background="{StaticResource PanelBrush}"
+                    BorderBrush="{StaticResource BorderBrushSoft}"
+                    BorderThickness="1"
+                    CornerRadius="10"
+                    Padding="30,26"
+                    MinWidth="320"
+                    MaxWidth="520"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <StackPanel HorizontalAlignment="Center">
+                    <Grid Width="46" Height="46" HorizontalAlignment="Center">
+                        <Ellipse Stroke="{StaticResource BorderBrushSoft}" StrokeThickness="4"/>
+                        <Ellipse x:Name="ProjectBusySpinnerRing"
+                                 Stroke="{StaticResource AccentBlueBrush}"
+                                 StrokeThickness="4"
+                                 StrokeDashArray="9 26"
+                                 StrokeDashCap="Round"
+                                 RenderTransformOrigin="0.5,0.5">
+                            <Ellipse.RenderTransform>
+                                <RotateTransform Angle="0"/>
+                            </Ellipse.RenderTransform>
+                            <Ellipse.Style>
+                                <Style TargetType="Ellipse">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsVisible" Value="True">
+                                            <Trigger.EnterActions>
+                                                <BeginStoryboard x:Name="ProjectBusySpinnerStoryboard">
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetProperty="RenderTransform.(RotateTransform.Angle)"
+                                                                         From="0"
+                                                                         To="360"
+                                                                         Duration="0:0:1"
+                                                                         RepeatBehavior="Forever"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </Trigger.EnterActions>
+                                            <Trigger.ExitActions>
+                                                <StopStoryboard BeginStoryboardName="ProjectBusySpinnerStoryboard"/>
+                                            </Trigger.ExitActions>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Ellipse.Style>
+                        </Ellipse>
+                    </Grid>
+                    <TextBlock x:Name="ProjectBusyLabelTextBlock"
+                               Margin="0,18,0,0"
+                               FontSize="15"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource InkBrush}"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               TextWrapping="Wrap"/>
+                    <TextBlock x:Name="ProjectBusyDetailTextBlock"
+                               Visibility="Collapsed"
+                               Margin="0,6,0,0"
+                               FontSize="12"
+                               Foreground="{StaticResource MutedBrush}"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               TextTrimming="CharacterEllipsis"/>
+                </StackPanel>
+            </Border>
+        </Border>
+    </Grid>
 </Window>

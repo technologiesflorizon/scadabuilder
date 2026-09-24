@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active regression coverage map
-Document version: `V2.1.6.0025`
+Document version: `V2.1.6.0026`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-24 | `V2.1.6.0026` | `PENDING` | Voile de chargement des gestes projet, couvert sur deux axes. `BusyOverlayControllerTests` exerce le comptage pour de vrai — le contrôleur est lié au projet de test comme les autres sources App testables : geste imbriqué qui ne baisse pas le voile du geste encore en cours, suspension imbriquée, double `Dispose`, `EndBusy` non apparié, et chaque transition poussée vers le shell. `ProjectLoadingOverlayContractTests` épingle en source ce qu'aucun test ne peut charger : le voile monte **dans le `try`** de `RunProjectGestureAsync` et redescend **dans son `finally`**, en un seul endroit — un test qui vérifierait seulement la présence des deux appels passerait sur la version cassée qui ne baisse le voile que dans le chemin heureux. Il épingle aussi `Visibility="Collapsed"` et le `Background` par défaut (sans lui, le `Border` n'est pas testé au survol et laisse passer tous les clics), la position du voile en frère du `DockPanel` racine, l'anneau animé en XAML pur, et la suspension autour des deux dialogues. |
 | 2026-09-12 | `V2.1.6.0025` | `705b13c` | Fond transparent : `TransparentBackgroundTests` épingle la propriété dont dépend l'usage — une zone transparente doit rester **cliquable**. Une forme exporte `fill="Transparent"` et non `fill="none"`, qui serait visuellement identique mais retirerait l'objet du test de survol; un élément non-forme conserve sa déclaration `background` au lieu de la perdre. Un contrat de source garde le câblage du dialogue, y compris la relecture d'un élément déjà transparent. |
 | 2026-09-12 | `V2.1.6.0024` | `b4ca385` | Contrat de source XAML : `XamlStaticResourceForwardReferenceTests` balaie les 30 `.xaml` de `src/` et refuse qu'un attribut de l'élément racine référence une clé définie plus bas dans son propre bloc `Resources`. Deux dialogues portaient ce défaut et ne pouvaient pas s'ouvrir — `UnsavedChangesDialog` et `ConversionPlanDialog`. Aucun test ne le voyait : le projet de test ne référence pas `ScadaBuilderV2.App`, donc aucune fenêtre n'est jamais chargée, et les contrats existants lisent ce balisage comme du texte. |
 | 2026-09-10 | `V2.1.6.0023` | `f208456` | Ligne de couverture du chantier de versionnement de format corrigée (tour 3, Ruling 46) : elle créditait `BackwardRefusalTests` d'un « declined-conversion no-touch » non assertée avant que l'assertion de répertoire n'existe réellement sur ce test. |
