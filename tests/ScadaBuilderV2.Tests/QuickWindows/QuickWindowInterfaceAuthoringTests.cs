@@ -325,7 +325,7 @@ public sealed class QuickWindowInterfaceAuthoringTests
                      "new ElementStateRuleDialog(null, ActiveSelectorTagCatalog)",
                      "new ElementStateRuleDialog(selected, ActiveSelectorTagCatalog)",
                      "new ElementReadVariableDialog(element.EffectiveStateConfig.ReadVariable, ActiveSelectorTagCatalog)",
-                     "ActiveSelectorTagCatalog, usedKinds)"
+                     "ActiveSelectorTagCatalog, usedKinds, BuildQuickWindowAuthoringContext())"
                  })
         {
             StringAssert.Contains(shell, selector, $"'{selector}' must consume the active context catalogue.");

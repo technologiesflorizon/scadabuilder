@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using ScadaBuilderV2.App.QuickWindows;
+using ScadaBuilderV2.Application.Commands;
 using ScadaBuilderV2.Domain.ElementEvents.Command;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.QuickWindows;
@@ -37,21 +38,22 @@ public partial class ElementCommandDialog : Window
         IReadOnlyList<ScadaSceneReference> pageReferences,
         ScadaTagCatalog? tagCatalog,
         IReadOnlyCollection<ScadaCommandKind> usedKinds,
-        QuickWindowCommandAuthoringContext? quickWindowContext = null)
+        QuickWindowCommandAuthoringContext quickWindowContext)
     {
         InitializeComponent();
         _pageReferences = pageReferences;
         _commandId = existingCommand?.Id ?? Guid.NewGuid().ToString("n");
         _existingCommand = existingCommand;
         _usedKinds = usedKinds;
-        _quickWindowContext = quickWindowContext ?? QuickWindowCommandAuthoringContext.Empty;
+        _quickWindowContext = quickWindowContext;
 
         TriggerComboBox.ItemsSource = Enum.GetValues<ScadaCommandTrigger>();
-        var quickWindowKinds = _quickWindowContext.AllowedCommandKinds();
-        KindComboBox.ItemsSource = Enum.GetValues<ScadaCommandKind>()
-            .Where(kind => kind is not ScadaCommandKind.OpenQuickWindow and not ScadaCommandKind.CloseQuickWindow || quickWindowKinds.Contains(kind))
-            .Where(kind => !usedKinds.Contains(kind) || kind == existingCommand?.Kind)
-            .ToArray();
+        var kindOptions = ElementCommandKindCatalog.CreateOptions(
+            usedKinds,
+            existingCommand?.Kind,
+            _quickWindowContext.EffectiveDefinitions.Count > 0,
+            _quickWindowContext.IsQuickWindowContent);
+        KindComboBox.ItemsSource = kindOptions;
         QuickWindowDefinitionComboBox.ItemsSource = _quickWindowContext.EffectiveDefinitions;
         WriteModeComboBox.ItemsSource = Enum.GetValues<ScadaWriteMode>();
         TargetPageComboBox.ItemsSource = pageReferences;
@@ -68,7 +70,7 @@ public partial class ElementCommandDialog : Window
         {
             NameTextBox.Text = existingCommand.Name;
             TriggerComboBox.SelectedItem = existingCommand.Trigger;
-            KindComboBox.SelectedItem = existingCommand.Kind;
+            KindComboBox.SelectedItem = kindOptions.First(option => option.Kind == existingCommand.Kind);
             WriteTagComboBox.SelectedItem = tagItems.FirstOrDefault(t => t.Id == existingCommand.WriteTagId);
             ReadTagComboBox.SelectedItem = tagItems.FirstOrDefault(t => t.Id == existingCommand.ReadTagId);
             WriteModeComboBox.SelectedItem = existingCommand.WriteMode;
@@ -85,7 +87,8 @@ public partial class ElementCommandDialog : Window
         else
         {
             TriggerComboBox.SelectedIndex = 0;
-            KindComboBox.SelectedIndex = 0;
+            var firstEnabledIndex = kindOptions.ToList().FindIndex(option => option.IsEnabled);
+            KindComboBox.SelectedIndex = firstEnabledIndex >= 0 ? firstEnabledIndex : -1;
         }
 
         UpdateKindPanels();
@@ -106,7 +109,7 @@ public partial class ElementCommandDialog : Window
 
     private void UpdateKindPanels()
     {
-        var kind = (ScadaCommandKind?)KindComboBox.SelectedItem ?? ScadaCommandKind.WriteTag;
+        var kind = (KindComboBox.SelectedItem as ElementCommandKindOption)?.Kind ?? ScadaCommandKind.WriteTag;
         WriteTagPanel.Visibility = kind == ScadaCommandKind.WriteTag ? Visibility.Visible : Visibility.Collapsed;
         PagePanel.Visibility = kind is ScadaCommandKind.Navigate
             ? Visibility.Visible
@@ -125,17 +128,19 @@ public partial class ElementCommandDialog : Window
 
     private void OnSaveClick(object sender, RoutedEventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(NameTextBox.Text) || TriggerComboBox.SelectedItem is null || KindComboBox.SelectedItem is null)
+        if (string.IsNullOrWhiteSpace(NameTextBox.Text) || TriggerComboBox.SelectedItem is null || KindComboBox.SelectedItem is not ElementCommandKindOption selectedKindOption)
         {
             return;
         }
 
-        var kind = (ScadaCommandKind)KindComboBox.SelectedItem;
-        if (_usedKinds.Contains(kind))
+        if (!selectedKindOption.IsEnabled)
         {
-            ValidationText.Text = $"Une commande '{kind}' existe deja pour cet Element+.";
+            // Defensive: WPF already refuses to select a disabled ComboBoxItem, but this must not rely on it.
+            ValidationText.Text = selectedKindOption.DisabledReason ?? "Ce type n'est pas disponible.";
             return;
         }
+
+        var kind = selectedKindOption.Kind;
 
         if (kind == ScadaCommandKind.OpenQuickWindow && QuickWindowDefinitionComboBox.SelectedItem is not QuickWindowDefinition)
         {

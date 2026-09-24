@@ -26,7 +26,15 @@
             <ComboBox x:Name="TriggerComboBox" Margin="0,2,0,8"/>
 
             <TextBlock Text="Type" Foreground="{StaticResource MutedBrush}"/>
-            <ComboBox x:Name="KindComboBox" Margin="0,2,0,8" SelectionChanged="OnKindChanged"/>
+            <ComboBox x:Name="KindComboBox" Margin="0,2,0,8" SelectionChanged="OnKindChanged" DisplayMemberPath="Label">
+                <ComboBox.ItemContainerStyle>
+                    <Style TargetType="ComboBoxItem">
+                        <Setter Property="IsEnabled" Value="{Binding IsEnabled}"/>
+                        <Setter Property="ToolTip" Value="{Binding DisabledReason}"/>
+                        <Setter Property="ToolTipService.ShowOnDisabled" Value="True"/>
+                    </Style>
+                </ComboBox.ItemContainerStyle>
+            </ComboBox>
 
             <StackPanel x:Name="WriteTagPanel" Visibility="Collapsed">
                 <TextBlock Text="Tag ecriture" Foreground="{StaticResource MutedBrush}"/>
@@ -48,7 +56,7 @@
             </StackPanel>
 
             <StackPanel x:Name="QuickWindowPanel" Visibility="Collapsed">
-                <TextBlock Text="Fenetre rapide cible" Foreground="{StaticResource MutedBrush}"/>
+                <TextBlock Text="Fenêtre rapide cible" Foreground="{StaticResource MutedBrush}"/>
                 <ComboBox x:Name="QuickWindowDefinitionComboBox" Margin="0,2,0,8" DisplayMemberPath="DisplayName"/>
             </StackPanel>
 

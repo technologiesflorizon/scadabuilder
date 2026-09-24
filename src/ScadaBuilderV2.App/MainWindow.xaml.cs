@@ -6040,7 +6040,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
 
         var usedKinds = element.EffectiveCommandConfig.Commands.Select(c => c.Kind).ToArray();
-        var dialog = new ElementCommandDialog(null, _modernProject?.Scenes ?? [], ActiveSelectorTagCatalog, usedKinds) { Owner = this };
+        var dialog = new ElementCommandDialog(null, _modernProject?.Scenes ?? [], ActiveSelectorTagCatalog, usedKinds, BuildQuickWindowAuthoringContext()) { Owner = this };
         if (dialog.ShowDialog() != true || dialog.Result is null)
         {
             return;
@@ -6081,7 +6081,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             .Where(c => c.Id != selected.Id)
             .Select(c => c.Kind)
             .ToArray();
-        var dialog = new ElementCommandDialog(selected, _modernProject?.Scenes ?? [], ActiveSelectorTagCatalog, usedKinds) { Owner = this };
+        var dialog = new ElementCommandDialog(selected, _modernProject?.Scenes ?? [], ActiveSelectorTagCatalog, usedKinds, BuildQuickWindowAuthoringContext()) { Owner = this };
         if (dialog.ShowDialog() != true || dialog.Result is null)
         {
             return;
