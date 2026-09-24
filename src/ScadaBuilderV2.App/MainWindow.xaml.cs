@@ -249,7 +249,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
             await RefreshRecentProjectsAsync();
             await RefreshDiscoveredProjectsAsync();
             ShowProjectWelcome();
-            if (!_diagnosticsPanel.HasIssues) DiagnosticsAnchorable.Hide();
+            if (!_diagnosticsPanel.HasIssues) HideAnchorable(DiagnosticsAnchorable);
         }
         catch (Exception ex)
         {
@@ -952,52 +952,53 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
     private void OnShowDiagnosticsAnchorableClick(object sender, RoutedEventArgs e) => ShowAnchorable(DiagnosticsAnchorable);
 
     /// <summary>
-    /// Shows a dockable panel, re-attaching it to the AvalonDock layout tree first when it has been
-    /// detached by a close.
+    /// Shows a dockable panel, resolving it by <c>ContentId</c> in the live AvalonDock layout tree rather than
+    /// trusting the <c>x:Name</c> field's own <see cref="LayoutAnchorable.Parent"/>.
     /// </summary>
-    /// <param name="anchorable">The anchorable to show, or <c>null</c> if the panel field is not bound yet.</param>
+    /// <param name="anchorable">The <c>x:Name</c>-declared anchorable, used only as a fallback source when the
+    /// live layout has none with this <c>ContentId</c> yet; or <c>null</c> if the panel field is not bound.</param>
     /// <remarks>
-    /// AvalonDock 4.74.1: every <c>LayoutAnchorable</c> in <c>MainWindow.xaml</c> is <c>CanClose="True"</c>,
-    /// and closing such an anchorable does not hide it - it detaches it from the layout tree, so its
-    /// <c>Parent</c> becomes <c>null</c>. A restored <c>dock-layout.xml</c> that omits a panel produces the
-    /// same detached state at startup. <see cref="LayoutAnchorable.Show"/> only un-hides an anchorable that
-    /// is still attached; called on a detached one, it is a silent no-op, which is why a closed - or never
-    /// persisted - panel could not be reopened from the "Fenetres" menu. This helper re-attaches first with
-    /// <see cref="LayoutAnchorable.AddToLayout(AvalonDock.DockingManager, AnchorableShowStrategy)"/> before
-    /// calling <c>Show()</c>, and leaves an already-attached anchorable's behavior unchanged.
+    /// AvalonDock 4.74.1: <c>XmlLayoutSerializer.Deserialize</c> (used by <c>DeserializeLayout</c> with no
+    /// <c>LayoutSerializationCallback</c>) replaces <c>MainDockingManager.Layout</c> wholesale with a new tree
+    /// built from the saved XML. The original <c>LayoutAnchorable</c> objects the XAML <c>x:Name</c> fields
+    /// point to are never in that new tree - they stay parented in the old, dead one - and <see
+    /// cref="LayoutAnchorable.Parent"/> on them is **never null**: closing one (<c>CanClose="True"</c> on all
+    /// eleven) detaches it into a dead subtree instead of hiding it, and a restored layout that omits a panel
+    /// leaves it in the same state. A guard on <c>Parent</c> therefore never catches the case it was meant to
+    /// catch, so a closed - or never persisted - panel could not be reopened from the "Fenetres" menu even
+    /// though the helper "looked" like it re-attached correctly. Verified against the real assembly by a probe
+    /// kept at
+    /// <c>C:\Users\mathi\AppData\Local\Temp\claude\F--Groupe-AMR-SCADA-AMR-GROUP\ec1a5845-88ba-4cc4-aef7-a67fb9a349f0\scratchpad\dockprobe</c>.
     ///
-    /// The strategy passed is <see cref="AnchorableShowStrategy.Most"/> combined with
-    /// <see cref="AnchorableShowStrategy.Right"/> (the enum is <c>[Flags]</c>): prefer reinserting next to
-    /// the most recently active anchorable group, falling back to the right dock side when there is no such
-    /// group yet (e.g. a fresh layout). This keeps a reopened panel in a visible, sensibly placed area
-    /// without hard-coding a side that would be wrong for panels whose default position is left, top or
-    /// bottom.
+    /// Delegates to <see cref="DockablePanelPresenter.Show"/>, which resolves the anchorable actually present in
+    /// <c>MainDockingManager.Layout</c> by <c>ContentId</c> and only falls back to re-attaching the declared
+    /// object via <c>AddToLayout</c> when the live tree has none with that id at all.
     ///
     /// Robust to <see cref="MainDockingManager"/> being <c>null</c> or not yet loaded: returns without
     /// throwing rather than re-attaching, since menu handlers can in principle run before the shell has
     /// finished loading its docking surface.
     ///
-    /// Tests: tests/ScadaBuilderV2.Tests/DockablePanelReattachmentTests.cs.
+    /// Tests: tests/ScadaBuilderV2.ShellTests/DockablePanelPresenterTests.cs,
+    /// tests/ScadaBuilderV2.Tests/DockablePanelReattachmentTests.cs.
     /// </remarks>
-    private void ShowAnchorable(LayoutAnchorable? anchorable)
-    {
-        if (anchorable is null)
-        {
-            return;
-        }
+    private void ShowAnchorable(LayoutAnchorable? anchorable) =>
+        DockablePanelPresenter.Show(MainDockingManager, anchorable);
 
-        if (anchorable.Parent is null)
-        {
-            if (MainDockingManager is null)
-            {
-                return;
-            }
+    /// <summary>
+    /// Hides a dockable panel, resolving it by <c>ContentId</c> in the live AvalonDock layout tree. A no-op when
+    /// the panel is not currently present there - see <see cref="ShowAnchorable"/> for why the declared field's
+    /// own state cannot be trusted.
+    /// </summary>
+    private void HideAnchorable(LayoutAnchorable? anchorable) =>
+        DockablePanelPresenter.Hide(MainDockingManager, anchorable);
 
-            anchorable.AddToLayout(MainDockingManager, AnchorableShowStrategy.Most | AnchorableShowStrategy.Right);
-        }
-
-        anchorable.Show();
-    }
+    /// <summary>
+    /// Activates (brings to front) a dockable panel already present in the live AvalonDock layout tree, resolved
+    /// by <c>ContentId</c>. A no-op when the panel is not currently visible - see <see cref="ShowAnchorable"/>
+    /// for why the declared field's own state cannot be trusted.
+    /// </summary>
+    private void ActivateAnchorable(LayoutAnchorable? anchorable) =>
+        DockablePanelPresenter.Activate(MainDockingManager, anchorable);
 
     private void SaveActiveTabTransientState()
     {
@@ -1366,7 +1367,6 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
     private void ShowDiagnosticsPanel(bool selectErrors = true)
     {
         ShowAnchorable(DiagnosticsAnchorable);
-        DiagnosticsAnchorable.IsActive = true;
         if (selectErrors) DiagnosticsTabControl.SelectedIndex = 0;
     }
 
@@ -1385,7 +1385,6 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
         if (!string.IsNullOrWhiteSpace(issue.PropertyPath))
         {
             ShowAnchorable(PageAnchorable);
-            PageAnchorable.IsActive = true;
         }
     }
 
@@ -4297,7 +4296,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             SetBackgroundColorControls(backgroundColor);
         }
 
-        PageAnchorable.IsActive = true;
+        ActivateAnchorable(PageAnchorable);
         SetStatus("Edition CSS du fond active. La modification reste en session legacy.");
     }
 
@@ -4389,7 +4388,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
 
         SelectModernElement(targetId);
-        PropertiesAnchorable.IsActive = true;
+        ActivateAnchorable(PropertiesAnchorable);
         OpenElementEventDialog(targetId);
     }
 
@@ -7370,7 +7369,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         RefreshActiveRibbonCommandStates();
 
         if (result.Message.Length > 0) SetStatus(result.Message);
-        if (result.PageToOpenKey is not null) PageAnchorable.IsActive = true;
+        if (result.PageToOpenKey is not null) ActivateAnchorable(PageAnchorable);
     }
 
     private ScadaSceneReference? GetSelectedModernPage()
@@ -7411,7 +7410,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         if (result.Status == CommandResultStatus.Succeeded && commandId == "page.properties")
         {
             ShowAnchorable(PageAnchorable);
-            PageAnchorable.IsActive = true;
         }
 
         if (commandId == "page.validate" || result.Diagnostics.Count > 0)

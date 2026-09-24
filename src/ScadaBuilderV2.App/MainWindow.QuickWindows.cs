@@ -272,15 +272,14 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
             _isQuickWindowInterfacePanelBound = true;
         }
 
-        TagCatalogAnchorable.Hide();
+        HideAnchorable(TagCatalogAnchorable);
         ShowAnchorable(QuickWindowInterfaceAnchorable);
-        QuickWindowInterfaceAnchorable.IsActive = true;
     }
 
     /// <summary>Restores the project `Catalogue Tags` when a page becomes the active surface again.</summary>
     private void HideLocalInterfacePanel()
     {
-        QuickWindowInterfaceAnchorable.Hide();
+        HideAnchorable(QuickWindowInterfaceAnchorable);
         ShowAnchorable(TagCatalogAnchorable);
     }
 
@@ -304,7 +303,7 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         QuickWindowTestBenchControl.HidePreview();
         QuickWindowTestBenchControl.Model.Clear();
         QuickWindowPreviewHost?.Close();
-        QuickWindowTestBenchAnchorable.Hide();
+        HideAnchorable(QuickWindowTestBenchAnchorable);
     }
 
     private async void OnQuickWindowPreviewRequested(object? sender, EventArgs e)
@@ -463,7 +462,7 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
                 _isUpdatingPageSelection = false;
             }
 
-            PageAnchorable.IsActive = true;
+            ActivateAnchorable(PageAnchorable);
         }
 
         var usage = mutation.UsageToNavigate;

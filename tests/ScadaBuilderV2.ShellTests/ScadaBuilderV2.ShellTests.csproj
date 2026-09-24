@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.1.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.1.1" />
+    <PackageReference Include="Dirkster.AvalonDock" Version="4.74.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Microsoft.VisualStudio.TestTools.UnitTesting" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!--
+      Referencing the App project (rather than linking DockablePanelPresenter.cs, as
+      tests/ScadaBuilderV2.Tests does for a handful of App files) so this suite exercises the exact
+      assembly that ships, not a copy of its source. Both projects target net8.0-windows with
+      UseWPF, so the reference is compatible; the App project's WinExe output type does not block
+      being referenced as a library.
+    -->
+    <ProjectReference Include="..\..\src\ScadaBuilderV2.App\ScadaBuilderV2.App.csproj" />
+  </ItemGroup>
+
+</Project>

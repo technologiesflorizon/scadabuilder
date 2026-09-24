@@ -314,8 +314,12 @@ public sealed class QuickWindowInterfaceAuthoringTests
         StringAssert.Contains(xaml, "x:Name=\"QuickWindowInterfacePanelControl\"");
 
         var wiring = ReadAppFile("MainWindow.QuickWindows.cs");
-        StringAssert.Contains(wiring, "TagCatalogAnchorable.Hide();");
+        // Both sides go through the presenter-backed helpers, not a bare field access: a saved dock layout
+        // replaces the AvalonDock tree wholesale, so the x:Name-declared field's own Show()/Hide() cannot be
+        // trusted to act on the anchorable actually in the live layout (see DockablePanelPresenter).
+        StringAssert.Contains(wiring, "HideAnchorable(TagCatalogAnchorable);");
         StringAssert.Contains(wiring, "ShowAnchorable(QuickWindowInterfaceAnchorable);");
+        StringAssert.Contains(wiring, "HideAnchorable(QuickWindowInterfaceAnchorable);");
         StringAssert.Contains(wiring, "ShowAnchorable(TagCatalogAnchorable);");
         StringAssert.Contains(wiring, "QuickWindowInterfaceCatalogProjection.Create(definition)");
 

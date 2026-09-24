@@ -4,25 +4,36 @@ using System.Text.RegularExpressions;
 namespace ScadaBuilderV2.Tests;
 
 /// <summary>
-/// Every dockable panel declared in <c>MainWindow.xaml</c> must be reachable from the "Fenetres" menu, and
-/// every menu item that reopens one must go through the reattachment helper rather than a bare
-/// <c>LayoutAnchorable.Show()</c>.
+/// Every dockable panel declared in <c>MainWindow.xaml</c> must be reachable from the "Fenetres" menu, and no
+/// source file may touch a <c>...Anchorable</c> field's <c>Show()</c>/<c>Hide()</c>/<c>IsActive</c> directly
+/// instead of going through the <c>DockablePanelPresenter</c>-backed helpers.
 /// </summary>
 /// <remarks>
-/// AvalonDock 4.74.1: all eleven <c>LayoutAnchorable</c>s in <c>MainWindow.xaml</c> are <c>CanClose="True"</c>,
-/// and closing one detaches it from the layout tree instead of hiding it (a restored
-/// <c>dock-layout.xml</c> that omits a panel produces the same detached state). <c>LayoutAnchorable.Show()</c>
-/// only un-hides an anchorable that is still attached - called on a detached one it is a silent no-op - so a
-/// closed panel, or one absent from the persisted layout, could never be reopened. Two panels
-/// (<c>QuickWindowsAnchorable</c>, <c>DiagnosticsAnchorable</c>) additionally had no menu entry at all.
+/// This file previously also pinned the *shape* of the reattachment helper - that its body mentioned
+/// <c>AddToLayout</c> and branched on <c>Parent</c>. That test passed on a helper that did not work: AvalonDock
+/// 4.74.1's <c>XmlLayoutSerializer.Deserialize</c> (used with no <c>LayoutSerializationCallback</c>) replaces
+/// <c>manager.Layout</c> wholesale, so the original <c>x:Name</c>-declared <c>LayoutAnchorable</c> objects are
+/// never in the tree the <c>DockingManager</c> renders after a restore - and their <c>Parent</c> is never null
+/// even so, because they are still parented in the old, dead tree. A guard on <c>Parent</c> therefore never
+/// caught the "not in the live layout" case it was meant to catch, and the old "shape" test could not see that
+/// because it never ran AvalonDock. A probe against the real assembly, kept at
+/// <c>C:\Users\mathi\AppData\Local\Temp\claude\F--Groupe-AMR-SCADA-AMR-GROUP\ec1a5845-88ba-4cc4-aef7-a67fb9a349f0\scratchpad\dockprobe</c>,
+/// demonstrates this. The *effect*-based coverage now lives in
+/// <c>tests/ScadaBuilderV2.ShellTests/DockablePanelPresenterTests.cs</c>, which runs real AvalonDock on an STA
+/// thread and asserts on <c>manager.Layout.Descendents()</c> - never on <c>Parent</c>.
 ///
-/// The test project does not reference <c>ScadaBuilderV2.App</c>, so no test can instantiate
+/// What still holds and is still pinned here: every anchorable has a "Fenetres" menu entry, and no code path
+/// bypasses the presenter-backed helpers to touch a declared anchorable field's <c>Show</c>/<c>Hide</c>/
+/// <c>IsActive</c> directly - such a read or write would report the dead tree's state, not the live one's.
+///
+/// The test project does not reference <c>ScadaBuilderV2.App</c>, so no test here can instantiate
 /// <c>MainWindow</c> or drive AvalonDock live. These checks read the source files as text and pin the
 /// contract instead, in the style of <see cref="XamlStaticResourceForwardReferenceTests"/> and
 /// <see cref="TransparentBackgroundTests"/>.
 ///
-/// Tests: this file. Surface: <c>MainWindow.xaml</c>, <c>MainWindow.xaml.cs</c>,
-/// <c>MainWindow.QuickWindows.cs</c>.
+/// Tests: this file, tests/ScadaBuilderV2.ShellTests/DockablePanelPresenterTests.cs. Surface:
+/// <c>MainWindow.xaml</c>, <c>MainWindow.xaml.cs</c>, <c>MainWindow.QuickWindows.cs</c>,
+/// <c>Shell/DockablePanelPresenter.cs</c>.
 /// </remarks>
 [TestClass]
 public sealed class DockablePanelReattachmentTests
@@ -66,40 +77,51 @@ public sealed class DockablePanelReattachmentTests
     }
 
     [TestMethod]
-    public void NoAnchorableIsShownWithoutGoingThroughTheReattachmentHelper()
+    public void NoAnchorableIsTouchedDirectlyOutsideThePresenterBackedHelpers()
     {
         var offenders = new List<string>();
 
+        // A bare `<Name>Anchorable.Show()/Hide()/Close()` or a direct `.IsActive =`/`.IsVisible`/`.IsSelected`/
+        // `.Parent` access reports the state of the dead XAML-declared tree, not the live AvalonDock one, once
+        // a saved layout has been restored - see the remarks on DockablePanelPresenter for why. The only
+        // legitimate direct touch is inside DockablePanelPresenter itself (which resolves the live anchorable
+        // first) and inside OnAnchorableClosing, whose `anchorable` local is the live object AvalonDock itself
+        // raised the Closing event for, not a stale declared field.
+        // `LayoutAnchorable` is the AvalonDock type name itself (e.g. in XML doc text or `is LayoutAnchorable`
+        // patterns) and is excluded - only a declared field name ending in "Anchorable" is an offender.
+        var offendingPattern = new Regex(@"\b(?!LayoutAnchorable\b)\w+Anchorable\.(Show\(\)|Hide\(\)|Close\(\)|IsActive\s*=|IsVisible\b|IsSelected\b|Parent\b)");
+
         foreach (var file in Directory.EnumerateFiles(SourceRoot(), "*.cs", SearchOption.AllDirectories))
         {
-            var code = File.ReadAllText(file);
-            foreach (Match match in Regex.Matches(code, @"\b\w+Anchorable\.Show\(\)"))
+            var fileName = Path.GetFileName(file);
+            if (string.Equals(fileName, "DockablePanelPresenter.cs", StringComparison.Ordinal))
             {
-                offenders.Add($"{Path.GetFileName(file)}: {match.Value}");
+                continue;
+            }
+
+            var lines = File.ReadAllLines(file);
+            for (var i = 0; i < lines.Length; i++)
+            {
+                if (string.Equals(fileName, "MainWindow.xaml.cs", StringComparison.Ordinal)
+                    && lines[i].Contains("anchorable.Hide()", StringComparison.Ordinal))
+                {
+                    // OnAnchorableClosing: `anchorable` here is the live object AvalonDock passed to the
+                    // Closing event, not a stale `x:Name`-declared field - not an offender.
+                    continue;
+                }
+
+                foreach (Match match in offendingPattern.Matches(lines[i]))
+                {
+                    offenders.Add($"{fileName}:{i + 1}: {match.Value}");
+                }
             }
         }
 
         Assert.AreEqual(
             0,
             offenders.Count,
-            "a bare '<Name>Anchorable.Show()' does nothing on a detached anchorable; every reopen must go "
-            + $"through the reattachment helper instead: {string.Join(", ", offenders)}.");
-    }
-
-    [TestMethod]
-    public void TheReattachmentHelperReattachesBeforeShowing()
-    {
-        var code = ReadAppFile("MainWindow.xaml.cs");
-
-        var helperMatch = Regex.Match(
-            code,
-            @"private void ShowAnchorable\(LayoutAnchorable\? anchorable\)\s*\{(?<body>[\s\S]*?)\n    \}");
-        Assert.IsTrue(helperMatch.Success, "expected a 'ShowAnchorable(LayoutAnchorable? anchorable)' helper in MainWindow.xaml.cs.");
-
-        var body = helperMatch.Groups["body"].Value;
-        StringAssert.Contains(body, "AddToLayout", "the helper must re-attach a detached anchorable via AddToLayout before showing it.");
-        StringAssert.Contains(body, "Parent", "the helper must branch on whether the anchorable is still attached (Parent).");
-        StringAssert.Contains(body, ".Show()", "the helper must still call Show() once the anchorable is attached.");
+            "these touch a declared '...Anchorable' field directly instead of going through "
+            + $"ShowAnchorable/HideAnchorable/ActivateAnchorable (DockablePanelPresenter): {string.Join(", ", offenders)}.");
     }
 
     private static string ReadAppFile(string relativePath)
