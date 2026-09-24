@@ -315,8 +315,8 @@ public sealed class QuickWindowInterfaceAuthoringTests
 
         var wiring = ReadAppFile("MainWindow.QuickWindows.cs");
         StringAssert.Contains(wiring, "TagCatalogAnchorable.Hide();");
-        StringAssert.Contains(wiring, "QuickWindowInterfaceAnchorable.Show();");
-        StringAssert.Contains(wiring, "TagCatalogAnchorable.Show();");
+        StringAssert.Contains(wiring, "ShowAnchorable(QuickWindowInterfaceAnchorable);");
+        StringAssert.Contains(wiring, "ShowAnchorable(TagCatalogAnchorable);");
         StringAssert.Contains(wiring, "QuickWindowInterfaceCatalogProjection.Create(definition)");
 
         var shell = ReadAppFile("MainWindow.xaml.cs");

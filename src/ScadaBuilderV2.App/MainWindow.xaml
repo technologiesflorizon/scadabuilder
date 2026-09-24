@@ -392,12 +392,14 @@
                                 <MenuItem Header="Outil" Click="OnShowToolAnchorableClick" />
                                 <MenuItem Header="Projet" Click="OnShowProjectAnchorableClick" />
                                 <MenuItem Header="Catalogue Tags" Click="OnShowTagCatalogAnchorableClick" />
+                                <MenuItem Header="Fenêtres rapides" Click="OnShowQuickWindowsAnchorableClick" />
                                 <MenuItem Header="Interface locale" Click="OnShowQuickWindowInterfaceAnchorableClick" />
                                 <MenuItem Header="Banc d'essai" Click="OnShowQuickWindowTestBenchAnchorableClick" />
                                 <MenuItem Header="Page" Click="OnShowPageAnchorableClick" />
                                 <MenuItem Header="Element" Click="OnShowElementAnchorableClick" />
                                 <MenuItem Header="Propriete" Click="OnShowPropertiesAnchorableClick" />
                                 <MenuItem Header="Librairie" Click="OnShowLibraryAnchorableClick" />
+                                <MenuItem Header="Diagnostics" Click="OnShowDiagnosticsAnchorableClick" />
                                 <Separator />
                                 <MenuItem Header="Reinitialiser la disposition" Click="OnResetLayoutClick" />
                             </MenuItem>

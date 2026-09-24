@@ -58,11 +58,14 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         ? QuickWindowInterfaceCatalogProjection.Create(definition)
         : _modernProject?.TagCatalog;
 
+    private void OnShowQuickWindowsAnchorableClick(object sender, RoutedEventArgs e) =>
+        ShowAnchorable(QuickWindowsAnchorable);
+
     private void OnShowQuickWindowInterfaceAnchorableClick(object sender, RoutedEventArgs e) =>
-        QuickWindowInterfaceAnchorable.Show();
+        ShowAnchorable(QuickWindowInterfaceAnchorable);
 
     private void OnShowQuickWindowTestBenchAnchorableClick(object sender, RoutedEventArgs e) =>
-        QuickWindowTestBenchAnchorable.Show();
+        ShowAnchorable(QuickWindowTestBenchAnchorable);
 
     /// <summary>Gets the editor-only preview host adapter, created once the project root is known.</summary>
     private BuilderQuickWindowHostAdapter? QuickWindowPreviewHost =>
@@ -270,7 +273,7 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         }
 
         TagCatalogAnchorable.Hide();
-        QuickWindowInterfaceAnchorable.Show();
+        ShowAnchorable(QuickWindowInterfaceAnchorable);
         QuickWindowInterfaceAnchorable.IsActive = true;
     }
 
@@ -278,7 +281,7 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
     private void HideLocalInterfacePanel()
     {
         QuickWindowInterfaceAnchorable.Hide();
-        TagCatalogAnchorable.Show();
+        ShowAnchorable(TagCatalogAnchorable);
     }
 
     /// <summary>Binds and shows the editor-only test bench of the activated definition (FR-UI-21).</summary>
@@ -292,7 +295,7 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         }
 
         QuickWindowTestBenchControl.Model.Load(definition);
-        QuickWindowTestBenchAnchorable.Show();
+        ShowAnchorable(QuickWindowTestBenchAnchorable);
     }
 
     /// <summary>Clears the bench and its preview when a page becomes the active surface again.</summary>

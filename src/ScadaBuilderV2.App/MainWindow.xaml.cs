@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Data;
 using System.Windows.Threading;
+using AvalonDock.Layout;
 using Microsoft.Web.WebView2.Core;
 using ScadaBuilderV2.Application.Clipboard;
 using ScadaBuilderV2.Application.Commands;
@@ -941,13 +942,62 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
         }
     }
 
-    private void OnShowToolAnchorableClick(object sender, RoutedEventArgs e) => ToolAnchorable.Show();
-    private void OnShowProjectAnchorableClick(object sender, RoutedEventArgs e) => ProjectAnchorable.Show();
-    private void OnShowTagCatalogAnchorableClick(object sender, RoutedEventArgs e) => TagCatalogAnchorable.Show();
-    private void OnShowPageAnchorableClick(object sender, RoutedEventArgs e) => PageAnchorable.Show();
-    private void OnShowElementAnchorableClick(object sender, RoutedEventArgs e) => ElementAnchorable.Show();
-    private void OnShowPropertiesAnchorableClick(object sender, RoutedEventArgs e) => PropertiesAnchorable.Show();
-    private void OnShowLibraryAnchorableClick(object sender, RoutedEventArgs e) => LibraryAnchorable.Show();
+    private void OnShowToolAnchorableClick(object sender, RoutedEventArgs e) => ShowAnchorable(ToolAnchorable);
+    private void OnShowProjectAnchorableClick(object sender, RoutedEventArgs e) => ShowAnchorable(ProjectAnchorable);
+    private void OnShowTagCatalogAnchorableClick(object sender, RoutedEventArgs e) => ShowAnchorable(TagCatalogAnchorable);
+    private void OnShowPageAnchorableClick(object sender, RoutedEventArgs e) => ShowAnchorable(PageAnchorable);
+    private void OnShowElementAnchorableClick(object sender, RoutedEventArgs e) => ShowAnchorable(ElementAnchorable);
+    private void OnShowPropertiesAnchorableClick(object sender, RoutedEventArgs e) => ShowAnchorable(PropertiesAnchorable);
+    private void OnShowLibraryAnchorableClick(object sender, RoutedEventArgs e) => ShowAnchorable(LibraryAnchorable);
+    private void OnShowDiagnosticsAnchorableClick(object sender, RoutedEventArgs e) => ShowAnchorable(DiagnosticsAnchorable);
+
+    /// <summary>
+    /// Shows a dockable panel, re-attaching it to the AvalonDock layout tree first when it has been
+    /// detached by a close.
+    /// </summary>
+    /// <param name="anchorable">The anchorable to show, or <c>null</c> if the panel field is not bound yet.</param>
+    /// <remarks>
+    /// AvalonDock 4.74.1: every <c>LayoutAnchorable</c> in <c>MainWindow.xaml</c> is <c>CanClose="True"</c>,
+    /// and closing such an anchorable does not hide it - it detaches it from the layout tree, so its
+    /// <c>Parent</c> becomes <c>null</c>. A restored <c>dock-layout.xml</c> that omits a panel produces the
+    /// same detached state at startup. <see cref="LayoutAnchorable.Show"/> only un-hides an anchorable that
+    /// is still attached; called on a detached one, it is a silent no-op, which is why a closed - or never
+    /// persisted - panel could not be reopened from the "Fenetres" menu. This helper re-attaches first with
+    /// <see cref="LayoutAnchorable.AddToLayout(AvalonDock.DockingManager, AnchorableShowStrategy)"/> before
+    /// calling <c>Show()</c>, and leaves an already-attached anchorable's behavior unchanged.
+    ///
+    /// The strategy passed is <see cref="AnchorableShowStrategy.Most"/> combined with
+    /// <see cref="AnchorableShowStrategy.Right"/> (the enum is <c>[Flags]</c>): prefer reinserting next to
+    /// the most recently active anchorable group, falling back to the right dock side when there is no such
+    /// group yet (e.g. a fresh layout). This keeps a reopened panel in a visible, sensibly placed area
+    /// without hard-coding a side that would be wrong for panels whose default position is left, top or
+    /// bottom.
+    ///
+    /// Robust to <see cref="MainDockingManager"/> being <c>null</c> or not yet loaded: returns without
+    /// throwing rather than re-attaching, since menu handlers can in principle run before the shell has
+    /// finished loading its docking surface.
+    ///
+    /// Tests: tests/ScadaBuilderV2.Tests/DockablePanelReattachmentTests.cs.
+    /// </remarks>
+    private void ShowAnchorable(LayoutAnchorable? anchorable)
+    {
+        if (anchorable is null)
+        {
+            return;
+        }
+
+        if (anchorable.Parent is null)
+        {
+            if (MainDockingManager is null)
+            {
+                return;
+            }
+
+            anchorable.AddToLayout(MainDockingManager, AnchorableShowStrategy.Most | AnchorableShowStrategy.Right);
+        }
+
+        anchorable.Show();
+    }
 
     private void SaveActiveTabTransientState()
     {
@@ -1315,7 +1365,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
 
     private void ShowDiagnosticsPanel(bool selectErrors = true)
     {
-        DiagnosticsAnchorable.Show();
+        ShowAnchorable(DiagnosticsAnchorable);
         DiagnosticsAnchorable.IsActive = true;
         if (selectErrors) DiagnosticsTabControl.SelectedIndex = 0;
     }
@@ -1334,7 +1384,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
         }
         if (!string.IsNullOrWhiteSpace(issue.PropertyPath))
         {
-            PageAnchorable.Show();
+            ShowAnchorable(PageAnchorable);
             PageAnchorable.IsActive = true;
         }
     }
@@ -7360,7 +7410,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
         if (result.Status == CommandResultStatus.Succeeded && commandId == "page.properties")
         {
-            PageAnchorable.Show();
+            ShowAnchorable(PageAnchorable);
             PageAnchorable.IsActive = true;
         }
 
