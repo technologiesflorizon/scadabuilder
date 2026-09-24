@@ -3,10 +3,13 @@ using System.IO;
 namespace ScadaBuilderV2.Tests;
 
 /// <summary>
-/// Pins three properties of `ElementCommandDialog` that no unit test can reach because the test project does
-/// not reference `ScadaBuilderV2.App` (see `tests/ScadaBuilderV2.Tests/ScadaBuilderV2.Tests.csproj`): the
-/// "Type" list is built from the policy rather than filtered by hand, the caller can no longer omit its
-/// quick-window context, and the disabled-tooltip escape hatch WPF needs is actually present in markup.
+/// Pins three properties of `ElementCommandDialog` that no unit test can reach, because the dialog is a WPF
+/// `Window` whose behaviour lives in `InitializeComponent` and its XAML: the test project links individual
+/// WPF-free `ScadaBuilderV2.App` source files (see the `Compile Include` list in
+/// `tests/ScadaBuilderV2.Tests/ScadaBuilderV2.Tests.csproj`), but a `Window` and its markup cannot be linked
+/// or instantiated in this headless test process. The three properties: the "Type" list is built from the
+/// policy rather than filtered by hand, the caller can no longer omit its quick-window context, and the
+/// disabled-tooltip escape hatch WPF needs is actually present in markup.
 /// </summary>
 /// <remarks>
 /// Before this change, `KindComboBox.ItemsSource` was `Enum.GetValues&lt;ScadaCommandKind&gt;()` narrowed by
