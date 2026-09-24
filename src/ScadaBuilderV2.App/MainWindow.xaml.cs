@@ -44,6 +44,7 @@ using ScadaBuilderV2.Application.Tables;
 using ScadaBuilderV2.Application.Projects;
 using ScadaBuilderV2.Infrastructure.Shell;
 using ScadaBuilderV2.App.Projects;
+using ScadaBuilderV2.App.Shell;
 
 namespace ScadaBuilderV2.App;
 
@@ -61,6 +62,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
     private readonly ProjectWorkspaceRepository _projectWorkspaceRepository;
     private readonly RecentProjectStore _recentProjectStore = new();
     private readonly ExistingProjectDiscovery _existingProjectDiscovery = new();
+    private readonly BusyOverlayController _busyOverlay;
     private readonly ProjectLifecycleCoordinator _projectLifecycleCoordinator;
     private readonly PageSourceProjectionResolver _pageSourceProjectionResolver = new();
     private readonly PageWorkspaceController _pageWorkspaceController;
@@ -170,13 +172,14 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
 
     public MainWindow()
     {
+        _busyOverlay = new BusyOverlayController(ApplyBusyOverlayState);
         var artifactConverterRegistry = new ArtifactConverterRegistry();
         artifactConverterRegistry.Register(new ProjectGeneration1Converter());
         _projectWorkspaceRepository = new ProjectWorkspaceRepository(
             _modernProjectStore,
             new ReferenceProjectCompatibilityLocator(),
             artifactConverterRegistry,
-            new ConversionCoordinator(artifactConverterRegistry, new WpfConversionConsent(this)));
+            new ConversionCoordinator(artifactConverterRegistry, new WpfConversionConsent(this, _busyOverlay)));
         _projectLifecycleCoordinator = new ProjectLifecycleCoordinator(
             _projectWorkspaceRepository,
             _recentProjectStore,
@@ -275,7 +278,13 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
         {
             Owner = this
         };
-        dialog.ShowDialog();
+
+        // Asking is not loading: this question is raised in the middle of a gesture, with the veil up.
+        using (_busyOverlay.Suspend())
+        {
+            dialog.ShowDialog();
+        }
+
         return await Task.FromResult(dialog.Decision);
     }
 
@@ -497,12 +506,22 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
         RefreshActiveRibbonCommandStates();
     }
 
+    /// <summary>Shows one repository diagnostic, never under the veil.</summary>
+    /// <remarks>
+    /// Unlike <see cref="PresentProjectFailure"/>, this one is reached from inside a gesture that is still
+    /// running, so the veil is suspended for the length of the box and restored afterwards rather than
+    /// lowered for good.
+    /// </remarks>
     private void PresentProjectRepositoryFailure(ProjectRepositoryResult result)
     {
         var message = result.Diagnostics.Count == 0
             ? "L'opération projet n'a pas pu être terminée."
             : string.Join(Environment.NewLine, result.Diagnostics.Select(issue => $"• {issue.Message}"));
-        MessageBox.Show(this, message, "SCADA Builder V2", MessageBoxButton.OK, MessageBoxImage.Error);
+        using (_busyOverlay.Suspend())
+        {
+            MessageBox.Show(this, message, "SCADA Builder V2", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
         SetStatus(result.Diagnostics.FirstOrDefault()?.Message ?? message);
     }
 
@@ -6967,7 +6986,15 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         _pendingTransitionDescription = "crée le nouveau projet";
         var initialParent = await _recentProjectStore.ReadCreationParentAsync();
         var dialog = new CreateProjectDialog(initialParent) { Owner = this };
-        if (dialog.ShowDialog() != true || dialog.Result is null)
+
+        // Asking is not loading: a ring spinning behind the creation dialog reads as a frozen application.
+        bool accepted;
+        using (_busyOverlay.Suspend())
+        {
+            accepted = dialog.ShowDialog() == true;
+        }
+
+        if (!accepted || dialog.Result is null)
         {
             SetStatus("Création de projet annulée.");
             return;
@@ -6993,7 +7020,15 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             Multiselect = false,
             CheckFileExists = true
         };
-        if (dialog.ShowDialog(this) != true)
+
+        // Asking is not loading: a ring spinning behind the picker reads as a frozen application.
+        bool accepted;
+        using (_busyOverlay.Suspend())
+        {
+            accepted = dialog.ShowDialog(this) == true;
+        }
+
+        if (!accepted)
         {
             SetStatus("Ouverture de projet annulée.");
             return;
@@ -7030,9 +7065,13 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
     }
 
+    /// <summary>The recent entry a reopen gesture would activate, or <c>null</c> when there is none.</summary>
+    private RecentProjectEntry? FirstAvailableRecentProject() =>
+        RecentProjects.FirstOrDefault(item => item.IsAvailable);
+
     private async Task ReopenLastProjectAsync()
     {
-        var entry = RecentProjects.FirstOrDefault(item => item.IsAvailable);
+        var entry = FirstAvailableRecentProject();
         if (entry is null)
         {
             SetStatus("Aucun projet récent disponible.");
@@ -7041,20 +7080,41 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         await OpenProjectPathAsync(entry.ProjectFilePath);
     }
 
-    /// <summary>Runs one lifecycle gesture behind an error boundary.</summary>
+    /// <summary>Runs one lifecycle gesture behind an error boundary, under the busy veil.</summary>
     /// <remarks>
     /// These handlers are `async void`, so nothing observes the task they return: an unhandled exception goes
     /// straight to the dispatcher and closes the application. A disk that fills, a revoked permission or a
     /// corrupted recent entry are ordinary outcomes of this flow and must surface as a message, not a crash.
+    ///
+    /// The veil goes up inside the `try` and the `finally` is what guarantees it comes down. Lowered in the
+    /// happy path alone, a gesture that throws would leave the window veiled and inert - the exact opposite
+    /// of the problem the veil exists to solve.
+    ///
+    /// The `finally` is not sufficient on its own, because `catch` runs *before* it: a failure box raised
+    /// from a `catch` is modal, so it would sit in front of a still-spinning ring until the operator
+    /// dismissed it. Each `catch` therefore lowers the veil before presenting anything. Lowering is
+    /// idempotent, so the two paths cannot pop the same gesture twice, and a gesture whose `BeginBusy` itself
+    /// threw is never lowered at all.
+    ///
+    /// Decisions: `DEC-0049`.
+    /// Contracts: `docs/06_ui_ux/UI_ARCHITECTURE_V2.md` sections 1 and 2.
+    /// Tests: `tests/ScadaBuilderV2.Tests/ProjectLoadingOverlayContractTests.cs`.
     /// </remarks>
-    private async Task RunProjectGestureAsync(string gesture, Func<Task> action)
+    /// <param name="gesture">The user-facing label, also used by the failure and cancellation messages.</param>
+    /// <param name="action">The gesture itself.</param>
+    /// <param name="detail">The project name shown under the label, when the gesture already knows it.</param>
+    private async Task RunProjectGestureAsync(string gesture, Func<Task> action, string? detail = null)
     {
+        var veilIsUp = false;
         try
         {
+            _busyOverlay.BeginBusy(gesture, detail);
+            veilIsUp = true;
             await action();
         }
         catch (ProjectActivationException exception)
         {
+            LowerVeilOnce();
             PresentProjectFailure(
                 $"{gesture} impossible",
                 "Le projet n'a pas pu être activé et l'éditeur est revenu à l'accueil." +
@@ -7062,17 +7122,111 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         }
         catch (OperationCanceledException)
         {
+            LowerVeilOnce();
             SetStatus($"{gesture}: opération annulée.");
         }
         catch (Exception exception)
         {
+            LowerVeilOnce();
             PresentProjectFailure($"{gesture} impossible", exception.Message);
+        }
+        finally
+        {
+            LowerVeilOnce();
+        }
+
+        void LowerVeilOnce()
+        {
+            if (!veilIsUp)
+            {
+                return;
+            }
+
+            veilIsUp = false;
+            _busyOverlay.EndBusy();
         }
     }
 
+    /// <summary>Projects one busy state onto the shell's veil.</summary>
+    /// <remarks>
+    /// Marshalled to the dispatcher rather than trusted to arrive on it. Every call reaches this method on the
+    /// UI thread today, and the chain behind a gesture is long enough that a single `ConfigureAwait(false)`
+    /// could move a continuation off it without any call site changing; touching these elements from a pool
+    /// thread would then throw.
+    ///
+    /// This buys safety, not ordering, and the difference matters: an off-thread caller is queued while a
+    /// UI-thread caller renders straight through, so two concurrent callers could still reach the veil in the
+    /// opposite order to their state changes. <see cref="BusyOverlayController"/> says the same thing from its
+    /// side - the veil is UI-thread-affine by design, and nothing here orders concurrent updates.
+    /// </remarks>
+    private void ApplyBusyOverlayState(BusyOverlayState state)
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.InvokeAsync(() => ApplyBusyOverlayState(state));
+            return;
+        }
+
+        if (ProjectBusyOverlay is null)
+        {
+            return;
+        }
+
+        ProjectBusyLabelTextBlock.Text = string.IsNullOrWhiteSpace(state.Label)
+            ? string.Empty
+            : $"{state.Label}…";
+        ProjectBusyDetailTextBlock.Text = state.Detail ?? string.Empty;
+        ProjectBusyDetailTextBlock.Visibility = string.IsNullOrWhiteSpace(state.Detail)
+            ? Visibility.Collapsed
+            : Visibility.Visible;
+        ProjectBusyOverlay.Visibility = state.IsVisible
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+    }
+
+    /// <summary>Swallows every key while the busy veil is up.</summary>
+    /// <remarks>
+    /// The veil intercepts the pointer by being hit-testable, but the keyboard does not go through hit
+    /// testing. A welcome button that already had focus re-fires on Enter or Space, and `Ctrl+Z` / `Ctrl+Y`
+    /// reach the editor through `Window.InputBindings`: both are two actions at once, which is the half of
+    /// the request the veil exists to satisfy. `PreviewKeyDown` tunnels from the window downwards, so marking
+    /// it handled here stops the key before any focused element, input binding or default button sees it.
+    ///
+    /// Contracts: `docs/06_ui_ux/UI_ARCHITECTURE_V2.md` sections 1 and 2.
+    /// Tests: `tests/ScadaBuilderV2.Tests/ProjectLoadingOverlayContractTests.cs`.
+    /// </remarks>
+    private void OnWindowPreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (_busyOverlay.State.IsVisible)
+        {
+            e.Handled = true;
+        }
+    }
+
+    /// <summary>Undo and redo stay unavailable for as long as a project gesture holds the veil up.</summary>
+    /// <remarks>
+    /// Belt and braces with <see cref="OnWindowPreviewKeyDown"/>: these two are the only commands reachable
+    /// without the pointer, and a command that cannot execute cannot be fired by any future route either.
+    /// </remarks>
+    private void OnSceneHistoryCommandCanExecute(object sender, CanExecuteRoutedEventArgs e)
+    {
+        e.CanExecute = !_busyOverlay.State.IsVisible;
+    }
+
+    /// <summary>Shows one failure, never under the veil.</summary>
+    /// <remarks>
+    /// A modal box in front of a spinning ring is the same defect as a dialog behind one: the shell claims to
+    /// be working while it waits for the operator. Callers inside <see cref="RunProjectGestureAsync"/> have
+    /// already lowered the veil by the time they get here, because their gesture is over; the suspension makes
+    /// the rule hold for any other caller too.
+    /// </remarks>
     private void PresentProjectFailure(string title, string message)
     {
-        MessageBox.Show(this, message, title, MessageBoxButton.OK, MessageBoxImage.Error);
+        using (_busyOverlay.Suspend())
+        {
+            MessageBox.Show(this, message, title, MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+
         SetStatus($"{title}: {message}");
     }
 
@@ -7083,7 +7237,10 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         await RunProjectGestureAsync("Ouverture de projet", OpenProjectInteractiveAsync);
 
     private async void OnWelcomeReopenLastClick(object sender, RoutedEventArgs e) =>
-        await RunProjectGestureAsync("Réouverture du dernier projet", ReopenLastProjectAsync);
+        await RunProjectGestureAsync(
+            "Réouverture du dernier projet",
+            ReopenLastProjectAsync,
+            FirstAvailableRecentProject()?.DisplayName);
 
     private async void OnRecentProjectOpenClick(object sender, RoutedEventArgs e)
     {
@@ -7091,7 +7248,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         {
             await RunProjectGestureAsync(
                 "Ouverture de projet",
-                () => OpenProjectPathAsync(entry.ProjectFilePath));
+                () => OpenProjectPathAsync(entry.ProjectFilePath),
+                entry.DisplayName);
         }
     }
 
@@ -7101,13 +7259,16 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         {
             return;
         }
-        await RunProjectGestureAsync("Retrait du projet récent", async () =>
-        {
-            await _recentProjectStore.RemoveAsync(entry.ProjectFilePath);
-            await RefreshRecentProjectsAsync();
-            await RefreshDiscoveredProjectsAsync();
-            SetStatus($"Projet retiré des récents: {entry.DisplayName}");
-        });
+        await RunProjectGestureAsync(
+            "Retrait du projet récent",
+            async () =>
+            {
+                await _recentProjectStore.RemoveAsync(entry.ProjectFilePath);
+                await RefreshRecentProjectsAsync();
+                await RefreshDiscoveredProjectsAsync();
+                SetStatus($"Projet retiré des récents: {entry.DisplayName}");
+            },
+            entry.DisplayName);
     }
 
     private async void OnDiscoveredProjectOpenClick(object sender, RoutedEventArgs e)
@@ -7116,7 +7277,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         {
             await RunProjectGestureAsync(
                 "Ouverture de projet",
-                () => OpenProjectPathAsync(entry.ProjectFilePath));
+                () => OpenProjectPathAsync(entry.ProjectFilePath),
+                entry.DisplayName);
         }
     }
 
