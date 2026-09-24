@@ -152,12 +152,17 @@ public sealed class DockablePanelPresenterTests
         {
             var (manager, kept, dropped) = BuildScene();
 
+            // Restore FIRST, so that `kept` is a stale XAML object and the live anchorable carrying KeptId is a
+            // different instance. Hiding before any restore would pass even with a bare `declared.Hide()`,
+            // because the declared object still IS the live one - which is what made the shipped
+            // `DiagnosticsAnchorable.Hide()` / `TagCatalogAnchorable.Hide()` calls silently do nothing.
+            RestoreLayoutOmitting(manager, DroppedId);
+
             DockablePanelPresenter.Hide(manager, kept);
             var hiddenIsVisible = manager.Layout!.Descendents().OfType<LayoutAnchorable>()
                 .FirstOrDefault(a => a.ContentId == KeptId)?.IsVisible;
 
-            // 'dropped' was never restored and never shown, so it has no live counterpart: Hide must not throw.
-            RestoreLayoutOmitting(manager, DroppedId);
+            // 'dropped' was omitted by the restore, so it has no live counterpart: Hide must not throw.
             DockablePanelPresenter.Hide(manager, dropped);
 
             return new SceneOutcome(
