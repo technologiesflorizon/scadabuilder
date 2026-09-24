@@ -39,8 +39,22 @@ public sealed class ProjectLoadingOverlayContractTests
     {
         var body = GestureBoundaryBody();
 
+        Assert.AreEqual(
+            1,
+            TokenCount(body, "try"),
+            "the boundary must carry exactly one `try`. This test reads the first one it finds, so an inner "
+            + "`try/finally` - around the awaited gesture, say - would let the guarantee move to a block "
+            + "nobody is checking while the assertions below still passed. Re-express the extraction before "
+            + "adding one.");
+        Assert.AreEqual(
+            1,
+            TokenCount(body, "finally"),
+            "the boundary must carry exactly one `finally`, for the same reason: an inner one would satisfy "
+            + "this test while the outer one - the actual guarantee - sat empty.");
+
         var tryBlock = ReadBlock(body, "try");
         var beginIndex = tryBlock.IndexOf("BeginBusy(", StringComparison.Ordinal);
+        var raisedIndex = tryBlock.IndexOf("veilIsUp = true", StringComparison.Ordinal);
         var actionIndex = tryBlock.IndexOf("await action()", StringComparison.Ordinal);
 
         Assert.IsTrue(
@@ -49,24 +63,57 @@ public sealed class ProjectLoadingOverlayContractTests
             + "escapes the boundary that exists to keep these `async void` handlers from killing the "
             + "application.");
         Assert.IsTrue(
-            actionIndex > beginIndex,
+            raisedIndex > beginIndex,
+            "the flag that says the veil is up must be set *after* the raise returns. Set before it, a "
+            + "`BeginBusy` that threw would be lowered by the `finally` and pop a gesture it never pushed.");
+        Assert.IsTrue(
+            actionIndex > raisedIndex,
             "the veil must be up before the gesture is awaited, otherwise nothing is shown while it runs.");
         Assert.AreEqual(
             1,
             Occurrences(body, "BeginBusy("),
             "the veil is raised in exactly one place; a second raise would need a second lowering to match.");
 
-        var finallyBlock = ReadBlock(body, "finally");
         StringAssert.Contains(
-            finallyBlock,
+            ReadBlock(body, "finally"),
             "LowerVeilOnce()",
             "the `finally` is the guarantee: lowered anywhere else alone, a gesture that throws leaves the "
             + "window veiled and inert.");
+    }
+
+    [TestMethod]
+    public void TheCounterDropsOnlyInsideTheIdempotentLowering()
+    {
+        var body = GestureBoundaryBody();
+        var lowering = ReadMethodBody(body, "void LowerVeilOnce()");
+
         Assert.AreEqual(
             1,
             Occurrences(body, "EndBusy()"),
             "the counter must be decremented from exactly one place, so that the `catch` path and the "
             + "`finally` path cannot pop the same gesture twice.");
+        Assert.AreEqual(
+            1,
+            Occurrences(lowering, "EndBusy()"),
+            "and that one place must be inside `LowerVeilOnce`. Moved into the happy path - after the "
+            + "awaited gesture, say - the counter would still be decremented exactly once and the `finally` "
+            + "would still call `LowerVeilOnce`, but a gesture that threw would never lower the veil at all.");
+
+        var guardIndex = lowering.IndexOf("if (!veilIsUp)", StringComparison.Ordinal);
+        var clearIndex = lowering.IndexOf("veilIsUp = false", StringComparison.Ordinal);
+        var dropIndex = lowering.IndexOf("EndBusy()", StringComparison.Ordinal);
+
+        Assert.IsTrue(
+            guardIndex >= 0,
+            "the lowering must refuse to act twice. Without the guard the `catch` path and the `finally` "
+            + $"path each pop a gesture, and the second pop takes somebody else's. Body: {lowering}");
+        Assert.IsTrue(
+            clearIndex > guardIndex,
+            "the flag must be cleared after the guard reads it, or the guard never sees it set.");
+        Assert.IsTrue(
+            dropIndex > clearIndex,
+            "the flag must be cleared *before* the counter drops: `EndBusy` is what can throw, and a throw "
+            + $"after an uncleared flag leaves the `finally` free to pop again. Body: {lowering}");
     }
 
     [TestMethod]
@@ -275,6 +322,10 @@ public sealed class ProjectLoadingOverlayContractTests
         Assert.IsTrue(best >= 0, $"none of [{string.Join(", ", needles)}] was found in: {source}");
         return best;
     }
+
+    /// <summary>Counts one C# keyword as a token, so that `retry` is not a `try`.</summary>
+    private static int TokenCount(string source, string keyword) =>
+        Regex.Matches(source, @"(?<![A-Za-z0-9_])" + Regex.Escape(keyword) + @"(?![A-Za-z0-9_])").Count;
 
     private static int Occurrences(string source, string needle)
     {

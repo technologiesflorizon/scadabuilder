@@ -42,11 +42,19 @@ public interface IBusyOverlaySuspender
 /// returns, so a throw between the increment and the return would suppress the veil for the rest of the
 /// session with nothing left able to restore it.
 ///
-/// The counters are guarded by a lock and the callback runs outside it. Today every call arrives on the UI
-/// thread, but a single `ConfigureAwait(false)` anywhere in the open chain would change that silently, and the
-/// failure mode is a permanently wrong veil rather than an exception. Marshalling the rendering itself back to
-/// the dispatcher belongs to the shell, which owns the dispatcher; this type carries no WPF reference on
-/// purpose, because the counting is the part that breaks silently and the test project cannot load a window.
+/// **This type is UI-thread-affine.** The lock is not a concurrency guarantee, and must not be read as one: it
+/// keeps the counters and the pending stack from being corrupted by a call that arrives off the UI thread, and
+/// that is all it does. The render callback deliberately runs *outside* the lock, because a renderer that goes
+/// back through the dispatcher while the lock is held would deadlock - so two threads mutating concurrently can
+/// still reach the shell in the opposite order to their mutations, leaving it showing a state that disagrees
+/// with <see cref="State"/>. Ordering is not offered. Nothing in this shell calls these methods off the UI
+/// thread today; a caller that wanted to would have to order its own updates, or this type would have to stamp
+/// each state with a sequence and have the shell drop stale ones.
+///
+/// This type carries no WPF reference on purpose: the counting is the part that breaks silently, and the test
+/// project cannot load a window. Marshalling the rendering back onto the dispatcher therefore belongs to the
+/// shell, which owns the dispatcher, and buys safety - an off-thread render would otherwise throw on the first
+/// element it touched - rather than ordering.
 ///
 /// Decisions: `DEC-0049` (cycle de vie autonome des projets V2).
 /// Contracts: `docs/06_ui_ux/UI_ARCHITECTURE_V2.md` sections 1 and 2.
@@ -58,6 +66,7 @@ public sealed class BusyOverlayController : IBusyOverlaySuspender
     private readonly List<PendingGesture> _pending = [];
     private readonly Action<BusyOverlayState> _render;
     private readonly object _gate = new();
+    private BusyOverlayState _state = BusyOverlayState.Hidden;
     private int _suspendDepth;
 
     /// <summary>Creates a controller that pushes every state change to <paramref name="render"/>.</summary>
@@ -68,7 +77,15 @@ public sealed class BusyOverlayController : IBusyOverlaySuspender
     }
 
     /// <summary>Gets the state the shell was last told to render.</summary>
-    public BusyOverlayState State { get; private set; } = BusyOverlayState.Hidden;
+    /// <remarks>
+    /// Read under the same lock as the two depths, for one story rather than three. It says what the shell was
+    /// last *told*; with an off-thread caller it would not say what the shell is showing, because this type
+    /// does not order the renders.
+    /// </remarks>
+    public BusyOverlayState State
+    {
+        get { lock (_gate) { return _state; } }
+    }
 
     /// <summary>Gets how many gestures are currently running.</summary>
     public int BusyDepth
@@ -95,7 +112,7 @@ public sealed class BusyOverlayController : IBusyOverlaySuspender
         lock (_gate)
         {
             _pending.Add(gesture);
-            next = State = Compute();
+            next = _state = Compute();
         }
 
         try
@@ -110,7 +127,7 @@ public sealed class BusyOverlayController : IBusyOverlaySuspender
             lock (_gate)
             {
                 _pending.Remove(gesture);
-                State = Compute();
+                _state = Compute();
             }
 
             throw;
@@ -128,7 +145,7 @@ public sealed class BusyOverlayController : IBusyOverlaySuspender
                 _pending.RemoveAt(_pending.Count - 1);
             }
 
-            next = State = Compute();
+            next = _state = Compute();
         }
 
         _render(next);
@@ -145,7 +162,7 @@ public sealed class BusyOverlayController : IBusyOverlaySuspender
         lock (_gate)
         {
             _suspendDepth++;
-            next = State = Compute();
+            next = _state = Compute();
         }
 
         try
@@ -164,7 +181,7 @@ public sealed class BusyOverlayController : IBusyOverlaySuspender
                     _suspendDepth--;
                 }
 
-                State = Compute();
+                _state = Compute();
             }
 
             throw;
@@ -183,7 +200,7 @@ public sealed class BusyOverlayController : IBusyOverlaySuspender
                 _suspendDepth--;
             }
 
-            next = State = Compute();
+            next = _state = Compute();
         }
 
         _render(next);

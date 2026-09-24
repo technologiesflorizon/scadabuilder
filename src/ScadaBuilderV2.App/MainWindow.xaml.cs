@@ -7150,9 +7150,14 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     /// <summary>Projects one busy state onto the shell's veil.</summary>
     /// <remarks>
     /// Marshalled to the dispatcher rather than trusted to arrive on it. Every call reaches this method on the
-    /// UI thread today, but the chain behind a gesture is long and a single `ConfigureAwait(false)` anywhere in
-    /// it would move the continuation to a pool thread without any call site changing. The symptom would not be
-    /// an exception at the point of the mistake but a veil stuck up or down.
+    /// UI thread today, and the chain behind a gesture is long enough that a single `ConfigureAwait(false)`
+    /// could move a continuation off it without any call site changing; touching these elements from a pool
+    /// thread would then throw.
+    ///
+    /// This buys safety, not ordering, and the difference matters: an off-thread caller is queued while a
+    /// UI-thread caller renders straight through, so two concurrent callers could still reach the veil in the
+    /// opposite order to their state changes. <see cref="BusyOverlayController"/> says the same thing from its
+    /// side - the veil is UI-thread-affine by design, and nothing here orders concurrent updates.
     /// </remarks>
     private void ApplyBusyOverlayState(BusyOverlayState state)
     {
