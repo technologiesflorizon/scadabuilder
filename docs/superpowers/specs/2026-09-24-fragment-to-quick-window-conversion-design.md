@@ -10,7 +10,7 @@ Dépendances: `docs/superpowers/specs/2026-08-04-parameterized-popup-management-
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-24 | `V2.1.6.0032` | `PENDING` | Création. Ferme la lacune laissée par `DEC-0050` : `ScadaPageType.Fragment` et `QuickWindowDefinition` coexistaient sans passerelle, de sorte qu'aucun popup legacy ne pouvait devenir une fenêtre rapide et qu'une page Fragment n'avait ni interface locale ni banc d'essai. |
+| 2026-09-24 | `V2.1.6.0032` | `8c8e544` | Création. Ferme la lacune laissée par `DEC-0050` : `ScadaPageType.Fragment` et `QuickWindowDefinition` coexistaient sans passerelle, de sorte qu'aucun popup legacy ne pouvait devenir une fenêtre rapide et qu'une page Fragment n'avait ni interface locale ni banc d'essai. |
 
 ## 1. Le problème
 
