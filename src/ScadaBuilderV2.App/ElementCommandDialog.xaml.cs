@@ -30,7 +30,6 @@ public partial class ElementCommandDialog : Window
     private readonly string _commandId;
     private readonly ScadaCommandBinding? _existingCommand;
 
-    private readonly IReadOnlyCollection<ScadaCommandKind> _usedKinds;
     private readonly QuickWindowCommandAuthoringContext _quickWindowContext;
 
     public ElementCommandDialog(
@@ -44,7 +43,6 @@ public partial class ElementCommandDialog : Window
         _pageReferences = pageReferences;
         _commandId = existingCommand?.Id ?? Guid.NewGuid().ToString("n");
         _existingCommand = existingCommand;
-        _usedKinds = usedKinds;
         _quickWindowContext = quickWindowContext;
 
         TriggerComboBox.ItemsSource = Enum.GetValues<ScadaCommandTrigger>();
