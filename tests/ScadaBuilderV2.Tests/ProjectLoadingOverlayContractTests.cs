@@ -1,24 +1,34 @@
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ScadaBuilderV2.Tests;
 
 /// <summary>
 /// Clicking `Rouvrir &lt;projet&gt;` or `Ouvrir` in the recent list gave no sign that anything was happening,
 /// and nothing stopped a second gesture being launched on top of the first. A veil now covers the whole window
-/// for the length of a project gesture: it says what is running and it swallows the clicks.
+/// for the length of a project gesture: it says what is running, it swallows the clicks and it swallows the
+/// keys.
 /// </summary>
 /// <remarks>
-/// The property that matters is not that the two calls exist but *where* they sit. The veil must go up inside
-/// the `try` and come down in the `finally`, because a gesture that throws is exactly the case the veil would
-/// otherwise turn into a dead window - and the failure box must not be raised behind it. A test that only
-/// looked for `BeginBusy` and `EndBusy` somewhere in the method would pass on a version that lowers the veil
-/// in the happy path alone, which is the broken version.
+/// The property that matters is not that the calls exist but *where* they sit, so every assertion here is made
+/// against a brace-matched block rather than against the position of a word. `IndexOf("try")` would match
+/// `retry`, a comment, or a string; it would also happily accept a `BeginBusy` sitting after the block it is
+/// supposed to open. The source is stripped of comments and string bodies first, so nothing written in prose
+/// can satisfy a structural assertion.
+///
+/// The veil must go up inside the `try` and come down in the `finally`, because a gesture that throws is
+/// exactly the case the veil would otherwise turn into a dead window. The `finally` alone is not enough: a
+/// `catch` runs before it and raises a modal box, which would sit in front of a still-spinning ring, so each
+/// `catch` lowers the veil first.
 ///
 /// This reads the sources as text on purpose. The test project does not reference `ScadaBuilderV2.App`, so no
 /// test in this repository can instantiate a window or a `Border`; two dialogs have already shipped broken for
 /// exactly that reason. The counting behind the veil is testable, and is tested for real in
 /// `BusyOverlayControllerTests`.
 ///
+/// Decisions: `DEC-0049`.
+/// Contracts: `docs/06_ui_ux/UI_ARCHITECTURE_V2.md` sections 1 and 2.
 /// Tests: this file. Surface: `MainWindow.xaml`, `MainWindow.xaml.cs`, `Projects/WpfConversionConsent.cs`.
 /// </remarks>
 [TestClass]
@@ -27,40 +37,63 @@ public sealed class ProjectLoadingOverlayContractTests
     [TestMethod]
     public void TheGestureBoundaryRaisesTheVeilInsideTheTryAndLowersItInTheFinally()
     {
-        var body = ExtractMethodBody(
-            ReadAppFile("MainWindow.xaml.cs"),
-            "private async Task RunProjectGestureAsync(");
+        var body = GestureBoundaryBody();
 
-        var tryIndex = body.IndexOf("try", StringComparison.Ordinal);
-        var beginIndex = body.IndexOf("BeginBusy(", StringComparison.Ordinal);
-        var actionIndex = body.IndexOf("await action()", StringComparison.Ordinal);
-        var finallyIndex = body.IndexOf("finally", StringComparison.Ordinal);
-        var endIndex = body.IndexOf("EndBusy()", StringComparison.Ordinal);
-
-        Assert.IsTrue(tryIndex >= 0, "the error boundary must still open with a `try`.");
-        Assert.IsTrue(beginIndex >= 0, "`RunProjectGestureAsync` must raise the busy veil.");
-        Assert.IsTrue(actionIndex >= 0, "the gesture itself must still be awaited here.");
-        Assert.IsTrue(finallyIndex >= 0, "`RunProjectGestureAsync` must carry a `finally`.");
-        Assert.IsTrue(endIndex >= 0, "`RunProjectGestureAsync` must lower the busy veil.");
+        var tryBlock = ReadBlock(body, "try");
+        var beginIndex = tryBlock.IndexOf("BeginBusy(", StringComparison.Ordinal);
+        var actionIndex = tryBlock.IndexOf("await action()", StringComparison.Ordinal);
 
         Assert.IsTrue(
-            beginIndex > tryIndex,
-            "the veil must go up inside the `try`. Raised before it, a throw from the raise itself escapes the "
-            + "boundary that exists to keep these handlers from killing the application.");
+            beginIndex >= 0,
+            "the veil must go up inside the `try` block itself. Raised before it, a throw from the raise "
+            + "escapes the boundary that exists to keep these `async void` handlers from killing the "
+            + "application.");
         Assert.IsTrue(
             actionIndex > beginIndex,
             "the veil must be up before the gesture is awaited, otherwise nothing is shown while it runs.");
-        Assert.IsTrue(
-            finallyIndex > actionIndex,
-            "the `finally` must close the boundary, after the awaited gesture and its `catch` clauses.");
-        Assert.IsTrue(
-            endIndex > finallyIndex,
-            "the veil must come down in the `finally`. Lowered anywhere else, a gesture that throws leaves the "
-            + "window veiled and inert, and the failure box appears behind it.");
         Assert.AreEqual(
-            endIndex,
-            body.LastIndexOf("EndBusy()", StringComparison.Ordinal),
-            "the veil must come down in exactly one place; a second lowering would unbalance the counter.");
+            1,
+            Occurrences(body, "BeginBusy("),
+            "the veil is raised in exactly one place; a second raise would need a second lowering to match.");
+
+        var finallyBlock = ReadBlock(body, "finally");
+        StringAssert.Contains(
+            finallyBlock,
+            "LowerVeilOnce()",
+            "the `finally` is the guarantee: lowered anywhere else alone, a gesture that throws leaves the "
+            + "window veiled and inert.");
+        Assert.AreEqual(
+            1,
+            Occurrences(body, "EndBusy()"),
+            "the counter must be decremented from exactly one place, so that the `catch` path and the "
+            + "`finally` path cannot pop the same gesture twice.");
+    }
+
+    [TestMethod]
+    public void EveryCatchLowersTheVeilBeforeItPresentsAnything()
+    {
+        var body = GestureBoundaryBody();
+        var catches = ReadAllBlocks(body, "catch");
+
+        Assert.AreEqual(
+            3,
+            catches.Count,
+            "the boundary still catches the activation failure, the cancellation and the rest.");
+
+        foreach (var block in catches)
+        {
+            var lowered = block.IndexOf("LowerVeilOnce()", StringComparison.Ordinal);
+            Assert.IsTrue(
+                lowered >= 0,
+                "every `catch` must lower the veil itself. `catch` runs before `finally`, so leaving it to "
+                + $"the `finally` shows the message with the ring still spinning behind it. Block: {block}");
+
+            var presented = FirstIndexOfAny(block, "PresentProjectFailure(", "SetStatus(");
+            Assert.IsTrue(
+                presented > lowered,
+                "the veil must be down *before* the message is presented: `MessageBox.Show` is modal and "
+                + $"blocks until the operator dismisses it. Block: {block}");
+        }
     }
 
     [TestMethod]
@@ -79,14 +112,26 @@ public sealed class ProjectLoadingOverlayContractTests
             "the veil must start folded away. Shipped visible, it hides the editor from the first frame.");
         StringAssert.Contains(
             tag,
-            "Background=\"",
-            "the veil must carry a background, however transparent. A `Border` without one is not hit-tested "
-            + "at all, so every click would pass straight through to the ribbon it is meant to freeze.");
-        StringAssert.Contains(
-            tag,
             "IsHitTestVisible=\"True\"",
             "freezing the other commands is half the request; the veil has to be the thing that receives the "
             + "click.");
+
+        var background = Regex.Match(tag, "Background=\"([^\"]*)\"");
+        Assert.IsTrue(
+            background.Success,
+            "the veil must carry a `Background`. A `Border` whose brush is null is not hit-tested at all, so "
+            + "every click would pass straight through to the ribbon it is meant to freeze.");
+
+        var brush = background.Groups[1].Value.Trim();
+        Assert.AreNotEqual(
+            string.Empty,
+            brush,
+            "`Background=\"\"` is not a brush: it leaves the property null and the veil transparent to the "
+            + "pointer. A fully transparent *colour* would be fine - WPF hit-tests those - but nothing is not "
+            + "a colour.");
+        Assert.IsFalse(
+            brush.Equals("{x:Null}", StringComparison.OrdinalIgnoreCase),
+            "`{x:Null}` is the explicit spelling of the same defect: no brush, no hit testing, no freeze.");
 
         Assert.IsTrue(
             xaml.LastIndexOf("</DockPanel>", StringComparison.Ordinal) < overlayIndex,
@@ -121,33 +166,176 @@ public sealed class ProjectLoadingOverlayContractTests
     }
 
     [TestMethod]
-    public void TheVeilStepsAsideForTheTwoQuestionsAskedInsideAGesture()
+    public void TheVeilStepsAsideForEveryQuestionAskedInsideAGesture()
     {
         var mainWindow = ReadAppFile("MainWindow.xaml.cs");
         var consent = ReadAppFile(Path.Combine("Projects", "WpfConversionConsent.cs"));
 
-        var picker = ExtractMethodBody(mainWindow, "private async Task OpenProjectInteractiveAsync(");
-        StringAssert.Contains(
-            picker,
-            "Suspend()",
-            "the file picker is a question, not loading: a ring spinning behind it reads as a frozen "
-            + "application.");
-        Assert.IsTrue(
-            picker.IndexOf("Suspend()", StringComparison.Ordinal)
-                < picker.IndexOf("ShowDialog(this)", StringComparison.Ordinal),
-            "the veil has to be down before the picker is shown, not after it returns.");
+        AssertSuspendedBefore(
+            MethodBody(mainWindow, "private async Task OpenProjectInteractiveAsync("),
+            "ShowDialog(this)",
+            "the file picker");
+        AssertSuspendedBefore(
+            MethodBody(mainWindow, "private async Task CreateProjectInteractiveAsync("),
+            "ShowDialog()",
+            "the creation dialog");
+        AssertSuspendedBefore(
+            MethodBody(mainWindow, "IProjectLifecycleHost.RequestCloseDecisionAsync("),
+            "ShowDialog()",
+            "the unsaved-changes dialog");
+        AssertSuspendedBefore(
+            MethodBody(consent, "public Task<ConversionDecision> RequestAsync("),
+            "dialog.ShowDialog()",
+            "the conversion consent dialog");
 
         StringAssert.Contains(
             consent,
             "IBusyOverlaySuspender",
             "the conversion dialog receives the narrow suspension capability, not the whole window.");
-        Assert.IsTrue(
-            consent.IndexOf("Suspend()", StringComparison.Ordinal)
-                < consent.IndexOf("dialog.ShowDialog()", StringComparison.Ordinal),
-            "the consent dialog must be asked with the veil already down.");
     }
 
-    private static string ExtractMethodBody(string source, string signatureStart)
+    [TestMethod]
+    public void NoFailureIsEverShownWithTheVeilStillUp()
+    {
+        var mainWindow = ReadAppFile("MainWindow.xaml.cs");
+
+        AssertSuspendedBefore(
+            MethodBody(mainWindow, "private void PresentProjectFailure("),
+            "MessageBox.Show(",
+            "the gesture failure box");
+        AssertSuspendedBefore(
+            MethodBody(mainWindow, "private void PresentProjectRepositoryFailure("),
+            "MessageBox.Show(",
+            "the repository diagnostic box");
+    }
+
+    [TestMethod]
+    public void TheVeilFreezesTheKeyboardAndNotOnlyThePointer()
+    {
+        var xaml = ReadAppFile("MainWindow.xaml");
+        var mainWindow = ReadAppFile("MainWindow.xaml.cs");
+
+        StringAssert.Contains(
+            xaml,
+            "PreviewKeyDown=\"OnWindowPreviewKeyDown\"",
+            "the window itself must see every key first. A welcome button that already had focus re-fires on "
+            + "Enter or Space, which is two project gestures at once - the thing the freeze exists to stop.");
+
+        var handler = MethodBody(mainWindow, "private void OnWindowPreviewKeyDown(");
+        StringAssert.Contains(handler, "_busyOverlay.State.IsVisible", "the freeze follows the veil, nothing else.");
+        StringAssert.Contains(
+            handler,
+            "e.Handled = true",
+            "the key must be marked handled, or the input binding and the focused element still receive it.");
+
+        Assert.AreEqual(
+            2,
+            Occurrences(xaml, "CanExecute=\"OnSceneHistoryCommandCanExecute\""),
+            "`Ctrl+Z` and `Ctrl+Y` are declared on the window and reach the editor without the pointer; both "
+            + "command bindings must refuse to execute while a project gesture holds the veil up.");
+        StringAssert.Contains(
+            MethodBody(mainWindow, "private void OnSceneHistoryCommandCanExecute("),
+            "e.CanExecute = !_busyOverlay.State.IsVisible",
+            "undo and redo are unavailable for exactly as long as the veil is up, and no longer.");
+    }
+
+    private static string GestureBoundaryBody() =>
+        MethodBody(ReadAppFile("MainWindow.xaml.cs"), "private async Task RunProjectGestureAsync(");
+
+    /// <summary>
+    /// Returns one method body, comments and string bodies blanked. The extraction runs on the raw file so
+    /// that the blanking never has to survive a raw string literal, of which this shell has several.
+    /// </summary>
+    private static string MethodBody(string source, string signatureStart) =>
+        Sanitise(ReadMethodBody(source, signatureStart));
+
+    private static void AssertSuspendedBefore(string body, string call, string what)
+    {
+        var suspended = body.IndexOf("Suspend()", StringComparison.Ordinal);
+        Assert.IsTrue(
+            suspended >= 0,
+            $"{what} is a question, not loading: a ring spinning behind it reads as a frozen application, so "
+            + $"the veil must be suspended around it. Body: {body}");
+
+        var shown = body.IndexOf(call, StringComparison.Ordinal);
+        Assert.IsTrue(
+            shown > suspended,
+            $"the veil has to be down before {what} is shown, not after it returns. Body: {body}");
+    }
+
+    private static int FirstIndexOfAny(string source, params string[] needles)
+    {
+        var best = -1;
+        foreach (var needle in needles)
+        {
+            var index = source.IndexOf(needle, StringComparison.Ordinal);
+            if (index >= 0 && (best < 0 || index < best)) best = index;
+        }
+
+        Assert.IsTrue(best >= 0, $"none of [{string.Join(", ", needles)}] was found in: {source}");
+        return best;
+    }
+
+    private static int Occurrences(string source, string needle)
+    {
+        var count = 0;
+        for (var index = source.IndexOf(needle, StringComparison.Ordinal);
+             index >= 0;
+             index = source.IndexOf(needle, index + needle.Length, StringComparison.Ordinal))
+        {
+            count++;
+        }
+
+        return count;
+    }
+
+    /// <summary>Returns the body of the first `keyword ... { }` block, braces balanced.</summary>
+    private static string ReadBlock(string source, string keyword, int from = 0)
+    {
+        var blocks = ReadAllBlocks(source, keyword, from, stopAfterFirst: true);
+        Assert.AreEqual(1, blocks.Count, $"no `{keyword}` block was found in: {source}");
+        return blocks[0];
+    }
+
+    private static IReadOnlyList<string> ReadAllBlocks(
+        string source,
+        string keyword,
+        int from = 0,
+        bool stopAfterFirst = false)
+    {
+        var blocks = new List<string>();
+        var pattern = new Regex(@"(?<![A-Za-z0-9_])" + Regex.Escape(keyword) + @"(?![A-Za-z0-9_])[^{;}]*\{");
+        var cursor = from;
+
+        while (cursor < source.Length)
+        {
+            var match = pattern.Match(source, cursor);
+            if (!match.Success) break;
+
+            var open = match.Index + match.Length - 1;
+            var end = MatchingBrace(source, open);
+            blocks.Add(source[(open + 1)..end]);
+            if (stopAfterFirst) break;
+            cursor = end + 1;
+        }
+
+        return blocks;
+    }
+
+    private static int MatchingBrace(string source, int open)
+    {
+        var depth = 0;
+        for (var index = open; index < source.Length; index++)
+        {
+            if (source[index] == '{') depth++;
+            else if (source[index] == '}' && --depth == 0) return index;
+        }
+
+        Assert.Fail("unbalanced braces in the source under test.");
+        return -1;
+    }
+
+    private static string ReadMethodBody(string source, string signatureStart)
     {
         var start = source.IndexOf(signatureStart, StringComparison.Ordinal);
         Assert.IsTrue(start >= 0, $"`{signatureStart}` was not found in the source under test.");
@@ -155,21 +343,72 @@ public sealed class ProjectLoadingOverlayContractTests
         var open = source.IndexOf('{', start);
         Assert.IsTrue(open >= 0, $"`{signatureStart}` has no body.");
 
-        var depth = 0;
-        for (var index = open; index < source.Length; index++)
+        return source[(open + 1)..MatchingBrace(source, open)];
+    }
+
+    /// <summary>
+    /// Blanks comments and string bodies, keeping every offset intact, so that a structural assertion cannot
+    /// be satisfied by prose and a brace inside a literal cannot unbalance the scan.
+    /// </summary>
+    private static string Sanitise(string source)
+    {
+        var output = new StringBuilder(source);
+        var index = 0;
+
+        while (index < source.Length)
         {
-            if (source[index] == '{')
+            var current = source[index];
+
+            if (current == '/' && index + 1 < source.Length && source[index + 1] == '/')
             {
-                depth++;
+                while (index < source.Length && source[index] != '\n') output[index++] = ' ';
+                continue;
             }
-            else if (source[index] == '}' && --depth == 0)
+
+            if (current == '/' && index + 1 < source.Length && source[index + 1] == '*')
             {
-                return source[(open + 1)..index];
+                while (index < source.Length && !(source[index] == '*' && index + 1 < source.Length && source[index + 1] == '/'))
+                {
+                    if (source[index] != '\n') output[index] = ' ';
+                    index++;
+                }
+
+                continue;
             }
+
+            if (current == '"')
+            {
+                var verbatim = index > 0 && source[index - 1] == '@';
+                index++;
+                while (index < source.Length && source[index] != '"')
+                {
+                    if (!verbatim && source[index] == '\\') { output[index] = ' '; index++; }
+                    if (index < source.Length && source[index] != '\n') output[index] = ' ';
+                    index++;
+                }
+
+                index++;
+                continue;
+            }
+
+            if (current == '\'')
+            {
+                index++;
+                while (index < source.Length && source[index] != '\'')
+                {
+                    if (source[index] == '\\') { output[index] = ' '; index++; }
+                    if (index < source.Length) output[index] = ' ';
+                    index++;
+                }
+
+                index++;
+                continue;
+            }
+
+            index++;
         }
 
-        Assert.Fail($"`{signatureStart}` has an unbalanced body.");
-        return string.Empty;
+        return output.ToString();
     }
 
     private static string ReadAppFile(string relativePath)

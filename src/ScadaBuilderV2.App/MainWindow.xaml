@@ -15,15 +15,20 @@
         MinHeight="760"
         MinWidth="1180"
         Background="#f7fbf5"
-        Loaded="OnLoaded">
+        Loaded="OnLoaded"
+        PreviewKeyDown="OnWindowPreviewKeyDown">
     <Window.InputBindings>
         <KeyBinding Key="Z" Modifiers="Control" Command="{x:Static local:MainWindow.UndoSceneCommand}"/>
         <KeyBinding Key="Y" Modifiers="Control" Command="{x:Static local:MainWindow.RedoSceneCommand}"/>
         <KeyBinding Key="Z" Modifiers="Control+Shift" Command="{x:Static local:MainWindow.RedoSceneCommand}"/>
     </Window.InputBindings>
     <Window.CommandBindings>
-        <CommandBinding Command="{x:Static local:MainWindow.UndoSceneCommand}" Executed="OnUndoCommandExecuted"/>
-        <CommandBinding Command="{x:Static local:MainWindow.RedoSceneCommand}" Executed="OnRedoCommandExecuted"/>
+        <CommandBinding Command="{x:Static local:MainWindow.UndoSceneCommand}"
+                        Executed="OnUndoCommandExecuted"
+                        CanExecute="OnSceneHistoryCommandCanExecute"/>
+        <CommandBinding Command="{x:Static local:MainWindow.RedoSceneCommand}"
+                        Executed="OnRedoCommandExecuted"
+                        CanExecute="OnSceneHistoryCommandCanExecute"/>
     </Window.CommandBindings>
     <Window.Resources>
         <SolidColorBrush x:Key="InkBrush" Color="#0f2a30"/>

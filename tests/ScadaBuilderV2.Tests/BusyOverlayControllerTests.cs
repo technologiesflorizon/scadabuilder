@@ -15,6 +15,8 @@ namespace ScadaBuilderV2.Tests;
 /// `BusyOverlayController` carries no WPF reference precisely so this can be tested; the rendering it drives
 /// cannot be, and is pinned as source text by `ProjectLoadingOverlayContractTests`.
 ///
+/// Decisions: `DEC-0049`.
+/// Contracts: `docs/06_ui_ux/UI_ARCHITECTURE_V2.md` sections 1 and 2.
 /// Tests: this file.
 /// </remarks>
 [TestClass]
@@ -148,6 +150,53 @@ public sealed class BusyOverlayControllerTests
         Assert.IsTrue(
             controller.State.IsVisible,
             "a negative counter would swallow the next gesture and show nothing while it loads.");
+    }
+
+    [TestMethod]
+    public void ARenderThatThrowsWhileSuspendingDoesNotSuppressTheVeilForever()
+    {
+        var failNextRender = false;
+        var controller = new BusyOverlayController(_ =>
+        {
+            if (failNextRender) throw new InvalidOperationException("the shell refused to render.");
+        });
+
+        controller.BeginBusy("Ouverture de projet", "AMR_REF_SCADA_V2");
+        Assert.IsTrue(controller.State.IsVisible);
+
+        failNextRender = true;
+        Assert.ThrowsException<InvalidOperationException>(() => controller.Suspend());
+        failNextRender = false;
+
+        Assert.AreEqual(
+            0,
+            controller.SuspendDepth,
+            "the caller never received the scope, so nothing could ever close this suspension. Left standing, "
+            + "it suppresses the veil for the rest of the session and no gesture ever shows anything again.");
+        Assert.IsTrue(
+            controller.State.IsVisible,
+            "the gesture is still running; rolling the suspension back must put the veil back exactly as the "
+            + "shell last saw it.");
+    }
+
+    [TestMethod]
+    public void ARenderThatThrowsWhileRaisingTheVeilDoesNotStrandTheGestureOnTheStack()
+    {
+        var failNextRender = true;
+        var controller = new BusyOverlayController(_ =>
+        {
+            if (failNextRender) throw new InvalidOperationException("the shell refused to render.");
+        });
+
+        Assert.ThrowsException<InvalidOperationException>(() => controller.BeginBusy("Ouverture de projet"));
+        failNextRender = false;
+
+        Assert.AreEqual(
+            0,
+            controller.BusyDepth,
+            "the caller's `finally` will not lower a veil it never saw raised, so a gesture left on the stack "
+            + "here would veil the window with nothing running.");
+        Assert.IsFalse(controller.State.IsVisible);
     }
 
     [TestMethod]

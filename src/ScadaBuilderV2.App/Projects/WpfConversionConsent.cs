@@ -14,6 +14,11 @@ namespace ScadaBuilderV2.App.Projects;
 /// application, and the operator has no reason to believe the answer will be taken. `IConversionConsent` stays
 /// as it is - the suspension is a WPF shell concern and has no business in the Application layer - so the
 /// capability arrives by constructor instead.
+///
+/// Decisions: `DEC-0049` (cycle de vie autonome des projets V2).
+/// Contracts: docs/superpowers/specs/2026-09-08-project-format-versioning-and-converters-design.md C5, C7;
+/// `docs/06_ui_ux/UI_ARCHITECTURE_V2.md` sections 1 and 2 for the veil.
+/// Tests: `tests/ScadaBuilderV2.Tests/ProjectLoadingOverlayContractTests.cs`.
 /// </remarks>
 public sealed class WpfConversionConsent(Window owner, IBusyOverlaySuspender overlaySuspender) : IConversionConsent
 {
