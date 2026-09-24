@@ -91,13 +91,28 @@ public sealed class DockablePanelPresenterTests
     [TestMethod]
     public void AnAnchorableClosedByTheUserComesBackWithItsContentWhenReopenedThroughShow()
     {
+        // This is deliberately NOT the same scenario as
+        // APanelOpenedFromTheFallbackBranchComesBackWithoutThrowingWhenClosedThenReopened below, and it is not
+        // a workaround for it either - it is a second, equally real path through Show, distinguished by which
+        // branch resolves the reopen:
+        //   - here, the restored layout already contains 'Kept', so Deserialize's wholesale tree replacement
+        //     (see the class remarks) leaves the x:Name-declared 'kept' field permanently stale: the live
+        //     'Kept' object is a DIFFERENT instance, on a different Root, from the moment of the first
+        //     Deserialize onward. Closing the live one and calling Show(manager, kept) - exactly what every
+        //     MainWindow call site does, it always passes the declared field - resolves through the plain
+        //     dead-tree-detach-then-AddToLayout branch (declared.Root != manager.Layout), unaffected by the
+        //     fallback-branch/Root fix below.
+        //   - in the fallback-branch test, 'declared' itself BECOMES the live object on its first Show, so its
+        //     Root stays manager.Layout across a Close() - a different branch entirely, and the one that used
+        //     to throw.
+        // Both are real, both must keep working; this test covers the "panel present in dock-layout.xml"
+        // case, the more common one for panels like Page/Properties/Diagnostics that are basically always open.
         var result = RunOnSta(() =>
         {
             var (manager, kept, dropped) = BuildScene();
-            // Restore first, as a real session always does at startup (dock-layout.xml is read and
-            // deserialized even when it omits nothing): this is what makes the live 'Kept' a different
-            // object from the x:Name-declared 'kept' field, exactly the condition the probe validated for
-            // this scenario. "None" is not a real ContentId, so nothing is actually stripped.
+            // "None" is not a real ContentId, so nothing is actually stripped - the restore still runs
+            // (dock-layout.xml is always read and deserialized, even when it omits nothing), which is what
+            // makes the live 'Kept' a different object from the x:Name-declared 'kept' field.
             RestoreLayoutOmitting(manager, "None");
             var live = manager.Layout!.Descendents().OfType<LayoutAnchorable>().First(a => a.ContentId == KeptId);
             live.Close();
@@ -143,6 +158,75 @@ public sealed class DockablePanelPresenterTests
         Assert.IsTrue(result.ShownInLiveTree);
         Assert.AreEqual("dropped", result.ShownContentText);
         Assert.AreEqual(1, result.LiveCountWithDroppedId, "calling Show() twice must not duplicate the anchorable in the live tree.");
+    }
+
+    [TestMethod]
+    public void APanelOpenedFromTheFallbackBranchComesBackWithoutThrowingWhenClosedThenReopened()
+    {
+        // This is the user's reported crash path, reproduced exactly: a panel absent from the restored
+        // layout is opened once (Show takes the fallback branch and 'declared' itself becomes the live
+        // anchorable), the user closes it (AvalonDock leaves a stale, dangling Parent and IsVisible=true,
+        // but the anchorable is genuinely out of the live tree), and the panel is reopened. Before the
+        // Root-based fix, the second Show's fallback branch called AddToLayout on an anchorable whose
+        // IsVisible was still (wrongly) true, which throws InvalidOperationException.
+        var result = RunOnSta(() =>
+        {
+            var (manager, kept, dropped) = BuildScene();
+            RestoreLayoutOmitting(manager, DroppedId);
+
+            var firstShown = DockablePanelPresenter.Show(manager, dropped);
+            Assert.IsNotNull(firstShown, "first Show (fallback branch) unexpectedly returned null.");
+            firstShown!.Close();
+
+            var secondShown = DockablePanelPresenter.Show(manager, dropped);
+
+            return new SceneOutcome(
+                ShownIsNotNull: secondShown is not null,
+                ShownInLiveTree: secondShown is not null && IsInLiveTree(manager, secondShown),
+                ShownContentText: (secondShown?.Content as TextBlock)?.Text,
+                LiveCountWithDroppedId: CountLiveWithContentId(manager, DroppedId));
+        });
+
+        Assert.IsTrue(result.ShownIsNotNull, "reopening a closed, fallback-opened panel threw or returned null.");
+        Assert.IsTrue(result.ShownInLiveTree, "the reopened panel is not back in the live AvalonDock tree.");
+        Assert.AreEqual("dropped", result.ShownContentText, "the reopened panel lost its Content.");
+        Assert.AreEqual(1, result.LiveCountWithDroppedId, "reopening must not leave duplicate or orphaned anchorables for the same ContentId.");
+    }
+
+    [TestMethod]
+    public void APanelOpenedFromTheFallbackBranchSurvivesThreeOpenCloseCyclesWithContentIntact()
+    {
+        var result = RunOnSta(() =>
+        {
+            var (manager, kept, dropped) = BuildScene();
+            RestoreLayoutOmitting(manager, DroppedId);
+
+            var allInLiveTree = true;
+            var allContentIntact = true;
+
+            for (var cycle = 0; cycle < 3; cycle++)
+            {
+                var shown = DockablePanelPresenter.Show(manager, dropped);
+                allInLiveTree &= shown is not null && IsInLiveTree(manager, shown);
+                allContentIntact &= (shown?.Content as TextBlock)?.Text == "dropped";
+                shown?.Close();
+            }
+
+            return new SceneOutcome(
+                ShownIsNotNull: allInLiveTree,
+                ShownInLiveTree: allInLiveTree,
+                ShownContentText: allContentIntact ? "dropped" : null,
+                LiveCountWithDroppedId: CountLiveWithContentId(manager, DroppedId));
+        });
+
+        Assert.IsTrue(result.ShownInLiveTree, "at least one of the three open/close cycles left the panel out of the live tree.");
+        Assert.AreEqual("dropped", result.ShownContentText, "at least one of the three open/close cycles lost the panel's Content.");
+        // Whether Close() leaves the anchorable in manager.Layout.Descendents() (hidden) or out of it entirely
+        // is AvalonDock's own call, not this presenter's contract, and the dockprobe shows it is not even
+        // consistent across cycles once the Hide()/Show() normalization has run once (absent after the 1st
+        // Close(), present-but-hidden after the 2nd and 3rd in the probe's own recorded run). What the
+        // presenter promises is no duplication: never more than one live anchorable for this ContentId.
+        Assert.IsTrue(result.LiveCountWithDroppedId <= 1, "three open/close cycles must not duplicate the anchorable in the live tree.");
     }
 
     [TestMethod]

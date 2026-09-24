@@ -52,6 +52,36 @@ public static class DockablePanelPresenter
     /// The live anchorable that now carries this panel's content, or <c>null</c> when <paramref name="declared"/>
     /// or <paramref name="manager"/> (or its layout) is not available.
     /// </returns>
+    /// <remarks>
+    /// A panel that was absent from a restored layout takes the third branch below on its first open: the
+    /// <c>declared</c> object itself is detached from its dead tree and <c>AddToLayout</c>-ed, so it *becomes*
+    /// the live anchorable - <see cref="FindLive"/> and <c>declared</c> are the same object from then on. If the
+    /// user then closes it, AvalonDock 4.74.1's <c>Close()</c> leaves a stale, dangling <see
+    /// cref="LayoutAnchorable.Parent"/> (observed as a <c>LayoutPanel</c> it is no longer really a child of) and
+    /// <see cref="LayoutAnchorable.IsVisible"/> stays <c>true</c>, while the anchorable is genuinely gone from
+    /// <c>manager.Layout.Descendents()</c>. On the next <c>Show</c>, <see cref="FindLive"/> correctly finds
+    /// nothing (it is not in the live tree), so the second branch runs: <c>Parent is ILayoutContainer</c> is
+    /// true, but <c>RemoveChild</c> on that stale back-reference is a no-op - it does not clear <c>IsVisible</c>
+    /// - and <c>AddToLayout</c> then throws on its <c>if (IsVisible || IsHidden) throw</c> guard. This shipped as
+    /// a runtime <see cref="InvalidOperationException"/> ("l'opération a été interrompue") the first time a user
+    /// actually closed a panel that had been opened this way.
+    ///
+    /// <see cref="LayoutAnchorable.Root"/> is what tells these two "not found live" cases apart, because it is
+    /// unaffected by the stale <c>Parent</c>: a panel that was *never* restored or opened resolves to the dead
+    /// tree's root (the one <c>Deserialize</c> discarded), while a panel that was live and then closed still
+    /// resolves to <c>manager.Layout</c> itself - AvalonDock's <c>Close()</c> does not reparent the anchorable
+    /// out of the live root, it only breaks the child link inside it. When <c>Root</c> matches the live layout,
+    /// <c>Hide()</c> is called first: it normalizes the anchorable's bookkeeping into
+    /// <c>LayoutRoot.Hidden</c> (clearing the state <c>AddToLayout</c>'s guard checks), and the following
+    /// <c>Show()</c> then brings it back out of <c>Hidden</c> the way it is designed to - no <c>AddToLayout</c>
+    /// call needed or possible here, since the anchorable is already rooted correctly. Calling <c>Hide()</c> on a
+    /// never-restored ghost instead would be a no-op that just files it under the *dead* root's <c>Hidden</c>
+    /// collection, so this branch must not be taken for that case - hence the <c>Root</c> check gating it.
+    ///
+    /// Verified against the real assembly by the probe kept at
+    /// <c>C:\Users\mathi\AppData\Local\Temp\claude\F--Groupe-AMR-SCADA-AMR-GROUP\ec1a5845-88ba-4cc4-aef7-a67fb9a349f0\scratchpad\dockprobe</c>
+    /// over three consecutive open/close cycles, content intact, no exception.
+    /// </remarks>
     public static LayoutAnchorable? Show(
         DockingManager? manager,
         LayoutAnchorable? declared,
@@ -68,6 +98,17 @@ public static class DockablePanelPresenter
             live.Show();
             live.IsActive = true;
             return live;
+        }
+
+        if (ReferenceEquals(declared.Root, manager.Layout))
+        {
+            // Stale, but still rooted in the LIVE tree: a close left a dangling Parent, so IsVisible is
+            // still true and AddToLayout would throw. Hide() normalises the anchorable into
+            // LayoutRoot.Hidden, and Show() brings it back from there.
+            declared.Hide();
+            declared.Show();
+            declared.IsActive = true;
+            return declared;
         }
 
         if (declared.Parent is ILayoutContainer container)
