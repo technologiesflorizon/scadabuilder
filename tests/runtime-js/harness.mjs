@@ -28,3 +28,145 @@ export function loadRuntime(moduleNames) {
 
   return context.window;
 }
+
+// ── minimal fake DOM ────────────────────────────────────────────────────────
+//
+// Node has no DOM. `substituteInstance` (quick-window-runtime.js) needs just enough of one to
+// run for real inside the vm sandbox: elements with get/setAttribute, a single compound
+// querySelectorAll (comma-separated attribute-presence / tag selectors, no combinators — the
+// only shape substituteInstance ever issues), and a TreeWalker over text nodes. Kept here,
+// rather than duplicated per test file, because any test exercising DOM-mounted substitution
+// needs the same shape.
+
+class FakeNode {
+  constructor(nodeType) {
+    this.nodeType = nodeType;
+    this.parentNode = null;
+    this.childNodes = [];
+  }
+}
+
+class FakeText extends FakeNode {
+  constructor(text) {
+    super(3); // Node.TEXT_NODE
+    this.textContent = text || '';
+  }
+}
+
+class FakeElement extends FakeNode {
+  constructor(tagName) {
+    super(1); // Node.ELEMENT_NODE
+    this.tagName = String(tagName).toUpperCase();
+    this._attributes = new Map();
+  }
+
+  appendChild(child) {
+    child.parentNode = this;
+    this.childNodes.push(child);
+    return child;
+  }
+
+  setAttribute(name, value) {
+    this._attributes.set(String(name), String(value));
+  }
+
+  getAttribute(name) {
+    return this._attributes.has(name) ? this._attributes.get(name) : null;
+  }
+
+  hasAttribute(name) {
+    return this._attributes.has(name);
+  }
+
+  get textContent() {
+    var text = '';
+    for (var i = 0; i < this.childNodes.length; i++) {
+      text += this.childNodes[i].textContent;
+    }
+    return text;
+  }
+
+  set textContent(value) {
+    this.childNodes = [];
+    this.appendChild(new FakeText(value));
+  }
+
+  querySelectorAll(selector) {
+    return _queryAll(this, selector);
+  }
+}
+
+function _matchesSimple(el, token) {
+  var tagMatch = token.match(/^[A-Za-z][A-Za-z0-9-]*/);
+  var tag = tagMatch ? tagMatch[0] : null;
+  if (tag && el.tagName !== tag.toUpperCase()) {
+    return false;
+  }
+  var attrRe = /\[([^\]=]+)(?:="([^"]*)")?\]/g;
+  var match;
+  while ((match = attrRe.exec(token)) !== null) {
+    var name = match[1];
+    var value = match[2];
+    if (!el.hasAttribute(name)) return false;
+    if (value !== undefined && el.getAttribute(name) !== value) return false;
+  }
+  return true;
+}
+
+function _queryAll(root, selector) {
+  var parts = selector.split(',').map(function (part) { return part.trim(); });
+  var result = [];
+  (function walk(node) {
+    for (var i = 0; i < node.childNodes.length; i++) {
+      var child = node.childNodes[i];
+      if (child.nodeType === 1) {
+        for (var p = 0; p < parts.length; p++) {
+          if (_matchesSimple(child, parts[p])) {
+            result.push(child);
+            break;
+          }
+        }
+        walk(child);
+      }
+    }
+  })(root);
+  return result;
+}
+
+/**
+ * Builds a minimal fake `document`/`NodeFilter` pair sufficient for
+ * `ScadaRuntime.QuickWindow.substituteInstance`: element creation, attribute get/set, a single
+ * compound `querySelectorAll`, and `createTreeWalker` over text nodes. Attach both onto the
+ * sandbox's `window` (e.g. `Object.assign(window, createFakeDom())`) before building a fixture.
+ *
+ * @returns {{document: object, NodeFilter: object}}
+ */
+export function createFakeDom() {
+  var NodeFilter = { SHOW_TEXT: 4 };
+
+  var document = {
+    createElement: function (tag) { return new FakeElement(tag); },
+    createTextNode: function (text) { return new FakeText(text); },
+    createTreeWalker: function (root, whatToShow) {
+      var nodes = [];
+      (function collect(node) {
+        for (var i = 0; i < node.childNodes.length; i++) {
+          var child = node.childNodes[i];
+          if (whatToShow === NodeFilter.SHOW_TEXT ? child.nodeType === 3 : true) {
+            nodes.push(child);
+          }
+          collect(child);
+        }
+      })(root);
+      var index = -1;
+      return {
+        nextNode: function () {
+          index += 1;
+          return index < nodes.length ? nodes[index] : null;
+        }
+      };
+    }
+  };
+
+  return { document: document, NodeFilter: NodeFilter };
+}

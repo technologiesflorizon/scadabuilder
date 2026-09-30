@@ -54,6 +54,47 @@
     return false;
   }
 
+  /**
+   * Collects every `tagName` (tagRef) and string `value` (literalString) carried by a serialized
+   * expression AST, so injection screening can inspect them before any binding is trusted.
+   */
+  function _astInjectionStrings(node, out) {
+    if (!node || typeof node !== 'object') {
+      return;
+    }
+    if (node.type === 'tagRef' && typeof node.tagName === 'string') {
+      out.push(node.tagName);
+    }
+    if (node.type === 'literalString' && typeof node.value === 'string') {
+      out.push(node.value);
+    }
+    for (var key in node) {
+      if (!Object.prototype.hasOwnProperty.call(node, key)) continue;
+      var value = node[key];
+      if (value && typeof value === 'object') {
+        if (Array.isArray(value)) {
+          for (var i = 0; i < value.length; i++) {
+            _astInjectionStrings(value[i], out);
+          }
+        } else {
+          _astInjectionStrings(value, out);
+        }
+      }
+    }
+  }
+
+  /** True when any string value carried by an `ExpressionAst` matches an injection pattern. */
+  function _isAstInjection(ast) {
+    var strings = [];
+    _astInjectionStrings(ast, strings);
+    for (var i = 0; i < strings.length; i++) {
+      if (_isInjection(strings[i])) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   /** Indexes the manifest registries. Registry casing is PascalCase, as frozen by the package contract. */
   function loadRegistries(manifest) {
     _definitions = {};
@@ -119,7 +160,8 @@
     var bindingsByMember = {};
     for (var b = 0; b < bindings.length; b++) {
       var binding = bindings[b];
-      if (_isInjection(binding.LiteralValue) || _isInjection(binding.Expression) || _isInjection(binding.TagId)) {
+      if (_isInjection(binding.LiteralValue) || _isInjection(binding.Expression) || _isInjection(binding.TagId) ||
+          _isAstInjection(binding.ExpressionAst)) {
         // Rejected before subscription: no read is registered and no write may ever be emitted.
         return { ok: false, code: 'injection-rejected', ports: {}, memberKey: binding.MemberKey };
       }
@@ -173,7 +215,8 @@
           (member.Access === 'Write' || member.Access === 'ReadWrite'),
         tagId: bound.TagId,
         literalValue: bound.LiteralValue,
-        expression: bound.Expression
+        expression: bound.Expression,
+        expressionAst: bound.ExpressionAst || null
       };
     }
 
@@ -273,6 +316,179 @@
     return { ok: true, code: 'requested', runtimeInstanceId: runtimeInstanceId, generation: generation, ports: context.ports };
   }
 
+  // ── #N placeholder substitution (DEC-0052, contract §11b.1) ───────────────
+  //
+  // A QuickWindowDefinition compiled from a parameter-sheet page keeps its `#N` tokens (`#1` to
+  // `#999`) in its Content. `substituteInstance` rewrites every one of them, once per instance, from
+  // the resolved ports of that instance's invocation, before the shared page runtime initializes.
+  // `style` attributes are never read nor written by this pass: a hex colour like `#0F2A30` is never
+  // searched for a placeholder there.
+
+  var PLACEHOLDER_EXACT = /^#([1-9][0-9]{0,2})$/;
+  var PLACEHOLDER_IN_TEXT = /(\\?)#([0-9]{1,3})(?![0-9A-Fa-f])/g;
+
+  function _refuse(code, detail) {
+    _diagnose(code, detail);
+    return { ok: false, code: code, detail: detail };
+  }
+
+  /** Resolves a `#N` placeholder to a tag id, or the reason it cannot be used as a tag. */
+  function _tagFor(ports, name) {
+    var port = ports[name];
+    if (!port || !port.available) return { error: 'placeholder-unbound' };
+    if (port.sourceKind !== 'Tag' || !port.tagId) return { error: 'placeholder-write-not-tag' };
+    return { tagId: port.tagId };
+  }
+
+  /** Builds the AST node a bound port substitutes for a `#N` tagRef inside an expression AST. */
+  function _nodeFor(port) {
+    if (port.sourceKind === 'Tag') return { type: 'tagRef', tagName: port.tagId };
+    if (port.sourceKind === 'Literal') return { type: 'literalString', value: String(port.literalValue) };
+    return port.expressionAst;
+  }
+
+  /**
+   * Walks a serialized expression AST, substituting every `#N` tagRef node from its bound port.
+   * Returns `{ node }` on success or `{ error, detail }` on refusal — never throws and never mutates
+   * the input node (a fresh copy is built so a refusal never leaves a partially rewritten AST).
+   */
+  function _substituteAst(node, ports) {
+    if (!node || typeof node !== 'object') return { node: node };
+    if (node.type === 'tagRef' && PLACEHOLDER_EXACT.test(node.tagName || '')) {
+      var port = ports[node.tagName];
+      if (!port || !port.available) return { error: 'placeholder-unbound', detail: node.tagName };
+      return { node: _nodeFor(port) };
+    }
+    var copy = {};
+    for (var key in node) {
+      if (!Object.prototype.hasOwnProperty.call(node, key)) continue;
+      var value = node[key];
+      if (value && typeof value === 'object') {
+        if (Array.isArray(value)) {
+          var items = [];
+          for (var i = 0; i < value.length; i++) {
+            var item = _substituteAst(value[i], ports);
+            if (item.error) return item;
+            items.push(item.node);
+          }
+          copy[key] = items;
+        } else {
+          var child = _substituteAst(value, ports);
+          if (child.error) return child;
+          copy[key] = child.node;
+        }
+      } else {
+        copy[key] = value;
+      }
+    }
+    return { node: copy };
+  }
+
+  /**
+   * Substitutes every `#N` placeholder of a mounted quick-window instance's DOM, in a single pass,
+   * from the resolved ports of that instance. Covers `data-scada-read-tag`/`data-scada-write-tag`
+   * (exact-match attribute values only), `data-scada-state-config`/`data-scada-command-config` (parsed
+   * as JSON, substituted, then re-serialized — never a raw string replacement on the JSON), and text
+   * nodes (rewritten through `textContent` only, never `innerHTML`). `style` attributes are never
+   * inspected. Refuses (instead of ever rendering a raw `#N`) with one of `placeholder-unbound`,
+   * `placeholder-write-not-tag` or `placeholder-text-not-literal`.
+   *
+   * @param {object} root  - The instance's mounted DOM root.
+   * @param {object} ports - The instance's resolved ports, keyed by definition member name.
+   * @returns {{ok: boolean, code: string, detail?: string}}
+   */
+  function substituteInstance(root, ports) {
+    var elements = root.querySelectorAll(
+      '[data-scada-read-tag],[data-scada-write-tag],[data-scada-state-config],[data-scada-command-config]');
+
+    for (var e = 0; e < elements.length; e++) {
+      var element = elements[e];
+
+      var readTag = element.getAttribute('data-scada-read-tag');
+      if (readTag !== null && PLACEHOLDER_EXACT.test(readTag)) {
+        var readResolved = _tagFor(ports, readTag);
+        if (readResolved.error) return _refuse(readResolved.error, readTag);
+        element.setAttribute('data-scada-read-tag', readResolved.tagId);
+      }
+
+      var writeTag = element.getAttribute('data-scada-write-tag');
+      if (writeTag !== null && PLACEHOLDER_EXACT.test(writeTag)) {
+        var writeResolved = _tagFor(ports, writeTag);
+        if (writeResolved.error) return _refuse(writeResolved.error, writeTag);
+        element.setAttribute('data-scada-write-tag', writeResolved.tagId);
+      }
+
+      var stateConfigRaw = element.getAttribute('data-scada-state-config');
+      if (stateConfigRaw !== null) {
+        var stateConfig = JSON.parse(stateConfigRaw);
+        var states = stateConfig.states || [];
+        for (var s = 0; s < states.length; s++) {
+          if (!states[s] || states[s].expression === undefined) continue;
+          var substitutedExpression = _substituteAst(states[s].expression, ports);
+          if (substitutedExpression.error) return _refuse(substitutedExpression.error, substitutedExpression.detail);
+          states[s].expression = substitutedExpression.node;
+        }
+        if (stateConfig.readVariable && typeof stateConfig.readVariable.tagId === 'string' &&
+            PLACEHOLDER_EXACT.test(stateConfig.readVariable.tagId)) {
+          var readVariableResolved = _tagFor(ports, stateConfig.readVariable.tagId);
+          if (readVariableResolved.error) return _refuse(readVariableResolved.error, stateConfig.readVariable.tagId);
+          stateConfig.readVariable.tagId = readVariableResolved.tagId;
+        }
+        element.setAttribute('data-scada-state-config', JSON.stringify(stateConfig));
+      }
+
+      var commandConfigRaw = element.getAttribute('data-scada-command-config');
+      if (commandConfigRaw !== null) {
+        var commandConfig = JSON.parse(commandConfigRaw);
+        var commands = commandConfig.commands || [];
+        for (var c = 0; c < commands.length; c++) {
+          var command = commands[c];
+          if (!command) continue;
+          if (typeof command.writeTagId === 'string' && PLACEHOLDER_EXACT.test(command.writeTagId)) {
+            var writeCommandResolved = _tagFor(ports, command.writeTagId);
+            if (writeCommandResolved.error) return _refuse(writeCommandResolved.error, command.writeTagId);
+            command.writeTagId = writeCommandResolved.tagId;
+          }
+          if (typeof command.readTagId === 'string' && PLACEHOLDER_EXACT.test(command.readTagId)) {
+            var readCommandResolved = _tagFor(ports, command.readTagId);
+            if (readCommandResolved.error) return _refuse(readCommandResolved.error, command.readTagId);
+            command.readTagId = readCommandResolved.tagId;
+          }
+        }
+        element.setAttribute('data-scada-command-config', JSON.stringify(commandConfig));
+      }
+    }
+
+    var walker = window.document.createTreeWalker(root, window.NodeFilter.SHOW_TEXT);
+    var textNode = walker.nextNode();
+    while (textNode) {
+      var original = textNode.textContent;
+      if (original && original.indexOf('#') !== -1) {
+        var refusal = null;
+        var replaced = original.replace(PLACEHOLDER_IN_TEXT, function (match, escape, digits) {
+          if (refusal) return match;
+          if (escape === '\\') return '#' + digits;
+          var name = '#' + digits;
+          var port = ports[name];
+          if (!port || !port.available) {
+            refusal = { code: 'placeholder-unbound', detail: name };
+            return match;
+          }
+          if (port.sourceKind !== 'Literal') {
+            refusal = { code: 'placeholder-text-not-literal', detail: name };
+            return match;
+          }
+          return String(port.literalValue);
+        });
+        if (refusal) return _refuse(refusal.code, refusal.detail);
+        textNode.textContent = replaced;
+      }
+      textNode = walker.nextNode();
+    }
+
+    return { ok: true, code: 'substituted' };
+  }
+
   /**
    * Mounts one resolved instance into the DOM root the host created. Mounting delegates to the shared
    * page runtime: no second state engine, dispatcher, tag cache or poller is created.
@@ -293,6 +509,13 @@
     }
 
     context.root = root || null;
+    if (root) {
+      var substituted = substituteInstance(root, context.ports || {});
+      if (!substituted.ok) {
+        disposeInstance(runtimeInstanceId);
+        return { ok: false, code: substituted.code };
+      }
+    }
     context.state = 'Active';
     if (root && window.ScadaRuntime && typeof window.ScadaRuntime.initPage === 'function') {
       window.ScadaRuntime.initPage(root, runtimeInstanceId);
@@ -326,10 +549,12 @@
     }
     if (port.sourceKind === 'Expression') {
       var evaluator = window.ScadaRuntime && window.ScadaRuntime.ExpressionEvaluator;
-      if (!evaluator || typeof evaluator.evaluate !== 'function') {
+      if (!evaluator || typeof evaluator.walk !== 'function') {
         return { ok: false, code: 'expression-unavailable' };
       }
-      return { ok: true, value: evaluator.evaluate(port.expression) };
+      // The evaluator walks the serialized AST, never the source text: `port.expression` is the
+      // original text kept for round-tripping/UI, but only `expressionAst` is evaluable.
+      return { ok: true, value: evaluator.walk(port.expressionAst, {}) };
     }
     if (port.tagId && window.ScadaRuntime && window.ScadaRuntime.TagBridge) {
       return { ok: true, value: window.ScadaRuntime.TagBridge.getTagValue(port.tagId) };
@@ -464,6 +689,7 @@
     resolveInvocation: resolveInvocation,
     open: open,
     mountInstance: mountInstance,
+    substituteInstance: substituteInstance,
     readPort: readPort,
     writePort: writePort,
     close: close,
