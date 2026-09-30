@@ -1965,16 +1965,21 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
             var pageType = GetSelectedPageType();
             var headerKey = pageType == ScadaPageType.Default ? GetSelectedCompositionPageKey(HeaderPageComboBox) : null;
             var footerKey = pageType == ScadaPageType.Default ? GetSelectedCompositionPageKey(FooterPageComboBox) : null;
-            var requests = new (string Id, PageCommandRequest Request)[]
+            var requests = new List<(string Id, PageCommandRequest Request)>
             {
                 ("page.change-code", new ChangePageCodeRequest(pageKey, PageNameTextBox.Text.Trim())),
                 ("page.rename", new RenamePageRequest(pageKey, PageTitleTextBox.Text.Trim())),
-                ("page.set-type", new SetPageTypeRequest(pageKey, pageType)),
                 ("page.set-build-inclusion", new SetPageBuildInclusionRequest(pageKey, IncludeInBuildCheckBox.IsChecked == true)),
                 ("page.set-composition", new SetPageCompositionRequest(pageKey, headerKey, footerKey)),
                 ("page.set-canvas", new SetPageCanvasRequest(pageKey, new CanvasSize(width, height))),
                 ("page.set-background", new SetPageBackgroundRequest(pageKey, background))
             };
+            // Only a deliberately selected type requests a change: the selector shows no selection for a
+            // legacy Fragment page, and that must never be read as "convert to Default".
+            if (pageType is { } requestedType)
+            {
+                requests.Add(("page.set-type", new SetPageTypeRequest(pageKey, requestedType)));
+            }
 
             foreach (var (commandId, request) in requests)
             {
@@ -2076,9 +2081,16 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
             return;
         }
 
+        if (GetSelectedPageType() is not { } requestedType)
+        {
+            // No option selected (e.g. the combo was cleared): a legacy Fragment page must never be
+            // coerced to Default just because nothing was deliberately picked.
+            return;
+        }
+
         await ExecutePagePropertyCommandAsync(
             "page.set-type",
-            new SetPageTypeRequest(_activeSceneTab.PageKey, GetSelectedPageType()));
+            new SetPageTypeRequest(_activeSceneTab.PageKey, requestedType));
     }
 
     private async void OnPageBuildInclusionClick(object sender, RoutedEventArgs e)
@@ -3905,8 +3917,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         SetStatus("Creation de tags disponible dans une prochaine revision apres import des protocoles projet.");
     }
 
-    private ScadaPageType GetSelectedPageType() =>
-        (PageTypeComboBox.SelectedItem as PageTypeOption)?.Type ?? ScadaPageType.Default;
+    private ScadaPageType? GetSelectedPageType() =>
+        PageTypeOptions.ResolveRequestedType(PageTypeComboBox.SelectedItem as PageTypeOption);
 
     private void SelectPageType(ScadaPageType pageType) =>
         PageTypeComboBox.SelectedItem = PageTypeOptions.Selectable.FirstOrDefault(option => option.Type == pageType);

@@ -85,13 +85,51 @@ public sealed class PageManagementSurfaceContractTests
         Assert.IsFalse(xaml.Contains("<ComboBoxItem Content=\"Defaut\"", StringComparison.Ordinal));
 
         StringAssert.Contains(code, "PageTypeComboBox.ItemsSource = PageTypeOptions.Selectable;");
+        // GetSelectedPageType is nullable: no selection (a legacy Fragment page) must resolve to "no
+        // request", never be coerced to Default by a fallback (Task 8 fix round 1).
         StringAssert.Contains(
             code,
-            "private ScadaPageType GetSelectedPageType() =>\r\n        (PageTypeComboBox.SelectedItem as PageTypeOption)?.Type ?? ScadaPageType.Default;");
+            "private ScadaPageType? GetSelectedPageType() =>\r\n        PageTypeOptions.ResolveRequestedType(PageTypeComboBox.SelectedItem as PageTypeOption);");
         StringAssert.Contains(
             code,
             "private void SelectPageType(ScadaPageType pageType) =>\r\n        PageTypeComboBox.SelectedItem = PageTypeOptions.Selectable.FirstOrDefault(option => option.Type == pageType);");
         StringAssert.Contains(code, "private static string GetPageTypeLabel(ScadaPageType pageType) => PageTypeOptions.Label(pageType);");
+    }
+
+    [TestMethod]
+    public void ApplyingPagePropertiesSkipsTheTypeChangeRequestWhenNothingIsSelected()
+    {
+        var code = Read("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");
+        var handler = ExtractMethod(code, "private async void OnApplyPagePropertiesClick(");
+
+        // A legacy Fragment page shows the selector empty (GetSelectedPageType() returns null); applying
+        // the other page properties must never silently convert it to Default (Task 8 fix round 1).
+        StringAssert.Contains(handler, "if (pageType is { } requestedType)");
+        StringAssert.Contains(handler, "requests.Add((\"page.set-type\", new SetPageTypeRequest(pageKey, requestedType)));");
+        Assert.IsFalse(
+            handler.Contains("(\"page.set-type\", new SetPageTypeRequest(pageKey, pageType))", StringComparison.Ordinal),
+            "page.set-type must not be sent unconditionally with a possibly-null pageType.");
+    }
+
+    private static string ExtractMethod(string source, string signaturePrefix)
+    {
+        var start = source.IndexOf(signaturePrefix, StringComparison.Ordinal);
+        Assert.AreNotEqual(-1, start, $"'{signaturePrefix}' was not found.");
+        var braceStart = source.IndexOf('{', start);
+        Assert.AreNotEqual(-1, braceStart, $"No opening brace found after '{signaturePrefix}'.");
+        var depth = 0;
+        for (var i = braceStart; i < source.Length; i++)
+        {
+            if (source[i] == '{') depth++;
+            else if (source[i] == '}')
+            {
+                depth--;
+                if (depth == 0) return source[start..(i + 1)];
+            }
+        }
+
+        Assert.Fail($"Could not find the end of the method starting with '{signaturePrefix}'.");
+        return string.Empty;
     }
 
     [TestMethod]

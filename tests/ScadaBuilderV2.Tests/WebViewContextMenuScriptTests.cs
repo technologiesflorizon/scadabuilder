@@ -880,7 +880,10 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(xaml, "x:Name=\"PageTypeComboBox\"");
         StringAssert.Contains(xaml, "SelectionChanged=\"OnPageTypeSelectionChanged\"");
         StringAssert.Contains(handler, "ExecutePagePropertyCommandAsync(");
-        StringAssert.Contains(handler, "new SetPageTypeRequest(_activeSceneTab.PageKey, GetSelectedPageType())");
+        StringAssert.Contains(handler, "new SetPageTypeRequest(_activeSceneTab.PageKey, requestedType)");
+        // No option selected (a legacy Fragment page shows the selector empty) must never be read as a
+        // request to convert the page to Default: the handler bails out before sending any command.
+        StringAssert.Contains(handler, "if (GetSelectedPageType() is not { } requestedType)");
         Assert.IsFalse(source.Contains("ApplyActiveScenePageType", StringComparison.Ordinal));
     }
 

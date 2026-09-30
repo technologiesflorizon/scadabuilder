@@ -42,4 +42,21 @@ public sealed class PageTypeOptionsTests
         var labels = PageTypeOptions.Selectable.Select(option => option.Label).ToArray();
         CollectionAssert.AllItemsAreUnique(labels);
     }
+
+    [TestMethod]
+    public void ResolveRequestedTypeReturnsNullWhenNothingIsSelected()
+    {
+        // The state of a page still typed Fragment (absent from Selectable): no option selected must mean
+        // "send no type-change request", never a silent fallback to Default (Task 8 fix round 1).
+        Assert.IsNull(PageTypeOptions.ResolveRequestedType(null));
+    }
+
+    [TestMethod]
+    public void ResolveRequestedTypeReturnsEachSelectableOptionsType()
+    {
+        foreach (var option in PageTypeOptions.Selectable)
+        {
+            Assert.AreEqual(option.Type, PageTypeOptions.ResolveRequestedType(option));
+        }
+    }
 }

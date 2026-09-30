@@ -40,4 +40,16 @@ public static class PageTypeOptions
         ScadaPageType.Fragment => "Fragment (obsolète)",
         _ => "Défaut"
     };
+
+    /// <summary>
+    /// Returns the page type a deliberately selected option requests, or <c>null</c> when nothing is
+    /// selected — the state of a page still typed <see cref="ScadaPageType.Fragment"/>, which is absent
+    /// from <see cref="Selectable"/>.
+    /// </summary>
+    /// <remarks>
+    /// A caller must treat <c>null</c> as "send no type-change request": a Fragment page must never be
+    /// silently coerced to <see cref="ScadaPageType.Default"/> just because nothing was picked yet.
+    /// Decisions: DEC-0052.
+    /// </remarks>
+    public static ScadaPageType? ResolveRequestedType(PageTypeOption? selected) => selected?.Type;
 }
