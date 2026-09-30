@@ -107,6 +107,9 @@ public sealed class QuickWindowWorkspaceController(
     /// <summary>Gets the searchable inventory bound to the project group.</summary>
     public QuickWindowsPanelViewModel Panel { get; } = new();
 
+    /// <summary>Gets the parameter-sheet inventory listed by the "Fenêtres rapides" panel (DEC-0052).</summary>
+    public ParameterSheetsPanelViewModel SheetsPanel { get; } = new();
+
     /// <summary>Gets the `Interface locale` panel of the active definition, replacing the project tag catalogue.</summary>
     public QuickWindowInterfacePanelViewModel InterfacePanel { get; } = new();
 
@@ -126,6 +129,7 @@ public sealed class QuickWindowWorkspaceController(
             definition => definition.DefinitionKey,
             definition => definitions.ListOutdatedInvocations(snapshot, definition.DefinitionKey).Count);
         Panel.Load(all, usages, outdated);
+        SheetsPanel.Load(snapshot.Project.EffectiveParameterSheets);
     }
 
     /// <summary>Creates one empty definition after asking for its name, then opens it.</summary>
@@ -220,6 +224,123 @@ public sealed class QuickWindowWorkspaceController(
             ? $"Fenêtre rapide '{definition.DisplayName}' supprimée."
             : "Suppression refusée : la définition est encore référencée.");
         return mutation;
+    }
+
+    /// <summary>Creates one empty parameter sheet after asking for its name (DEC-0052).</summary>
+    /// <remarks>
+    /// Mirrors <see cref="CreateAsync"/>: a free, human-readable name is always accepted, and the portable
+    /// technical <see cref="ParameterSheet.Code"/> is derived from it and made unique among sheets, never
+    /// re-typed by the operator.
+    /// </remarks>
+    public async Task<QuickWindowWorkspaceMutation?> CreateSheetAsync(PageWorkspaceSnapshot snapshot)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var name = await host.RequestQuickWindowNameAsync("Nouvelle feuille de paramètres", ProposeSheetCode(snapshot, "feuille"));
+        if (string.IsNullOrWhiteSpace(name)) return null;
+
+        var code = ProposeSheetCode(snapshot, PageCodePolicy.DeriveCodeFromDisplayName(name));
+        var validation = PageCodePolicy.Validate(code, snapshot.Project.EffectiveParameterSheets.Select(sheet => sheet.Code));
+        if (!validation.IsValid)
+        {
+            var blocked = BlockedSheetMutation(snapshot, "create parameter sheet", validation.Errors);
+            host.ReportQuickWindowStatus(FormatRefusal("Création de la feuille de paramètres refusée", blocked));
+            return blocked;
+        }
+
+        var sheet = new ParameterSheet(Guid.NewGuid(), code, name, string.Empty);
+        var sheets = snapshot.Project.EffectiveParameterSheets.Append(sheet).ToArray();
+        var after = snapshot with { Version = snapshot.Version + 1, Project = snapshot.Project with { ParameterSheets = sheets } };
+        var mutation = new QuickWindowWorkspaceMutation(
+            snapshot,
+            after,
+            CommandResult.Success("Feuille de paramètres créée.", workspaceDirty: true),
+            "create parameter sheet",
+            sheet.SheetKey);
+        host.ReportQuickWindowStatus($"Feuille de paramètres '{name}' créée.");
+        return mutation;
+    }
+
+    /// <summary>Renames one sheet without changing its durable key nor its technical code.</summary>
+    public async Task<QuickWindowWorkspaceMutation?> RenameSheetAsync(PageWorkspaceSnapshot snapshot, Guid sheetKey)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var sheet = FindSheet(snapshot, sheetKey);
+        if (sheet is null) return null;
+
+        var name = await host.RequestQuickWindowNameAsync("Renommer la feuille de paramètres", sheet.DisplayName);
+        if (string.IsNullOrWhiteSpace(name) || string.Equals(name, sheet.DisplayName, StringComparison.Ordinal)) return null;
+
+        var mutation = UpdateSheet(snapshot, sheet with { DisplayName = name }, "rename parameter sheet");
+        host.ReportQuickWindowStatus($"Feuille de paramètres renommée en '{name}'.");
+        return mutation;
+    }
+
+    /// <summary>Duplicates one sheet into an independent one: new key, unique derived code, full text copy.</summary>
+    public async Task<QuickWindowWorkspaceMutation?> DuplicateSheetAsync(PageWorkspaceSnapshot snapshot, Guid sheetKey)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var source = FindSheet(snapshot, sheetKey);
+        if (source is null) return null;
+
+        var proposed = ProposeSheetCode(snapshot, source.Code);
+        var name = await host.RequestQuickWindowNameAsync("Dupliquer la feuille de paramètres", proposed);
+        if (string.IsNullOrWhiteSpace(name)) return null;
+
+        var code = ProposeSheetCode(snapshot, PageCodePolicy.DeriveCodeFromDisplayName(name));
+        var validation = PageCodePolicy.Validate(code, snapshot.Project.EffectiveParameterSheets.Select(sheet => sheet.Code));
+        if (!validation.IsValid)
+        {
+            var blocked = BlockedSheetMutation(snapshot, "duplicate parameter sheet", validation.Errors);
+            host.ReportQuickWindowStatus(FormatRefusal("Duplication de la feuille de paramètres refusée", blocked));
+            return blocked;
+        }
+
+        var copy = new ParameterSheet(Guid.NewGuid(), code, name, source.Text);
+        var sheets = snapshot.Project.EffectiveParameterSheets.Append(copy).ToArray();
+        var after = snapshot with { Version = snapshot.Version + 1, Project = snapshot.Project with { ParameterSheets = sheets } };
+        var mutation = new QuickWindowWorkspaceMutation(
+            snapshot,
+            after,
+            CommandResult.Success("Feuille de paramètres dupliquée.", workspaceDirty: true),
+            "duplicate parameter sheet",
+            copy.SheetKey);
+        host.ReportQuickWindowStatus($"Feuille de paramètres '{source.DisplayName}' dupliquée en '{name}'.");
+        return mutation;
+    }
+
+    /// <summary>Replaces one sheet's text as a single undoable transition, applied by the sheet editor's "Enregistrer".</summary>
+    public Task<QuickWindowWorkspaceMutation?> UpdateSheetTextAsync(PageWorkspaceSnapshot snapshot, Guid sheetKey, string text)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var sheet = FindSheet(snapshot, sheetKey);
+        if (sheet is null) return Task.FromResult<QuickWindowWorkspaceMutation?>(null);
+
+        var normalized = text ?? string.Empty;
+        if (string.Equals(normalized, sheet.Text, StringComparison.Ordinal))
+            return Task.FromResult<QuickWindowWorkspaceMutation?>(null);
+
+        var mutation = UpdateSheet(snapshot, sheet with { Text = normalized }, "edit parameter sheet");
+        host.ReportQuickWindowStatus($"Feuille de paramètres '{sheet.DisplayName}' enregistrée.");
+        return Task.FromResult<QuickWindowWorkspaceMutation?>(mutation);
+    }
+
+    /// <summary>Deletes one parameter sheet; undo restores it, so no confirmation dialog is required.</summary>
+    public Task<QuickWindowWorkspaceMutation?> DeleteSheetAsync(PageWorkspaceSnapshot snapshot, Guid sheetKey)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        var sheet = FindSheet(snapshot, sheetKey);
+        if (sheet is null) return Task.FromResult<QuickWindowWorkspaceMutation?>(null);
+
+        var sheets = snapshot.Project.EffectiveParameterSheets.Where(item => item.SheetKey != sheetKey).ToArray();
+        var after = snapshot with { Version = snapshot.Version + 1, Project = snapshot.Project with { ParameterSheets = sheets } };
+        var mutation = new QuickWindowWorkspaceMutation(
+            snapshot,
+            after,
+            CommandResult.Success("Feuille de paramètres supprimée.", workspaceDirty: true),
+            "delete parameter sheet",
+            sheetKey);
+        host.ReportQuickWindowStatus($"Feuille de paramètres '{sheet.DisplayName}' supprimée.");
+        return Task.FromResult<QuickWindowWorkspaceMutation?>(mutation);
     }
 
     /// <summary>Opens one definition in the shared editor and publishes its bounded context.</summary>
@@ -632,6 +753,59 @@ public sealed class QuickWindowWorkspaceController(
 
     private static QuickWindowDefinition? Find(PageWorkspaceSnapshot snapshot, Guid definitionKey) =>
         snapshot.Project.EffectiveQuickWindows.FirstOrDefault(item => item.DefinitionKey == definitionKey);
+
+    private static ParameterSheet? FindSheet(PageWorkspaceSnapshot snapshot, Guid sheetKey) =>
+        snapshot.Project.EffectiveParameterSheets.FirstOrDefault(item => item.SheetKey == sheetKey);
+
+    /// <summary>Replaces one sheet by key and wraps the transition as a prepared workspace mutation.</summary>
+    private static QuickWindowWorkspaceMutation UpdateSheet(PageWorkspaceSnapshot snapshot, ParameterSheet candidate, string label)
+    {
+        var sheets = snapshot.Project.EffectiveParameterSheets
+            .Select(item => item.SheetKey == candidate.SheetKey ? candidate : item)
+            .ToArray();
+        var after = snapshot with { Version = snapshot.Version + 1, Project = snapshot.Project with { ParameterSheets = sheets } };
+        return new QuickWindowWorkspaceMutation(
+            snapshot,
+            after,
+            CommandResult.Success("Feuille de paramètres mise à jour.", workspaceDirty: true),
+            label,
+            candidate.SheetKey);
+    }
+
+    /// <summary>Builds a blocked, no-op mutation reporting one or more sheet-code validation errors.</summary>
+    private static QuickWindowWorkspaceMutation BlockedSheetMutation(
+        PageWorkspaceSnapshot snapshot,
+        string label,
+        IReadOnlyList<string> errors)
+    {
+        var diagnostics = errors.Select(message => new ScadaBuildValidationIssue(
+            ScadaBuildValidationSeverity.Error,
+            "parameter-sheet.code-invalid",
+            message,
+            PropertyPath: "Project.ParameterSheets",
+            SuggestedFix: "Choisissez un autre nom pour la feuille.")).ToArray();
+        return new QuickWindowWorkspaceMutation(
+            snapshot,
+            snapshot,
+            CommandResult.Blocked("Parameter-sheet mutation was blocked.", diagnostics),
+            label);
+    }
+
+    /// <summary>Proposes a deterministic unique code for a new or duplicated parameter sheet.</summary>
+    private static string ProposeSheetCode(PageWorkspaceSnapshot snapshot, string seed)
+    {
+        var taken = snapshot.Project.EffectiveParameterSheets
+            .Select(sheet => sheet.Code)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        if (!taken.Contains(seed)) return seed;
+        for (var index = 2; index < 1000; index++)
+        {
+            var candidate = $"{seed}_{index}";
+            if (!taken.Contains(candidate)) return candidate;
+        }
+
+        return $"{seed}_{Guid.NewGuid().ToString("N")[..6]}";
+    }
 
     /// <summary>Appends the first diagnostic reason to a French refusal prefix, when one is available.</summary>
     /// <remarks>

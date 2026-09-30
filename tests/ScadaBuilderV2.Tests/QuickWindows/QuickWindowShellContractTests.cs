@@ -172,25 +172,32 @@ public sealed class QuickWindowShellContractTests
     }
 
     [TestMethod]
-    public void MainWindowXamlExposesTheQuickWindowGroupAndItsCommands()
+    public void MainWindowXamlExposesTheParameterSheetGroupAndItsCommands()
     {
+        // DEC-0052 superseded the front door: the "Fenêtres rapides" panel now lists parameter sheets,
+        // not quick-window definitions. Definitions are still produced by the compiler, but this panel no
+        // longer offers "quick-window.new"/"quick-window.open"/etc. as a manual entry point.
         var xaml = ReadAppFile("MainWindow.xaml");
 
         StringAssert.Contains(xaml, "x:Name=\"QuickWindowsAnchorable\"");
         StringAssert.Contains(xaml, "Title=\"Fenêtres rapides\"");
-        StringAssert.Contains(xaml, "x:Name=\"QuickWindowsListBox\"");
-        StringAssert.Contains(xaml, "SelectionChanged=\"OnQuickWindowSelectionChanged\"");
-        StringAssert.Contains(xaml, "MouseDoubleClick=\"OnQuickWindowsListMouseDoubleClick\"");
+        StringAssert.Contains(xaml, "x:Name=\"ParameterSheetsListBox\"");
+        StringAssert.Contains(xaml, "ItemsSource=\"{Binding ParameterSheetsPanel.Items}\"");
+        StringAssert.Contains(xaml, "SelectionChanged=\"OnParameterSheetSelectionChanged\"");
+        StringAssert.Contains(xaml, "MouseDoubleClick=\"OnParameterSheetsListMouseDoubleClick\"");
 
         foreach (var command in new[]
                  {
-                     "quick-window.new", "quick-window.open", "quick-window.rename",
-                     "quick-window.duplicate", "quick-window.delete"
+                     "parameter-sheet.new", "parameter-sheet.open", "parameter-sheet.rename",
+                     "parameter-sheet.duplicate", "parameter-sheet.delete"
                  })
         {
             StringAssert.Contains(xaml, $"Tag=\"{command}\"");
         }
 
+        Assert.IsFalse(
+            xaml.Contains("x:Name=\"QuickWindowsListBox\"", StringComparison.Ordinal),
+            "the panel no longer lists quick-window definitions directly");
         Assert.IsFalse(
             xaml.Contains("x:Name=\"PagesListBox\" ItemsSource=\"{Binding QuickWindows", StringComparison.Ordinal),
             "quick windows must not be mixed into the pages list");

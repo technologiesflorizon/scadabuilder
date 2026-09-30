@@ -29,7 +29,7 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
 {
     private QuickWindowWorkspaceController? _quickWindowWorkspaceController;
     private QuickWindowEditorContext? _activeEditorContext;
-    private bool _isUpdatingQuickWindowSelection;
+    private bool _isUpdatingParameterSheetSelection;
     private Guid? _hostedQuickWindowKey;
     private QuickWindowDefinition? _hostedQuickWindowDefinition;
     private bool _isQuickWindowInterfacePanelBound;
@@ -49,6 +49,9 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
 
     /// <summary>Gets the quick-window inventory bound by the project group.</summary>
     public QuickWindowsPanelViewModel QuickWindowsPanel => QuickWindowWorkspace.Panel;
+
+    /// <summary>Gets the parameter-sheet inventory listed by the "Fenêtres rapides" panel (DEC-0052).</summary>
+    public ParameterSheetsPanelViewModel ParameterSheetsPanel => QuickWindowWorkspace.SheetsPanel;
 
     /// <summary>
     /// Gets the catalogue offered to the state, command, binding and expression selectors of the active
@@ -116,41 +119,42 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         }
     }
 
-    private async void OnQuickWindowCommandClick(object sender, RoutedEventArgs e)
+    private async void OnParameterSheetCommandClick(object sender, RoutedEventArgs e)
     {
         if (sender is not FrameworkElement { Tag: string commandId } source) return;
-        if (source.DataContext is QuickWindowListItemViewModel item)
+        if (source.DataContext is ParameterSheetListItemViewModel item)
         {
-            _isUpdatingQuickWindowSelection = true;
+            _isUpdatingParameterSheetSelection = true;
             try
             {
-                QuickWindowsPanel.Selected = item;
-                QuickWindowsListBox.SelectedItem = item;
+                ParameterSheetsPanel.Selected = item;
+                ParameterSheetsListBox.SelectedItem = item;
             }
             finally
             {
-                _isUpdatingQuickWindowSelection = false;
+                _isUpdatingParameterSheetSelection = false;
             }
         }
 
-        await ExecuteQuickWindowCommandAsync(commandId);
+        await ExecuteParameterSheetCommandAsync(commandId);
         e.Handled = true;
     }
 
-    private void OnQuickWindowSelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void OnParameterSheetSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (_isUpdatingQuickWindowSelection) return;
-        QuickWindowsPanel.Selected = QuickWindowsListBox.SelectedItem as QuickWindowListItemViewModel;
+        if (_isUpdatingParameterSheetSelection) return;
+        ParameterSheetsPanel.Selected = ParameterSheetsListBox.SelectedItem as ParameterSheetListItemViewModel;
     }
 
-    private async void OnQuickWindowsListMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    private async void OnParameterSheetsListMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
     {
-        if (QuickWindowsPanel.Selected is null) return;
-        await ExecuteQuickWindowCommandAsync("quick-window.open");
+        if (ParameterSheetsPanel.Selected is null) return;
+        await ExecuteParameterSheetCommandAsync("parameter-sheet.open");
         e.Handled = true;
     }
 
-    private async Task ExecuteQuickWindowCommandAsync(string commandId)
+    /// <summary>Dispatches one parameter-sheet panel command: create, rename, duplicate, delete or open (DEC-0052).</summary>
+    private async Task ExecuteParameterSheetCommandAsync(string commandId)
     {
         if (_modernProject is null)
         {
@@ -158,37 +162,54 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
             return;
         }
 
-        var selectedKey = QuickWindowsPanel.Selected?.DefinitionKey;
+        var selectedKey = ParameterSheetsPanel.Selected?.SheetKey;
         var snapshot = await _pageWorkspaceController.CaptureSnapshotAsync();
+
+        if (commandId == "parameter-sheet.open")
+        {
+            if (selectedKey is not { } openKey) return;
+            await OpenParameterSheetEditorAsync(snapshot, openKey);
+            return;
+        }
+
         var mutation = commandId switch
         {
-            "quick-window.new" => await QuickWindowWorkspace.CreateAsync(snapshot),
-            "quick-window.duplicate" when selectedKey is { } key => await QuickWindowWorkspace.DuplicateAsync(snapshot, key),
-            "quick-window.rename" when selectedKey is { } key => await QuickWindowWorkspace.RenameAsync(snapshot, key),
-            "quick-window.delete" when selectedKey is { } key => await QuickWindowWorkspace.DeleteAsync(snapshot, key),
-            "quick-window.open" when selectedKey is { } key => await OpenQuickWindowAsync(snapshot, key),
+            "parameter-sheet.new" => await QuickWindowWorkspace.CreateSheetAsync(snapshot),
+            "parameter-sheet.duplicate" when selectedKey is { } key => await QuickWindowWorkspace.DuplicateSheetAsync(snapshot, key),
+            "parameter-sheet.rename" when selectedKey is { } key => await QuickWindowWorkspace.RenameSheetAsync(snapshot, key),
+            "parameter-sheet.delete" when selectedKey is { } key => await QuickWindowWorkspace.DeleteSheetAsync(snapshot, key),
             _ => null
         };
 
         if (mutation is null) return;
         if (mutation.Result.Status != CommandResultStatus.Succeeded)
         {
-            // A definite cancellation (mutation is null) stays silent; a refusal must not, even though the
-            // workspace controller already reports one through ReportQuickWindowStatus for every command
-            // wired here today (FormatRefusal). This is the front door's own safety net against a future
-            // command that returns a failed mutation without reporting one.
             var reason = mutation.Result.Diagnostics.FirstOrDefault()?.Message;
             if (!string.IsNullOrWhiteSpace(reason)) SetStatus(reason);
             return;
         }
 
-        await ApplyQuickWindowMutationAsync(mutation);
+        await ApplyParameterSheetMutationAsync(mutation);
+        if (commandId == "parameter-sheet.new" && mutation.AffectedDefinitionKey is { } createdKey)
+        {
+            await OpenParameterSheetEditorAsync(await _pageWorkspaceController.CaptureSnapshotAsync(), createdKey);
+        }
     }
 
-    private async Task<QuickWindowWorkspaceMutation?> OpenQuickWindowAsync(PageWorkspaceSnapshot snapshot, Guid definitionKey)
+    /// <summary>Opens the sheet editor dialog on one sheet; "Enregistrer" applies an undoable text update.</summary>
+    private async Task OpenParameterSheetEditorAsync(PageWorkspaceSnapshot snapshot, Guid sheetKey)
     {
-        await QuickWindowWorkspace.OpenAsync(snapshot, definitionKey);
-        return null;
+        var sheet = snapshot.Project.EffectiveParameterSheets.FirstOrDefault(item => item.SheetKey == sheetKey);
+        if (sheet is null) return;
+
+        var viewModel = new ParameterSheetEditorViewModel(sheet, _modernProject?.TagCatalog);
+        var dialog = new ParameterSheetEditorDialog(viewModel) { Owner = this };
+        if (dialog.ShowDialog() != true || dialog.SavedSheet is not { } saved) return;
+
+        var current = await _pageWorkspaceController.CaptureSnapshotAsync();
+        var mutation = await QuickWindowWorkspace.UpdateSheetTextAsync(current, sheetKey, saved.Text);
+        if (mutation is null) return;
+        await ApplyParameterSheetMutationAsync(mutation);
     }
 
     /// <summary>
@@ -211,6 +232,16 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
 
         RefreshActiveRibbonCommandStates();
         if (!string.IsNullOrWhiteSpace(mutation.Result.Message)) SetStatus(mutation.Result.Message);
+    }
+
+    /// <summary>Applies one prepared parameter-sheet mutation, then keeps the sheet panel selection in sync.</summary>
+    private async Task ApplyParameterSheetMutationAsync(QuickWindowWorkspaceMutation mutation)
+    {
+        await ApplyQuickWindowMutationAsync(mutation);
+        if (mutation.AffectedDefinitionKey is { } sheetKey)
+        {
+            ParameterSheetsPanel.Selected = ParameterSheetsPanel.Items.FirstOrDefault(item => item.SheetKey == sheetKey);
+        }
     }
 
     /// <inheritdoc />
