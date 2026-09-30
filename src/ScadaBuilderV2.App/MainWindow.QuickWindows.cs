@@ -6,6 +6,7 @@ using ScadaBuilderV2.Application.Clipboard;
 using ScadaBuilderV2.Application.Commands;
 using ScadaBuilderV2.Application.Pages;
 using ScadaBuilderV2.Application.QuickWindows;
+using ScadaBuilderV2.Domain.ElementEvents.Command;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.QuickWindows;
 using ScadaBuilderV2.Domain.Scenes;
@@ -470,6 +471,43 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         _activeSceneTab?.Page.Type == ScadaPageType.QuickWindow,
         invocationKey => _modernProject?.EffectiveQuickWindowInvocations
             .FirstOrDefault(invocation => invocation.InvocationKey == invocationKey));
+
+    /// <summary>
+    /// Applies a command edit that migrates an `OpenQuickWindow` command from a legacy
+    /// `QuickWindowInvocationKey` to a `ParameterSheetKey`/`QuickWindowPageKey` pair, retiring the
+    /// now-orphaned invocation from the project as a single undoable transition (controller fix round 1,
+    /// Task 10): <see cref="ApplyQuickWindowMutationAsync"/> pushes one project-scoped history entry whose
+    /// undo restores both the caller command and the retired invocation together.
+    /// </summary>
+    private async Task<ScadaElement> RetireMigratedQuickWindowInvocationAsync(
+        string elementId,
+        ScadaCommandBinding migratedCommand,
+        Guid retiredInvocationKey)
+    {
+        var fallback = () => _activeScene?.FindElementRecursive(elementId) ?? ScadaElement.CreateInputText(elementId, elementId, 0, 0);
+        if (_modernProject is null || _activeSceneTab?.PageKey is not { } pageKey || _activeScene is null)
+        {
+            return fallback();
+        }
+
+        var snapshot = await _pageWorkspaceController.CaptureSnapshotAsync();
+        var mutation = QuickWindowWorkspace.RetireMigratedInvocation(snapshot, pageKey, elementId, migratedCommand.Id, migratedCommand, retiredInvocationKey);
+        if (mutation.Result.Status != CommandResultStatus.Succeeded)
+        {
+            SetStatus(mutation.Result.Diagnostics.FirstOrDefault()?.Message ?? mutation.Result.Message);
+            return fallback();
+        }
+
+        await ApplyQuickWindowMutationAsync(mutation);
+        if (mutation.After.Scenes.TryGetValue(pageKey, out var updatedScene))
+        {
+            _activeScene = updatedScene;
+            MarkActiveSceneDirty();
+            RefreshModernSceneUi();
+        }
+
+        return fallback();
+    }
 
     /// <summary>Selects and reveals the page that owns one quick-window usage, without mutating anything.</summary>
     private void NavigateToQuickWindowUsage(QuickWindowWorkspaceMutation mutation)

@@ -1,6 +1,7 @@
 using ScadaBuilderV2.Application.Commands;
 using ScadaBuilderV2.Application.Pages;
 using ScadaBuilderV2.Application.QuickWindows;
+using ScadaBuilderV2.Domain.ElementEvents.Command;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.QuickWindows;
 using ScadaBuilderV2.Domain.Scenes;
@@ -523,6 +524,31 @@ public sealed class QuickWindowWorkspaceController(
         host.ReportQuickWindowStatus(mutation.Result.Status == CommandResultStatus.Succeeded
             ? "Liaisons de la fenêtre rapide enregistrées."
             : $"Enregistrement des liaisons refusé : {mutation.Result.Message}");
+        return mutation;
+    }
+
+    /// <summary>
+    /// Applies a command edit that migrates an `OpenQuickWindow` command from a legacy
+    /// `QuickWindowInvocationKey` to a `ParameterSheetKey`/`QuickWindowPageKey` pair, retiring the
+    /// now-orphaned invocation from the project in the same transition (controller fix round 1, Task 10).
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0050, DEC-0052.
+    /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowInvocationMigrationTests.cs.
+    /// </remarks>
+    public QuickWindowWorkspaceMutation RetireMigratedInvocation(
+        PageWorkspaceSnapshot snapshot,
+        Guid ownerPageKey,
+        string ownerElementId,
+        string ownerCommandId,
+        ScadaCommandBinding migratedCommand,
+        Guid retiredInvocationKey)
+    {
+        var mutation = invocations.RetireMigratedInvocation(
+            snapshot, ownerPageKey, ownerElementId, ownerCommandId, migratedCommand, retiredInvocationKey);
+        host.ReportQuickWindowStatus(mutation.Result.Status == CommandResultStatus.Succeeded
+            ? "Commande migrée vers une feuille de paramètres ; l'ancienne liaison a été retirée."
+            : $"Migration de la commande refusée : {mutation.Result.Message}");
         return mutation;
     }
 

@@ -53,18 +53,58 @@ public static class ParameterSheetLowering
             resultScenes[key] = loweredScenes.TryGetValue(key, out var lowered) ? lowered : scene;
         }
 
+        // Defence in depth (controller fix round 1): a pre-existing invocation that no live command's
+        // QuickWindowInvocationKey references any more (e.g. its caller command was migrated to a
+        // ParameterSheetKey/QuickWindowPageKey pair and its old invocation was never retired at authoring
+        // time) must not reach the lowered project - ValidateQuickWindowInvocations validates every
+        // invocation unconditionally, and an orphan pins a build/export error to a command that looks
+        // correctly configured, with no UI left to fix it.
+        var liveInvocationKeys = CollectReferencedInvocationKeys(resultScenes);
+        var keptPreexisting = project.EffectiveQuickWindowInvocations
+            .Where(invocation => liveInvocationKeys.Contains(invocation.InvocationKey))
+            .ToArray();
+        var invocationsChanged = keptPreexisting.Length != project.EffectiveQuickWindowInvocations.Count || context.Invocations.Count > 0;
+
         var resultProject = project with
         {
             Scenes = project.Scenes.Where(page => !context.IsQuickWindowKey(page.PageKey)).ToArray(),
             QuickWindows = definitions.Count == 0
                 ? project.QuickWindows
                 : [.. project.EffectiveQuickWindows, .. definitions],
-            QuickWindowInvocations = context.Invocations.Count == 0
-                ? project.QuickWindowInvocations
-                : [.. project.EffectiveQuickWindowInvocations, .. context.Invocations]
+            QuickWindowInvocations = invocationsChanged
+                ? [.. keptPreexisting, .. context.Invocations]
+                : project.QuickWindowInvocations
         };
 
         return new ParameterSheetLoweringResult(resultProject, resultScenes, context.Diagnostics);
+    }
+
+    /// <summary>Collects every `QuickWindowInvocationKey` referenced by a command anywhere in <paramref name="scenes"/>.</summary>
+    private static HashSet<Guid> CollectReferencedInvocationKeys(IReadOnlyDictionary<Guid, ScadaScene> scenes)
+    {
+        var keys = new HashSet<Guid>();
+        foreach (var scene in scenes.Values)
+        {
+            foreach (var element in scene.Elements ?? [])
+            {
+                CollectReferencedInvocationKeys(element, keys);
+            }
+        }
+
+        return keys;
+    }
+
+    private static void CollectReferencedInvocationKeys(ScadaElement element, HashSet<Guid> keys)
+    {
+        foreach (var command in element.CommandConfig?.Commands ?? [])
+        {
+            if (command.QuickWindowInvocationKey is { } key) keys.Add(key);
+        }
+
+        foreach (var child in element.Children ?? [])
+        {
+            CollectReferencedInvocationKeys(child, keys);
+        }
     }
 
     /// <summary>One sheet and its single parse.</summary>

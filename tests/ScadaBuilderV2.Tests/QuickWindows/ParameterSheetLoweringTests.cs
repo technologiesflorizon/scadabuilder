@@ -577,19 +577,61 @@ public sealed class ParameterSheetLoweringTests
     }
 
     [TestMethod]
-    public void ExistingDefinitionsAndInvocationsAreKeptAsIs()
+    public void ExistingDefinitionsAreKeptAsIsAndAPreExistingInvocationStillReferencedByALegacyCommandIsKept()
     {
         var existing = QuickWindowDefinition.CreateEmpty("legacy_qw", "Ancienne");
         var existingInvocation = QuickWindowInvocation.CreateEmpty(existing.DefinitionKey);
         var (project, scenes) = Arrange(FullSheet, FanPageElements());
         project = project with { QuickWindows = [existing], QuickWindowInvocations = [existingInvocation] };
+        scenes = WithLegacyCaller(scenes, CallerPageKey, existingInvocation.InvocationKey);
 
         var result = ParameterSheetLowering.Lower(project, scenes);
 
         Assert.AreSame(existing, result.Project.EffectiveQuickWindows[0]);
-        Assert.AreSame(existingInvocation, result.Project.EffectiveQuickWindowInvocations[0]);
+        Assert.AreSame(existingInvocation, result.Project.EffectiveQuickWindowInvocations.Single(inv => inv.InvocationKey == existingInvocation.InvocationKey));
         Assert.AreEqual(2, result.Project.EffectiveQuickWindows.Count);
         Assert.AreEqual(2, result.Project.EffectiveQuickWindowInvocations.Count);
+    }
+
+    [TestMethod]
+    public void APreExistingInvocationReferencedByNoLiveCommandIsDroppedByLowering()
+    {
+        // Controller fix round 1: a legacy OpenQuickWindow command that migrated to a ParameterSheetKey +
+        // QuickWindowPageKey pair, whose old invocation was never retired at authoring time, must not reach
+        // the lowered project - it would otherwise validate unconditionally and pin a build/export error to
+        // a command that looks correctly configured.
+        var existing = QuickWindowDefinition.CreateEmpty("legacy_qw", "Ancienne");
+        var orphanInvocation = QuickWindowInvocation.CreateEmpty(existing.DefinitionKey);
+        var (project, scenes) = Arrange(FullSheet, FanPageElements());
+        project = project with { QuickWindows = [existing], QuickWindowInvocations = [orphanInvocation] };
+
+        var result = ParameterSheetLowering.Lower(project, scenes);
+
+        Assert.IsFalse(
+            result.Project.EffectiveQuickWindowInvocations.Any(inv => inv.InvocationKey == orphanInvocation.InvocationKey),
+            "an invocation referenced by no live command must be dropped from the lowered project");
+        Assert.AreEqual(1, result.Project.EffectiveQuickWindowInvocations.Count, "only the lowered (sheet, page) invocation remains");
+        Assert.IsFalse(
+            result.Diagnostics.Any(diagnostic => diagnostic.TargetKey == orphanInvocation.InvocationKey),
+            "no diagnostic should ever be raised about an invocation lowering itself already dropped");
+    }
+
+    private static IReadOnlyDictionary<Guid, ScadaScene> WithLegacyCaller(
+        IReadOnlyDictionary<Guid, ScadaScene> scenes, Guid pageKey, Guid invocationKey)
+    {
+        var legacyCaller = ScadaElement.CreateButton("legacy-open", "Ouvrir (ancien)", 5, 5) with
+        {
+            CommandConfig = new ScadaElementCommandConfig(
+            [
+                new ScadaCommandBinding("legacy-cmd", "Ouvrir (ancien)", true, ScadaCommandTrigger.OnClick, ScadaCommandKind.OpenQuickWindow,
+                    QuickWindowInvocationKey: invocationKey)
+            ])
+        };
+        var updated = new Dictionary<Guid, ScadaScene>(scenes)
+        {
+            [pageKey] = scenes[pageKey].WithElement(legacyCaller)
+        };
+        return updated;
     }
 
     // ---- Arrangement ------------------------------------------------------------------------------------

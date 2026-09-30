@@ -4320,6 +4320,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         };
         dialog.SaveStateConfig = config => SaveElementStateConfigFromDialog(current.Id, config);
         dialog.SaveCommandConfig = config => SaveElementCommandConfigFromDialog(current.Id, config);
+        dialog.SaveMigratedQuickWindowCommand = (migrated, retiredKey) => RetireMigratedQuickWindowInvocationAsync(current.Id, migrated, retiredKey);
         dialog.QuickWindowContext = BuildQuickWindowAuthoringContext();
         dialog.ParameterSheets = _modernProject?.EffectiveParameterSheets ?? [];
         if (dialog.ShowDialog() != true || dialog.Result is null)
@@ -6062,7 +6063,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         OnEditCommandClick(sender, e);
     }
 
-    private void OnEditCommandClick(object sender, RoutedEventArgs e)
+    private async void OnEditCommandClick(object sender, RoutedEventArgs e)
     {
         if (_activeScene is null || _selectedSceneObject is null)
         {
@@ -6087,6 +6088,14 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         var dialog = new ElementCommandDialog(selected, _modernProject?.Scenes ?? [], ActiveSelectorTagCatalog, usedKinds, _modernProject?.EffectiveParameterSheets ?? [], BuildQuickWindowAuthoringContext()) { Owner = this };
         if (dialog.ShowDialog() != true || dialog.Result is null)
         {
+            return;
+        }
+
+        var retiredInvocationKey = QuickWindowInvocationMigration.InvocationKeyToRetire(selected, dialog.Result);
+        if (retiredInvocationKey is { } keyToRetire)
+        {
+            await RetireMigratedQuickWindowInvocationAsync(_selectedSceneObject.Id, dialog.Result, keyToRetire);
+            RefreshStateAndCommandTabs();
             return;
         }
 

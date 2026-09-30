@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ScadaBuilderV2.App.QuickWindows;
+using ScadaBuilderV2.Application.QuickWindows;
 using ScadaBuilderV2.Domain.ElementEvents.Command;
 using ScadaBuilderV2.Domain.QuickWindows;
 using ScadaBuilderV2.Domain.ElementEvents.Expressions;
@@ -69,6 +70,18 @@ public partial class ElementPropertiesDialog : Window
     /// Invoked to persist a new command config on the underlying element; returns the latest element.
     /// </summary>
     public Func<ScadaElementCommandConfig, ScadaElement>? SaveCommandConfig { get; set; }
+
+    /// <summary>
+    /// Invoked instead of <see cref="SaveCommandConfig"/> when editing migrates an `OpenQuickWindow` command
+    /// from a legacy `QuickWindowInvocationKey` to a `ParameterSheetKey`/`QuickWindowPageKey` pair: applies
+    /// the migrated command and retires the now-orphaned invocation from the project, as one undoable
+    /// transition (controller fix round 1, Task 10).
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0050, DEC-0052.
+    /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowInvocationMigrationTests.cs.
+    /// </remarks>
+    public Func<ScadaCommandBinding, Guid, Task<ScadaElement>>? SaveMigratedQuickWindowCommand { get; set; }
 
     private void RefreshStateAndCommandLists()
     {
@@ -222,7 +235,7 @@ public partial class ElementPropertiesDialog : Window
         OnEditCommandClick(sender, e);
     }
 
-    private void OnEditCommandClick(object sender, RoutedEventArgs e)
+    private async void OnEditCommandClick(object sender, RoutedEventArgs e)
     {
         if (CommandsListBox.SelectedItem is not ScadaCommandBinding selected || SaveCommandConfig is null)
         {
@@ -239,10 +252,19 @@ public partial class ElementPropertiesDialog : Window
             return;
         }
 
-        var commands = currentElement.EffectiveCommandConfig.Commands
-            .Select(command => command.Id == dialog.Result.Id ? dialog.Result : command)
-            .ToArray();
-        currentElement = SaveCommandConfig(currentElement.EffectiveCommandConfig with { Commands = commands });
+        var retiredInvocationKey = QuickWindowInvocationMigration.InvocationKeyToRetire(selected, dialog.Result);
+        if (retiredInvocationKey is { } keyToRetire && SaveMigratedQuickWindowCommand is not null)
+        {
+            currentElement = await SaveMigratedQuickWindowCommand(dialog.Result, keyToRetire);
+        }
+        else
+        {
+            var commands = currentElement.EffectiveCommandConfig.Commands
+                .Select(command => command.Id == dialog.Result.Id ? dialog.Result : command)
+                .ToArray();
+            currentElement = SaveCommandConfig(currentElement.EffectiveCommandConfig with { Commands = commands });
+        }
+
         RefreshStateAndCommandLists();
     }
 
