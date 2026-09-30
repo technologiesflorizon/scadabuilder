@@ -379,9 +379,10 @@ public sealed class ParameterSheetExportTests
     private static ScadaTagCatalog Catalog() => new(
         "scada-v2-parameter-sheet-export-tests",
         [
-            // #N members are informative-only String (DEC-0052 §6): a Tag-kind binding needs a
-            // string-compatible tag to pass DEC-0050's real type check (QuickWindowBindingValidator).
-            new ScadaTagDefinition("tf100.mapping.101", "FAN_03_RUN", Datatype: "String"),
+            // Realistic datatypes (Task 6 fix round 1): #N members now infer their DataType from every
+            // invocation's binding (spec §6), so a Boolean tag on a Tag-kind #N no longer fails
+            // QuickWindowBindingValidator's real type check the way it would against an always-String member.
+            new ScadaTagDefinition("tf100.mapping.101", "FAN_03_RUN", Datatype: "Boolean"),
             new ScadaTagDefinition("tf100.mapping.103", "FAN_03_SPEED", Datatype: "Decimal"),
         ],
         "generated-parameter-sheet-export-tags.json");

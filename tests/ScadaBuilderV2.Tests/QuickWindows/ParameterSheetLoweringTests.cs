@@ -77,7 +77,105 @@ public sealed class ParameterSheetLoweringTests
             Assert.AreEqual(QuickWindowMemberAccess.Read, read.Access, read.Name);
         }
 
-        Assert.IsTrue(members.All(member => member.DataType == QuickWindowDataType.String), "spec §6: informative type");
+        // spec §6 (fix round 1, Task 6): a member's DataType is deduced from its bindings' agreeing tag/literal
+        // types (#1, #2: Tag-bound to a Boolean tag); #3 is Expression-bound (untyped, kept String); #4 is a
+        // string Literal (String).
+        Assert.AreEqual(QuickWindowDataType.Boolean, members.Single(member => member.Name == "#1").DataType);
+        Assert.AreEqual(QuickWindowDataType.Boolean, members.Single(member => member.Name == "#2").DataType);
+        Assert.AreEqual(QuickWindowDataType.String, members.Single(member => member.Name == "#3").DataType);
+        Assert.AreEqual(QuickWindowDataType.String, members.Single(member => member.Name == "#4").DataType);
+    }
+
+    [TestMethod]
+    public void ATagBoundBooleanPlaceholderInfersItsMemberDataType()
+    {
+        var result = Lower(FullSheet, FanPageElements());
+        Assert.AreEqual(0, result.Diagnostics.Count, Describe(result));
+
+        var member1 = result.Project.EffectiveQuickWindows.Single().EffectiveInterfaceMembers.Single(member => member.Name == "#1");
+        Assert.AreEqual(QuickWindowDataType.Boolean, member1.DataType, "#1 is Tag-bound to FAN_03_RUN (Boolean) by the only invocation");
+
+        var validation = ScadaProjectBuildValidator.Validate(result.Project, result.Scenes.Values.ToArray());
+        Assert.IsFalse(
+            validation.Any(issue => issue.Severity == ScadaBuildValidationSeverity.Error),
+            string.Join(" | ", validation.Select(issue => $"{issue.Severity} {issue.Code}: {issue.Message}")));
+    }
+
+    [TestMethod]
+    public void ATagBoundNumericPlaceholderInfersItsMemberDataType()
+    {
+        const string numericSheet =
+            "#1 := {FAN_03_RUN}\n" +
+            "#2 := {FAN_03_START}\n" +
+            "#3 := {FAN_03_SPEED}\n" +
+            "#4 := \"Ventilateur 3\"\n";
+        var result = Lower(numericSheet, FanPageElements());
+        Assert.AreEqual(0, result.Diagnostics.Count, Describe(result));
+
+        var member3 = result.Project.EffectiveQuickWindows.Single().EffectiveInterfaceMembers.Single(member => member.Name == "#3");
+        Assert.AreEqual(QuickWindowDataType.Decimal, member3.DataType, "#3 is Tag-bound to FAN_03_SPEED (Decimal) by the only invocation");
+
+        var validation = ScadaProjectBuildValidator.Validate(result.Project, result.Scenes.Values.ToArray());
+        Assert.IsFalse(
+            validation.Any(issue => issue.Severity == ScadaBuildValidationSeverity.Error),
+            string.Join(" | ", validation.Select(issue => $"{issue.Severity} {issue.Code}: {issue.Message}")));
+    }
+
+    [TestMethod]
+    public void TwoSheetsDisagreeingOnAPlaceholderTypeIsANamedDiagnostic()
+    {
+        var secondSheetKey = Guid.Parse("5a000000-0000-4000-8000-0000000000f4");
+        const string secondSheetName = "Ventilateur 3 (bis)";
+        const string sheetBText =
+            "#1 := {FAN_03_SPEED}\n" +
+            "#2 := {FAN_03_START}\n" +
+            "#3 := {FAN_03_SPEED}\n" +
+            "#4 := \"Ventilateur 3\"\n";
+
+        var (quickWindowRef, quickWindowScene) = Page(QuickWindowPageKey, ScadaPageType.QuickWindow, QuickWindowPageCode, "Popup ventilateur", FanPageElements());
+        var callerScene = ScadaScene.CreateEmpty(CallerPageCode, "Synoptique", new CanvasSize(430, 215)) with
+        {
+            PageKey = CallerPageKey,
+            PageCode = CallerPageCode,
+            PageType = ScadaPageType.Default,
+            Elements =
+            [
+                OpenCommandElementWithIds("open-a", "open-a-cmd", SheetKey, QuickWindowPageKey),
+                OpenCommandElementWithIds("open-b", "open-b-cmd", secondSheetKey, QuickWindowPageKey),
+            ]
+        };
+        var callerRef = new ScadaSceneReference(
+            CallerPageCode, "Synoptique", $"scenes/{CallerPageCode}.scene.json", ScadaPageType.Default,
+            PageKey: CallerPageKey, PageCode: CallerPageCode);
+
+        var project = ScadaProject.CreateDefault("ParameterSheetLoweringTypeConflict") with
+        {
+            ManifestVersion = "2.3",
+            HomePageId = CallerPageCode,
+            Scenes = [callerRef, quickWindowRef],
+            TagCatalog = Catalog(),
+            ParameterSheets =
+            [
+                new ParameterSheet(SheetKey, SheetCode, SheetName, FullSheet),
+                new ParameterSheet(secondSheetKey, "fan_03_b", secondSheetName, sheetBText)
+            ]
+        };
+        var scenes = new Dictionary<Guid, ScadaScene>
+        {
+            [CallerPageKey] = callerScene,
+            [QuickWindowPageKey] = quickWindowScene
+        };
+
+        var result = ParameterSheetLowering.Lower(project, scenes);
+
+        var issue = Single(result, "parameter-sheet.placeholder-type-conflict");
+        Assert.AreEqual(ScadaBuildValidationSeverity.Error, issue.Severity);
+        StringAssert.Contains(issue.Message, "#1");
+        StringAssert.Contains(issue.Message, $"'{SheetName}'");
+        StringAssert.Contains(issue.Message, $"'{secondSheetName}'");
+
+        var member1 = result.Project.EffectiveQuickWindows.Single().EffectiveInterfaceMembers.Single(member => member.Name == "#1");
+        Assert.AreEqual(QuickWindowDataType.String, member1.DataType, "a type conflict keeps the member String");
     }
 
     [TestMethod]
@@ -536,6 +634,18 @@ public sealed class ParameterSheetLoweringTests
             CommandConfig = new ScadaElementCommandConfig(
             [
                 new ScadaCommandBinding(OpenCommandId, "Ouvrir", true, ScadaCommandTrigger.OnClick, ScadaCommandKind.OpenQuickWindow,
+                    ParameterSheetKey: sheetKey, QuickWindowPageKey: pageKey)
+            ])
+        };
+
+    /// <summary>Same shape as <see cref="OpenCommandElement"/>, with caller-chosen element/command ids so two
+    /// open commands (two sheets opening the same quick-window page) can coexist on one caller page.</summary>
+    private static ScadaElement OpenCommandElementWithIds(string elementId, string commandId, Guid sheetKey, Guid pageKey) =>
+        ScadaElement.CreateButton(elementId, "Ouvrir", 20, 20) with
+        {
+            CommandConfig = new ScadaElementCommandConfig(
+            [
+                new ScadaCommandBinding(commandId, "Ouvrir", true, ScadaCommandTrigger.OnClick, ScadaCommandKind.OpenQuickWindow,
                     ParameterSheetKey: sheetKey, QuickWindowPageKey: pageKey)
             ])
         };

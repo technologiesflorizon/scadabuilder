@@ -79,6 +79,16 @@ public static class ParameterSheetLowering
         private readonly Dictionary<Guid, ParsedSheet> _sheets = new();
         private readonly Dictionary<Guid, QuickWindowPage> _quickWindowPages = new();
 
+        /// <summary>
+        /// Per-(page, #N) type implied by every invocation's binding, in traversal order (spec §6: "il est
+        /// déduit quand toutes les invocations concordent et vaut String sinon"). Only a resolved Tag binding
+        /// (via the tag's catalog <c>Datatype</c>) or a string Literal binding contributes an observation; an
+        /// Expression binding is untyped in this codebase (<c>QuickWindowBindingValidator.ValidateExpressionBinding</c>
+        /// never compares it against a member type) and is treated as compatible with any inferred type, so it
+        /// contributes none.
+        /// </summary>
+        private readonly Dictionary<(Guid PageKey, int Number), List<(string SheetDisplayName, QuickWindowDataType DataType)>> _placeholderTypeObservations = new();
+
         /// <summary>Diagnostics in the order they were found.</summary>
         public List<ScadaBuildValidationIssue> Diagnostics { get; } = new();
 
@@ -187,7 +197,7 @@ public static class ParameterSheetLowering
                             QuickWindowKeys.Member(pageKey, group.Key),
                             $"#{group.Key}",
                             writes ? QuickWindowInterfaceFamily.WriteCommand : QuickWindowInterfaceFamily.ReadState,
-                            QuickWindowDataType.String,
+                            ResolvePlaceholderDataType(pageKey, group.Key, page),
                             writes ? QuickWindowMemberAccess.Write : QuickWindowMemberAccess.Read);
                     })
                     .ToArray();
@@ -203,6 +213,56 @@ public static class ParameterSheetLowering
             }
 
             return definitions;
+        }
+
+        /// <summary>
+        /// Spec §6: a `#N` member's <see cref="QuickWindowDataType"/> is deduced when every invocation's
+        /// binding for that member agrees, and stays <see cref="QuickWindowDataType.String"/> otherwise — in
+        /// which case a <c>parameter-sheet.placeholder-type-conflict</c> error names every disagreeing sheet.
+        /// No observation at all (the page is never opened) also keeps <see cref="QuickWindowDataType.String"/>.
+        /// </summary>
+        private QuickWindowDataType ResolvePlaceholderDataType(Guid pageKey, int number, ScadaSceneReference page)
+        {
+            if (!_placeholderTypeObservations.TryGetValue((pageKey, number), out var observations) || observations.Count == 0)
+            {
+                return QuickWindowDataType.String;
+            }
+
+            var distinctTypes = observations.Select(observation => observation.DataType).Distinct().ToArray();
+            if (distinctTypes.Length == 1)
+            {
+                return distinctTypes[0];
+            }
+
+            var bySheet = string.Join(", ", observations
+                .GroupBy(observation => observation.SheetDisplayName, StringComparer.Ordinal)
+                .OrderBy(group => group.Key, StringComparer.Ordinal)
+                .Select(group => $"'{group.Key}' ({group.First().DataType})"));
+            Diagnostics.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                "parameter-sheet.placeholder-type-conflict",
+                $"Page '{page.EffectivePageCode}', #{number} : les feuilles ne concordent pas sur le type de #{number} ({bySheet}) ; " +
+                "le membre reste String.",
+                PageId: page.EffectivePageCode,
+                PageKey: pageKey,
+                PropertyPath: $"Scenes[{page.EffectivePageCode}].#{number}",
+                TargetKey: QuickWindowKeys.Member(pageKey, number)));
+            return QuickWindowDataType.String;
+        }
+
+        /// <summary>Records the type one binding implies for its `#N`, per <see cref="_placeholderTypeObservations"/>.</summary>
+        private void RecordPlaceholderTypeObservation(Guid pageKey, int number, ParameterSheet sheet, QuickWindowDataType? impliedType)
+        {
+            if (impliedType is not { } type) return;
+
+            var key = (pageKey, number);
+            if (!_placeholderTypeObservations.TryGetValue(key, out var list))
+            {
+                list = new List<(string SheetDisplayName, QuickWindowDataType DataType)>();
+                _placeholderTypeObservations[key] = list;
+            }
+
+            list.Add((sheet.DisplayName, type));
         }
 
         /// <summary>
@@ -433,6 +493,17 @@ public static class ParameterSheetLowering
                     _ => new QuickWindowBinding(memberKey, QuickWindowBindingSourceKind.Expression,
                         Expression: entry.Source, ExpressionAst: entry.Node)
                 });
+
+                // Expression bindings are untyped in this codebase (see the remarks on
+                // _placeholderTypeObservations) and contribute no observation.
+                var impliedType = entry.Kind switch
+                {
+                    ParameterValueKind.Tag => QuickWindowBindingValidator.InferDataTypeFromTagDatatype(
+                        project.TagCatalog?.Tags.FirstOrDefault(tag => string.Equals(tag.Id, canonicalId, StringComparison.Ordinal))?.Datatype),
+                    ParameterValueKind.Literal => QuickWindowDataType.String,
+                    _ => null
+                };
+                RecordPlaceholderTypeObservation(pageKey, number, sheet, impliedType);
             }
 
             var usedNumbers = used.Select(group => group.Key).ToHashSet();

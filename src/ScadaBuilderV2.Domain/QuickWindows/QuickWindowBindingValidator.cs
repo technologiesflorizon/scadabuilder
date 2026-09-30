@@ -272,6 +272,13 @@ public static class QuickWindowBindingValidator
         return null;
     }
 
+    // Single source of truth for the tag-datatype ↔ member-type mapping. IsTagDatatypeCompatible and
+    // InferDataTypeFromTagDatatype both read these, so the two never drift into two different contracts.
+    private static readonly string[] BooleanTagDatatypes = ["bool", "boolean", "booléen", "bit"];
+    private static readonly string[] IntegerTagDatatypes = ["int", "int16", "int32", "int64", "integer", "dint", "word"];
+    private static readonly string[] DecimalTagDatatypes = ["float", "float32", "float64", "double", "decimal", "real", "analog"];
+    private static readonly string[] StringTagDatatypes = ["string", "text", "char"];
+
     private static bool IsTagDatatypeCompatible(string? tagDatatype, QuickWindowDataType memberType)
     {
         if (string.IsNullOrWhiteSpace(tagDatatype))
@@ -280,13 +287,39 @@ public static class QuickWindowBindingValidator
         var dt = tagDatatype.Trim().ToLowerInvariant();
         return memberType switch
         {
-            QuickWindowDataType.Boolean => dt is "bool" or "boolean" or "booléen" or "bit",
-            QuickWindowDataType.Integer => dt is "int" or "int16" or "int32" or "int64" or "integer" or "dint" or "word",
-            QuickWindowDataType.Decimal => dt is "float" or "float32" or "float64" or "double" or "decimal" or "real" or "analog",
-            QuickWindowDataType.String => dt is "string" or "text" or "char",
-            QuickWindowDataType.Enum => dt is "int" or "int16" or "int32" or "int64" or "integer" or "dint" or "word" or "string" or "text",
+            QuickWindowDataType.Boolean => BooleanTagDatatypes.Contains(dt),
+            QuickWindowDataType.Integer => IntegerTagDatatypes.Contains(dt),
+            QuickWindowDataType.Decimal => DecimalTagDatatypes.Contains(dt),
+            QuickWindowDataType.String => StringTagDatatypes.Contains(dt),
+            QuickWindowDataType.Enum => IntegerTagDatatypes.Contains(dt) || StringTagDatatypes.Contains(dt),
             _ => false
         };
+    }
+
+    /// <summary>
+    /// Infers the single natural <see cref="QuickWindowDataType"/> a tag's catalog <c>Datatype</c> implies —
+    /// the same mapping <see cref="IsTagDatatypeCompatible"/> validates against, read from the same tables —
+    /// or <c>null</c> when the datatype is empty or unrecognised. <see cref="QuickWindowDataType.Enum"/> is
+    /// never inferred: it is a semantic authoring choice, not a physical tag type, and its compatibility list
+    /// overlaps <see cref="QuickWindowDataType.Integer"/> and <see cref="QuickWindowDataType.String"/>, which
+    /// would make the inference ambiguous.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0050, DEC-0052.
+    /// Contracts: docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md §6.
+    /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/ParameterSheetLoweringTests.cs.
+    /// </remarks>
+    public static QuickWindowDataType? InferDataTypeFromTagDatatype(string? tagDatatype)
+    {
+        if (string.IsNullOrWhiteSpace(tagDatatype))
+            return null;
+
+        var dt = tagDatatype.Trim().ToLowerInvariant();
+        if (BooleanTagDatatypes.Contains(dt)) return QuickWindowDataType.Boolean;
+        if (IntegerTagDatatypes.Contains(dt)) return QuickWindowDataType.Integer;
+        if (DecimalTagDatatypes.Contains(dt)) return QuickWindowDataType.Decimal;
+        if (StringTagDatatypes.Contains(dt)) return QuickWindowDataType.String;
+        return null;
     }
 
     private static bool IsLiteralCompatible(string literal, QuickWindowDataType type)
