@@ -2,7 +2,8 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Editeur de commande" Width="520" Height="520"
-        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize"
+        Loaded="OnDialogLoaded">
     <Window.Resources>
         <SolidColorBrush x:Key="MutedBrush" Color="#5E7A82"/>
         <SolidColorBrush x:Key="PanelBrush" Color="#F7FBF5"/>
@@ -57,7 +58,9 @@
 
             <StackPanel x:Name="QuickWindowPanel" Visibility="Collapsed">
                 <TextBlock Text="Fenêtre rapide cible" Foreground="{StaticResource MutedBrush}"/>
-                <ComboBox x:Name="QuickWindowDefinitionComboBox" Margin="0,2,0,8" DisplayMemberPath="DisplayName"/>
+                <TextBlock x:Name="QuickWindowSummaryText" TextWrapping="Wrap" Margin="0,2,0,4"/>
+                <Button x:Name="QuickWindowConfigureButton" Content="Configurer..." HorizontalAlignment="Left"
+                        Margin="0,0,0,8" Click="OnConfigureQuickWindowClick"/>
             </StackPanel>
 
             <StackPanel x:Name="CloseQuickWindowPanel" Visibility="Collapsed">

@@ -35,9 +35,12 @@ public static class ElementCommandKindCatalog
     /// <summary>Reason shown when a kind is already used by another command of the same element.</summary>
     public const string AlreadyUsedReason = "Ce type est déjà utilisé par une autre commande de cet élément.";
 
-    /// <summary>Reason shown when `OpenQuickWindow` has no quick-window definition to target.</summary>
-    public const string NoQuickWindowDefinitionReason =
-        "Aucune fenêtre rapide n'existe dans ce projet. Créez-en une dans le panneau « Fenêtres rapides ».";
+    /// <summary>Reason shown when `OpenQuickWindow` has no page of type Fenêtre rapide to target.</summary>
+    public const string NoQuickWindowPageReason = "Aucune page de type Fenêtre rapide dans ce projet.";
+
+    /// <summary>Reason shown when `OpenQuickWindow` has no parameter sheet to pair with a page.</summary>
+    public const string NoParameterSheetReason =
+        "Aucune feuille de paramètres. Créez-en une dans le panneau « Fenêtres rapides ».";
 
     /// <summary>Reason shown when `CloseQuickWindow` is offered outside a quick-window's own content.</summary>
     public const string NotQuickWindowContentReason = "Disponible seulement depuis le contenu d'une fenêtre rapide.";
@@ -50,19 +53,21 @@ public static class ElementCommandKindCatalog
     /// The kind of the command currently being edited, when editing rather than adding; a kind equal to this
     /// one is never disabled by <paramref name="usedKinds"/>.
     /// </param>
-    /// <param name="hasQuickWindowDefinitions">Whether the project has at least one quick-window definition.</param>
+    /// <param name="hasQuickWindowPages">Whether the project has at least one page of type Fenêtre rapide.</param>
+    /// <param name="hasParameterSheets">Whether the project has at least one parameter sheet.</param>
     /// <param name="isQuickWindowContent">Whether the caller surface is authoring inside a quick-window's own content.</param>
     /// <returns>The six entries, in enum order. Nothing is ever omitted.</returns>
     public static IReadOnlyList<ElementCommandKindOption> CreateOptions(
         IReadOnlyCollection<ScadaCommandKind> usedKinds,
         ScadaCommandKind? editedKind,
-        bool hasQuickWindowDefinitions,
+        bool hasQuickWindowPages,
+        bool hasParameterSheets,
         bool isQuickWindowContent)
     {
         var options = new List<ElementCommandKindOption>(6);
         foreach (var kind in Enum.GetValues<ScadaCommandKind>())
         {
-            options.Add(CreateOption(kind, usedKinds, editedKind, hasQuickWindowDefinitions, isQuickWindowContent));
+            options.Add(CreateOption(kind, usedKinds, editedKind, hasQuickWindowPages, hasParameterSheets, isQuickWindowContent));
         }
 
         return options;
@@ -72,22 +77,30 @@ public static class ElementCommandKindCatalog
         ScadaCommandKind kind,
         IReadOnlyCollection<ScadaCommandKind> usedKinds,
         ScadaCommandKind? editedKind,
-        bool hasQuickWindowDefinitions,
+        bool hasQuickWindowPages,
+        bool hasParameterSheets,
         bool isQuickWindowContent)
     {
         var label = Label(kind);
 
         // Rule order is deliberate: a kind already used by another command wins over any other reason, even
-        // when that other reason also applies (e.g. an already-used OpenQuickWindow with zero definitions
-        // still reads "already used", not "no quick window exists").
+        // when that other reason also applies (e.g. an already-used OpenQuickWindow with zero pages/sheets
+        // still reads "already used", not "no quick window page/sheet").
         if (usedKinds.Contains(kind) && kind != editedKind)
         {
             return new ElementCommandKindOption(kind, label, IsEnabled: false, AlreadyUsedReason);
         }
 
-        if (kind == ScadaCommandKind.OpenQuickWindow && !hasQuickWindowDefinitions)
+        if (kind == ScadaCommandKind.OpenQuickWindow && (!hasQuickWindowPages || !hasParameterSheets))
         {
-            return new ElementCommandKindOption(kind, label, IsEnabled: false, NoQuickWindowDefinitionReason);
+            var reason = (!hasQuickWindowPages, !hasParameterSheets) switch
+            {
+                (true, true) => $"{NoQuickWindowPageReason} {NoParameterSheetReason}",
+                (true, false) => NoQuickWindowPageReason,
+                (false, true) => NoParameterSheetReason,
+                _ => NoQuickWindowPageReason,
+            };
+            return new ElementCommandKindOption(kind, label, IsEnabled: false, reason);
         }
 
         if (kind == ScadaCommandKind.CloseQuickWindow && !isQuickWindowContent)

@@ -44,6 +44,7 @@
     <Compile Include="..\..\src\ScadaBuilderV2.App\QuickWindows\ParameterSheetEditorViewModel.cs" Link="AppSource\ParameterSheetEditorViewModel.cs" />
     <Compile Include="..\..\src\ScadaBuilderV2.App\QuickWindows\ParameterSheetUsageFinder.cs" Link="AppSource\ParameterSheetUsageFinder.cs" />
     <Compile Include="..\..\src\ScadaBuilderV2.App\QuickWindows\ParameterSheetListItemViewModel.cs" Link="AppSource\ParameterSheetListItemViewModel.cs" />
+    <Compile Include="..\..\src\ScadaBuilderV2.App\QuickWindows\QuickWindowConfigurationRules.cs" Link="AppSource\QuickWindowConfigurationRules.cs" />
     <Compile Include="..\..\src\ScadaBuilderV2.App\Shell\BusyOverlayController.cs" Link="AppSource\BusyOverlayController.cs" />
     <Compile Include="..\..\src\ScadaBuilderV2.App\Pages\PageTypeOptions.cs" Link="AppSource\PageTypeOptions.cs" />
   </ItemGroup>

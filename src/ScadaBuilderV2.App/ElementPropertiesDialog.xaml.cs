@@ -35,7 +35,6 @@ public partial class ElementPropertiesDialog : Window
         this.tagCatalog = tagCatalog;
         currentElement = element;
         InitializeComponent();
-        QuickWindowBindingsEditorControl.SaveRequested += OnQuickWindowBindingsSaveRequested;
         LoadElement(element);
         RefreshStateAndCommandLists();
     }
@@ -53,10 +52,13 @@ public partial class ElementPropertiesDialog : Window
     public QuickWindowCommandAuthoringContext QuickWindowContext { get; set; } = QuickWindowCommandAuthoringContext.Empty;
 
     /// <summary>
-    /// Invoked to persist one quick-window invocation and its caller command as a single undoable
-    /// workspace transition; returns the outcome carried back to the `Liaisons` tab.
+    /// Gets or sets the project's parameter sheets, offered by the "Configuration de la fenêtre rapide"
+    /// sub-dialog opened for an `OpenQuickWindow` command.
     /// </summary>
-    public Func<QuickWindowInvocationAuthoringRequest, Task<QuickWindowInvocationAuthoringOutcome>>? SaveQuickWindowInvocation { get; set; }
+    /// <remarks>
+    /// Decisions: DEC-0052.
+    /// </remarks>
+    public IReadOnlyList<ParameterSheet> ParameterSheets { get; set; } = Array.Empty<ParameterSheet>();
 
     /// <summary>
     /// Invoked to persist a new state config on the underlying element; returns the latest element.
@@ -198,10 +200,10 @@ public partial class ElementPropertiesDialog : Window
         RefreshStateAndCommandLists();
     }
 
-    private async void OnAddCommandClick(object sender, RoutedEventArgs e)
+    private void OnAddCommandClick(object sender, RoutedEventArgs e)
     {
         var usedKinds = currentElement.EffectiveCommandConfig.Commands.Select(c => c.Kind).ToArray();
-        var dialog = new ElementCommandDialog(null, pageReferences, tagCatalog, usedKinds, QuickWindowContext) { Owner = this };
+        var dialog = new ElementCommandDialog(null, pageReferences, tagCatalog, usedKinds, ParameterSheets, QuickWindowContext) { Owner = this };
         if (dialog.ShowDialog() != true || dialog.Result is null || SaveCommandConfig is null)
         {
             return;
@@ -213,7 +215,6 @@ public partial class ElementPropertiesDialog : Window
         };
         currentElement = SaveCommandConfig(config);
         RefreshStateAndCommandLists();
-        await EnsureQuickWindowInvocationAsync(dialog.Result, dialog.SelectedQuickWindowDefinitionKey);
     }
 
     private void OnCommandDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -221,7 +222,7 @@ public partial class ElementPropertiesDialog : Window
         OnEditCommandClick(sender, e);
     }
 
-    private async void OnEditCommandClick(object sender, RoutedEventArgs e)
+    private void OnEditCommandClick(object sender, RoutedEventArgs e)
     {
         if (CommandsListBox.SelectedItem is not ScadaCommandBinding selected || SaveCommandConfig is null)
         {
@@ -232,7 +233,7 @@ public partial class ElementPropertiesDialog : Window
             .Where(c => c.Id != selected.Id)
             .Select(c => c.Kind)
             .ToArray();
-        var dialog = new ElementCommandDialog(selected, pageReferences, tagCatalog, usedKinds, QuickWindowContext) { Owner = this };
+        var dialog = new ElementCommandDialog(selected, pageReferences, tagCatalog, usedKinds, ParameterSheets, QuickWindowContext) { Owner = this };
         if (dialog.ShowDialog() != true || dialog.Result is null)
         {
             return;
@@ -243,78 +244,6 @@ public partial class ElementPropertiesDialog : Window
             .ToArray();
         currentElement = SaveCommandConfig(currentElement.EffectiveCommandConfig with { Commands = commands });
         RefreshStateAndCommandLists();
-        await EnsureQuickWindowInvocationAsync(dialog.Result, dialog.SelectedQuickWindowDefinitionKey);
-    }
-
-    private void OnCommandSelectionChanged(object sender, SelectionChangedEventArgs e) => RefreshQuickWindowBindingsTab();
-
-    /// <summary>
-    /// Shows the `Liaisons` tab only for an `OpenQuickWindow` command and loads its typed grid from the
-    /// target definition and the persisted invocation. Any other command hides and clears the tab.
-    /// </summary>
-    private void RefreshQuickWindowBindingsTab()
-    {
-        var selected = CommandsListBox.SelectedItem as ScadaCommandBinding;
-        var definition = selected?.Kind == ScadaCommandKind.OpenQuickWindow
-            ? QuickWindowContext.ResolveDefinitionOfInvocation(selected.QuickWindowInvocationKey)
-            : null;
-        if (selected is null || definition is null)
-        {
-            QuickWindowBindingsTab.Visibility = Visibility.Collapsed;
-            QuickWindowBindingsEditorControl.Clear();
-            return;
-        }
-
-        QuickWindowBindingsEditorControl.Load(
-            selected.Id,
-            definition,
-            QuickWindowContext.ResolveInvocation(selected.QuickWindowInvocationKey),
-            tagCatalog,
-            QuickWindowContext.EffectiveParentPorts);
-        QuickWindowBindingsTab.Visibility = Visibility.Visible;
-    }
-
-    /// <summary>
-    /// Creates or realigns the invocation of one authored `OpenQuickWindow` command so a caller command
-    /// never stays without its typed invocation, then reopens the `Liaisons` tab on the saved state.
-    /// </summary>
-    private async Task EnsureQuickWindowInvocationAsync(ScadaCommandBinding command, Guid? definitionKey)
-    {
-        if (command.Kind != ScadaCommandKind.OpenQuickWindow || definitionKey is not { } target) return;
-        if (SaveQuickWindowInvocation is null) return;
-
-        var existing = QuickWindowContext.ResolveInvocation(command.QuickWindowInvocationKey);
-        var bindings = existing is not null && existing.DefinitionKey == target
-            ? existing.Bindings ?? []
-            : [];
-        var outcome = await SaveQuickWindowInvocation(new QuickWindowInvocationAuthoringRequest(
-            command.Id,
-            target,
-            bindings,
-            existing?.DefinitionKey == target ? existing.InvocationKey : null,
-            existing?.EffectiveTitleOverride));
-        if (!outcome.Succeeded)
-        {
-            ValidationText.Text = outcome.Message;
-            return;
-        }
-
-        RefreshStateAndCommandLists();
-        CommandsListBox.SelectedItem = currentElement.EffectiveCommandConfig.Commands
-            .FirstOrDefault(item => string.Equals(item.Id, command.Id, StringComparison.Ordinal));
-        RefreshQuickWindowBindingsTab();
-    }
-
-    private async void OnQuickWindowBindingsSaveRequested(object? sender, QuickWindowInvocationAuthoringRequest request)
-    {
-        if (SaveQuickWindowInvocation is null) return;
-        var outcome = await SaveQuickWindowInvocation(request);
-        ValidationText.Text = outcome.Succeeded ? string.Empty : outcome.Message;
-        if (!outcome.Succeeded) return;
-        RefreshStateAndCommandLists();
-        CommandsListBox.SelectedItem = currentElement.EffectiveCommandConfig.Commands
-            .FirstOrDefault(item => string.Equals(item.Id, request.CommandId, StringComparison.Ordinal));
-        RefreshQuickWindowBindingsTab();
     }
 
     private void OnDeleteCommandClick(object sender, RoutedEventArgs e)

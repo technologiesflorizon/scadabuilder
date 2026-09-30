@@ -51,7 +51,7 @@ public sealed class QuickWindowBindingAuthoringTests
 
         var xaml = ReadAppFile("ElementCommandDialog.xaml");
         StringAssert.Contains(xaml, "x:Name=\"CloseQuickWindowPanel\"");
-        StringAssert.Contains(xaml, "x:Name=\"QuickWindowDefinitionComboBox\"");
+        StringAssert.Contains(xaml, "x:Name=\"QuickWindowConfigureButton\"");
 
         var source = ReadAppFile("ElementCommandDialog.xaml.cs");
         StringAssert.Contains(source, "CloseQuickWindowPanel.Visibility = kind == ScadaCommandKind.CloseQuickWindow");
@@ -65,19 +65,18 @@ public sealed class QuickWindowBindingAuthoringTests
     }
 
     [TestMethod]
-    public void TheLiaisonsTabIsShownOnlyForAnOpenQuickWindowCommand()
+    public void TheLiaisonsTabNoLongerExistsOnAuthoring()
     {
+        // DEC-0052 replaces the `Liaisons` tab and its typed bindings grid with the "Configuration de la
+        // fenêtre rapide" sub-dialog (sheet + page pair) opened from `ElementCommandDialog` itself; the tab
+        // never appears in the properties surface any more.
         var xaml = ReadAppFile("ElementPropertiesDialog.xaml");
-        StringAssert.Contains(xaml, "x:Name=\"QuickWindowBindingsTab\"");
-        StringAssert.Contains(xaml, "Header=\"Liaisons\"");
-        StringAssert.Contains(xaml, "Visibility=\"Collapsed\"");
-        StringAssert.Contains(xaml, "x:Name=\"QuickWindowBindingsEditorControl\"");
-        StringAssert.Contains(xaml, "SelectionChanged=\"OnCommandSelectionChanged\"");
+        Assert.IsFalse(xaml.Contains("Header=\"Liaisons\"", StringComparison.Ordinal));
+        Assert.IsFalse(xaml.Contains("x:Name=\"QuickWindowBindingsTab\"", StringComparison.Ordinal));
 
         var source = ReadAppFile("ElementPropertiesDialog.xaml.cs");
-        StringAssert.Contains(source, "selected?.Kind == ScadaCommandKind.OpenQuickWindow");
-        StringAssert.Contains(source, "QuickWindowBindingsTab.Visibility = Visibility.Collapsed;");
-        StringAssert.Contains(source, "QuickWindowBindingsEditorControl.Clear();");
+        Assert.IsFalse(source.Contains("QuickWindowBindingsEditorControl", StringComparison.Ordinal));
+        Assert.IsFalse(source.Contains("EnsureQuickWindowInvocationAsync", StringComparison.Ordinal));
     }
 
     [TestMethod]

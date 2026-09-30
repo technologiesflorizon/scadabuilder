@@ -14,10 +14,17 @@ namespace ScadaBuilderV2.App;
 /// <remarks>
 /// Quick-window command kinds are offered by the bounded authoring context of the caller surface: a page may
 /// open a definition, only a quick-window content may close itself as `Self`, and no Toggle kind exists
-/// since `DEC-0050` removed the popup command kinds.
+/// since `DEC-0050` removed the popup command kinds. Choosing (or already editing) the `OpenQuickWindow` type
+/// opens the `QuickWindowConfigurationDialog` sub-dialog - a parameter sheet and a page of type Fenêtre
+/// rapide - rather than the former single "fenêtre rapide cible" combo box; the pairing is stored on the
+/// command as `ParameterSheetKey`/`QuickWindowPageKey` and compiled at build time by `ParameterSheetLowering`.
+/// A pre-existing DEC-0050 command that only ever carried a `QuickWindowInvocationKey` (authored before this
+/// pairing existed) keeps loading and saving unchanged as long as its sheet/page selection is left untouched
+/// in this editing session - see `QuickWindowConfigurationRules.IsUnmodifiedLegacyInvocation`.
 ///
-/// Decisions: DEC-0036, DEC-0050, FR-011, FR-013.
-/// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowBindingAuthoringTests.cs.
+/// Decisions: DEC-0036, DEC-0050, DEC-0052, FR-011, FR-013.
+/// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowBindingAuthoringTests.cs,
+/// tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowConfigurationRulesTests.cs.
 /// </remarks>
 public partial class ElementCommandDialog : Window
 {
@@ -27,32 +34,46 @@ public partial class ElementCommandDialog : Window
     }
 
     private readonly IReadOnlyList<ScadaSceneReference> _pageReferences;
+    private readonly IReadOnlyList<ScadaSceneReference> _quickWindowPages;
+    private readonly IReadOnlyList<ParameterSheet> _parameterSheets;
     private readonly string _commandId;
     private readonly ScadaCommandBinding? _existingCommand;
 
     private readonly QuickWindowCommandAuthoringContext _quickWindowContext;
+
+    private Guid? _parameterSheetKey;
+    private Guid? _quickWindowPageKey;
 
     public ElementCommandDialog(
         ScadaCommandBinding? existingCommand,
         IReadOnlyList<ScadaSceneReference> pageReferences,
         ScadaTagCatalog? tagCatalog,
         IReadOnlyCollection<ScadaCommandKind> usedKinds,
+        IReadOnlyList<ParameterSheet> parameterSheets,
         QuickWindowCommandAuthoringContext quickWindowContext)
     {
         InitializeComponent();
         _pageReferences = pageReferences;
+        _quickWindowPages = pageReferences.Where(page => page.Type == ScadaPageType.QuickWindow).ToArray();
+        _parameterSheets = parameterSheets;
         _commandId = existingCommand?.Id ?? Guid.NewGuid().ToString("n");
         _existingCommand = existingCommand;
         _quickWindowContext = quickWindowContext;
+
+        if (existingCommand?.Kind == ScadaCommandKind.OpenQuickWindow)
+        {
+            _parameterSheetKey = existingCommand.ParameterSheetKey;
+            _quickWindowPageKey = existingCommand.QuickWindowPageKey;
+        }
 
         TriggerComboBox.ItemsSource = Enum.GetValues<ScadaCommandTrigger>();
         var kindOptions = ElementCommandKindCatalog.CreateOptions(
             usedKinds,
             existingCommand?.Kind,
-            _quickWindowContext.EffectiveDefinitions.Count > 0,
+            _quickWindowPages.Count > 0,
+            _parameterSheets.Count > 0,
             _quickWindowContext.IsQuickWindowContent);
         KindComboBox.ItemsSource = kindOptions;
-        QuickWindowDefinitionComboBox.ItemsSource = _quickWindowContext.EffectiveDefinitions;
         WriteModeComboBox.ItemsSource = Enum.GetValues<ScadaWriteMode>();
         TargetPageComboBox.ItemsSource = pageReferences;
 
@@ -76,7 +97,6 @@ public partial class ElementCommandDialog : Window
             OffValueTextBox.Text = existingCommand.OffValue ?? string.Empty;
             FixedValueTextBox.Text = existingCommand.FixedValue ?? string.Empty;
             TargetPageComboBox.SelectedItem = pageReferences.FirstOrDefault(p => p.Id == existingCommand.TargetPageId);
-            QuickWindowDefinitionComboBox.SelectedItem = _quickWindowContext.ResolveDefinitionOfInvocation(existingCommand.QuickWindowInvocationKey);
             UrlTextBox.Text = existingCommand.Url ?? string.Empty;
             NewTabCheckBox.IsChecked = existingCommand.NewTab;
             ConfirmationCheckBox.IsChecked = existingCommand.Confirmation is not null;
@@ -91,19 +111,59 @@ public partial class ElementCommandDialog : Window
 
         UpdateKindPanels();
         UpdateWriteModePanels();
+        UpdateQuickWindowSummary();
     }
 
     public ScadaCommandBinding? Result { get; private set; }
 
-    /// <summary>
-    /// Gets the definition targeted by an authored `OpenQuickWindow` command. The command itself only ever
-    /// carries an `InvocationKey`; the shell creates or updates the invocation resolving this target.
-    /// </summary>
-    public Guid? SelectedQuickWindowDefinitionKey { get; private set; }
+    private void OnDialogLoaded(object sender, RoutedEventArgs e)
+    {
+        if ((KindComboBox.SelectedItem as ElementCommandKindOption)?.Kind == ScadaCommandKind.OpenQuickWindow)
+        {
+            OpenQuickWindowConfiguration();
+        }
+    }
 
-    private void OnKindChanged(object sender, SelectionChangedEventArgs e) => UpdateKindPanels();
+    private void OnKindChanged(object sender, SelectionChangedEventArgs e)
+    {
+        UpdateKindPanels();
+        if (IsLoaded && (KindComboBox.SelectedItem as ElementCommandKindOption)?.Kind == ScadaCommandKind.OpenQuickWindow)
+        {
+            OpenQuickWindowConfiguration();
+        }
+    }
 
     private void OnWriteModeChanged(object sender, SelectionChangedEventArgs e) => UpdateWriteModePanels();
+
+    private void OnConfigureQuickWindowClick(object sender, RoutedEventArgs e) => OpenQuickWindowConfiguration();
+
+    /// <summary>
+    /// Opens the "Configuration de la fenêtre rapide" sub-dialog preselected on the dialog's current
+    /// choice, and applies its result - or keeps the previous choice unchanged on "Annuler".
+    /// </summary>
+    private void OpenQuickWindowConfiguration()
+    {
+        var dialog = new QuickWindowConfigurationDialog(_parameterSheets, _quickWindowPages, _parameterSheetKey, _quickWindowPageKey)
+        {
+            Owner = this
+        };
+        if (dialog.ShowDialog() == true)
+        {
+            _parameterSheetKey = dialog.SelectedParameterSheetKey;
+            _quickWindowPageKey = dialog.SelectedQuickWindowPageKey;
+        }
+
+        UpdateQuickWindowSummary();
+    }
+
+    private void UpdateQuickWindowSummary()
+    {
+        var sheetName = _parameterSheets.FirstOrDefault(sheet => sheet.SheetKey == _parameterSheetKey)?.DisplayName;
+        var pageName = _quickWindowPages.FirstOrDefault(page => page.PageKey == _quickWindowPageKey)?.Title;
+        QuickWindowSummaryText.Text = sheetName is not null && pageName is not null
+            ? $"Feuille : {sheetName} — Page : {pageName}"
+            : "Non configurée.";
+    }
 
     private void UpdateKindPanels()
     {
@@ -140,18 +200,20 @@ public partial class ElementCommandDialog : Window
 
         var kind = selectedKindOption.Kind;
 
-        if (kind == ScadaCommandKind.OpenQuickWindow && QuickWindowDefinitionComboBox.SelectedItem is not QuickWindowDefinition)
+        var isUnmodifiedLegacyInvocation = QuickWindowConfigurationRules.IsUnmodifiedLegacyInvocation(
+            _existingCommand?.Kind == ScadaCommandKind.OpenQuickWindow,
+            _existingCommand?.QuickWindowInvocationKey,
+            _existingCommand?.ParameterSheetKey,
+            _existingCommand?.QuickWindowPageKey,
+            _parameterSheetKey,
+            _quickWindowPageKey);
+
+        if (kind == ScadaCommandKind.OpenQuickWindow &&
+            !QuickWindowConfigurationRules.CanSaveOpenQuickWindowCommand(_parameterSheetKey, _quickWindowPageKey, isUnmodifiedLegacyInvocation))
         {
-            ValidationText.Text = "Selectionnez la fenetre rapide cible.";
+            ValidationText.Text = "Sélectionnez la feuille de paramètres et la page Fenêtre rapide cible.";
             return;
         }
-
-        SelectedQuickWindowDefinitionKey = kind == ScadaCommandKind.OpenQuickWindow
-            ? (QuickWindowDefinitionComboBox.SelectedItem as QuickWindowDefinition)?.DefinitionKey
-            : null;
-        var existingInvocationKey = _existingCommand?.Kind == ScadaCommandKind.OpenQuickWindow
-            ? _existingCommand.QuickWindowInvocationKey
-            : null;
 
         Result = new ScadaCommandBinding(
             _commandId,
@@ -171,7 +233,11 @@ public partial class ElementCommandDialog : Window
             TargetPageId: kind == ScadaCommandKind.Navigate ? (TargetPageComboBox.SelectedItem as ScadaSceneReference)?.Id : null,
             Url: string.IsNullOrWhiteSpace(UrlTextBox.Text) ? null : UrlTextBox.Text,
             NewTab: NewTabCheckBox.IsChecked == true,
-            QuickWindowInvocationKey: kind == ScadaCommandKind.OpenQuickWindow ? existingInvocationKey : null);
+            QuickWindowInvocationKey: kind == ScadaCommandKind.OpenQuickWindow && isUnmodifiedLegacyInvocation
+                ? _existingCommand?.QuickWindowInvocationKey
+                : null,
+            ParameterSheetKey: kind == ScadaCommandKind.OpenQuickWindow ? _parameterSheetKey : null,
+            QuickWindowPageKey: kind == ScadaCommandKind.OpenQuickWindow ? _quickWindowPageKey : null);
 
         DialogResult = true;
     }

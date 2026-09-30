@@ -8,7 +8,7 @@ namespace ScadaBuilderV2.Tests.Commands;
 /// labels and reasons, and the rule priority when several disabling rules would apply to the same entry.
 /// </summary>
 /// <remarks>
-/// Decisions: DEC-0050.
+/// Decisions: DEC-0050, DEC-0052.
 /// Tests: this file.
 /// </remarks>
 [TestClass]
@@ -24,22 +24,26 @@ public sealed class ElementCommandKindCatalogTests
         ScadaCommandKind.Back,
     ];
 
+    private static ElementCommandKindOption Option(bool pages, bool sheets) =>
+        ElementCommandKindCatalog.CreateOptions([], null, pages, sheets, false)
+            .Single(o => o.Kind == ScadaCommandKind.OpenQuickWindow);
+
     [TestMethod]
     public void AllSixKindsAreAlwaysReturnedInEnumOrder()
     {
         // Every context combination below must still surface all six kinds - the whole point of the policy
         // is that nothing is ever removed from the list, only disabled.
-        var contexts = new (IReadOnlyCollection<ScadaCommandKind> Used, ScadaCommandKind? Edited, bool HasDefs, bool IsContent)[]
+        var contexts = new (IReadOnlyCollection<ScadaCommandKind> Used, ScadaCommandKind? Edited, bool HasPages, bool HasSheets, bool IsContent)[]
         {
-            ([], null, false, false),
+            ([], null, false, false, false),
             ([ScadaCommandKind.WriteTag, ScadaCommandKind.Navigate, ScadaCommandKind.OpenQuickWindow,
-              ScadaCommandKind.CloseQuickWindow, ScadaCommandKind.OpenUrl, ScadaCommandKind.Back], null, false, false),
-            ([], ScadaCommandKind.OpenQuickWindow, true, true),
+              ScadaCommandKind.CloseQuickWindow, ScadaCommandKind.OpenUrl, ScadaCommandKind.Back], null, false, false, false),
+            ([], ScadaCommandKind.OpenQuickWindow, true, true, true),
         };
 
         foreach (var context in contexts)
         {
-            var options = ElementCommandKindCatalog.CreateOptions(context.Used, context.Edited, context.HasDefs, context.IsContent);
+            var options = ElementCommandKindCatalog.CreateOptions(context.Used, context.Edited, context.HasPages, context.HasSheets, context.IsContent);
             CollectionAssert.AreEqual(AllKindsInEnumOrder, options.Select(o => o.Kind).ToArray());
         }
     }
@@ -47,7 +51,7 @@ public sealed class ElementCommandKindCatalogTests
     [TestMethod]
     public void TheSixLabelsAreExactlyTheOnesTheOperatorMustRead()
     {
-        var options = ElementCommandKindCatalog.CreateOptions([], null, hasQuickWindowDefinitions: true, isQuickWindowContent: true);
+        var options = ElementCommandKindCatalog.CreateOptions([], null, hasQuickWindowPages: true, hasParameterSheets: true, isQuickWindowContent: true);
 
         var labels = options.ToDictionary(o => o.Kind, o => o.Label);
         Assert.AreEqual("Écrire un tag", labels[ScadaCommandKind.WriteTag]);
@@ -59,21 +63,27 @@ public sealed class ElementCommandKindCatalogTests
     }
 
     [TestMethod]
-    public void OpenQuickWindowIsDisabledWithTheExactReasonWhenNoDefinitionExists()
+    public void OpenQuickWindowNeedsBothAPageAndASheet()
     {
-        var options = ElementCommandKindCatalog.CreateOptions([], null, hasQuickWindowDefinitions: false, isQuickWindowContent: true);
-        var openQuickWindow = options.Single(o => o.Kind == ScadaCommandKind.OpenQuickWindow);
+        AssertDisabled(Option(pages: false, sheets: true), ElementCommandKindCatalog.NoQuickWindowPageReason);
+        AssertDisabled(Option(pages: true, sheets: false), ElementCommandKindCatalog.NoParameterSheetReason);
+        var neither = Option(pages: false, sheets: false);
+        Assert.IsFalse(neither.IsEnabled);
+        StringAssert.Contains(neither.DisabledReason, ElementCommandKindCatalog.NoQuickWindowPageReason);
+        StringAssert.Contains(neither.DisabledReason, ElementCommandKindCatalog.NoParameterSheetReason);
+        Assert.IsTrue(Option(pages: true, sheets: true).IsEnabled);
+    }
 
-        Assert.IsFalse(openQuickWindow.IsEnabled);
-        Assert.AreEqual(
-            "Aucune fenêtre rapide n'existe dans ce projet. Créez-en une dans le panneau « Fenêtres rapides ».",
-            openQuickWindow.DisabledReason);
+    private static void AssertDisabled(ElementCommandKindOption option, string reason)
+    {
+        Assert.IsFalse(option.IsEnabled);
+        Assert.AreEqual(reason, option.DisabledReason);
     }
 
     [TestMethod]
-    public void OpenQuickWindowIsEnabledAssoonAsOneDefinitionExists()
+    public void OpenQuickWindowIsEnabledAsSoonAsAPageAndASheetExist()
     {
-        var options = ElementCommandKindCatalog.CreateOptions([], null, hasQuickWindowDefinitions: true, isQuickWindowContent: false);
+        var options = ElementCommandKindCatalog.CreateOptions([], null, hasQuickWindowPages: true, hasParameterSheets: true, isQuickWindowContent: false);
         var openQuickWindow = options.Single(o => o.Kind == ScadaCommandKind.OpenQuickWindow);
 
         Assert.IsTrue(openQuickWindow.IsEnabled);
@@ -83,7 +93,7 @@ public sealed class ElementCommandKindCatalogTests
     [TestMethod]
     public void CloseQuickWindowIsDisabledWithTheExactReasonOutsideQuickWindowContent()
     {
-        var options = ElementCommandKindCatalog.CreateOptions([], null, hasQuickWindowDefinitions: true, isQuickWindowContent: false);
+        var options = ElementCommandKindCatalog.CreateOptions([], null, hasQuickWindowPages: true, hasParameterSheets: true, isQuickWindowContent: false);
         var closeQuickWindow = options.Single(o => o.Kind == ScadaCommandKind.CloseQuickWindow);
 
         Assert.IsFalse(closeQuickWindow.IsEnabled);
@@ -93,7 +103,7 @@ public sealed class ElementCommandKindCatalogTests
     [TestMethod]
     public void CloseQuickWindowIsEnabledInsideQuickWindowContent()
     {
-        var options = ElementCommandKindCatalog.CreateOptions([], null, hasQuickWindowDefinitions: false, isQuickWindowContent: true);
+        var options = ElementCommandKindCatalog.CreateOptions([], null, hasQuickWindowPages: false, hasParameterSheets: false, isQuickWindowContent: true);
         var closeQuickWindow = options.Single(o => o.Kind == ScadaCommandKind.CloseQuickWindow);
 
         Assert.IsTrue(closeQuickWindow.IsEnabled);
@@ -104,7 +114,7 @@ public sealed class ElementCommandKindCatalogTests
     public void AKindAlreadyUsedByAnotherCommandIsDisabledWithTheExactReason()
     {
         var options = ElementCommandKindCatalog.CreateOptions(
-            [ScadaCommandKind.WriteTag], editedKind: null, hasQuickWindowDefinitions: true, isQuickWindowContent: true);
+            [ScadaCommandKind.WriteTag], editedKind: null, hasQuickWindowPages: true, hasParameterSheets: true, isQuickWindowContent: true);
         var writeTag = options.Single(o => o.Kind == ScadaCommandKind.WriteTag);
 
         Assert.IsFalse(writeTag.IsEnabled);
@@ -115,7 +125,7 @@ public sealed class ElementCommandKindCatalogTests
     public void AKindUsedOnlyByTheCommandBeingEditedStaysEnabled()
     {
         var options = ElementCommandKindCatalog.CreateOptions(
-            [ScadaCommandKind.WriteTag], editedKind: ScadaCommandKind.WriteTag, hasQuickWindowDefinitions: true, isQuickWindowContent: true);
+            [ScadaCommandKind.WriteTag], editedKind: ScadaCommandKind.WriteTag, hasQuickWindowPages: true, hasParameterSheets: true, isQuickWindowContent: true);
         var writeTag = options.Single(o => o.Kind == ScadaCommandKind.WriteTag);
 
         Assert.IsTrue(writeTag.IsEnabled);
@@ -123,12 +133,12 @@ public sealed class ElementCommandKindCatalogTests
     }
 
     [TestMethod]
-    public void AlreadyUsedWinsOverNoDefinitionsWhenBothRulesWouldApply()
+    public void AlreadyUsedWinsOverMissingPageOrSheetWhenBothRulesWouldApply()
     {
-        // OpenQuickWindow is both already used by another command AND the project has no definitions.
-        // Rule 1 (already used) must be reported, not rule 2 (no definitions) - the brief's priority order.
+        // OpenQuickWindow is both already used by another command AND the project has no page/sheet.
+        // Rule 1 (already used) must be reported, not rule 2 (no page/sheet) - the brief's priority order.
         var options = ElementCommandKindCatalog.CreateOptions(
-            [ScadaCommandKind.OpenQuickWindow], editedKind: null, hasQuickWindowDefinitions: false, isQuickWindowContent: false);
+            [ScadaCommandKind.OpenQuickWindow], editedKind: null, hasQuickWindowPages: false, hasParameterSheets: false, isQuickWindowContent: false);
         var openQuickWindow = options.Single(o => o.Kind == ScadaCommandKind.OpenQuickWindow);
 
         Assert.IsFalse(openQuickWindow.IsEnabled);
@@ -140,7 +150,7 @@ public sealed class ElementCommandKindCatalogTests
     [TestMethod]
     public void EveryOtherKindIsEnabledByDefault()
     {
-        var options = ElementCommandKindCatalog.CreateOptions([], null, hasQuickWindowDefinitions: false, isQuickWindowContent: false);
+        var options = ElementCommandKindCatalog.CreateOptions([], null, hasQuickWindowPages: false, hasParameterSheets: false, isQuickWindowContent: false);
 
         foreach (var kind in new[] { ScadaCommandKind.WriteTag, ScadaCommandKind.Navigate, ScadaCommandKind.OpenUrl, ScadaCommandKind.Back })
         {
