@@ -182,6 +182,22 @@ export function createFakeDom() {
  * @param {string} html     - A single-root HTML fragment.
  * @returns {object} the root element.
  */
+/**
+ * Decodes the handful of named/numeric HTML entities the exporter (`HtmlEncoder.Default.Encode`) ever
+ * produces, exactly as a real browser's parser would while building attribute values and text nodes.
+ * Without this, an attribute serialized as JSON (`data-scada-state-config`, `&quot;`-escaped) comes back
+ * from `getAttribute` with the literal three-character sequence `&quot;` instead of a `"`, and
+ * `JSON.parse` on it fails — a real DOM never has this problem.
+ */
+function _decodeHtmlEntities(value) {
+  return value
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, '\'')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&');
+}
+
 export function parseFragment(document, html) {
   var tokenRe = /<\/[a-zA-Z][^>]*>|<[a-zA-Z][^>]*>|[^<]+/g;
   var attrRe = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*=\s*"([^"]*)"/g;
@@ -202,7 +218,7 @@ export function parseFragment(document, html) {
       var attrMatch;
       attrRe.lastIndex = 0;
       while ((attrMatch = attrRe.exec(rest)) !== null) {
-        element.setAttribute(attrMatch[1], attrMatch[2]);
+        element.setAttribute(attrMatch[1], _decodeHtmlEntities(attrMatch[2]));
       }
       if (stack.length > 0) {
         stack[stack.length - 1].appendChild(element);
@@ -213,7 +229,7 @@ export function parseFragment(document, html) {
       continue;
     }
     if (stack.length > 0) {
-      stack[stack.length - 1].appendChild(document.createTextNode(token));
+      stack[stack.length - 1].appendChild(document.createTextNode(_decodeHtmlEntities(token)));
     }
   }
   return root;

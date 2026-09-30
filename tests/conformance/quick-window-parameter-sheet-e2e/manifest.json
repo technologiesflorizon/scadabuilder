@@ -1,0 +1,399 @@
+{
+  "Name": "ParameterSheetEndToEnd",
+  "ManifestVersion": "2.3",
+  "HomePageId": "synoptique_e2e",
+  "Pages": [
+    {
+      "Id": "synoptique_e2e",
+      "Name": "Synoptique",
+      "Type": "default",
+      "IncludeInBuild": true,
+      "IsHome": true,
+      "HeaderPageId": null,
+      "FooterPageId": null,
+      "RelativePath": "synoptique_e2e/synoptique_e2e.html",
+      "Width": 430,
+      "Height": 215,
+      "RequiredDisplayWidth": 430,
+      "RequiredDisplayHeight": 215,
+      "Background": {
+        "Color": "#000000",
+        "Image": null,
+        "Size": "cover",
+        "Repeat": "no-repeat",
+        "Position": "center center",
+        "Attachment": "scroll",
+        "Origin": "padding-box",
+        "Clip": "border-box",
+        "BlendMode": "normal"
+      },
+      "Objects": [
+        {
+          "Id": "open-fan3",
+          "DisplayName": "Ventilateur 3",
+          "Kind": "Button",
+          "ShapeKind": null,
+          "ButtonKind": "Command",
+          "ButtonBehavior": {
+            "IsDisabled": false,
+            "Hover": {
+              "Enabled": true,
+              "Background": "#EAF5F7",
+              "Foreground": "#0F2A30",
+              "BorderColor": "#2090A0"
+            },
+            "Pressed": {
+              "Enabled": true,
+              "Background": "#0F7280",
+              "Foreground": "#FFFFFF",
+              "BorderColor": "#0F2A30"
+            },
+            "EffectiveHover": {
+              "Enabled": true,
+              "Background": "#EAF5F7",
+              "Foreground": "#0F2A30",
+              "BorderColor": "#2090A0"
+            },
+            "EffectivePressed": {
+              "Enabled": true,
+              "Background": "#0F7280",
+              "Foreground": "#FFFFFF",
+              "BorderColor": "#0F2A30"
+            }
+          },
+          "Data": null,
+          "Events": [],
+          "ValueBindings": {
+            "ReadTagId": null,
+            "WriteTagId": null
+          },
+          "TableCellBindings": [],
+          "StateConfig": null,
+          "CommandConfig": {
+            "Commands": [
+              {
+                "Id": "open-3",
+                "Name": "Ouvrir",
+                "Enabled": true,
+                "Trigger": "onClick",
+                "Kind": "openQuickWindow",
+                "Confirmation": null,
+                "WriteTagId": null,
+                "ReadTagId": null,
+                "WriteMode": null,
+                "OnValue": null,
+                "OffValue": null,
+                "FixedValue": null,
+                "TargetPageId": null,
+                "Url": null,
+                "NewTab": false,
+                "QuickWindowInvocationKey": "502ee859-326b-584f-a5f9-6ff831cd4b6d"
+              }
+            ]
+          }
+        },
+        {
+          "Id": "open-fan5",
+          "DisplayName": "Ventilateur 5",
+          "Kind": "Button",
+          "ShapeKind": null,
+          "ButtonKind": "Command",
+          "ButtonBehavior": {
+            "IsDisabled": false,
+            "Hover": {
+              "Enabled": true,
+              "Background": "#EAF5F7",
+              "Foreground": "#0F2A30",
+              "BorderColor": "#2090A0"
+            },
+            "Pressed": {
+              "Enabled": true,
+              "Background": "#0F7280",
+              "Foreground": "#FFFFFF",
+              "BorderColor": "#0F2A30"
+            },
+            "EffectiveHover": {
+              "Enabled": true,
+              "Background": "#EAF5F7",
+              "Foreground": "#0F2A30",
+              "BorderColor": "#2090A0"
+            },
+            "EffectivePressed": {
+              "Enabled": true,
+              "Background": "#0F7280",
+              "Foreground": "#FFFFFF",
+              "BorderColor": "#0F2A30"
+            }
+          },
+          "Data": null,
+          "Events": [],
+          "ValueBindings": {
+            "ReadTagId": null,
+            "WriteTagId": null
+          },
+          "TableCellBindings": [],
+          "StateConfig": null,
+          "CommandConfig": {
+            "Commands": [
+              {
+                "Id": "open-5",
+                "Name": "Ouvrir",
+                "Enabled": true,
+                "Trigger": "onClick",
+                "Kind": "openQuickWindow",
+                "Confirmation": null,
+                "WriteTagId": null,
+                "ReadTagId": null,
+                "WriteMode": null,
+                "OnValue": null,
+                "OffValue": null,
+                "FixedValue": null,
+                "TargetPageId": null,
+                "Url": null,
+                "NewTab": false,
+                "QuickWindowInvocationKey": "7b745208-35ba-528d-b495-c18f737f419b"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "Actions": [],
+  "Tags": [
+    {
+      "Id": "tf100.mapping.301",
+      "DisplayName": "FAN_03_RUN",
+      "KeywordLabel": null,
+      "KeywordType": null,
+      "Device": null,
+      "Protocol": null,
+      "AddressUri": null,
+      "Datatype": "Boolean",
+      "Writeable": false,
+      "Enabled": true,
+      "Unit": null
+    },
+    {
+      "Id": "tf100.mapping.302",
+      "DisplayName": "FAN_03_SPEED",
+      "KeywordLabel": null,
+      "KeywordType": null,
+      "Device": null,
+      "Protocol": null,
+      "AddressUri": null,
+      "Datatype": "Decimal",
+      "Writeable": false,
+      "Enabled": true,
+      "Unit": null
+    },
+    {
+      "Id": "tf100.mapping.501",
+      "DisplayName": "FAN_05_RUN",
+      "KeywordLabel": null,
+      "KeywordType": null,
+      "Device": null,
+      "Protocol": null,
+      "AddressUri": null,
+      "Datatype": "Boolean",
+      "Writeable": false,
+      "Enabled": true,
+      "Unit": null
+    },
+    {
+      "Id": "tf100.mapping.502",
+      "DisplayName": "FAN_05_SPEED",
+      "KeywordLabel": null,
+      "KeywordType": null,
+      "Device": null,
+      "Protocol": null,
+      "AddressUri": null,
+      "Datatype": "Decimal",
+      "Writeable": false,
+      "Enabled": true,
+      "Unit": null
+    }
+  ],
+  "RuntimeContract": {
+    "Version": "1.0",
+    "RequiredCapabilities": [
+      "binding.element.read",
+      "button.command",
+      "button.hover",
+      "button.pressed",
+      "command.open-quick-window",
+      "command.trigger.on-click",
+      "effect.border-color",
+      "effect.border-width",
+      "effect.opacity",
+      "element.button",
+      "element.text",
+      "expression.binary",
+      "expression.binary.equal",
+      "expression.literal-number",
+      "expression.tag-ref",
+      "page.default",
+      "quick-window.definition",
+      "quick-window.dom.scoped-root",
+      "quick-window.instance.single-per-definition",
+      "quick-window.lifecycle.host-owned",
+      "quick-window.local-interface.typed",
+      "quick-window.port-binding",
+      "quick-window.presentation.backdrop",
+      "state.default-effect",
+      "state.quality-fallback",
+      "state.rules"
+    ],
+    "RuntimeSha256": "50abec74f5be0d3b5b46b1c57cfc393cd3f8b754ed76600943f7d0a778611112"
+  },
+  "QuickWindows": [
+    {
+      "DefinitionKey": "7e000000-0000-4000-8000-0000000000a1",
+      "Code": "popup_fan_e2e",
+      "DisplayName": "Popup ventilateur",
+      "InterfaceVersion": 1,
+      "Namespace": "qw-7e000000",
+      "RelativePath": "qw-7e000000/qw-7e000000.html",
+      "CssRelativePath": "qw-7e000000/css/qw-7e000000.css",
+      "Width": 430,
+      "Height": 215,
+      "InterfaceMembers": [
+        {
+          "MemberKey": "1042ed82-211c-56ed-8fac-87a613a7e76a",
+          "Name": "#1",
+          "Family": "ReadState",
+          "DataType": "Boolean",
+          "Access": "Read",
+          "Required": false,
+          "DefaultValue": null,
+          "Description": null
+        },
+        {
+          "MemberKey": "86af6f20-b499-5428-a7ed-e5f046896b71",
+          "Name": "#3",
+          "Family": "ReadState",
+          "DataType": "String",
+          "Access": "Read",
+          "Required": false,
+          "DefaultValue": null,
+          "Description": null
+        },
+        {
+          "MemberKey": "a6f1c673-a24b-5656-8e8c-bc1e959745d9",
+          "Name": "#4",
+          "Family": "ReadState",
+          "DataType": "String",
+          "Access": "Read",
+          "Required": false,
+          "DefaultValue": null,
+          "Description": null
+        }
+      ],
+      "PresentationDefaults": {
+        "Title": "Popup ventilateur",
+        "Position": "Center",
+        "Backdrop": true,
+        "IsDraggable": true,
+        "IsResizable": false,
+        "IsViewportConstrained": true,
+        "TitleBarColor": null,
+        "BorderColor": null,
+        "Shadow": null
+      }
+    }
+  ],
+  "QuickWindowInvocations": [
+    {
+      "InvocationKey": "502ee859-326b-584f-a5f9-6ff831cd4b6d",
+      "DefinitionKey": "7e000000-0000-4000-8000-0000000000a1",
+      "InterfaceVersion": 1,
+      "TitleOverride": null,
+      "OwnerElementId": "open-fan3",
+      "OwnerCommandId": "open-3",
+      "Bindings": [
+        {
+          "MemberKey": "1042ed82-211c-56ed-8fac-87a613a7e76a",
+          "SourceKind": "Tag",
+          "TagId": "tf100.mapping.301",
+          "LiteralValue": null,
+          "Expression": null,
+          "ParentMemberKey": null
+        },
+        {
+          "MemberKey": "86af6f20-b499-5428-a7ed-e5f046896b71",
+          "SourceKind": "Expression",
+          "TagId": null,
+          "LiteralValue": null,
+          "Expression": "{FAN_03_SPEED} * 0.1",
+          "ParentMemberKey": null,
+          "ExpressionAst": {
+            "type": "binary",
+            "op": "multiply",
+            "left": {
+              "type": "tagRef",
+              "tagName": "FAN_03_SPEED"
+            },
+            "right": {
+              "type": "literalNumber",
+              "value": 0.1
+            }
+          }
+        },
+        {
+          "MemberKey": "a6f1c673-a24b-5656-8e8c-bc1e959745d9",
+          "SourceKind": "Literal",
+          "TagId": null,
+          "LiteralValue": "Ventilateur 3",
+          "Expression": null,
+          "ParentMemberKey": null
+        }
+      ]
+    },
+    {
+      "InvocationKey": "7b745208-35ba-528d-b495-c18f737f419b",
+      "DefinitionKey": "7e000000-0000-4000-8000-0000000000a1",
+      "InterfaceVersion": 1,
+      "TitleOverride": null,
+      "OwnerElementId": "open-fan5",
+      "OwnerCommandId": "open-5",
+      "Bindings": [
+        {
+          "MemberKey": "1042ed82-211c-56ed-8fac-87a613a7e76a",
+          "SourceKind": "Tag",
+          "TagId": "tf100.mapping.501",
+          "LiteralValue": null,
+          "Expression": null,
+          "ParentMemberKey": null
+        },
+        {
+          "MemberKey": "86af6f20-b499-5428-a7ed-e5f046896b71",
+          "SourceKind": "Expression",
+          "TagId": null,
+          "LiteralValue": null,
+          "Expression": "{FAN_05_SPEED} * 0.1",
+          "ParentMemberKey": null,
+          "ExpressionAst": {
+            "type": "binary",
+            "op": "multiply",
+            "left": {
+              "type": "tagRef",
+              "tagName": "FAN_05_SPEED"
+            },
+            "right": {
+              "type": "literalNumber",
+              "value": 0.1
+            }
+          }
+        },
+        {
+          "MemberKey": "a6f1c673-a24b-5656-8e8c-bc1e959745d9",
+          "SourceKind": "Literal",
+          "TagId": null,
+          "LiteralValue": "Ventilateur 5",
+          "Expression": null,
+          "ParentMemberKey": null
+        }
+      ]
+    }
+  ]
+}
