@@ -218,6 +218,20 @@ public static class ParameterSheetLowering
                         ElementId: token.ElementId,
                         PropertyPath: ElementPath(page, token.ElementId)));
                 }
+
+                foreach (var use in QuickWindowPlaceholderUsageCollector.CollectUnsupported(scene))
+                {
+                    Diagnostics.Add(new ScadaBuildValidationIssue(
+                        ScadaBuildValidationSeverity.Error,
+                        "parameter-sheet.placeholder-unsupported-site",
+                        $"Page '{page.EffectivePageCode}', élément '{use.ElementId}', champ {use.Field} : « {use.Raw} » n'est pas substitué dans ce champ " +
+                        "et s'afficherait tel quel. Un paramètre #N n'est pris en charge que dans un texte affiché, un tag lu ou écrit, " +
+                        "une expression d'état ou une commande (écrire \\# pour un # littéral).",
+                        PageId: page.EffectivePageCode,
+                        PageKey: page.PageKey,
+                        ElementId: use.ElementId,
+                        PropertyPath: $"{ElementPath(page, use.ElementId)}.{use.Field}"));
+                }
             }
         }
 
@@ -251,6 +265,13 @@ public static class ParameterSheetLowering
             {
                 if (quickWindow.Usages is null) continue;
                 var scene = loweredScenes.TryGetValue(pageKey, out var lowered) ? lowered : scenes[pageKey];
+                if (quickWindow.Usages.Count == 0)
+                {
+                    // The runtime substitutes (and unescapes \#) only in a definition with #N members: a page
+                    // with no #N at all would otherwise show its escaped \# as is.
+                    scene = QuickWindowPlaceholderUsageCollector.UnescapeDisplayedTexts(scene);
+                }
+
                 var page = quickWindow.Reference;
                 var members = quickWindow.Usages
                     .GroupBy(usage => usage.Number)

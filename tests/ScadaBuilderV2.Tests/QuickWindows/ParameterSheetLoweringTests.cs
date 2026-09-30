@@ -550,6 +550,163 @@ public sealed class ParameterSheetLoweringTests
     }
 
     [TestMethod]
+    public void EveryDisplayedTextTheExporterRendersIsATextSite()
+    {
+        // Final review I2: a displayed text is exactly what the exporter emits as a text node, fallbacks included.
+        var table = ScadaElement.CreateTable("table", "Tableau", 0, 0, rows: 1, columns: 2);
+        table = table with
+        {
+            Table = table.Table! with
+            {
+                Cells =
+                [
+                    new ScadaTableCell(0, 0, Content: new ScadaTableCellContent(Text: "Débit #5")),
+                    new ScadaTableCell(0, 1)
+                ]
+            }
+        };
+        var fallbackText = ScadaElement.CreateText("name-fallback", "Nom #6", 0, 0);
+        fallbackText = fallbackText with { Data = fallbackText.Data! with { Text = null } };
+        var placeholderButton = ScadaElement.CreateButton("button-fallback", "Bouton", 0, 0);
+        placeholderButton = placeholderButton with { Data = placeholderButton.Data! with { Text = null, Placeholder = "Démarrer #7" } };
+        var readOnlyNumeric = ScadaElement.CreateInputNumeric("numeric-fallback", "Valeur", 0, 0, isReadOnly: true);
+        readOnlyNumeric = readOnlyNumeric with { Data = readOnlyNumeric.Data! with { Value = null, DisplayFormat = null, Placeholder = "#8" } };
+        var scene = ScadaScene.CreateEmpty("qw", "qw", new CanvasSize(400, 200)) with
+        {
+            Elements = [table, fallbackText, placeholderButton, readOnlyNumeric]
+        };
+
+        var (usages, invalid) = QuickWindowPlaceholderUsageCollector.Collect(scene);
+
+        Assert.AreEqual(0, invalid.Count);
+        CollectionAssert.AreEquivalent(
+            new[]
+            {
+                new PlaceholderUsage(5, PlaceholderUsageSite.Text, "table", null),
+                new PlaceholderUsage(6, PlaceholderUsageSite.Text, "name-fallback", null),
+                new PlaceholderUsage(7, PlaceholderUsageSite.Text, "button-fallback", null),
+                new PlaceholderUsage(8, PlaceholderUsageSite.Text, "numeric-fallback", null),
+            },
+            usages.ToArray());
+
+        // Validated and substituted as a text: a table cell #N bound to a tag is refused like any text.
+        var result = Lower(FullSheet + "#5 := {FAN_03_SPEED}\n", [.. FanPageElements(), table]);
+        var issue = Single(result, "parameter-sheet.text-not-literal");
+        StringAssert.Contains(issue.Message, "#5");
+    }
+
+    [TestMethod]
+    public void TheMarkupOfACustomElementIsNeverScanned()
+    {
+        var custom = ScadaElement.CreateText("svg", "svg", 0, 0) with { Kind = ScadaElementKind.Custom };
+        custom = custom with { Data = custom.Data! with { Text = "<svg><style>.a{fill:#333}</style><text>#4 #0</text></svg>" } };
+        var scene = ScadaScene.CreateEmpty("qw", "qw", new CanvasSize(400, 200)) with { Elements = [custom] };
+
+        var (usages, invalid) = QuickWindowPlaceholderUsageCollector.Collect(scene);
+
+        Assert.AreEqual(0, usages.Count, string.Join(", ", usages));
+        Assert.AreEqual(0, invalid.Count, string.Join(", ", invalid));
+    }
+
+    [TestMethod]
+    public void ATextCarriedByBothDataAndLegacyPayloadIsReportedOnce()
+    {
+        var legacy = TextElement("legacy", "Pompe #0") with
+        {
+            LegacyPayload = new LegacyElementPayload("Text", "Pompe #0", true, "Segoe UI", 12, "#000000", "Transparent", null, null)
+        };
+        var legacyValid = TextElement("legacy-valid", "Ventilateur #4") with
+        {
+            LegacyPayload = new LegacyElementPayload("Text", "Ventilateur #4", true, "Segoe UI", 12, "#000000", "Transparent", null, null)
+        };
+        var scene = ScadaScene.CreateEmpty("qw", "qw", new CanvasSize(400, 200)) with { Elements = [legacy, legacyValid] };
+
+        var (usages, invalid) = QuickWindowPlaceholderUsageCollector.Collect(scene);
+        Assert.AreEqual(1, invalid.Count, string.Join(", ", invalid));
+        Assert.AreEqual(1, usages.Count, string.Join(", ", usages));
+
+        var result = Lower(FullSheet, [.. FanPageElements(), legacy]);
+        Single(result, "parameter-sheet.token-invalid");
+    }
+
+    [TestMethod]
+    public void APlaceholderInAFieldTheRuntimeNeverSubstitutesIsAnError()
+    {
+        // Final review I2: no mount-time substitution exists for these fields, so a #N there would reach the
+        // operator raw. Fail closed, naming the element and the field.
+        var effectText = ScadaEffectBlock.Empty with { TextContent = "Ventilateur #4" };
+        var cases = new (ScadaElement Element, string Field)[]
+        {
+            (StateElement("state-text", "{#1} == 1") with
+            {
+                StateConfig = StateElement("state-text", "{#1} == 1").StateConfig! with
+                {
+                    States = [new ScadaStateRule("run-state", "En marche", true, ScadaExpression.FromSource("{#1} == 1"), effectText)]
+                }
+            }, "StateConfig.States[run-state].Effect.TextContent"),
+            (ScadaElement.CreateText("default-text", "t", 0, 0) with
+            {
+                StateConfig = ScadaElementStateConfig.Default with { DefaultEffect = effectText }
+            }, "StateConfig.DefaultEffect.TextContent"),
+            (ScadaElement.CreateText("fallback-text", "t", 0, 0) with
+            {
+                StateConfig = ScadaElementStateConfig.Default with { QualityFallback = ScadaEffectBlock.Empty with { TextContent = "{#4}" } }
+            }, "StateConfig.QualityFallback.TextContent"),
+            (ScadaElement.CreateText("format", "t", 0, 0) with
+            {
+                StateConfig = ScadaElementStateConfig.Default with { ReadVariable = new ScadaReadVariableRule("#1", "0.0 #4") }
+            }, "StateConfig.ReadVariable.DisplayFormat"),
+            (ScadaElement.CreateButton("confirm", "Marche", 0, 0) with
+            {
+                CommandConfig = new ScadaElementCommandConfig(
+                [
+                    new ScadaCommandBinding("confirm-cmd", "Marche", true, ScadaCommandTrigger.OnClick, ScadaCommandKind.WriteTag,
+                        Confirmation: new ScadaConfirmation("Démarrer #4 ?"), WriteTagId: "#2", WriteMode: ScadaWriteMode.Momentary)
+                ])
+            }, "CommandConfig.Commands[confirm-cmd].Confirmation.Message"),
+            (ScadaElement.CreateInputText("input", "Saisie", 0, 0) with
+            {
+                Data = ScadaElement.CreateInputText("input", "Saisie", 0, 0).Data! with { Text = "#4" }
+            }, "Data.Text"),
+        };
+
+        foreach (var (element, field) in cases)
+        {
+            var result = Lower(FullSheet, [.. FanPageElements(), element]);
+
+            var issue = Single(result, "parameter-sheet.placeholder-unsupported-site");
+            Assert.AreEqual(ScadaBuildValidationSeverity.Error, issue.Severity, field);
+            Assert.AreEqual(element.Id, issue.ElementId, field);
+            StringAssert.Contains(issue.Message, $"'{element.Id}'", field);
+            StringAssert.Contains(issue.Message, field, field);
+            StringAssert.Contains(issue.Message, $"Page '{QuickWindowPageCode}'", field);
+        }
+    }
+
+    [TestMethod]
+    public void AnEscapedHashOnAPageWithoutAnyPlaceholderIsUnescapedInTheDefinition()
+    {
+        // Final review M4: the runtime substitutes (and unescapes \#) only in a definition with #N members.
+        var table = ScadaElement.CreateTable("table", "Tableau", 0, 0, rows: 1, columns: 1);
+        table = table with
+        {
+            Table = table.Table! with { Cells = [new ScadaTableCell(0, 0, Content: new ScadaTableCellContent(Text: @"Ligne \#3"))] }
+        };
+        var result = Lower(string.Empty, [TextElement("pump", @"Pompe \#2"), table]);
+
+        Assert.IsFalse(result.Diagnostics.Any(diagnostic => diagnostic.Severity == ScadaBuildValidationSeverity.Error), Describe(result));
+        var content = result.Project.EffectiveQuickWindows.Single().EffectiveContent.EffectiveElements;
+        Assert.AreEqual("Pompe #2", content.Single(element => element.Id == "pump").Data!.Text);
+        Assert.AreEqual("Ligne #3", content.Single(element => element.Id == "table").Table!.EffectiveCells.Single().EffectiveContent.Text);
+
+        var withPlaceholders = Lower(FullSheet, FanPageElements());
+        Assert.AreEqual(
+            @"Pompe \#2",
+            withPlaceholders.Project.EffectiveQuickWindows.Single().EffectiveContent.EffectiveElements.Single(element => element.Id == "escaped").Data!.Text,
+            "a page with #N keeps its escapes: the runtime unescapes them while substituting");
+    }
+
+    [TestMethod]
     public void TheCollectorReadsEveryBindingSiteAndOnlyThem()
     {
         var table = ScadaElement.CreateTable("table", "Tableau", 0, 0, rows: 1, columns: 1);
