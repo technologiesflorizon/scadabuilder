@@ -122,7 +122,7 @@ public sealed class ParameterSheetLoweringTests
     }
 
     [TestMethod]
-    public void TwoSheetsDisagreeingOnAPlaceholderTypeIsANamedDiagnostic()
+    public void TwoSheetsDisagreeingOnAPlaceholderTypeMakeItStringWithoutErrorAndValidate()
     {
         var secondSheetKey = Guid.Parse("5a000000-0000-4000-8000-0000000000f4");
         const string secondSheetName = "Ventilateur 3 (bis)";
@@ -168,22 +168,26 @@ public sealed class ParameterSheetLoweringTests
 
         var result = ParameterSheetLowering.Lower(project, scenes);
 
-        var issue = Single(result, "parameter-sheet.placeholder-type-conflict");
-        Assert.AreEqual(ScadaBuildValidationSeverity.Error, issue.Severity);
-        StringAssert.Contains(issue.Message, $"'{QuickWindowPageCode}'", "the ruling requires the page to be named");
-        StringAssert.Contains(issue.Message, "#1");
-        StringAssert.Contains(issue.Message, $"'{SheetName}' (Boolean)", "the ruling requires each sheet named with its implied type");
-        StringAssert.Contains(issue.Message, $"'{secondSheetName}' (Decimal)", "the ruling requires each sheet named with its implied type");
+        // Final review I5 (controller ruling, back to spec §6): a disagreement is not an error.
+        Assert.IsFalse(result.Diagnostics.Any(diagnostic => diagnostic.Severity == ScadaBuildValidationSeverity.Error), Describe(result));
+        var members = result.Project.EffectiveQuickWindows.Single().EffectiveInterfaceMembers;
+        Assert.AreEqual(QuickWindowDataType.String, members.Single(member => member.Name == "#1").DataType,
+            "#1 is a Boolean tag for one sheet and a Decimal tag for the other: the member is String");
+        Assert.AreEqual(QuickWindowDataType.Decimal, members.Single(member => member.Name == "#3").DataType,
+            "#3 is only typed by the second sheet's Decimal tag (the first binds an untyped expression): inference stays");
 
-        var member1 = result.Project.EffectiveQuickWindows.Single().EffectiveInterfaceMembers.Single(member => member.Name == "#1");
-        Assert.AreEqual(QuickWindowDataType.String, member1.DataType, "a type conflict keeps the member String");
+        // A Boolean tag and a Decimal tag bound to the same String #N member both validate.
+        var validation = ScadaProjectBuildValidator.Validate(result.Project, result.Scenes.Values.ToArray());
+        Assert.IsFalse(
+            validation.Any(issue => issue.Severity == ScadaBuildValidationSeverity.Error),
+            string.Join(" | ", validation.Select(issue => $"{issue.Severity} {issue.Code}: {issue.Message}")));
     }
 
     [TestMethod]
-    public void TwoDistinctSheetsSharingADisplayNameStillConflictCorrectlyByKey()
+    public void TwoDistinctSheetsSharingADisplayNameStillLowerAndValidate()
     {
-        // Same DisplayName ("Ventilateur 3") on two distinct sheets: grouping by SheetDisplayName would
-        // collapse them into one bucket and hide (or misreport) the conflict. Grouping by SheetKey must not.
+        // Same DisplayName ("Ventilateur 3") on two distinct sheets that disagree on #1's type: still two
+        // invocations, a String #1 and no error (final review I5).
         var secondSheetKey = Guid.Parse("5a000000-0000-4000-8000-0000000000f5");
         const string sheetBText =
             "#1 := {FAN_03_SPEED}\n" +
@@ -227,13 +231,14 @@ public sealed class ParameterSheetLoweringTests
 
         var result = ParameterSheetLowering.Lower(project, scenes);
 
-        var issues = result.Diagnostics.Where(item => item.Code == "parameter-sheet.placeholder-type-conflict").ToArray();
-        Assert.AreEqual(1, issues.Length, Describe(result));
-        StringAssert.Contains(issues[0].Message, $"'{SheetName}' (Boolean)");
-        StringAssert.Contains(issues[0].Message, $"'{SheetName}' (Decimal)");
-
+        Assert.IsFalse(result.Diagnostics.Any(diagnostic => diagnostic.Severity == ScadaBuildValidationSeverity.Error), Describe(result));
         var member1 = result.Project.EffectiveQuickWindows.Single().EffectiveInterfaceMembers.Single(member => member.Name == "#1");
         Assert.AreEqual(QuickWindowDataType.String, member1.DataType);
+        Assert.AreEqual(2, result.Project.EffectiveQuickWindowInvocations.Count, "each sheet still produces its own invocation");
+        var validation = ScadaProjectBuildValidator.Validate(result.Project, result.Scenes.Values.ToArray());
+        Assert.IsFalse(
+            validation.Any(issue => issue.Severity == ScadaBuildValidationSeverity.Error),
+            string.Join(" | ", validation.Select(issue => $"{issue.Severity} {issue.Code}: {issue.Message}")));
     }
 
     [TestMethod]
@@ -704,6 +709,103 @@ public sealed class ParameterSheetLoweringTests
             @"Pompe \#2",
             withPlaceholders.Project.EffectiveQuickWindows.Single().EffectiveContent.EffectiveElements.Single(element => element.Id == "escaped").Data!.Text,
             "a page with #N keeps its escapes: the runtime unescapes them while substituting");
+    }
+
+    [TestMethod]
+    public void AnImportedQuickWindowPageWhoseSourceLayerIsNotReplacedIsAnError()
+    {
+        // Final review I6: a definition keeps only the scene's elements; an imported page's source HTML layer,
+        // legacy actions and text overrides would be lost silently.
+        var legacyStatic = new ScadaElement(
+            "legacy-pump", "Pompe", ScadaElementKind.LegacyStatic, new SceneBounds(0, 0, 50, 20),
+            new LegacySourceTrace("Legacy", "popup_fan", "pump-1", "Pompe", "imports/popup_fan.html"));
+        var cases = new (string Name, bool Materialized, ScadaElement[] Extra, bool Expected)[]
+        {
+            ("not materialized", false, [], true),
+            ("materialized, one legacy element left unconverted", true, [legacyStatic], true),
+            ("materialized and fully converted", true, [], false),
+        };
+
+        foreach (var (name, materialized, extra, expected) in cases)
+        {
+            var (project, scenes) = Arrange(FullSheet, [.. FanPageElements(), .. extra]);
+            var importedScene = scenes[QuickWindowPageKey] with { Origin = PageOrigin.Imported, LegacyElementsMaterialized = materialized };
+            var importedProject = project with
+            {
+                Scenes = project.Scenes
+                    .Select(page => page.PageKey == QuickWindowPageKey ? page with { Origin = PageOrigin.Imported } : page)
+                    .ToArray()
+            };
+            var result = ParameterSheetLowering.Lower(
+                importedProject,
+                new Dictionary<Guid, ScadaScene>(scenes) { [QuickWindowPageKey] = importedScene });
+
+            var issues = result.Diagnostics.Where(diagnostic => diagnostic.Code == "parameter-sheet.page-not-materialized").ToArray();
+            Assert.AreEqual(expected ? 1 : 0, issues.Length, $"{name}: {Describe(result)}");
+            if (expected)
+            {
+                Assert.AreEqual(ScadaBuildValidationSeverity.Error, issues[0].Severity, name);
+                StringAssert.Contains(issues[0].Message, $"'{QuickWindowPageCode}'", name);
+            }
+        }
+
+        var native = Lower(FullSheet, FanPageElements());
+        Assert.IsFalse(native.Diagnostics.Any(diagnostic => diagnostic.Code == "parameter-sheet.page-not-materialized"), Describe(native));
+    }
+
+    [TestMethod]
+    public void AValueTheRuntimeWouldRejectAsAnInjectionIsASheetError()
+    {
+        // Final review M1: mirror of quick-window-runtime.js _isInjection — refused at validation, not at mount.
+        // #4 is a displayed text (a literal), #3 a state expression (an expression).
+        var cases = new (int Number, string RightHandSide)[]
+        {
+            (4, "\"<script>alert(1)</script>\""),
+            (4, "\"javascript:void(0)\""),
+            (4, "\"../etc\""),
+            (4, "\"# Ventilateur\""),
+            (4, "\"onclick=go()\""),
+            (4, "\"Consommation = 5\""),
+            (3, "{FAN_03_SPEED} > 0 && \"x\" == \"onload=1\""),
+        };
+
+        foreach (var (number, rightHandSide) in cases)
+        {
+            var lines = new Dictionary<int, string>
+            {
+                [1] = "{FAN_03_RUN}", [2] = "{FAN_03_START}", [3] = "{FAN_03_SPEED} * 0.1", [4] = "\"Ventilateur 3\"", [number] = rightHandSide
+            };
+            var sheet = string.Join("\n", lines.OrderBy(pair => pair.Key).Select(pair => $"#{pair.Key} := {pair.Value}")) + "\n";
+            var result = Lower(sheet, FanPageElements());
+
+            Assert.IsFalse(result.Diagnostics.Any(diagnostic => diagnostic.Code == "parameter-sheet.syntax"), $"{rightHandSide}: {Describe(result)}");
+            var issue = Single(result, "parameter-sheet.literal-rejected-by-runtime");
+            Assert.AreEqual(ScadaBuildValidationSeverity.Error, issue.Severity, rightHandSide);
+            StringAssert.Contains(issue.Message, $"#{number}", rightHandSide);
+            StringAssert.Contains(issue.Message, $"ligne {number}", rightHandSide);
+            Assert.IsNull(
+                result.Project.EffectiveQuickWindowInvocations.Single().FindBinding(QuickWindowKeys.Member(QuickWindowPageKey, number)),
+                $"{rightHandSide}: a rejected value never reaches the exported invocation");
+        }
+
+        var clean = Lower(FullSheet, FanPageElements());
+        Assert.IsFalse(clean.Diagnostics.Any(diagnostic => diagnostic.Code == "parameter-sheet.literal-rejected-by-runtime"), Describe(clean));
+    }
+
+    [TestMethod]
+    public void TheBuilderInjectionMirrorCarriesExactlyTheRuntimePatterns()
+    {
+        var runtime = File.ReadAllText(Path.Combine(FindRepoRoot(), "src", "ScadaBuilderV2.Rendering", "Runtime", "quick-window-runtime.js"));
+        var start = runtime.IndexOf("var INJECTION_PATTERNS = [", StringComparison.Ordinal);
+        Assert.IsTrue(start >= 0, "INJECTION_PATTERNS not found in quick-window-runtime.js");
+        var end = runtime.IndexOf("];", start, StringComparison.Ordinal);
+        var patterns = runtime[(start + "var INJECTION_PATTERNS = [".Length)..end]
+            .Split('\n')
+            .Select(line => line.Trim().TrimEnd(','))
+            .Where(line => line.Length > 0)
+            .ToArray();
+
+        CollectionAssert.AreEqual(patterns, QuickWindowRuntimeInjectionScreen.Patterns.ToArray());
     }
 
     [TestMethod]

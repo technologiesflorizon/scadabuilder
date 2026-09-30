@@ -149,10 +149,9 @@ public static class ParameterSheetLowering
         /// (via the tag's catalog <c>Datatype</c>) or a string Literal binding contributes an observation; an
         /// Expression binding is untyped in this codebase (<c>QuickWindowBindingValidator.ValidateExpressionBinding</c>
         /// never compares it against a member type) and is treated as compatible with any inferred type, so it
-        /// contributes none. Grouped by <c>SheetKey</c>, not display name: two distinct sheets may share a
-        /// display name, and collapsing on it would hide a real conflict or misattribute one.
+        /// contributes none. A disagreement is not an error (see <see cref="ResolvePlaceholderDataType"/>).
         /// </summary>
-        private readonly Dictionary<(Guid PageKey, int Number), List<(Guid SheetKey, string SheetDisplayName, QuickWindowDataType DataType)>> _placeholderTypeObservations = new();
+        private readonly Dictionary<(Guid PageKey, int Number), List<QuickWindowDataType>> _placeholderTypeObservations = new();
 
         /// <summary>Diagnostics in the order they were found.</summary>
         public List<ScadaBuildValidationIssue> Diagnostics { get; } = new();
@@ -207,6 +206,32 @@ public static class ParameterSheetLowering
 
                 var (usages, invalid) = QuickWindowPlaceholderUsageCollector.Collect(scene);
                 _quickWindowPages[page.PageKey] = new QuickWindowPage(page, usages);
+
+                // VisualContent.FromScene keeps only the scene's elements: an imported page still draws through
+                // its source HTML layer (with its legacy Actions and LegacyTextOverrides), which a definition
+                // drops. That layer is fully replaced only once the editor has materialized the source inventory
+                // (ScadaScene.LegacyElementsMaterialized) AND no legacy element is left unconverted: a
+                // materialized but unconverted element is a LegacyStatic proxy, which Ft100SceneExporter renders
+                // as nothing (ScadaElement.IsLegacyStatic) because the source layer draws it. Refuse such a page
+                // rather than exporting a quick window silently missing its visuals.
+                if (page.EffectiveOrigin == PageOrigin.Imported || scene.EffectiveOrigin == PageOrigin.Imported)
+                {
+                    var unconverted = CountLegacyStatic(scene.Elements ?? []);
+                    if (!scene.LegacyElementsMaterialized || unconverted > 0)
+                    {
+                        var reason = !scene.LegacyElementsMaterialized
+                            ? "ses éléments hérités n'ont jamais été matérialisés en Element+"
+                            : $"{unconverted} élément(s) hérité(s) n'ont pas été convertis en Element+";
+                        Diagnostics.Add(new ScadaBuildValidationIssue(
+                            ScadaBuildValidationSeverity.Error,
+                            "parameter-sheet.page-not-materialized",
+                            $"Page Fenêtre rapide '{page.EffectivePageCode}' : page importée dont {reason} ; sa couche HTML source, " +
+                            "ses actions et ses textes hérités seraient perdus dans la fenêtre rapide. Convertir ses éléments hérités en Element+.",
+                            PageId: page.EffectivePageCode,
+                            PageKey: page.PageKey,
+                            PropertyPath: $"Scenes[{page.EffectivePageCode}]"));
+                    }
+                }
                 foreach (var token in invalid)
                 {
                     Diagnostics.Add(new ScadaBuildValidationIssue(
@@ -283,7 +308,7 @@ public static class ParameterSheetLowering
                             QuickWindowKeys.Member(pageKey, group.Key),
                             $"#{group.Key}",
                             writes ? QuickWindowInterfaceFamily.WriteCommand : QuickWindowInterfaceFamily.ReadState,
-                            ResolvePlaceholderDataType(pageKey, group.Key, page),
+                            ResolvePlaceholderDataType(pageKey, group.Key),
                             writes ? QuickWindowMemberAccess.Write : QuickWindowMemberAccess.Read);
                     })
                     .ToArray();
@@ -303,53 +328,36 @@ public static class ParameterSheetLowering
 
         /// <summary>
         /// Spec §6: a `#N` member's <see cref="QuickWindowDataType"/> is deduced when every invocation's
-        /// binding for that member agrees, and stays <see cref="QuickWindowDataType.String"/> otherwise — in
-        /// which case a <c>parameter-sheet.placeholder-type-conflict</c> error names every disagreeing sheet.
-        /// No observation at all (the page is never opened) also keeps <see cref="QuickWindowDataType.String"/>.
+        /// binding for that member agrees, and is <see cref="QuickWindowDataType.String"/> otherwise, without any
+        /// diagnostic: two sheets may legitimately bind the same `#N` to a Boolean and to a Decimal tag, the
+        /// textual mount-time substitution never reads the member type, and
+        /// <see cref="QuickWindowBindingValidator"/> exempts `#N` members from its tag-type check. No observation
+        /// at all (the page is never opened) also keeps <see cref="QuickWindowDataType.String"/>.
         /// </summary>
-        private QuickWindowDataType ResolvePlaceholderDataType(Guid pageKey, int number, ScadaSceneReference page)
+        private QuickWindowDataType ResolvePlaceholderDataType(Guid pageKey, int number)
         {
             if (!_placeholderTypeObservations.TryGetValue((pageKey, number), out var observations) || observations.Count == 0)
             {
                 return QuickWindowDataType.String;
             }
 
-            var distinctTypes = observations.Select(observation => observation.DataType).Distinct().ToArray();
-            if (distinctTypes.Length == 1)
-            {
-                return distinctTypes[0];
-            }
-
-            var bySheet = string.Join(", ", observations
-                .GroupBy(observation => observation.SheetKey)
-                .OrderBy(group => group.First().SheetDisplayName, StringComparer.Ordinal)
-                .ThenBy(group => group.Key)
-                .Select(group => $"'{group.First().SheetDisplayName}' ({group.First().DataType})"));
-            Diagnostics.Add(new ScadaBuildValidationIssue(
-                ScadaBuildValidationSeverity.Error,
-                "parameter-sheet.placeholder-type-conflict",
-                $"Page '{page.EffectivePageCode}', #{number} : les feuilles ne concordent pas sur le type de #{number} ({bySheet}) ; " +
-                "le membre reste String.",
-                PageId: page.EffectivePageCode,
-                PageKey: pageKey,
-                PropertyPath: $"Scenes[{page.EffectivePageCode}].#{number}",
-                TargetKey: QuickWindowKeys.Member(pageKey, number)));
-            return QuickWindowDataType.String;
+            var distinctTypes = observations.Distinct().ToArray();
+            return distinctTypes.Length == 1 ? distinctTypes[0] : QuickWindowDataType.String;
         }
 
         /// <summary>Records the type one binding implies for its `#N`, per <see cref="_placeholderTypeObservations"/>.</summary>
-        private void RecordPlaceholderTypeObservation(Guid pageKey, int number, ParameterSheet sheet, QuickWindowDataType? impliedType)
+        private void RecordPlaceholderTypeObservation(Guid pageKey, int number, QuickWindowDataType? impliedType)
         {
             if (impliedType is not { } type) return;
 
             var key = (pageKey, number);
             if (!_placeholderTypeObservations.TryGetValue(key, out var list))
             {
-                list = new List<(Guid SheetKey, string SheetDisplayName, QuickWindowDataType DataType)>();
+                list = new List<QuickWindowDataType>();
                 _placeholderTypeObservations[key] = list;
             }
 
-            list.Add((sheet.SheetKey, sheet.DisplayName, type));
+            list.Add(type);
         }
 
         /// <summary>
@@ -607,6 +615,33 @@ public static class ParameterSheetLowering
                     }
                 }
 
+                // Mirror of the runtime's _isInjection/_isAstInjection (resolveInvocation screens LiteralValue,
+                // Expression, TagId and every ExpressionAst string): a value it would reject makes the whole
+                // invocation refuse to open, so refuse it here, where the sheet line can be named.
+                if (valid)
+                {
+                    var rejected = entry.Kind switch
+                    {
+                        ParameterValueKind.Literal => QuickWindowRuntimeInjectionScreen.FindRejectingPattern(((ScadaExprLiteralString)entry.Node).Value) is { } literalPattern
+                            ? (((ScadaExprLiteralString)entry.Node).Value, literalPattern)
+                            : ((string, string)?)null,
+                        ParameterValueKind.Tag => QuickWindowRuntimeInjectionScreen.FindRejectingPattern(canonicalId) is { } tagPattern
+                            ? (canonicalId!, tagPattern)
+                            : null,
+                        _ => QuickWindowRuntimeInjectionScreen.FindRejectingPattern(entry.Source) is { } sourcePattern
+                            ? (entry.Source, sourcePattern)
+                            : QuickWindowRuntimeInjectionScreen.FindRejectedAstString(expressionAst)
+                    };
+                    if (rejected is { } found)
+                    {
+                        valid = false;
+                        AddCommandIssue(ScadaBuildValidationSeverity.Error, "parameter-sheet.literal-rejected-by-runtime",
+                            $"{linePrefix} : #{number} vaut « {entry.Source} » ; « {found.Item1} » serait refusé au montage par le runtime " +
+                            $"comme une injection (motif {found.Item2}), et la fenêtre ne s'ouvrirait pas.",
+                            owner, element, command, sheet.SheetKey);
+                    }
+                }
+
                 if (!valid) continue;
 
                 var memberKey = QuickWindowKeys.Member(pageKey, number);
@@ -628,7 +663,7 @@ public static class ParameterSheetLowering
                     ParameterValueKind.Literal => QuickWindowDataType.String,
                     _ => null
                 };
-                RecordPlaceholderTypeObservation(pageKey, number, sheet, impliedType);
+                RecordPlaceholderTypeObservation(pageKey, number, impliedType);
             }
 
             var usedNumbers = used.Select(group => group.Key).ToHashSet();
@@ -674,6 +709,9 @@ public static class ParameterSheetLowering
 
     private static bool IsWrite(PlaceholderUsageSite site) =>
         site is PlaceholderUsageSite.WriteTag or PlaceholderUsageSite.CommandWriteTag;
+
+    private static int CountLegacyStatic(IReadOnlyList<ScadaElement> elements) =>
+        elements.Sum(element => (element.IsLegacyStatic ? 1 : 0) + CountLegacyStatic(element.ChildElements));
 
     /// <summary>Read sites the runtime substitutes only with a tag id (never a literal nor an expression).</summary>
     private static bool IsTagRead(PlaceholderUsageSite site) =>

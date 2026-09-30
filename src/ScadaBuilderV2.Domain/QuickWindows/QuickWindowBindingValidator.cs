@@ -187,8 +187,12 @@ public static class QuickWindowBindingValidator
                 return BindingValidationResult.Invalid("binding.tag-readonly", $"Member '{member.Name}' requires write access but tag '{tagId}' is read-only.");
         }
 
-        // Type compatibility: crude mapping datatype string vs member DataType
-        if (!IsTagDatatypeCompatible(tag.Datatype, member.DataType))
+        // Type compatibility: crude mapping datatype string vs member DataType. A `#N` member of a definition
+        // compiled from a parameter-sheet QuickWindow page is exempt (spec §6, DEC-0052): the same page may be
+        // bound to a Boolean tag by one sheet and to a Decimal tag by another, its type is then only the
+        // neutral String the manifest requires, and the textual mount-time substitution never reads it.
+        if (!QuickWindowPlaceholder.TryParseName(member.Name, out _) &&
+            !IsTagDatatypeCompatible(tag.Datatype, member.DataType))
             return BindingValidationResult.Invalid("binding.type-mismatch", $"Tag '{tagId}' datatype '{tag.Datatype}' is not compatible with member '{member.Name}' type {member.DataType}.");
 
         return BindingValidationResult.Valid;

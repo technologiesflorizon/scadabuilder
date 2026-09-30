@@ -35,6 +35,25 @@ public sealed class QuickWindowBindingTests
     }
 
     [TestMethod]
+    public void AParameterSheetPlaceholderMemberIsExemptFromTheTagTypeCheck()
+    {
+        // Final review I5 (spec §6): a `#N` member is String when its sheets disagree, and a Boolean or an
+        // Int32 tag bound to it must still validate; a named DEC-0050 member keeps the check.
+        var placeholder = new QuickWindowInterfaceMember(Guid.NewGuid(), "#1", QuickWindowInterfaceFamily.ReadState, QuickWindowDataType.String, QuickWindowMemberAccess.Read);
+        var named = placeholder with { MemberKey = Guid.NewGuid(), Name = "MotorName" };
+        var catalog = CreateCatalog();
+
+        foreach (var tagId in new[] { "tf100.mapping.210", "tf100.mapping.220" })
+        {
+            var result = QuickWindowBindingValidator.ValidateBinding(QuickWindowBinding.FromTag(placeholder.MemberKey, tagId), placeholder, catalog, 1);
+            Assert.IsTrue(result.IsValid, $"{tagId}: {result.ErrorCode} {result.Message}");
+        }
+
+        var namedResult = QuickWindowBindingValidator.ValidateBinding(QuickWindowBinding.FromTag(named.MemberKey, "tf100.mapping.210"), named, catalog, 1);
+        Assert.AreEqual("binding.type-mismatch", namedResult.ErrorCode);
+    }
+
+    [TestMethod]
     public void OpenQuickWindowRequiresInvocationKey()
     {
         var cmd = new ScadaCommandBinding("cmd1", "Open", true, ScadaCommandTrigger.OnClick, ScadaCommandKind.OpenQuickWindow, QuickWindowInvocationKey: null);
