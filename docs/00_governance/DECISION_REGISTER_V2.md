@@ -8,7 +8,7 @@ Document version: `V2.1.6.0034`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-30 | `V2.1.6.0034` | `PENDING` | Ajout de `DEC-0052` : les fenêtres rapides sont désormais authorées comme des pages `QuickWindow` paramétrées par `#N`, résolues par des feuilles de paramètres substituées au montage de l'instance; supersède `2026-09-24-fragment-to-quick-window-conversion-design.md` et modifie `FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` §11b/§12.4. |
+| 2026-09-30 | `V2.1.6.0034` | `a32545a` | Ajout de `DEC-0052` : les fenêtres rapides sont désormais authorées comme des pages `QuickWindow` paramétrées par `#N`, résolues par des feuilles de paramètres substituées au montage de l'instance; supersède `2026-09-24-fragment-to-quick-window-conversion-design.md` et modifie `FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` §11b/§12.4. |
 | 2026-09-10 | `V2.1.6.0017` | `f5589e9` | Tâche 7 du chantier C close, re-cadrée par les Rulings 16 et 17 du contrôleur : le convertisseur projet 0 → 1 règle l'identité de page une fois, dans le fichier, avec la dérivation `PageKeyFactory.CreateDeterministic` (et non une dérivation SHA-256 incompatible); la suppression des règles de `ModernProjectMigration` promise par le brief est retirée, ce normaliseur restant nécessaire aux écritures et à la construction en mémoire. |
 | 2026-09-08 | `V2.1.6.0012` | `37bf604` | `DEC-0049` : le volet refus vers l'arrière de D5 est marqué implémenté dans la couverture de régression. |
 | 2026-09-08 | `V2.1.6.0008` | `77d955d` | `DEC-0049` auditée décision par décision; couverture portée de 9 à 27 tests et treize écarts corrigés. |
@@ -126,7 +126,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-09-30 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `a32545a`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A

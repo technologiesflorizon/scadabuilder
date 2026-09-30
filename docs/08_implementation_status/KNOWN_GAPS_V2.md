@@ -8,7 +8,7 @@ Document version: `V2.1.6.0034`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-30 | `V2.1.6.0034` | `PENDING` | Nouvelle entrée 36 : aucun élément de fenêtre rapide n'est animé par un port (`readPort`/`writePort` de `quick-window-runtime.js` appelés uniquement par des tests, appel interdit à l'hôte TF100Web). Traité par `DEC-0052`. |
+| 2026-09-30 | `V2.1.6.0034` | `a32545a` | Nouvelle entrée 36 : aucun élément de fenêtre rapide n'est animé par un port (`readPort`/`writePort` de `quick-window-runtime.js` appelés uniquement par des tests, appel interdit à l'hôte TF100Web). Traité par `DEC-0052`. |
 | 2026-09-10 | `V2.1.6.0022` | `240dcf6` | Nouvelle entrée 35 : trois modules sur quatre (`Scene`, `TagCatalog`, `Component`) n'ont aucun refus vers l'arrière effectif, trouvé lors du tour 2 de la revue de branche du chantier de versionnement de format. Consigne aussi, comme préexistante, l'attente de verrou infinie et non annulable d'`AcquireWorkspaceLockAsync`. Voir `docs/superpowers/reports/2026-09-10-project-format-versioning-audit.md` §9. |
 | 2026-09-10 | `V2.1.6.0019` | `6e4f4b6` | Nouvelle entrée 34 : la Tâche 8 du chantier de versionnement de format retire l'export non gardé pour `Compatibility21`/`Compatibility22`. |
 | 2026-09-10 | `V2.1.6.0017` | `f5589e9` | Nouvelle entrée 33 : la Tâche 7 du chantier C livre le stamp de génération de format, le refus vers l'arrière et le pipeline de conversion, mais pas la suppression du reniflage de forme qui motivait le chantier. `ModernProjectMigration` reste consigné comme écart ouvert, pas comme amélioration future. |
