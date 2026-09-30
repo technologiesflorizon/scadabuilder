@@ -568,6 +568,23 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
     }
 
     /// <inheritdoc />
+    public Task<bool> ConfirmParameterSheetDeletionAsync(ParameterSheet sheet, IReadOnlyList<ParameterSheetUsage> usages)
+    {
+        ArgumentNullException.ThrowIfNull(sheet);
+        ArgumentNullException.ThrowIfNull(usages);
+        var callers = string.Join(
+            Environment.NewLine,
+            usages.Take(10).Select(usage => $"· {usage.PageCode} / {usage.ElementId} / {usage.CommandId}"));
+        var confirmed = MessageBox.Show(
+            this,
+            $"La feuille de paramètres '{sheet.DisplayName}' est encore référencée par {usages.Count} commande(s) « Ouvrir une fenêtre rapide » :{Environment.NewLine}{callers}{Environment.NewLine}{Environment.NewLine}Supprimer quand même ?",
+            "Supprimer une feuille de paramètres référencée",
+            MessageBoxButton.YesNo,
+            MessageBoxImage.Warning) == MessageBoxResult.Yes;
+        return Task.FromResult(confirmed);
+    }
+
+    /// <inheritdoc />
     public Task<QuickWindowInterfaceMember?> RequestInterfaceMemberAsync(
         string title,
         QuickWindowInterfaceMemberDraft draft,

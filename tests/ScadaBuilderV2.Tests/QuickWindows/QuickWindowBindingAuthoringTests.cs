@@ -321,6 +321,9 @@ public sealed class QuickWindowBindingAuthoringTests
         public Task<bool> ConfirmQuickWindowDeletionAsync(QuickWindowDefinition definition, IReadOnlyList<QuickWindowUsage> usages) =>
             Task.FromResult(usages.Count == 0);
 
+        public Task<bool> ConfirmParameterSheetDeletionAsync(ParameterSheet sheet, IReadOnlyList<ParameterSheetUsage> usages) =>
+            Task.FromResult(usages.Count == 0);
+
         public Task<QuickWindowInterfaceMember?> RequestInterfaceMemberAsync(
             string title,
             QuickWindowInterfaceMemberDraft draft,

@@ -118,6 +118,9 @@ public sealed class QuickWindowFrontDoorNamingTests
         public Task<bool> ConfirmQuickWindowDeletionAsync(QuickWindowDefinition definition, IReadOnlyList<QuickWindowUsage> usages) =>
             Task.FromResult(true);
 
+        public Task<bool> ConfirmParameterSheetDeletionAsync(ParameterSheet sheet, IReadOnlyList<ParameterSheetUsage> usages) =>
+            Task.FromResult(true);
+
         public Task<QuickWindowInterfaceMember?> RequestInterfaceMemberAsync(
             string title,
             QuickWindowInterfaceMemberDraft draft,

@@ -50,6 +50,12 @@ public interface IQuickWindowWorkspaceHost
     Task<bool> ConfirmQuickWindowDeletionAsync(QuickWindowDefinition definition, IReadOnlyList<QuickWindowUsage> usages);
 
     /// <summary>
+    /// Asks the operator to confirm deleting one parameter sheet that is still referenced by at least one
+    /// `Ouvrir une fenêtre rapide` command, listing every caller (DEC-0052).
+    /// </summary>
+    Task<bool> ConfirmParameterSheetDeletionAsync(ParameterSheet sheet, IReadOnlyList<ParameterSheetUsage> usages);
+
+    /// <summary>
     /// Opens the shared member dialog on one draft and returns the authored member; null cancels.
     /// The same dialog serves creation and advanced edition (FR-UI-16).
     /// </summary>
@@ -324,12 +330,24 @@ public sealed class QuickWindowWorkspaceController(
         return Task.FromResult<QuickWindowWorkspaceMutation?>(mutation);
     }
 
-    /// <summary>Deletes one parameter sheet; undo restores it, so no confirmation dialog is required.</summary>
-    public Task<QuickWindowWorkspaceMutation?> DeleteSheetAsync(PageWorkspaceSnapshot snapshot, Guid sheetKey)
+    /// <summary>
+    /// Deletes one parameter sheet. A sheet still referenced by at least one `Ouvrir une fenêtre rapide`
+    /// command asks the operator to confirm first, listing every caller — otherwise the deletion only
+    /// surfaces as `parameter-sheet.sheet-missing` at the next validation or export, long after undo has
+    /// stopped covering it. A sheet with no caller deletes directly, exactly as before (fix round 1).
+    /// </summary>
+    public async Task<QuickWindowWorkspaceMutation?> DeleteSheetAsync(PageWorkspaceSnapshot snapshot, Guid sheetKey)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
         var sheet = FindSheet(snapshot, sheetKey);
-        if (sheet is null) return Task.FromResult<QuickWindowWorkspaceMutation?>(null);
+        if (sheet is null) return null;
+
+        var usages = ParameterSheetUsageFinder.Find(snapshot, sheetKey);
+        if (usages.Count > 0 && !await host.ConfirmParameterSheetDeletionAsync(sheet, usages))
+        {
+            host.ReportQuickWindowStatus($"Suppression de la feuille de paramètres '{sheet.DisplayName}' annulée.");
+            return null;
+        }
 
         var sheets = snapshot.Project.EffectiveParameterSheets.Where(item => item.SheetKey != sheetKey).ToArray();
         var after = snapshot with { Version = snapshot.Version + 1, Project = snapshot.Project with { ParameterSheets = sheets } };
@@ -340,7 +358,7 @@ public sealed class QuickWindowWorkspaceController(
             "delete parameter sheet",
             sheetKey);
         host.ReportQuickWindowStatus($"Feuille de paramètres '{sheet.DisplayName}' supprimée.");
-        return Task.FromResult<QuickWindowWorkspaceMutation?>(mutation);
+        return mutation;
     }
 
     /// <summary>Opens one definition in the shared editor and publishes its bounded context.</summary>
