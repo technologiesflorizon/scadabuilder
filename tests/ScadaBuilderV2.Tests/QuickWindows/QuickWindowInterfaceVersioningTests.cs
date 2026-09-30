@@ -407,8 +407,10 @@ public sealed class QuickWindowInterfaceVersioningTests
         StringAssert.Contains(xaml, "x:Name=\"RepairInvocationButton\"");
         StringAssert.Contains(xaml, "QuickWindowBindingsEditor x:Name=\"RepairBindingsEditor\"");
 
-        var panel = ReadAppFile(Path.Combine("QuickWindows", "QuickWindowInterfacePanel.xaml"));
-        StringAssert.Contains(panel, "x:Name=\"RepairInvocationsButton\"");
+        // The `Interface locale` panel (QuickWindowInterfacePanel.xaml) was repurposed by DEC-0052 (Task 11)
+        // into a read-only `#N` placeholder-usage list bound to the active quick-window page; it no longer
+        // hosts a definition-editing surface, so it no longer offers this repair entry point. The repair
+        // dialog itself (asserted above) and its underlying domain services are unaffected (spec §9).
 
         var dialog = ReadAppFile(Path.Combine("QuickWindows", "QuickWindowInvocationRepairDialog.xaml.cs"));
         Assert.IsFalse(

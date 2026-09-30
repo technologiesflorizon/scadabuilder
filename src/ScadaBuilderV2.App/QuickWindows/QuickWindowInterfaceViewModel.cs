@@ -2,8 +2,38 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using ScadaBuilderV2.Application.QuickWindows;
 using ScadaBuilderV2.Domain.QuickWindows;
+using ScadaBuilderV2.Domain.Scenes;
 
 namespace ScadaBuilderV2.App.QuickWindows;
+
+/// <summary>
+/// One read-only row of the `Interface locale` panel when it is bound to a quick-window page (DEC-0052):
+/// the `#N` placeholder, how many times it is used and every location it is used at.
+/// </summary>
+/// <remarks>
+/// Built directly from <see cref="QuickWindowPlaceholderUsageCollector"/>; never persisted, never edited.
+///
+/// Decisions: DEC-0052.
+/// Contracts: docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md §5.
+/// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowInterfaceViewModelTests.cs.
+/// </remarks>
+public sealed class PlaceholderUsageRow(int number, int usageCount, IReadOnlyList<string> locations)
+{
+    /// <summary>Gets the placeholder number.</summary>
+    public int Number { get; } = number;
+
+    /// <summary>Gets the display label of the placeholder (<c>#N</c>).</summary>
+    public string NumberLabel => $"#{Number}";
+
+    /// <summary>Gets how many times this placeholder is used by the page.</summary>
+    public int UsageCount { get; } = usageCount;
+
+    /// <summary>Gets every location this placeholder is used at.</summary>
+    public IReadOnlyList<string> Locations { get; } = locations;
+
+    /// <summary>Gets the locations, joined for display.</summary>
+    public string LocationsLabel => string.Join(", ", Locations);
+}
 
 /// <summary>French authoring labels for the typed local-interface vocabulary.</summary>
 /// <remarks>
@@ -352,10 +382,12 @@ public sealed class QuickWindowInterfacePanelViewModel : INotifyPropertyChanged
     public const string AllFamiliesLabel = "Toutes les familles";
 
     private readonly List<QuickWindowInterfaceMemberViewModel> all = [];
+    private readonly List<InvalidPlaceholderToken> invalidPlaceholderTokens = [];
     private QuickWindowInterfaceMemberViewModel? selected;
     private QuickWindowInterfaceFamilyFilter familyFilter;
     private string searchText = string.Empty;
     private string definitionLabel = string.Empty;
+    private string pageLabel = string.Empty;
 
     /// <summary>Creates an empty panel bound to no definition.</summary>
     public QuickWindowInterfacePanelViewModel()
@@ -453,6 +485,67 @@ public sealed class QuickWindowInterfacePanelViewModel : INotifyPropertyChanged
     /// <summary>Gets whether the panel currently shows a definition.</summary>
     public bool HasDefinition => DefinitionKey is not null;
 
+    /// <summary>Gets the read-only `#N` placeholder rows of the active quick-window page, sorted by number.</summary>
+    public ObservableCollection<PlaceholderUsageRow> PlaceholderRows { get; } = [];
+
+    /// <summary>Gets every `#…` token found in the active page's displayed texts that is not a valid placeholder.</summary>
+    public IReadOnlyList<InvalidPlaceholderToken> InvalidPlaceholderTokens => invalidPlaceholderTokens;
+
+    /// <summary>Gets whether the active page carries at least one invalid `#…` token.</summary>
+    public bool HasInvalidPlaceholderTokens => invalidPlaceholderTokens.Count > 0;
+
+    /// <summary>Gets the label of the active quick-window page, shown above the placeholder table.</summary>
+    public string PageLabel
+    {
+        get => pageLabel;
+        private set { if (pageLabel == value) return; pageLabel = value; Raise(nameof(PageLabel)); }
+    }
+
+    /// <summary>
+    /// Reloads the panel, read-only, from the `#N` placeholders used by a quick-window page's active
+    /// content (DEC-0052): one row per number, sorted ascending, with its usage count and locations.
+    /// There is no member to add, edit or delete any more — the page's own content is the only source.
+    /// </summary>
+    public void LoadPlaceholders(ScadaScene page)
+    {
+        ArgumentNullException.ThrowIfNull(page);
+        var (usages, invalid) = QuickWindowPlaceholderUsageCollector.Collect(page);
+
+        PlaceholderRows.Clear();
+        foreach (var group in usages.GroupBy(usage => usage.Number).OrderBy(group => group.Key))
+        {
+            var locations = group.Select(FormatLocation).ToArray();
+            PlaceholderRows.Add(new PlaceholderUsageRow(group.Key, group.Count(), locations));
+        }
+
+        invalidPlaceholderTokens.Clear();
+        invalidPlaceholderTokens.AddRange(invalid);
+
+        PageLabel = $"{page.Title} ({page.EffectivePageCode})";
+        Raise(nameof(InvalidPlaceholderTokens));
+        Raise(nameof(HasInvalidPlaceholderTokens));
+    }
+
+    private static string FormatLocation(PlaceholderUsage usage)
+    {
+        var site = SiteLabel(usage.Site);
+        return usage.CommandId is { } commandId
+            ? $"{usage.ElementId} · {site} ({commandId})"
+            : $"{usage.ElementId} · {site}";
+    }
+
+    private static string SiteLabel(PlaceholderUsageSite site) => site switch
+    {
+        PlaceholderUsageSite.ReadTag => "Tag lu",
+        PlaceholderUsageSite.WriteTag => "Tag écrit",
+        PlaceholderUsageSite.StateExpression => "Expression d'état",
+        PlaceholderUsageSite.ReadVariable => "Variable lue",
+        PlaceholderUsageSite.CommandWriteTag => "Commande (écriture)",
+        PlaceholderUsageSite.CommandReadTag => "Commande (lecture)",
+        PlaceholderUsageSite.Text => "Texte",
+        _ => site.ToString()
+    };
+
     /// <summary>Reloads the panel from one definition and its per-member usages.</summary>
     public void Load(
         QuickWindowDefinition definition,
@@ -489,9 +582,14 @@ public sealed class QuickWindowInterfacePanelViewModel : INotifyPropertyChanged
         DefinitionKey = null;
         DefinitionLabel = string.Empty;
         Selected = null;
+        PlaceholderRows.Clear();
+        invalidPlaceholderTokens.Clear();
+        PageLabel = string.Empty;
         ApplyFilters();
         Raise(nameof(DefinitionKey));
         Raise(nameof(HasDefinition));
+        Raise(nameof(InvalidPlaceholderTokens));
+        Raise(nameof(HasInvalidPlaceholderTokens));
     }
 
     private void OnMemberInlineEdited(object? sender, QuickWindowInterfaceMemberViewModel item) =>

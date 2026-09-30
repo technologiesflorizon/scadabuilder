@@ -6,78 +6,74 @@
         <SolidColorBrush x:Key="BenchMutedBrush" Color="#5E7A82"/>
         <SolidColorBrush x:Key="BenchBorderBrush" Color="#DCE8DD"/>
         <SolidColorBrush x:Key="BenchInkBrush" Color="#0F2A30"/>
+        <SolidColorBrush x:Key="BenchDangerBrush" Color="#B3261E"/>
+        <BooleanToVisibilityConverter x:Key="BenchBooleanToVisibility"/>
     </UserControl.Resources>
     <Grid Margin="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Margin="0,0,0,8">
             <TextBlock Text="Banc d'essai" FontWeight="SemiBold" Foreground="{StaticResource BenchInkBrush}"/>
-            <TextBlock x:Name="DefinitionLabelText"
-                       Text="{Binding DefinitionLabel}"
+            <TextBlock x:Name="PageLabelText"
+                       Text="{Binding PageLabel}"
                        FontSize="11"
                        TextWrapping="Wrap"
                        Foreground="{StaticResource BenchMutedBrush}"/>
-            <TextBlock Text="Valeurs temporaires editor-only : jamais persistées, jamais exportées."
+            <TextBlock Text="Prévisualise la page active avec les valeurs d'une feuille de paramètres, via la substitution réelle de montage."
                        FontSize="11"
                        TextWrapping="Wrap"
                        Margin="0,4,0,0"
                        Foreground="{StaticResource BenchMutedBrush}"/>
         </StackPanel>
 
-        <StackPanel Grid.Row="1" Margin="0,0,0,8">
-            <TextBlock Text="Titre temporaire de l'instance" Foreground="{StaticResource BenchMutedBrush}"/>
-            <TextBox x:Name="TitleOverrideTextBox"
-                     MinHeight="28"
-                     Text="{Binding TitleOverride, UpdateSourceTrigger=PropertyChanged}"/>
-        </StackPanel>
-
-        <DataGrid x:Name="TestValuesDataGrid"
-                  Grid.Row="2"
-                  AutoGenerateColumns="False"
-                  CanUserAddRows="False"
-                  CanUserDeleteRows="False"
-                  HeadersVisibility="Column"
-                  GridLinesVisibility="Horizontal"
-                  BorderBrush="{StaticResource BenchBorderBrush}"
-                  BorderThickness="1"
-                  ItemsSource="{Binding Rows}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Port" Binding="{Binding Name}" IsReadOnly="True" Width="1.2*"/>
-                <DataGridTextColumn Header="Famille" Binding="{Binding FamilyLabel}" IsReadOnly="True" Width="1*"/>
-                <DataGridTextColumn Header="Type" Binding="{Binding DataTypeLabel}" IsReadOnly="True" Width="0.8*"/>
-                <DataGridTextColumn Header="Tag temporaire" Binding="{Binding TemporaryTagId, UpdateSourceTrigger=LostFocus}" Width="1.3*"/>
-                <DataGridTextColumn Header="Valeur temporaire" Binding="{Binding TemporaryValue, UpdateSourceTrigger=LostFocus}" Width="1.2*"/>
-            </DataGrid.Columns>
-        </DataGrid>
-
-        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0,8,0,8">
-            <Button x:Name="OpenPreviewButton"
-                    Content="Ouvrir l'aperçu"
-                    MinHeight="30"
-                    Padding="12,4"
-                    Margin="0,0,8,0"
-                    IsEnabled="{Binding HasDefinition}"
-                    Click="OnOpenPreviewClick"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,8">
+            <TextBlock Text="Feuille de paramètres" VerticalAlignment="Center" Margin="0,0,8,0" Foreground="{StaticResource BenchMutedBrush}"/>
+            <ComboBox x:Name="SheetSelectorComboBox"
+                      MinHeight="30"
+                      Width="220"
+                      DisplayMemberPath="DisplayName"
+                      ItemsSource="{Binding Sheets}"
+                      SelectionChanged="OnSheetSelectionChanged"/>
             <Button x:Name="ClosePreviewButton"
                     Content="Fermer l'aperçu"
                     MinHeight="30"
                     Padding="12,4"
-                    Margin="0,0,8,0"
+                    Margin="12,0,0,0"
                     Click="OnClosePreviewClick"/>
-            <TextBlock x:Name="BenchStatusText"
-                       Text="{Binding Status}"
-                       VerticalAlignment="Center"
-                       TextWrapping="Wrap"
-                       Foreground="{StaticResource BenchMutedBrush}"/>
         </StackPanel>
 
-        <Border Grid.Row="4"
+        <StackPanel Grid.Row="2" Margin="0,0,0,8">
+            <TextBlock x:Name="BenchStatusText"
+                       Text="{Binding Status}"
+                       TextWrapping="Wrap"
+                       Foreground="{StaticResource BenchMutedBrush}"/>
+            <ItemsControl ItemsSource="{Binding LoweringDiagnostics}"
+                          Visibility="{Binding HasLoweringDiagnostics, Converter={StaticResource BenchBooleanToVisibility}}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock FontSize="11" TextWrapping="Wrap" Text="{Binding Message}">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="Foreground" Value="{StaticResource BenchMutedBrush}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Severity}" Value="Error">
+                                            <Setter Property="Foreground" Value="{StaticResource BenchDangerBrush}"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+
+        <Border Grid.Row="3"
                 BorderBrush="{StaticResource BenchBorderBrush}"
                 BorderThickness="1">
             <Grid>

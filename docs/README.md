@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.6.0051`
+Document version: `V2.1.6.0052`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-30 | `V2.1.6.0052` | `PENDING` | Tâche 11 du chantier `2026-09-30-quick-window-parameter-sheets` (`DEC-PARAMSHEETS` = `DEC-0052`) : « Interface locale » (lecture seule des `#N` de la page active) et « Banc d'essai » (feuille choisie → abaissement sur instantané → aperçu via `mountInstance`) rewirés sur la page active de type `QuickWindow`. Détail complet : `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md` et `.superpowers/sdd/2026-09-30-quick-window-parameter-sheets/task-11-report.md`. |
 | 2026-09-30 | `V2.1.6.0051` | `fa65e0c` | Fix round 2 de revue de la Tâche 10 (`DEC-PARAMSHEETS` = `DEC-0052`) : la liveness des invocations pré-existantes pendant l'abaissement balaie désormais aussi le contenu de chaque définition Fenêtre rapide (nouvelle ou pré-existante), pas seulement les scènes de page abaissées — corrige une casse silencieuse introduite par le fix round 1 pour une commande vivant dans le contenu d'une fenêtre rapide. Détail complet : `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md` et `.superpowers/sdd/2026-09-30-quick-window-parameter-sheets/task-10-report.md`. |
 | 2026-09-30 | `V2.1.6.0050` | `49f5d88` | Fix round 1 de revue de la Tâche 10 (`DEC-PARAMSHEETS` = `DEC-0052`) : migrer une commande `OpenQuickWindow` legacy vers une paire feuille/page retire désormais l'ancienne invocation orpheline du projet, en une seule transition undoable ; `ParameterSheetLowering.Lower` ne conserve plus qu'une invocation pré-existante encore référencée par une commande vivante. Détail complet : `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md` et `.superpowers/sdd/2026-09-30-quick-window-parameter-sheets/task-10-report.md`. |
 | 2026-09-30 | `V2.1.6.0049` | `bc5ebfb` | Tâche 10 du chantier `2026-09-30-quick-window-parameter-sheets` (`DEC-PARAMSHEETS` = `DEC-0052`) : dialogue « Configuration de la fenêtre rapide » (feuille de paramètres + page `QuickWindow`) remplaçant l'ancienne déroulante de définition et l'onglet « Liaisons » pour une commande « Ouvrir une fenêtre rapide » d'authoring. Détail complet : `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md` et `.superpowers/sdd/2026-09-30-quick-window-parameter-sheets/task-10-report.md`. |

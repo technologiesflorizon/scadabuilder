@@ -1,6 +1,8 @@
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.QuickWindows;
 
@@ -42,11 +44,18 @@ public sealed record QuickWindowTestBenchValues(
 /// <param name="InvocationKey">The invocation whose bindings are previewed.</param>
 /// <param name="TestBench">Editor-only temporary values, or null.</param>
 /// <param name="TagCatalog">Catalog used to resolve tag bindings while rendering.</param>
+/// <param name="Invocation">
+/// A real, fully-bound invocation to register and mount through the shared DEC-0052 runtime
+/// (<c>ScadaRuntime.QuickWindow.loadRegistries</c>/<c>open</c>/<c>mountInstance</c>) instead of the legacy
+/// <c>QuickWindowHost.open</c> path. Null keeps the legacy path, used by a DEC-0050 definition with no `#N`
+/// placeholder member: it mounts exactly as before, with no substitution and no possible refusal.
+/// </param>
 public sealed record QuickWindowPreviewInput(
     QuickWindowDefinition Definition,
     Guid InvocationKey,
     QuickWindowTestBenchValues? TestBench = null,
-    ScadaTagCatalog? TagCatalog = null);
+    ScadaTagCatalog? TagCatalog = null,
+    QuickWindowInvocation? Invocation = null);
 
 /// <summary>Generated editor-only preview document of one quick-window instance.</summary>
 /// <param name="InstanceCode">Collision-free code of the preview directory and files.</param>
@@ -97,6 +106,20 @@ public static class QuickWindowPreviewDocumentFactory
         Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
     };
 
+    /// <summary>
+    /// Options for the DEC-0052 preview registry payload (<c>ScadaRuntime.QuickWindow.loadRegistries</c>):
+    /// property names AND enum values keep the exact PascalCase spelling the shared runtime module compares
+    /// against (<c>bound.SourceKind === 'Tag'</c>, <c>member.Family !== 'PrivateVariable'</c>, …) — unlike
+    /// <c>Ft100SceneExporter.ManifestJsonOptions</c>, which camel-cases enum values for the exported package
+    /// manifest. A nested <c>ExpressionAst</c> is re-serialized separately with
+    /// <c>Ft100SceneExporter.StateCommandJsonOptions</c> (full camelCase), per spec §3 ruling R3.
+    /// </summary>
+    private static readonly JsonSerializerOptions RegistryJsonOptions = new()
+    {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+        Converters = { new JsonStringEnumConverter() }
+    };
+
     /// <summary>Creates the preview document of one quick-window instance.</summary>
     public static QuickWindowPreviewDocument Create(
         QuickWindowPreviewInput input,
@@ -115,6 +138,7 @@ public static class QuickWindowPreviewDocumentFactory
         var title = HtmlEncoder.Default.Encode(
             string.IsNullOrWhiteSpace(testBench.TitleOverride) ? definition.EffectiveTitle : testBench.TitleOverride!);
         var templateId = $"{ns}__template";
+        var registry = input.Invocation is { } invocation ? BuildRegistry(definition, invocation) : null;
         var requestJson = HtmlEncoder.Default.Encode(JsonSerializer.Serialize(new
         {
             definitionKey = definition.DefinitionKey,
@@ -122,6 +146,7 @@ public static class QuickWindowPreviewDocumentFactory
             runtimeInstanceId = instanceId,
             generation,
             templateId,
+            registry,
             testValues = new
             {
                 tagValues = testBench.EffectiveTagValues,
@@ -129,6 +154,7 @@ public static class QuickWindowPreviewDocumentFactory
                 titleOverride = testBench.TitleOverride
             }
         }, TestValueJsonOptions));
+        var mountScript = registry is null ? LegacyMountScript : PlaceholderMountScript;
 
         var html = $$"""
 <!doctype html>
@@ -158,16 +184,7 @@ public static class QuickWindowPreviewDocumentFactory
   </template>
   <script src="{{ScriptFileName}}" defer></script>
   <script defer>
-    document.addEventListener('DOMContentLoaded', function () {
-      var request = JSON.parse(document.getElementById('qw-preview-request').getAttribute('{{TestValuesAttribute}}'));
-      window.ScadaRuntime.QuickWindowHost.setHostRoot(document.body);
-      window.ScadaRuntime.QuickWindowHost.open({
-        definitionKey: request.definitionKey,
-        invocationKey: request.invocationKey,
-        templateId: request.templateId,
-        testValues: request.testValues.tagValues
-      });
-    });
+{{mountScript}}
   </script>
   <div id="qw-preview-request" hidden {{TestValuesAttribute}}="{{requestJson}}"></div>
 </body>
@@ -183,6 +200,111 @@ public static class QuickWindowPreviewDocumentFactory
             BuildCss(scene, ns),
             BuildScript(),
             warnings);
+    }
+
+    /// <summary>Legacy mount script: DEC-0050 hosted-definition preview via <c>QuickWindowHost.open</c>, no `#N` substitution.</summary>
+    private const string LegacyMountScript = """
+    document.addEventListener('DOMContentLoaded', function () {
+      var request = JSON.parse(document.getElementById('qw-preview-request').getAttribute('data-qw-test-values'));
+      window.ScadaRuntime.QuickWindowHost.setHostRoot(document.body);
+      window.ScadaRuntime.QuickWindowHost.open({
+        definitionKey: request.definitionKey,
+        invocationKey: request.invocationKey,
+        templateId: request.templateId,
+        testValues: request.testValues.tagValues
+      });
+    });
+    """;
+
+    /// <summary>
+    /// DEC-0052 mount script: registers the previewed definition and invocation with the shared runtime
+    /// module, opens the invocation and mounts it through <c>ScadaRuntime.QuickWindow.mountInstance</c> so
+    /// the `#N` substitution of Task 7 runs exactly as it will for a real instance. The DOM materialization
+    /// and close wiring a real host normally owns are inlined here as a minimal `HostAdapter`, scoped to
+    /// this editor-only preview document: the shared runtime module's own open()/close() call
+    /// <c>window.ScadaRuntime.HostAdapter.dispatchIntent</c>, which no production host implements yet
+    /// (spec §2 — end-to-end host wiring is a later step of this plan, not this one).
+    /// </summary>
+    private const string PlaceholderMountScript = """
+    document.addEventListener('DOMContentLoaded', function () {
+      var request = JSON.parse(document.getElementById('qw-preview-request').getAttribute('data-qw-test-values'));
+      var hostRoot = document.getElementById('qw-preview-host');
+      var showRefusal = function (code) {
+        var warning = document.createElement('p');
+        warning.className = 'qw-preview-hint';
+        warning.textContent = 'Apercu refuse: ' + code;
+        hostRoot.appendChild(warning);
+      };
+      window.ScadaRuntime.QuickWindow.loadRegistries(request.registry);
+      window.ScadaRuntime.HostAdapter = {
+        dispatchIntent: function (envelope) {
+          var intent = envelope.intent;
+          if (intent.kind === 'openQuickWindow') {
+            var template = document.getElementById(request.templateId);
+            var fragment = template.content.cloneNode(true);
+            var root = fragment.firstElementChild;
+            root.setAttribute('data-qw-def', intent.namespace);
+            root.setAttribute('data-qw-inst', intent.runtimeInstanceId);
+            hostRoot.appendChild(root);
+            var closeButton = root.querySelector('[data-qw-close]');
+            if (closeButton) {
+              closeButton.addEventListener('click', function () {
+                window.ScadaRuntime.QuickWindow.close(intent.runtimeInstanceId);
+              });
+            }
+            var mounted = window.ScadaRuntime.QuickWindow.mountInstance(intent.runtimeInstanceId, root);
+            if (!mounted.ok) {
+              root.remove();
+              showRefusal(mounted.code);
+            }
+          } else if (intent.kind === 'closeQuickWindow') {
+            window.ScadaRuntime.QuickWindow.disposeInstance(intent.runtimeInstanceId);
+            var mounted = hostRoot.querySelector('[data-qw-inst="' + intent.runtimeInstanceId + '"]');
+            if (mounted) mounted.remove();
+          }
+        }
+      };
+      var opened = window.ScadaRuntime.QuickWindow.open(request.invocationKey);
+      if (!opened.ok) {
+        showRefusal(opened.code);
+      }
+    });
+    """;
+
+    /// <summary>
+    /// Builds the minimal DEC-0052 registry payload (<see cref="RegistryJsonOptions"/>) the preview
+    /// registers with <c>ScadaRuntime.QuickWindow.loadRegistries</c>: the previewed definition (its
+    /// interface members only — visual content is already rendered server-side) and its one invocation.
+    /// A binding's <c>ExpressionAst</c>, when present, is re-serialized with
+    /// <see cref="Ft100SceneExporter.StateCommandJsonOptions"/> per ruling R3.
+    /// </summary>
+    private static object BuildRegistry(QuickWindowDefinition definition, QuickWindowInvocation invocation)
+    {
+        var definitionNode = JsonSerializer.SerializeToNode(new
+        {
+            definition.DefinitionKey,
+            definition.InterfaceVersion,
+            InterfaceMembers = definition.EffectiveInterfaceMembers
+        }, RegistryJsonOptions);
+
+        var invocationNode = JsonSerializer.SerializeToNode(invocation, RegistryJsonOptions)!.AsObject();
+        var bindingsNode = invocationNode["Bindings"]?.AsArray();
+        if (bindingsNode is not null)
+        {
+            for (var i = 0; i < invocation.Bindings.Count; i++)
+            {
+                if (invocation.Bindings[i].ExpressionAst is { } ast)
+                {
+                    bindingsNode[i]!["ExpressionAst"] = JsonSerializer.SerializeToNode(ast, Ft100SceneExporter.StateCommandJsonOptions);
+                }
+            }
+        }
+
+        return new
+        {
+            QuickWindows = new[] { definitionNode },
+            QuickWindowInvocations = new[] { invocationNode }
+        };
     }
 
     /// <summary>Returns the preview script bundle: shared runtime modules plus the quick-window host.</summary>

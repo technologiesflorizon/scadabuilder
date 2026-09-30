@@ -246,6 +246,14 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
     }
 
     /// <inheritdoc />
+    /// <remarks>
+    /// Retained only to satisfy <see cref="IQuickWindowWorkspaceHost"/>: <see cref="QuickWindowWorkspaceController.OpenAsync"/>
+    /// is its only caller and has had none of its own since Task 9 replaced the "+" empty-definition
+    /// workflow with authoring quick windows as pages (spec §9) — no panel or menu reaches this method any
+    /// more. It still hosts the definition's visual content as a read-only canvas projection (defence in
+    /// depth) but no longer drives `Interface locale`/`Banc d'essai`: those now read the ACTIVE PAGE
+    /// (<see cref="RefreshQuickWindowPageSurfaces"/>), which this hosted-definition surface is not.
+    /// </remarks>
     public async Task ActivateQuickWindowAsync(QuickWindowEditorContext context, QuickWindowDefinition definition)
     {
         ArgumentNullException.ThrowIfNull(context);
@@ -256,8 +264,8 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         EditorContextBadgeText.Text = context.ContextBadge;
         EditorContextTitleText.Text = context.ContextTitle;
         EditorContextPanel.Visibility = Visibility.Visible;
-        ShowLocalInterfacePanel();
-        ShowQuickWindowTestBench(definition);
+        HideLocalInterfacePanel();
+        HideQuickWindowTestBench();
         RefreshActiveRibbonCommandStates();
         await HostQuickWindowProjectionAsync(definition);
     }
@@ -303,7 +311,11 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         }
     }
 
-    /// <summary>Restores the page context after a page becomes the active surface again.</summary>
+    /// <summary>
+    /// Restores the page context after a page becomes the active surface again, and shows `Interface
+    /// locale`/`Banc d'essai` for the active page's own `#N` placeholders when it is authored as
+    /// <see cref="ScadaPageType.QuickWindow"/> (DEC-0052) instead of the retired hosted-definition path.
+    /// </summary>
     private void ActivatePageEditorContext(Guid pageKey, string code, string? title)
     {
         _activeEditorContext = QuickWindowEditorContext.ForPage(pageKey, code, title);
@@ -313,29 +325,46 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         EditorContextBadgeText.Text = _activeEditorContext.ContextBadge;
         EditorContextTitleText.Text = _activeEditorContext.ContextTitle;
         EditorContextPanel.Visibility = Visibility.Visible;
-        HideLocalInterfacePanel();
-        HideQuickWindowTestBench();
+        RefreshQuickWindowPageSurfaces();
     }
 
     /// <summary>
-    /// Shows `Interface locale` in place of the project `Catalogue Tags` while a quick window is authored.
-    /// The tag catalogue is hidden rather than left visible and ambiguous: quick-window content never
-    /// references a physical project tag.
+    /// Shows `Interface locale` and the `Banc d'essai` for the active page when it is authored as
+    /// <see cref="ScadaPageType.QuickWindow"/>, reading its `#N` placeholders and letting the operator
+    /// preview it with a parameter sheet (DEC-0052); hides both and restores the project `Catalogue Tags`
+    /// otherwise.
     /// </summary>
-    private void ShowLocalInterfacePanel()
+    private void RefreshQuickWindowPageSurfaces()
+    {
+        var page = _activeSceneTab?.PageKey is { } pageKey
+            ? _modernProject?.Scenes.FirstOrDefault(item => item.PageKey == pageKey)
+            : null;
+        if (page?.Type == ScadaPageType.QuickWindow && _activeScene is not null)
+        {
+            ShowLocalInterfacePanelForPage(_activeScene);
+            ShowQuickWindowTestBenchForPage(_activeScene);
+        }
+        else
+        {
+            HideLocalInterfacePanel();
+            HideQuickWindowTestBench();
+        }
+    }
+
+    /// <summary>
+    /// Shows `Interface locale` in place of the project `Catalogue Tags` while a quick-window page is the
+    /// active surface. The tag catalogue is hidden rather than left visible and ambiguous: quick-window
+    /// content never references a physical project tag.
+    /// </summary>
+    private void ShowLocalInterfacePanelForPage(ScadaScene page)
     {
         if (!_isQuickWindowInterfacePanelBound)
         {
             QuickWindowInterfacePanelControl.Bind(QuickWindowWorkspace.InterfacePanel);
-            QuickWindowInterfacePanelControl.AddMemberRequested += OnQuickWindowAddMemberRequested;
-            QuickWindowInterfacePanelControl.EditMemberRequested += OnQuickWindowEditMemberRequested;
-            QuickWindowInterfacePanelControl.DeleteMemberRequested += OnQuickWindowDeleteMemberRequested;
-            QuickWindowInterfacePanelControl.NavigateToUsageRequested += OnQuickWindowNavigateToMemberUsageRequested;
-            QuickWindowInterfacePanelControl.MemberInlineEdited += OnQuickWindowMemberInlineEdited;
-            QuickWindowInterfacePanelControl.RepairInvocationsRequested += OnQuickWindowRepairInvocationsRequested;
             _isQuickWindowInterfacePanelBound = true;
         }
 
+        QuickWindowWorkspace.InterfacePanel.LoadPlaceholders(page);
         HideAnchorable(TagCatalogAnchorable);
         ShowAnchorable(QuickWindowInterfaceAnchorable);
     }
@@ -347,17 +376,17 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         ShowAnchorable(TagCatalogAnchorable);
     }
 
-    /// <summary>Binds and shows the editor-only test bench of the activated definition (FR-UI-21).</summary>
-    private void ShowQuickWindowTestBench(QuickWindowDefinition definition)
+    /// <summary>Binds and shows the test bench of the active quick-window page (DEC-0052).</summary>
+    private void ShowQuickWindowTestBenchForPage(ScadaScene page)
     {
         if (!_isQuickWindowTestBenchBound)
         {
-            QuickWindowTestBenchControl.PreviewRequested += OnQuickWindowPreviewRequested;
+            QuickWindowTestBenchControl.SheetSelected += OnQuickWindowTestBenchSheetSelected;
             QuickWindowTestBenchControl.CloseRequested += OnQuickWindowPreviewCloseRequested;
             _isQuickWindowTestBenchBound = true;
         }
 
-        QuickWindowTestBenchControl.Model.Load(definition);
+        QuickWindowTestBenchControl.Model.LoadPage(page, _modernProject?.EffectiveParameterSheets ?? []);
         ShowAnchorable(QuickWindowTestBenchAnchorable);
     }
 
@@ -370,11 +399,35 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         HideAnchorable(QuickWindowTestBenchAnchorable);
     }
 
-    private async void OnQuickWindowPreviewRequested(object? sender, EventArgs e)
+    /// <summary>
+    /// Previews the active quick-window page with one parameter sheet's values (DEC-0052): builds a
+    /// synthetic "Ouvrir une fenêtre rapide" command pairing the chosen sheet with the active page on an
+    /// in-memory snapshot — never written into the project — lowers that snapshot and, when lowering
+    /// carries no error, feeds the resulting definition and invocation to the existing preview so it
+    /// mounts through <c>mountInstance</c> and the `#N` substitution of Task 7. Lowering diagnostics
+    /// (errors and warnings) are always shown in the bench, whether or not the preview opens.
+    /// </summary>
+    private async void OnQuickWindowTestBenchSheetSelected(object? sender, Guid sheetKey)
     {
-        if (_hostedQuickWindowDefinition is not { } definition)
+        QuickWindowTestBenchControl.Model.SelectSheet(sheetKey);
+        if (_modernProject is null || _activeSceneTab?.PageKey is not { } pageKey || _activeScene is null)
         {
             QuickWindowTestBenchControl.Model.Status = "Aucune fenetre rapide active.";
+            return;
+        }
+
+        var sheet = _modernProject.EffectiveParameterSheets.FirstOrDefault(item => item.SheetKey == sheetKey);
+        if (sheet is null)
+        {
+            QuickWindowTestBenchControl.Model.Status = "Feuille de paramètres introuvable.";
+            return;
+        }
+
+        var lowering = QuickWindowTestBenchLowering.Lower(_modernProject, _activeScene, pageKey, sheet);
+        QuickWindowTestBenchControl.Model.SetLoweringDiagnostics(lowering.Diagnostics);
+        if (lowering.Definition is null || lowering.Invocation is null)
+        {
+            QuickWindowTestBenchControl.HidePreview("Aperçu impossible: la feuille ne peut pas être appliquée à cette page (voir diagnostics).");
             return;
         }
 
@@ -387,13 +440,13 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         try
         {
             var session = await adapter.OpenAsync(
-                definition,
-                Guid.NewGuid(),
-                QuickWindowTestBenchControl.Model.ToTestBenchValues(),
-                ActiveSelectorTagCatalog);
+                lowering.Definition,
+                lowering.Invocation.InvocationKey,
+                invocation: lowering.Invocation,
+                tagCatalog: _modernProject.TagCatalog);
             QuickWindowTestBenchControl.ShowPreview(session.Source);
             QuickWindowTestBenchControl.Model.Status =
-                $"Instance de prévisualisation ouverte (génération {session.Generation}).";
+                $"Instance de prévisualisation ouverte avec la feuille '{sheet.DisplayName}' (génération {session.Generation}).";
         }
         catch (Exception ex)
         {
@@ -405,55 +458,6 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
     {
         QuickWindowPreviewHost?.Close();
         QuickWindowTestBenchControl.HidePreview("Instance de prévisualisation fermée.");
-    }
-
-    private async void OnQuickWindowAddMemberRequested(object? sender, EventArgs e) =>
-        await ExecuteQuickWindowInterfaceCommandAsync((snapshot, definitionKey) =>
-            QuickWindowWorkspace.AddInterfaceMemberAsync(snapshot, definitionKey));
-
-    private async void OnQuickWindowEditMemberRequested(object? sender, QuickWindowInterfaceMemberViewModel member) =>
-        await ExecuteQuickWindowInterfaceCommandAsync((snapshot, definitionKey) =>
-            QuickWindowWorkspace.EditInterfaceMemberAsync(snapshot, definitionKey, member.MemberKey));
-
-    private async void OnQuickWindowDeleteMemberRequested(object? sender, QuickWindowInterfaceMemberViewModel member) =>
-        await ExecuteQuickWindowInterfaceCommandAsync((snapshot, definitionKey) =>
-            QuickWindowWorkspace.DeleteInterfaceMemberAsync(snapshot, definitionKey, member.MemberKey));
-
-    private async void OnQuickWindowMemberInlineEdited(object? sender, QuickWindowInterfaceMemberViewModel member) =>
-        await ExecuteQuickWindowInterfaceCommandAsync((snapshot, definitionKey) =>
-            QuickWindowWorkspace.ApplyInlineInterfaceEditAsync(snapshot, definitionKey, member.Member));
-
-    private async void OnQuickWindowNavigateToMemberUsageRequested(object? sender, QuickWindowInterfaceMemberViewModel member)
-    {
-        if (_modernProject is null || _hostedQuickWindowKey is not { } definitionKey) return;
-        var snapshot = await _pageWorkspaceController.CaptureSnapshotAsync();
-        var mutation = QuickWindowWorkspace.NavigateToMemberUsage(snapshot, definitionKey, member.MemberKey);
-        if (mutation is null) return;
-        NavigateToQuickWindowUsage(mutation);
-    }
-
-    /// <summary>
-    /// Applies one local-interface command as a single undoable transition, then refreshes the hosted
-    /// projection so the canvas keeps showing the definition that was just edited.
-    /// </summary>
-    private async Task ExecuteQuickWindowInterfaceCommandAsync(
-        Func<PageWorkspaceSnapshot, Guid, Task<QuickWindowWorkspaceMutation?>> command)
-    {
-        if (_modernProject is null || _hostedQuickWindowKey is not { } definitionKey)
-        {
-            SetStatus("Aucune fenetre rapide active.");
-            return;
-        }
-
-        var snapshot = await _pageWorkspaceController.CaptureSnapshotAsync();
-        var mutation = await command(snapshot, definitionKey);
-        if (mutation is null || mutation.Result.Status != CommandResultStatus.Succeeded || !mutation.Result.Changed) return;
-
-        await ApplyQuickWindowMutationAsync(mutation);
-        if (mutation.After.Project.EffectiveQuickWindows.FirstOrDefault(item => item.DefinitionKey == definitionKey) is { } updated)
-        {
-            _hostedQuickWindowDefinition = updated;
-        }
     }
 
     /// <summary>

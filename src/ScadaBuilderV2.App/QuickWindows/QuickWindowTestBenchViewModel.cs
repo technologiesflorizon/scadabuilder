@@ -1,7 +1,10 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.QuickWindows;
+using ScadaBuilderV2.Domain.Scenes;
 using ScadaBuilderV2.Rendering.QuickWindows;
+// ScadaBuildValidationIssue lives in ScadaBuilderV2.Domain.Projects; ParameterSheet in ScadaBuilderV2.Domain.QuickWindows (both imported above).
 
 namespace ScadaBuilderV2.App.QuickWindows;
 
@@ -76,12 +79,34 @@ public sealed class QuickWindowTestBenchViewModel : INotifyPropertyChanged
     private QuickWindowDefinition? definition;
     private string titleOverride = string.Empty;
     private string status = string.Empty;
+    private string pageLabel = string.Empty;
+    private Guid? selectedSheetKey;
+    private IReadOnlyList<ScadaBuildValidationIssue> loweringDiagnostics = [];
 
     /// <inheritdoc />
     public event PropertyChangedEventHandler? PropertyChanged;
 
     /// <summary>Gets the editable test rows, one per public port.</summary>
     public ObservableCollection<QuickWindowTestBenchRowViewModel> Rows { get; } = [];
+
+    /// <summary>Gets the parameter sheets offered by the bench's sheet selector (DEC-0052).</summary>
+    public ObservableCollection<ParameterSheet> Sheets { get; } = [];
+
+    /// <summary>Gets the label of the active quick-window page previewed by the bench.</summary>
+    public string PageLabel
+    {
+        get => pageLabel;
+        private set { if (pageLabel == value) return; pageLabel = value; Raise(nameof(PageLabel)); }
+    }
+
+    /// <summary>Gets the sheet key currently selected in the bench, or null.</summary>
+    public Guid? SelectedSheetKey => selectedSheetKey;
+
+    /// <summary>Gets the lowering diagnostics of the last previewed (sheet, page) pair (DEC-0052, spec §6).</summary>
+    public IReadOnlyList<ScadaBuildValidationIssue> LoweringDiagnostics => loweringDiagnostics;
+
+    /// <summary>Gets whether the last lowering carried at least one diagnostic.</summary>
+    public bool HasLoweringDiagnostics => loweringDiagnostics.Count > 0;
 
     /// <summary>Gets the definition currently exercised, or null.</summary>
     public Guid? DefinitionKey => definition?.DefinitionKey;
@@ -130,14 +155,57 @@ public sealed class QuickWindowTestBenchViewModel : INotifyPropertyChanged
         RaiseAll();
     }
 
+    /// <summary>
+    /// Loads the bench for the active quick-window page (DEC-0052, spec §5): offers every parameter
+    /// sheet of the project, keeping the previously selected one when it is still offered.
+    /// </summary>
+    public void LoadPage(ScadaScene page, IReadOnlyList<ParameterSheet> sheets)
+    {
+        ArgumentNullException.ThrowIfNull(page);
+        ArgumentNullException.ThrowIfNull(sheets);
+        var previous = selectedSheetKey;
+        PageLabel = $"{page.Title} ({page.EffectivePageCode})";
+        Sheets.Clear();
+        foreach (var sheet in sheets.OrderBy(sheet => sheet.DisplayName, StringComparer.OrdinalIgnoreCase)) Sheets.Add(sheet);
+        selectedSheetKey = previous is { } key && Sheets.Any(sheet => sheet.SheetKey == key) ? key : null;
+        loweringDiagnostics = [];
+        Status = string.Empty;
+        Raise(nameof(SelectedSheetKey));
+        Raise(nameof(LoweringDiagnostics));
+        Raise(nameof(HasLoweringDiagnostics));
+    }
+
+    /// <summary>Records the sheet the operator picked in the bench's sheet selector.</summary>
+    public void SelectSheet(Guid sheetKey)
+    {
+        if (selectedSheetKey == sheetKey) return;
+        selectedSheetKey = sheetKey;
+        Raise(nameof(SelectedSheetKey));
+    }
+
+    /// <summary>Shows the lowering diagnostics of the last previewed (sheet, page) pair in the bench.</summary>
+    public void SetLoweringDiagnostics(IReadOnlyList<ScadaBuildValidationIssue> diagnostics)
+    {
+        loweringDiagnostics = diagnostics ?? [];
+        Raise(nameof(LoweringDiagnostics));
+        Raise(nameof(HasLoweringDiagnostics));
+    }
+
     /// <summary>Clears the bench when no quick window is active.</summary>
     public void Clear()
     {
         definition = null;
         Rows.Clear();
+        Sheets.Clear();
+        selectedSheetKey = null;
+        loweringDiagnostics = [];
+        PageLabel = string.Empty;
         titleOverride = string.Empty;
         Status = string.Empty;
         RaiseAll();
+        Raise(nameof(SelectedSheetKey));
+        Raise(nameof(LoweringDiagnostics));
+        Raise(nameof(HasLoweringDiagnostics));
     }
 
     /// <summary>

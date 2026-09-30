@@ -21,153 +21,52 @@
     <DockPanel Margin="12">
         <StackPanel DockPanel.Dock="Top" Margin="0,0,0,8">
             <TextBlock Text="Interface locale" FontWeight="SemiBold" Foreground="{StaticResource PanelInkBrush}"/>
-            <TextBlock x:Name="DefinitionLabelText"
-                       Text="{Binding DefinitionLabel}"
+            <TextBlock x:Name="PageLabelText"
+                       Text="{Binding PageLabel}"
                        FontSize="11"
                        TextWrapping="Wrap"
                        Foreground="{StaticResource PanelMutedBrush}"/>
-            <TextBlock x:Name="SummaryText"
-                       Text="{Binding SummaryLabel}"
+            <TextBlock Text="Liste en lecture seule des #N utilisés par la page active et leurs emplacements."
                        FontSize="11"
                        Margin="0,4,0,0"
+                       TextWrapping="Wrap"
                        Foreground="{StaticResource PanelMutedBrush}"/>
         </StackPanel>
 
-        <WrapPanel DockPanel.Dock="Top" Margin="0,0,0,8">
-            <TextBox x:Name="MemberSearchTextBox"
-                     MinHeight="30"
-                     Width="160"
-                     Margin="0,0,8,6"
-                     ToolTip="Recherche membre"
-                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"/>
-            <ComboBox x:Name="MemberFamilyFilterComboBox"
-                      MinHeight="30"
-                      Width="160"
-                      Margin="0,0,8,6"
-                      ToolTip="Filtrer par famille"
-                      DisplayMemberPath="Label"
-                      ItemsSource="{Binding FamilyFilters}"
-                      SelectedItem="{Binding SelectedFamilyFilter}"/>
-            <Button x:Name="AddMemberButton"
-                    MinHeight="30"
-                    Padding="10,2"
-                    Margin="0,0,8,6"
-                    Content="+ Membre"
-                    ToolTip="Ajouter un membre"
-                    Click="OnAddMemberClick"/>
-            <Button x:Name="EditMemberButton"
-                    MinHeight="30"
-                    Padding="10,2"
-                    Margin="0,0,8,6"
-                    Content="Propriétés avancées"
-                    ToolTip="Contraintes et propriétés avancées du membre"
-                    IsEnabled="{Binding HasSelection}"
-                    Click="OnEditMemberClick"/>
-            <Button x:Name="DeleteMemberButton"
-                    MinHeight="30"
-                    Padding="10,2"
-                    Margin="0,0,8,6"
-                    Content="Supprimer"
-                    ToolTip="Supprimer le membre"
-                    IsEnabled="{Binding HasSelection}"
-                    Click="OnDeleteMemberClick"/>
-            <Button x:Name="RepairInvocationsButton"
-                    MinHeight="30"
-                    Padding="10,2"
-                    Margin="0,0,0,6"
-                    Content="Réparer les invocations"
-                    ToolTip="Relier port par port les invocations laissées Outdated par une évolution d'interface"
-                    Foreground="#B3261E"
-                    FontWeight="SemiBold"
-                    Click="OnRepairInvocationsClick"/>
-        </WrapPanel>
+        <ItemsControl DockPanel.Dock="Top"
+                      Margin="0,0,0,8"
+                      ItemsSource="{Binding InvalidPlaceholderTokens}"
+                      Visibility="{Binding HasInvalidPlaceholderTokens, Converter={StaticResource BooleanToVisibility}}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock FontSize="11" Foreground="{StaticResource PanelDangerBrush}" TextWrapping="Wrap">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="Jeton invalide « {0} » (élément '{1}') — écrire \# pour un # littéral.">
+                                <Binding Path="Raw"/>
+                                <Binding Path="ElementId"/>
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
-        <DataGrid x:Name="InterfaceMembersDataGrid"
+        <DataGrid x:Name="PlaceholderRowsDataGrid"
                   AutoGenerateColumns="False"
                   CanUserAddRows="False"
                   CanUserDeleteRows="False"
+                  IsReadOnly="True"
                   HeadersVisibility="Column"
                   GridLinesVisibility="Horizontal"
                   BorderBrush="{StaticResource PanelBorderBrush}"
                   BorderThickness="1"
                   SelectionMode="Single"
                   SelectionUnit="FullRow"
-                  ItemsSource="{Binding Source={StaticResource GroupedMembers}}"
-                  SelectedItem="{Binding Selected}"
-                  MouseDoubleClick="OnMembersDoubleClick">
-            <DataGrid.GroupStyle>
-                <GroupStyle>
-                    <GroupStyle.HeaderTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}"
-                                       FontWeight="Bold"
-                                       Margin="2,6,0,2"
-                                       Foreground="{StaticResource PanelInkBrush}"/>
-                        </DataTemplate>
-                    </GroupStyle.HeaderTemplate>
-                </GroupStyle>
-            </DataGrid.GroupStyle>
+                  ItemsSource="{Binding PlaceholderRows}">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Nom" Binding="{Binding Name, UpdateSourceTrigger=LostFocus}" Width="1.4*"/>
-                <DataGridComboBoxColumn x:Name="FamilyColumn"
-                                        Header="Famille"
-                                        DisplayMemberPath="Label"
-                                        SelectedValuePath="Value"
-                                        SelectedValueBinding="{Binding Family}"
-                                        Width="1.2*"/>
-                <DataGridComboBoxColumn x:Name="DataTypeColumn"
-                                        Header="Type"
-                                        DisplayMemberPath="Label"
-                                        SelectedValuePath="Value"
-                                        SelectedValueBinding="{Binding DataType}"
-                                        Width="1*"/>
-                <DataGridComboBoxColumn x:Name="AccessColumn"
-                                        Header="Accès"
-                                        DisplayMemberPath="Label"
-                                        SelectedValuePath="Value"
-                                        SelectedValueBinding="{Binding Access}"
-                                        Width="1*"/>
-                <DataGridCheckBoxColumn Header="Requis" Binding="{Binding Required, UpdateSourceTrigger=PropertyChanged}" Width="0.6*"/>
-                <DataGridTemplateColumn Header="Statut" Width="0.9*" IsReadOnly="True">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding BindingStatusLabel}" VerticalAlignment="Center" Margin="4,0">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Foreground" Value="{StaticResource PanelInkBrush}"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsUnboundOptional}" Value="True">
-                                                <Setter Property="Foreground" Value="{StaticResource PanelMutedBrush}"/>
-                                            </DataTrigger>
-                                            <DataTrigger Binding="{Binding IsUnboundRequired}" Value="True">
-                                                <Setter Property="Foreground" Value="{StaticResource PanelDangerBrush}"/>
-                                                <Setter Property="FontWeight" Value="Bold"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Utilisations" Width="1.1*" IsReadOnly="True">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <TextBlock Text="{Binding UsageLabel}"
-                                           VerticalAlignment="Center"
-                                           Margin="4,0,6,0"
-                                           Foreground="{StaticResource PanelMutedBrush}"/>
-                                <Button Content="Voir"
-                                        Padding="6,1"
-                                        MinHeight="22"
-                                        ToolTip="Naviguer vers les utilisations de ce membre"
-                                        Visibility="{Binding HasUsages, Converter={StaticResource BooleanToVisibility}}"
-                                        Click="OnNavigateToUsageClick"/>
-                            </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="#N" Binding="{Binding NumberLabel}" Width="0.6*"/>
+                <DataGridTextColumn Header="Usages" Binding="{Binding UsageCount}" Width="0.6*"/>
+                <DataGridTextColumn Header="Emplacements" Binding="{Binding LocationsLabel}" Width="2.4*"/>
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

@@ -59,6 +59,7 @@ public sealed class BuilderQuickWindowHostAdapter(string previewRootPath)
         Guid invocationKey,
         QuickWindowTestBenchValues? testBench = null,
         ScadaTagCatalog? tagCatalog = null,
+        QuickWindowInvocation? invocation = null,
         CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(definition);
@@ -66,7 +67,7 @@ public sealed class BuilderQuickWindowHostAdapter(string previewRootPath)
         var runtimeInstanceId = Guid.NewGuid();
         var root = Path.Combine(previewRoot, PreviewDirectoryName);
         var document = await PreviewDocument.MaterializeQuickWindowAsync(
-            new QuickWindowPreviewInput(definition, invocationKey, testBench, tagCatalog),
+            new QuickWindowPreviewInput(definition, invocationKey, testBench, tagCatalog, invocation),
             root,
             nextGeneration,
             runtimeInstanceId,

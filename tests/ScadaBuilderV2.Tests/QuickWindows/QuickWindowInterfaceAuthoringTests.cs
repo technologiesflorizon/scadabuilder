@@ -74,23 +74,16 @@ public sealed class QuickWindowInterfaceAuthoringTests
     [TestMethod]
     public void CommonPropertiesAreInlineAndAdvancedOnesUseTheSharedDialog()
     {
+        // The `Interface locale` panel (QuickWindowInterfacePanel.xaml) no longer hosts this inline/advanced
+        // member table: DEC-0052 (Task 11) replaced it with a read-only `#N` placeholder-usage list bound to
+        // the active quick-window page (QuickWindowInterfaceViewModelTests.cs). QuickWindowInterfaceMemberViewModel
+        // and QuickWindowInterfaceMemberDialog remain, since the domain/dialog services still exist (spec §9).
         CollectionAssert.AreEqual(
             new[] { "Name", "Family", "DataType", "Access", "Required" },
             QuickWindowInterfaceMemberViewModel.InlineEditableProperties.ToArray());
         CollectionAssert.AreEqual(
             new[] { "DefaultValue", "Description" },
             QuickWindowInterfaceMemberViewModel.AdvancedProperties.ToArray());
-
-        var panelXaml = ReadAppFile(Path.Combine("QuickWindows", "QuickWindowInterfacePanel.xaml"));
-        foreach (var column in new[] { "Nom", "Famille", "Type", "Accès", "Requis", "Statut", "Utilisations" })
-        {
-            StringAssert.Contains(panelXaml, $"Header=\"{column}\"");
-        }
-
-        StringAssert.Contains(panelXaml, "PropertyGroupDescription PropertyName=\"GroupLabel\"");
-        StringAssert.Contains(panelXaml, "x:Name=\"MemberFamilyFilterComboBox\"");
-        StringAssert.Contains(panelXaml, "x:Name=\"MemberSearchTextBox\"");
-        StringAssert.Contains(panelXaml, "Click=\"OnNavigateToUsageClick\"");
 
         var dialogXaml = ReadAppFile(Path.Combine("QuickWindows", "QuickWindowInterfaceMemberDialog.xaml"));
         foreach (var field in new[] { "NameTextBox", "FamilyComboBox", "DataTypeComboBox", "AccessComboBox", "RequiredCheckBox", "DefaultValueTextBox", "DescriptionTextBox" })

@@ -199,6 +199,35 @@ public sealed class QuickWindowPreviewTests
         Assert.IsTrue(bench.ToTestBenchValues().IsEmpty);
     }
 
+    [TestMethod]
+    public void AnInvocationRoutesTheMountThroughTheSharedRuntimeModuleInsteadOfTheLegacyHost()
+    {
+        var definition = Definition();
+        var invocation = new QuickWindowInvocation(
+            Guid.NewGuid(),
+            definition.DefinitionKey,
+            [QuickWindowBinding.FromLiteral(RunningKey, "Ventilateur 3")],
+            InterfaceVersion: definition.InterfaceVersion);
+
+        var document = QuickWindowPreviewDocumentFactory.Create(
+            new QuickWindowPreviewInput(definition, Guid.NewGuid(), Invocation: invocation));
+
+        StringAssert.Contains(document.Html, "ScadaRuntime.QuickWindow.loadRegistries");
+        StringAssert.Contains(document.Html, "ScadaRuntime.QuickWindow.open(");
+        StringAssert.Contains(document.Html, "ScadaRuntime.QuickWindow.mountInstance(");
+        StringAssert.Contains(document.Html, "&quot;SourceKind&quot;:&quot;Literal&quot;", "the registry keeps the exact PascalCase enum spelling the runtime module compares against");
+        Assert.IsFalse(document.Html.Contains("QuickWindowHost.open", StringComparison.Ordinal), "an invocation preview never takes the legacy DEC-0050 host path");
+    }
+
+    [TestMethod]
+    public void WithNoInvocationThePreviewKeepsTheLegacyHostPath()
+    {
+        var document = QuickWindowPreviewDocumentFactory.Create(new QuickWindowPreviewInput(Definition(), Guid.NewGuid()));
+
+        StringAssert.Contains(document.Html, "QuickWindowHost.open");
+        Assert.IsFalse(document.Html.Contains("ScadaRuntime.QuickWindow.mountInstance(", StringComparison.Ordinal));
+    }
+
     private static QuickWindowDefinition Definition() =>
         new(
             DefinitionKey,
