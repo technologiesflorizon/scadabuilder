@@ -193,6 +193,18 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         {
             throw new InvalidDataException("project.json contains inline QuickWindow definitions without authoritative quick-windows/*.quick-window.json files. The file remains unchanged; no implicit migration is performed.");
         }
+
+        // ParameterSheet files are authoritative. project.json never embeds full sheets.
+        var psStore = new ParameterSheetStore();
+        var psFromFiles = await psStore.LoadAllAsync(projectRoot, cancellationToken);
+        if (psFromFiles.Count > 0)
+        {
+            project = project with { ParameterSheets = psFromFiles };
+        }
+        else if (project.EffectiveParameterSheets.Count > 0)
+        {
+            throw new InvalidDataException("project.json contains inline ParameterSheet entries without authoritative parameter-sheets/*.parameter-sheet.json files. The file remains unchanged; no implicit migration is performed.");
+        }
         return ModernProjectMigration.MigrateProject(project);
     }
 
@@ -257,9 +269,12 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         var quickWindowStore = new QuickWindowStore();
         foreach (var definition in normalized.EffectiveQuickWindows.OrderBy(item => item.Code, StringComparer.Ordinal).ThenBy(item => item.DefinitionKey))
             await quickWindowStore.SaveAsync(projectRoot, definition, cancellationToken);
+        var parameterSheetStore = new ParameterSheetStore();
+        foreach (var sheet in normalized.EffectiveParameterSheets.OrderBy(item => item.Code, StringComparer.Ordinal).ThenBy(item => item.SheetKey))
+            await parameterSheetStore.SaveAsync(projectRoot, sheet, cancellationToken);
         var projectPath = Path.Combine(Path.GetFullPath(projectRoot), "project.json");
         Directory.CreateDirectory(Path.GetDirectoryName(projectPath)!);
-        await SaveJsonAsync(projectPath, normalized with { QuickWindows = null }, cancellationToken);
+        await SaveJsonAsync(projectPath, normalized with { QuickWindows = null, ParameterSheets = null }, cancellationToken);
     }
 
     /// <inheritdoc />
@@ -320,11 +335,18 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
                 entries.Add(await QuickWindowStore.StageJsonAsync(projectRoot, transactionRoot, qw, cancellationToken));
             }
 
+            // Stage parameter sheets deterministically
+            foreach (var ps in normalized.Project.EffectiveParameterSheets.OrderBy(ps => ps.Code, StringComparer.Ordinal).ThenBy(ps => ps.SheetKey))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                entries.Add(await ParameterSheetStore.StageJsonAsync(projectRoot, transactionRoot, ps, cancellationToken));
+            }
+
             entries.Add(await StageJsonAsync(
                 projectRoot,
                 transactionRoot,
                 "project.json",
-                normalized.Project with { QuickWindows = null },
+                normalized.Project with { QuickWindows = null, ParameterSheets = null },
                 cancellationToken));
             await ValidateStagedSnapshotAsync(transactionRoot, entries, normalized.Project, cancellationToken);
             cancellationToken.ThrowIfCancellationRequested();
@@ -342,7 +364,22 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
             }
             var normalizedQwRelative = normalized.Project.EffectiveQuickWindows.Select(qw => QuickWindowStore.GetRelativePath(qw.DefinitionKey)).ToHashSet(StringComparer.OrdinalIgnoreCase);
             var qwDeletions = existingQwRelative.Where(rel => !normalizedQwRelative.Contains(rel)).ToArray();
-            var allDeletions = normalized.PendingDeletions.Select(item => NormalizeRelativePath(item.RelativePath)).Concat(qwDeletions).ToArray();
+
+            // Compute parameter-sheet deletions: any file under parameter-sheets/ not in normalized project
+            var existingPsRelative = new List<string>();
+            var psDir = Path.Combine(projectRoot, "parameter-sheets");
+            if (Directory.Exists(psDir))
+            {
+                foreach (var file in Directory.GetFiles(psDir, "*.parameter-sheet.json", SearchOption.TopDirectoryOnly))
+                {
+                    var rel = Path.GetRelativePath(projectRoot, file).Replace('\\', '/');
+                    existingPsRelative.Add(rel);
+                }
+            }
+            var normalizedPsRelative = normalized.Project.EffectiveParameterSheets.Select(ps => ParameterSheetStore.GetRelativePath(ps.SheetKey)).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            var psDeletions = existingPsRelative.Where(rel => !normalizedPsRelative.Contains(rel)).ToArray();
+
+            var allDeletions = normalized.PendingDeletions.Select(item => NormalizeRelativePath(item.RelativePath)).Concat(qwDeletions).Concat(psDeletions).ToArray();
 
             journal = new WorkspaceSaveJournal(
                 transactionId,
@@ -566,6 +603,25 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
             }
         }
 
+        // Validate parameter sheets
+        var parameterSheets = project.EffectiveParameterSheets;
+        if (parameterSheets.Count > 0)
+        {
+            var psKeys = new HashSet<Guid>();
+            foreach (var ps in parameterSheets)
+            {
+                if (ps.SheetKey == Guid.Empty)
+                    throw new InvalidOperationException("ParameterSheet SheetKey must be non-empty.");
+                if (!psKeys.Add(ps.SheetKey))
+                    throw new InvalidOperationException($"Duplicate ParameterSheet SheetKey '{ps.SheetKey}'.");
+                var relative = ParameterSheetStore.GetRelativePath(ps.SheetKey);
+                _ = ParameterSheetStore.ResolveContainedParameterSheetPath(projectRoot, relative);
+            }
+            // Deterministic order
+            var orderedSheets = parameterSheets.OrderBy(ps => ps.Code, StringComparer.Ordinal).ThenBy(ps => ps.SheetKey).ToArray();
+            project = project with { ParameterSheets = orderedSheets };
+        }
+
         return new PageWorkspaceSnapshot(snapshot.Version, project, scenes, pendingDeletions);
     }
 
@@ -619,6 +675,14 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
                 if (qw is null || qw.DefinitionKey == Guid.Empty)
                 {
                     throw new InvalidDataException($"Staged quick-window '{entry.TargetRelativePath}' did not pass validation.");
+                }
+            }
+            else if (entry.TargetRelativePath.StartsWith("parameter-sheets/", StringComparison.OrdinalIgnoreCase))
+            {
+                var ps = await JsonSerializer.DeserializeAsync<ScadaBuilderV2.Domain.QuickWindows.ParameterSheet>(stream, JsonOptions, cancellationToken);
+                if (ps is null || ps.SheetKey == Guid.Empty)
+                {
+                    throw new InvalidDataException($"Staged parameter-sheet '{entry.TargetRelativePath}' did not pass validation.");
                 }
             }
             else
@@ -696,7 +760,14 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
                 }
                 catch
                 {
-                    path = ResolveContainedPath(projectRoot, relativePath);
+                    try
+                    {
+                        path = ParameterSheetStore.ResolveContainedParameterSheetPath(projectRoot, relativePath);
+                    }
+                    catch
+                    {
+                        path = ResolveContainedPath(projectRoot, relativePath);
+                    }
                 }
             }
             if (File.Exists(path))

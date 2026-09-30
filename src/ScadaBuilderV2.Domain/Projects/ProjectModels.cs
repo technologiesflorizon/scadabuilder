@@ -93,6 +93,7 @@ public sealed record ScadaProject(
     Guid? HomePageKey = null,
     IReadOnlyList<QuickWindowDefinition>? QuickWindows = null,
     IReadOnlyList<QuickWindowInvocation>? QuickWindowInvocations = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     IReadOnlyList<ParameterSheet>? ParameterSheets = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     int? FormatVersion = null)
