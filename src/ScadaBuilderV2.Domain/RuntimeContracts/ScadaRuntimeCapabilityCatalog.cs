@@ -50,7 +50,8 @@ public static class ScadaRuntimeCapabilityCatalog
         (ScadaPageType.Default, Capability("page.default", ScadaRuntimeCapabilityOwner.Tf100WebHost)),
         (ScadaPageType.Fragment, Capability("page.fragment", ScadaRuntimeCapabilityOwner.Tf100WebHost)),
         (ScadaPageType.Header, Capability("page.header", ScadaRuntimeCapabilityOwner.Tf100WebHost)),
-        (ScadaPageType.Footer, Capability("page.footer", ScadaRuntimeCapabilityOwner.Tf100WebHost)));
+        (ScadaPageType.Footer, Capability("page.footer", ScadaRuntimeCapabilityOwner.Tf100WebHost)),
+        (ScadaPageType.QuickWindow, Blocked("page.quick-window", ScadaRuntimeCapabilityOwner.Tf100WebHost)));
 
     /// <summary>Gets capabilities keyed by persistent element kind.</summary>
     public static IReadOnlyDictionary<ScadaElementKind, ScadaRuntimeCapability> ElementKinds { get; } = Map(

@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using ScadaBuilderV2.Domain.ElementEvents.Expressions;
 
 namespace ScadaBuilderV2.Domain.QuickWindows;
 
@@ -37,7 +38,8 @@ public sealed record QuickWindowBinding(
     string? TagId = null,
     string? LiteralValue = null,
     string? Expression = null,
-    Guid? ParentMemberKey = null)
+    Guid? ParentMemberKey = null,
+    ScadaExprNode? ExpressionAst = null)
 {
     /// <summary>Gets whether this binding is explicitly absent.</summary>
     [JsonIgnore]

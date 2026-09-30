@@ -1413,6 +1413,16 @@
       "ExpectedDiagnostic": null
     },
     {
+      "CapabilityId": "page.quick-window",
+      "FixtureId": "blocked:page.quick-window",
+      "Status": "Blocked",
+      "PageId": null,
+      "InitialValues": null,
+      "Gesture": "load-page",
+      "ExpectedResult": "strict-export-rejected",
+      "ExpectedDiagnostic": "page.quick-window"
+    },
+    {
       "CapabilityId": "popup.options",
       "FixtureId": "blocked:popup.options",
       "Status": "Blocked",

@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.6.0035`
+Document version: `V2.1.6.0036`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-30 | `V2.1.6.0036` | `PENDING` | Tâche 3 du chantier `2026-09-30-quick-window-parameter-sheets` : jetons `#N` (`QuickWindowPlaceholder`) et extension du modèle de projet — `ScadaPageType.QuickWindow`, `ScadaProject.ParameterSheets`/`EffectiveParameterSheets`, `ScadaCommandBinding.ParameterSheetKey`/`QuickWindowPageKey`, `QuickWindowBinding.ExpressionAst`. Détail complet : `docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md`. |
 | 2026-09-30 | `V2.1.6.0035` | `99ad60f` | Tâche 2 du chantier `2026-09-30-quick-window-parameter-sheets` : analyseur de feuille de paramètres. Modèles `ParameterSheet`, `ParameterValueKind`, `ParameterEntry`, `ParameterSheetDiagnostic`, `ParameterSheetParseResult` ajoutés ; parseur statique `ParameterSheetParser.Parse` et classificateur `ParameterSheetParser.Classify` livrés avec 20 tests (modèle `#N := expression`, commentaires `//`, validation des placements de paramètres, rejet des doublons et des références emboîtées `{#N}`). Détail complet : `docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md` §4.2/§4.3. |
 | 2026-09-30 | `V2.1.6.0034` | `a32545a` | Ajout de `DEC-0052` (`docs/00_governance/DECISION_REGISTER_V2.md`) : les fenêtres rapides sont désormais authorées par pages `QuickWindow` paramétrées par `#N` et feuilles de paramètres, substituées au montage de l'instance; supersède `docs/superpowers/specs/2026-09-24-fragment-to-quick-window-conversion-design.md`. `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` §11b/§12.4 mis à jour (`ExpressionAst`, substitution au montage). Nouvelle entrée 36 dans `docs/08_implementation_status/KNOWN_GAPS_V2.md` (`readPort`/`writePort` non appelés en production). |
 | 2026-09-24 | `V2.1.6.0033` | `ef7d502` | Nommer une fenêtre rapide avec une majuscule, un espace ou un accent était refusé sans raison affichée. Cause : `QuickWindowWorkspaceController` passait le même texte saisi comme code technique et comme nom affiché, validé par `PageCodePolicy.Validate` (`^[a-z][a-z0-9_-]{0,63}$`). Ajout de `PageCodePolicy.DeriveCodeFromDisplayName` (nom libre → code portable, normalisation Unicode des diacritiques) ; `CreateAsync`/`DuplicateAsync` dérivent le code, `RenameAsync` ne touche plus que `DisplayName` (le `Code` reste stable, car il descend jusqu'au compilateur `.sb2`, à l'aperçu et à la clé de persistance). Tout refus rapporte désormais la première raison de diagnostic au lieu du seul préfixe générique. Détail complet : `docs/06_ui_ux/UI_ARCHITECTURE_V2.md`. |

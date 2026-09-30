@@ -15,7 +15,7 @@ Document version: `V2.1.4.0062`
 
 The strict 2.3 status is deliberately conservative. Every `Supported` row has Builder, shared-runtime and TF100Web evidence and is exercised by the exact-SHA shared conformance gate. Every remaining `Blocked` row is rejected by the strict Builder exporter and TF100Web deployment validator.
 
-Summary: 172 capabilities; 126 Supported; 46 Blocked; 0 Deprecated.
+Summary: 173 capabilities; 126 Supported; 47 Blocked; 0 Deprecated.
 
 | Capability | Minimum contract | Owner | Status | Artifacts | Fixture | Builder tests | Shared-runtime tests | TF100Web tests |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -134,6 +134,7 @@ Summary: 172 capabilities; 126 Supported; 46 Blocked; 0 Deprecated.
 | page.footer | 1.0 | Tf100WebHost | Supported | manifest.json:Pages&lt;br&gt;&lt;page-id&gt;/&lt;page-id&gt;.html | conformance:page.footer | tests/ScadaBuilderV2.Tests/RuntimeContracts/RuntimeConformancePackageTests.cs | tests/runtime-js&lt;br&gt;tests/ScadaBuilderV2.Tests/Runtime/RuntimeJsModulesTests.cs | F:/Projet/Git/TF100Web/frontend/tests_runtime_conformance.py |
 | page.fragment | 1.0 | Tf100WebHost | Supported | manifest.json:Pages&lt;br&gt;&lt;page-id&gt;/&lt;page-id&gt;.html | conformance:page.fragment | tests/ScadaBuilderV2.Tests/RuntimeContracts/RuntimeConformancePackageTests.cs | tests/runtime-js&lt;br&gt;tests/ScadaBuilderV2.Tests/Runtime/RuntimeJsModulesTests.cs | F:/Projet/Git/TF100Web/frontend/tests_runtime_conformance.py |
 | page.header | 1.0 | Tf100WebHost | Supported | manifest.json:Pages&lt;br&gt;&lt;page-id&gt;/&lt;page-id&gt;.html | conformance:page.header | tests/ScadaBuilderV2.Tests/RuntimeContracts/RuntimeConformancePackageTests.cs | tests/runtime-js&lt;br&gt;tests/ScadaBuilderV2.Tests/Runtime/RuntimeJsModulesTests.cs | F:/Projet/Git/TF100Web/frontend/tests_runtime_conformance.py |
+| page.quick-window | 1.0 | Tf100WebHost | Blocked | manifest.json:Pages&lt;br&gt;&lt;page-id&gt;/&lt;page-id&gt;.html | blocked:page.quick-window | - | - | - |
 | popup.options | 1.0 | Tf100WebHost | Blocked | &lt;page-id&gt;/&lt;page-id&gt;.html:action-registry&lt;br&gt;scada-runtime.&lt;hash&gt;.js | blocked:popup.options | - | - | - |
 | popup.position.bottom-left | 1.0 | Tf100WebHost | Blocked | &lt;page-id&gt;/&lt;page-id&gt;.html:action-registry&lt;br&gt;scada-runtime.&lt;hash&gt;.js | blocked:popup.position.bottom-left | - | - | - |
 | popup.position.bottom-right | 1.0 | Tf100WebHost | Blocked | &lt;page-id&gt;/&lt;page-id&gt;.html:action-registry&lt;br&gt;scada-runtime.&lt;hash&gt;.js | blocked:popup.position.bottom-right | - | - | - |

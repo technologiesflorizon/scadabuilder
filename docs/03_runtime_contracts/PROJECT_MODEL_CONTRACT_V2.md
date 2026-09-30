@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active project model contract
-Document version: `V2.1.6.0022`
+Document version: `V2.1.6.0036`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-30 | `V2.1.6.0036` | `PENDING` | Tâche 3 du chantier `2026-09-30-quick-window-parameter-sheets` : `ScadaPageType.QuickWindow` ajouté en dernière valeur (aucun décalage des valeurs persistées) ; `ScadaProject` porte `ParameterSheets : IReadOnlyList<ParameterSheet>?` (inséré avant `FormatVersion`, tous les appelants nomment déjà `FormatVersion`) et `EffectiveParameterSheets`. `ScadaCommandBinding` gagne `ParameterSheetKey`/`QuickWindowPageKey` (`Guid?`) et `QuickWindowBinding` gagne `ExpressionAst : ScadaExprNode?`, tous deux additifs et sérialisés `null` par défaut (fixtures de conformance regénérées : `tests/conformance/quick-window-contract-handshake/*.json`). Nouveau reconnaisseur `QuickWindowPlaceholder` (`Domain/QuickWindows/QuickWindowPlaceholder.cs`) : `TryParseName`, `FindInText`, `UnescapeText`, jeton `#1`..`#999` sans zéro de tête, `\#` échappé, garde hexadécimale excluant les couleurs (`#0F2A30`). `ScadaRuntimeCapabilityCatalog.PageTypes` gagne `page.quick-window` (`Blocked`, `Tf100WebHost`) pour garder la complétude de catalogue ; aucun comportement d'export changé (capacité non `Supported`, absente du profil strict). Détail complet : `docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md` §4.4. |
 | 2026-09-10 | `V2.1.6.0022` | `240dcf6` | §5 corrigée : sa première phrase se lisait comme si les quatre modules persistés portaient un refus vers l'arrière en service. Seul `project.json` l'est effectivement; `Scene`, `TagCatalog` et `Component` portent le champ `FormatVersion` à l'aller-retour mais aucun code de production ne le lit pour refuser ou convertir. Trouvé au tour 2 de la revue de branche du chantier de versionnement de format, `KNOWN_GAPS_V2.md` entrée 35. |
 | 2026-09-10 | `V2.1.6.0019` | `6e4f4b6` | Correction de suivi Tâche 8 (revue round 1) : §2.2 précise que le retrait de la comparaison `ManifestVersion` corrige un blocage total latent de la fonctionnalité Fenêtre rapide, pas une réduction de portée. Le trou résiduel sous `Compatibility21`/`Compatibility22` est consigné à l'entrée 34 de `KNOWN_GAPS_V2.md`. |
 | 2026-09-10 | `V2.1.6.0018` | `02de468` | Tâche 8 du chantier de versionnement de format : `ManifestVersion` perd son rôle d'autorisation de contenu pour les Fenêtres rapides. `ValidateQuickWindows` ne compare plus contre `"2.3"`; le catalogue de capacités reste seul juge de ce qu'un projet peut contenir, quel que soit le profil négocié. **Corrige un défaut latent** : `ManifestVersion` valait `"2.0"` par défaut et n'était jamais mis à `"2.3"` nulle part dans `src/`, donc la comparaison retirée bloquait en `Error` tout projet réel portant une Fenêtre rapide, dès sa création — pas un simple rétrécissement de portée. |

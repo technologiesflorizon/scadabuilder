@@ -18,7 +18,8 @@ public enum ScadaPageType
     Default,
     Fragment,
     Header,
-    Footer
+    Footer,
+    QuickWindow
 }
 
 public sealed record SceneBackgroundStyle(
@@ -92,6 +93,7 @@ public sealed record ScadaProject(
     Guid? HomePageKey = null,
     IReadOnlyList<QuickWindowDefinition>? QuickWindows = null,
     IReadOnlyList<QuickWindowInvocation>? QuickWindowInvocations = null,
+    IReadOnlyList<ParameterSheet>? ParameterSheets = null,
     [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     int? FormatVersion = null)
 {
@@ -109,6 +111,10 @@ public sealed record ScadaProject(
     /// <summary>Gets the effective quick window invocations, empty when not persisted.</summary>
     [JsonIgnore]
     public IReadOnlyList<QuickWindowInvocation> EffectiveQuickWindowInvocations => QuickWindowInvocations ?? Array.Empty<QuickWindowInvocation>();
+
+    /// <summary>Gets the effective project parameter sheets, empty when not persisted.</summary>
+    [JsonIgnore]
+    public IReadOnlyList<ParameterSheet> EffectiveParameterSheets => ParameterSheets ?? Array.Empty<ParameterSheet>();
 
     /// <summary>Gets the persisted format generation; an absent field means generation zero.</summary>
     /// <remarks>
