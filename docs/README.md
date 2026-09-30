@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.6.0053`
+Document version: `V2.1.6.0054`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-30 | `V2.1.6.0054` | `PENDING` | Fix round 2 de revue de la Tâche 11 (`DEC-PARAMSHEETS` = `DEC-0052`) : `LoadPage` du banc d'essai est désormais idempotent et une resynchronisation programmatique de la sélection de feuille ne relance plus jamais l'aperçu — seul un choix authentique de l'opérateur le fait. Détail complet : `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md` et `.superpowers/sdd/2026-09-30-quick-window-parameter-sheets/task-11-report.md`. |
 | 2026-09-30 | `V2.1.6.0053` | `PENDING` | Fix round 1 de revue de la Tâche 11 (`DEC-PARAMSHEETS` = `DEC-0052`) : rafraîchissement des panneaux lu désormais depuis l'onglet actif (pas `_modernProject.Scenes`) et appelé aussi après une commande de propriété de page ; l'instantané du banc d'essai porte désormais toutes les feuilles et toutes les pages `QuickWindow` du projet, seul un diagnostic sur la commande/la page/la feuille testées bloque l'aperçu ; le registre de l'aperçu porte désormais `Namespace`. Détail complet : `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md` et `.superpowers/sdd/2026-09-30-quick-window-parameter-sheets/task-11-report.md`. |
 | 2026-09-30 | `V2.1.6.0052` | `PENDING` | Tâche 11 du chantier `2026-09-30-quick-window-parameter-sheets` (`DEC-PARAMSHEETS` = `DEC-0052`) : « Interface locale » (lecture seule des `#N` de la page active) et « Banc d'essai » (feuille choisie → abaissement sur instantané → aperçu via `mountInstance`) rewirés sur la page active de type `QuickWindow`. Détail complet : `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md` et `.superpowers/sdd/2026-09-30-quick-window-parameter-sheets/task-11-report.md`. |
 | 2026-09-30 | `V2.1.6.0051` | `fa65e0c` | Fix round 2 de revue de la Tâche 10 (`DEC-PARAMSHEETS` = `DEC-0052`) : la liveness des invocations pré-existantes pendant l'abaissement balaie désormais aussi le contenu de chaque définition Fenêtre rapide (nouvelle ou pré-existante), pas seulement les scènes de page abaissées — corrige une casse silencieuse introduite par le fix round 1 pour une commande vivant dans le contenu d'une fenêtre rapide. Détail complet : `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md` et `.superpowers/sdd/2026-09-30-quick-window-parameter-sheets/task-10-report.md`. |

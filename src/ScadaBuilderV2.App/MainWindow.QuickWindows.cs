@@ -413,9 +413,15 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
     /// mounts through <c>mountInstance</c> and the `#N` substitution of Task 7. Lowering diagnostics
     /// (errors and warnings) are always shown in the bench, whether or not the preview opens.
     /// </summary>
+    /// <remarks>
+    /// Controller fix round 2: only fires for a genuine operator pick — the control's `SheetSelected`
+    /// event now relays <see cref="QuickWindowTestBenchViewModel.SheetSelected"/>, which a programmatic
+    /// resync (<see cref="QuickWindowTestBenchViewModel.LoadPage"/>, called on every page-property
+    /// command since fix round 1) never raises. <see cref="QuickWindowTestBenchViewModel.SelectedSheetKey"/>
+    /// is already set by the time this runs, so no redundant <c>SelectSheet</c> call is needed here.
+    /// </remarks>
     private async void OnQuickWindowTestBenchSheetSelected(object? sender, Guid sheetKey)
     {
-        QuickWindowTestBenchControl.Model.SelectSheet(sheetKey);
         if (_modernProject is null || _activeSceneTab?.PageKey is not { } pageKey || _activeScene is null)
         {
             QuickWindowTestBenchControl.Model.Status = "Aucune fenetre rapide active.";

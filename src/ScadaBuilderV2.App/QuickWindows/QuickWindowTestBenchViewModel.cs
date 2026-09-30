@@ -82,9 +82,31 @@ public sealed class QuickWindowTestBenchViewModel : INotifyPropertyChanged
     private string pageLabel = string.Empty;
     private Guid? selectedSheetKey;
     private IReadOnlyList<ScadaBuildValidationIssue> loweringDiagnostics = [];
+    private Guid? loadedPageKey;
+    private IReadOnlyList<(Guid SheetKey, string DisplayName)> loadedSheetIdentity = [];
+    private bool isProgrammaticSelectionUpdate;
 
     /// <inheritdoc />
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    /// <summary>
+    /// Raised exactly when the operator genuinely picks a sheet in the bench's sheet selector — never for
+    /// a programmatic resync (<see cref="LoadPage"/> restoring a previously valid selection across a page
+    /// reload, or <see cref="Clear"/>). This is what actually drives the lowering-and-preview request; the
+    /// control forwards it unchanged as its own `SheetSelected` event.
+    /// </summary>
+    /// <remarks>
+    /// Controller fix round 2: `OnPageCommandCompleted` now calls the refresh that reaches
+    /// <see cref="LoadPage"/> on every page-property command, not only a real tab switch. Combined with the
+    /// `SelectedValue` binding added in fix round 1, a page reload that only restores the same selection
+    /// (or briefly clears it while the sheet `ItemsSource` is rebuilt) could reach the WPF control's
+    /// `SelectionChanged` event and, before this fix, unconditionally re-triggered a full lowering and
+    /// preview reload — visible flicker on every unrelated page command. The single source of truth is now
+    /// this event: it fires only when <see cref="SelectedSheetKey"/> actually changes to a non-null value
+    /// while <see cref="isProgrammaticSelectionUpdate"/> is false, regardless of how many times the WPF
+    /// control's `SelectionChanged` re-forwards the same, unchanged key.
+    /// </remarks>
+    public event EventHandler<Guid>? SheetSelected;
 
     /// <summary>Gets the editable test rows, one per public port.</summary>
     public ObservableCollection<QuickWindowTestBenchRowViewModel> Rows { get; } = [];
@@ -102,8 +124,11 @@ public sealed class QuickWindowTestBenchViewModel : INotifyPropertyChanged
     /// <summary>
     /// Gets or sets the sheet key currently selected in the bench, or null. The setter is what the
     /// `SheetSelectorComboBox`'s `SelectedValue` binding writes to and reads back from, so a page reload
-    /// that restores a previously picked sheet (<see cref="LoadPage"/>) keeps the combo box in sync, and a
-    /// re-selection (including one restored across a tab switch) reaches the same path as an operator pick.
+    /// that restores a previously picked sheet (<see cref="LoadPage"/>) keeps the combo box in sync.
+    /// Setting it to a genuinely new value raises <see cref="SheetSelected"/> — unless
+    /// <see cref="isProgrammaticSelectionUpdate"/> is set, which every internal caller
+    /// (<see cref="LoadPage"/>, <see cref="Clear"/>) uses so a resync never previews on its own; only
+    /// <see cref="SelectSheet"/>, the operator-pick entry point, leaves the guard open.
     /// </summary>
     public Guid? SelectedSheetKey
     {
@@ -113,6 +138,10 @@ public sealed class QuickWindowTestBenchViewModel : INotifyPropertyChanged
             if (selectedSheetKey == value) return;
             selectedSheetKey = value;
             Raise(nameof(SelectedSheetKey));
+            if (!isProgrammaticSelectionUpdate && value is { } key)
+            {
+                SheetSelected?.Invoke(this, key);
+            }
         }
     }
 
@@ -173,23 +202,54 @@ public sealed class QuickWindowTestBenchViewModel : INotifyPropertyChanged
     /// Loads the bench for the active quick-window page (DEC-0052, spec §5): offers every parameter
     /// sheet of the project, keeping the previously selected one when it is still offered.
     /// </summary>
+    /// <remarks>
+    /// Controller fix round 2: idempotent when <paramref name="page"/>'s key and the ordered (key,
+    /// display name) set of <paramref name="sheets"/> are unchanged from the last call — nothing is
+    /// touched, not even a `Sheets` collection-changed or a redundant `PropertyChanged`, since
+    /// `OnPageCommandCompleted` now calls this on every page-property command, not only a real page
+    /// switch. When something did change, the whole reload runs with <see cref="isProgrammaticSelectionUpdate"/>
+    /// set, so restoring (or losing) a previously valid selection never raises <see cref="SheetSelected"/>.
+    /// </remarks>
     public void LoadPage(ScadaScene page, IReadOnlyList<ParameterSheet> sheets)
     {
         ArgumentNullException.ThrowIfNull(page);
         ArgumentNullException.ThrowIfNull(sheets);
-        var previous = selectedSheetKey;
-        PageLabel = $"{page.Title} ({page.EffectivePageCode})";
-        Sheets.Clear();
-        foreach (var sheet in sheets.OrderBy(sheet => sheet.DisplayName, StringComparer.OrdinalIgnoreCase)) Sheets.Add(sheet);
-        selectedSheetKey = previous is { } key && Sheets.Any(sheet => sheet.SheetKey == key) ? key : null;
-        loweringDiagnostics = [];
-        Status = string.Empty;
-        Raise(nameof(SelectedSheetKey));
-        Raise(nameof(LoweringDiagnostics));
-        Raise(nameof(HasLoweringDiagnostics));
+
+        var ordered = sheets.OrderBy(sheet => sheet.DisplayName, StringComparer.OrdinalIgnoreCase).ToArray();
+        var identity = ordered.Select(sheet => (sheet.SheetKey, sheet.DisplayName)).ToArray();
+        if (loadedPageKey == page.PageKey && identity.SequenceEqual(loadedSheetIdentity))
+        {
+            return;
+        }
+
+        isProgrammaticSelectionUpdate = true;
+        try
+        {
+            loadedPageKey = page.PageKey;
+            loadedSheetIdentity = identity;
+            var previous = selectedSheetKey;
+            PageLabel = $"{page.Title} ({page.EffectivePageCode})";
+            Sheets.Clear();
+            foreach (var sheet in ordered) Sheets.Add(sheet);
+            SelectedSheetKey = previous is { } key && Sheets.Any(sheet => sheet.SheetKey == key) ? key : null;
+            loweringDiagnostics = [];
+            Status = string.Empty;
+            Raise(nameof(LoweringDiagnostics));
+            Raise(nameof(HasLoweringDiagnostics));
+        }
+        finally
+        {
+            isProgrammaticSelectionUpdate = false;
+        }
     }
 
-    /// <summary>Records the sheet the operator picked in the bench's sheet selector.</summary>
+    /// <summary>
+    /// Records the sheet the operator genuinely picked in the bench's sheet selector, raising
+    /// <see cref="SheetSelected"/> exactly once when this actually changes the selection. The control's
+    /// code-behind calls this unconditionally from `SelectionChanged`, including for a resync the WPF
+    /// `SelectedValue` binding itself triggered (e.g. the `Sheets` `ItemsSource` being rebuilt by
+    /// <see cref="LoadPage"/>) — the equality check here, not the caller, is what makes that safe.
+    /// </summary>
     public void SelectSheet(Guid sheetKey) => SelectedSheetKey = sheetKey;
 
     /// <summary>Shows the lowering diagnostics of the last previewed (sheet, page) pair in the bench.</summary>
@@ -203,18 +263,27 @@ public sealed class QuickWindowTestBenchViewModel : INotifyPropertyChanged
     /// <summary>Clears the bench when no quick window is active.</summary>
     public void Clear()
     {
-        definition = null;
-        Rows.Clear();
-        Sheets.Clear();
-        selectedSheetKey = null;
-        loweringDiagnostics = [];
-        PageLabel = string.Empty;
-        titleOverride = string.Empty;
-        Status = string.Empty;
-        RaiseAll();
-        Raise(nameof(SelectedSheetKey));
-        Raise(nameof(LoweringDiagnostics));
-        Raise(nameof(HasLoweringDiagnostics));
+        isProgrammaticSelectionUpdate = true;
+        try
+        {
+            definition = null;
+            Rows.Clear();
+            Sheets.Clear();
+            loadedPageKey = null;
+            loadedSheetIdentity = [];
+            SelectedSheetKey = null;
+            loweringDiagnostics = [];
+            PageLabel = string.Empty;
+            titleOverride = string.Empty;
+            Status = string.Empty;
+            RaiseAll();
+            Raise(nameof(LoweringDiagnostics));
+            Raise(nameof(HasLoweringDiagnostics));
+        }
+        finally
+        {
+            isProgrammaticSelectionUpdate = false;
+        }
     }
 
     /// <summary>
