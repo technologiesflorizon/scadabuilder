@@ -2,12 +2,13 @@
 
 Date: 2026-08-13
 Status: Active implementation status
-Document version: `V2.1.6.0035`
+Document version: `V2.1.6.0039`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-30 | `V2.1.6.0039` | `PENDING` | Tâche 5 du chantier `2026-09-30-quick-window-parameter-sheets` : abaissement et validation par couple (feuille, page). `ParameterSheetLowering.Lower` (nouveau, `src/ScadaBuilderV2.Application/QuickWindows/`) transforme chaque page `QuickWindow` en `QuickWindowDefinition` de clé `PageKey` (un membre `#N` par paramètre utilisé, `WriteCommand`/`Write` si écrit, sinon `ReadState`/`Read`, type `String`), chaque commande « Ouvrir une fenêtre rapide » (feuille, page) en `QuickWindowInvocation` (liaison `Tag` canonique, `Literal` ou `Expression` + `ExpressionAst`, sans `OwnerPageKey`) et réécrit la commande avec sa `QuickWindowInvocationKey`. Clés déterministes SHA-256 (`QuickWindowKeys`, ruling R4) : deux abaissements sont identiques octet pour octet. Les pages `QuickWindow` sortent de `Project.Scenes` et du dictionnaire de scènes, si bien que la capacité `page.quick-window` (`Blocked`) n'est jamais demandée à l'export. `QuickWindowPlaceholderUsageCollector` ne lit que les champs de liaison et les textes, jamais les styles (`#0F2A30` reste une couleur ; fixture réelle `popup_fan_condenseur.scene.json`). Diagnostics : `parameter-sheet.syntax`, `.sheet-missing`, `.page-not-quick-window`, `.page-scene-missing`, `.placeholder-undefined`, `.write-not-tag`, `.text-not-literal`, `.tag-unknown`, `.tag-ambiguous`, `.token-invalid` (erreurs) et `.placeholder-unused` (avertissement). Tests : `tests/ScadaBuilderV2.Tests/QuickWindows/ParameterSheetLoweringTests.cs`. |
 | 2026-09-30 | `V2.1.6.0035` | `99ad60f` | Tâche 2 du chantier `2026-09-30-quick-window-parameter-sheets` : analyseur de feuille de paramètres. Modèles `ParameterSheet`, `ParameterValueKind`, `ParameterEntry`, `ParameterSheetDiagnostic`, `ParameterSheetParseResult` ajoutés ; parseur statique `ParameterSheetParser.Parse` et classificateur `ParameterSheetParser.Classify` livrés avec 20 tests (modèle `#N := expression`, commentaires `//`, validation des placements de paramètres, rejet des doublons et des références emboîtées `{#N}`). Détail complet : `docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md` §4.2/§4.3. |
 | 2026-08-25 | `V2.1.5.0047` | `dce0941` | Conformance cross-runtime des Fenetres rapides prouvee, canary et rollback eprouves; capacites toujours `Blocked`. |
 | 2026-08-25 | `V2.1.5.0046` | `705077c` | TF100Web monte les Fenetres rapides : adaptateur host, gestionnaire SinglePerDefinition et service du fragment par namespace. |
