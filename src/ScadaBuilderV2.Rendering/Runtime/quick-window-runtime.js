@@ -351,11 +351,17 @@
     return { ok: false, code: code, detail: detail };
   }
 
-  /** Resolves a `#N` placeholder to a tag id, or the reason it cannot be used as a tag. */
-  function _tagFor(ports, name) {
+  /**
+   * Resolves a `#N` placeholder to a tag id, or the reason it cannot be used as a tag. `site` is
+   * `'read'` for a read site (`data-scada-read-tag`, `readVariable.tagId`, a command's `readTagId`)
+   * and `'write'` for a write site, so the refusal names the site that needed the tag.
+   */
+  function _tagFor(ports, name, site) {
     var port = ports[name];
     if (!port || !port.available) return { error: 'placeholder-unbound' };
-    if (port.sourceKind !== 'Tag' || !port.tagId) return { error: 'placeholder-write-not-tag' };
+    if (port.sourceKind !== 'Tag' || !port.tagId) {
+      return { error: site === 'read' ? 'placeholder-read-not-tag' : 'placeholder-write-not-tag' };
+    }
     return { tagId: port.tagId };
   }
 
@@ -442,7 +448,8 @@
    * inspected, and a text node inside a `<style>`/`<script>` element (HTML or SVG) is never walked —
    * a bare CSS/JS `#` token there (e.g. `.cls-1{fill:#333;}`) is never mistaken for a placeholder.
    * Refuses (instead of ever rendering a raw `#N`) with one of `placeholder-unbound`,
-   * `placeholder-write-not-tag`, `placeholder-text-not-literal`, `placeholder-expression-unavailable`
+   * `placeholder-read-not-tag` (a read site bound to a non-tag), `placeholder-write-not-tag` (a write
+   * site bound to a non-tag), `placeholder-text-not-literal`, `placeholder-expression-unavailable`
    * (a `#N` bound to an `Expression` port whose `expressionAst` is null/absent) or
    * `placeholder-config-invalid` (a `data-scada-state-config`/`data-scada-command-config` attribute
    * that is not parseable JSON, or whose JSON is not an object). A refusal does not roll back
@@ -462,14 +469,14 @@
 
       var readTag = element.getAttribute('data-scada-read-tag');
       if (readTag !== null && PLACEHOLDER_EXACT.test(readTag)) {
-        var readResolved = _tagFor(ports, readTag);
+        var readResolved = _tagFor(ports, readTag, 'read');
         if (readResolved.error) return _refuse(readResolved.error, readTag);
         element.setAttribute('data-scada-read-tag', readResolved.tagId);
       }
 
       var writeTag = element.getAttribute('data-scada-write-tag');
       if (writeTag !== null && PLACEHOLDER_EXACT.test(writeTag)) {
-        var writeResolved = _tagFor(ports, writeTag);
+        var writeResolved = _tagFor(ports, writeTag, 'write');
         if (writeResolved.error) return _refuse(writeResolved.error, writeTag);
         element.setAttribute('data-scada-write-tag', writeResolved.tagId);
       }
@@ -488,7 +495,7 @@
         }
         if (stateConfig.readVariable && typeof stateConfig.readVariable.tagId === 'string' &&
             PLACEHOLDER_EXACT.test(stateConfig.readVariable.tagId)) {
-          var readVariableResolved = _tagFor(ports, stateConfig.readVariable.tagId);
+          var readVariableResolved = _tagFor(ports, stateConfig.readVariable.tagId, 'read');
           if (readVariableResolved.error) return _refuse(readVariableResolved.error, stateConfig.readVariable.tagId);
           stateConfig.readVariable.tagId = readVariableResolved.tagId;
         }
@@ -505,12 +512,12 @@
           var command = commands[c];
           if (!command) continue;
           if (typeof command.writeTagId === 'string' && PLACEHOLDER_EXACT.test(command.writeTagId)) {
-            var writeCommandResolved = _tagFor(ports, command.writeTagId);
+            var writeCommandResolved = _tagFor(ports, command.writeTagId, 'write');
             if (writeCommandResolved.error) return _refuse(writeCommandResolved.error, command.writeTagId);
             command.writeTagId = writeCommandResolved.tagId;
           }
           if (typeof command.readTagId === 'string' && PLACEHOLDER_EXACT.test(command.readTagId)) {
-            var readCommandResolved = _tagFor(ports, command.readTagId);
+            var readCommandResolved = _tagFor(ports, command.readTagId, 'read');
             if (readCommandResolved.error) return _refuse(readCommandResolved.error, command.readTagId);
             command.readTagId = readCommandResolved.tagId;
           }

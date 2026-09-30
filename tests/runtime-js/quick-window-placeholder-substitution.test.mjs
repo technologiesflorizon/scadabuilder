@@ -111,6 +111,64 @@ test('a write tag bound to a non-tag refuses the mount', () => {
   assert.equal(el.getAttribute('data-scada-write-tag'), '#4');
 });
 
+// Final review C1: every READ site bound to a non-tag refuses with its own code, distinct from the
+// write refusal, so the diagnostic names what the operator actually did (read vs write).
+function readSiteRoots(window, placeholder) {
+  const make = () => window.document.createElement('div');
+  const attr = make();
+  attr.setAttribute('data-scada-read-tag', placeholder);
+  const readVariable = make();
+  readVariable.setAttribute('data-scada-state-config', JSON.stringify({ states: [], readVariable: { tagId: placeholder, displayFormat: null } }));
+  const commandRead = make();
+  commandRead.setAttribute('data-scada-command-config', JSON.stringify({ commands: [{ id: 'cmd', writeTagId: null, readTagId: placeholder }] }));
+  return { 'data-scada-read-tag': attr, 'readVariable.tagId': readVariable, 'command readTagId': commandRead };
+}
+
+function writeSiteRoots(window, placeholder) {
+  const make = () => window.document.createElement('div');
+  const attr = make();
+  attr.setAttribute('data-scada-write-tag', placeholder);
+  const commandWrite = make();
+  commandWrite.setAttribute('data-scada-command-config', JSON.stringify({ commands: [{ id: 'cmd', writeTagId: placeholder, readTagId: null }] }));
+  return { 'data-scada-write-tag': attr, 'command writeTagId': commandWrite };
+}
+
+test('every read site bound to a Literal or an Expression refuses placeholder-read-not-tag', () => {
+  for (const placeholder of ['#3', '#4']) { // #3 Expression, #4 Literal
+    const window = loadQuickWindow();
+    for (const [site, el] of Object.entries(readSiteRoots(window, placeholder))) {
+      const root = window.document.createElement('div');
+      root.appendChild(el);
+      const result = window.ScadaRuntime.QuickWindow.substituteInstance(root, PORTS);
+      assert.equal(result.ok, false, `${site} ${placeholder}`);
+      assert.equal(result.code, 'placeholder-read-not-tag', `${site} ${placeholder}`);
+    }
+  }
+});
+
+test('every write site bound to a Literal or an Expression keeps refusing placeholder-write-not-tag', () => {
+  for (const placeholder of ['#3', '#4']) {
+    const window = loadQuickWindow();
+    for (const [site, el] of Object.entries(writeSiteRoots(window, placeholder))) {
+      const root = window.document.createElement('div');
+      root.appendChild(el);
+      const result = window.ScadaRuntime.QuickWindow.substituteInstance(root, PORTS);
+      assert.equal(result.ok, false, `${site} ${placeholder}`);
+      assert.equal(result.code, 'placeholder-write-not-tag', `${site} ${placeholder}`);
+    }
+  }
+});
+
+test('every read site bound to a Tag is substituted without refusal', () => {
+  const window = loadQuickWindow();
+  for (const [site, el] of Object.entries(readSiteRoots(window, '#1'))) {
+    const root = window.document.createElement('div');
+    root.appendChild(el);
+    const result = window.ScadaRuntime.QuickWindow.substituteInstance(root, PORTS);
+    assert.equal(result.ok, true, site);
+  }
+});
+
 test('a state expression tagRef #3 is replaced by the bound AST and the JSON stays valid', () => {
   const window = loadQuickWindow();
   const root = window.document.createElement('div');

@@ -515,6 +515,18 @@ public static class ParameterSheetLowering
                         owner, element, command, sheet.SheetKey);
                 }
 
+                // The shared runtime substitutes a read site (data-scada-read-tag, readVariable.tagId, a command's
+                // readTagId) only with a tag id and refuses the mount otherwise (placeholder-read-not-tag): the
+                // pair must fail here, never pass validation and then refuse to open (spec §7).
+                if (group.Any(usage => IsTagRead(usage.Site)) && entry.Kind != ParameterValueKind.Tag)
+                {
+                    valid = false;
+                    AddCommandIssue(ScadaBuildValidationSeverity.Error, "parameter-sheet.read-not-tag",
+                        $"{linePrefix} : #{number} est lu comme un tag ({DescribeReadSites(group)}) et doit être lié à un tag seul ({{TAG}}), pas à « {entry.Source} ». " +
+                        $"Pour une valeur calculée, utiliser #{number} dans une expression d'état.",
+                        owner, element, command, sheet.SheetKey);
+                }
+
                 if (group.Any(usage => usage.Site == PlaceholderUsageSite.Text) && entry.Kind != ParameterValueKind.Literal)
                 {
                     valid = false;
@@ -641,6 +653,20 @@ public static class ParameterSheetLowering
 
     private static bool IsWrite(PlaceholderUsageSite site) =>
         site is PlaceholderUsageSite.WriteTag or PlaceholderUsageSite.CommandWriteTag;
+
+    /// <summary>Read sites the runtime substitutes only with a tag id (never a literal nor an expression).</summary>
+    private static bool IsTagRead(PlaceholderUsageSite site) =>
+        site is PlaceholderUsageSite.ReadTag or PlaceholderUsageSite.ReadVariable or PlaceholderUsageSite.CommandReadTag;
+
+    private static string DescribeReadSites(IEnumerable<PlaceholderUsage> usages) => string.Join(", ", usages
+        .Where(usage => IsTagRead(usage.Site))
+        .Select(usage => usage.Site switch
+        {
+            PlaceholderUsageSite.ReadVariable => $"variable lue de l'élément '{usage.ElementId}'",
+            PlaceholderUsageSite.CommandReadTag => $"tag relu par la commande '{usage.CommandId}' de l'élément '{usage.ElementId}'",
+            _ => $"tag lu par l'élément '{usage.ElementId}'"
+        })
+        .Distinct(StringComparer.Ordinal));
 
     private static string SheetPath(ParameterSheet sheet) => $"ParameterSheets[{sheet.Code}]";
 

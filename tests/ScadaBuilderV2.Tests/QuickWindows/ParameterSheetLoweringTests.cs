@@ -377,6 +377,42 @@ public sealed class ParameterSheetLoweringTests
     }
 
     [TestMethod]
+    public void EveryReadSiteBoundToANonTagIsAnError()
+    {
+        // Final review C1: the runtime substitutes a read site (data-scada-read-tag, readVariable.tagId, a
+        // command's readTagId, a table cell read) only with a tag id and refuses the mount otherwise. The pair
+        // must therefore fail validation, never pass it and then refuse to open (spec §7).
+        foreach (var (site, element) in ReadSiteElements("#9"))
+        {
+            foreach (var rightHandSide in new[] { "{FAN_03_SPEED} * 0.1", "\"Ventilateur 3\"", "12" })
+            {
+                var result = Lower(FullSheet + $"#9 := {rightHandSide}\n", [.. FanPageElements(), element]);
+
+                var issue = Single(result, "parameter-sheet.read-not-tag");
+                Assert.AreEqual(ScadaBuildValidationSeverity.Error, issue.Severity, $"{site} {rightHandSide}");
+                StringAssert.Contains(issue.Message, $"Feuille '{SheetName}'", site);
+                StringAssert.Contains(issue.Message, $"page '{QuickWindowPageCode}'", site);
+                StringAssert.Contains(issue.Message, "#9", site);
+                StringAssert.Contains(issue.Message, "ligne 6", site);
+                Assert.IsNull(
+                    result.Project.EffectiveQuickWindowInvocations.Single().FindBinding(QuickWindowKeys.Member(QuickWindowPageKey, 9)),
+                    $"{site}: an invalid pair produces no binding for that #N");
+            }
+        }
+    }
+
+    [TestMethod]
+    public void EveryReadSiteBoundToATagValidates()
+    {
+        foreach (var (site, element) in ReadSiteElements("#9"))
+        {
+            var result = Lower(FullSheet + "#9 := {FAN_03_SPEED}\n", [.. FanPageElements(), element]);
+
+            Assert.IsFalse(result.Diagnostics.Any(diagnostic => diagnostic.Severity == ScadaBuildValidationSeverity.Error), $"{site}: {Describe(result)}");
+        }
+    }
+
+    [TestMethod]
     public void APlaceholderInATextBoundToATagIsAnError()
     {
         var result = Lower(
@@ -773,12 +809,16 @@ public sealed class ParameterSheetLoweringTests
         return (reference, scene);
     }
 
-    /// <summary>The "Popup ventilateur" page: a title (#4), a state (#1), a speed read (#3) and a start command (#2).</summary>
+    /// <summary>
+    /// The "Popup ventilateur" page: a title (#4), a state (#1), a speed threshold state (#3, an expression in
+    /// <see cref="FullSheet"/>, so it may only be used inside a state expression, never on a read site) and a
+    /// start command (#2).
+    /// </summary>
     private static ScadaElement[] FanPageElements() =>
     [
         TextElement("title", "Ventilateur #4"),
         StateElement("run", "{#1} == 1"),
-        ReadElement("speed", "#3"),
+        StateElement("speed", "{#3} > 50"),
         WriteCommandElement("start", "#2"),
         TextElement("escaped", @"Pompe \#2"),
     ];
@@ -793,6 +833,31 @@ public sealed class ParameterSheetLoweringTests
     {
         var element = ScadaElement.CreateText(id, id, 0, 0);
         return element with { Data = element.Data! with { Text = string.Empty, ReadTagId = tagId } };
+    }
+
+    /// <summary>One element per read site the runtime substitutes only with a tag id, all using <paramref name="placeholder"/>.</summary>
+    private static IEnumerable<(string Site, ScadaElement Element)> ReadSiteElements(string placeholder)
+    {
+        yield return ("Data.ReadTagId", ReadElement("read-tag", placeholder));
+        var tagBinding = ScadaElement.CreateText("tag-binding", "tag-binding", 0, 0);
+        yield return ("Data.TagBinding", tagBinding with { Data = tagBinding.Data! with { Text = string.Empty, TagBinding = placeholder } });
+        yield return ("ReadVariable", ScadaElement.CreateText("read-variable", "read-variable", 0, 0) with
+        {
+            StateConfig = ScadaElementStateConfig.Default with { ReadVariable = new ScadaReadVariableRule(placeholder) }
+        });
+        yield return ("CommandReadTag", ScadaElement.CreateButton("read-back", "Relire", 0, 0) with
+        {
+            CommandConfig = new ScadaElementCommandConfig(
+            [
+                new ScadaCommandBinding("read-back-cmd", "Relire", true, ScadaCommandTrigger.OnClick, ScadaCommandKind.WriteTag,
+                    WriteTagId: "#2", ReadTagId: placeholder, WriteMode: ScadaWriteMode.Momentary)
+            ])
+        });
+        var table = ScadaElement.CreateTable("table-read", "Tableau", 0, 0, rows: 1, columns: 1);
+        yield return ("TableCellRead", table with
+        {
+            Table = table.Table! with { Cells = [new ScadaTableCell(0, 0, ValueBindings: new ScadaTableCellValueBindings(placeholder, null))] }
+        });
     }
 
     private static ScadaElement WriteElement(string id, string tagId)
