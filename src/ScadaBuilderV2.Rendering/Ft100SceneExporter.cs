@@ -42,7 +42,7 @@ public sealed partial class Ft100SceneExporter
     /// HTML data attributes. Uses camelCase so the JS runtime can read properties
     /// directly (the JS modules use camelCase per convention).
     /// </summary>
-    private static readonly JsonSerializerOptions StateCommandJsonOptions = new()
+    internal static readonly JsonSerializerOptions StateCommandJsonOptions = new()
     {
         WriteIndented = false,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,

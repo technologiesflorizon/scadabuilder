@@ -1,3 +1,6 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 namespace ScadaBuilderV2.Rendering.QuickWindows;
 
 /// <summary>One compiled interface member of a quick-window definition, in manifest PascalCase.</summary>
@@ -57,13 +60,24 @@ public sealed record Ft100QuickWindowDefinitionEntry(
     Ft100QuickWindowPresentation PresentationDefaults);
 
 /// <summary>One compiled typed binding of an invocation.</summary>
+/// <remarks>
+/// <see cref="ExpressionAst"/> is the same node shape the exporter already writes for state conditions in
+/// <c>data-scada-state-config</c>: serialized through <see cref="Ft100SceneExporter.StateCommandJsonOptions"/>,
+/// the single camelCase configuration, so the runtime evaluator recognises both without a second contract.
+///
+/// Decisions: DEC-0050, DEC-0052.
+/// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md §12.4.
+/// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/ParameterSheetExportTests.cs.
+/// </remarks>
 public sealed record Ft100QuickWindowBinding(
     string MemberKey,
     string SourceKind,
     string? TagId,
     string? LiteralValue,
     string? Expression,
-    string? ParentMemberKey);
+    string? ParentMemberKey,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    JsonElement? ExpressionAst = null);
 
 /// <summary>One compiled invocation entry of the manifest `QuickWindowInvocations[]` registry.</summary>
 /// <param name="InvocationKey">Durable identity referenced by the caller command.</param>

@@ -18,6 +18,7 @@ using ScadaBuilderV2.Application.Commands.Pages;
 using ScadaBuilderV2.Application.Conversion;
 using ScadaBuilderV2.Application.ElementStudio;
 using ScadaBuilderV2.Application.History;
+using ScadaBuilderV2.Application.QuickWindows;
 using ScadaBuilderV2.Application.Selection;
 using ScadaBuilderV2.Domain.Editor;
 using ScadaBuilderV2.Domain.ElementEvents.Command;
@@ -4482,9 +4483,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
             var exporter = new Ft100SceneExporter();
             var workspaceSnapshot = await _pageWorkspaceController.CaptureSnapshotAsync();
-            var projectSnapshot = workspaceSnapshot.Project;
-            _modernProject = projectSnapshot;
-            var validationIssues = ScadaProjectBuildValidator.Validate(projectSnapshot, workspaceSnapshot.Scenes.Values.ToArray()).ToArray();
+            _modernProject = workspaceSnapshot.Project;
+            var lowered = ParameterSheetLowering.Lower(workspaceSnapshot.Project, workspaceSnapshot.Scenes);
+            var projectSnapshot = lowered.Project;
+            var validationIssues = lowered.Diagnostics
+                .Concat(ScadaProjectBuildValidator.Validate(projectSnapshot, lowered.Scenes.Values.ToArray()))
+                .ToArray();
             _diagnosticsPanel.Load(validationIssues, projectSnapshot, "Validation export FT100");
             var errors = validationIssues
                 .Where(issue => issue.Severity == ScadaBuildValidationSeverity.Error)
@@ -4496,7 +4500,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 return;
             }
 
-            var inputs = await BuildFt100ProjectExportInputsAsync(projectSnapshot);
+            var inputs = await BuildFt100ProjectExportInputsAsync(projectSnapshot, lowered.Scenes);
             var result = await exporter.ExportProjectAsync(projectSnapshot, inputs, dialog.FolderName);
             SetStatus($"Export FT100 paquet cree: {result.ExportDirectory} ({result.PageResults.Count} page(s), {result.CopiedImageCount} image(s)).");
         }
@@ -4553,9 +4557,12 @@ await PreviewWebView.ExecuteScriptAsync($$"""
 
             var exporter = new Ft100SceneExporter();
             var workspaceSnapshot = await _pageWorkspaceController.CaptureSnapshotAsync();
-            var projectSnapshot = workspaceSnapshot.Project;
-            _modernProject = projectSnapshot;
-            var validationIssues = ScadaProjectBuildValidator.Validate(projectSnapshot, workspaceSnapshot.Scenes.Values.ToArray()).ToArray();
+            _modernProject = workspaceSnapshot.Project;
+            var lowered = ParameterSheetLowering.Lower(workspaceSnapshot.Project, workspaceSnapshot.Scenes);
+            var projectSnapshot = lowered.Project;
+            var validationIssues = lowered.Diagnostics
+                .Concat(ScadaProjectBuildValidator.Validate(projectSnapshot, lowered.Scenes.Values.ToArray()))
+                .ToArray();
             _diagnosticsPanel.Load(validationIssues, projectSnapshot, "Validation export FT100 .sb2");
             var errors = validationIssues
                 .Where(issue => issue.Severity == ScadaBuildValidationSeverity.Error)
@@ -4568,7 +4575,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             }
 
             SetStatus("Export FT100 .sb2 en cours: resolution des sources...");
-            var inputs = await BuildFt100ProjectExportInputsAsync(projectSnapshot);
+            var inputs = await BuildFt100ProjectExportInputsAsync(projectSnapshot, lowered.Scenes);
             var archivePath = dialog.FileName;
             SetStatus("Export FT100 .sb2 en cours: generation et compression...");
             var result = await Task.Run(() => exporter.ExportProjectArchiveAsync(projectSnapshot, inputs, archivePath));
@@ -4624,7 +4631,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             : sanitized;
     }
 
-    private async Task<IReadOnlyList<Ft100ProjectPageExportInput>> BuildFt100ProjectExportInputsAsync(ScadaProject project)
+    private async Task<IReadOnlyList<Ft100ProjectPageExportInput>> BuildFt100ProjectExportInputsAsync(
+        ScadaProject project,
+        IReadOnlyDictionary<Guid, ScadaScene> loweredScenes)
     {
         if (_repositoryRoot is null)
         {
@@ -4637,7 +4646,8 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             _pageWorkspaceController.OpenTabs,
             _activeSceneTab,
             _activeScene,
-            _importedSourceBaseRoot);
+            _importedSourceBaseRoot,
+            loweredScenes);
     }
 
     private void OnInsertInputTextClick(object sender, RoutedEventArgs e)

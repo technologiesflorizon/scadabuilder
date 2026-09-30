@@ -1,3 +1,4 @@
+using System.Text.Json;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.QuickWindows;
 
@@ -140,7 +141,10 @@ internal static class QuickWindowCompiler
         binding.TagId,
         binding.LiteralValue,
         binding.Expression,
-        binding.ParentMemberKey is { } parentKey ? Key(parentKey) : null);
+        binding.ParentMemberKey is { } parentKey ? Key(parentKey) : null,
+        binding.ExpressionAst is null
+            ? null
+            : JsonSerializer.SerializeToElement(binding.ExpressionAst, Ft100SceneExporter.StateCommandJsonOptions));
 
     private static string Key(Guid value) => value.ToString("D");
 }

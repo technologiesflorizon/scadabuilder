@@ -44,6 +44,7 @@ public static class ParameterSheetLowering
         context.CollectQuickWindowPages();
         var loweredScenes = context.LowerCommands();
         var definitions = context.BuildDefinitions(loweredScenes);
+        context.DetectPageReferencedAsPage(loweredScenes);
 
         var resultScenes = new Dictionary<Guid, ScadaScene>();
         foreach (var (key, scene) in scenes)
@@ -202,6 +203,101 @@ public static class ParameterSheetLowering
             }
 
             return definitions;
+        }
+
+        /// <summary>
+        /// Controller ruling: after lowering removes quick-window pages from the page inventory, any
+        /// remaining page's <c>HeaderPageKey</c>/<c>FooterPageKey</c>, any <see cref="ScadaCommandKind.Navigate"/>
+        /// command's <c>TargetPageKey</c>, and any legacy <see cref="ScadaActionDefinition.TargetPageKey"/> that
+        /// still points at a removed quick-window page would otherwise reach
+        /// <c>ScadaBuilderV2.Rendering.PageRuntimeIdentityResolver</c> unexamined and throw a raw
+        /// <see cref="InvalidOperationException"/> at export time. Surfacing it here, as a named diagnostic,
+        /// keeps every authoring-data problem a diagnostic and no product path throwing on it (contract R1).
+        /// </summary>
+        public void DetectPageReferencedAsPage(IReadOnlyDictionary<Guid, ScadaScene> loweredScenes)
+        {
+            foreach (var page in project.Scenes)
+            {
+                if (IsQuickWindowKey(page.PageKey)) continue;
+
+                CheckPageReference(page, page.HeaderPageKey, "en-tête", "HeaderPageKey");
+                CheckPageReference(page, page.FooterPageKey, "pied de page", "FooterPageKey");
+
+                if (!scenes.TryGetValue(page.PageKey, out var originalScene)) continue;
+                var scene = loweredScenes.TryGetValue(page.PageKey, out var lowered) ? lowered : originalScene;
+
+                foreach (var action in scene.ActionDefinitions)
+                {
+                    if (action.TargetPageKey is not { } actionTargetKey || !_quickWindowPages.TryGetValue(actionTargetKey, out var actionTarget))
+                    {
+                        continue;
+                    }
+
+                    Diagnostics.Add(new ScadaBuildValidationIssue(
+                        ScadaBuildValidationSeverity.Error,
+                        "parameter-sheet.page-referenced-as-page",
+                        $"L'action '{action.Id}' de la page '{page.EffectivePageCode}' cible la page '{actionTarget.Reference.EffectivePageCode}', " +
+                        "une page Fenêtre rapide qui n'existe plus comme page après l'abaissement.",
+                        PageId: page.EffectivePageCode,
+                        PageKey: page.PageKey,
+                        PropertyPath: $"Scenes[{page.EffectivePageCode}].Actions[{action.Id}].TargetPageKey",
+                        TargetKey: actionTargetKey));
+                }
+
+                foreach (var element in scene.Elements ?? [])
+                {
+                    CheckElementNavigateCommands(page, element);
+                }
+            }
+        }
+
+        private void CheckPageReference(ScadaSceneReference page, Guid? referencedKey, string role, string propertyName)
+        {
+            if (referencedKey is not { } key || !_quickWindowPages.TryGetValue(key, out var target)) return;
+
+            Diagnostics.Add(new ScadaBuildValidationIssue(
+                ScadaBuildValidationSeverity.Error,
+                "parameter-sheet.page-referenced-as-page",
+                $"La page '{page.EffectivePageCode}' référence la page '{target.Reference.EffectivePageCode}' comme {role}, " +
+                "mais celle-ci est une page Fenêtre rapide et n'existe plus comme page après l'abaissement.",
+                PageId: page.EffectivePageCode,
+                PageKey: page.PageKey,
+                PropertyPath: $"Scenes[{page.EffectivePageCode}].{propertyName}",
+                TargetKey: key));
+        }
+
+        private void CheckElementNavigateCommands(ScadaSceneReference page, ScadaElement element)
+        {
+            var commands = element.CommandConfig?.Commands;
+            if (commands is not null)
+            {
+                foreach (var command in commands)
+                {
+                    if (command.Kind != ScadaCommandKind.Navigate ||
+                        command.TargetPageKey is not { } targetKey ||
+                        !_quickWindowPages.TryGetValue(targetKey, out var target))
+                    {
+                        continue;
+                    }
+
+                    Diagnostics.Add(new ScadaBuildValidationIssue(
+                        ScadaBuildValidationSeverity.Error,
+                        "parameter-sheet.page-referenced-as-page",
+                        $"La commande '{command.Id}' de l'élément '{element.Id}' (page '{page.EffectivePageCode}') cible la page " +
+                        $"'{target.Reference.EffectivePageCode}', une page Fenêtre rapide qui n'existe plus comme page après l'abaissement.",
+                        PageId: page.EffectivePageCode,
+                        PageKey: page.PageKey,
+                        ElementId: element.Id,
+                        CommandId: command.Id,
+                        PropertyPath: $"{ElementPath(page, element.Id)}.CommandConfig.Commands[{command.Id}].TargetPageKey",
+                        TargetKey: targetKey));
+                }
+            }
+
+            foreach (var child in element.Children ?? [])
+            {
+                CheckElementNavigateCommands(page, child);
+            }
         }
 
         private ScadaElement LowerElement(ScadaSceneReference owner, ScadaElement element)
