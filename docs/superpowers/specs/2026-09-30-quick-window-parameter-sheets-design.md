@@ -2,7 +2,7 @@
 
 Date: 2026-09-30
 Status: Approved - DEC-0052
-Document version: `V2.1.6.0034`
+Document version: `V2.1.6.0062`
 Portée: SCADA Builder V2 (modèle, éditeur, compilateur, runtime partagé embarqué dans le paquet) et rejeu de conformance sur la branche TF100Web `codex/quick-window-v1`
 Dépendances: `docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md` (`DEC-0050`), `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` §11b et §12, `docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md`, `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`, `docs/08_implementation_status/KNOWN_GAPS_V2.md`
 
@@ -10,6 +10,7 @@ Dépendances: `docs/superpowers/specs/2026-08-04-parameterized-popup-management-
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-30 | `V2.1.6.0062` | `PENDING` | Revue finale du chantier `2026-09-30-quick-window-parameter-sheets` (`DEC-PARAMSHEETS` = `DEC-0052`), correctif M5 (documentation). Spec : §11(2) corrigé selon R1 (`"x"` → `Literal`, `1` → `Expression`, et non `Literal`) ; le tableau de validation par couple de §6 gagne les cas livrés par la revue finale (`read-not-tag`, texte non littéral, `placeholder-unsupported-site`, `literal-rejected-by-runtime`, `page-not-materialized`) et le paragraphe « Type des membres » précise qu'un désaccord de type donne `String` sans erreur et que le contrôle de type tag ne s'applique pas à un membre `#N` (I5). `KNOWN_GAPS_V2.md` entrée 36 : le défaut de canonicalisation est attribué à `ParameterSheetLowering.cs` (et non `QuickWindowCompiler.cs`), et l'entrée décrit exactement la couverture après C1/I2/M1/M4 — y compris ce qui reste non couvert : `Data.TagBinding` et les `ValueBindings` de cellule de tableau sont validés comme sites de lecture mais jamais émis dans le DOM d'une définition, donc n'animent rien dans une fenêtre rapide. Aucun code touché. |
 | 2026-09-30 | `V2.1.6.0034` | `a32545a` | Approuvée sous `DEC-0052`. Statut passé à *Approved*; rulings R1 à R4 ajoutés en fin de §3. |
 | 2026-09-30 | `V2.1.6.0033` | `9ba10d4` | Création. Remplace le modèle d'authoring des fenêtres rapides par des pages de type Fenêtre rapide paramétrées par `#N` et des feuilles de paramètres, résolues à l'ouverture de l'instance. Supersède à l'approbation `2026-09-24-fragment-to-quick-window-conversion-design.md`. |
 
@@ -147,13 +148,18 @@ Deux commandes qui associent la même feuille à la même page produisent deux i
 | --- | --- |
 | `#N` utilisé par la page, absent de la feuille | Erreur |
 | `#N` en cible d'écriture (`data-scada-write-tag`, commande d'écriture) dont la partie droite n'est pas un `Tag` seul | Erreur |
+| `#N` lu comme un tag (`data-scada-read-tag`, variable lue, tag relu par une commande, lecture de cellule de tableau) dont la partie droite n'est pas un `Tag` seul (`parameter-sheet.read-not-tag`) | Erreur |
+| `#N` d'un texte affiché dont la partie droite n'est pas un littéral chaîne (R2) | Erreur |
+| `#N` dans un champ que la substitution de §7 ne réécrit pas : texte d'un effet d'état, format d'une variable lue, message de confirmation, attributs d'une saisie (`parameter-sheet.placeholder-unsupported-site`) | Erreur |
+| Valeur de liaison que `_isInjection` du runtime refuserait au montage (`parameter-sheet.literal-rejected-by-runtime`) | Erreur |
+| Page Fenêtre rapide importée dont la couche HTML source n'est pas entièrement remplacée par des Element+ (`parameter-sheet.page-not-materialized`) | Erreur |
 | Tag référencé absent du catalogue du projet | Erreur |
 | Erreur de syntaxe ou `#N` défini deux fois | Erreur |
 | `#N` défini dans la feuille, inutilisé par la page | Avertissement |
 
 Chaque diagnostic nomme la feuille, la page, le `#N` et la ligne de la feuille.
 
-**Type des membres.** Le manifeste exige un type par membre, alors qu'une même page peut être liée à un tag booléen par une feuille et à un réel par une autre. La substitution de §7 étant textuelle, le runtime ne s'appuie pas sur ce type. Il est déduit quand toutes les invocations concordent et vaut `String` sinon. Voir §12.
+**Type des membres.** Le manifeste exige un type par membre, alors qu'une même page peut être liée à un tag booléen par une feuille et à un réel par une autre. La substitution de §7 étant textuelle, le runtime ne s'appuie pas sur ce type. Il est déduit quand toutes les invocations concordent et vaut `String` sinon, **sans erreur** : le contrôle de compatibilité de type tag ne s'applique pas à un membre `#N`, si bien qu'un tag booléen et un tag réel liés au même `#N` par deux feuilles valident tous deux. Voir §12.
 
 ## 7. Runtime : substitution à l'ouverture
 
@@ -195,9 +201,9 @@ Les contrôles existants s'appliquent aux valeurs substituées : `_isInjection` 
 **Domaine et application (MSTest)** :
 
 1. Analyse de feuille : les six lignes de l'exemple de §4.3 donnent la bonne table et la bonne nature ; commentaire en fin de ligne ; lignes vides ; `#0`, `#1000` et `#01` refusés ; `#N` en double refusé avec les deux numéros de ligne ; deux analyses du même texte identiques.
-2. Classement : `{A}` → `Tag`, `"x"` et `1` → `Literal`, `{A} * 0.1` et `{A} && {B}` → `Expression`.
+2. Classement (R1) : `{A}` → `Tag`, `"x"` → `Literal`, `1`, `{A} * 0.1` et `{A} && {B}` → `Expression`.
 3. Jetons de page : `#1` reconnu, `#1` dans `#10` non reconnu, `\#2` non reconnu.
-4. Compilation : définition avec un membre par `#N` utilisé ; invocation avec les bonnes natures ; les cinq cas de validation de §6, chacun avec sa sévérité.
+4. Compilation : définition avec un membre par `#N` utilisé ; invocation avec les bonnes natures ; chaque cas de validation de §6, chacun avec sa sévérité.
 5. Sélecteur de type de page : un aller-retour de chaque type conserve sa valeur, avec « Fragment » retiré.
 6. Persistance : une feuille relue est identique à la feuille écrite.
 
