@@ -210,6 +210,7 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
         DataContext = this;
         SetActiveRibbon("File");
         ElementLibraryListBox.ItemsSource = _elementLibraryItems;
+        PageTypeComboBox.ItemsSource = PageTypeOptions.Selectable;
         _tagCatalogView = CollectionViewSource.GetDefaultView(_tagCatalogItems);
         _tagCatalogView.Filter = FilterTagCatalogItem;
         TagCatalogDataGrid.ItemsSource = _tagCatalogView;
@@ -3904,38 +3905,13 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         SetStatus("Creation de tags disponible dans une prochaine revision apres import des protocoles projet.");
     }
 
-    private ScadaPageType GetSelectedPageType()
-    {
-        return PageTypeComboBox.SelectedIndex switch
-        {
-            1 => ScadaPageType.Fragment,
-            2 => ScadaPageType.Header,
-            3 => ScadaPageType.Footer,
-            _ => ScadaPageType.Default
-        };
-    }
+    private ScadaPageType GetSelectedPageType() =>
+        (PageTypeComboBox.SelectedItem as PageTypeOption)?.Type ?? ScadaPageType.Default;
 
-    private void SelectPageType(ScadaPageType pageType)
-    {
-        PageTypeComboBox.SelectedIndex = pageType switch
-        {
-            ScadaPageType.Fragment => 1,
-            ScadaPageType.Header => 2,
-            ScadaPageType.Footer => 3,
-            _ => 0
-        };
-    }
+    private void SelectPageType(ScadaPageType pageType) =>
+        PageTypeComboBox.SelectedItem = PageTypeOptions.Selectable.FirstOrDefault(option => option.Type == pageType);
 
-    private static string GetPageTypeLabel(ScadaPageType pageType)
-    {
-        return pageType switch
-        {
-            ScadaPageType.Fragment => "Fragment",
-            ScadaPageType.Header => "Entete",
-            ScadaPageType.Footer => "Pied-de-page",
-            _ => "Defaut"
-        };
-    }
+    private static string GetPageTypeLabel(ScadaPageType pageType) => PageTypeOptions.Label(pageType);
 
     private async Task ShowContextMenuForRequestAsync(LegacyViewerMessage message)
     {

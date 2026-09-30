@@ -71,6 +71,41 @@ public sealed class PageManagementSurfaceContractTests
     }
 
     [TestMethod]
+    public void PageTypeSelectorMapsByValueAndRetiresFragmentFromSelection()
+    {
+        var xaml = Read("src", "ScadaBuilderV2.App", "MainWindow.xaml");
+        var code = Read("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");
+
+        StringAssert.Contains(xaml, "x:Name=\"PageTypeComboBox\"");
+        StringAssert.Contains(xaml, "DisplayMemberPath=\"Label\"");
+        StringAssert.Contains(xaml, "SelectionChanged=\"OnPageTypeSelectionChanged\"");
+        // No hard-coded ComboBoxItem: the selector is fed exclusively from PageTypeOptions.Selectable, by
+        // value, never by list position (DEC-0052 — see PageTypeOptionsTests for the round-trip lock).
+        Assert.IsFalse(xaml.Contains("<ComboBoxItem Content=\"Fragment\"", StringComparison.Ordinal));
+        Assert.IsFalse(xaml.Contains("<ComboBoxItem Content=\"Defaut\"", StringComparison.Ordinal));
+
+        StringAssert.Contains(code, "PageTypeComboBox.ItemsSource = PageTypeOptions.Selectable;");
+        StringAssert.Contains(
+            code,
+            "private ScadaPageType GetSelectedPageType() =>\r\n        (PageTypeComboBox.SelectedItem as PageTypeOption)?.Type ?? ScadaPageType.Default;");
+        StringAssert.Contains(
+            code,
+            "private void SelectPageType(ScadaPageType pageType) =>\r\n        PageTypeComboBox.SelectedItem = PageTypeOptions.Selectable.FirstOrDefault(option => option.Type == pageType);");
+        StringAssert.Contains(code, "private static string GetPageTypeLabel(ScadaPageType pageType) => PageTypeOptions.Label(pageType);");
+    }
+
+    [TestMethod]
+    public void PagesPanelFilterOffersQuickWindowLabelAndKeepsLegacyFragmentUnderTous()
+    {
+        var panel = Read("src", "ScadaBuilderV2.App", "Pages", "PagesPanelViewModel.cs");
+
+        StringAssert.Contains(panel, "[\"Tous\", \"Default\", \"Fenêtre rapide\", \"Header\", \"Footer\"]");
+        Assert.IsFalse(panel.Contains("\"Fragment\"", StringComparison.Ordinal), "Fragment must not be a selectable type filter (DEC-0052).");
+        StringAssert.Contains(panel, "TypeFilterLabel");
+        StringAssert.Contains(panel, "ScadaPageType.QuickWindow");
+    }
+
+    [TestMethod]
     public void PageContextTraversalSupportsInlineRunContentWithoutVisualTreeCrash()
     {
         var code = Read("src", "ScadaBuilderV2.App", "MainWindow.xaml.cs");

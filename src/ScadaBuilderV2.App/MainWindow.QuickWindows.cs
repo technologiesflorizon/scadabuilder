@@ -56,7 +56,28 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
     /// </summary>
     private ScadaTagCatalog? ActiveSelectorTagCatalog => _hostedQuickWindowDefinition is { } definition
         ? QuickWindowInterfaceCatalogProjection.Create(definition)
-        : _modernProject?.TagCatalog;
+        : IsActivePageOfQuickWindowType
+            ? QuickWindowPagePlaceholderTagCatalog
+            : _modernProject?.TagCatalog;
+
+    /// <summary>
+    /// Gets whether the active page (not a hosted quick-window definition) carries
+    /// <see cref="ScadaPageType.QuickWindow"/>: its selectors offer <c>#1</c>..<c>#999</c> parameter
+    /// placeholders instead of project tags (DEC-0052).
+    /// </summary>
+    private bool IsActivePageOfQuickWindowType =>
+        _activeSceneTab?.PageKey is { } pageKey &&
+        _modernProject?.Scenes.FirstOrDefault(page => page.PageKey == pageKey)?.Type == ScadaPageType.QuickWindow;
+
+    /// <summary>Synthetic <c>#1</c>..<c>#999</c> parameter catalog offered to selectors on a QuickWindow page.</summary>
+    /// <remarks>Built once and cached: it never varies across activations.</remarks>
+    private static ScadaTagCatalog QuickWindowPagePlaceholderTagCatalog => _quickWindowPagePlaceholderTagCatalog ??= new ScadaTagCatalog(
+        "quick-window-page-placeholder-parameters/1.0",
+        Enumerable.Range(1, 999)
+            .Select(n => new ScadaTagDefinition($"#{n}", $"#{n}", Device: "Paramètre", Writeable: true, Enabled: true))
+            .ToArray());
+
+    private static ScadaTagCatalog? _quickWindowPagePlaceholderTagCatalog;
 
     private void OnShowQuickWindowsAnchorableClick(object sender, RoutedEventArgs e) =>
         ShowAnchorable(QuickWindowsAnchorable);

@@ -306,6 +306,38 @@ public sealed class QuickWindowInterfaceAuthoringTests
     }
 
     [TestMethod]
+    public void TheShellOffersNumberedPlaceholdersOnAQuickWindowTypedPageInsteadOfProjectTags()
+    {
+        var wiring = ReadAppFile("MainWindow.QuickWindows.cs");
+
+        // A page still typed QuickWindow (DEC-0052) is not the hosted-definition case handled by
+        // QuickWindowInterfaceCatalogProjection above; its selectors must fall back to a synthetic
+        // #1..#999 catalog built once and cached, never to the project tag catalogue.
+        StringAssert.Contains(wiring, "IsActivePageOfQuickWindowType");
+        StringAssert.Contains(wiring, "QuickWindowPagePlaceholderTagCatalog");
+        StringAssert.Contains(wiring, "Enumerable.Range(1, 999)");
+        StringAssert.Contains(wiring, "new ScadaTagDefinition($\"#{n}\", $\"#{n}\", Device: \"Paramètre\", Writeable: true, Enabled: true)");
+        StringAssert.Contains(wiring, "_quickWindowPagePlaceholderTagCatalog ??=");
+
+        var catalogAccessor = ExtractMember(wiring, "private ScadaTagCatalog? ActiveSelectorTagCatalog =>");
+        StringAssert.Contains(catalogAccessor, "_hostedQuickWindowDefinition is { } definition");
+        StringAssert.Contains(catalogAccessor, "QuickWindowInterfaceCatalogProjection.Create(definition)");
+        StringAssert.Contains(catalogAccessor, "IsActivePageOfQuickWindowType");
+        StringAssert.Contains(catalogAccessor, "QuickWindowPagePlaceholderTagCatalog");
+        StringAssert.Contains(catalogAccessor, "_modernProject?.TagCatalog");
+    }
+
+    private static string ExtractMember(string source, string signature)
+    {
+        var start = source.IndexOf(signature, StringComparison.Ordinal);
+        Assert.AreNotEqual(-1, start, $"'{signature}' was not found.");
+        var end = source.IndexOf(";\r\n", start, StringComparison.Ordinal);
+        if (end == -1) end = source.IndexOf(";\n", start, StringComparison.Ordinal);
+        Assert.AreNotEqual(-1, end, $"Could not find the end of member '{signature}'.");
+        return source[start..end];
+    }
+
+    [TestMethod]
     public void TheShellReplacesTheProjectTagCatalogueByTheLocalInterfaceInAQuickWindowContext()
     {
         var xaml = ReadAppFile("MainWindow.xaml");

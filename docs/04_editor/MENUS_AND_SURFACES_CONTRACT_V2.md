@@ -2,12 +2,13 @@
 
 Date: 2026-07-16
 Status: Active editor menu and surface contract
-Document version: `V2.1.5.0035`
+Document version: `V2.1.6.0045`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-30 | `V2.1.6.0045` | `PENDING` | Tâche 8 du chantier `2026-09-30-quick-window-parameter-sheets` (`DEC-PARAMSHEETS` = `DEC-0052`) : le sélecteur `Type` de la page retire `Fragment` de la sélection (reste affichable, libellé « Fragment (obsolète) », via `PageTypeOptions.Label`) et ajoute `Fenêtre rapide` ; mappage strictement par valeur (`PageTypeOptions.Selectable`), jamais par position de liste. Une page encore typée `Fragment` affiche le sélecteur vide ; la choisir convertit la page comme tout autre changement de type, via la même commande `page.set-type` (undoable). Le filtre de type du panneau Pages ajoute `Fenêtre rapide` et retire `Fragment` : une page héritée `Fragment` reste trouvable sous `Tous` mais ne correspond plus à aucun filtre de type nommé. Sur une page typée `QuickWindow`, les sélecteurs de tag (état, commande, liaison, expression) offrent un catalogue synthétique de jetons `#1`..`#999` au lieu du `Catalogue Tags` projet — même principe que la projection `Interface locale` ci-dessus, mais pour une page, pas pour une définition Fenêtre rapide hébergée. Voir `docs/00_governance/DECISION_REGISTER_V2.md` `DEC-0052`. |
 | 2026-08-24 | `V2.1.5.0035` | `2e86fd9` | Surface de reparation des invocations `Outdated` : liste page/appelant/commande/motif, navigation vers l'appelant et reliaison port par port. |
 | 2026-08-24 | `V2.1.5.0034` | `4202a70` | Dialogue de collage refuse : liste objet/propriete/reference/motif et deux issues seulement, `Annuler` ou `Coller sans liaisons`. |
 | 2026-08-23 | `V2.1.5.0030` | `6c55fdb` | Banc d'essai Fenetre rapide : valeurs et titre temporaires, ouverture d'une instance d'apercu editor-only et fermeture explicite. |
@@ -55,9 +56,15 @@ Dans cette tranche, la projection est en lecture seule : tant qu’une Fenêtre 
 
 Un bandeau de contexte affiche en permanence le badge `Page` ou `Fenêtre rapide` et le titre de la surface active.
 
+## Sélecteur de type de page
+
+Le sélecteur `Type` du panneau Propriétés page (`PageTypeComboBox`) n'offre que `Défaut`, `Fenêtre rapide`, `En-tête` et `Pied de page` (`PageTypeOptions.Selectable`, `src/ScadaBuilderV2.App/Pages/PageTypeOptions.cs`), dans cet ordre. `Fragment` (`DEC-0052`) est retiré de la sélection ; son libellé reste défini (« Fragment (obsolète) », `PageTypeOptions.Label`) pour l'affichage d'une page qui le porte encore. Le mappage se fait strictement par la valeur `ScadaPageType` de l'option sélectionnée, jamais par l'index de la liste : retirer `Fragment` de la sélection ne décale donc jamais ce qu'un autre index signifiait. Une page encore typée `Fragment` affiche le sélecteur vide ; choisir un type la convertit comme tout autre changement de type, via la commande de page partagée `page.set-type` (`SetPageTypeCommand`), donc annulable comme les autres modifications des propriétés de page.
+
+Le filtre de type du panneau `Pages` (`PagesPanelViewModel.TypeFilters`) offre de même `Fenêtre rapide` à la place de `Fragment` ; une page héritée encore typée `Fragment` reste trouvable sous `Tous` mais ne correspond plus à aucun filtre de type nommé.
+
 ## Panneau Interface locale
 
-Tant qu'une Fenêtre rapide est la surface active, le panneau `Catalogue Tags` du projet est masqué et remplacé par `Interface locale`. Le contenu d'une Fenêtre rapide ne référence jamais un tag physique du projet : les sélecteurs d'état, de commande, de liaison et d'expression consomment le catalogue de contexte, projeté depuis les membres de l'Interface locale de la définition ouverte. Cette projection est editor-only, reconstruite à chaque activation, jamais persistée ni exportée. Revenir sur une page restaure le catalogue de tags projet.
+Tant qu'une Fenêtre rapide est la surface active, le panneau `Catalogue Tags` du projet est masqué et remplacé par `Interface locale`. Le contenu d'une Fenêtre rapide ne référence jamais un tag physique du projet : les sélecteurs d'état, de commande, de liaison et d'expression consomment le catalogue de contexte, projeté depuis les membres de l'Interface locale de la définition ouverte. Cette projection est editor-only, reconstruite à chaque activation, jamais persistée ni exportée. Revenir sur une page restaure le catalogue de tags projet — sauf si cette page est elle-même typée `QuickWindow` (voir « Sélecteur de type de page » ci-dessus), auquel cas ses sélecteurs offrent un catalogue synthétique `#1`..`#999` construit une fois et mis en cache (`MainWindow.QuickWindows.cs`), jamais le catalogue de tags projet.
 
 `Interface locale` est un tableau unique groupé en `Interface publique` et `Données privées`, filtrable par famille et par texte. Chaque ligne expose nom, famille, type, accès, requis, statut de liaison et compteur d'utilisations. Les propriétés courantes — nom, famille, type, accès, requis — sont modifiables directement dans le tableau; la famille impose l'accès et interdit `Requis` sur un membre privé. Les propriétés avancées — valeur par défaut et description — passent par le dialogue commun de membre, qui sert aussi la création.
 

@@ -1069,12 +1069,8 @@
                                 <TextBlock Text="Type"/>
                                 <ComboBox x:Name="PageTypeComboBox"
                                           Margin="0,3,0,8"
-                                          SelectionChanged="OnPageTypeSelectionChanged">
-                                    <ComboBoxItem Content="Defaut"/>
-                                    <ComboBoxItem Content="Fragment"/>
-                                    <ComboBoxItem Content="Entete"/>
-                                    <ComboBoxItem Content="Pied-de-page"/>
-                                </ComboBox>
+                                          DisplayMemberPath="Label"
+                                          SelectionChanged="OnPageTypeSelectionChanged"/>
                                 <CheckBox x:Name="IncludeInBuildCheckBox"
                                           Content="Compiler cette page"
                                           Margin="0,0,0,6"

@@ -42,6 +42,7 @@
     <Compile Include="..\..\src\ScadaBuilderV2.App\QuickWindows\QuickWindowTestBenchViewModel.cs" Link="AppSource\QuickWindowTestBenchViewModel.cs" />
     <Compile Include="..\..\src\ScadaBuilderV2.App\QuickWindows\BuilderQuickWindowHostAdapter.cs" Link="AppSource\BuilderQuickWindowHostAdapter.cs" />
     <Compile Include="..\..\src\ScadaBuilderV2.App\Shell\BusyOverlayController.cs" Link="AppSource\BusyOverlayController.cs" />
+    <Compile Include="..\..\src\ScadaBuilderV2.App\Pages\PageTypeOptions.cs" Link="AppSource\PageTypeOptions.cs" />
   </ItemGroup>
 
 </Project>
