@@ -28,6 +28,10 @@
     /on[a-z]+\s*=/i
   ];
 
+  // `#N` placeholder tokens (DEC-0052, contract §11b.1): 1..999, no leading zero.
+  var PLACEHOLDER_EXACT = /^#([1-9][0-9]{0,2})$/;
+  var PLACEHOLDER_IN_TEXT = /(\\?)#([0-9]{1,3})(?![0-9A-Fa-f])/g;
+
   var _definitions = {};   // definitionKey -> definition entry
   var _invocations = {};   // invocationKey -> invocation entry
   var _instances = {};     // runtimeInstanceId -> instance context
@@ -135,6 +139,23 @@
       }
     }
     return result;
+  }
+
+  /**
+   * True only for a definition compiled from a parameter-sheet `QuickWindow` page: its members are
+   * anonymous placeholder tokens (`#1`..`#999`) rather than human-readable names. Mount-time `#N`
+   * substitution runs only for such a definition — a pre-existing DEC-0050 quick window with named
+   * ports (e.g. `Speed`) mounts exactly as before, with no substitution and no possible refusal, so a
+   * literal `#N` in its own text or markup (e.g. a label "Pompe #1") is left untouched.
+   */
+  function _hasPlaceholderMembers(definition) {
+    var members = _members(definition);
+    for (var i = 0; i < members.length; i++) {
+      if (PLACEHOLDER_EXACT.test(members[i] && members[i].Name)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -280,6 +301,7 @@
       parentInstanceId: parentContext ? parentContext.runtimeInstanceId : null,
       ports: resolution.ports,
       portsByKey: _indexByKey(resolution.ports),
+      substitutionEnabled: _hasPlaceholderMembers(resolution.definition),
       state: 'Requested',
       root: null,
       subscriptions: []
@@ -324,9 +346,6 @@
   // `style` attributes are never read nor written by this pass: a hex colour like `#0F2A30` is never
   // searched for a placeholder there.
 
-  var PLACEHOLDER_EXACT = /^#([1-9][0-9]{0,2})$/;
-  var PLACEHOLDER_IN_TEXT = /(\\?)#([0-9]{1,3})(?![0-9A-Fa-f])/g;
-
   function _refuse(code, detail) {
     _diagnose(code, detail);
     return { ok: false, code: code, detail: detail };
@@ -357,6 +376,9 @@
     if (node.type === 'tagRef' && PLACEHOLDER_EXACT.test(node.tagName || '')) {
       var port = ports[node.tagName];
       if (!port || !port.available) return { error: 'placeholder-unbound', detail: node.tagName };
+      if (port.sourceKind === 'Expression' && !port.expressionAst) {
+        return { error: 'placeholder-expression-unavailable', detail: node.tagName };
+      }
       return { node: _nodeFor(port) };
     }
     var copy = {};
@@ -384,14 +406,48 @@
     return { node: copy };
   }
 
+  /** True when a text node sits inside a `<style>` or `<script>` element (HTML or SVG, case-insensitive). */
+  function _hasStyleOrScriptAncestor(node) {
+    var ancestor = node.parentNode;
+    while (ancestor) {
+      if (ancestor.tagName) {
+        var tag = String(ancestor.tagName).toUpperCase();
+        if (tag === 'STYLE' || tag === 'SCRIPT') return true;
+      }
+      ancestor = ancestor.parentNode;
+    }
+    return false;
+  }
+
+  /** Parses a `data-scada-*-config` attribute as a non-null JSON object, or the refusal reason. */
+  function _parseConfig(raw) {
+    var parsed;
+    try {
+      parsed = JSON.parse(raw);
+    } catch (e) {
+      return { error: 'placeholder-config-invalid' };
+    }
+    if (!parsed || typeof parsed !== 'object') {
+      return { error: 'placeholder-config-invalid' };
+    }
+    return { config: parsed };
+  }
+
   /**
    * Substitutes every `#N` placeholder of a mounted quick-window instance's DOM, in a single pass,
    * from the resolved ports of that instance. Covers `data-scada-read-tag`/`data-scada-write-tag`
    * (exact-match attribute values only), `data-scada-state-config`/`data-scada-command-config` (parsed
    * as JSON, substituted, then re-serialized — never a raw string replacement on the JSON), and text
    * nodes (rewritten through `textContent` only, never `innerHTML`). `style` attributes are never
-   * inspected. Refuses (instead of ever rendering a raw `#N`) with one of `placeholder-unbound`,
-   * `placeholder-write-not-tag` or `placeholder-text-not-literal`.
+   * inspected, and a text node inside a `<style>`/`<script>` element (HTML or SVG) is never walked —
+   * a bare CSS/JS `#` token there (e.g. `.cls-1{fill:#333;}`) is never mistaken for a placeholder.
+   * Refuses (instead of ever rendering a raw `#N`) with one of `placeholder-unbound`,
+   * `placeholder-write-not-tag`, `placeholder-text-not-literal`, `placeholder-expression-unavailable`
+   * (a `#N` bound to an `Expression` port whose `expressionAst` is null/absent) or
+   * `placeholder-config-invalid` (a `data-scada-state-config`/`data-scada-command-config` attribute
+   * that is not parseable JSON, or whose JSON is not an object). A refusal does not roll back
+   * elements already rewritten earlier in the same pass — the host discards the whole instance root
+   * on refusal (see `quick-window-host.js`), so a partial rewrite is never observable.
    *
    * @param {object} root  - The instance's mounted DOM root.
    * @param {object} ports - The instance's resolved ports, keyed by definition member name.
@@ -420,7 +476,9 @@
 
       var stateConfigRaw = element.getAttribute('data-scada-state-config');
       if (stateConfigRaw !== null) {
-        var stateConfig = JSON.parse(stateConfigRaw);
+        var parsedStateConfig = _parseConfig(stateConfigRaw);
+        if (parsedStateConfig.error) return _refuse(parsedStateConfig.error, 'data-scada-state-config');
+        var stateConfig = parsedStateConfig.config;
         var states = stateConfig.states || [];
         for (var s = 0; s < states.length; s++) {
           if (!states[s] || states[s].expression === undefined) continue;
@@ -439,7 +497,9 @@
 
       var commandConfigRaw = element.getAttribute('data-scada-command-config');
       if (commandConfigRaw !== null) {
-        var commandConfig = JSON.parse(commandConfigRaw);
+        var parsedCommandConfig = _parseConfig(commandConfigRaw);
+        if (parsedCommandConfig.error) return _refuse(parsedCommandConfig.error, 'data-scada-command-config');
+        var commandConfig = parsedCommandConfig.config;
         var commands = commandConfig.commands || [];
         for (var c = 0; c < commands.length; c++) {
           var command = commands[c];
@@ -462,6 +522,10 @@
     var walker = window.document.createTreeWalker(root, window.NodeFilter.SHOW_TEXT);
     var textNode = walker.nextNode();
     while (textNode) {
+      if (_hasStyleOrScriptAncestor(textNode)) {
+        textNode = walker.nextNode();
+        continue;
+      }
       var original = textNode.textContent;
       if (original && original.indexOf('#') !== -1) {
         var refusal = null;
@@ -509,7 +573,7 @@
     }
 
     context.root = root || null;
-    if (root) {
+    if (root && context.substitutionEnabled) {
       var substituted = substituteInstance(root, context.ports || {});
       if (!substituted.ok) {
         disposeInstance(runtimeInstanceId);
@@ -548,13 +612,22 @@
       return { ok: true, value: port.literalValue };
     }
     if (port.sourceKind === 'Expression') {
-      var evaluator = window.ScadaRuntime && window.ScadaRuntime.ExpressionEvaluator;
-      if (!evaluator || typeof evaluator.walk !== 'function') {
-        return { ok: false, code: 'expression-unavailable' };
-      }
       // The evaluator walks the serialized AST, never the source text: `port.expression` is the
       // original text kept for round-tripping/UI, but only `expressionAst` is evaluable.
-      return { ok: true, value: evaluator.walk(port.expressionAst, {}) };
+      if (!port.expressionAst) {
+        return { ok: false, code: 'expression-unavailable' };
+      }
+      var evaluator = window.ScadaRuntime && window.ScadaRuntime.ExpressionEvaluator;
+      if (!evaluator || typeof evaluator.walk !== 'function' ||
+          typeof evaluator.resetError !== 'function' || typeof evaluator.hasError !== 'function') {
+        return { ok: false, code: 'expression-unavailable' };
+      }
+      evaluator.resetError();
+      var value = evaluator.walk(port.expressionAst, {});
+      if (evaluator.hasError()) {
+        return { ok: false, code: 'expression-error' };
+      }
+      return { ok: true, value: value };
     }
     if (port.tagId && window.ScadaRuntime && window.ScadaRuntime.TagBridge) {
       return { ok: true, value: window.ScadaRuntime.TagBridge.getTagValue(port.tagId) };

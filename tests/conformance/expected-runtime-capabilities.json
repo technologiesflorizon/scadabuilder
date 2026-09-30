@@ -2,7 +2,7 @@
   "Schema": "scada-v2-runtime-conformance-v2",
   "ContractVersion": "1.0",
   "PackageFile": "scada-v2-runtime-conformance.sb2",
-  "PackageSha256": "86eed1bc70a9ac8a20ebbd692ddba3d33d63a41207039a058b17a9548955ef97",
+  "PackageSha256": "e3cb29d384b7a5f9f2706edabbe98b6a8a84d7e7c8160c7d2c7265c4229722b7",
   "Fixtures": [
     {
       "CapabilityId": "action.close-popup",

@@ -170,3 +170,51 @@ export function createFakeDom() {
 
   return { document: document, NodeFilter: NodeFilter };
 }
+
+/**
+ * Builds one DOM tree from a tiny well-formed HTML fragment (single root element, `"` quoted
+ * attributes only, no self-closing tags, no comments): enough to let a fixture be written once as
+ * a template string and cloned into independent trees per call — e.g. to prove two mounted
+ * instances of the "same page" never share state. Uses the `document` a `createFakeDom()` call
+ * produced.
+ *
+ * @param {object} document - The fake `document` (from `createFakeDom()`).
+ * @param {string} html     - A single-root HTML fragment.
+ * @returns {object} the root element.
+ */
+export function parseFragment(document, html) {
+  var tokenRe = /<\/[a-zA-Z][^>]*>|<[a-zA-Z][^>]*>|[^<]+/g;
+  var attrRe = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*=\s*"([^"]*)"/g;
+  var root = null;
+  var stack = [];
+  var match;
+  while ((match = tokenRe.exec(html)) !== null) {
+    var token = match[0];
+    if (token[0] === '<' && token[1] === '/') {
+      stack.pop();
+      continue;
+    }
+    if (token[0] === '<') {
+      var inner = token.slice(1, -1);
+      var tagMatch = inner.match(/^[a-zA-Z][a-zA-Z0-9-]*/);
+      var element = document.createElement(tagMatch[0]);
+      var rest = inner.slice(tagMatch[0].length);
+      var attrMatch;
+      attrRe.lastIndex = 0;
+      while ((attrMatch = attrRe.exec(rest)) !== null) {
+        element.setAttribute(attrMatch[1], attrMatch[2]);
+      }
+      if (stack.length > 0) {
+        stack[stack.length - 1].appendChild(element);
+      } else {
+        root = element;
+      }
+      stack.push(element);
+      continue;
+    }
+    if (stack.length > 0) {
+      stack[stack.length - 1].appendChild(document.createTextNode(token));
+    }
+  }
+  return root;
+}
