@@ -10,7 +10,7 @@ Dépendances: `docs/superpowers/specs/2026-08-04-parameterized-popup-management-
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-30 | `V2.1.6.0033` | `PENDING` | Création. Remplace le modèle d'authoring des fenêtres rapides par des pages de type Fenêtre rapide paramétrées par `#N` et des feuilles de paramètres, résolues à l'ouverture de l'instance. Supersède à l'approbation `2026-09-24-fragment-to-quick-window-conversion-design.md`. |
+| 2026-09-30 | `V2.1.6.0033` | `9ba10d4` | Création. Remplace le modèle d'authoring des fenêtres rapides par des pages de type Fenêtre rapide paramétrées par `#N` et des feuilles de paramètres, résolues à l'ouverture de l'instance. Supersède à l'approbation `2026-09-24-fragment-to-quick-window-conversion-design.md`. |
 
 ## 1. Le problème
 
