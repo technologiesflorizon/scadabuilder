@@ -8,7 +8,7 @@ Document version: `V2.1.6.0033`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-09-30 | `V2.1.6.0033` | `PENDING` | Création du plan dérivé de `docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md` : treize tâches, rulings R1 à R4. |
+| 2026-09-30 | `V2.1.6.0033` | `bf9ff47` | Création du plan dérivé de `docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md` : treize tâches, rulings R1 à R4. |
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
