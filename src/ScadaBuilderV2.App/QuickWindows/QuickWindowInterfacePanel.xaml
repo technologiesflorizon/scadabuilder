@@ -1,22 +1,12 @@
 <UserControl x:Class="ScadaBuilderV2.App.QuickWindows.QuickWindowInterfacePanel"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase">
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <UserControl.Resources>
         <SolidColorBrush x:Key="PanelMutedBrush" Color="#5B7076"/>
         <SolidColorBrush x:Key="PanelBorderBrush" Color="#DCE8DD"/>
         <SolidColorBrush x:Key="PanelDangerBrush" Color="#B3261E"/>
         <SolidColorBrush x:Key="PanelInkBrush" Color="#0F2A30"/>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
-        <CollectionViewSource x:Key="GroupedMembers" Source="{Binding Members}">
-            <CollectionViewSource.GroupDescriptions>
-                <PropertyGroupDescription PropertyName="GroupLabel"/>
-            </CollectionViewSource.GroupDescriptions>
-            <CollectionViewSource.SortDescriptions>
-                <scm:SortDescription PropertyName="GroupOrder" Direction="Ascending"/>
-                <scm:SortDescription PropertyName="Name" Direction="Ascending"/>
-            </CollectionViewSource.SortDescriptions>
-        </CollectionViewSource>
     </UserControl.Resources>
     <DockPanel Margin="12">
         <StackPanel DockPanel.Dock="Top" Margin="0,0,0,8">

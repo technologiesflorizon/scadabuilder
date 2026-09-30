@@ -99,8 +99,22 @@ public sealed class QuickWindowTestBenchViewModel : INotifyPropertyChanged
         private set { if (pageLabel == value) return; pageLabel = value; Raise(nameof(PageLabel)); }
     }
 
-    /// <summary>Gets the sheet key currently selected in the bench, or null.</summary>
-    public Guid? SelectedSheetKey => selectedSheetKey;
+    /// <summary>
+    /// Gets or sets the sheet key currently selected in the bench, or null. The setter is what the
+    /// `SheetSelectorComboBox`'s `SelectedValue` binding writes to and reads back from, so a page reload
+    /// that restores a previously picked sheet (<see cref="LoadPage"/>) keeps the combo box in sync, and a
+    /// re-selection (including one restored across a tab switch) reaches the same path as an operator pick.
+    /// </summary>
+    public Guid? SelectedSheetKey
+    {
+        get => selectedSheetKey;
+        set
+        {
+            if (selectedSheetKey == value) return;
+            selectedSheetKey = value;
+            Raise(nameof(SelectedSheetKey));
+        }
+    }
 
     /// <summary>Gets the lowering diagnostics of the last previewed (sheet, page) pair (DEC-0052, spec §6).</summary>
     public IReadOnlyList<ScadaBuildValidationIssue> LoweringDiagnostics => loweringDiagnostics;
@@ -176,12 +190,7 @@ public sealed class QuickWindowTestBenchViewModel : INotifyPropertyChanged
     }
 
     /// <summary>Records the sheet the operator picked in the bench's sheet selector.</summary>
-    public void SelectSheet(Guid sheetKey)
-    {
-        if (selectedSheetKey == sheetKey) return;
-        selectedSheetKey = sheetKey;
-        Raise(nameof(SelectedSheetKey));
-    }
+    public void SelectSheet(Guid sheetKey) => SelectedSheetKey = sheetKey;
 
     /// <summary>Shows the lowering diagnostics of the last previewed (sheet, page) pair in the bench.</summary>
     public void SetLoweringDiagnostics(IReadOnlyList<ScadaBuildValidationIssue> diagnostics)

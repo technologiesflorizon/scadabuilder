@@ -37,7 +37,9 @@
                       MinHeight="30"
                       Width="220"
                       DisplayMemberPath="DisplayName"
+                      SelectedValuePath="SheetKey"
                       ItemsSource="{Binding Sheets}"
+                      SelectedValue="{Binding SelectedSheetKey}"
                       SelectionChanged="OnSheetSelectionChanged"/>
             <Button x:Name="ClosePreviewButton"
                     Content="Fermer l'aperçu"

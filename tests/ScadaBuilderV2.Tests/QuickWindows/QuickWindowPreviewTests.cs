@@ -220,6 +220,28 @@ public sealed class QuickWindowPreviewTests
     }
 
     [TestMethod]
+    public void TheRegistryCarriesTheDefinitionNamespaceTheStylesheetTargets()
+    {
+        // Controller fix round 1: quick-window-runtime.js's open() reads resolution.definition.Namespace to
+        // build intent.namespace, which the inline adapter writes onto data-qw-def. Omitting it left that
+        // attribute "undefined", so the frame never matched its own [data-qw-def="..."] style rules.
+        var definition = Definition();
+        var invocation = new QuickWindowInvocation(
+            Guid.NewGuid(),
+            definition.DefinitionKey,
+            [QuickWindowBinding.FromLiteral(RunningKey, "Ventilateur 3")],
+            InterfaceVersion: definition.InterfaceVersion);
+
+        var document = QuickWindowPreviewDocumentFactory.Create(
+            new QuickWindowPreviewInput(definition, Guid.NewGuid(), Invocation: invocation));
+
+        StringAssert.Contains(
+            document.Html,
+            $"&quot;Namespace&quot;:&quot;{document.Namespace}&quot;",
+            "the registry's Namespace must equal the namespace the stylesheet's [data-qw-def=...] rules target");
+    }
+
+    [TestMethod]
     public void WithNoInvocationThePreviewKeepsTheLegacyHostPath()
     {
         var document = QuickWindowPreviewDocumentFactory.Create(new QuickWindowPreviewInput(Definition(), Guid.NewGuid()));

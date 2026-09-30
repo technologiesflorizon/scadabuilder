@@ -7366,6 +7366,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
     {
         _modernProject = project;
         _pageWorkspaceController.ReplaceProject(project, result.WorkspaceDirty);
+        // Controller fix round 1 (Task 11): ReplaceProject just called tab.UpdatePage on every open tab,
+        // including the active one, so a page.set-type result (or any other page-property command) is now
+        // reflected on _activeSceneTab.Page.Type; refresh Interface locale/Banc d'essai immediately instead
+        // of waiting for the next tab activation.
+        RefreshQuickWindowPageSurfaces();
         var selectedKey = result.PageToSelectKey ?? _pagesPanel.SelectedPage?.PageKey;
         _pagesPanel.Load(project, result.Diagnostics);
         _pagesPanel.SelectedPage = _pagesPanel.Items.FirstOrDefault(item => item.PageKey == selectedKey);

@@ -334,12 +334,18 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
     /// preview it with a parameter sheet (DEC-0052); hides both and restores the project `Catalogue Tags`
     /// otherwise.
     /// </summary>
+    /// <remarks>
+    /// Controller fix round 1: reads the type from <see cref="_activeSceneTab"/>'s own
+    /// <see cref="SceneWorkspaceTab.Page"/> — the same source <see cref="BuildQuickWindowAuthoringContext"/>
+    /// uses — never from <c>_modernProject.Scenes</c>. A `page.set-type` result assigns
+    /// <c>_modernProject</c> in <see cref="OnPageCommandCompleted"/> only after
+    /// <see cref="PageWorkspaceController.ReplaceProject"/> calls <c>tab.UpdatePage</c> and re-activates the
+    /// tab; reading <c>_modernProject.Scenes</c> here observed the pre-mutation project and never reflected
+    /// a type change into or out of <see cref="ScadaPageType.QuickWindow"/> on the currently active tab.
+    /// </remarks>
     private void RefreshQuickWindowPageSurfaces()
     {
-        var page = _activeSceneTab?.PageKey is { } pageKey
-            ? _modernProject?.Scenes.FirstOrDefault(item => item.PageKey == pageKey)
-            : null;
-        if (page?.Type == ScadaPageType.QuickWindow && _activeScene is not null)
+        if (_activeSceneTab?.Page.Type == ScadaPageType.QuickWindow && _activeScene is not null)
         {
             ShowLocalInterfacePanelForPage(_activeScene);
             ShowQuickWindowTestBenchForPage(_activeScene);

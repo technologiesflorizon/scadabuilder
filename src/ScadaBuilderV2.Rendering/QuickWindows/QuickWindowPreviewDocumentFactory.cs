@@ -138,7 +138,7 @@ public static class QuickWindowPreviewDocumentFactory
         var title = HtmlEncoder.Default.Encode(
             string.IsNullOrWhiteSpace(testBench.TitleOverride) ? definition.EffectiveTitle : testBench.TitleOverride!);
         var templateId = $"{ns}__template";
-        var registry = input.Invocation is { } invocation ? BuildRegistry(definition, invocation) : null;
+        var registry = input.Invocation is { } invocation ? BuildRegistry(definition, invocation, ns) : null;
         var requestJson = HtmlEncoder.Default.Encode(JsonSerializer.Serialize(new
         {
             definitionKey = definition.DefinitionKey,
@@ -275,16 +275,22 @@ public static class QuickWindowPreviewDocumentFactory
     /// Builds the minimal DEC-0052 registry payload (<see cref="RegistryJsonOptions"/>) the preview
     /// registers with <c>ScadaRuntime.QuickWindow.loadRegistries</c>: the previewed definition (its
     /// interface members only — visual content is already rendered server-side) and its one invocation.
-    /// A binding's <c>ExpressionAst</c>, when present, is re-serialized with
+    /// Carries the same <paramref name="ns"/> namespace <c>Create</c> already computed for the stylesheet
+    /// (<c>[data-qw-def="ns"]</c>): <c>quick-window-runtime.js</c>'s <c>open()</c> reads
+    /// <c>resolution.definition.Namespace</c> to build both <c>runtimeInstanceId</c> and
+    /// <c>intent.namespace</c> — omitting it left the inline adapter setting
+    /// <c>data-qw-def="undefined"</c>, so the frame lost every namespaced style rule. A binding's
+    /// <c>ExpressionAst</c>, when present, is re-serialized with
     /// <see cref="Ft100SceneExporter.StateCommandJsonOptions"/> per ruling R3.
     /// </summary>
-    private static object BuildRegistry(QuickWindowDefinition definition, QuickWindowInvocation invocation)
+    private static object BuildRegistry(QuickWindowDefinition definition, QuickWindowInvocation invocation, string ns)
     {
         var definitionNode = JsonSerializer.SerializeToNode(new
         {
             definition.DefinitionKey,
             definition.InterfaceVersion,
-            InterfaceMembers = definition.EffectiveInterfaceMembers
+            InterfaceMembers = definition.EffectiveInterfaceMembers,
+            Namespace = ns
         }, RegistryJsonOptions);
 
         var invocationNode = JsonSerializer.SerializeToNode(invocation, RegistryJsonOptions)!.AsObject();
