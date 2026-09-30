@@ -1,5 +1,6 @@
 using ScadaBuilderV2.Application.Commands;
 using ScadaBuilderV2.Application.History;
+using ScadaBuilderV2.Application.QuickWindows;
 using ScadaBuilderV2.Domain.ElementEvents.Command;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
@@ -341,9 +342,24 @@ public sealed class PageCommandCoordinator(PageDependencyAnalyzer? dependencyAna
             "modifier arrière-plan page");
     }
 
+    /// <summary>
+    /// Validates the lowered projection, not the authoring snapshot: an authored open-quick-window command
+    /// (sheet + page, no invocation key yet) would otherwise raise a false
+    /// <c>command.open-quick-window-missing-invocation</c> here, since that key is only assigned by
+    /// <see cref="ParameterSheetLowering.Lower"/>, and no <c>parameter-sheet.*</c> diagnostic would ever
+    /// surface at this command. The dependency analyzer stays on the authoring <paramref name="snapshot"/>:
+    /// it reasons about open tabs and page identity, which lowering does not change for surviving pages.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0050, DEC-0052.
+    /// Contracts: docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md §4, §6.
+    /// Tests: tests/ScadaBuilderV2.Tests/PageCommandCoordinatorTests.cs.
+    /// </remarks>
     private PageWorkspaceMutation Validate(PageWorkspaceSnapshot snapshot, ProjectWorkspaceUiSnapshot ui)
     {
-        var diagnostics = ScadaProjectBuildValidator.Validate(snapshot.Project, snapshot.Scenes.Values.ToArray())
+        var lowered = ParameterSheetLowering.Lower(snapshot.Project, snapshot.Scenes);
+        var diagnostics = lowered.Diagnostics
+            .Concat(ScadaProjectBuildValidator.Validate(lowered.Project, lowered.Scenes.Values.ToArray()))
             .Concat(dependencyAnalyzer.Analyze(snapshot, ui.OpenPageKeys).Diagnostics)
             .Distinct()
             .ToArray();

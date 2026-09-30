@@ -1,7 +1,11 @@
 using System.Security.Cryptography;
 using ScadaBuilderV2.Application.Formats;
+using ScadaBuilderV2.Application.Pages;
 using ScadaBuilderV2.Application.Projects;
+using ScadaBuilderV2.Domain.ElementEvents.Command;
 using ScadaBuilderV2.Domain.Projects;
+using ScadaBuilderV2.Domain.QuickWindows;
+using ScadaBuilderV2.Domain.Scenes;
 using ScadaBuilderV2.Infrastructure.ModernProjects;
 using ScadaBuilderV2.Infrastructure.ModernProjects.Converters;
 using ScadaBuilderV2.Infrastructure.Shell;
@@ -102,6 +106,87 @@ public sealed class ProjectLifecycleInfrastructureTests
             Assert.IsFalse(result.IsSuccess);
             Assert.IsNull(result.Candidate);
             Assert.IsTrue(result.Diagnostics.Any(issue => issue.Code == "project.open-failed"));
+        }
+        finally
+        {
+            DeleteTemporaryDirectory(root);
+        }
+    }
+
+    /// <summary>
+    /// Fix round 2, item 6 (confirm): <c>ProjectWorkspaceRepository.ValidateSnapshot</c> calls
+    /// <c>ScadaProjectBuildValidator.Validate(snapshot.Project)</c> — the single-argument overload, which
+    /// validates with an empty scene list. The per-scene command validator that would flag an authored
+    /// (unlowered) open-quick-window command as missing its invocation key therefore never runs here, and
+    /// <c>ValidateQuickWindows</c> keys off compiled <c>EffectiveQuickWindows</c>/<c>EffectiveQuickWindowInvocations</c>
+    /// (empty before lowering), not the presence of a <see cref="ScadaPageType.QuickWindow"/> page. Opening
+    /// such a project must not fail or raise an Error.
+    /// </summary>
+    [TestMethod]
+    public async Task OpenProject_WithAnAuthoredQuickWindowOpenCommand_ProducesNoErrorBeforeLowering()
+    {
+        var root = CreateTemporaryDirectory();
+        try
+        {
+            var projectRoot = Path.Combine(root, "QuickWindowProject");
+            var quickWindowKey = Guid.NewGuid();
+            var callerKey = Guid.NewGuid();
+            var sheetKey = Guid.NewGuid();
+
+            var quickWindowPage = new ScadaSceneReference(
+                "popup", "Popup", $"scenes/{quickWindowKey:N}.scene.json", ScadaPageType.QuickWindow,
+                PageKey: quickWindowKey, PageCode: "popup");
+            var quickWindowScene = ScadaScene.CreateEmpty("popup", "Popup", new CanvasSize(200, 150)) with
+            {
+                PageKey = quickWindowKey,
+                PageCode = "popup",
+                PageType = ScadaPageType.QuickWindow
+            };
+
+            var openCommand = ScadaElement.CreateButton("open", "Ouvrir", 0, 0) with
+            {
+                CommandConfig = new ScadaElementCommandConfig(
+                [
+                    new ScadaCommandBinding("open-cmd", "Ouvrir", true, ScadaCommandTrigger.OnClick, ScadaCommandKind.OpenQuickWindow,
+                        ParameterSheetKey: sheetKey, QuickWindowPageKey: quickWindowKey)
+                ])
+            };
+            var callerPage = new ScadaSceneReference(
+                "caller", "Caller", $"scenes/{callerKey:N}.scene.json", ScadaPageType.Default,
+                PageKey: callerKey, PageCode: "caller");
+            var callerScene = ScadaScene.CreateEmpty("caller", "Caller", CanvasSize.DefaultDesktop) with
+            {
+                PageKey = callerKey,
+                PageCode = "caller",
+                Elements = [openCommand]
+            };
+
+            var project = new ScadaProject(
+                "QuickWindowProject",
+                Domain.Versioning.ScadaVersion.Initial,
+                CanvasSize.DefaultDesktop,
+                ResponsiveMode.Fixed,
+                AuthoringMode.DesktopFirst,
+                DefaultDevicePresets.All,
+                [callerPage, quickWindowPage],
+                HomePageId: "caller",
+                HomePageKey: callerKey,
+                FormatVersion: ScadaFormatGeneration.Project,
+                ParameterSheets: [new ParameterSheet(sheetKey, "sheet1", "Feuille", string.Empty)]);
+
+            var snapshot = new PageWorkspaceSnapshot(
+                1,
+                project,
+                new Dictionary<Guid, ScadaScene> { [callerKey] = callerScene, [quickWindowKey] = quickWindowScene },
+                []);
+
+            await new ModernProjectStore().SaveWorkspaceSnapshotToProjectRootAsync(projectRoot, snapshot);
+
+            var result = await CreateRepository().OpenAsync(Path.Combine(projectRoot, "project.json"));
+
+            var describe = string.Join(Environment.NewLine, result.Diagnostics.Select(issue => $"{issue.Severity} {issue.Code}: {issue.Message}"));
+            Assert.IsTrue(result.IsSuccess, describe);
+            Assert.IsFalse(result.Diagnostics.Any(issue => issue.Severity == ScadaBuildValidationSeverity.Error), describe);
         }
         finally
         {

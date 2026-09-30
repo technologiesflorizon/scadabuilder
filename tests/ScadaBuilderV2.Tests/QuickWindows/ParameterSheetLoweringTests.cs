@@ -170,12 +170,70 @@ public sealed class ParameterSheetLoweringTests
 
         var issue = Single(result, "parameter-sheet.placeholder-type-conflict");
         Assert.AreEqual(ScadaBuildValidationSeverity.Error, issue.Severity);
+        StringAssert.Contains(issue.Message, $"'{QuickWindowPageCode}'", "the ruling requires the page to be named");
         StringAssert.Contains(issue.Message, "#1");
-        StringAssert.Contains(issue.Message, $"'{SheetName}'");
-        StringAssert.Contains(issue.Message, $"'{secondSheetName}'");
+        StringAssert.Contains(issue.Message, $"'{SheetName}' (Boolean)", "the ruling requires each sheet named with its implied type");
+        StringAssert.Contains(issue.Message, $"'{secondSheetName}' (Decimal)", "the ruling requires each sheet named with its implied type");
 
         var member1 = result.Project.EffectiveQuickWindows.Single().EffectiveInterfaceMembers.Single(member => member.Name == "#1");
         Assert.AreEqual(QuickWindowDataType.String, member1.DataType, "a type conflict keeps the member String");
+    }
+
+    [TestMethod]
+    public void TwoDistinctSheetsSharingADisplayNameStillConflictCorrectlyByKey()
+    {
+        // Same DisplayName ("Ventilateur 3") on two distinct sheets: grouping by SheetDisplayName would
+        // collapse them into one bucket and hide (or misreport) the conflict. Grouping by SheetKey must not.
+        var secondSheetKey = Guid.Parse("5a000000-0000-4000-8000-0000000000f5");
+        const string sheetBText =
+            "#1 := {FAN_03_SPEED}\n" +
+            "#2 := {FAN_03_START}\n" +
+            "#3 := {FAN_03_SPEED}\n" +
+            "#4 := \"Ventilateur 3\"\n";
+
+        var (quickWindowRef, quickWindowScene) = Page(QuickWindowPageKey, ScadaPageType.QuickWindow, QuickWindowPageCode, "Popup ventilateur", FanPageElements());
+        var callerScene = ScadaScene.CreateEmpty(CallerPageCode, "Synoptique", new CanvasSize(430, 215)) with
+        {
+            PageKey = CallerPageKey,
+            PageCode = CallerPageCode,
+            PageType = ScadaPageType.Default,
+            Elements =
+            [
+                OpenCommandElementWithIds("open-a", "open-a-cmd", SheetKey, QuickWindowPageKey),
+                OpenCommandElementWithIds("open-b", "open-b-cmd", secondSheetKey, QuickWindowPageKey),
+            ]
+        };
+        var callerRef = new ScadaSceneReference(
+            CallerPageCode, "Synoptique", $"scenes/{CallerPageCode}.scene.json", ScadaPageType.Default,
+            PageKey: CallerPageKey, PageCode: CallerPageCode);
+
+        var project = ScadaProject.CreateDefault("ParameterSheetLoweringSameNameConflict") with
+        {
+            ManifestVersion = "2.3",
+            HomePageId = CallerPageCode,
+            Scenes = [callerRef, quickWindowRef],
+            TagCatalog = Catalog(),
+            ParameterSheets =
+            [
+                new ParameterSheet(SheetKey, SheetCode, SheetName, FullSheet),
+                new ParameterSheet(secondSheetKey, "fan_03_same_name", SheetName, sheetBText) // same DisplayName, distinct SheetKey/Code
+            ]
+        };
+        var scenes = new Dictionary<Guid, ScadaScene>
+        {
+            [CallerPageKey] = callerScene,
+            [QuickWindowPageKey] = quickWindowScene
+        };
+
+        var result = ParameterSheetLowering.Lower(project, scenes);
+
+        var issues = result.Diagnostics.Where(item => item.Code == "parameter-sheet.placeholder-type-conflict").ToArray();
+        Assert.AreEqual(1, issues.Length, Describe(result));
+        StringAssert.Contains(issues[0].Message, $"'{SheetName}' (Boolean)");
+        StringAssert.Contains(issues[0].Message, $"'{SheetName}' (Decimal)");
+
+        var member1 = result.Project.EffectiveQuickWindows.Single().EffectiveInterfaceMembers.Single(member => member.Name == "#1");
+        Assert.AreEqual(QuickWindowDataType.String, member1.DataType);
     }
 
     [TestMethod]

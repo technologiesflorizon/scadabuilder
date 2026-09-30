@@ -4482,6 +4482,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             }
 
             var exporter = new Ft100SceneExporter();
+            // Flush _activeScene into its tab's Scene first: CaptureSnapshotAsync reads tab.Scene per open
+            // tab, so an unflushed edit on the active tab would otherwise be silently dropped from the export.
+            SaveActiveTabTransientState();
             var workspaceSnapshot = await _pageWorkspaceController.CaptureSnapshotAsync();
             _modernProject = workspaceSnapshot.Project;
             var lowered = ParameterSheetLowering.Lower(workspaceSnapshot.Project, workspaceSnapshot.Scenes);
@@ -4556,6 +4559,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             await Dispatcher.Yield(DispatcherPriority.Background);
 
             var exporter = new Ft100SceneExporter();
+            // Flush _activeScene into its tab's Scene first: CaptureSnapshotAsync reads tab.Scene per open
+            // tab, so an unflushed edit on the active tab would otherwise be silently dropped from the export.
+            SaveActiveTabTransientState();
             var workspaceSnapshot = await _pageWorkspaceController.CaptureSnapshotAsync();
             _modernProject = workspaceSnapshot.Project;
             var lowered = ParameterSheetLowering.Lower(workspaceSnapshot.Project, workspaceSnapshot.Scenes);

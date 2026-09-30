@@ -2,6 +2,7 @@ using ScadaBuilderV2.Application.History;
 using ScadaBuilderV2.Application.Pages;
 using ScadaBuilderV2.Domain.ElementEvents.Command;
 using ScadaBuilderV2.Domain.Projects;
+using ScadaBuilderV2.Domain.QuickWindows;
 using ScadaBuilderV2.Domain.Scenes;
 
 namespace ScadaBuilderV2.Tests;
@@ -229,6 +230,87 @@ public sealed class PageCommandCoordinatorTests
         Assert.AreEqual(ScadaBuilderV2.Application.Commands.CommandResultStatus.Blocked, compose.Result.Status);
         Assert.AreSame(snapshot, exclude.After);
         Assert.AreSame(snapshot, compose.After);
+    }
+
+    [TestMethod]
+    public void ValidateLowersFirstSoAnAuthoredOpenQuickWindowCommandRaisesNoFalseMissingInvocationDiagnostic()
+    {
+        var (project, callerScene, quickWindowScene, callerKey) = QuickWindowFixture(
+            sheetText: "#1 := {SOME_TAG}\n", quickWindowReadTag: "#1");
+        var snapshot = Snapshot(project, callerScene, quickWindowScene);
+        var ui = Ui(callerKey, callerKey, [callerKey]);
+
+        var mutation = coordinator.Execute(snapshot, ui, new ValidatePagesRequest());
+
+        var describe = string.Join(" | ", mutation.Result.Diagnostics.Select(issue => $"{issue.Severity} {issue.Code}: {issue.Message}"));
+        Assert.IsFalse(
+            mutation.Result.Diagnostics.Any(issue => issue.Code == "command.open-quick-window-missing-invocation"),
+            describe);
+        Assert.IsFalse(
+            mutation.Result.Diagnostics.Any(issue => issue.Severity == ScadaBuildValidationSeverity.Error),
+            describe);
+    }
+
+    [TestMethod]
+    public void ValidateSurfacesAParameterSheetDiagnosticWithItsNamedCode()
+    {
+        // The sheet defines nothing: the quick-window page's #1 usage has no matching entry.
+        var (project, callerScene, quickWindowScene, callerKey) = QuickWindowFixture(
+            sheetText: string.Empty, quickWindowReadTag: "#1");
+        var snapshot = Snapshot(project, callerScene, quickWindowScene);
+        var ui = Ui(callerKey, callerKey, [callerKey]);
+
+        var mutation = coordinator.Execute(snapshot, ui, new ValidatePagesRequest());
+
+        var issue = mutation.Result.Diagnostics.Single(item => item.Code == "parameter-sheet.placeholder-undefined");
+        Assert.AreEqual(ScadaBuildValidationSeverity.Error, issue.Severity);
+    }
+
+    /// <summary>One quick-window page (`#1`, read), one caller page with an authored (unlowered) open command,
+    /// and the sheet/catalog they need.</summary>
+    private static (ScadaProject Project, ScadaScene CallerScene, ScadaScene QuickWindowScene, Guid CallerKey) QuickWindowFixture(
+        string sheetText, string quickWindowReadTag)
+    {
+        var quickWindowKey = Guid.NewGuid();
+        var callerKey = Guid.NewGuid();
+        var sheetKey = Guid.NewGuid();
+
+        var quickWindowPage = Page(quickWindowKey, "popup", ScadaPageType.QuickWindow);
+        var quickWindowScene = Scene(quickWindowPage) with
+        {
+            Elements = [ReadElement("read1", quickWindowReadTag)]
+        };
+
+        var openCommand = ScadaElement.CreateButton("open", "Ouvrir", 0, 0) with
+        {
+            CommandConfig = new ScadaElementCommandConfig(
+            [
+                new ScadaCommandBinding("open-cmd", "Ouvrir", true, ScadaCommandTrigger.OnClick, ScadaCommandKind.OpenQuickWindow,
+                    ParameterSheetKey: sheetKey, QuickWindowPageKey: quickWindowKey)
+            ])
+        };
+        var callerPage = Page(callerKey, "caller", ScadaPageType.Default);
+        var callerScene = Scene(callerPage) with { Elements = [openCommand] };
+
+        var project = ScadaProject.CreateDefault("Pages") with
+        {
+            Scenes = [callerPage, quickWindowPage],
+            HomePageKey = callerKey,
+            HomePageId = "caller",
+            ParameterSheets = [new ParameterSheet(sheetKey, "sheet1", "Feuille", sheetText)],
+            TagCatalog = new ScadaTagCatalog(
+                "page-command-coordinator-tests",
+                [new ScadaTagDefinition("tag.some", "SOME_TAG", Datatype: "Boolean")],
+                "generated-page-command-coordinator-tags.json")
+        };
+
+        return (project, callerScene, quickWindowScene, callerKey);
+    }
+
+    private static ScadaElement ReadElement(string id, string tagId)
+    {
+        var element = ScadaElement.CreateText(id, id, 0, 0);
+        return element with { Data = element.Data! with { Text = string.Empty, ReadTagId = tagId } };
     }
 
     private static ScadaSceneReference Page(Guid key, string code, ScadaPageType type) =>

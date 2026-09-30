@@ -85,9 +85,10 @@ public static class ParameterSheetLowering
         /// (via the tag's catalog <c>Datatype</c>) or a string Literal binding contributes an observation; an
         /// Expression binding is untyped in this codebase (<c>QuickWindowBindingValidator.ValidateExpressionBinding</c>
         /// never compares it against a member type) and is treated as compatible with any inferred type, so it
-        /// contributes none.
+        /// contributes none. Grouped by <c>SheetKey</c>, not display name: two distinct sheets may share a
+        /// display name, and collapsing on it would hide a real conflict or misattribute one.
         /// </summary>
-        private readonly Dictionary<(Guid PageKey, int Number), List<(string SheetDisplayName, QuickWindowDataType DataType)>> _placeholderTypeObservations = new();
+        private readonly Dictionary<(Guid PageKey, int Number), List<(Guid SheetKey, string SheetDisplayName, QuickWindowDataType DataType)>> _placeholderTypeObservations = new();
 
         /// <summary>Diagnostics in the order they were found.</summary>
         public List<ScadaBuildValidationIssue> Diagnostics { get; } = new();
@@ -235,9 +236,10 @@ public static class ParameterSheetLowering
             }
 
             var bySheet = string.Join(", ", observations
-                .GroupBy(observation => observation.SheetDisplayName, StringComparer.Ordinal)
-                .OrderBy(group => group.Key, StringComparer.Ordinal)
-                .Select(group => $"'{group.Key}' ({group.First().DataType})"));
+                .GroupBy(observation => observation.SheetKey)
+                .OrderBy(group => group.First().SheetDisplayName, StringComparer.Ordinal)
+                .ThenBy(group => group.Key)
+                .Select(group => $"'{group.First().SheetDisplayName}' ({group.First().DataType})"));
             Diagnostics.Add(new ScadaBuildValidationIssue(
                 ScadaBuildValidationSeverity.Error,
                 "parameter-sheet.placeholder-type-conflict",
@@ -258,11 +260,11 @@ public static class ParameterSheetLowering
             var key = (pageKey, number);
             if (!_placeholderTypeObservations.TryGetValue(key, out var list))
             {
-                list = new List<(string SheetDisplayName, QuickWindowDataType DataType)>();
+                list = new List<(Guid SheetKey, string SheetDisplayName, QuickWindowDataType DataType)>();
                 _placeholderTypeObservations[key] = list;
             }
 
-            list.Add((sheet.DisplayName, type));
+            list.Add((sheet.SheetKey, sheet.DisplayName, type));
         }
 
         /// <summary>
