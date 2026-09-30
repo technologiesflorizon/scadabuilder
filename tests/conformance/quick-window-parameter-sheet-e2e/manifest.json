@@ -331,7 +331,8 @@
             "op": "multiply",
             "left": {
               "type": "tagRef",
-              "tagName": "FAN_03_SPEED"
+              "tagName": "tf100.mapping.302",
+              "tagId": "tf100.mapping.302"
             },
             "right": {
               "type": "literalNumber",
@@ -377,7 +378,8 @@
             "op": "multiply",
             "left": {
               "type": "tagRef",
-              "tagName": "FAN_05_SPEED"
+              "tagName": "tf100.mapping.502",
+              "tagId": "tf100.mapping.502"
             },
             "right": {
               "type": "literalNumber",

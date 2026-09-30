@@ -46,7 +46,6 @@ public sealed class QuickWindowParameterSheetAnimationFixtureTests
 {
     private const string FixtureName = "quick-window-parameter-sheet.sb2";
     private const string HashName = "quick-window-parameter-sheet.sha256";
-    private const string ExpectedTf100Branch = "codex/quick-window-v1";
 
     private static readonly Guid QuickWindowPageKey = Guid.Parse("7e130000-0000-4000-8000-0000000000a1");
     private static readonly Guid CallerPageKey = Guid.Parse("7e130000-0000-4000-8000-0000000000c1");
@@ -86,7 +85,7 @@ public sealed class QuickWindowParameterSheetAnimationFixtureTests
 
             var sha256 = Convert.ToHexString(SHA256.HashData(firstBytes)).ToLowerInvariant();
 
-            var conformanceDirectory = FindConformanceDirectory();
+            var conformanceDirectory = Tf100WebFixtureTestSupport.FindConformanceDirectory();
             var fixturePath = Path.Combine(conformanceDirectory, FixtureName);
             var hashPath = Path.Combine(conformanceDirectory, HashName);
 
@@ -112,11 +111,11 @@ public sealed class QuickWindowParameterSheetAnimationFixtureTests
     [TestMethod]
     public void TheVendoredTf100WebCopyIsTheSameArtifact()
     {
-        var conformanceDirectory = FindConformanceDirectory();
+        var conformanceDirectory = Tf100WebFixtureTestSupport.FindConformanceDirectory();
         var builderFixture = Path.Combine(conformanceDirectory, FixtureName);
         Assert.IsTrue(File.Exists(builderFixture), "the Builder fixture must exist; run with SCADA_UPDATE_QUICK_WINDOW_PARAMETER_SHEET=1");
 
-        var tf100Root = ResolveTf100WebWorktree();
+        var tf100Root = Tf100WebFixtureTestSupport.ResolveTf100WebWorktree();
         if (tf100Root is null)
         {
             Assert.Inconclusive("TF100Web is not available on this machine; the vendored copy cannot be compared.");
@@ -125,7 +124,7 @@ public sealed class QuickWindowParameterSheetAnimationFixtureTests
 
         var vendored = Path.Combine(tf100Root, "frontend", "test_fixtures", FixtureName);
         Assert.IsTrue(File.Exists(vendored),
-            $"TF100Web is checked out on {ExpectedTf100Branch} at {tf100Root} but carries no vendored fixture.");
+            $"TF100Web is checked out on {Tf100WebFixtureTestSupport.ExpectedTf100Branch} at {tf100Root} but carries no vendored fixture.");
 
         CollectionAssert.AreEqual(
             File.ReadAllBytes(builderFixture),
@@ -141,70 +140,6 @@ public sealed class QuickWindowParameterSheetAnimationFixtureTests
         var result = await new Ft100SceneExporter().ExportProjectArchiveAsync(project, pages, archivePath);
         Assert.IsTrue(result.Validation.IsValid, string.Join(" | ", result.Validation.Errors.Select(e => e.Message)));
         return await File.ReadAllBytesAsync(result.ArchivePath);
-    }
-
-    private static string? ResolveTf100WebWorktree()
-    {
-        var root = Environment.GetEnvironmentVariable("TF100WEB_ROOT")
-            ?? Path.Combine("F:", "Projet", "Git", "TF100Web");
-        if (!Directory.Exists(root)) return null;
-
-        string output;
-        try
-        {
-            using var process = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-            {
-                FileName = "git",
-                ArgumentList = { "-C", root, "worktree", "list", "--porcelain" },
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false,
-            });
-            if (process is null) return null;
-            output = process.StandardOutput.ReadToEnd();
-            process.WaitForExit(30_000);
-            if (process.ExitCode != 0) return null;
-        }
-        catch (Exception)
-        {
-            return null;
-        }
-
-        string? candidate = null;
-        foreach (var line in output.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries))
-        {
-            var trimmed = line.Trim();
-            if (trimmed.StartsWith("worktree ", StringComparison.Ordinal))
-            {
-                candidate = trimmed[9..].Trim();
-            }
-            else if (trimmed.StartsWith("branch ", StringComparison.Ordinal) && candidate is not null)
-            {
-                var branch = trimmed[7..].Trim();
-                if (branch.StartsWith("refs/heads/", StringComparison.Ordinal)) branch = branch[11..];
-                if (string.Equals(branch, ExpectedTf100Branch, StringComparison.Ordinal)) return candidate;
-            }
-        }
-
-        Assert.Fail($"TF100Web exists at {root} but no checkout or worktree carries {ExpectedTf100Branch}; "
-            + "the vendored fixture cannot be compared against the wrong branch.");
-        return null;
-    }
-
-    private static string FindConformanceDirectory()
-    {
-        var directory = new DirectoryInfo(AppContext.BaseDirectory);
-        while (directory is not null)
-        {
-            if (File.Exists(Path.Combine(directory.FullName, "ScadaBuilderV2.sln")))
-            {
-                return Path.Combine(directory.FullName, "tests", "conformance");
-            }
-            directory = directory.Parent;
-        }
-
-        Assert.Fail("Unable to locate the repository root.");
-        return string.Empty;
     }
 
     // ---- Arrangement ------------------------------------------------------------------------------------

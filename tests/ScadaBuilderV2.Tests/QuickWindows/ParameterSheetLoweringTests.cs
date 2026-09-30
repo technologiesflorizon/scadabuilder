@@ -272,6 +272,14 @@ public sealed class ParameterSheetLoweringTests
         Assert.AreEqual("{FAN_03_SPEED} * 0.1", speed.Expression);
         Assert.IsInstanceOfType(speed.ExpressionAst, typeof(ScadaExprBinary), "ruling R3: the AST travels with the source");
         Assert.IsNull(speed.TagId);
+        var speedTagRef = (ScadaExprTagRef)((ScadaExprBinary)speed.ExpressionAst!).Left;
+        Assert.AreEqual(
+            "tf100.mapping.103", speedTagRef.TagName,
+            "the tag reference INSIDE an Expression binding's AST must be canonicalized exactly like a " +
+            "page state expression's (Ft100SceneExporter.NormalizeAstForExport) — the shared runtime's " +
+            "TagBridge resolves every tagRef by this exact string, and the deployed mapping id is never " +
+            "the human-readable tag name a parameter sheet was written with.");
+        Assert.AreEqual(speedTagRef.TagName, speedTagRef.TagId, "a canonicalized tagRef carries the same value in both fields");
 
         var name = invocation.FindBinding(QuickWindowKeys.Member(QuickWindowPageKey, 4))!;
         Assert.AreEqual(QuickWindowBindingSourceKind.Literal, name.SourceKind);
@@ -394,6 +402,41 @@ public sealed class ParameterSheetLoweringTests
         StringAssert.Contains(issue.Message, "ligne 4");
         StringAssert.Contains(issue.Message, "#3");
         StringAssert.Contains(issue.Message, "FAN_99_SPEED");
+    }
+
+    [TestMethod]
+    public void AnUnknownTagInsideAnExpressionIsAnError()
+    {
+        // Fix round 1: an unknown tag REFERENCED FROM INSIDE an otherwise-valid expression (not a
+        // lone tag reference — that is the ParameterValueKind.Tag case covered by AnUnknownTagIsAnError
+        // above) must be reported exactly like the lone-reference case, not silently exported unresolved.
+        var result = Lower(
+            "#1 := {FAN_03_RUN}\n#2 := {FAN_03_START}\n\n#3 := {FAN_99_SPEED} * 0.1\n#4 := \"Ventilateur 3\"",
+            FanPageElements());
+
+        var issue = Single(result, "parameter-sheet.tag-unknown");
+        Assert.AreEqual(ScadaBuildValidationSeverity.Error, issue.Severity);
+        StringAssert.Contains(issue.Message, "ligne 4");
+        StringAssert.Contains(issue.Message, "#3");
+        StringAssert.Contains(issue.Message, "FAN_99_SPEED");
+        Assert.IsNull(
+            result.Project.EffectiveQuickWindowInvocations.SingleOrDefault()?.FindBinding(QuickWindowKeys.Member(QuickWindowPageKey, 3)),
+            "an Expression binding that fails canonicalization must never reach the exported invocation");
+    }
+
+    [TestMethod]
+    public void AnAmbiguousTagInsideAnExpressionIsAnError()
+    {
+        var result = Lower(
+            "#1 := {FAN_03_RUN}\n#2 := {FAN_03_START}\n#3 := {DUPLICATE} * 0.1\n#4 := \"Ventilateur 3\"",
+            FanPageElements());
+
+        var issue = Single(result, "parameter-sheet.tag-ambiguous");
+        Assert.AreEqual(ScadaBuildValidationSeverity.Error, issue.Severity);
+        StringAssert.Contains(issue.Message, "ligne 3");
+        StringAssert.Contains(issue.Message, "#3");
+        StringAssert.Contains(issue.Message, "tf100.mapping.201");
+        StringAssert.Contains(issue.Message, "DUPLICATE");
     }
 
     [TestMethod]

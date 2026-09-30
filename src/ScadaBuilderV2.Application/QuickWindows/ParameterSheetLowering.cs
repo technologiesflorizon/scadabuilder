@@ -548,6 +548,32 @@ public static class ParameterSheetLowering
                     }
                 }
 
+                // An Expression binding's ExpressionAst is serialized RAW into the manifest (no
+                // Ft100SceneExporter pass touches QuickWindowInvocations[].Bindings[]) and the shared
+                // runtime resolves every tagRef by exactly the string it carries
+                // (TagBridge.getTagValue → tf100webScadaBuilder.getTagValue, keyed by mapping id, never
+                // by a human-readable tag name). Canonicalize here — the same rule
+                // Ft100SceneExporter applies to page state expressions — or the element this binding
+                // feeds never animates in the real host: it silently reads a key nothing ever writes.
+                var expressionAst = entry.Node;
+                if (entry.Kind == ParameterValueKind.Expression)
+                {
+                    var issues = new List<TagCanonicalizationIssue>();
+                    expressionAst = ScadaExpressionValidator.CanonicalizeTagReferences(
+                        entry.Node, project.TagCatalog, issues);
+                    foreach (var issue in issues)
+                    {
+                        valid = false;
+                        var (code, reason) = issue.Status == TagResolveStatus.Ambiguous
+                            ? ("parameter-sheet.tag-ambiguous",
+                                $"ambigu dans le catalogue du projet ({string.Join(", ", issue.Matches)})")
+                            : ("parameter-sheet.tag-unknown", "absent du catalogue du projet");
+                        AddCommandIssue(ScadaBuildValidationSeverity.Error, code,
+                            $"{linePrefix} : #{number} référence le tag '{issue.TagName}' dans l'expression « {entry.Source} », {reason}.",
+                            owner, element, command, sheet.SheetKey);
+                    }
+                }
+
                 if (!valid) continue;
 
                 var memberKey = QuickWindowKeys.Member(pageKey, number);
@@ -557,7 +583,7 @@ public static class ParameterSheetLowering
                     ParameterValueKind.Literal => new QuickWindowBinding(memberKey, QuickWindowBindingSourceKind.Literal,
                         LiteralValue: ((ScadaExprLiteralString)entry.Node).Value),
                     _ => new QuickWindowBinding(memberKey, QuickWindowBindingSourceKind.Expression,
-                        Expression: entry.Source, ExpressionAst: entry.Node)
+                        Expression: entry.Source, ExpressionAst: expressionAst)
                 });
 
                 // Expression bindings are untyped in this codebase (see the remarks on

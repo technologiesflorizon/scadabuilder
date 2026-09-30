@@ -907,83 +907,26 @@ public sealed partial class Ft100SceneExporter
             config.QualityFallback, config.DefaultEffect, normalizedStates, config.ReadVariable);
     }
 
+    /// <summary>
+    /// Canonicalizes every tag reference in <paramref name="node"/> via the single shared rule
+    /// (<see cref="ScadaExpressionValidator.CanonicalizeTagReferences"/> — also used by
+    /// <c>ParameterSheetLowering</c> for parameter-sheet Expression bindings, so a tag reference is never
+    /// resolved two different ways in two call sites), translating an ambiguous reference into this
+    /// exporter's own message format. An unresolved reference is left as-is (silently: it falls back to
+    /// <c>qualityFallback</c> at runtime, and is separately warned about by <see cref="EmitUnresolvedWarnings"/>).
+    /// </summary>
     private static (ScadaExprNode Node, List<string> Ambiguous) NormalizeAstForExport(
         ScadaExprNode node, ScadaTagCatalog? catalog, string expressionSource)
     {
-        return node switch
-        {
-            ScadaExprTagRef tagRef =>
-                (NormalizeTagRefForExport(tagRef, catalog, expressionSource, out var amb), amb),
-            ScadaExprUnary unary =>
-                NormalizeUnaryForExport(unary, catalog, expressionSource),
-            ScadaExprBinary binary =>
-                NormalizeBinaryForExport(binary, catalog, expressionSource),
-            ScadaExprFunc func =>
-                NormalizeFuncForExport(func, catalog, expressionSource),
-            _ => (node, new List<string>())
-        };
-    }
-
-    private static ScadaExprTagRef NormalizeTagRefForExport(
-        ScadaExprTagRef tagRef, ScadaTagCatalog? catalog, string source,
-        out List<string> ambiguous)
-    {
-        ambiguous = new List<string>();
-
-        // Priority 1: TagId already present → direct normalization
-        if (!string.IsNullOrWhiteSpace(tagRef.TagId))
-            return new ScadaExprTagRef(tagRef.TagId, tagRef.TagId);
-
-        // Priority 2: resolve TagName via catalog
-        if (catalog is not null)
-        {
-            var result = ScadaExpressionValidator.TryResolveTagReference(
-                tagRef.TagName, catalog);
-            switch (result.Status)
-            {
-                case TagResolveStatus.Resolved when result.CanonicalId is not null:
-                    return new ScadaExprTagRef(result.CanonicalId, result.CanonicalId);
-                case TagResolveStatus.Ambiguous:
-                    ambiguous.Add(
-                        $"Expression \"{source}\" : le tag '{{{tagRef.TagName}}}' est ambigu " +
-                        $"({string.Join(", ", result.Matches)}). Remplacez-le par l'Id canonique.");
-                    break;
-            }
-        }
-
-        // Unresolved: leave TagName as-is → qualityFallback at runtime
-        return tagRef;
-    }
-
-    private static (ScadaExprNode Node, List<string> Ambiguous) NormalizeUnaryForExport(
-        ScadaExprUnary unary, ScadaTagCatalog? catalog, string source)
-    {
-        var (operand, amb) = NormalizeAstForExport(unary.Operand, catalog, source);
-        return (new ScadaExprUnary(unary.Op, operand), amb);
-    }
-
-    private static (ScadaExprNode Node, List<string> Ambiguous) NormalizeBinaryForExport(
-        ScadaExprBinary binary, ScadaTagCatalog? catalog, string source)
-    {
-        var (left, ambL) = NormalizeAstForExport(binary.Left, catalog, source);
-        var (right, ambR) = NormalizeAstForExport(binary.Right, catalog, source);
-        var allAmb = new List<string>();
-        allAmb.AddRange(ambL);
-        allAmb.AddRange(ambR);
-        return (new ScadaExprBinary(binary.Op, left, right), allAmb);
-    }
-
-    private static (ScadaExprNode Node, List<string> Ambiguous) NormalizeFuncForExport(
-        ScadaExprFunc func, ScadaTagCatalog? catalog, string source)
-    {
-        var allAmb = new List<string>();
-        var normalizedArgs = func.Args.Select(arg =>
-        {
-            var (a, amb) = NormalizeAstForExport(arg, catalog, source);
-            allAmb.AddRange(amb);
-            return a;
-        }).ToArray();
-        return (new ScadaExprFunc(func.Name, normalizedArgs), allAmb);
+        var issues = new List<TagCanonicalizationIssue>();
+        var normalized = ScadaExpressionValidator.CanonicalizeTagReferences(node, catalog, issues);
+        var ambiguous = issues
+            .Where(issue => issue.Status == TagResolveStatus.Ambiguous)
+            .Select(issue =>
+                $"Expression \"{expressionSource}\" : le tag '{{{issue.TagName}}}' est ambigu " +
+                $"({string.Join(", ", issue.Matches)}). Remplacez-le par l'Id canonique.")
+            .ToList();
+        return (normalized, ambiguous);
     }
 
     private static void EmitUnresolvedWarnings(

@@ -65,6 +65,33 @@ function loadE2eRuntime() {
   return window;
 }
 
+/**
+ * Fix round 1: installs a stand-in for `window.tf100webScadaBuilder` that reproduces, exactly, how
+ * the real TF100Web runtime resolves a tag value (`tag-bridge.js`'s `getTagValue` delegates to it
+ * when present) — stripping the `tf100.mapping.` prefix and reading a map keyed by the bare mapping
+ * id, mirroring `ScadaTagCache.values` in TF100Web's `visualisation_import.js`. Without this, the
+ * fallback in `tag-bridge.js` reads its own local cache keyed by WHATEVER string a tagRef carries —
+ * which is exactly how a raw, uncanonicalized tag NAME ("FAN_03_SPEED") inside an Expression
+ * binding's AST could look resolved in this test (any key "works" against a same-repo local cache)
+ * while never animating anything in the real host, whose cache is keyed by mapping id alone. Seeding
+ * `values` by mapping id and asserting through this stand-in is what would have caught that: a
+ * tagRef left as "FAN_03_SPEED" resolves to `undefined` here, exactly as it would have in production.
+ *
+ * @param {object} window - The sandbox window (`loadE2eRuntime()`'s return value).
+ * @param {Record<string, number|boolean|string>} valuesByMappingId - e.g. `{ '302': 10 }` for `tf100.mapping.302`.
+ */
+function installProductionLikeTagBridge(window, valuesByMappingId) {
+  window.tf100webScadaBuilder = {
+    getTagValue(tagId) {
+      const mappingId = String(tagId).replace(/^tf100\.mapping\./, '');
+      return Object.prototype.hasOwnProperty.call(valuesByMappingId, mappingId)
+        ? valuesByMappingId[mappingId]
+        : undefined;
+    },
+    writeTag() { return true; },
+  };
+}
+
 test('opening the Ventilateur 3 invocation mounts the real exported fragment with its own tag, text and state expression', () => {
   const { manifest, fragmentTemplate } = readFixture();
   const window = loadE2eRuntime();
@@ -105,6 +132,16 @@ test('opening the Ventilateur 3 invocation mounts the real exported fragment wit
     stateConfig.states[0].expression.ast.left,
     binding3.ExpressionAst,
     'the #3 tagRef inside the state condition must be substituted by Ventilateur 3\'s own expression AST');
+
+  // Fix round 1: structural AST equality (above) is not enough — it would pass just as well with a
+  // raw, uncanonicalized tag NAME baked into the AST, which never resolves to a value in the real
+  // host. Prove the substituted tagRef is something a PRODUCTION lookup (keyed by mapping id, never
+  // by a human-readable tag name) actually resolves: FAN_03_SPEED = 10 -> {#3} = 10 * 0.1 = 1 ->
+  // {#3} == 1 is true, exactly the state that selects "Actif" in the real host.
+  installProductionLikeTagBridge(window, { '302': 10 });
+  const evaluated = window.ScadaRuntime.ExpressionEvaluator.walk(stateConfig.states[0].expression.ast, {});
+  assert.equal(evaluated, true,
+    'the #3 expression must evaluate true against a production-shaped, mapping-id-keyed tag bridge');
 
   quickWindow.close(opened.runtimeInstanceId);
 });
@@ -161,6 +198,15 @@ test('closing Ventilateur 3 and opening Ventilateur 5 shows only the second shee
   assert.deepEqual(stateConfigFan5.states[0].expression.ast.left, binding3Fan5.ExpressionAst);
   assert.notDeepEqual(stateConfigFan5.states[0].expression.ast.left, binding3Fan3.ExpressionAst,
     'the mounted second instance must carry Ventilateur 5\'s own expression, not a leftover of the first');
+
+  // Fix round 1: same production-shaped, mapping-id-keyed proof as the first test, for the second
+  // sheet's own mapping (tf100.mapping.502 = FAN_05_SPEED) — and FAN_03_SPEED's own mapping id is
+  // deliberately left unseeded, so a leftover reference to the first sheet's tag would resolve to
+  // `undefined` (an unavailable tag skips the state, never a false positive true/false).
+  installProductionLikeTagBridge(window, { '502': 10 });
+  const evaluatedFan5 = window.ScadaRuntime.ExpressionEvaluator.walk(stateConfigFan5.states[0].expression.ast, {});
+  assert.equal(evaluatedFan5, true,
+    'Ventilateur 5\'s #3 expression must evaluate true against its own mapping id (FAN_05_SPEED = 10 -> 10*0.1 == 1)');
 
   // The first (closed) instance's root itself is untouched by anything done to the second: each mounted
   // instance rewrote only its own DOM tree, exactly like the reuse test in

@@ -39,6 +39,18 @@ public sealed record TagResolveResult(
 }
 
 /// <summary>
+/// One tag reference inside an expression AST that <see cref="ScadaExpressionValidator.CanonicalizeTagReferences"/>
+/// could not turn into a canonical id (<see cref="TagResolveStatus.Unresolved"/> or
+/// <see cref="TagResolveStatus.Ambiguous"/>). Carries everything a caller needs to report it: the
+/// original tag name/label as written, the reason, and (for <see cref="TagResolveStatus.Ambiguous"/>)
+/// every candidate canonical id it could have meant.
+/// </summary>
+public sealed record TagCanonicalizationIssue(
+    string TagName,
+    TagResolveStatus Status,
+    IReadOnlyList<string> Matches);
+
+/// <summary>
 /// Validates Element+ state condition expressions: syntax, tag existence, function arity,
 /// boolean root type, and literal division by zero.
 /// </summary>
@@ -103,6 +115,59 @@ public static class ScadaExpressionValidator
                 byKeyword.Select(t => t.Id).ToArray());
 
         return TagResolveResult.ForUnresolved();
+    }
+
+    /// <summary>
+    /// Rewrites every <see cref="ScadaExprTagRef"/> inside <paramref name="node"/> to carry the project's
+    /// canonical tag id (the same normalization <c>Ft100SceneExporter</c> applies to page state-condition
+    /// expressions before export, extracted here as the single rule both callers share — a tag reference
+    /// resolved two different ways in two call sites is exactly how the runtime ends up unable to find a
+    /// value it was given a different key for at authoring time). Builds a fresh node tree and never
+    /// mutates <paramref name="node"/>.
+    /// </summary>
+    /// <param name="node">The expression AST to canonicalize (usually the whole tree; recurses).</param>
+    /// <param name="catalog">The project tag catalog, or null to leave every tag name unresolved.</param>
+    /// <param name="issues">
+    /// Appended with one <see cref="TagCanonicalizationIssue"/> per tag reference that could not be
+    /// resolved to exactly one canonical id. That reference is left with its original <c>TagName</c> (and
+    /// no <c>TagId</c>) in the returned tree; the caller decides whether an unresolved or ambiguous
+    /// reference is a warning, an export-time gate, or a validation error — this method only reports.
+    /// </param>
+    public static ScadaExprNode CanonicalizeTagReferences(
+        ScadaExprNode node, ScadaTagCatalog? catalog, List<TagCanonicalizationIssue> issues)
+    {
+        switch (node)
+        {
+            case ScadaExprTagRef tagRef:
+                if (!string.IsNullOrWhiteSpace(tagRef.TagId))
+                {
+                    return new ScadaExprTagRef(tagRef.TagId, tagRef.TagId);
+                }
+
+                var resolved = TryResolveTagReference(tagRef.TagName, catalog);
+                if (resolved.Status == TagResolveStatus.Resolved && resolved.CanonicalId is not null)
+                {
+                    return new ScadaExprTagRef(resolved.CanonicalId, resolved.CanonicalId);
+                }
+
+                issues.Add(new TagCanonicalizationIssue(tagRef.TagName, resolved.Status, resolved.Matches));
+                return tagRef;
+
+            case ScadaExprUnary unary:
+                return new ScadaExprUnary(unary.Op, CanonicalizeTagReferences(unary.Operand, catalog, issues));
+
+            case ScadaExprBinary binary:
+                var left = CanonicalizeTagReferences(binary.Left, catalog, issues);
+                var right = CanonicalizeTagReferences(binary.Right, catalog, issues);
+                return new ScadaExprBinary(binary.Op, left, right);
+
+            case ScadaExprFunc func:
+                var args = func.Args.Select(arg => CanonicalizeTagReferences(arg, catalog, issues)).ToArray();
+                return new ScadaExprFunc(func.Name, args);
+
+            default:
+                return node;
+        }
     }
 
     /// <summary>Validates <paramref name="source"/> and reports every problem found.</summary>
