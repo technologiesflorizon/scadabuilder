@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.6.0050`
+Document version: `V2.1.6.0051`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-30 | `V2.1.6.0051` | `PENDING` | Fix round 2 de revue de la Tâche 10 (`DEC-PARAMSHEETS` = `DEC-0052`) : la liveness des invocations pré-existantes pendant l'abaissement balaie désormais aussi le contenu de chaque définition Fenêtre rapide (nouvelle ou pré-existante), pas seulement les scènes de page abaissées — corrige une casse silencieuse introduite par le fix round 1 pour une commande vivant dans le contenu d'une fenêtre rapide. Détail complet : `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md` et `.superpowers/sdd/2026-09-30-quick-window-parameter-sheets/task-10-report.md`. |
 | 2026-09-30 | `V2.1.6.0050` | `PENDING` | Fix round 1 de revue de la Tâche 10 (`DEC-PARAMSHEETS` = `DEC-0052`) : migrer une commande `OpenQuickWindow` legacy vers une paire feuille/page retire désormais l'ancienne invocation orpheline du projet, en une seule transition undoable ; `ParameterSheetLowering.Lower` ne conserve plus qu'une invocation pré-existante encore référencée par une commande vivante. Détail complet : `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md` et `.superpowers/sdd/2026-09-30-quick-window-parameter-sheets/task-10-report.md`. |
 | 2026-09-30 | `V2.1.6.0049` | `PENDING` | Tâche 10 du chantier `2026-09-30-quick-window-parameter-sheets` (`DEC-PARAMSHEETS` = `DEC-0052`) : dialogue « Configuration de la fenêtre rapide » (feuille de paramètres + page `QuickWindow`) remplaçant l'ancienne déroulante de définition et l'onglet « Liaisons » pour une commande « Ouvrir une fenêtre rapide » d'authoring. Détail complet : `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md` et `.superpowers/sdd/2026-09-30-quick-window-parameter-sheets/task-10-report.md`. |
 | 2026-09-30 | `V2.1.6.0048` | `83470f2` | Fix round 1 de revue de la Tâche 9 (`DEC-PARAMSHEETS` = `DEC-0052`) : `DeleteSheetAsync` demande désormais confirmation (`ConfirmParameterSheetDeletionAsync`, listant jusqu'à 10 appelants) avant de supprimer une feuille de paramètres encore référencée par une commande « Ouvrir une fenêtre rapide », via le nouveau `ParameterSheetUsageFinder`. Un refus ne produit aucune mutation ni entrée d'historique ; une feuille sans appelant se supprime comme avant, sans confirmation. Détail complet : `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md` et `.superpowers/sdd/2026-09-30-quick-window-parameter-sheets/task-9-report.md`. |

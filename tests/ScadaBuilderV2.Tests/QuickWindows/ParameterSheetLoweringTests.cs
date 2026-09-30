@@ -616,6 +616,55 @@ public sealed class ParameterSheetLoweringTests
             "no diagnostic should ever be raised about an invocation lowering itself already dropped");
     }
 
+    [TestMethod]
+    public void APreExistingInvocationReferencedOnlyFromInsideAQuickWindowPagesContentIsKept()
+    {
+        // Fix round 2: OpenQuickWindow/CloseQuickWindow are offered on quick-window pages too. A command
+        // living inside a QuickWindow page's own content becomes part of a definition's content by this
+        // very lowering, so the liveness scan must include it - scanning resultScenes alone would miss it,
+        // since resultScenes deliberately excludes every QuickWindow page.
+        var invocation = new QuickWindowInvocation(Guid.NewGuid(), Guid.NewGuid(), []);
+        var (project, scenes) = Arrange(FullSheet, FanPageElements());
+        project = project with { QuickWindowInvocations = [invocation] };
+        scenes = WithLegacyCaller(scenes, QuickWindowPageKey, invocation.InvocationKey);
+
+        var result = ParameterSheetLowering.Lower(project, scenes);
+
+        Assert.IsTrue(
+            result.Project.EffectiveQuickWindowInvocations.Any(inv => inv.InvocationKey == invocation.InvocationKey),
+            "an invocation referenced only from inside a QuickWindow page's own content must be kept");
+    }
+
+    [TestMethod]
+    public void APreExistingInvocationReferencedOnlyFromInsideAPreExistingDefinitionsContentIsKept()
+    {
+        // Fix round 2: the same applies to a pre-existing DEC-0050 definition's own content (never lowered,
+        // carried forward as-is) - its commands must also feed the liveness scan.
+        var definitionKey = Guid.NewGuid();
+        var invocation = new QuickWindowInvocation(Guid.NewGuid(), definitionKey, []);
+        var legacyCallerInsideDefinition = ScadaElement.CreateButton("inner-open", "Ouvrir (interne)", 5, 5) with
+        {
+            CommandConfig = new ScadaElementCommandConfig(
+            [
+                new ScadaCommandBinding("inner-cmd", "Ouvrir (interne)", true, ScadaCommandTrigger.OnClick, ScadaCommandKind.OpenQuickWindow,
+                    QuickWindowInvocationKey: invocation.InvocationKey)
+            ])
+        };
+        var existingDefinition = QuickWindowDefinition.CreateEmpty("legacy_qw", "Ancienne") with
+        {
+            DefinitionKey = definitionKey,
+            Content = new VisualContent(CanvasSize.DefaultDesktop, Elements: [legacyCallerInsideDefinition])
+        };
+        var (project, scenes) = Arrange(FullSheet, FanPageElements());
+        project = project with { QuickWindows = [existingDefinition], QuickWindowInvocations = [invocation] };
+
+        var result = ParameterSheetLowering.Lower(project, scenes);
+
+        Assert.IsTrue(
+            result.Project.EffectiveQuickWindowInvocations.Any(inv => inv.InvocationKey == invocation.InvocationKey),
+            "an invocation referenced only from inside a pre-existing definition's content must be kept");
+    }
+
     private static IReadOnlyDictionary<Guid, ScadaScene> WithLegacyCaller(
         IReadOnlyDictionary<Guid, ScadaScene> scenes, Guid pageKey, Guid invocationKey)
     {

@@ -59,7 +59,17 @@ public static class ParameterSheetLowering
         // time) must not reach the lowered project - ValidateQuickWindowInvocations validates every
         // invocation unconditionally, and an orphan pins a build/export error to a command that looks
         // correctly configured, with no UI left to fix it.
-        var liveInvocationKeys = CollectReferencedInvocationKeys(resultScenes);
+        //
+        // Fix round 2: a command can also live INSIDE quick-window content - a QuickWindow page's own
+        // content (which becomes a definition's content by this same lowering) or a pre-existing DEC-0050
+        // definition's content - and OpenQuickWindow/CloseQuickWindow are both offered there too. The
+        // liveness set must therefore be collected from every place a command can live in the LOWERED
+        // project: the lowered page scenes AND every definition's content (both freshly built here and
+        // pre-existing), never from resultScenes alone (which excludes every QuickWindow page).
+        var allDefinitions = definitions.Count == 0
+            ? project.EffectiveQuickWindows
+            : (IReadOnlyList<QuickWindowDefinition>)[.. project.EffectiveQuickWindows, .. definitions];
+        var liveInvocationKeys = CollectReferencedInvocationKeys(resultScenes, allDefinitions);
         var keptPreexisting = project.EffectiveQuickWindowInvocations
             .Where(invocation => liveInvocationKeys.Contains(invocation.InvocationKey))
             .ToArray();
@@ -79,13 +89,27 @@ public static class ParameterSheetLowering
         return new ParameterSheetLoweringResult(resultProject, resultScenes, context.Diagnostics);
     }
 
-    /// <summary>Collects every `QuickWindowInvocationKey` referenced by a command anywhere in <paramref name="scenes"/>.</summary>
-    private static HashSet<Guid> CollectReferencedInvocationKeys(IReadOnlyDictionary<Guid, ScadaScene> scenes)
+    /// <summary>
+    /// Collects every `QuickWindowInvocationKey` referenced by a command anywhere in <paramref name="scenes"/>
+    /// or in any of <paramref name="definitions"/>' own content, deterministically (scenes ordered by page
+    /// key, definitions in their given order).
+    /// </summary>
+    private static HashSet<Guid> CollectReferencedInvocationKeys(
+        IReadOnlyDictionary<Guid, ScadaScene> scenes,
+        IReadOnlyList<QuickWindowDefinition> definitions)
     {
         var keys = new HashSet<Guid>();
-        foreach (var scene in scenes.Values)
+        foreach (var scene in scenes.OrderBy(pair => pair.Key).Select(pair => pair.Value))
         {
             foreach (var element in scene.Elements ?? [])
+            {
+                CollectReferencedInvocationKeys(element, keys);
+            }
+        }
+
+        foreach (var definition in definitions)
+        {
+            foreach (var element in definition.EffectiveContent.EffectiveElements)
             {
                 CollectReferencedInvocationKeys(element, keys);
             }
