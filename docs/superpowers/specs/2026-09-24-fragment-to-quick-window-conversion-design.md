@@ -1,8 +1,8 @@
 # Conversion d'une page Fragment en fenêtre rapide - Spécification
 
 Date: 2026-09-24
-Status: Draft - en attente d'approbation
-Document version: `V2.1.6.0032`
+Status: Superseded by docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md (DEC-0052)
+Document version: `V2.1.6.0034`
 Portée: SCADA Builder V2, éditeur et modèle de projet. Aucune capacité runtime, aucun contrat de package modifié.
 Dépendances: `docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md` (`DEC-0050`), `docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md`, `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`, `docs/06_ui_ux/UI_ARCHITECTURE_V2.md`
 
@@ -10,6 +10,7 @@ Dépendances: `docs/superpowers/specs/2026-08-04-parameterized-popup-management-
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-30 | `V2.1.6.0034` | `PENDING` | Statut passé à *Superseded* par `docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md` (`DEC-0052`) : la conversion vers une définition séparée que cette spec décrivait est rendue inutile par le modèle de feuilles de paramètres. |
 | 2026-09-24 | `V2.1.6.0032` | `8c8e544` | Création. Ferme la lacune laissée par `DEC-0050` : `ScadaPageType.Fragment` et `QuickWindowDefinition` coexistaient sans passerelle, de sorte qu'aucun popup legacy ne pouvait devenir une fenêtre rapide et qu'une page Fragment n'avait ni interface locale ni banc d'essai. |
 
 ## 1. Le problème

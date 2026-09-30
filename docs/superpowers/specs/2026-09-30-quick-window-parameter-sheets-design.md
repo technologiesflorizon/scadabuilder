@@ -1,8 +1,8 @@
 # Feuilles de paramètres des fenêtres rapides - Spécification
 
 Date: 2026-09-30
-Status: Draft - en attente d'approbation; une décision `DEC-xxxx` sera enregistrée à l'approbation
-Document version: `V2.1.6.0033`
+Status: Approved - DEC-0052
+Document version: `V2.1.6.0034`
 Portée: SCADA Builder V2 (modèle, éditeur, compilateur, runtime partagé embarqué dans le paquet) et rejeu de conformance sur la branche TF100Web `codex/quick-window-v1`
 Dépendances: `docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md` (`DEC-0050`), `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` §11b et §12, `docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md`, `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`, `docs/08_implementation_status/KNOWN_GAPS_V2.md`
 
@@ -10,6 +10,7 @@ Dépendances: `docs/superpowers/specs/2026-08-04-parameterized-popup-management-
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-30 | `V2.1.6.0034` | `PENDING` | Approuvée sous `DEC-0052`. Statut passé à *Approved*; rulings R1 à R4 ajoutés en fin de §3. |
 | 2026-09-30 | `V2.1.6.0033` | `9ba10d4` | Création. Remplace le modèle d'authoring des fenêtres rapides par des pages de type Fenêtre rapide paramétrées par `#N` et des feuilles de paramètres, résolues à l'ouverture de l'instance. Supersède à l'approbation `2026-09-24-fragment-to-quick-window-conversion-design.md`. |
 
 ## 1. Le problème
@@ -48,6 +49,15 @@ Retour de l'utilisateur après essai de la branche `feature/quick-window-front-d
 | D5 | La règle **une instance par définition** est conservée : ouvrir Ventilateur 5 remplace Ventilateur 3. | Instances simultanées : chantier TF100Web supplémentaire, à reprendre séparément. |
 | D6 | `ScadaPageType.Fragment` quitte le sélecteur et reste lu. Une page Fragment se **convertit en la retypant** en Fenêtre rapide. | Conversion vers une définition séparée : c'est l'objet de la spec du 2026-09-24, rendue inutile par ce modèle. |
 | D7 | Un même `#N` défini deux fois dans une feuille est une **erreur**, jamais « le dernier gagne ». | Dernier gagne : la feuille dépendrait de l'ordre de ses lignes et cesserait d'être idempotente. |
+
+**Rulings R1 à R4 (`DEC-0052`) :**
+
+| # | Ruling |
+| --- | --- |
+| R1 | Seul un littéral chaîne est de nature `Literal`; un nombre ou un booléen seul est une expression à un nœud (le runtime évalue des AST typés). |
+| R2 | Un `#N` utilisé dans un texte affiché doit être lié à un littéral chaîne; lié à un tag ou à une expression, c'est une erreur de compilation (une substitution textuelle afficherait un identifiant technique comme `tf100.mapping.196`). Les valeurs vivantes continuent d'utiliser l'affichage de variable de lecture existant, qui accepte un `#N` lié à un tag. |
+| R3 | Le runtime possède un évaluateur d'expressions mais aucun analyseur; une liaison `Expression` porte donc, en plus de sa source, un champ manifeste optionnel `ExpressionAst` : l'AST sérialisé au format runtime (discriminant `type`, mêmes options de sérialisation que celles déjà utilisées par l'exporteur pour `data-scada-state-config`). |
+| R4 | `DefinitionKey` est la `PageKey` de la page fenêtre rapide; `MemberKey` et `InvocationKey` sont dérivés de façon déterministe par SHA-256 de chaînes canoniques, de sorte que deux compilations du même projet soient identiques. |
 
 ## 4. Modèle d'authoring
 

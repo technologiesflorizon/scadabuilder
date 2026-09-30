@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active authoritative decision register
-Document version: `V2.1.6.0017`
+Document version: `V2.1.6.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-30 | `V2.1.6.0034` | `PENDING` | Ajout de `DEC-0052` : les fenêtres rapides sont désormais authorées comme des pages `QuickWindow` paramétrées par `#N`, résolues par des feuilles de paramètres substituées au montage de l'instance; supersède `2026-09-24-fragment-to-quick-window-conversion-design.md` et modifie `FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` §11b/§12.4. |
 | 2026-09-10 | `V2.1.6.0017` | `f5589e9` | Tâche 7 du chantier C close, re-cadrée par les Rulings 16 et 17 du contrôleur : le convertisseur projet 0 → 1 règle l'identité de page une fois, dans le fichier, avec la dérivation `PageKeyFactory.CreateDeterministic` (et non une dérivation SHA-256 incompatible); la suppression des règles de `ModernProjectMigration` promise par le brief est retirée, ce normaliseur restant nécessaire aux écritures et à la construction en mémoire. |
 | 2026-09-08 | `V2.1.6.0012` | `37bf604` | `DEC-0049` : le volet refus vers l'arrière de D5 est marqué implémenté dans la couverture de régression. |
 | 2026-09-08 | `V2.1.6.0008` | `77d955d` | `DEC-0049` auditée décision par décision; couverture portée de 9 à 27 tests et treize écarts corrigés. |
@@ -120,6 +121,39 @@ Regression coverage:
 ```
 
 ## 3. Active Decisions
+
+### DEC-0052 - Fenêtres rapides paramétrées par feuilles de paramètres
+
+Status: Active
+Created: 2026-09-30 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md`
+
+Context:
+
+Retour de l'utilisateur après essai de la branche `feature/quick-window-front-door` : le « + » du panneau « Fenêtres rapides » crée une `QuickWindowDefinition` nommée, traitée comme une bibliothèque, et cette stratégie ne permet pas de travailler. Il demande le modèle qu'il connaît de FactoryTalk View — une feuille de paramètres idempotente, une page paramétrée par `#1` à `#999`, une commande « Ouvrir une fenêtre rapide » qui associe une feuille à une page, et la liaison entre chaque instance et sa feuille produite par la chaîne de compilation. Un écart a par ailleurs été constaté le 2026-09-30 et consigné à l'entrée 36 de `KNOWN_GAPS_V2.md` : `readPort`/`writePort` de `quick-window-runtime.js` ne sont appelés que par des tests, jamais par un élément d'une instance ouverte, et la capacité `quick-window.port-binding` était promue sur cette seule base.
+
+Decision:
+
+Le modèle d'authoring des fenêtres rapides est remplacé par des pages de type `ScadaPageType.QuickWindow` (D6, ajoutée en dernière position de l'enum, jamais renumérotée) dont les états, commandes et textes affichés utilisent des jetons `#1` à `#999`, et par une entité de projet `ParameterSheet` — feuille de paramètres textuelle, idempotente, de la forme `#N := <expression>` avec commentaires `//` (D1 à D3, D7 : une ligne peut lier un tag, un littéral ou une expression de la grammaire `ScadaExpressionParser` existante; un `#N` défini deux fois dans une feuille est une erreur, jamais « le dernier gagne »). La règle **une instance par définition** est conservée (D5).
+
+Approche retenue pour la substitution (D4, « approche C ») : la page est compilée une seule fois avec ses `#N` conservés — une `QuickWindowDefinition` et un membre public par `#N` utilisé — chaque feuille devient une table dans le paquet — une `QuickWindowInvocation` avec une liaison par `#N`, de nature `Tag`, `Literal` ou `Expression` — et **le runtime substitue à l'ouverture de l'instance**, dans `mountInstance`, avant `ScadaRuntime.initPage`. C'est le mécanisme de FactoryTalk et la structure déjà posée par `DEC-0050`; les alternatives écartées sont la résolution à la compilation (une copie de page par feuille, une recompilation par équipement ajouté) et des ports lus en continu par les éléments (chantier runtime et hôte bien plus large).
+
+Quatre rulings précisent la mécanique retenue :
+
+- R1 : seul un littéral chaîne est de nature `Literal`; un nombre ou un booléen seul est une expression à un nœud (le runtime évalue des AST typés).
+- R2 : un `#N` utilisé dans un texte affiché doit être lié à un littéral chaîne; lié à un tag ou à une expression, c'est une erreur de compilation (une substitution textuelle afficherait un identifiant technique comme `tf100.mapping.196`). Les valeurs vivantes continuent d'utiliser l'affichage de variable de lecture existant, qui accepte un `#N` lié à un tag.
+- R3 : le runtime possède un évaluateur d'expressions mais aucun analyseur; une liaison `Expression` porte donc, en plus de sa source textuelle, un champ manifeste optionnel `ExpressionAst` — l'AST sérialisé au format runtime (discriminant `type`, mêmes options de sérialisation que celles déjà utilisées par l'exporteur pour `data-scada-state-config`).
+- R4 : `DefinitionKey` est la `PageKey` de la page fenêtre rapide; `MemberKey` et `InvocationKey` sont dérivés de façon déterministe par SHA-256 de chaînes canoniques, de sorte que deux compilations du même projet produisent des octets identiques.
+
+`ScadaPageType.Fragment` quitte le sélecteur de type de page et reste lu; une page `Fragment` se convertit en fenêtre rapide en la retypant. Le sélecteur de type de page de `MainWindow.xaml.cs` passe d'un mappage par position à un mappage par valeur avant tout retrait d'entrée.
+
+Consequences:
+
+La spec `docs/superpowers/specs/2026-09-24-fragment-to-quick-window-conversion-design.md` (`8c8e544`) passe *Superseded* : la conversion vers une définition séparée qu'elle décrivait est rendue inutile par ce modèle. `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` §11b et §12.4 sont modifiés en conséquence : §12.4 gagne le champ optionnel `ExpressionAst` sur `QuickWindowInvocations[].Bindings[]`; §11b décrit la substitution au montage (emplacements, règles de §7 de la spec et de R2, refus diagnostiqués `placeholder-unbound`/`placeholder-write-not-tag`/`placeholder-text-not-literal`, interdiction de toucher aux attributs `style`). La création d'une définition vide par le « + », l'onglet « Liaisons » et l'édition manuelle des membres typés disparaissent des surfaces d'authoring; les services de domaine sous-jacents restent, la compilation les produisant toujours. `quick-window.binding.parent-port` reste `Blocked` : une partie droite de feuille ne peut pas référencer un autre `#N`. `quick-window.port-binding` n'est considérée réellement couverte que lorsqu'une sonde prouve qu'un élément d'une instance ouverte dans l'hôte est animé par la valeur substituée, pas seulement que `readPort` répond — ce que l'entrée 36 de `KNOWN_GAPS_V2.md` consigne comme non encore prouvé à la date de la présente décision.
 
 ### DEC-0051 - Moteur Node épinglé sur 24.15.x
 

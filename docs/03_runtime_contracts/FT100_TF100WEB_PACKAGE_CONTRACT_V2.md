@@ -2,12 +2,13 @@
 
 Date: 2026-07-30
 Status: Active runtime package contract
-Document version: `V2.1.6.0006`
+Document version: `V2.1.6.0034`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-09-30 | `V2.1.6.0034` | `PENDING` | `DEC-0052` : §12.4 gagne le champ optionnel `ExpressionAst` sur `QuickWindowInvocations[].Bindings[]`; §11b décrit la substitution des `#N` au montage de l'instance (emplacements, refus diagnostiqués, interdiction de toucher aux attributs `style`). |
 | 2026-09-08 | `V2.1.6.0006` | `8074d0a` | Section 12.4 : la résolution du titre à trois niveaux est figee et appartient a la compilation; le champ manifest n'est jamais vide pour une definition nommee. |
 | 2026-09-08 | `V2.1.6.0004` | `d5f9ab1` | Sections 12.5, 12.7 et 12.8 recalées sur l'après-Phase 6, soak et déploiement contrôlé consignés comme décidés, et le flow de paquet porte enfin la branche Fenêtre rapide jusqu'au host. |
 | 2026-09-04 | `V2.1.6.0000` | `078dbce` | Phase 6 : onze capacites Fenetre rapide promues. `OwnerPageKey` retire du manifeste (identite d'editeur), `quickWindowInvocationKey` ajoute a la commande appelante, et `SUPPORTED_SCADA_RUNTIME_CAPABILITIES` etendu aux onze promues. |
@@ -352,6 +353,30 @@ Frontiere de responsabilite : le runtime partage resout les registres, les ports
 
 Consequence de transport : ajouter un module change le hash du runtime, donc les octets de tout `.sb2`. Le paquet de conformance et la preuve d'acceptation industrielle sont regeneres deliberement lors de ce changement.
 
+### 11b.1 Substitution des `#N` au montage (`DEC-0052`)
+
+Une définition `QuickWindowDefinition` compilée depuis une page `ScadaPageType.QuickWindow` conserve ses jetons `#N` (`#1` à `#999`) dans son `Content`. `mountInstance`, dans `quick-window-runtime.js`, les substitue **une seule fois par instance**, après `context.root = root` et avant `ScadaRuntime.initPage`, à partir des `Bindings[]` de l'invocation résolue (§12.4).
+
+Emplacements couverts, avec la règle appliquée à chacun :
+
+| Emplacement | Règle |
+| --- | --- |
+| `data-scada-read-tag`, `data-scada-write-tag` | L'attribut valant exactement `#N` est remplacé par l'identifiant du tag. Une liaison de nature autre que `Tag` sur `data-scada-write-tag` est un refus au montage (R2). |
+| `data-scada-state-config`, `data-scada-command-config` | Le JSON est **analysé**, les champs portant un identifiant de tag ou une expression sont substitués, puis le JSON est **re-sérialisé** — jamais de remplacement de chaîne sur le JSON brut. Dans une expression, un `Tag` devient `{TAG}`, une `Expression` devient `(…)` reconstruite depuis `ExpressionAst` quand il est présent, et un `Literal` devient un littéral correctement échappé. |
+| Nœuds texte | Remplacement de `#N` par la valeur d'affichage, via `textContent` uniquement, jamais `innerHTML`. `\#` devient `#` littéral. Un `#N` de texte doit être lié à un littéral chaîne (R2) : lié à un tag ou à une expression, la substitution textuelle afficherait un identifiant technique et c'est refusé à la compilation, pas au montage. |
+
+Les attributs `style` ne sont **jamais** parcourus ni modifiés par cette substitution : un `#N` n'y est jamais recherché, de sorte qu'une couleur hexadécimale comme `#0F2A30` ne peut jamais être interprétée comme un jeton de paramètre.
+
+Refus diagnostiqués, chacun un refus de montage et non un affichage de `#N` :
+
+| Code | Condition |
+| --- | --- |
+| `placeholder-unbound` | Un `#N` référencé par la page n'a aucune liaison dans l'invocation résolue. Impossible après la validation par couple (feuille, page) exigée avant l'export, mais défendu quand même au montage. |
+| `placeholder-write-not-tag` | Un `#N` cible de `data-scada-write-tag` (ou d'une commande d'écriture dans `data-scada-command-config`) dont la liaison n'est pas de nature `Tag` seule. |
+| `placeholder-text-not-literal` | Un `#N` d'un nœud texte dont la liaison n'est pas un littéral chaîne. |
+
+Les contrôles existants s'appliquent aux valeurs substituées : `_isInjection` refuse toute valeur de liaison suspecte avant le montage. Écrit **une seule fois** dans le runtime partagé livré dans le paquet; l'aperçu du Builder et l'hôte TF100Web l'exécutent tous deux par `mountInstance` sans aucun changement de code hôte attendu.
+
 ## 11c. Executed Round Trip Evidence
 
 Le paquet `quick-window-runtime-handshake.sb2` est la preuve executable du contrat de la section 12. Il est produit uniquement par le harnais interne protege du Builder, verrouille par SHA-256 et vendorise a l'identique dans TF100Web.
@@ -427,6 +452,8 @@ Les deux registres sont des tableaux de la racine du `manifest.json`, en **Pasca
 `QuickWindows[]` : `DefinitionKey`, `Code`, `DisplayName`, `InterfaceVersion`, `Content`, `InterfaceMembers[]`, `PresentationDefaults`. Chaque membre porte `MemberKey`, `Name`, `Family`, `DataType`, `Access`, `Required`, `DefaultValue`, `Description`.
 
 `QuickWindowInvocations[]` : `InvocationKey`, `DefinitionKey`, `Bindings[]`, `TitleOverride`, `InterfaceVersion`, `OwnerElementId`, `OwnerCommandId`.
+
+Chaque entrée de `Bindings[]` porte `MemberKey`, `SourceKind` (`Tag`, `Literal` ou `Expression`), `TagId`, `LiteralValue`, `Expression` et `ParentMemberKey` (`DEC-0052`). Elle gagne un champ optionnel `ExpressionAst` : un objet JSON, l'AST au format runtime — discriminant `type` parmi `literalNumber`, `literalBool`, `literalString`, `tagRef`, `unary`, `binary`, `func`, propriétés camelCase, mêmes options de sérialisation que celles déjà utilisées par l'exporteur pour `data-scada-state-config`. Présent seulement quand `SourceKind` vaut `Expression`; le runtime partagé n'ayant pas d'analyseur (R3 de la spec), c'est cet AST déjà analysé, et non `Expression` en texte, que `mountInstance` reconstruit dans les substitutions de §11b.1.
 
 **`OwnerPageKey` n'est pas exporté** (Phase 6). C'est une identité d'éditeur : le manifeste désigne partout ailleurs une page par son `Id` textuel, jamais par un Guid, et aucun runtime ne lisait ce champ. `Ft100PackageValidation.ValidateNoInternalPageKeys` interdit d'ailleurs toute propriété se terminant par `PageKey` dans un manifeste — la règle et le compilateur se contredisaient sans jamais se rencontrer, aucun package portant des fenêtres rapides n'ayant pu s'exporter tant que les capacités étaient `Blocked`. `OwnerElementId` et `OwnerCommandId` suffisent à dire d'où une ouverture provient.
 
