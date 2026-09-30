@@ -39,6 +39,7 @@ public sealed record QuickWindowBinding(
     string? LiteralValue = null,
     string? Expression = null,
     Guid? ParentMemberKey = null,
+    [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     ScadaExprNode? ExpressionAst = null)
 {
     /// <summary>Gets whether this binding is explicitly absent.</summary>

@@ -1,5 +1,6 @@
 using System.Text.Json;
 using ScadaBuilderV2.Domain.ElementEvents.Command;
+using ScadaBuilderV2.Domain.ElementEvents.Expressions;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.QuickWindows;
 
@@ -79,5 +80,16 @@ public sealed class ParameterSheetProjectModelTests
     public void AProjectWithoutSheetsHasAnEmptyEffectiveList()
     {
         Assert.AreEqual(0, ScadaProject.CreateDefault("p").EffectiveParameterSheets.Count);
+    }
+
+    [TestMethod]
+    public void ExpressionAstIsOmittedFromJsonWhenNullAndPresentWhenSet()
+    {
+        var absent = QuickWindowBinding.Absent(Guid.NewGuid());
+        Assert.IsFalse(JsonSerializer.Serialize(absent).Contains("ExpressionAst"),
+            "Contract 12.4: ExpressionAst must be present only when SourceKind is Expression.");
+
+        var withAst = absent with { ExpressionAst = new ScadaExprLiteralNumber(1) };
+        Assert.IsTrue(JsonSerializer.Serialize(withAst).Contains("ExpressionAst"));
     }
 }
