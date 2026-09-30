@@ -249,9 +249,9 @@ public static class ParameterSheetLowering
                     Diagnostics.Add(new ScadaBuildValidationIssue(
                         ScadaBuildValidationSeverity.Error,
                         "parameter-sheet.placeholder-unsupported-site",
-                        $"Page '{page.EffectivePageCode}', élément '{use.ElementId}', champ {use.Field} : « {use.Raw} » n'est pas substitué dans ce champ " +
-                        "et s'afficherait tel quel. Un paramètre #N n'est pris en charge que dans un texte affiché, un tag lu ou écrit, " +
-                        "une expression d'état ou une commande (écrire \\# pour un # littéral).",
+                        $"Page '{page.EffectivePageCode}', élément '{use.ElementId}', champ {use.Field} : « {use.Raw} » n'est pas pris en charge dans ce champ " +
+                        "et s'afficherait tel quel, sans substitution. Un paramètre #N n'est pris en charge que dans un texte affiché, un tag lu ou écrit, " +
+                        "une expression d'état ou une commande : retirer ce #N ou déplacer ce texte dans un élément de texte affiché.",
                         PageId: page.EffectivePageCode,
                         PageKey: page.PageKey,
                         ElementId: use.ElementId,

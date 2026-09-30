@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using AvalonDock;
 using AvalonDock.Layout;
 using AvalonDock.Layout.Serialization;
@@ -279,6 +280,7 @@ public sealed class DockablePanelPresenterTests
         var manager = new DockingManager { Layout = root };
         var window = new Window { Content = manager, Width = 900, Height = 600, ShowInTaskbar = false };
         window.Show();
+        RegisterScenarioWindow(window);
 
         return (manager, kept, dropped);
     }
@@ -317,6 +319,31 @@ public sealed class DockablePanelPresenterTests
     private static int CountLiveWithContentId(DockingManager manager, string contentId) =>
         manager.Layout!.Descendents().OfType<LayoutAnchorable>().Count(a => a.ContentId == contentId);
 
+    /// <summary>
+    /// Windows shown by <see cref="BuildScene"/> on the current STA thread, registered so <see cref="RunOnSta"/>
+    /// can close every one of them - and shut this thread's dispatcher down - before the thread exits.
+    /// </summary>
+    [ThreadStatic]
+    private static List<Window>? _scenarioWindows;
+
+    /// <summary>
+    /// Records <paramref name="window"/> so the STA thread running the current scenario closes it in a
+    /// <c>finally</c> before the thread exits.
+    /// </summary>
+    /// <remarks>
+    /// Before this fix, <see cref="BuildScene"/> called <c>window.Show()</c> and the STA thread then ran the
+    /// rest of the scenario and exited via <see cref="Thread.Join"/> without ever calling <c>Close()</c> or
+    /// shutting its <see cref="Dispatcher"/> down. That leaves a live HWND, with its managed window-procedure
+    /// hook (<c>MS.Win32.HwndSubclass</c>) still attached, outliving the very dispatcher that hook depends on.
+    /// A later message delivered to that stale HWND - from the OS, DWM, or another AvalonDock/WPF internal
+    /// callback - then re-enters <c>HwndSubclass.SubclassWndProc</c> against a dead dispatcher/thread and
+    /// crashes the whole test host with an unhandled <see cref="NullReferenceException"/>
+    /// (<c>Thread.get_CurrentThread</c>), independently of and after any given test method already returned.
+    /// This is why the crash was intermittent and uncorrelated with which test ran: it is a use-after-teardown
+    /// bug in the harness, not in <see cref="DockablePanelPresenter"/> itself.
+    /// </remarks>
+    private static void RegisterScenarioWindow(Window window) => (_scenarioWindows ??= new List<Window>()).Add(window);
+
     /// <summary>Runs <paramref name="scenario"/> to completion on a dedicated STA thread, as AvalonDock requires, and returns its result.</summary>
     private static SceneOutcome RunOnSta(Func<SceneOutcome> scenario)
     {
@@ -325,16 +352,21 @@ public sealed class DockablePanelPresenterTests
 
         var thread = new Thread(() =>
         {
+            _scenarioWindows = null;
             try
             {
                 // Application is a process-wide singleton (Application.Current); MSTest runs every test in
-                // this file in the same process, so only the first test's STA thread may construct it.
+                // this file in the same process, so only the first test's STA thread may construct it. It is
+                // built with ShutdownMode.OnExplicitShutdown and never asked to shut down here: its own
+                // constructing thread's dispatcher is torn down like any other scenario thread's below (see
+                // the finally block), and Application.Current must keep working as a plain marker/singleton
+                // for every later scenario thread regardless of whether its original thread is still alive.
                 // Fully qualified: this project also references ScadaBuilderV2.App, which pulls in the
                 // sibling namespace ScadaBuilderV2.Application - an unqualified "Application" here binds to
                 // that namespace instead of System.Windows.Application.
                 if (System.Windows.Application.Current is null)
                 {
-                    _ = new System.Windows.Application();
+                    _ = new System.Windows.Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
                 }
 
                 result = scenario();
@@ -342,6 +374,31 @@ public sealed class DockablePanelPresenterTests
             catch (Exception ex)
             {
                 failure = ex;
+            }
+            finally
+            {
+                // Close every window this scenario opened - on its own STA thread, before that thread's
+                // dispatcher goes away - then shut the dispatcher down. Both steps run even when the scenario
+                // threw, so a failing assertion never leaks a live HWND into a later test run.
+                if (_scenarioWindows is { } windows)
+                {
+                    foreach (var window in windows)
+                    {
+                        try
+                        {
+                            window.Close();
+                        }
+                        catch
+                        {
+                            // Best-effort: a window already closed by the scenario itself (e.g. via
+                            // LayoutAnchorable.Close()'s side effects) must not fail teardown.
+                        }
+                    }
+
+                    _scenarioWindows = null;
+                }
+
+                Dispatcher.CurrentDispatcher.InvokeShutdown();
             }
         });
         thread.SetApartmentState(ApartmentState.STA);

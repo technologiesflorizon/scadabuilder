@@ -685,6 +685,12 @@ public sealed class ParameterSheetLoweringTests
             StringAssert.Contains(issue.Message, $"'{element.Id}'", field);
             StringAssert.Contains(issue.Message, field, field);
             StringAssert.Contains(issue.Message, $"Page '{QuickWindowPageCode}'", field);
+            // The field never unescapes `\#`, so the message must not tell the operator to write it as a
+            // workaround (that used to show a raw `\#4`); it must say the token is unsupported there and
+            // must be removed or moved into a displayed text element.
+            StringAssert.Contains(issue.Message, "n'est pas pris en charge dans ce champ", field);
+            StringAssert.Contains(issue.Message, "retirer ce #N ou déplacer ce texte dans un élément de texte affiché", field);
+            Assert.IsFalse(issue.Message.Contains("\\#"), $"the message must not advise escaping with \\# in a field that never unescapes it ({field}).");
         }
     }
 
