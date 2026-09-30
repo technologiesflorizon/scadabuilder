@@ -1,4 +1,5 @@
 using ScadaBuilderV2.App.QuickWindows;
+using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.QuickWindows;
 
 namespace ScadaBuilderV2.Tests.QuickWindows;
@@ -43,6 +44,41 @@ public sealed class ParameterSheetEditorViewModelTests
         var vm = new ParameterSheetEditorViewModel(Sheet(""), null);
 
         Assert.ThrowsException<ArgumentException>(() => vm.AppendRule(1, ParameterValueKind.Literal, "dit \"x\""));
+    }
+
+    [TestMethod]
+    public void ATagRuleWritesTheReadableNameTheLoweringResolvesNotTheMappingId()
+    {
+        // Final review M2: the dialog wrote {tf100.mapping.N}; the operator picked "FAN_03_RUN" in the list.
+        var catalog = new ScadaTagCatalog("tests",
+        [
+            new ScadaTagDefinition("tf100.mapping.101", "FAN_03_RUN", Datatype: "Boolean"),
+            new ScadaTagDefinition("tf100.mapping.201", "DUPLICATE"),
+            new ScadaTagDefinition("tf100.mapping.202", "DUPLICATE"),
+            new ScadaTagDefinition("tf100.mapping.301", " "),
+        ]);
+
+        Assert.AreEqual("FAN_03_RUN", ParameterSheetEditorViewModel.TagReferenceFor(catalog.Tags[0], catalog));
+        Assert.AreEqual("tf100.mapping.201", ParameterSheetEditorViewModel.TagReferenceFor(catalog.Tags[1], catalog), "an ambiguous name falls back to the id");
+        Assert.AreEqual("tf100.mapping.301", ParameterSheetEditorViewModel.TagReferenceFor(catalog.Tags[3], catalog), "a blank name falls back to the id");
+
+        var vm = new ParameterSheetEditorViewModel(Sheet(""), catalog);
+        vm.AppendRule(1, ParameterValueKind.Tag, ParameterSheetEditorViewModel.TagReferenceFor(catalog.Tags[0], catalog));
+        Assert.AreEqual("#1 := {FAN_03_RUN}", vm.Text);
+    }
+
+    [TestMethod]
+    public void ARuleIsValidatedByTheSheetParserBeforeItIsAdded()
+    {
+        var vm = new ParameterSheetEditorViewModel(Sheet("#1 := {A}"), null);
+
+        Assert.IsNull(vm.ValidateRule(2, ParameterValueKind.Expression, "{A} * 0.1"));
+        Assert.IsNull(vm.ValidateRule(2, ParameterValueKind.Literal, "Ventilateur 3"));
+        Assert.IsNotNull(vm.ValidateRule(2, ParameterValueKind.Expression, "{A} * "), "an invalid expression is refused");
+        Assert.IsNotNull(vm.ValidateRule(2, ParameterValueKind.Expression, "{#3} + 1"), "a reference to another #N is refused");
+        Assert.IsNotNull(vm.ValidateRule(1, ParameterValueKind.Literal, "x"), "an already defined #N is refused");
+        Assert.IsNotNull(vm.ValidateRule(2, ParameterValueKind.Literal, "dit \"x\""), "a quote in a literal is refused");
+        Assert.AreEqual("#1 := {A}", vm.Text, "validating never mutates the text");
     }
 
     [TestMethod]

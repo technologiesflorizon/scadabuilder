@@ -6676,6 +6676,9 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                     var selectedKey = _pageWorkspaceController.HistorySelectedPageKey;
                     _pagesPanel.SelectedPage = _pagesPanel.Items.FirstOrDefault(item => item.PageKey == selectedKey);
                     PagesListBox.SelectedItem = _pagesPanel.SelectedPage;
+                    // A project-scope undo/redo (e.g. of a parameter-sheet creation, edit or deletion) replaced the
+                    // project: the parameter-sheet panel must reload from it, not keep showing the undone state.
+                    await RefreshQuickWindowGroupAsync();
                 }
             },
             SetStatus = SetStatus

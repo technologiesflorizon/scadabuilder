@@ -44,6 +44,36 @@ public sealed class QuickWindowPageSurfaceRefreshContractTests
         Assert.IsTrue(refreshIndex > replaceIndex, "the refresh must run after ReplaceProject updated every open tab's Page.");
     }
 
+    [TestMethod]
+    public void AProjectScopeUndoOrRedoReloadsTheParameterSheetPanel()
+    {
+        // Final review I4: the project-scope branch of the history RefreshTargetAsync callback replaced the
+        // project but never reloaded the quick-window group, so an undone sheet stayed listed.
+        var source = ReadAppFile("MainWindow.xaml.cs");
+        var start = source.IndexOf("RefreshTargetAsync = async target =>", StringComparison.Ordinal);
+        Assert.IsTrue(start >= 0, "the history RefreshTargetAsync callback was not found.");
+        var callback = ExtractBlock(source, start);
+        var projectBranch = ExtractBlock(callback, callback.IndexOf("if (target.Scope == EditorHistoryScope.Project)", StringComparison.Ordinal));
+
+        StringAssert.Contains(projectBranch, "await RefreshQuickWindowGroupAsync();",
+            "a project-scope undo/redo must reload the parameter-sheet panel from the restored project.");
+    }
+
+    private static string ExtractBlock(string source, int from)
+    {
+        Assert.IsTrue(from >= 0, "block start not found.");
+        var openBrace = source.IndexOf('{', from);
+        var depth = 0;
+        for (var i = openBrace; i < source.Length; i++)
+        {
+            if (source[i] == '{') depth++;
+            else if (source[i] == '}' && --depth == 0) return source[openBrace..(i + 1)];
+        }
+
+        Assert.Fail("unbalanced block.");
+        return string.Empty;
+    }
+
     /// <summary>Extracts one method's brace-balanced body by name, naive but sufficient for a source pin.</summary>
     private static string ExtractMethodBody(string source, string methodName)
     {

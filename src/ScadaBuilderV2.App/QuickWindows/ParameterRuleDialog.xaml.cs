@@ -30,18 +30,22 @@ public partial class ParameterRuleDialog : Window
         new("Expression", ParameterValueKind.Expression)
     ];
 
-    private readonly ScadaTagCatalog? catalog;
+    private readonly ParameterSheetEditorViewModel sheet;
     private bool isLoading = true;
 
-    /// <summary>Creates the dialog proposing <paramref name="nextFreeNumber"/> against an optional tag catalog.</summary>
-    public ParameterRuleDialog(int nextFreeNumber, ScadaTagCatalog? catalog)
+    /// <summary>
+    /// Creates the dialog for <paramref name="sheet"/>: proposes its next free `#N`, offers its tag catalog and
+    /// validates the rule against its current text before accepting it.
+    /// </summary>
+    public ParameterRuleDialog(ParameterSheetEditorViewModel sheet)
     {
-        this.catalog = catalog;
+        ArgumentNullException.ThrowIfNull(sheet);
+        this.sheet = sheet;
         InitializeComponent();
 
-        NumberTextBox.Text = nextFreeNumber.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        NumberTextBox.Text = sheet.NextFreeNumber.ToString(System.Globalization.CultureInfo.InvariantCulture);
         KindComboBox.ItemsSource = KindOptions;
-        TagComboBox.ItemsSource = catalog?.Tags ?? Array.Empty<ScadaTagDefinition>();
+        TagComboBox.ItemsSource = sheet.Catalog?.Tags ?? Array.Empty<ScadaTagDefinition>();
         isLoading = false;
         KindComboBox.SelectedIndex = 0;
         Loaded += (_, _) => NumberTextBox.Focus();
@@ -92,7 +96,9 @@ public partial class ParameterRuleDialog : Window
                 return;
             }
 
-            value = tag.Id;
+            // The readable name the operator picked in the list (resolved to the tag id by the lowering), never
+            // the technical `tf100.mapping.N` id - unless that name is blank or ambiguous in the catalog.
+            value = ParameterSheetEditorViewModel.TagReferenceFor(tag, sheet.Catalog);
         }
         else
         {
@@ -103,11 +109,14 @@ public partial class ParameterRuleDialog : Window
                 return;
             }
 
-            if (kind == ParameterValueKind.Literal && value.Contains('"'))
-            {
-                ShowError("Un littéral ne peut pas contenir de guillemet : la grammaire des feuilles n'a pas d'échappement.");
-                return;
-            }
+        }
+
+        // Every nature goes through the sheet parser before the line is added: an invalid expression, a quote
+        // in a literal or an already defined #N is shown here instead of producing a broken line.
+        if (sheet.ValidateRule(number, kind, value) is { } error)
+        {
+            ShowError(error);
+            return;
         }
 
         Number = number;

@@ -1,4 +1,6 @@
 using ScadaBuilderV2.App.QuickWindows;
+using ScadaBuilderV2.Domain.ElementEvents.Command;
+using ScadaBuilderV2.Domain.Projects;
 
 namespace ScadaBuilderV2.Tests.QuickWindows;
 
@@ -16,6 +18,55 @@ public sealed class QuickWindowConfigurationRulesTests
     private static readonly Guid SheetKey = Guid.NewGuid();
     private static readonly Guid PageKey = Guid.NewGuid();
     private static readonly Guid InvocationKey = Guid.NewGuid();
+
+    [TestMethod]
+    public void ANavigateCommandNeverOffersAQuickWindowPage()
+    {
+        // Final review M3: a QuickWindow page leaves the page inventory at lowering; navigating to it is an error.
+        var pages = new[]
+        {
+            new ScadaSceneReference("synoptique", "Synoptique", "scenes/synoptique.scene.json", ScadaPageType.Default),
+            new ScadaSceneReference("popup_fan", "Popup", "scenes/popup_fan.scene.json", ScadaPageType.QuickWindow),
+            new ScadaSceneReference("entete", "En-tête", "scenes/entete.scene.json", ScadaPageType.Header),
+        };
+
+        CollectionAssert.AreEqual(
+            new[] { "synoptique", "entete" },
+            QuickWindowConfigurationRules.NavigateTargetPages(pages).Select(page => page.Id).ToArray());
+    }
+
+    [TestMethod]
+    public void TheConfigurationSubDialogOpensByItselfOnlyWhenCreatingAnOpenCommand()
+    {
+        Assert.IsTrue(QuickWindowConfigurationRules.ShouldOpenConfigurationOnLoad(isNewCommand: true, ScadaCommandKind.OpenQuickWindow));
+        Assert.IsFalse(QuickWindowConfigurationRules.ShouldOpenConfigurationOnLoad(isNewCommand: false, ScadaCommandKind.OpenQuickWindow),
+            "editing an existing command must not reopen the sub-dialog on load");
+        Assert.IsFalse(QuickWindowConfigurationRules.ShouldOpenConfigurationOnLoad(isNewCommand: true, ScadaCommandKind.WriteTag));
+    }
+
+    [TestMethod]
+    public void ElementCommandDialogUsesTheNavigateAndOnLoadRules()
+    {
+        var source = ReadAppFile("ElementCommandDialog.xaml.cs");
+        StringAssert.Contains(source, "TargetPageComboBox.ItemsSource = navigateTargets;");
+        StringAssert.Contains(source, "QuickWindowConfigurationRules.NavigateTargetPages(pageReferences)");
+        StringAssert.Contains(source, "QuickWindowConfigurationRules.ShouldOpenConfigurationOnLoad(");
+        Assert.IsFalse(source.Contains("TargetPageComboBox.ItemsSource = pageReferences;", StringComparison.Ordinal));
+    }
+
+    private static string ReadAppFile(string fileName)
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+        while (directory is not null)
+        {
+            var candidate = Path.Combine(directory.FullName, "src", "ScadaBuilderV2.App", fileName);
+            if (File.Exists(candidate)) return File.ReadAllText(candidate);
+            directory = directory.Parent;
+        }
+
+        Assert.Fail($"Unable to locate src/ScadaBuilderV2.App/{fileName}.");
+        return string.Empty;
+    }
 
     [TestMethod]
     public void CanSaveConfigurationRequiresBothASheetAndAPage()

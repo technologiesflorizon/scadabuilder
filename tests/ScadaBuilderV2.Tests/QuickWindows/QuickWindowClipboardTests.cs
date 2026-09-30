@@ -155,6 +155,34 @@ public sealed class QuickWindowClipboardTests
     }
 
     [TestMethod]
+    public void PastingASheetPageOpenCommandRaisesNoDiagnosticAndKeepsItsPair()
+    {
+        // Final review I3: a parameter-sheet command carries a (sheet, page) pair and no invocation key; its
+        // invocation only exists after lowering. It must paste as is, never trigger the blocking dialog.
+        var sheetKey = Guid.NewGuid();
+        var pageKey = Guid.NewGuid();
+        var caller = ScadaElement.CreateButton("open-fan", "Ventilateur", 0, 0) with
+        {
+            CommandConfig = new ScadaElementCommandConfig(
+            [
+                new ScadaCommandBinding("open", "Ouvrir", true, ScadaCommandTrigger.OnClick, ScadaCommandKind.OpenQuickWindow,
+                    ParameterSheetKey: sheetKey, QuickWindowPageKey: pageKey)
+            ])
+        };
+
+        foreach (var sourceIds in new IReadOnlySet<string>?[] { null, new HashSet<string>(StringComparer.Ordinal) { "open-fan" } })
+        {
+            var analysis = QuickWindowClipboardValidator.Analyze([caller], QuickWindowClipboardTarget.ForPage(), Project(), sourceIds);
+
+            Assert.IsTrue(analysis.IsAllowed, string.Join(" | ", analysis.Issues.Select(issue => $"{issue.Kind}: {issue.Message}")));
+        }
+
+        var pasted = caller.EffectiveCommandConfig.Commands.Single();
+        Assert.AreEqual(sheetKey, pasted.ParameterSheetKey);
+        Assert.AreEqual(pageKey, pasted.QuickWindowPageKey);
+    }
+
+    [TestMethod]
     public void AnInvocationWhoseTargetIsGoneIsRefused()
     {
         var caller = Caller("caller");

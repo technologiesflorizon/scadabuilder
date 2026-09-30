@@ -1,4 +1,5 @@
 using System.ComponentModel;
+using ScadaBuilderV2.Domain.ElementEvents.Expressions;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.QuickWindows;
 
@@ -87,6 +88,53 @@ public sealed class ParameterSheetEditorViewModel : INotifyPropertyChanged
     /// </summary>
     public void AppendRule(int number, ParameterValueKind kind, string value)
     {
+        Text = AppendedText(BuildLine(number, kind, value));
+    }
+
+    /// <summary>
+    /// Validates one rule the dialog is about to add, through the sheet parser itself: the line
+    /// <see cref="AppendRule"/> would append is parsed together with the current text, and any diagnostic it
+    /// raises (invalid expression, `#N` already defined, …) is returned instead of adding a broken line. Returns
+    /// null when the rule can be added.
+    /// </summary>
+    public string? ValidateRule(int number, ParameterValueKind kind, string value)
+    {
+        string line;
+        try
+        {
+            line = BuildLine(number, kind, value);
+        }
+        catch (ArgumentException exception)
+        {
+            return exception.Message.Split(" (Parameter", 2)[0];
+        }
+
+        var candidate = AppendedText(line);
+        var lineNumber = candidate.Split('\n').Length;
+        var diagnostic = ParameterSheetParser.Parse(candidate).Diagnostics.FirstOrDefault(item => item.Line == lineNumber);
+        return diagnostic?.Message;
+    }
+
+    /// <summary>
+    /// The reference a Tag rule writes for <paramref name="tag"/>: its display name — the name the operator picked
+    /// in the list, resolved to the tag id by the lowering — when that name resolves unambiguously to this very
+    /// tag in <paramref name="catalog"/>; its id otherwise (blank or ambiguous display name).
+    /// </summary>
+    public static string TagReferenceFor(ScadaTagDefinition tag, ScadaTagCatalog? catalog)
+    {
+        ArgumentNullException.ThrowIfNull(tag);
+        if (string.IsNullOrWhiteSpace(tag.DisplayName)) return tag.Id;
+        var name = tag.DisplayName.Trim();
+        var resolved = ScadaExpressionValidator.TryResolveTagReference(name, catalog);
+        var readsBack = ParameterSheetParser.Parse($"#1 := {{{name}}}").Entries.TryGetValue(1, out var entry) &&
+            entry.Node is ScadaExprTagRef tagRef && string.Equals(tagRef.TagName, name, StringComparison.Ordinal);
+        return readsBack && resolved.Status == TagResolveStatus.Resolved && string.Equals(resolved.CanonicalId, tag.Id, StringComparison.Ordinal)
+            ? name
+            : tag.Id;
+    }
+
+    private static string BuildLine(int number, ParameterValueKind kind, string value)
+    {
         if (number < 1 || number > 999)
             throw new ArgumentOutOfRangeException(nameof(number), number, "Le numéro de paramètre doit être compris entre 1 et 999.");
         ArgumentNullException.ThrowIfNull(value);
@@ -99,10 +147,14 @@ public sealed class ParameterSheetEditorViewModel : INotifyPropertyChanged
             _ => throw new ArgumentOutOfRangeException(nameof(kind), kind, "Nature de règle inconnue.")
         };
 
-        var line = $"#{number} := {rightHandSide}";
+        return $"#{number} := {rightHandSide}";
+    }
+
+    private string AppendedText(string line)
+    {
         var current = text;
         var needsNewline = current.Length > 0 && current[^1] != '\n';
-        Text = current.Length == 0 ? line : $"{current}{(needsNewline ? "\n" : string.Empty)}{line}";
+        return current.Length == 0 ? line : $"{current}{(needsNewline ? "\n" : string.Empty)}{line}";
     }
 
     /// <summary>Returns the sheet with its original key and this view-model's current text.</summary>

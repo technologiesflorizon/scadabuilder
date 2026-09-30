@@ -56,7 +56,7 @@ public partial class ParameterSheetEditorDialog : Window
 
     private void OnAddRuleClick(object sender, RoutedEventArgs e)
     {
-        var dialog = new ParameterRuleDialog(viewModel.NextFreeNumber, viewModel.Catalog) { Owner = this };
+        var dialog = new ParameterRuleDialog(viewModel) { Owner = this };
         if (dialog.ShowDialog() != true) return;
 
         try

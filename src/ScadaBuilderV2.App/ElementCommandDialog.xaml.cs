@@ -75,7 +75,8 @@ public partial class ElementCommandDialog : Window
             _quickWindowContext.IsQuickWindowContent);
         KindComboBox.ItemsSource = kindOptions;
         WriteModeComboBox.ItemsSource = Enum.GetValues<ScadaWriteMode>();
-        TargetPageComboBox.ItemsSource = pageReferences;
+        var navigateTargets = QuickWindowConfigurationRules.NavigateTargetPages(pageReferences);
+        TargetPageComboBox.ItemsSource = navigateTargets;
 
         var tagItems = (tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
             .Where(tag => tag.Enabled)
@@ -96,7 +97,7 @@ public partial class ElementCommandDialog : Window
             OnValueTextBox.Text = existingCommand.OnValue ?? string.Empty;
             OffValueTextBox.Text = existingCommand.OffValue ?? string.Empty;
             FixedValueTextBox.Text = existingCommand.FixedValue ?? string.Empty;
-            TargetPageComboBox.SelectedItem = pageReferences.FirstOrDefault(p => p.Id == existingCommand.TargetPageId);
+            TargetPageComboBox.SelectedItem = navigateTargets.FirstOrDefault(p => p.Id == existingCommand.TargetPageId);
             UrlTextBox.Text = existingCommand.Url ?? string.Empty;
             NewTabCheckBox.IsChecked = existingCommand.NewTab;
             ConfirmationCheckBox.IsChecked = existingCommand.Confirmation is not null;
@@ -118,7 +119,10 @@ public partial class ElementCommandDialog : Window
 
     private void OnDialogLoaded(object sender, RoutedEventArgs e)
     {
-        if ((KindComboBox.SelectedItem as ElementCommandKindOption)?.Kind == ScadaCommandKind.OpenQuickWindow)
+        // Only a new command opens the sub-dialog by itself; editing an existing one goes through "Configurer…".
+        if (QuickWindowConfigurationRules.ShouldOpenConfigurationOnLoad(
+                _existingCommand is null,
+                (KindComboBox.SelectedItem as ElementCommandKindOption)?.Kind))
         {
             OpenQuickWindowConfiguration();
         }

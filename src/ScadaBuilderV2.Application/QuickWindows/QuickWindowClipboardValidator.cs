@@ -149,6 +149,14 @@ public static class QuickWindowClipboardValidator
             foreach (var command in element.EffectiveCommandConfig.Commands
                          .Where(command => command.Kind == ScadaCommandKind.OpenQuickWindow))
             {
+                // A parameter-sheet command (DEC-0052) carries a (sheet, page) pair and no invocation key: its
+                // invocation is derived by ParameterSheetLowering at build time from its owner (page, element,
+                // command), so there is no invocation to be missing or shared. It pastes as is and keeps its pair.
+                if (command.ParameterSheetKey is not null && command.QuickWindowPageKey is not null)
+                {
+                    continue;
+                }
+
                 var path = $"CommandConfig.Commands[{command.Id}].QuickWindowInvocationKey";
                 if (command.QuickWindowInvocationKey is not { } invocationKey || invocationKey == Guid.Empty)
                 {

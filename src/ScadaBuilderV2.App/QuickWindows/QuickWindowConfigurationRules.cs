@@ -1,3 +1,6 @@
+using ScadaBuilderV2.Domain.ElementEvents.Command;
+using ScadaBuilderV2.Domain.Projects;
+
 namespace ScadaBuilderV2.App.QuickWindows;
 
 /// <summary>
@@ -33,6 +36,22 @@ public static class QuickWindowConfigurationRules
         Guid? quickWindowPageKey,
         bool isUnmodifiedLegacyInvocation) =>
         CanSaveConfiguration(parameterSheetKey, quickWindowPageKey) || isUnmodifiedLegacyInvocation;
+
+    /// <summary>
+    /// Gets the pages a <see cref="ScadaCommandKind.Navigate"/> command may target: every page except the pages
+    /// of type Fenêtre rapide, which the lowering removes from the page inventory (they are opened through
+    /// "Ouvrir une fenêtre rapide", never navigated to).
+    /// </summary>
+    public static IReadOnlyList<ScadaSceneReference> NavigateTargetPages(IEnumerable<ScadaSceneReference> pages) =>
+        pages.Where(page => page.Type != ScadaPageType.QuickWindow).ToArray();
+
+    /// <summary>
+    /// Gets whether `ElementCommandDialog` opens the "Configuration de la fenêtre rapide" sub-dialog by itself when
+    /// it loads: only while creating a command whose kind is already `OpenQuickWindow`. Editing an existing
+    /// command never reopens it on load; the operator uses "Configurer…" (or picks the kind again).
+    /// </summary>
+    public static bool ShouldOpenConfigurationOnLoad(bool isNewCommand, ScadaCommandKind? selectedKind) =>
+        isNewCommand && selectedKind == ScadaCommandKind.OpenQuickWindow;
 
     /// <summary>
     /// Gets whether one existing command is an untouched legacy DEC-0050 `OpenQuickWindow` command: it never
