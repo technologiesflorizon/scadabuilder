@@ -1,4 +1,5 @@
 using System.Windows;
+using ScadaBuilderV2.Application.QuickWindows;
 using ScadaBuilderV2.Domain.ElementEvents.State;
 using ScadaBuilderV2.Domain.Projects;
 
@@ -15,9 +16,14 @@ public partial class ElementReadVariableDialog : Window
         InitializeComponent();
         _tagCatalog = tagCatalog;
 
-        var items = (tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
+        var enabledTags = (tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
             .Where(tag => tag.Enabled)
-            .OrderBy(tag => tag.DisplayName, StringComparer.CurrentCultureIgnoreCase)
+            .ToArray();
+        // Shared guard (fix round 1, DEC-0052): a QuickWindow page's `#N` catalog is already numerically
+        // ordered and must not be re-sorted by DisplayName, which would scramble it back to the lexical
+        // #1, #10, #100... order this fixes.
+        var orderedTags = QuickWindowPagePlaceholderCatalog.OrderForSelector(enabledTags, StringComparer.CurrentCultureIgnoreCase);
+        var items = orderedTags
             .Select(tag => new TagItem(tag.Id, TagLabel(tag)))
             .ToArray();
         TagComboBox.ItemsSource = items;

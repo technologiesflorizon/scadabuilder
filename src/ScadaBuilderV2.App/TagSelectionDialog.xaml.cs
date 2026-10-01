@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Windows;
+using ScadaBuilderV2.Application.QuickWindows;
 using ScadaBuilderV2.Domain.Projects;
 
 namespace ScadaBuilderV2.App;
@@ -22,14 +23,26 @@ public partial class TagSelectionDialog : Window
 
     private void PopulateTags()
     {
-        TagListBox.ItemsSource = (_catalog?.Tags ?? [])
+        var enabledTags = (_catalog?.Tags ?? [])
             .Where(tag => tag.Enabled)
-            .OrderBy(tag => tag.DisplayName, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        // Shared guard (fix round 1, DEC-0052): a QuickWindow page's `#N` catalog is already numerically
+        // ordered and must not be re-sorted by DisplayName, which would scramble it back to the lexical
+        // #1, #10, #100... order this fixes.
+        var orderedTags = QuickWindowPagePlaceholderCatalog.OrderForSelector(enabledTags, StringComparer.OrdinalIgnoreCase);
+        var isPlaceholderCatalog = QuickWindowPagePlaceholderCatalog.IsPlaceholderCatalog(enabledTags);
+        TagListBox.ItemsSource = orderedTags
             .Select(tag => new TagSelectionItem(
                 tag.DisplayName,
                 tag.Id,
                 tag.Datatype ?? string.Empty,
-                $"{tag.DisplayName}  ·  {tag.Id}  ·  {tag.Datatype ?? "type inconnu"}"))
+                // A placeholder's DisplayName already carries both the #N id and its source (e.g.
+                // "#1 — {FAN_03_RUN}"); appending " · #1 · type inconnu" doubled the #N and showed a
+                // meaningless "type inconnu" (fix round 1, bug report). A normal project tag keeps the
+                // original three-part label.
+                isPlaceholderCatalog
+                    ? tag.DisplayName
+                    : $"{tag.DisplayName}  ·  {tag.Id}  ·  {tag.Datatype ?? "type inconnu"}"))
             .ToArray();
     }
 

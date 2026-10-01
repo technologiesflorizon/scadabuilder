@@ -82,11 +82,10 @@ public partial class ElementCommandDialog : Window
         var enabledTags = (tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
             .Where(tag => tag.Enabled)
             .ToArray();
-        // A QuickWindow page's `#N` catalog is already numerically ordered (DEC-0052); re-sorting it by
-        // DisplayName here would scramble it back to the lexical #1, #10, #100... order this fixes.
-        var orderedTags = QuickWindowPagePlaceholderCatalog.IsPlaceholderCatalog(enabledTags)
-            ? enabledTags
-            : enabledTags.OrderBy(tag => tag.DisplayName).ToArray();
+        // Shared guard (fix round 1, DEC-0052): a QuickWindow page's `#N` catalog is already numerically
+        // ordered and must not be re-sorted by DisplayName, which would scramble it back to the lexical
+        // #1, #10, #100... order this fixes.
+        var orderedTags = QuickWindowPagePlaceholderCatalog.OrderForSelector(enabledTags);
         var tagItems = orderedTags
             .Select(tag => new TagItem(tag.Id, tag.AuthoringLabel))
             .ToArray();

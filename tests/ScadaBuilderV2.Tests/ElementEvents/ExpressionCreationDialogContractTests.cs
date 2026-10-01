@@ -9,7 +9,10 @@ public sealed class ExpressionCreationDialogContractTests
         var source = ReadAppFile("TagSelectionDialog.xaml.cs");
 
         StringAssert.Contains(source, ".Where(tag => tag.Enabled)");
-        StringAssert.Contains(source, ".OrderBy(tag => tag.DisplayName, StringComparer.OrdinalIgnoreCase)");
+        // Fix round 1 (DEC-0052): sorting moved into the shared QuickWindowPagePlaceholderCatalog.OrderForSelector
+        // helper, which skips the DisplayName sort on a QuickWindow page's #N catalog (own numeric order) and
+        // keeps OrdinalIgnoreCase for every other tag catalog, exactly as this inline OrderBy did before.
+        StringAssert.Contains(source, "QuickWindowPagePlaceholderCatalog.OrderForSelector(enabledTags, StringComparer.OrdinalIgnoreCase)");
     }
 
     [TestMethod]

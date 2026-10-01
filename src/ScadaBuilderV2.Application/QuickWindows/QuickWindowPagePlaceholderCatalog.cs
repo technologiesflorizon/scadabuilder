@@ -12,10 +12,13 @@ namespace ScadaBuilderV2.Application.QuickWindows;
 /// `#1`..`#999` placeholder list (DEC-0052).
 /// </summary>
 /// <remarks>
-/// Pure and deterministic: no I/O, no WPF. <see cref="Build"/> only sees the scenes its caller already has in
-/// memory - it never captures a workspace snapshot itself, so a page whose linking command lives on a page not
-/// currently loaded cannot be found; that case degrades to the "no sheet linked" rule (every sheet retained),
-/// which is always at least as permissive as the real answer and never hides a currently used value.
+/// Pure and deterministic: no I/O, no WPF. <see cref="Build"/> never captures a workspace snapshot itself; it
+/// only sees the <paramref name="scenes"/> its caller passes in, so finding every linking command project-wide
+/// is the caller's responsibility (fix round 1, DEC-0052: the App layer passes a coherent workspace snapshot's
+/// scenes, overlaid with every open tab's live scene, from <c>MainWindow.BuildActiveQuickWindowPagePlaceholderCatalog</c>).
+/// A caller that passes a partial <paramref name="scenes"/> map degrades safely rather than incorrectly: a
+/// linking command on a page missing from that map is not found, which falls back to the "no sheet linked"
+/// rule (every sheet retained) - always at least as permissive as the real answer, never narrower.
 ///
 /// Decisions: DEC-0052.
 /// Contracts: docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md §5, §6.
@@ -118,7 +121,12 @@ public static class QuickWindowPagePlaceholderCatalog
         var id = $"#{number}";
         if (contributions.Count == 0)
         {
-            return new ScadaTagDefinition(id, $"{id} — (non défini dans les feuilles)", Device: DeviceLabel, Writeable: false, Enabled: true);
+            // Writeable ruling (fix round 1): an undefined #N still already reaches a write site on the page
+            // (see the "Plus" rule above) and must stay offered to the command selector's write-tag combo
+            // (TableCellNumericInputInspector.Inspect / TableEditCoordinator.SetCellValueBinding filter/refuse
+            // on Writeable) until the sheet is fixed; refusing it outright would be a regression on an
+            // already-authored write command, worse than the bug this catalog fixes.
+            return new ScadaTagDefinition(id, $"{id} — (non défini dans les feuilles)", Device: DeviceLabel, Writeable: true, Enabled: true);
         }
 
         var sources = contributions
@@ -127,27 +135,34 @@ public static class QuickWindowPagePlaceholderCatalog
             .ToArray();
         var label = Truncate($"{id} — {string.Join(" / ", sources)}");
 
-        // Writeable/Datatype ruling (brief §1): only a single resolved Tag-kind contribution carries the
-        // project tag's Writeable/Datatype; a literal, an expression, or more than one Tag contribution
-        // (several sheets may legitimately bind the same #N to different tags) keeps the safe Writeable: false
-        // default rather than guessing which contribution should win.
+        // Writeable/Datatype ruling (fix round 1): several sheets may legitimately bind the same #N to
+        // different tags (e.g. two fan speed setpoints), so Writeable does not require a single contribution -
+        // it requires every contribution to be a Tag reference that resolves to a writable project tag.
+        // Writeable is false as soon as one contribution is a literal/expression, or one Tag reference does
+        // not resolve, or resolves to a non-writable tag. Datatype is reported only when every resolved Tag
+        // contribution agrees; a mix (or none resolved) reports no datatype rather than guessing one.
         var tagContributions = contributions.Where(contribution => contribution.Entry.Kind == ParameterValueKind.Tag).ToArray();
-        var writeable = false;
-        string? datatype = null;
-        if (tagContributions.Length == 1 && projectTagCatalog is not null)
+        var hasNonTagContribution = tagContributions.Length != contributions.Count;
+        var resolvedTags = new List<ScadaTagDefinition>();
+        if (projectTagCatalog is not null)
         {
-            var tagName = ((ScadaExprTagRef)tagContributions[0].Entry.Node).TagName;
-            var resolved = ScadaExpressionValidator.TryResolveTagReference(tagName, projectTagCatalog);
-            if (resolved.Status == TagResolveStatus.Resolved)
+            foreach (var contribution in tagContributions)
             {
+                var tagName = ((ScadaExprTagRef)contribution.Entry.Node).TagName;
+                var resolved = ScadaExpressionValidator.TryResolveTagReference(tagName, projectTagCatalog);
+                if (resolved.Status != TagResolveStatus.Resolved) continue;
                 var tag = projectTagCatalog.Tags.FirstOrDefault(candidate => string.Equals(candidate.Id, resolved.CanonicalId, StringComparison.Ordinal));
-                if (tag is not null)
-                {
-                    writeable = tag.Writeable;
-                    datatype = tag.Datatype;
-                }
+                if (tag is not null) resolvedTags.Add(tag);
             }
         }
+
+        var writeable = !hasNonTagContribution &&
+            tagContributions.Length > 0 &&
+            resolvedTags.Count == tagContributions.Length &&
+            resolvedTags.All(tag => tag.Writeable);
+
+        var distinctDatatypes = resolvedTags.Select(tag => tag.Datatype).Distinct(StringComparer.Ordinal).ToArray();
+        var datatype = resolvedTags.Count > 0 && distinctDatatypes.Length == 1 ? distinctDatatypes[0] : null;
 
         return new ScadaTagDefinition(id, label, Device: DeviceLabel, Datatype: datatype, Writeable: writeable, Enabled: true);
     }
@@ -171,6 +186,29 @@ public static class QuickWindowPagePlaceholderCatalog
     /// </remarks>
     public static bool IsPlaceholderCatalog(IReadOnlyCollection<ScadaTagDefinition> tags) =>
         tags.Count > 0 && tags.All(tag => QuickWindowPlaceholder.TryParseName(tag.Id, out _));
+
+    /// <summary>
+    /// Orders <paramref name="tags"/> for one tag selector: unchanged (already numeric, per <see cref="Build"/>)
+    /// when <see cref="IsPlaceholderCatalog"/> holds, otherwise sorted by <see cref="ScadaTagDefinition.DisplayName"/>
+    /// exactly as every selector did before this catalog existed (fix round 1, DEC-0052).
+    /// </summary>
+    /// <remarks>
+    /// Shared by every tag selector (`ElementStateRuleDialog`, `ElementCommandDialog`, `TagSelectionDialog`,
+    /// `ElementReadVariableDialog`, `ElementEventDialog`) so a sixth selector added later cannot reintroduce the
+    /// reported bug by re-sorting this catalog lexically. <paramref name="comparer"/> lets each caller keep its
+    /// own pre-existing string comparer for a normal project tag catalog; passing none reproduces a plain
+    /// `OrderBy(tag => tag.DisplayName)` with no comparer argument, exactly as before.
+    /// </remarks>
+    public static IReadOnlyList<ScadaTagDefinition> OrderForSelector(
+        IEnumerable<ScadaTagDefinition> tags,
+        IComparer<string>? comparer = null)
+    {
+        var materialized = tags as ScadaTagDefinition[] ?? tags.ToArray();
+        if (IsPlaceholderCatalog(materialized)) return materialized;
+        return comparer is null
+            ? materialized.OrderBy(tag => tag.DisplayName).ToArray()
+            : materialized.OrderBy(tag => tag.DisplayName, comparer).ToArray();
+    }
 
     private static string Truncate(string label) =>
         label.Length <= MaxLabelLength ? label : label[..(MaxLabelLength - 1)] + "…";

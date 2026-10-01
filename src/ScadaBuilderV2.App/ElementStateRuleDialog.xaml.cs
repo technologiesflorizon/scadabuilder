@@ -289,11 +289,10 @@ private sealed record EffectListItem(EffectKind Kind, string Summary);
         var enabledTags = (_tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
             .Where(tag => tag.Enabled)
             .ToArray();
-        // A QuickWindow page's `#N` catalog is already numerically ordered (DEC-0052); re-sorting it by
-        // DisplayName here would scramble it back to the lexical #1, #10, #100... order this fixes.
-        var orderedTags = QuickWindowPagePlaceholderCatalog.IsPlaceholderCatalog(enabledTags)
-            ? enabledTags
-            : enabledTags.OrderBy(tag => tag.DisplayName, StringComparer.CurrentCultureIgnoreCase).ToArray();
+        // Shared guard (fix round 1, DEC-0052): a QuickWindow page's `#N` catalog is already numerically
+        // ordered and must not be re-sorted by DisplayName, which would scramble it back to the lexical
+        // #1, #10, #100... order this fixes.
+        var orderedTags = QuickWindowPagePlaceholderCatalog.OrderForSelector(enabledTags, StringComparer.CurrentCultureIgnoreCase);
         var items = orderedTags
             .Select(tag => new TagItem(tag.Id, TagLabel(tag)))
             .ToArray();

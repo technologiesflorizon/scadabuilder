@@ -81,7 +81,34 @@ public sealed class QuickWindowPagePlaceholderCatalogTests
         CollectionAssert.AreEqual(new[] { "#1", "#7" }, catalog.Tags.Select(tag => tag.Id).ToArray());
         var undefined = catalog.Tags.Single(tag => tag.Id == "#7");
         StringAssert.Contains(undefined.DisplayName, "non défini");
-        Assert.IsFalse(undefined.Writeable);
+        // Writeable ruling (fix round 1): an undefined #N must stay offered to the write-tag selector until
+        // the sheet is fixed, or an already-authored write command regresses (table write-tag combo filters
+        // by Writeable: TableCellNumericInputInspector.cs:39, TableEditCoordinator.cs:187).
+        Assert.IsTrue(undefined.Writeable);
+    }
+
+    [TestMethod]
+    public void LinkingCommandsOnTwoDifferentPagesFromTwoDifferentScenesSourcesBothContributeToTheUnion()
+    {
+        // Fix round 1 (project-wide "feuilles liées" search): MainWindow.BuildActiveQuickWindowPagePlaceholderCatalog
+        // merges a project-wide snapshot's scenes with an in-memory overlay (open tabs, the active scene)
+        // before calling Build. Reproduce that merge of two distinct sources here (no WPF host in this test
+        // project) and assert the union still carries both sheets' #N entries, not just the overlay's.
+        var pageKey = Guid.NewGuid();
+        var sheetA = Sheet("#1 := {FAN_03_RUN}");
+        var sheetB = Sheet("#5 := {FAN_03_SPEED} * 0.1");
+        var project = Project([sheetA, sheetB], CommandCatalog());
+
+        var callerPageFromSnapshot = Page("win00001", OpenCommand(sheetA.SheetKey, pageKey, elementId: "open-a", commandId: "cmd-a"));
+        var callerPageFromOverlay = Page("win00003", OpenCommand(sheetB.SheetKey, pageKey, elementId: "open-b", commandId: "cmd-b"));
+
+        var scenes = new Dictionary<Guid, ScadaScene>();
+        foreach (var (key, scene) in Scenes(callerPageFromSnapshot)) scenes[key] = scene;
+        foreach (var (key, scene) in Scenes(callerPageFromOverlay)) scenes[key] = scene;
+
+        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
+
+        CollectionAssert.AreEqual(new[] { "#1", "#5" }, catalog.Tags.Select(tag => tag.Id).ToArray());
     }
 
     [TestMethod]
@@ -158,6 +185,94 @@ public sealed class QuickWindowPagePlaceholderCatalogTests
         Assert.IsFalse(catalog.Tags.Single(t => t.Id == "#1").Writeable);
     }
 
+    [TestMethod]
+    public void WriteableIsTrueWhenEveryTagContributionAcrossDifferentSheetsResolvesToAWritableTag()
+    {
+        // Ruling (fix round 1): two sheets binding the same #1 to two different writable project tags
+        // (FAN_03_SP / FAN_04_SP) must still report Writeable: true.
+        var pageKey = Guid.NewGuid();
+        var sheetA = Sheet("#1 := {FAN_03_SP}");
+        var sheetB = Sheet("#1 := {FAN_04_SP}");
+        var project = Project([sheetA, sheetB], CommandCatalog());
+        var callerPage = Page(
+            "win00001",
+            OpenCommand(sheetA.SheetKey, pageKey, elementId: "open-a", commandId: "cmd-a"),
+            OpenCommand(sheetB.SheetKey, pageKey, elementId: "open-b", commandId: "cmd-b"));
+        var scenes = Scenes(callerPage);
+
+        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
+
+        var tag = catalog.Tags.Single(t => t.Id == "#1");
+        Assert.IsTrue(tag.Writeable);
+        Assert.AreEqual("Decimal", tag.Datatype, "both contributions agree on Decimal");
+    }
+
+    [TestMethod]
+    public void WriteableIsFalseWhenOneTagContributionResolvesToANonWritableTag()
+    {
+        var pageKey = Guid.NewGuid();
+        var sheetA = Sheet("#1 := {FAN_03_SP}"); // writable
+        var sheetB = Sheet("#1 := {FAN_05_SP}"); // not writable
+        var project = Project([sheetA, sheetB], CommandCatalog());
+        var callerPage = Page(
+            "win00001",
+            OpenCommand(sheetA.SheetKey, pageKey, elementId: "open-a", commandId: "cmd-a"),
+            OpenCommand(sheetB.SheetKey, pageKey, elementId: "open-b", commandId: "cmd-b"));
+        var scenes = Scenes(callerPage);
+
+        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
+
+        Assert.IsFalse(catalog.Tags.Single(t => t.Id == "#1").Writeable);
+    }
+
+    [TestMethod]
+    public void IsPlaceholderCatalogIsTrueOnlyWhenEveryTagIsShapedLikeAHashNumber()
+    {
+        var placeholderTags = new[]
+        {
+            new ScadaTagDefinition("#1", "#1 — {A}"),
+            new ScadaTagDefinition("#10", "#10 — {B}"),
+            new ScadaTagDefinition("#100", "#100 — {C}")
+        };
+        Assert.IsTrue(QuickWindowPagePlaceholderCatalog.IsPlaceholderCatalog(placeholderTags));
+
+        var normalTags = new[]
+        {
+            new ScadaTagDefinition("tf100.mapping.1", "FAN_03_RUN"),
+            new ScadaTagDefinition("tf100.mapping.2", "FAN_03_FAULT")
+        };
+        Assert.IsFalse(QuickWindowPagePlaceholderCatalog.IsPlaceholderCatalog(normalTags));
+
+        var mixedTags = new[] { placeholderTags[0], normalTags[0] };
+        Assert.IsFalse(QuickWindowPagePlaceholderCatalog.IsPlaceholderCatalog(mixedTags));
+
+        Assert.IsFalse(QuickWindowPagePlaceholderCatalog.IsPlaceholderCatalog(Array.Empty<ScadaTagDefinition>()));
+    }
+
+    [TestMethod]
+    public void OrderForSelectorKeepsNumericOrderOnAPlaceholderCatalogButSortsANormalCatalogByDisplayName()
+    {
+        var placeholderTags = new[]
+        {
+            new ScadaTagDefinition("#1", "#1 — {A}"),
+            new ScadaTagDefinition("#10", "#10 — {B}"),
+            new ScadaTagDefinition("#2", "#2 — {C}")
+        };
+        var orderedPlaceholders = QuickWindowPagePlaceholderCatalog.OrderForSelector(placeholderTags);
+        // Passed through unchanged: re-sorting by DisplayName would scramble #1, #10, #2 lexically.
+        CollectionAssert.AreEqual(placeholderTags, orderedPlaceholders.ToArray());
+
+        var normalTags = new[]
+        {
+            new ScadaTagDefinition("tf100.mapping.1", "Ventilateur 3"),
+            new ScadaTagDefinition("tf100.mapping.2", "Compresseur 1")
+        };
+        var orderedNormal = QuickWindowPagePlaceholderCatalog.OrderForSelector(normalTags, StringComparer.Ordinal);
+        CollectionAssert.AreEqual(
+            new[] { "Compresseur 1", "Ventilateur 3" },
+            orderedNormal.Select(tag => tag.DisplayName).ToArray());
+    }
+
     // ---- Fixtures --------------------------------------------------------
 
     private static ParameterSheet Sheet(string text) =>
@@ -169,6 +284,9 @@ public sealed class QuickWindowPagePlaceholderCatalogTests
             new ScadaTagDefinition("tf100.mapping.101", "FAN_03_RUN", Datatype: "Boolean"),
             new ScadaTagDefinition("tf100.mapping.102", "FAN_03_START", Datatype: "Boolean", Writeable: true),
             new ScadaTagDefinition("tf100.mapping.103", "FAN_03_SPEED", Datatype: "Decimal"),
+            new ScadaTagDefinition("tf100.mapping.104", "FAN_03_SP", Datatype: "Decimal", Writeable: true),
+            new ScadaTagDefinition("tf100.mapping.105", "FAN_04_SP", Datatype: "Decimal", Writeable: true),
+            new ScadaTagDefinition("tf100.mapping.106", "FAN_05_SP", Datatype: "Decimal", Writeable: false),
         ]);
 
     private static ScadaProject Project(IReadOnlyList<ParameterSheet> sheets, ScadaTagCatalog tagCatalog) =>
