@@ -155,6 +155,13 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
     }
 
     /// <summary>Dispatches one parameter-sheet panel command: create, rename, duplicate, delete or open (DEC-0052).</summary>
+    /// <remarks>
+    /// A workspace snapshot reads every non-open scene of the project, so it is never captured before a name
+    /// dialog: new, rename and duplicate ask first and capture only once the operator confirmed (a cancelled
+    /// dialog captures nothing), and opening a sheet only needs the in-memory project. Only delete, which must
+    /// scan every page for callers before its confirmation, captures up front.
+    /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/ParameterSheetAskBeforeCaptureTests.cs.
+    /// </remarks>
     private async Task ExecuteParameterSheetCommandAsync(string commandId)
     {
         if (_modernProject is null)
@@ -164,21 +171,22 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         }
 
         var selectedKey = ParameterSheetsPanel.Selected?.SheetKey;
-        var snapshot = await _pageWorkspaceController.CaptureSnapshotAsync();
+        var currentProject = _pageWorkspaceController.Project ?? _modernProject;
+        Func<Task<PageWorkspaceSnapshot>> captureSnapshot = () => _pageWorkspaceController.CaptureSnapshotAsync();
 
         if (commandId == "parameter-sheet.open")
         {
             if (selectedKey is not { } openKey) return;
-            await OpenParameterSheetEditorAsync(snapshot, openKey);
+            await OpenParameterSheetEditorAsync(currentProject, openKey);
             return;
         }
 
         var mutation = commandId switch
         {
-            "parameter-sheet.new" => await QuickWindowWorkspace.CreateSheetAsync(snapshot),
-            "parameter-sheet.duplicate" when selectedKey is { } key => await QuickWindowWorkspace.DuplicateSheetAsync(snapshot, key),
-            "parameter-sheet.rename" when selectedKey is { } key => await QuickWindowWorkspace.RenameSheetAsync(snapshot, key),
-            "parameter-sheet.delete" when selectedKey is { } key => await QuickWindowWorkspace.DeleteSheetAsync(snapshot, key),
+            "parameter-sheet.new" => await QuickWindowWorkspace.CreateSheetAsync(currentProject, captureSnapshot),
+            "parameter-sheet.duplicate" when selectedKey is { } key => await QuickWindowWorkspace.DuplicateSheetAsync(currentProject, key, captureSnapshot),
+            "parameter-sheet.rename" when selectedKey is { } key => await QuickWindowWorkspace.RenameSheetAsync(currentProject, key, captureSnapshot),
+            "parameter-sheet.delete" when selectedKey is { } key => await QuickWindowWorkspace.DeleteSheetAsync(await captureSnapshot(), key),
             _ => null
         };
 
@@ -193,14 +201,15 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         await ApplyParameterSheetMutationAsync(mutation);
         if (commandId == "parameter-sheet.new" && mutation.AffectedDefinitionKey is { } createdKey)
         {
-            await OpenParameterSheetEditorAsync(await _pageWorkspaceController.CaptureSnapshotAsync(), createdKey);
+            // The mutation's After snapshot already carries the new sheet: no second capture to open the editor.
+            await OpenParameterSheetEditorAsync(mutation.After.Project, createdKey);
         }
     }
 
     /// <summary>Opens the sheet editor dialog on one sheet; "Enregistrer" applies an undoable text update.</summary>
-    private async Task OpenParameterSheetEditorAsync(PageWorkspaceSnapshot snapshot, Guid sheetKey)
+    private async Task OpenParameterSheetEditorAsync(ScadaProject project, Guid sheetKey)
     {
-        var sheet = snapshot.Project.EffectiveParameterSheets.FirstOrDefault(item => item.SheetKey == sheetKey);
+        var sheet = project.EffectiveParameterSheets.FirstOrDefault(item => item.SheetKey == sheetKey);
         if (sheet is null) return;
 
         var viewModel = new ParameterSheetEditorViewModel(sheet, _modernProject?.TagCatalog);

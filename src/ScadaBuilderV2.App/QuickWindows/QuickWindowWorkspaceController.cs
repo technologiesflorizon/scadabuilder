@@ -239,13 +239,35 @@ public sealed class QuickWindowWorkspaceController(
     /// technical <see cref="ParameterSheet.Code"/> is derived from it and made unique among sheets, never
     /// re-typed by the operator.
     /// </remarks>
-    public async Task<QuickWindowWorkspaceMutation?> CreateSheetAsync(PageWorkspaceSnapshot snapshot)
+    public Task<QuickWindowWorkspaceMutation?> CreateSheetAsync(PageWorkspaceSnapshot snapshot)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
-        var name = await host.RequestQuickWindowNameAsync("Nouvelle feuille de paramètres", ProposeSheetCode(snapshot, "feuille"));
+        return CreateSheetAsync(snapshot.Project, () => Task.FromResult(snapshot));
+    }
+
+    /// <summary>
+    /// Creates one empty parameter sheet, asking for its name BEFORE the workspace snapshot is captured.
+    /// </summary>
+    /// <param name="currentProject">The in-memory project, used only to propose a name.</param>
+    /// <param name="captureSnapshot">Captures the coherent workspace snapshot once the operator confirmed; never called on cancel.</param>
+    /// <remarks>
+    /// Capturing a snapshot reads every non-open scene of the project, so asking first makes the dialog appear
+    /// at once and a cancelled dialog costs nothing. The mutation's <c>Before</c> is the snapshot captured after
+    /// the dialog, so the operation stays one undoable transition.
+    /// Decisions: DEC-0052.
+    /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/ParameterSheetAskBeforeCaptureTests.cs.
+    /// </remarks>
+    public async Task<QuickWindowWorkspaceMutation?> CreateSheetAsync(
+        ScadaProject currentProject,
+        Func<Task<PageWorkspaceSnapshot>> captureSnapshot)
+    {
+        ArgumentNullException.ThrowIfNull(currentProject);
+        ArgumentNullException.ThrowIfNull(captureSnapshot);
+        var name = await host.RequestQuickWindowNameAsync("Nouvelle feuille de paramètres", ProposeSheetCode(currentProject, "feuille"));
         if (string.IsNullOrWhiteSpace(name)) return null;
 
-        var code = ProposeSheetCode(snapshot, PageCodePolicy.DeriveCodeFromDisplayName(name));
+        var snapshot = await captureSnapshot();
+        var code = ProposeSheetCode(snapshot.Project, PageCodePolicy.DeriveCodeFromDisplayName(name));
         var validation = PageCodePolicy.Validate(code, snapshot.Project.EffectiveParameterSheets.Select(sheet => sheet.Code));
         if (!validation.IsValid)
         {
@@ -268,14 +290,32 @@ public sealed class QuickWindowWorkspaceController(
     }
 
     /// <summary>Renames one sheet without changing its durable key nor its technical code.</summary>
-    public async Task<QuickWindowWorkspaceMutation?> RenameSheetAsync(PageWorkspaceSnapshot snapshot, Guid sheetKey)
+    public Task<QuickWindowWorkspaceMutation?> RenameSheetAsync(PageWorkspaceSnapshot snapshot, Guid sheetKey)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
-        var sheet = FindSheet(snapshot, sheetKey);
-        if (sheet is null) return null;
+        return RenameSheetAsync(snapshot.Project, sheetKey, () => Task.FromResult(snapshot));
+    }
 
-        var name = await host.RequestQuickWindowNameAsync("Renommer la feuille de paramètres", sheet.DisplayName);
-        if (string.IsNullOrWhiteSpace(name) || string.Equals(name, sheet.DisplayName, StringComparison.Ordinal)) return null;
+    /// <summary>
+    /// Renames one sheet, asking for the new name BEFORE the workspace snapshot is captured (see
+    /// <see cref="CreateSheetAsync(ScadaProject, Func{Task{PageWorkspaceSnapshot}})"/>).
+    /// </summary>
+    public async Task<QuickWindowWorkspaceMutation?> RenameSheetAsync(
+        ScadaProject currentProject,
+        Guid sheetKey,
+        Func<Task<PageWorkspaceSnapshot>> captureSnapshot)
+    {
+        ArgumentNullException.ThrowIfNull(currentProject);
+        ArgumentNullException.ThrowIfNull(captureSnapshot);
+        var current = FindSheet(currentProject, sheetKey);
+        if (current is null) return null;
+
+        var name = await host.RequestQuickWindowNameAsync("Renommer la feuille de paramètres", current.DisplayName);
+        if (string.IsNullOrWhiteSpace(name) || string.Equals(name, current.DisplayName, StringComparison.Ordinal)) return null;
+
+        var snapshot = await captureSnapshot();
+        var sheet = FindSheet(snapshot.Project, sheetKey);
+        if (sheet is null) return null;
 
         var mutation = UpdateSheet(snapshot, sheet with { DisplayName = name }, "rename parameter sheet");
         host.ReportQuickWindowStatus($"Feuille de paramètres renommée en '{name}'.");
@@ -283,17 +323,35 @@ public sealed class QuickWindowWorkspaceController(
     }
 
     /// <summary>Duplicates one sheet into an independent one: new key, unique derived code, full text copy.</summary>
-    public async Task<QuickWindowWorkspaceMutation?> DuplicateSheetAsync(PageWorkspaceSnapshot snapshot, Guid sheetKey)
+    public Task<QuickWindowWorkspaceMutation?> DuplicateSheetAsync(PageWorkspaceSnapshot snapshot, Guid sheetKey)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
-        var source = FindSheet(snapshot, sheetKey);
-        if (source is null) return null;
+        return DuplicateSheetAsync(snapshot.Project, sheetKey, () => Task.FromResult(snapshot));
+    }
 
-        var proposed = ProposeSheetCode(snapshot, source.Code);
+    /// <summary>
+    /// Duplicates one sheet, asking for the copy's name BEFORE the workspace snapshot is captured (see
+    /// <see cref="CreateSheetAsync(ScadaProject, Func{Task{PageWorkspaceSnapshot}})"/>).
+    /// </summary>
+    public async Task<QuickWindowWorkspaceMutation?> DuplicateSheetAsync(
+        ScadaProject currentProject,
+        Guid sheetKey,
+        Func<Task<PageWorkspaceSnapshot>> captureSnapshot)
+    {
+        ArgumentNullException.ThrowIfNull(currentProject);
+        ArgumentNullException.ThrowIfNull(captureSnapshot);
+        var current = FindSheet(currentProject, sheetKey);
+        if (current is null) return null;
+
+        var proposed = ProposeSheetCode(currentProject, current.Code);
         var name = await host.RequestQuickWindowNameAsync("Dupliquer la feuille de paramètres", proposed);
         if (string.IsNullOrWhiteSpace(name)) return null;
 
-        var code = ProposeSheetCode(snapshot, PageCodePolicy.DeriveCodeFromDisplayName(name));
+        var snapshot = await captureSnapshot();
+        var source = FindSheet(snapshot.Project, sheetKey);
+        if (source is null) return null;
+
+        var code = ProposeSheetCode(snapshot.Project, PageCodePolicy.DeriveCodeFromDisplayName(name));
         var validation = PageCodePolicy.Validate(code, snapshot.Project.EffectiveParameterSheets.Select(sheet => sheet.Code));
         if (!validation.IsValid)
         {
@@ -798,6 +856,9 @@ public sealed class QuickWindowWorkspaceController(
     private static QuickWindowDefinition? Find(PageWorkspaceSnapshot snapshot, Guid definitionKey) =>
         snapshot.Project.EffectiveQuickWindows.FirstOrDefault(item => item.DefinitionKey == definitionKey);
 
+    private static ParameterSheet? FindSheet(ScadaProject project, Guid sheetKey) =>
+        project.EffectiveParameterSheets.FirstOrDefault(sheet => sheet.SheetKey == sheetKey);
+
     private static ParameterSheet? FindSheet(PageWorkspaceSnapshot snapshot, Guid sheetKey) =>
         snapshot.Project.EffectiveParameterSheets.FirstOrDefault(item => item.SheetKey == sheetKey);
 
@@ -836,9 +897,9 @@ public sealed class QuickWindowWorkspaceController(
     }
 
     /// <summary>Proposes a deterministic unique code for a new or duplicated parameter sheet.</summary>
-    private static string ProposeSheetCode(PageWorkspaceSnapshot snapshot, string seed)
+    private static string ProposeSheetCode(ScadaProject project, string seed)
     {
-        var taken = snapshot.Project.EffectiveParameterSheets
+        var taken = project.EffectiveParameterSheets
             .Select(sheet => sheet.Code)
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
         if (!taken.Contains(seed)) return seed;

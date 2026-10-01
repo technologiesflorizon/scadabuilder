@@ -16,6 +16,39 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         Converters = { new JsonStringEnumConverter() }
     };
 
+    private readonly SceneFileCache sceneCache = new();
+
+    /// <summary>Gets the scene file cache shared by every scene read of this store instance.</summary>
+    /// <remarks>
+    /// Exposed for diagnostics and tests (read and deserialization counters). Every write this store
+    /// performs on a scene file invalidates the matching entry; files written by other processes are caught
+    /// by the last-write-time and length check.
+    /// Tests: tests/ScadaBuilderV2.Tests/ModernProjectSceneCacheTests.cs.
+    /// </remarks>
+    public SceneFileCache SceneCache => sceneCache;
+
+    /// <summary>
+    /// Forgets every cached scene that does not belong to <paramref name="projectRoot"/>; a null root forgets
+    /// every cached scene. Called when the active project changes or closes.
+    /// </summary>
+    public void ScopeSceneCacheTo(string? projectRoot) =>
+        sceneCache.RetainOnly(string.IsNullOrWhiteSpace(projectRoot) ? null : Path.GetFullPath(projectRoot));
+
+    /// <summary>Demotes every cached scene under <paramref name="projectRoot"/> so its next read re-checks the file content.</summary>
+    public void InvalidateSceneCache(string projectRoot)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectRoot);
+        sceneCache.InvalidateUnder(Path.GetFullPath(projectRoot));
+    }
+
+    /// <summary>Demotes the cached scene stored at one project-relative path (see <see cref="SceneFileCache.Invalidate"/>).</summary>
+    public void InvalidateSceneCache(string projectRoot, string relativePath)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectRoot);
+        ArgumentException.ThrowIfNullOrWhiteSpace(relativePath);
+        sceneCache.Invalidate(ResolveContainedScenePath(Path.GetFullPath(projectRoot), relativePath));
+    }
+
     public async Task<ScadaProject> EnsureReferenceModernProjectAsync(string repositoryRoot, IReadOnlyList<ScadaSceneReference> scenes)
     {
         var projectRoot = GetReferenceModernProjectRoot(repositoryRoot);
@@ -27,7 +60,7 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         Directory.CreateDirectory(Path.Combine(projectRoot, "imports", "legacy"));
         Directory.CreateDirectory(Path.Combine(projectRoot, "imports", "tags"));
         Directory.CreateDirectory(Path.Combine(projectRoot, "exports"));
-        await RecoverIncompleteTransactionsAsync(projectRoot);
+        await RecoverAndInvalidateAsync(projectRoot);
 
         var projectPath = Path.Combine(projectRoot, "project.json");
         var project = ModernProjectMigration.MigrateProject(new ScadaProject(
@@ -66,7 +99,7 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
 
     public async Task<ScadaScene> LoadOrCreateSceneAsync(string repositoryRoot, string sceneId, string title, CanvasSize canvasSize)
     {
-        await RecoverIncompleteTransactionsAsync(GetReferenceModernProjectRoot(repositoryRoot));
+        await RecoverAndInvalidateAsync(Path.GetFullPath(GetReferenceModernProjectRoot(repositoryRoot)));
         var path = GetScenePath(repositoryRoot, sceneId);
         if (File.Exists(path))
         {
@@ -112,21 +145,35 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         ArgumentException.ThrowIfNullOrWhiteSpace(projectRoot);
         ArgumentNullException.ThrowIfNull(page);
         projectRoot = Path.GetFullPath(projectRoot);
-        await RecoverIncompleteTransactionsAsync(projectRoot, cancellationToken);
+        await RecoverAndInvalidateAsync(projectRoot, cancellationToken);
+        return await LoadOrCreateSceneCoreAsync(
+            projectRoot,
+            page,
+            () => LoadProjectFromRootAsync(projectRoot, cancellationToken),
+            cancellationToken);
+    }
+
+    // Shared by single-scene loads and workspace snapshots: the raw scene comes from the scene file cache
+    // (a pure function of the file bytes), then the on-disk project projection is applied exactly as before
+    // the cache existed, so the result is identical to an uncached read (project persistence, undo/redo).
+    private async Task<ScadaScene> LoadOrCreateSceneCoreAsync(
+        string projectRoot,
+        ScadaSceneReference page,
+        Func<Task<ScadaProject?>> loadDiskProject,
+        CancellationToken cancellationToken)
+    {
         var path = ResolveContainedScenePath(projectRoot, page.RelativePath);
-        if (File.Exists(path))
+        var context = $"scene '{page.EffectivePageCode}' ({page.RelativePath})";
+        var scene = await sceneCache.GetOrReadAsync(
+            path,
+            (bytes, token) => DeserializeSceneFileAsync(bytes, context, token),
+            cancellationToken);
+        if (scene is not null)
         {
-            var json = await File.ReadAllTextAsync(path, cancellationToken);
-            ThrowIfRetiredPopupCommandKind(json, $"scene '{page.EffectivePageCode}' ({page.RelativePath})");
-            await using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(json));
-            var scene = await JsonSerializer.DeserializeAsync<ScadaScene>(stream, JsonOptions, cancellationToken);
-            if (scene is not null)
-            {
-                var project = await LoadProjectFromRootAsync(projectRoot, cancellationToken);
-                return project is null
-                    ? scene.WithoutConvertedLegacyTextOverrides()
-                    : ModernProjectMigration.MigrateScene(scene.WithoutConvertedLegacyTextOverrides(), project);
-            }
+            var project = await loadDiskProject();
+            return project is null
+                ? scene
+                : ModernProjectMigration.MigrateScene(scene, project);
         }
 
         return ScadaScene.CreateEmpty(page.EffectivePageCode, page.Title, page.EffectiveCanvasSize) with
@@ -146,6 +193,26 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         };
     }
 
+    // Decodes scene file bytes exactly like File.ReadAllText (BOM detection, UTF-8 default), refuses retired
+    // popup command kinds, then deserializes and strips converted legacy text overrides. Pure function of the
+    // bytes, which is what makes its result cacheable per file content (project persistence).
+    private static async Task<ScadaScene?> DeserializeSceneFileAsync(
+        byte[] bytes,
+        string context,
+        CancellationToken cancellationToken)
+    {
+        string json;
+        using (var reader = new StreamReader(new MemoryStream(bytes, writable: false), System.Text.Encoding.UTF8, detectEncodingFromByteOrderMarks: true))
+        {
+            json = await reader.ReadToEndAsync(cancellationToken);
+        }
+
+        ThrowIfRetiredPopupCommandKind(json, context);
+        await using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(json));
+        var scene = await JsonSerializer.DeserializeAsync<ScadaScene>(stream, JsonOptions, cancellationToken);
+        return scene?.WithoutConvertedLegacyTextOverrides();
+    }
+
     /// <summary>Saves one scene file without mutating the authoritative project page inventory.</summary>
     public async Task SaveSceneAsync(string repositoryRoot, ScadaScene scene)
     {
@@ -159,7 +226,14 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
             ? GetScenePath(repositoryRoot, normalized.Id)
             : ResolveContainedScenePath(projectRoot, existingReference.RelativePath);
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
-        await SaveJsonAsync(path, normalized);
+        try
+        {
+            await SaveJsonAsync(path, normalized);
+        }
+        finally
+        {
+            sceneCache.Invalidate(path);
+        }
     }
 
     public async Task<ScadaProject?> LoadProjectAsync(string repositoryRoot)
@@ -174,7 +248,7 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(projectRoot);
         projectRoot = Path.GetFullPath(projectRoot);
-        await RecoverIncompleteTransactionsAsync(projectRoot);
+        await RecoverAndInvalidateAsync(projectRoot);
         var projectPath = Path.Combine(projectRoot, "project.json");
         var project = File.Exists(projectPath)
             ? await LoadProjectFileAsync(projectPath, cancellationToken)
@@ -229,18 +303,24 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(projectRoot);
         projectRoot = Path.GetFullPath(projectRoot);
+        await RecoverAndInvalidateAsync(projectRoot, cancellationToken);
         var project = context?.ProjectOverride ?? await LoadProjectFromRootAsync(projectRoot, cancellationToken)
             ?? throw new InvalidOperationException("No modern SCADA project exists at the requested repository root.");
         project = ModernProjectMigration.MigrateProject(project);
         var overrides = context?.OpenOrDirtyScenes ?? new Dictionary<Guid, ScadaScene>();
         var scenes = new Dictionary<Guid, ScadaScene>();
 
+        // The on-disk project manifest feeds every non-open scene's projection; it is loaded once per
+        // snapshot, lazily, instead of once per scene.
+        Task<ScadaProject?>? diskProject = null;
+        Task<ScadaProject?> LoadDiskProject() => diskProject ??= LoadProjectFromRootAsync(projectRoot, cancellationToken);
+
         foreach (var page in project.Scenes)
         {
             cancellationToken.ThrowIfCancellationRequested();
             var scene = overrides.TryGetValue(page.PageKey, out var openOrDirtyScene)
                 ? openOrDirtyScene
-                : await LoadOrCreateSceneFromProjectRootAsync(projectRoot, page, cancellationToken);
+                : await LoadOrCreateSceneCoreAsync(projectRoot, page, LoadDiskProject, cancellationToken);
             scenes[page.PageKey] = ModernProjectMigration.MigrateScene(scene, project);
         }
 
@@ -302,7 +382,7 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         projectRoot = Path.GetFullPath(projectRoot);
         Directory.CreateDirectory(projectRoot);
         await using var workspaceLock = await AcquireWorkspaceLockAsync(projectRoot, cancellationToken);
-        await RecoverIncompleteTransactionsAsync(projectRoot, cancellationToken, lockAlreadyHeld: true);
+        await RecoverAndInvalidateAsync(projectRoot, cancellationToken, lockAlreadyHeld: true);
         var normalized = ValidateAndNormalizeSnapshot(projectRoot, snapshot);
         cancellationToken.ThrowIfCancellationRequested();
 
@@ -425,6 +505,21 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
 
             throw;
         }
+        finally
+        {
+            // Every scene file the save may have written (or rolled back) is demoted: its next use re-reads
+            // and re-hashes it, so a write within the file system's timestamp resolution cannot be missed.
+            // Every scene the save deleted is forgotten.
+            foreach (var reference in normalized.Project.Scenes)
+            {
+                sceneCache.Invalidate(ResolveContainedScenePath(projectRoot, reference.RelativePath));
+            }
+
+            foreach (var deletion in normalized.PendingDeletions)
+            {
+                sceneCache.Forget(ResolveContainedScenePath(projectRoot, deletion.RelativePath));
+            }
+        }
     }
 
     public static string GetReferenceModernProjectRoot(string repositoryRoot)
@@ -449,7 +544,20 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
     public async Task RecoverPendingTransactionsAsync(string projectRoot, CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(projectRoot);
-        await RecoverIncompleteTransactionsAsync(Path.GetFullPath(projectRoot), cancellationToken);
+        await RecoverAndInvalidateAsync(Path.GetFullPath(projectRoot), cancellationToken);
+    }
+
+    // Runs crash recovery; a replayed or rolled-back transaction may have rewritten or deleted scene files,
+    // so every cached scene of the project is then re-checked (project persistence).
+    private async Task RecoverAndInvalidateAsync(
+        string projectRoot,
+        CancellationToken cancellationToken = default,
+        bool lockAlreadyHeld = false)
+    {
+        if (await RecoverIncompleteTransactionsAsync(projectRoot, cancellationToken, lockAlreadyHeld))
+        {
+            sceneCache.InvalidateUnder(projectRoot);
+        }
     }
 
     private static PageWorkspaceSnapshot ValidateAndNormalizeSnapshot(
@@ -777,11 +885,13 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         }
     }
 
-    private static async Task RecoverIncompleteTransactionsAsync(
+    // Returns whether at least one interrupted transaction was replayed or rolled back.
+    private static async Task<bool> RecoverIncompleteTransactionsAsync(
         string projectRoot,
         CancellationToken cancellationToken = default,
         bool lockAlreadyHeld = false)
     {
+        var recovered = false;
         FileStream? workspaceLock = null;
         if (!lockAlreadyHeld)
         {
@@ -793,7 +903,7 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
             var transactionsRoot = Path.Combine(projectRoot, ".studio", "transactions");
             if (!Directory.Exists(transactionsRoot))
             {
-                return;
+                return false;
             }
 
             foreach (var transactionRoot in Directory.GetDirectories(transactionsRoot).OrderBy(path => path, StringComparer.Ordinal))
@@ -822,7 +932,10 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
                 }
 
                 DeleteTransactionDirectory(transactionsRoot, transactionRoot);
+                recovered = true;
             }
+
+            return recovered;
         }
         finally
         {

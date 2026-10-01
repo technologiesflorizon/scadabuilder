@@ -270,6 +270,10 @@ public sealed class ProjectWorkspaceRepository(
                         : $" Une sauvegarde de l'original se trouve à '{lastBackupPath}'.";
                     return Failure("project.open-failed", $"L’ouverture du projet a échoué : {exception.Message}{backupHint}");
                 }
+
+                // The conversion rewrote scene files in place: every scene cached for this project is re-checked
+                // by content on its next read, whatever the file system's timestamp resolution.
+                store.InvalidateSceneCache(validation.Location.ProjectRoot);
             }
 
             var snapshot = await store.ReadWorkspaceSnapshotFromProjectRootAsync(

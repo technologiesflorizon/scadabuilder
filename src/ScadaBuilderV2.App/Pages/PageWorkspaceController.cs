@@ -29,10 +29,13 @@ public sealed class PageWorkspaceController(
     public IReadOnlyList<PendingPageDeletion> PendingDeletions => pendingDeletions;
     public Guid? HistorySelectedPageKey => historySelectedPageKey;
 
+    /// <summary>Binds the workspace to one project root; scenes cached for any other project are forgotten.</summary>
     public void Initialize(string root, ScadaProject modernProject)
     {
         projectRoot = string.IsNullOrWhiteSpace(root) ? throw new ArgumentException("Project root is required.", nameof(root)) : Path.GetFullPath(root);
         project = modernProject ?? throw new ArgumentNullException(nameof(modernProject));
+        // Scenes just read by the project open for this same root stay cached; any other project's go.
+        store.ScopeSceneCacheTo(projectRoot);
     }
 
     /// <summary>Clears every project-scoped tab, history entry and pending mutation.</summary>
@@ -52,6 +55,7 @@ public sealed class PageWorkspaceController(
         historyActivePageKey = null;
         historySelectedPageKey = null;
         IsProjectDirty = false;
+        store.ScopeSceneCacheTo(null);
     }
 
     public void ReplaceProject(ScadaProject modernProject, bool markDirty = false)
@@ -133,6 +137,7 @@ public sealed class PageWorkspaceController(
             var path = existing?.RelativePath ?? project?.Scenes.FirstOrDefault(page => page.PageKey == pageKey)?.RelativePath ?? $"scenes/{pageKey:N}.scene.json";
             return new PendingPageDeletion(pageKey, path);
         }).ToArray();
+        InvalidatePendingDeletionScenes();
     }
 
     /// <summary>Restores the project dirty state from project history.</summary>
@@ -239,6 +244,7 @@ public sealed class PageWorkspaceController(
         ArgumentNullException.ThrowIfNull(mutation);
         project = mutation.After.Project;
         pendingDeletions = mutation.After.PendingDeletions;
+        InvalidatePendingDeletionScenes();
         var openKeys = mutation.AfterUi.OpenPageKeys.ToHashSet();
         foreach (var tab in OpenTabs.Where(tab => !openKeys.Contains(tab.PageKey)).ToArray())
         {
@@ -299,6 +305,24 @@ public sealed class PageWorkspaceController(
                 Origin: PageOrigin.Imported,
                 ImportProvenance: new ImportProvenance("Wonderware", projectName, page.PageCode, page.SourcePath)))
             .ToArray();
+
+    // A page pending deletion must never be served from the scene cache on a later restore without its file
+    // being re-checked: demote the cached entry of every pending-deletion path (undo/redo, project persistence).
+    private void InvalidatePendingDeletionScenes()
+    {
+        if (projectRoot is null) return;
+        foreach (var deletion in pendingDeletions)
+        {
+            try
+            {
+                store.InvalidateSceneCache(projectRoot, deletion.RelativePath);
+            }
+            catch (Exception exception) when (exception is InvalidOperationException or ArgumentException)
+            {
+                // A path outside the project is refused by the store; nothing of it can be cached either.
+            }
+        }
+    }
 
     private void EnsureInitialized()
     {
