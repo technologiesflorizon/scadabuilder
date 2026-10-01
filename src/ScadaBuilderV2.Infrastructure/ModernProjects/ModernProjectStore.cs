@@ -41,6 +41,13 @@ public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceRead
         sceneCache.InvalidateUnder(Path.GetFullPath(projectRoot));
     }
 
+    /// <summary>Forgets every cached scene under <paramref name="projectRoot"/>, e.g. once opening that project was refused.</summary>
+    public void ForgetSceneCache(string projectRoot)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(projectRoot);
+        sceneCache.ForgetUnder(Path.GetFullPath(projectRoot));
+    }
+
     /// <summary>Demotes the cached scene stored at one project-relative path (see <see cref="SceneFileCache.Invalidate"/>).</summary>
     public void InvalidateSceneCache(string projectRoot, string relativePath)
     {

@@ -299,6 +299,8 @@ public sealed class ProjectWorkspaceRepository(
 
             if (diagnostics.Any(issue => issue.Severity == ScadaBuildValidationSeverity.Error))
             {
+                // The refused project is never activated: its scenes just read must not stay cached.
+                store.ForgetSceneCache(validation.Location.ProjectRoot);
                 return new ProjectRepositoryResult(null, diagnostics);
             }
 
@@ -309,6 +311,8 @@ public sealed class ProjectWorkspaceRepository(
         }
         catch (Exception exception) when (exception is IOException or UnauthorizedAccessException or InvalidDataException or InvalidOperationException or System.Text.Json.JsonException)
         {
+            // A read that failed part-way may have cached some of the refused project's scenes.
+            store.ForgetSceneCache(validation.Location.ProjectRoot);
             return Failure("project.open-failed", $"L’ouverture du projet a échoué : {exception.Message}");
         }
     }

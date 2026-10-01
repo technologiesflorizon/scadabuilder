@@ -16,6 +16,11 @@ namespace ScadaBuilderV2.Infrastructure.ModernProjects;
 /// an entry so its next use always re-reads and re-hashes, which closes the gap of a write landing within
 /// the file system's timestamp resolution. A missing file always drops its entry.
 ///
+/// A read that races a write cannot store a stale entry: every invalidation, forget or scope change bumps a
+/// per-path generation (or the global epoch), the reader captures both before probing the file, and its result
+/// is stored only if neither moved in the meantime. The cache assumes the application is the only writer of the
+/// open project; a file rewritten by another process with the same last-write time and length is not detected.
+///
 /// The cached value is the raw scene exactly as deserialized from the file (after the converted legacy
 /// text-override cleanup), i.e. a pure function of the file bytes; project-dependent migration is applied
 /// by the caller on every read, so a cached scene never carries a stale project projection.
@@ -30,6 +35,8 @@ public sealed class SceneFileCache
 {
     private readonly object gate = new();
     private readonly Dictionary<string, Entry> entries = new(StringComparer.OrdinalIgnoreCase);
+    private readonly Dictionary<string, long> generations = new(StringComparer.OrdinalIgnoreCase);
+    private long epoch;
     private int fileReadCount;
     private int deserializationCount;
 
@@ -65,8 +72,10 @@ public sealed class SceneFileCache
         ArgumentNullException.ThrowIfNull(deserialize);
         path = Path.GetFullPath(path);
 
-        // The stamp is probed before the bytes are read: a write racing this read can only make the stored
-        // stamp older than the content, which the next probe turns into a harmless re-read.
+        // The generation is captured before the probe and the stamp before the bytes: a write racing this read
+        // either makes the stored stamp older than the content (a harmless re-read next time) or bumps the
+        // generation through its invalidation, in which case nothing is stored.
+        var version = CaptureVersion(path);
         var stamp = Probe(path);
         Entry? existing;
         lock (gate)
@@ -104,7 +113,11 @@ public sealed class SceneFileCache
         var hash = SHA256.HashData(bytes);
         if (existing is not null && CryptographicOperations.FixedTimeEquals(existing.ContentHash, hash))
         {
-            lock (gate) entries[path] = existing with { Stamp = stamp };
+            lock (gate)
+            {
+                if (IsCurrent(path, version)) entries[path] = existing with { Stamp = stamp };
+            }
+
             return existing.Scene;
         }
 
@@ -112,7 +125,12 @@ public sealed class SceneFileCache
         var scene = await deserialize(bytes, cancellationToken);
         lock (gate)
         {
-            if (scene is null)
+            if (!IsCurrent(path, version))
+            {
+                // Invalidated, forgotten or re-scoped while this read was in flight: what was read may already be
+                // stale, so it is returned to this caller but never cached.
+            }
+            else if (scene is null)
             {
                 entries.Remove(path);
             }
@@ -135,6 +153,7 @@ public sealed class SceneFileCache
         path = Path.GetFullPath(path);
         lock (gate)
         {
+            Bump(path);
             if (entries.TryGetValue(path, out var entry)) entries[path] = entry with { Stamp = null };
         }
     }
@@ -145,6 +164,8 @@ public sealed class SceneFileCache
         ArgumentException.ThrowIfNullOrWhiteSpace(root);
         lock (gate)
         {
+            // Reads in flight under this root may target files not cached yet: the epoch stops all of them.
+            epoch++;
             foreach (var path in entries.Keys.Where(path => IsUnder(path, root)).ToArray())
             {
                 entries[path] = entries[path] with { Stamp = null };
@@ -156,7 +177,26 @@ public sealed class SceneFileCache
     public void Forget(string path)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
-        lock (gate) entries.Remove(Path.GetFullPath(path));
+        path = Path.GetFullPath(path);
+        lock (gate)
+        {
+            Bump(path);
+            entries.Remove(path);
+        }
+    }
+
+    /// <summary>Forgets every entry located under <paramref name="root"/>, e.g. after a refused project open.</summary>
+    public void ForgetUnder(string root)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(root);
+        lock (gate)
+        {
+            epoch++;
+            foreach (var path in entries.Keys.Where(path => IsUnder(path, root)).ToArray())
+            {
+                entries.Remove(path);
+            }
+        }
     }
 
     /// <summary>
@@ -167,9 +207,12 @@ public sealed class SceneFileCache
     {
         lock (gate)
         {
+            // A read of the previous project still in flight must not insert a late entry after the switch.
+            epoch++;
             if (root is null)
             {
                 entries.Clear();
+                generations.Clear();
                 return;
             }
 
@@ -179,6 +222,18 @@ public sealed class SceneFileCache
             }
         }
     }
+
+    private (long Epoch, long Generation) CaptureVersion(string path)
+    {
+        lock (gate) return (epoch, generations.GetValueOrDefault(path));
+    }
+
+    // Must be called under the gate.
+    private bool IsCurrent(string path, (long Epoch, long Generation) version) =>
+        epoch == version.Epoch && generations.GetValueOrDefault(path) == version.Generation;
+
+    // Must be called under the gate.
+    private void Bump(string path) => generations[path] = generations.GetValueOrDefault(path) + 1;
 
     private static FileStamp? Probe(string path)
     {
