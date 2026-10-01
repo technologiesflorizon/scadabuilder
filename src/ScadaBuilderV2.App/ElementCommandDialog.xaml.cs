@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using ScadaBuilderV2.App.QuickWindows;
 using ScadaBuilderV2.Application.Commands;
+using ScadaBuilderV2.Application.QuickWindows;
 using ScadaBuilderV2.Domain.ElementEvents.Command;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.QuickWindows;
@@ -78,9 +79,15 @@ public partial class ElementCommandDialog : Window
         var navigateTargets = QuickWindowConfigurationRules.NavigateTargetPages(pageReferences);
         TargetPageComboBox.ItemsSource = navigateTargets;
 
-        var tagItems = (tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
+        var enabledTags = (tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
             .Where(tag => tag.Enabled)
-            .OrderBy(tag => tag.DisplayName)
+            .ToArray();
+        // A QuickWindow page's `#N` catalog is already numerically ordered (DEC-0052); re-sorting it by
+        // DisplayName here would scramble it back to the lexical #1, #10, #100... order this fixes.
+        var orderedTags = QuickWindowPagePlaceholderCatalog.IsPlaceholderCatalog(enabledTags)
+            ? enabledTags
+            : enabledTags.OrderBy(tag => tag.DisplayName).ToArray();
+        var tagItems = orderedTags
             .Select(tag => new TagItem(tag.Id, tag.AuthoringLabel))
             .ToArray();
         WriteTagComboBox.ItemsSource = tagItems;

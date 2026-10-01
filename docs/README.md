@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.6.0065`
+Document version: `V2.1.6.0066`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-10-01 | `V2.1.6.0066` | `PENDING` | Fix bug utilisateur sur `Popup_Fan_Condenseur` (page `QuickWindow`) : le sélecteur de tag d'État → Ajouter proposait `#1, #10, #100, #101, …` au lieu des `#N` des feuilles de paramètres. `QuickWindowPagePlaceholderCatalog.Build` (nouveau, `ScadaBuilderV2.Application.QuickWindows`) remplace le catalogue statique `#1`..`#999` par le catalogue construit depuis les feuilles liées à la page, numériquement ordonné. Voir `docs/04_editor/MENUS_AND_SURFACES_CONTRACT_V2.md` § « Catalogue `#N` d'une page Fenêtre rapide ». |
 | 2026-10-01 | `V2.1.6.0065` | `7aca9de` | Revue du cache de scènes : une lecture qui croise une invalidation ou un changement de projet ne stocke plus son entrée (génération par chemin et époque globale dans `SceneFileCache`), une ouverture de projet refusée oublie les scènes du projet refusé, et `PROJECT_MODEL_CONTRACT_V2.md` §2.4 précise le partage des enregistrements imbriqués et l'hypothèse d'écrivain unique. Voir `docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md`. |
 | 2026-10-01 | `V2.1.6.0064` | `dbd18bd` | Performance des commandes du panneau « Fenêtres rapides » et de toute capture de l'espace de travail : le « + » demandait ~2 s avant d'afficher le dialogue de nom. (1) Nouveau, renommer et dupliquer une feuille de paramètres demandent le nom avant de capturer le snapshot (un dialogue annulé ne lit rien) et l'éditeur de la feuille créée s'ouvre sur le `After` de la mutation sans seconde capture. (2) Cause racine : chaque capture relisait et redésérialisait toutes les scènes non ouvertes ; `SceneFileCache` (nouveau) ne relit plus une scène dont le fichier n'a pas changé (date d'écriture + longueur, puis SHA-256 après une réécriture), avec invalidation explicite à chaque écriture du store. Projet de référence (56 scènes, ~60 Mo) : avant 3,1 s puis 1,1 à 1,5 s par capture ; après 2,1 s puis 17 à 48 ms. Voir `docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md` §2.4 et `docs/06_ui_ux/UI_ARCHITECTURE_V2.md`. |
 | 2026-09-30 | `V2.1.6.0063` | `983bf5f` | Reformulation du message `parameter-sheet.placeholder-unsupported-site` (n'invite plus à écrire `\#`, jamais déséchappé dans ces champs), réparation de l'harnais `ScadaBuilderV2.ShellTests` (dispatcher/fenêtre non fermés à la fin de chaque scénario `RunOnSta`) et nouvelle entrée 39 de `KNOWN_GAPS_V2.md` (`Actions` de scène héritées abandonnées sans diagnostic à la conversion Fenêtre rapide d'une page importée). Voir `docs/08_implementation_status/KNOWN_GAPS_V2.md`. |

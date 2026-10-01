@@ -299,24 +299,24 @@ public sealed class QuickWindowInterfaceAuthoringTests
     }
 
     [TestMethod]
-    public void TheShellOffersNumberedPlaceholdersOnAQuickWindowTypedPageInsteadOfProjectTags()
+    public void TheShellOffersParameterSheetPlaceholdersOnAQuickWindowTypedPageInsteadOfProjectTags()
     {
         var wiring = ReadAppFile("MainWindow.QuickWindows.cs");
 
         // A page still typed QuickWindow (DEC-0052) is not the hosted-definition case handled by
-        // QuickWindowInterfaceCatalogProjection above; its selectors must fall back to a synthetic
-        // #1..#999 catalog built once and cached, never to the project tag catalogue.
+        // QuickWindowInterfaceCatalogProjection above; its selectors must fall back to the #N catalog built
+        // from the project's parameter sheets (QuickWindowPagePlaceholderCatalog.Build, fix for the
+        // Popup_Fan_Condenseur bug report: the former static #1..#999 list sorted its entries as text), never
+        // to the project tag catalogue.
         StringAssert.Contains(wiring, "IsActivePageOfQuickWindowType");
-        StringAssert.Contains(wiring, "QuickWindowPagePlaceholderTagCatalog");
-        StringAssert.Contains(wiring, "Enumerable.Range(1, 999)");
-        StringAssert.Contains(wiring, "new ScadaTagDefinition($\"#{n}\", $\"#{n}\", Device: \"Paramètre\", Writeable: true, Enabled: true)");
-        StringAssert.Contains(wiring, "_quickWindowPagePlaceholderTagCatalog ??=");
+        StringAssert.Contains(wiring, "BuildActiveQuickWindowPagePlaceholderCatalog");
+        StringAssert.Contains(wiring, "QuickWindowPagePlaceholderCatalog.Build(_modernProject, scenes, pageKey)");
 
         var catalogAccessor = ExtractMember(wiring, "private ScadaTagCatalog? ActiveSelectorTagCatalog =>");
         StringAssert.Contains(catalogAccessor, "_hostedQuickWindowDefinition is { } definition");
         StringAssert.Contains(catalogAccessor, "QuickWindowInterfaceCatalogProjection.Create(definition)");
         StringAssert.Contains(catalogAccessor, "IsActivePageOfQuickWindowType");
-        StringAssert.Contains(catalogAccessor, "QuickWindowPagePlaceholderTagCatalog");
+        StringAssert.Contains(catalogAccessor, "BuildActiveQuickWindowPagePlaceholderCatalog");
         StringAssert.Contains(catalogAccessor, "_modernProject?.TagCatalog");
     }
 

@@ -61,27 +61,51 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
     private ScadaTagCatalog? ActiveSelectorTagCatalog => _hostedQuickWindowDefinition is { } definition
         ? QuickWindowInterfaceCatalogProjection.Create(definition)
         : IsActivePageOfQuickWindowType
-            ? QuickWindowPagePlaceholderTagCatalog
+            ? BuildActiveQuickWindowPagePlaceholderCatalog()
             : _modernProject?.TagCatalog;
 
     /// <summary>
     /// Gets whether the active page (not a hosted quick-window definition) carries
-    /// <see cref="ScadaPageType.QuickWindow"/>: its selectors offer <c>#1</c>..<c>#999</c> parameter
-    /// placeholders instead of project tags (DEC-0052).
+    /// <see cref="ScadaPageType.QuickWindow"/>: its selectors offer the `#N` parameters defined by the
+    /// parameter sheets linked to it instead of project tags (DEC-0052).
     /// </summary>
     private bool IsActivePageOfQuickWindowType =>
         _activeSceneTab?.PageKey is { } pageKey &&
         _modernProject?.Scenes.FirstOrDefault(page => page.PageKey == pageKey)?.Type == ScadaPageType.QuickWindow;
 
-    /// <summary>Synthetic <c>#1</c>..<c>#999</c> parameter catalog offered to selectors on a QuickWindow page.</summary>
-    /// <remarks>Built once and cached: it never varies across activations.</remarks>
-    private static ScadaTagCatalog QuickWindowPagePlaceholderTagCatalog => _quickWindowPagePlaceholderTagCatalog ??= new ScadaTagCatalog(
-        "quick-window-page-placeholder-parameters/1.0",
-        Enumerable.Range(1, 999)
-            .Select(n => new ScadaTagDefinition($"#{n}", $"#{n}", Device: "Paramètre", Writeable: true, Enabled: true))
-            .ToArray());
+    /// <summary>
+    /// Builds the `#N` catalog of the active quick-window page from the project's parameter sheets
+    /// (<see cref="QuickWindowPagePlaceholderCatalog"/>), replacing the former static `#1`..`#999` list.
+    /// </summary>
+    /// <remarks>
+    /// Recomputed on every access rather than cached: the walk below only touches objects already held by
+    /// <see cref="_pageWorkspaceController"/> and <see cref="_activeScene"/> (no new
+    /// <see cref="PageWorkspaceController.CaptureSnapshotAsync"/>, no disk read), so a sheet edited or a
+    /// linking command added since the last dialog open is always reflected without any invalidation to get
+    /// wrong. Only pages currently open (or visited by project history) contribute their commands to the
+    /// "feuilles liées" search; a linking command on a page never opened this session is not found, which
+    /// degrades to the safe "no sheet linked -> keep every sheet" rule rather than hiding a value.
+    ///
+    /// Decisions: DEC-0052.
+    /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowPagePlaceholderCatalogTests.cs.
+    /// </remarks>
+    private ScadaTagCatalog BuildActiveQuickWindowPagePlaceholderCatalog()
+    {
+        if (_modernProject is null || _activeSceneTab?.PageKey is not { } pageKey)
+        {
+            return new ScadaTagCatalog("quick-window-page-placeholder-parameters/2.0", Array.Empty<ScadaTagDefinition>());
+        }
 
-    private static ScadaTagCatalog? _quickWindowPagePlaceholderTagCatalog;
+        var scenes = new Dictionary<Guid, ScadaScene>();
+        foreach (var key in _pageWorkspaceController.GetWorkspaceSceneKeys())
+        {
+            if (_pageWorkspaceController.GetScene(key) is { } scene) scenes[key] = scene;
+        }
+
+        if (_activeScene is not null) scenes[pageKey] = _activeScene;
+
+        return QuickWindowPagePlaceholderCatalog.Build(_modernProject, scenes, pageKey);
+    }
 
     private void OnShowQuickWindowsAnchorableClick(object sender, RoutedEventArgs e) =>
         ShowAnchorable(QuickWindowsAnchorable);

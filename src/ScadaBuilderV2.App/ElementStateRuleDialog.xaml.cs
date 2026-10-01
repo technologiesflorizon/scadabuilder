@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
+using ScadaBuilderV2.Application.QuickWindows;
 using ScadaBuilderV2.Domain.ElementEvents.Expressions;
 using ScadaBuilderV2.Domain.ElementEvents.State;
 using ScadaBuilderV2.Domain.Projects;
@@ -285,9 +286,15 @@ private sealed record EffectListItem(EffectKind Kind, string Summary);
 
     private void PopulateTagComboBox()
     {
-        var items = (_tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
+        var enabledTags = (_tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
             .Where(tag => tag.Enabled)
-            .OrderBy(tag => tag.DisplayName, StringComparer.CurrentCultureIgnoreCase)
+            .ToArray();
+        // A QuickWindow page's `#N` catalog is already numerically ordered (DEC-0052); re-sorting it by
+        // DisplayName here would scramble it back to the lexical #1, #10, #100... order this fixes.
+        var orderedTags = QuickWindowPagePlaceholderCatalog.IsPlaceholderCatalog(enabledTags)
+            ? enabledTags
+            : enabledTags.OrderBy(tag => tag.DisplayName, StringComparer.CurrentCultureIgnoreCase).ToArray();
+        var items = orderedTags
             .Select(tag => new TagItem(tag.Id, TagLabel(tag)))
             .ToArray();
         TagComboBox.ItemsSource = items;
