@@ -12,10 +12,16 @@ namespace ScadaBuilderV2.App;
 /// Fix round 2 (DEC-0052, bug report on `Popup_Fan_Condenseur`): both dialogs used to compose
 /// `{tag.DisplayName}` directly. <see cref="QuickWindowPagePlaceholderCatalog"/>'s `#N` entries once put the
 /// parameter sheet's source description in <c>DisplayName</c> (fix round 1), so selecting `#1` composed
-/// `{#1 — {BP_1A_AUTO}}` - unparsable ("Caractere inattendu : '}'"). `DisplayName` now always equals
-/// <see cref="ScadaTagDefinition.Id"/> for a placeholder entry, but this helper composes from
-/// <see cref="ScadaTagDefinition.Id"/> directly regardless, so it stays correct even for an ordinary project
-/// tag if that invariant were ever violated by mistake.
+/// `{#1 — {BP_1A_AUTO}}` - unparsable ("Caractere inattendu : '}'").
+///
+/// Fix round 3 (regression on a normal page): round 2 changed the composition to use
+/// <see cref="ScadaTagDefinition.Id"/> instead, reasoning that `DisplayName` now always equals `Id` for a
+/// placeholder entry so either field would do. That invariant holds for `#N` entries, but not for an
+/// ordinary project tag - a real catalog has `Id` `"tf100.mapping.161"` and `DisplayName` `"PE_16"` - so
+/// selecting that tag composed `{tf100.mapping.161} > 0` instead of the operator-friendly `{PE_16} > 0` the
+/// operator expects to see and re-edit. <c>WrapTagToken</c> composes from `DisplayName` again: correct for a
+/// normal tag by construction, and still correct for a placeholder entry because `DisplayName == Id` holds
+/// for it (DEC-0052).
 ///
 /// Decisions: DEC-0052.
 /// Contracts: docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md §5, §6.
@@ -23,14 +29,14 @@ namespace ScadaBuilderV2.App;
 /// </remarks>
 public static class ScadaTagExpressionComposer
 {
-    /// <summary>Wraps <paramref name="tagId"/> as a `{...}` expression tag token.</summary>
-    public static string WrapTagToken(string tagId) => $"{{{tagId}}}";
+    /// <summary>Wraps <paramref name="tagToken"/> (a tag's DisplayName) as a `{...}` expression tag token.</summary>
+    public static string WrapTagToken(string tagToken) => $"{{{tagToken}}}";
 
-    /// <summary>Wraps <paramref name="tag"/>'s <see cref="ScadaTagDefinition.Id"/> as a `{...}` expression tag token.</summary>
+    /// <summary>Wraps <paramref name="tag"/>'s <see cref="ScadaTagDefinition.DisplayName"/> as a `{...}` expression tag token.</summary>
     public static string WrapTagToken(ScadaTagDefinition tag)
     {
         ArgumentNullException.ThrowIfNull(tag);
-        return WrapTagToken(tag.Id);
+        return $"{{{tag.DisplayName}}}";
     }
 
     /// <summary>

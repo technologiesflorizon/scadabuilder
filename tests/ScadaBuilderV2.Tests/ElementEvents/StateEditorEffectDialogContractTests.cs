@@ -63,16 +63,26 @@ public sealed class StateEditorEffectDialogContractTests
     [TestMethod]
     public void ElementStateRuleDialog_BuildExpression_ComposesThroughTheSharedTagExpressionComposer()
     {
-        // Fix round 2 (bug report): composing `{tag.DisplayName}` directly broke the moment a QuickWindow
-        // page's #N catalog put the parameter sheet's source description in DisplayName (fix round 1) -
-        // `{#1 — {BP_1A_AUTO}}` is unparsable. BuildExpressionFromVariable now delegates to
-        // ScadaTagExpressionComposer.ComposeVariableExpression, which always composes from Id
-        // (see tests/ScadaBuilderV2.Tests/QuickWindows/ScadaTagExpressionComposerTests.cs).
+        // BuildExpressionFromVariable delegates to ScadaTagExpressionComposer.ComposeVariableExpression
+        // (extracted in fix round 2) rather than composing `{tag.DisplayName}` inline.
         var source = ReadAppFile("ElementStateRuleDialog.xaml.cs");
-        Assert.IsFalse(
-            source.Contains("$\"{{{tag.DisplayName}}}"),
-            "BuildExpressionFromVariable must never compose `{tag.DisplayName}` directly again.");
         StringAssert.Contains(source, "ScadaTagExpressionComposer.ComposeVariableExpression(");
+    }
+
+    [TestMethod]
+    public void ElementStateRuleDialog_BuildExpression_KeepsDisplayNameInSource()
+    {
+        // Restored contract lock (fix round 3, regression on a normal page): fix round 2 moved this
+        // composition from `{tag.DisplayName}` to `{tag.Id}`, reasoning that DisplayName always equals Id for
+        // a QuickWindow #N placeholder entry (true, DEC-0052) - but not for an ordinary project tag, whose
+        // real Id ("tf100.mapping.161") is not what the operator expects to see and re-edit, DisplayName
+        // ("PE_16") is. The composition now lives in ScadaTagExpressionComposer.cs (extracted so it is
+        // WPF-free and unit-testable), not inlined in ElementStateRuleDialog.xaml.cs, so this lock reads that
+        // file instead of the dialog's.
+        var source = ReadAppFile("ScadaTagExpressionComposer.cs");
+        var usesDisplayNameInSource = source.Contains("$\"{{{tag.DisplayName}}}");
+        Assert.IsTrue(usesDisplayNameInSource,
+            "ScadaTagExpressionComposer.WrapTagToken must keep DisplayName in the expression source text.");
     }
 
     [TestMethod]

@@ -34,11 +34,12 @@ public partial class ExpressionCreationDialog : Window
     private void OnVariableClick(object sender, RoutedEventArgs e)
     {
         var dialog = new TagSelectionDialog(_tagCatalog) { Owner = this };
-        // Fix round 2 (bug report): compose from TagId (the tag's Id), never DisplayName - a placeholder
-        // catalog entry's DisplayName equals its Id anyway (DEC-0052), but composing from the identifier
-        // field directly is what ScadaTagExpressionComposer locks for ElementStateRuleDialog too.
+        // Fix round 3 (regression on a normal page): compose from DisplayName, not TagId - a real project
+        // tag's Id ("tf100.mapping.161") is not what the operator expects to see and re-edit, DisplayName
+        // ("PE_16") is. A placeholder entry's DisplayName equals its Id anyway (DEC-0052), so this stays
+        // correct for #N too.
         if (dialog.ShowDialog() == true && dialog.SelectedTag is { } tag)
-            InsertAtCaret(ScadaTagExpressionComposer.WrapTagToken(tag.TagId));
+            InsertAtCaret(ScadaTagExpressionComposer.WrapTagToken(tag.DisplayName));
     }
 
     private void OnOperatorClick(object sender, RoutedEventArgs e)

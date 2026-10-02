@@ -9,13 +9,16 @@ using ScadaBuilderV2.Domain.Scenes;
 namespace ScadaBuilderV2.Tests.QuickWindows;
 
 /// <summary>
-/// Regression tests (fix round 2) for the bug reported on `Popup_Fan_Condenseur`: selecting a QuickWindow
-/// page's `#1` placeholder in `ElementStateRuleDialog`'s Variable mode (Condition = Variable, "si vrai")
-/// produced an unparsable expression ("Caractere inattendu : '}'") because the dialog composed
-/// `{tag.DisplayName}`, and <see cref="QuickWindowPagePlaceholderCatalog"/> once put the sheet's source
-/// description in `DisplayName` (fix round 1). These tests lock, through the exact composition logic the
-/// dialogs use (<see cref="ScadaTagExpressionComposer"/>), that a placeholder entry always composes and
-/// resolves correctly.
+/// Regression tests for two bugs on <see cref="ScadaTagExpressionComposer"/>: (fix round 2) selecting a
+/// QuickWindow page's `#1` placeholder in `ElementStateRuleDialog`'s Variable mode produced an unparsable
+/// expression ("Caractere inattendu : '}'") because the dialog composed `{tag.DisplayName}` while
+/// <see cref="QuickWindowPagePlaceholderCatalog"/> put the sheet's source description in `DisplayName` (fix
+/// round 1); and (fix round 3) composing from `Id` instead to fix that broke every *normal* project tag
+/// selection - a real catalog has `Id` `"tf100.mapping.161"` and `DisplayName` `"PE_16"`, so the rule read
+/// `{tf100.mapping.161} > 0` instead of `{PE_16} > 0`. The composer now always composes from `DisplayName`,
+/// which is correct for a normal tag by construction and for a placeholder entry because `DisplayName == Id`
+/// holds for it (DEC-0052). These tests lock both: a normal tag composes from its `DisplayName`, and a
+/// placeholder entry still composes and resolves correctly.
 /// </summary>
 /// <remarks>
 /// Decisions: DEC-0052.
@@ -24,6 +27,51 @@ namespace ScadaBuilderV2.Tests.QuickWindows;
 [TestClass]
 public sealed class ScadaTagExpressionComposerTests
 {
+    [TestMethod]
+    public void WrapTagTokenComposesFromDisplayNameForANormalProjectTag()
+    {
+        // Fix round 3 regression lock: a real project tag's Id ("tf100.mapping.161") is not what the
+        // operator expects to see and re-edit; DisplayName ("PE_16") is.
+        var tag = new ScadaTagDefinition("tf100.mapping.161", "PE_16", Datatype: "Decimal");
+        Assert.AreEqual("{PE_16}", ScadaTagExpressionComposer.WrapTagToken(tag));
+    }
+
+    [TestMethod]
+    public void WrapTagTokenComposesFromDisplayNameForAPlaceholderTagToo()
+    {
+        // DisplayName == Id for a placeholder entry (DEC-0052), so composing from DisplayName stays correct.
+        var tag = new ScadaTagDefinition("#1", "#1");
+        Assert.AreEqual("{#1}", ScadaTagExpressionComposer.WrapTagToken(tag));
+    }
+
+    [TestMethod]
+    public void TheStateRuleOperatorAndValueVariableExpressionForANormalProjectTagUsesItsDisplayName()
+    {
+        // ElementStateRuleDialog.BuildExpressionFromVariable on an ordinary page: Decimal tag "PE_16"
+        // (Id "tf100.mapping.161"), operator ">" and value "0" - must read `{PE_16} > 0`, never
+        // `{tf100.mapping.161} > 0` (the round-2 regression this round fixes).
+        var tag = new ScadaTagDefinition("tf100.mapping.161", "PE_16", Datatype: "Decimal");
+        var expression = ScadaTagExpressionComposer.ComposeVariableExpression(
+            tag, isBooleanDatatype: false, boolValue: null, comparisonOperator: ">", rawValue: "0");
+        Assert.AreEqual("{PE_16} > 0", expression);
+
+        var catalog = new ScadaTagCatalog("scada-tag-expression-composer-tests-normal", [tag]);
+        var validation = ScadaExpressionValidator.Validate(expression, catalog);
+        Assert.IsTrue(validation.IsValid, string.Join(" | ", validation.Errors));
+
+        var resolved = ScadaExpressionValidator.TryResolveTagReference("PE_16", catalog);
+        Assert.AreEqual(TagResolveStatus.Resolved, resolved.Status);
+        Assert.AreEqual("tf100.mapping.161", resolved.CanonicalId);
+    }
+
+    [TestMethod]
+    public void ExpressionCreationDialogStyleTokenInsertionForANormalProjectTagUsesItsDisplayName()
+    {
+        // ExpressionCreationDialog.OnVariableClick composes ScadaTagExpressionComposer.WrapTagToken(selectedTag.DisplayName).
+        var insertedToken = ScadaTagExpressionComposer.WrapTagToken("PE_16");
+        Assert.AreEqual("{PE_16}", insertedToken);
+    }
+
     [TestMethod]
     public void B_TheStateRuleBooleanVariableExpressionForASelectedPlaceholderValidatesAndResolvesToItsId()
     {
@@ -80,8 +128,8 @@ public sealed class ScadaTagExpressionComposerTests
     {
         var catalog = BuildSingleEntryCatalog("#1 := {FAN_03_RUN}", out var tag);
 
-        // ExpressionCreationDialog.OnVariableClick: ScadaTagExpressionComposer.WrapTagToken(selectedTag.TagId).
-        var insertedToken = ScadaTagExpressionComposer.WrapTagToken(tag.Id);
+        // ExpressionCreationDialog.OnVariableClick: ScadaTagExpressionComposer.WrapTagToken(selectedTag.DisplayName).
+        var insertedToken = ScadaTagExpressionComposer.WrapTagToken(tag.DisplayName);
         Assert.AreEqual("{#1}", insertedToken);
 
         // The inserted token alone is never flagged as referencing an unknown tag (the bug this locks),
@@ -100,15 +148,6 @@ public sealed class ScadaTagExpressionComposerTests
         var resolved = ScadaExpressionValidator.TryResolveTagReference("#1", catalog);
         Assert.AreEqual(TagResolveStatus.Resolved, resolved.Status);
         Assert.AreEqual("#1", resolved.CanonicalId);
-    }
-
-    [TestMethod]
-    public void WrapTagTokenComposesFromIdNeverFromDisplayName()
-    {
-        // Direct lock of the regression: even if a tag's DisplayName ever diverged from its Id again by
-        // mistake, the composer must still use Id.
-        var tag = new ScadaTagDefinition("#1", "#1 — {BP_1A_AUTO}");
-        Assert.AreEqual("{#1}", ScadaTagExpressionComposer.WrapTagToken(tag));
     }
 
     private static ScadaTagCatalog BuildSingleEntryCatalog(string sheetText, out ScadaTagDefinition tag)
