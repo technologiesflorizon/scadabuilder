@@ -526,20 +526,15 @@ private sealed record EffectListItem(EffectKind Kind, string Summary);
         var tag = SelectedTag;
         if (tag is null) return string.Empty;
 
-        if (IsBooleanDatatype(tag.Datatype))
+        var isBoolean = IsBooleanDatatype(tag.Datatype);
+        if (isBoolean)
         {
-            if (BoolTrueRadio.IsChecked != true && BoolFalseRadio.IsChecked != true)
-                return $"{{{tag.DisplayName}}}";
-            var value = BoolTrueRadio.IsChecked == true ? "true" : "false";
-            return $"{{{tag.DisplayName}}} == {value}";
+            bool? boolValue = BoolTrueRadio.IsChecked == true ? true : BoolFalseRadio.IsChecked == true ? false : null;
+            return ScadaTagExpressionComposer.ComposeVariableExpression(tag, isBooleanDatatype: true, boolValue, null, null);
         }
 
         var op = (OperatorComboBox.SelectedItem as OperatorItem)?.Expression ?? "==";
-        if (string.IsNullOrEmpty(op))
-            return $"{{{tag.DisplayName}}}";
-        var val = ValueTextBox.Text.Trim();
-        if (string.IsNullOrWhiteSpace(val)) val = "0";
-        return $"{{{tag.DisplayName}}} {op} {val}";
+        return ScadaTagExpressionComposer.ComposeVariableExpression(tag, isBooleanDatatype: false, null, op, ValueTextBox.Text);
     }
 
     private void OnSaveClick(object sender, RoutedEventArgs e)

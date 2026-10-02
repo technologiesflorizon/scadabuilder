@@ -118,6 +118,17 @@ public static class QuickWindowPagePlaceholderCatalog
         IReadOnlyList<(ParameterSheet Sheet, ParameterEntry Entry)> contributions,
         ScadaTagCatalog? projectTagCatalog)
     {
+        // DisplayName MUST equal Id exactly (fix round 2, bug report): DisplayName is an identifier-bearing
+        // field throughout the app, not a display-only one - ElementStateRuleDialog.BuildExpressionFromVariable
+        // and ExpressionCreationDialog compose `{tag.DisplayName}` directly into expression source text, and
+        // ScadaExpressionValidator.TryResolveTagReference matches a parsed `{...}` token against DisplayName
+        // as its second resolution step. Putting the sheet's source description there produced
+        // `{#1 — {BP_1A_AUTO}}` - unparsable ("Caractere inattendu : '}'") - the moment a state rule or
+        // expression was composed from the dropdown. The source description now lives in Device, which every
+        // consumer treats as caption-only (`AuthoringLabel`'s ` | {Device}` segment, the `TagLabel` helpers'
+        // ` ({Device})` suffix, the Catalogue Tags panel and its device filter - all display text, never
+        // parsed, matched, or persisted as an identifier; audited across every `ScadaTagDefinition.Device`/
+        // `.DisplayName` consumer in App/Application/Domain before this change).
         var id = $"#{number}";
         if (contributions.Count == 0)
         {
@@ -126,14 +137,14 @@ public static class QuickWindowPagePlaceholderCatalog
             // (TableCellNumericInputInspector.Inspect / TableEditCoordinator.SetCellValueBinding filter/refuse
             // on Writeable) until the sheet is fixed; refusing it outright would be a regression on an
             // already-authored write command, worse than the bug this catalog fixes.
-            return new ScadaTagDefinition(id, $"{id} — (non défini dans les feuilles)", Device: DeviceLabel, Writeable: true, Enabled: true);
+            return new ScadaTagDefinition(id, id, Device: $"{DeviceLabel} — (non défini dans les feuilles)", Writeable: true, Enabled: true);
         }
 
         var sources = contributions
             .Select(contribution => DescribeSource(contribution.Entry))
             .Distinct(StringComparer.Ordinal)
             .ToArray();
-        var label = Truncate($"{id} — {string.Join(" / ", sources)}");
+        var device = Truncate($"{DeviceLabel} — {string.Join(" / ", sources)}");
 
         // Writeable/Datatype ruling (fix round 1): several sheets may legitimately bind the same #N to
         // different tags (e.g. two fan speed setpoints), so Writeable does not require a single contribution -
@@ -164,7 +175,7 @@ public static class QuickWindowPagePlaceholderCatalog
         var distinctDatatypes = resolvedTags.Select(tag => tag.Datatype).Distinct(StringComparer.Ordinal).ToArray();
         var datatype = resolvedTags.Count > 0 && distinctDatatypes.Length == 1 ? distinctDatatypes[0] : null;
 
-        return new ScadaTagDefinition(id, label, Device: DeviceLabel, Datatype: datatype, Writeable: writeable, Enabled: true);
+        return new ScadaTagDefinition(id, id, Device: device, Datatype: datatype, Writeable: writeable, Enabled: true);
     }
 
     private static string DescribeSource(ParameterEntry entry) => entry.Kind switch
@@ -180,9 +191,10 @@ public static class QuickWindowPagePlaceholderCatalog
     /// <remarks>
     /// Used by the state/command selectors to skip their usual DisplayName sort when offered this catalog:
     /// <see cref="Build"/> already returns its tags in ascending numeric order, and a lexical re-sort of
-    /// `#1 — ...`, `#2 — ...`, `#10 — ...` would scramble them back to `#1, #10, #100, ...` - the very bug
-    /// this catalog exists to fix. An ordinary project tag catalog is never composed entirely of `#N` ids
-    /// (and a mixed one isn't this catalog at all), so this never changes the sort of a normal page's tags.
+    /// `#1`, `#2`, `#10` (every tag's <c>DisplayName</c> equals its <c>Id</c> exactly, fix round 2) would
+    /// scramble them back to `#1, #10, #100, ...` - the very bug this catalog exists to fix. An ordinary
+    /// project tag catalog is never composed entirely of `#N` ids (and a mixed one isn't this catalog at all),
+    /// so this never changes the sort of a normal page's tags.
     /// </remarks>
     public static bool IsPlaceholderCatalog(IReadOnlyCollection<ScadaTagDefinition> tags) =>
         tags.Count > 0 && tags.All(tag => QuickWindowPlaceholder.TryParseName(tag.Id, out _));

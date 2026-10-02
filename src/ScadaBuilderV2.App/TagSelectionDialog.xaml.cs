@@ -36,12 +36,13 @@ public partial class TagSelectionDialog : Window
                 tag.DisplayName,
                 tag.Id,
                 tag.Datatype ?? string.Empty,
-                // A placeholder's DisplayName already carries both the #N id and its source (e.g.
-                // "#1 — {FAN_03_RUN}"); appending " · #1 · type inconnu" doubled the #N and showed a
-                // meaningless "type inconnu" (fix round 1, bug report). A normal project tag keeps the
-                // original three-part label.
+                // Fix round 2 (bug report): a placeholder's DisplayName is now exactly its Id ("#1") - never
+                // the sheet's source description, which composing `{tag.DisplayName}` into an expression
+                // would have broken ("Caractere inattendu : '}'" on `{#1 — {BP_1A_AUTO}}`). The source
+                // description lives in Device instead, shown here next to the #N so the operator still sees
+                // what they are picking. A normal project tag keeps the original three-part label.
                 isPlaceholderCatalog
-                    ? tag.DisplayName
+                    ? $"{tag.DisplayName}  ·  {tag.Device}"
                     : $"{tag.DisplayName}  ·  {tag.Id}  ·  {tag.Datatype ?? "type inconnu"}"))
             .ToArray();
     }

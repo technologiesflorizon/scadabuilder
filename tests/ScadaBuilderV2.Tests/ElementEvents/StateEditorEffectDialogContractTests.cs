@@ -61,12 +61,18 @@ public sealed class StateEditorEffectDialogContractTests
     }
 
     [TestMethod]
-    public void ElementStateRuleDialog_BuildExpression_KeepsDisplayNameInSource()
+    public void ElementStateRuleDialog_BuildExpression_ComposesThroughTheSharedTagExpressionComposer()
     {
+        // Fix round 2 (bug report): composing `{tag.DisplayName}` directly broke the moment a QuickWindow
+        // page's #N catalog put the parameter sheet's source description in DisplayName (fix round 1) -
+        // `{#1 — {BP_1A_AUTO}}` is unparsable. BuildExpressionFromVariable now delegates to
+        // ScadaTagExpressionComposer.ComposeVariableExpression, which always composes from Id
+        // (see tests/ScadaBuilderV2.Tests/QuickWindows/ScadaTagExpressionComposerTests.cs).
         var source = ReadAppFile("ElementStateRuleDialog.xaml.cs");
-        var usesDisplayNameInSource = source.Contains("$\"{{{tag.DisplayName}}}");
-        Assert.IsTrue(usesDisplayNameInSource,
-            "BuildExpressionFromVariable must keep DisplayName in the expression source text.");
+        Assert.IsFalse(
+            source.Contains("$\"{{{tag.DisplayName}}}"),
+            "BuildExpressionFromVariable must never compose `{tag.DisplayName}` directly again.");
+        StringAssert.Contains(source, "ScadaTagExpressionComposer.ComposeVariableExpression(");
     }
 
     [TestMethod]

@@ -80,7 +80,9 @@ public sealed class QuickWindowPagePlaceholderCatalogTests
 
         CollectionAssert.AreEqual(new[] { "#1", "#7" }, catalog.Tags.Select(tag => tag.Id).ToArray());
         var undefined = catalog.Tags.Single(tag => tag.Id == "#7");
-        StringAssert.Contains(undefined.DisplayName, "non défini");
+        // DisplayName MUST equal Id exactly (fix round 2) - the descriptive text lives in Device instead.
+        Assert.AreEqual("#7", undefined.DisplayName);
+        StringAssert.Contains(undefined.Device, "non défini");
         // Writeable ruling (fix round 1): an undefined #N must stay offered to the write-tag selector until
         // the sheet is fixed, or an already-authored write command regresses (table write-tag combo filters
         // by Writeable: TableCellNumericInputInspector.cs:39, TableEditCoordinator.cs:187).
@@ -127,8 +129,14 @@ public sealed class QuickWindowPagePlaceholderCatalogTests
     }
 
     [TestMethod]
-    public void TheDisplayedLabelCarriesTheSheetSource()
+    public void TheDisplayedSourceLivesInDeviceNeverInDisplayName()
     {
+        // Fix round 2 (bug report on Popup_Fan_Condenseur): ElementStateRuleDialog.BuildExpressionFromVariable
+        // and ExpressionCreationDialog compose `{tag.DisplayName}` (now `{tag.Id}` via ScadaTagExpressionComposer,
+        // but DisplayName is still matched elsewhere) directly into expression source text, and
+        // ScadaExpressionValidator.TryResolveTagReference matches a parsed token against DisplayName as its
+        // second resolution step. Putting the sheet's source description there produced
+        // `{#1 — {BP_1A_AUTO}}`, unparsable. The source now lives in Device; DisplayName is always the bare Id.
         var pageKey = Guid.NewGuid();
         var sheet = Sheet("#1 := {FAN_03_RUN}");
         var project = Project([sheet], CommandCatalog());
@@ -138,7 +146,35 @@ public sealed class QuickWindowPagePlaceholderCatalogTests
         var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
 
         var tag = catalog.Tags.Single(t => t.Id == "#1");
-        StringAssert.Contains(tag.DisplayName, "FAN_03_RUN");
+        Assert.AreEqual("#1", tag.DisplayName);
+        StringAssert.Contains(tag.Device, "FAN_03_RUN");
+    }
+
+    [TestMethod]
+    public void ARegressionTest_EveryPlaceholderEntryHasDisplayNameEqualToId()
+    {
+        // Required regression test (a): DisplayName == Id == "#N" for defined, multi-source, literal,
+        // expression and undefined entries - DisplayName is an identifier-bearing field throughout the app
+        // (ElementStateRuleDialog, ExpressionCreationDialog, ScadaExpressionValidator.TryResolveTagReference),
+        // never a display-only one. A violation here is exactly the bug reported on Popup_Fan_Condenseur.
+        var pageKey = Guid.NewGuid();
+        var sheetA = Sheet("#1 := {FAN_03_RUN}\n#2 := \"Ventilateur 3\"\n#3 := {FAN_03_SPEED} * 0.1\n#5 := {FAN_03_SPEED}");
+        var sheetB = Sheet("#5 := {FAN_03_START}"); // second source for the same number -> multi-source
+        var project = Project([sheetA, sheetB], CommandCatalog());
+        var callerPage = Page(
+            "win00001",
+            OpenCommand(sheetA.SheetKey, pageKey, elementId: "open-a", commandId: "cmd-a"),
+            OpenCommand(sheetB.SheetKey, pageKey, elementId: "open-b", commandId: "cmd-b"));
+        var quickWindowPage = PageWithTextUsage(pageKey, "#7"); // undefined
+        var scenes = Scenes(callerPage, quickWindowPage);
+
+        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
+
+        CollectionAssert.AreEqual(new[] { "#1", "#2", "#3", "#5", "#7" }, catalog.Tags.Select(t => t.Id).ToArray());
+        foreach (var tag in catalog.Tags)
+        {
+            Assert.AreEqual(tag.Id, tag.DisplayName, $"DisplayName must equal Id for {tag.Id}");
+        }
     }
 
     [TestMethod]
