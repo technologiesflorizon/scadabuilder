@@ -92,27 +92,6 @@ public sealed record QuickWindowInvocationAuthoringOutcome(
         new(false, null, message, []);
 }
 
-/// <summary>One outdated invocation as shown by the repair surface.</summary>
-/// <param name="Outdated">The outdated invocation and its incompatibility reasons.</param>
-/// <param name="PageLabel">Page code of the caller, or a placeholder when it is unattached.</param>
-public sealed record QuickWindowRepairRowViewModel(QuickWindowOutdatedInvocation Outdated, string PageLabel)
-{
-    /// <summary>Gets the invocation key being repaired.</summary>
-    public Guid InvocationKey => Outdated.InvocationKey;
-
-    /// <summary>Gets the caller element id.</summary>
-    public string OwnerElementId => Outdated.OwnerElementId ?? "(non rattachée)";
-
-    /// <summary>Gets the caller command id.</summary>
-    public string OwnerCommandId => Outdated.OwnerCommandId ?? "-";
-
-    /// <summary>Gets the version pair that makes the invocation outdated.</summary>
-    public string VersionLabel => $"v{Outdated.InvocationInterfaceVersion} → v{Outdated.DefinitionInterfaceVersion}";
-
-    /// <summary>Gets every incompatibility reason on one line.</summary>
-    public string ReasonLabel => string.Join(" ", Outdated.Reasons);
-}
-
 /// <summary>One typed source option offered by the `Source` column of the bindings grid (FR-UI-19).</summary>
 /// <param name="Label">The French authoring label.</param>
 /// <param name="Kind">The typed domain source kind.</param>

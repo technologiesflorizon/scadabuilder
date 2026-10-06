@@ -10,11 +10,12 @@ using ScadaBuilderV2.Domain.Scenes;
 namespace ScadaBuilderV2.Tests.QuickWindows;
 
 /// <summary>
-/// Covers the local-interface versioning transitions, the derived `Outdated` invocation status and the
-/// repair surface: listing with page, caller and reason, navigation, explicit port-by-port relinking, the
-/// confirmation shown before an interface change outdates invocations, and the build gate that clears only
-/// once every invocation is repaired.
-/// Decisions: DEC-0050, FR-032, FR-UI-24. Plan: Tasks 2.4 and 3.6.
+/// Covers the local-interface versioning transitions, the derived `Outdated` invocation status and its
+/// listing, the confirmation shown before an interface change outdates invocations, and the build gate that
+/// clears only once every invocation is current. The DEC-0050 repair surface (dialog, controller and service
+/// repair entry points) was decommissioned with its tests on 2026-10-06 (DEC-0052 replaced that authoring
+/// model; the handler opening it was never subscribed).
+/// Decisions: DEC-0050 (décommissionné), FR-032, FR-UI-24. Plan: Tasks 2.4 and 3.6.
 /// </summary>
 [TestClass]
 public sealed class QuickWindowInterfaceVersioningTests
@@ -162,57 +163,6 @@ public sealed class QuickWindowInterfaceVersioningTests
     }
 
     [TestMethod]
-    public void RepairRebindsRealignsAndClearsTheBuildGate()
-    {
-        var member = Member("Run");
-        var required = Member("Speed", QuickWindowDataType.Integer, required: true);
-        var definition = Definition("motor", members: [member, required], interfaceVersion: 2);
-        var invocation = Invocation(definition, QuickWindowBinding.FromTag(member.MemberKey, "motor.run")) with
-        {
-            InterfaceVersion = 1
-        };
-        var snapshot = Snapshot(definition, invocation);
-        var service = new QuickWindowInvocationService();
-
-        var repaired = service.Repair(
-            snapshot,
-            invocation.InvocationKey,
-            [
-                QuickWindowBinding.FromTag(member.MemberKey, "motor.run"),
-                QuickWindowBinding.FromLiteral(required.MemberKey, "12")
-            ]);
-
-        Assert.AreEqual(CommandResultStatus.Succeeded, repaired.Result.Status);
-        var after = repaired.After.Project.EffectiveQuickWindowInvocations.Single();
-        Assert.AreEqual(2, after.InterfaceVersion);
-        Assert.AreEqual(QuickWindowInvocationStatus.Current, QuickWindowInterfaceCompatibility.StatusOf(definition, after));
-        Assert.IsFalse(ScadaProjectBuildValidator.Validate(repaired.After.Project, [Page("page")])
-            .Any(issue => issue.Code == "quick-window.interface-version-incompatible"));
-    }
-
-    [TestMethod]
-    public void RepairIsBlockedWhileTheInvocationStaysIncompatible()
-    {
-        var member = Member("Run");
-        var required = Member("Speed", QuickWindowDataType.Integer, required: true);
-        var definition = Definition("motor", members: [member, required], interfaceVersion: 2);
-        var invocation = Invocation(definition, QuickWindowBinding.FromTag(member.MemberKey, "motor.run")) with
-        {
-            InterfaceVersion = 1
-        };
-        var snapshot = Snapshot(definition, invocation);
-
-        var repaired = new QuickWindowInvocationService().Repair(
-            snapshot,
-            invocation.InvocationKey,
-            [QuickWindowBinding.FromTag(member.MemberKey, "motor.run")]);
-
-        Assert.AreEqual(CommandResultStatus.Blocked, repaired.Result.Status);
-        Assert.IsTrue(repaired.Result.Diagnostics.Any(issue => issue.Code == "quick-window.invocation-outdated"));
-        Assert.AreEqual(1, repaired.After.Project.EffectiveQuickWindowInvocations.Single().InterfaceVersion);
-    }
-
-    [TestMethod]
     public void OutdatedInvocationsAreListedWithTheirReasonForTheRepairSurface()
     {
         var member = Member("Run");
@@ -234,52 +184,7 @@ public sealed class QuickWindowInterfaceVersioningTests
     }
 
     [TestMethod]
-    public void TheRepairSurfaceListsEachOutdatedInvocationWithItsCallerAndReason()
-    {
-        var member = Member("Run");
-        var required = Member("Speed", QuickWindowDataType.Integer, required: true);
-        var definition = Definition("motor", members: [member, required], interfaceVersion: 2);
-        var invocation = Caller(definition, QuickWindowBinding.FromTag(member.MemberKey, "motor.run")) with
-        {
-            InterfaceVersion = 1
-        };
-        var snapshot = Snapshot(definition, invocation);
-        var controller = new QuickWindowWorkspaceController(new RepairHost());
-
-        var outdated = controller.ListOutdatedInvocations(snapshot, definition.DefinitionKey);
-
-        Assert.AreEqual(1, outdated.Count);
-        var row = new QuickWindowRepairRowViewModel(outdated[0], "page");
-        Assert.AreEqual("page", row.PageLabel);
-        Assert.AreEqual("caller", row.OwnerElementId);
-        Assert.AreEqual("open", row.OwnerCommandId);
-        Assert.AreEqual("v1 → v2", row.VersionLabel);
-        StringAssert.Contains(row.ReasonLabel, "Speed");
-    }
-
-    [TestMethod]
-    public void NavigatingToACallerSelectsItsPageWithoutMutatingAnything()
-    {
-        var member = Member("Run");
-        var definition = Definition("motor", members: [member], interfaceVersion: 2);
-        var invocation = Caller(definition, QuickWindowBinding.FromTag(member.MemberKey, "motor.run")) with
-        {
-            InterfaceVersion = 1
-        };
-        var snapshot = Snapshot(definition, invocation);
-        var controller = new QuickWindowWorkspaceController(new RepairHost());
-
-        var navigation = controller.NavigateToInvocation(snapshot, invocation.InvocationKey);
-
-        Assert.IsNotNull(navigation);
-        Assert.IsFalse(navigation!.Result.Changed);
-        Assert.AreEqual(PageKeyFor("page"), navigation.Result.PageToOpenKey);
-        Assert.AreEqual("caller", navigation.UsageToNavigate?.ElementId);
-        Assert.IsNull(controller.NavigateToInvocation(snapshot, Guid.NewGuid()));
-    }
-
-    [TestMethod]
-    public void TheBuildGateClearsOnlyWhenEveryInvocationIsRepaired()
+    public void TheBuildGateClearsOnlyWhenEveryInvocationIsCurrent()
     {
         var member = Member("Run");
         var required = Member("Speed", QuickWindowDataType.Integer, required: true);
@@ -293,59 +198,22 @@ public sealed class QuickWindowInterfaceVersioningTests
             InterfaceVersion = 1,
             OwnerElementId = "caller-2"
         };
-        var snapshot = Snapshot(definition, first, second);
-        var controller = new QuickWindowWorkspaceController(new RepairHost());
         var bindings = new[]
         {
             QuickWindowBinding.FromTag(member.MemberKey, "motor.run"),
             QuickWindowBinding.FromLiteral(required.MemberKey, "12")
         };
+        var firstCurrent = first with { Bindings = bindings, InterfaceVersion = definition.InterfaceVersion };
+        var secondCurrent = second with { Bindings = bindings, InterfaceVersion = definition.InterfaceVersion };
 
-        var afterFirst = controller.RepairInvocation(snapshot, first.InvocationKey, bindings);
-        Assert.AreEqual(CommandResultStatus.Succeeded, afterFirst.Result.Status);
-        Assert.AreEqual(
-            1,
-            controller.ListOutdatedInvocations(afterFirst.After, definition.DefinitionKey).Count,
-            "repairing one invocation never repairs the others in bulk");
         Assert.IsTrue(
-            ScadaProjectBuildValidator.Validate(afterFirst.After.Project, [Page("page")])
+            ScadaProjectBuildValidator.Validate(Snapshot(definition, firstCurrent, second).Project, [Page("page")])
                 .Any(issue => issue.Code == "quick-window.interface-version-incompatible"),
             "the build gate stays closed while one invocation is still outdated");
-
-        var afterSecond = controller.RepairInvocation(afterFirst.After, second.InvocationKey, bindings);
-
-        Assert.AreEqual(CommandResultStatus.Succeeded, afterSecond.Result.Status);
-        Assert.AreEqual(0, controller.ListOutdatedInvocations(afterSecond.After, definition.DefinitionKey).Count);
         Assert.IsFalse(
-            ScadaProjectBuildValidator.Validate(afterSecond.After.Project, [Page("page")])
+            ScadaProjectBuildValidator.Validate(Snapshot(definition, firstCurrent, secondCurrent).Project, [Page("page")])
                 .Any(issue => issue.Code == "quick-window.interface-version-incompatible"),
-            "the build gate clears only once every invocation is repaired");
-    }
-
-    [TestMethod]
-    public void ARepairIsOneUndoableTransitionOfTheSingleWorkspaceStack()
-    {
-        var member = Member("Run");
-        var required = Member("Speed", QuickWindowDataType.Integer, required: true);
-        var definition = Definition("motor", members: [member, required], interfaceVersion: 2);
-        var invocation = Caller(definition, QuickWindowBinding.FromTag(member.MemberKey, "motor.run")) with
-        {
-            InterfaceVersion = 1
-        };
-        var snapshot = Snapshot(definition, invocation);
-        var controller = new QuickWindowWorkspaceController(new RepairHost());
-
-        var repaired = controller.RepairInvocation(
-            snapshot,
-            invocation.InvocationKey,
-            [
-                QuickWindowBinding.FromTag(member.MemberKey, "motor.run"),
-                QuickWindowBinding.FromLiteral(required.MemberKey, "12")
-            ]);
-
-        Assert.AreSame(snapshot, repaired.Before, "the before snapshot stays the reversible baseline");
-        Assert.AreEqual(1, repaired.Before.Project.EffectiveQuickWindowInvocations.First().InterfaceVersion);
-        Assert.AreEqual(2, repaired.After.Project.EffectiveQuickWindowInvocations.First().InterfaceVersion);
+            "the build gate clears only once every invocation is current");
     }
 
     [TestMethod]
@@ -391,31 +259,6 @@ public sealed class QuickWindowInterfaceVersioningTests
             definition with { InterfaceMembers = [member with { Name = "RunFeedback" }] });
 
         Assert.AreEqual(0, impact.Count, "a rename breaks no invocation");
-    }
-
-    [TestMethod]
-    public void TheRepairSurfaceExposesItsColumnsAndItsExplicitActions()
-    {
-        var xaml = ReadAppFile(Path.Combine("QuickWindows", "QuickWindowInvocationRepairDialog.xaml"));
-
-        foreach (var column in new[] { "Page", "Élément appelant", "Commande", "Interface", "Motif" })
-        {
-            StringAssert.Contains(xaml, $"Header=\"{column}\"");
-        }
-
-        StringAssert.Contains(xaml, "x:Name=\"NavigateToCallerButton\"");
-        StringAssert.Contains(xaml, "x:Name=\"RepairInvocationButton\"");
-        StringAssert.Contains(xaml, "QuickWindowBindingsEditor x:Name=\"RepairBindingsEditor\"");
-
-        // The `Interface locale` panel (QuickWindowInterfacePanel.xaml) was repurposed by DEC-0052 (Task 11)
-        // into a read-only `#N` placeholder-usage list bound to the active quick-window page; it no longer
-        // hosts a definition-editing surface, so it no longer offers this repair entry point. The repair
-        // dialog itself (asserted above) and its underlying domain services are unaffected (spec §9).
-
-        var dialog = ReadAppFile(Path.Combine("QuickWindows", "QuickWindowInvocationRepairDialog.xaml.cs"));
-        Assert.IsFalse(
-            dialog.Contains("RepairAll", StringComparison.Ordinal),
-            "no automatic nor silent bulk repair may exist");
     }
 
     private sealed class RepairHost : IQuickWindowWorkspaceHost
@@ -468,20 +311,6 @@ public sealed class QuickWindowInterfaceVersioningTests
             OwnerPageKey: PageKeyFor("page"),
             OwnerElementId: "caller",
             OwnerCommandId: "open");
-
-    private static string ReadAppFile(string relativePath)
-    {
-        var directory = new DirectoryInfo(AppContext.BaseDirectory);
-        while (directory is not null)
-        {
-            var candidate = Path.Combine(directory.FullName, "src", "ScadaBuilderV2.App", relativePath);
-            if (File.Exists(candidate)) return File.ReadAllText(candidate);
-            directory = directory.Parent;
-        }
-
-        Assert.Fail($"Unable to locate src/ScadaBuilderV2.App/{relativePath}.");
-        return string.Empty;
-    }
 
     private static PageWorkspaceSnapshot Snapshot(QuickWindowDefinition definition, params QuickWindowInvocation[] invocations)
     {

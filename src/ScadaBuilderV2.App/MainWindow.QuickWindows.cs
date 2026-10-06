@@ -573,31 +573,6 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         return fallback();
     }
 
-    /// <summary>Selects and reveals the page that owns one quick-window usage, without mutating anything.</summary>
-    private void NavigateToQuickWindowUsage(QuickWindowWorkspaceMutation mutation)
-    {
-        if (mutation.Result.PageToSelectKey is { } pageKey)
-        {
-            _pagesPanel.SelectedPage = _pagesPanel.Items.FirstOrDefault(item => item.PageKey == pageKey);
-            _isUpdatingPageSelection = true;
-            try
-            {
-                PagesListBox.SelectedItem = _pagesPanel.SelectedPage;
-            }
-            finally
-            {
-                _isUpdatingPageSelection = false;
-            }
-
-            ActivateAnchorable(PageAnchorable);
-        }
-
-        var usage = mutation.UsageToNavigate;
-        SetStatus(usage is null
-            ? mutation.Result.Message
-            : $"Utilisation: {usage.PropertyPath}");
-    }
-
     /// <inheritdoc />
     public async Task<string?> RequestQuickWindowNameAsync(string title, string proposedName)
     {
@@ -723,70 +698,6 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
             MessageBoxImage.Warning) == MessageBoxResult.Yes;
         return Task.FromResult(confirmed);
     }
-
-    /// <summary>
-    /// Opens the repair surface of the active definition: outdated invocations with their caller and reason,
-    /// navigation to that caller and explicit port-by-port relinking (FR-UI-24).
-    /// </summary>
-    private async void OnQuickWindowRepairInvocationsRequested(object? sender, EventArgs e)
-    {
-        if (_modernProject is null || _hostedQuickWindowKey is not { } definitionKey)
-        {
-            SetStatus("Aucune fenetre rapide active.");
-            return;
-        }
-
-        var snapshot = await _pageWorkspaceController.CaptureSnapshotAsync();
-        var definition = snapshot.Project.EffectiveQuickWindows.FirstOrDefault(item => item.DefinitionKey == definitionKey);
-        if (definition is null) return;
-
-        var outdated = QuickWindowWorkspace.ListOutdatedInvocations(snapshot, definitionKey);
-        if (outdated.Count == 0)
-        {
-            SetStatus("Aucune invocation a reparer pour cette fenetre rapide.");
-            return;
-        }
-
-        var rows = outdated
-            .Select(item => new QuickWindowRepairRowViewModel(item, ResolvePageLabel(snapshot, item.OwnerPageKey)))
-            .ToArray();
-        var dialog = new QuickWindowInvocationRepairDialog(
-            definition,
-            rows,
-            snapshot.Project.EffectiveQuickWindowInvocations,
-            ActiveSelectorTagCatalog)
-        {
-            Owner = this
-        };
-        if (dialog.ShowDialog() != true || dialog.SelectedInvocationKey is not { } invocationKey) return;
-
-        if (dialog.NavigationRequested)
-        {
-            if (QuickWindowWorkspace.NavigateToInvocation(snapshot, invocationKey) is { } navigation)
-            {
-                NavigateToQuickWindowUsage(navigation);
-            }
-
-            return;
-        }
-
-        var mutation = QuickWindowWorkspace.RepairInvocation(snapshot, invocationKey, dialog.RepairedBindings);
-        if (mutation.Result.Status != CommandResultStatus.Succeeded) return;
-        await ApplyQuickWindowMutationAsync(mutation);
-        if (mutation.After.Scenes.TryGetValue(mutation.After.Project.EffectiveQuickWindowInvocations
-                .First(item => item.InvocationKey == invocationKey).OwnerPageKey ?? Guid.Empty, out var updatedScene) &&
-            _activeSceneTab?.PageKey == updatedScene.PageKey)
-        {
-            _activeScene = updatedScene;
-            MarkActiveSceneDirty();
-            RefreshModernSceneUi();
-        }
-    }
-
-    private static string ResolvePageLabel(PageWorkspaceSnapshot snapshot, Guid? pageKey) =>
-        pageKey is { } key
-            ? snapshot.Project.Scenes.FirstOrDefault(page => page.PageKey == key)?.EffectivePageCode ?? key.ToString("N")[..8]
-            : "(non rattachee)";
 
     /// <inheritdoc />
     public void ReportQuickWindowStatus(string message) => SetStatus(message);
