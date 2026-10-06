@@ -452,6 +452,75 @@ public sealed class EditorHistoryServiceTests
     }
 
     [TestMethod]
+    public async Task AnActionIsNeverAppliedByAContextThatCannotResolveItsTarget()
+    {
+        var history = new EditorHistoryService();
+        var action = new RecordingProjectAction();
+        history.Push(action);
+        var pageOnlyContext = new EditorHistoryContext
+        {
+            ActiveSceneId = "win00003",
+            GetActiveScene = () => null,
+            ReplaceActiveScene = _ => { },
+            MarkDirty = () => { },
+            RefreshPreviewAsync = () => Task.CompletedTask,
+            SetStatus = _ => { }
+        };
+        var projectContext = new EditorHistoryContext
+        {
+            ActiveSceneId = "win00003",
+            GetActiveScene = () => null,
+            ReplaceActiveScene = _ => { },
+            RestoreProjectWorkspaceSnapshot = _ => { },
+            MarkDirty = () => { },
+            RefreshPreviewAsync = () => Task.CompletedTask,
+            SetStatus = _ => { }
+        };
+
+        Assert.IsFalse(await history.UndoAsync(pageOnlyContext), "an unresolvable undo is refused");
+        Assert.AreEqual(0, action.UndoCalls, "a refused undo never runs the action");
+        Assert.AreEqual(1, history.UndoCount, "an unresolvable action stays on the stack instead of being lost");
+        Assert.AreEqual(0, history.RedoCount);
+
+        Assert.IsTrue(await history.UndoAsync(projectContext));
+        Assert.AreEqual(1, action.UndoCalls);
+        Assert.AreEqual(0, history.UndoCount);
+        Assert.AreEqual(1, history.RedoCount);
+
+        Assert.IsFalse(await history.RedoAsync(pageOnlyContext), "an unresolvable redo is refused");
+        Assert.AreEqual(0, action.RedoCalls, "a refused redo never runs the action");
+        Assert.AreEqual(0, history.UndoCount);
+        Assert.AreEqual(1, history.RedoCount, "an unresolvable action stays on the redo stack");
+    }
+
+    private sealed class RecordingProjectAction : IEditorHistoryAction
+    {
+        public int UndoCalls { get; private set; }
+
+        public int RedoCalls { get; private set; }
+
+        public EditorHistoryTarget Target => EditorHistoryTarget.Project;
+
+        public string Label => "recording project action";
+
+        public bool CanMergeWith(IEditorHistoryAction next) => false;
+
+        public IEditorHistoryAction MergeWith(IEditorHistoryAction next) => throw new InvalidOperationException();
+
+        public Task UndoAsync(EditorHistoryContext context)
+        {
+            UndoCalls++;
+            return Task.CompletedTask;
+        }
+
+        public Task RedoAsync(EditorHistoryContext context)
+        {
+            RedoCalls++;
+            return Task.CompletedTask;
+        }
+    }
+
+    [TestMethod]
     public async Task NewActionClearsRedoStack()
     {
         var scene = ScadaScene.CreateEmpty("win00008", "win00008", new(1280, 873));
