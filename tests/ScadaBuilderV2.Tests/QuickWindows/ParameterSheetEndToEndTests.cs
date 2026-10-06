@@ -27,12 +27,15 @@ namespace ScadaBuilderV2.Tests.QuickWindows;
 /// side has no zip-reading dependency and none may be added (constraints.md); reading two committed text
 /// files needs none.
 ///
-/// Every element of the <c>QuickWindow</c> page's content is authored as <see cref="ScadaElementKind.Text"/>
-/// on purpose: a <see cref="ScadaElementKind.Shape"/> (as used by other fixtures in this suite) emits
-/// self-closing SVG child markup (`&lt;rect .../&gt;`) that the JS harness's minimal HTML fragment parser
-/// (`tests/runtime-js/harness.mjs`, `parseFragment`) cannot walk; a state condition's
-/// `data-scada-state-config` attribute is emitted on the element's outer `&lt;div&gt;` regardless of its
-/// content kind, so `Text` carries the same proof with no self-closing markup anywhere in the fragment.
+/// Every element of the <c>QuickWindow</c> page's content but the table is authored as
+/// <see cref="ScadaElementKind.Text"/> on purpose: a state condition's `data-scada-state-config` attribute is
+/// emitted on the element's outer `&lt;div&gt;` regardless of its content kind, so `Text` carries the same
+/// proof as a shape with the least markup. The table (`#6`) is the one site that only exists on a table: its
+/// numeric cell emits a self-closing `&lt;input /&gt;`, which `parseFragment` treats as an empty element.
+///
+/// `#5` (a direct <c>Data.TagBinding</c>) and `#6` (a numeric table cell's read binding) are the two sites a
+/// page only transports through its manifest objects; the quick-window fragment must carry them itself
+/// (package contract §11b.2), and the JS test proves both are substituted and displayed by the host.
 ///
 /// Decisions: DEC-0050, DEC-0052.
 /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md §12.4.
@@ -60,12 +63,16 @@ public sealed class ParameterSheetEndToEndTests
     private const string SheetFan03Text =
         "#1 := {FAN_03_RUN}\n" +
         "#3 := {FAN_03_SPEED} * 0.1\n" +
-        "#4 := \"Ventilateur 3\"\n";
+        "#4 := \"Ventilateur 3\"\n" +
+        "#5 := {FAN_03_LEVEL}\n" +
+        "#6 := {FAN_03_SETPOINT}\n";
 
     private const string SheetFan05Text =
         "#1 := {FAN_05_RUN}\n" +
         "#3 := {FAN_05_SPEED} * 0.1\n" +
-        "#4 := \"Ventilateur 5\"\n";
+        "#4 := \"Ventilateur 5\"\n" +
+        "#5 := {FAN_05_LEVEL}\n" +
+        "#6 := {FAN_05_SETPOINT}\n";
 
     [TestMethod]
     public async Task AQuickWindowOpenedThroughTwoParameterSheetsLowersValidatesAndExportsTwoIndependentInvocations()
@@ -102,6 +109,8 @@ public sealed class ParameterSheetEndToEndTests
             var member1 = QuickWindowKeys.Member(QuickWindowPageKey, 1).ToString("D");
             var member3 = QuickWindowKeys.Member(QuickWindowPageKey, 3).ToString("D");
             var member4 = QuickWindowKeys.Member(QuickWindowPageKey, 4).ToString("D");
+            var member5 = QuickWindowKeys.Member(QuickWindowPageKey, 5).ToString("D");
+            var member6 = QuickWindowKeys.Member(QuickWindowPageKey, 6).ToString("D");
 
             var invocationFan03 = invocations.EnumerateArray()
                 .Single(invocation => Binding(invocation, member4).GetProperty("LiteralValue").GetString() == SheetFan03Name);
@@ -134,13 +143,21 @@ public sealed class ParameterSheetEndToEndTests
             Assert.AreEqual("Literal", Binding(invocationFan03, member4).GetProperty("SourceKind").GetString());
             Assert.AreEqual("Literal", Binding(invocationFan05, member4).GetProperty("SourceKind").GetString());
 
+            // #5 (TagBinding) and #6 (table cell): read sites, each bound to its own sheet's tag.
+            Assert.AreEqual("tf100.mapping.305", Binding(invocationFan03, member5).GetProperty("TagId").GetString());
+            Assert.AreEqual("tf100.mapping.505", Binding(invocationFan05, member5).GetProperty("TagId").GetString());
+            Assert.AreEqual("tf100.mapping.306", Binding(invocationFan03, member6).GetProperty("TagId").GetString());
+            Assert.AreEqual("tf100.mapping.506", Binding(invocationFan05, member6).GetProperty("TagId").GetString());
+
             var definitionHtml = await File.ReadAllTextAsync(
                 Path.Combine(result.ExportDirectory, relativeHtmlPath.Replace('/', Path.DirectorySeparatorChar)));
             StringAssert.Contains(definitionHtml, "#1");
             StringAssert.Contains(definitionHtml, "#3");
             StringAssert.Contains(definitionHtml, "#4");
-            StringAssert.DoesNotMatch(definitionHtml, new System.Text.RegularExpressions.Regex("<[a-zA-Z][^>]*/>"),
-                "the fragment must carry no self-closing tag: the JS harness's minimal fragment parser cannot walk one");
+            StringAssert.Matches(definitionHtml, new System.Text.RegularExpressions.Regex("id=\"[^\"]*__level\"[^>]* data-scada-read-tag=\"#5\""),
+                "the TagBinding #5 must reach the fragment as a substitutable read tag");
+            StringAssert.Matches(definitionHtml, new System.Text.RegularExpressions.Regex("id=\"[^\"]*__setpoint__cell-0-0\"[^>]* data-scada-read-tag=\"#6\""),
+                "the table cell #6 must carry its read tag on its own cell");
 
             WriteOrCompareFixture(manifestJson, relativeHtmlPath, definitionHtml);
         }
@@ -235,6 +252,8 @@ public sealed class ParameterSheetEndToEndTests
         ReadElement("read1", "#1"),
         StateTextElement("state3", "{#3} == 1"),
         TextElement("title4", "Ventilateur #4"),
+        TagBindingElement("level", "#5"),
+        NumericTableElement("setpoint", "#6"),
     ];
 
     private static (ScadaSceneReference Reference, ScadaScene Scene) Page(
@@ -255,6 +274,29 @@ public sealed class ParameterSheetEndToEndTests
     {
         var element = ScadaElement.CreateText(id, id, 0, 0);
         return element with { Data = element.Data! with { Text = text } };
+    }
+
+    private static ScadaElement TagBindingElement(string id, string tagBinding)
+    {
+        var element = ScadaElement.CreateText(id, id, 0, 60);
+        return element with { Data = element.Data! with { Text = string.Empty, TagBinding = tagBinding } };
+    }
+
+    private static ScadaElement NumericTableElement(string id, string readTagId)
+    {
+        var table = ScadaElement.CreateTable(id, id, 0, 100, rows: 1, columns: 1, firstRowIsHeader: false);
+        return table with
+        {
+            Table = table.Table! with
+            {
+                Cells =
+                [
+                    new ScadaTableCell(0, 0,
+                        Content: new ScadaTableCellContent(ScadaTableCellContentKind.InputNumeric),
+                        ValueBindings: new ScadaTableCellValueBindings(readTagId, null))
+                ]
+            }
+        };
     }
 
     private static ScadaElement ReadElement(string id, string tagId)
@@ -297,8 +339,12 @@ public sealed class ParameterSheetEndToEndTests
         [
             new ScadaTagDefinition("tf100.mapping.301", "FAN_03_RUN", Datatype: "Boolean"),
             new ScadaTagDefinition("tf100.mapping.302", "FAN_03_SPEED", Datatype: "Decimal"),
+            new ScadaTagDefinition("tf100.mapping.305", "FAN_03_LEVEL", Datatype: "Decimal"),
+            new ScadaTagDefinition("tf100.mapping.306", "FAN_03_SETPOINT", Datatype: "Decimal"),
             new ScadaTagDefinition("tf100.mapping.501", "FAN_05_RUN", Datatype: "Boolean"),
             new ScadaTagDefinition("tf100.mapping.502", "FAN_05_SPEED", Datatype: "Decimal"),
+            new ScadaTagDefinition("tf100.mapping.505", "FAN_05_LEVEL", Datatype: "Decimal"),
+            new ScadaTagDefinition("tf100.mapping.506", "FAN_05_SETPOINT", Datatype: "Decimal"),
         ],
         "generated-parameter-sheet-e2e-tags.json");
 

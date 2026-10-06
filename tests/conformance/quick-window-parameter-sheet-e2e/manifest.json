@@ -188,6 +188,32 @@
       "Unit": null
     },
     {
+      "Id": "tf100.mapping.305",
+      "DisplayName": "FAN_03_LEVEL",
+      "KeywordLabel": null,
+      "KeywordType": null,
+      "Device": null,
+      "Protocol": null,
+      "AddressUri": null,
+      "Datatype": "Decimal",
+      "Writeable": false,
+      "Enabled": true,
+      "Unit": null
+    },
+    {
+      "Id": "tf100.mapping.306",
+      "DisplayName": "FAN_03_SETPOINT",
+      "KeywordLabel": null,
+      "KeywordType": null,
+      "Device": null,
+      "Protocol": null,
+      "AddressUri": null,
+      "Datatype": "Decimal",
+      "Writeable": false,
+      "Enabled": true,
+      "Unit": null
+    },
+    {
       "Id": "tf100.mapping.501",
       "DisplayName": "FAN_05_RUN",
       "KeywordLabel": null,
@@ -212,12 +238,39 @@
       "Writeable": false,
       "Enabled": true,
       "Unit": null
+    },
+    {
+      "Id": "tf100.mapping.505",
+      "DisplayName": "FAN_05_LEVEL",
+      "KeywordLabel": null,
+      "KeywordType": null,
+      "Device": null,
+      "Protocol": null,
+      "AddressUri": null,
+      "Datatype": "Decimal",
+      "Writeable": false,
+      "Enabled": true,
+      "Unit": null
+    },
+    {
+      "Id": "tf100.mapping.506",
+      "DisplayName": "FAN_05_SETPOINT",
+      "KeywordLabel": null,
+      "KeywordType": null,
+      "Device": null,
+      "Protocol": null,
+      "AddressUri": null,
+      "Datatype": "Decimal",
+      "Writeable": false,
+      "Enabled": true,
+      "Unit": null
     }
   ],
   "RuntimeContract": {
     "Version": "1.0",
     "RequiredCapabilities": [
       "binding.element.read",
+      "binding.table.read",
       "button.command",
       "button.hover",
       "button.pressed",
@@ -227,6 +280,7 @@
       "effect.border-width",
       "effect.opacity",
       "element.button",
+      "element.table",
       "element.text",
       "expression.binary",
       "expression.binary.equal",
@@ -242,7 +296,8 @@
       "quick-window.presentation.backdrop",
       "state.default-effect",
       "state.quality-fallback",
-      "state.rules"
+      "state.rules",
+      "table.cell.input-numeric"
     ],
     "RuntimeSha256": "b968f8fc59c0b0102141d05e4d621373dba95860a41bd2216af43676de8d939f"
   },
@@ -269,6 +324,16 @@
           "Description": null
         },
         {
+          "MemberKey": "19f9cd30-6d73-50a9-901a-8bad49f09915",
+          "Name": "#5",
+          "Family": "ReadState",
+          "DataType": "Decimal",
+          "Access": "Read",
+          "Required": false,
+          "DefaultValue": null,
+          "Description": null
+        },
+        {
           "MemberKey": "86af6f20-b499-5428-a7ed-e5f046896b71",
           "Name": "#3",
           "Family": "ReadState",
@@ -283,6 +348,16 @@
           "Name": "#4",
           "Family": "ReadState",
           "DataType": "String",
+          "Access": "Read",
+          "Required": false,
+          "DefaultValue": null,
+          "Description": null
+        },
+        {
+          "MemberKey": "d3031039-dcfc-56ab-a96e-f642194b4344",
+          "Name": "#6",
+          "Family": "ReadState",
+          "DataType": "Decimal",
           "Access": "Read",
           "Required": false,
           "DefaultValue": null,
@@ -320,6 +395,14 @@
           "ParentMemberKey": null
         },
         {
+          "MemberKey": "19f9cd30-6d73-50a9-901a-8bad49f09915",
+          "SourceKind": "Tag",
+          "TagId": "tf100.mapping.305",
+          "LiteralValue": null,
+          "Expression": null,
+          "ParentMemberKey": null
+        },
+        {
           "MemberKey": "86af6f20-b499-5428-a7ed-e5f046896b71",
           "SourceKind": "Expression",
           "TagId": null,
@@ -347,6 +430,14 @@
           "LiteralValue": "Ventilateur 3",
           "Expression": null,
           "ParentMemberKey": null
+        },
+        {
+          "MemberKey": "d3031039-dcfc-56ab-a96e-f642194b4344",
+          "SourceKind": "Tag",
+          "TagId": "tf100.mapping.306",
+          "LiteralValue": null,
+          "Expression": null,
+          "ParentMemberKey": null
         }
       ]
     },
@@ -362,6 +453,14 @@
           "MemberKey": "1042ed82-211c-56ed-8fac-87a613a7e76a",
           "SourceKind": "Tag",
           "TagId": "tf100.mapping.501",
+          "LiteralValue": null,
+          "Expression": null,
+          "ParentMemberKey": null
+        },
+        {
+          "MemberKey": "19f9cd30-6d73-50a9-901a-8bad49f09915",
+          "SourceKind": "Tag",
+          "TagId": "tf100.mapping.505",
           "LiteralValue": null,
           "Expression": null,
           "ParentMemberKey": null
@@ -392,6 +491,14 @@
           "SourceKind": "Literal",
           "TagId": null,
           "LiteralValue": "Ventilateur 5",
+          "Expression": null,
+          "ParentMemberKey": null
+        },
+        {
+          "MemberKey": "d3031039-dcfc-56ab-a96e-f642194b4344",
+          "SourceKind": "Tag",
+          "TagId": "tf100.mapping.506",
+          "LiteralValue": null,
           "Expression": null,
           "ParentMemberKey": null
         }

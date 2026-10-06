@@ -105,6 +105,13 @@ public static class ScadaRuntimeCapabilityAnalyzer
             foreach (var element in Flatten(definition.EffectiveContent.EffectiveElements))
             {
                 AnalyzeElement(capabilities, element);
+
+                // A quick-window fragment carries its TagBinding as a host-read data-scada-read-tag
+                // (package contract §11b.2); a page only transports it in its manifest objects.
+                if (QuickWindowFragmentBindings.InlineTagBinding(element) is not null)
+                {
+                    Add(capabilities, ScadaRuntimeCapabilityCatalog.ElementReadBinding);
+                }
             }
 
             var members = definition.EffectiveInterfaceMembers;

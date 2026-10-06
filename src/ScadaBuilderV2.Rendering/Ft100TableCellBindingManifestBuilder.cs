@@ -1,4 +1,5 @@
 using ScadaBuilderV2.Domain.Projects;
+using ScadaBuilderV2.Domain.QuickWindows;
 using ScadaBuilderV2.Domain.Scenes;
 
 namespace ScadaBuilderV2.Rendering;
@@ -94,7 +95,8 @@ public static class Ft100TableCellBindingManifestBuilder
         IReadOnlyDictionary<string, ScadaTagDefinition> tags,
         ICollection<string> warnings)
     {
-        if (tagId is null)
+        // A quick-window `#N` is substituted at mount time from the invocation, never looked up here.
+        if (tagId is null || QuickWindowPlaceholder.TryParseName(tagId, out _))
         {
             return;
         }

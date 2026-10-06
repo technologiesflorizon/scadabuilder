@@ -6,10 +6,18 @@ using ScadaBuilderV2.Domain.Scenes;
 namespace ScadaBuilderV2.Rendering;
 
 /// <summary>Renders the persistent modern-table model for preview and FT100 export.</summary>
-/// <remarks>Decisions: DEC-0039, DEC-0042. Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md. Tests: tests/ScadaBuilderV2.Tests/PreviewDocumentTests.cs and Ft100SceneExporterTests.cs.</remarks>
+/// <remarks>Decisions: DEC-0039, DEC-0042, DEC-0052. Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md §11, §11b.2. Tests: tests/ScadaBuilderV2.Tests/PreviewDocumentTests.cs, Ft100SceneExporterTests.cs and QuickWindows/QuickWindowFragmentValueBindingTests.cs.</remarks>
 internal static class ModernTableHtmlRenderer
 {
-    public static string Render(ScadaElement element, string scopedElementId)
+    /// <summary>
+    /// Renders <paramref name="element"/>'s table. <paramref name="cellBindingAttributes"/>, keyed by anchor
+    /// (row, column), is pre-encoded attribute markup appended to that cell's opening tag; only a quick-window
+    /// fragment passes it, since a page's cell bindings travel in its manifest.
+    /// </summary>
+    public static string Render(
+        ScadaElement element,
+        string scopedElementId,
+        IReadOnlyDictionary<(int Row, int Column), string>? cellBindingAttributes = null)
     {
         var table = element.Table;
         if (table is null || table.EffectiveRows.Count == 0 || table.EffectiveColumns.Count == 0)
@@ -46,7 +54,10 @@ internal static class ModernTableHtmlRenderer
                 html.Append(cell.Column.ToString(CultureInfo.InvariantCulture));
                 html.Append("\" data-scada-table-cell-kind=\"");
                 html.Append(cell.EffectiveContent.Kind.ToString());
-                html.Append("\" style=\"");
+                html.Append('"');
+                if (cellBindingAttributes is not null && cellBindingAttributes.TryGetValue((cell.Row, cell.Column), out var bindingAttributes))
+                    html.Append(bindingAttributes);
+                html.Append(" style=\"");
                 AppendCellStyle(html, cell, format);
                 html.Append("\">");
                 AppendContent(html, cell.EffectiveContent, cellId);

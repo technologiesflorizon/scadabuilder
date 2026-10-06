@@ -9,7 +9,8 @@ import { loadRuntime, createFakeDom, parseFragment } from './harness.mjs';
  * Task 12: proves a parameter-sheet quick window end to end — Builder export through the shared runtime.
  *
  * The fixture (`tests/conformance/quick-window-parameter-sheet-e2e/`) is a real Builder export: a
- * `QuickWindow` page with `#1` (read), `#3` (state expression) and `#4` (text) placeholders, opened from
+ * `QuickWindow` page with `#1` (read), `#3` (state expression), `#4` (text), `#5` (direct `Data.TagBinding`)
+ * and `#6` (numeric table cell read binding) placeholders, opened from
  * a caller page through two different parameter sheets ("Ventilateur 3", "Ventilateur 5"), lowered,
  * validated (0 error) and exported by `Ft100SceneExporter` —
  * `tests/ScadaBuilderV2.Tests/QuickWindows/ParameterSheetEndToEndTests.cs` produces and locks it (run
@@ -119,7 +120,7 @@ test('opening the Ventilateur 3 invocation mounts the real exported fragment wit
   const { root, mounted } = mountedRoots[opened.runtimeInstanceId];
   assert.equal(mounted.ok, true, JSON.stringify(mounted));
 
-  const readElement = findByAttribute(root, 'data-scada-read-tag');
+  const readElement = findByIdSuffix(root, '__read1');
   assert.equal(readElement.getAttribute('data-scada-read-tag'), binding1.TagId);
 
   const textElement = findByText(root, 'Ventilateur 3');
@@ -183,7 +184,7 @@ test('closing Ventilateur 3 and opening Ventilateur 5 shows only the second shee
   assert.equal(fan5.mounted.ok, true, JSON.stringify(fan5.mounted));
 
   const binding1Fan5 = bindingFor(invocationFan5, manifest, '#1');
-  const readElementFan5 = findByAttribute(fan5.root, 'data-scada-read-tag');
+  const readElementFan5 = findByIdSuffix(fan5.root, '__read1');
   assert.equal(readElementFan5.getAttribute('data-scada-read-tag'), binding1Fan5.TagId);
   assert.notEqual(readElementFan5.getAttribute('data-scada-read-tag'), bindingFor(invocationFan3, manifest, '#1').TagId);
 
@@ -214,7 +215,123 @@ test('closing Ventilateur 3 and opening Ventilateur 5 shows only the second shee
   assert.ok(findByText(fan3.root, 'Ventilateur 3'), 'the first root is not mutated by opening the second');
 });
 
+// ── #5 (Data.TagBinding) and #6 (table cell ValueBindings): the two sites a page only transports in its
+// manifest objects. A quick-window fragment carries them itself (package contract §11b.2); these tests
+// prove the real exported fragment gets them substituted per invocation and displayed by the host. ─────
+
+/**
+ * Stand-in for TF100Web's host-side value display, reproduced exactly from
+ * `static/asset/js/station/visualisation_import.js` (`ScadaTagCache.applyReadBindings`): every
+ * `[data-scada-read-tag]`/`[data-scada-mapping-id]` element whose mapping id (`tf100.mapping.` prefix
+ * stripped, `_mappingId`) has a value gets it written into its input, else into its `[data-scada-text]`
+ * child, else into its own text when it holds no svg/canvas/img/button. The shared runtime never displays a
+ * read tag itself (`ElementReadBinding` is a TF100Web-host capability); value formatting (`formatValue`,
+ * `data-scada-format`) is the host's and out of scope here, so a value is shown as `String(value)`.
+ *
+ * @param {object} root - The mounted instance root.
+ * @param {Record<string, number|boolean|string>} valuesByMappingId - e.g. `{ '305': 42 }`.
+ */
+function applyReadBindingsLikeTf100Web(root, valuesByMappingId) {
+  const nodes = root.querySelectorAll('[data-scada-read-tag], [data-scada-mapping-id]');
+  for (const element of nodes) {
+    const raw = element.getAttribute('data-scada-mapping-id') || element.getAttribute('data-scada-read-tag');
+    const match = String(raw || '').match(/^(?:tf100\.mapping\.)?(\d+)$/i);
+    const mappingId = match ? match[1] : '';
+    if (!mappingId || !Object.prototype.hasOwnProperty.call(valuesByMappingId, mappingId)) continue;
+    const value = valuesByMappingId[mappingId];
+    const text = value === null || value === undefined ? '---' : String(value);
+    const input = element.querySelectorAll('input, textarea, select')[0];
+    if (input) {
+      input.value = text;
+      continue;
+    }
+    const textTarget = element.querySelectorAll('[data-scada-text]')[0];
+    if (textTarget) {
+      textTarget.textContent = text;
+      continue;
+    }
+    if (element.querySelectorAll('svg, canvas, img, button').length === 0) element.textContent = text;
+  }
+}
+
+function openInvocation(manifest, fragmentTemplate, invocation) {
+  const window = loadE2eRuntime();
+  const quickWindow = window.ScadaRuntime.QuickWindow;
+  quickWindow.loadRegistries(manifest);
+  const mountedRoots = {};
+  window.ScadaRuntime.HostAdapter = {
+    dispatchIntent(envelope) {
+      const intent = envelope.intent;
+      if (intent.kind !== 'openQuickWindow') return true;
+      const root = parseFragment(window.document, fragmentTemplate);
+      mountedRoots[intent.runtimeInstanceId] = { root, mounted: quickWindow.mountInstance(intent.runtimeInstanceId, root) };
+      return true;
+    }
+  };
+  const opened = quickWindow.open(invocation.InvocationKey);
+  return { opened, instance: opened.ok ? mountedRoots[opened.runtimeInstanceId] : null };
+}
+
+test('the #5 TagBinding and the #6 table cell show their own sheet\'s tag values and follow every tag change', () => {
+  const { manifest, fragmentTemplate } = readFixture();
+  for (const [sheet, levelId, setpointId, otherLevelId] of [
+    ['Ventilateur 3', '305', '306', '505'],
+    ['Ventilateur 5', '505', '506', '305']
+  ]) {
+    const invocation = invocationNamed(manifest, sheet);
+    const { opened, instance } = openInvocation(manifest, fragmentTemplate, invocation);
+    assert.equal(opened.ok, true, JSON.stringify(opened));
+    assert.equal(instance.mounted.ok, true, JSON.stringify(instance.mounted));
+
+    const level = findByIdSuffix(instance.root, '__level');
+    const cell = findByIdSuffix(instance.root, '__setpoint__cell-0-0');
+    assert.equal(level.getAttribute('data-scada-read-tag'), bindingFor(invocation, manifest, '#5').TagId);
+    assert.equal(level.getAttribute('data-scada-read-tag'), `tf100.mapping.${levelId}`);
+    assert.equal(cell.getAttribute('data-scada-read-tag'), `tf100.mapping.${setpointId}`);
+    const levelText = level.querySelectorAll('[data-scada-text]')[0];
+    const cellInput = cell.querySelectorAll('input')[0];
+
+    applyReadBindingsLikeTf100Web(instance.root, { [levelId]: 42, [setpointId]: 7.5 });
+    assert.equal(levelText.textContent, '42', `${sheet}: #5 must display its own level tag`);
+    assert.equal(cellInput.value, '7.5', `${sheet}: #6 must display its own setpoint tag in the cell input`);
+
+    applyReadBindingsLikeTf100Web(instance.root, { [levelId]: 43, [setpointId]: 8 });
+    assert.equal(levelText.textContent, '43', `${sheet}: #5 must follow a tag change`);
+    assert.equal(cellInput.value, '8', `${sheet}: #6 must follow a tag change`);
+
+    applyReadBindingsLikeTf100Web(instance.root, { [otherLevelId]: 99 });
+    assert.equal(levelText.textContent, '43', `${sheet}: the other sheet's tag must never reach this instance`);
+  }
+});
+
+test('a #5 TagBinding or a #6 table cell bound to a literal refuses the mount as a read site', () => {
+  const { manifest, fragmentTemplate } = readFixture();
+  for (const placeholder of ['#5', '#6']) {
+    const tampered = JSON.parse(JSON.stringify(manifest));
+    const invocation = invocationNamed(tampered, 'Ventilateur 3');
+    const binding = bindingFor(invocation, tampered, placeholder);
+    binding.SourceKind = 'Literal';
+    binding.TagId = null;
+    binding.LiteralValue = '42';
+
+    const { opened, instance } = openInvocation(tampered, fragmentTemplate, invocation);
+    assert.equal(opened.ok, true, JSON.stringify(opened));
+    assert.equal(instance.mounted.ok, false, `${placeholder}: a literal must never be mounted on a read tag site`);
+    assert.equal(instance.mounted.code, 'placeholder-read-not-tag', JSON.stringify(instance.mounted));
+  }
+});
+
 // ── tiny fake-DOM search helpers (the harness's FakeElement has no getElementsBy*/matches) ──────────────
+
+function findByIdSuffix(root, suffix) {
+  const stack = [root];
+  while (stack.length > 0) {
+    const node = stack.pop();
+    if (node.nodeType === 1 && String(node.getAttribute('id') || '').endsWith(suffix)) return node;
+    if (node.childNodes) stack.push(...node.childNodes);
+  }
+  return null;
+}
 
 function findByAttribute(root, attributeName) {
   const stack = [root];

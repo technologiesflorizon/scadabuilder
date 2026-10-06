@@ -172,8 +172,10 @@ export function createFakeDom() {
 }
 
 /**
- * Builds one DOM tree from a tiny well-formed HTML fragment (single root element, `"` quoted
- * attributes only, no self-closing tags, no comments): enough to let a fixture be written once as
+ * Builds one DOM tree from a tiny well-formed HTML fragment (single root element, `"` quoted or
+ * valueless attributes such as the exporter's `<span data-scada-text>`, no comments; a self-closing tag
+ * such as the exporter's `<input ... />` or an HTML void element becomes an empty element): enough to let
+ * a fixture be written once as
  * a template string and cloned into independent trees per call — e.g. to prove two mounted
  * instances of the "same page" never share state. Uses the `document` a `createFakeDom()` call
  * produced.
@@ -198,9 +200,11 @@ function _decodeHtmlEntities(value) {
     .replace(/&amp;/g, '&');
 }
 
+var VOID_ELEMENTS = { area: 1, base: 1, br: 1, col: 1, embed: 1, hr: 1, img: 1, input: 1, link: 1, meta: 1, source: 1, track: 1, wbr: 1 };
+
 export function parseFragment(document, html) {
   var tokenRe = /<\/[a-zA-Z][^>]*>|<[a-zA-Z][^>]*>|[^<]+/g;
-  var attrRe = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)\s*=\s*"([^"]*)"/g;
+  var attrRe = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*"([^"]*)")?/g;
   var root = null;
   var stack = [];
   var match;
@@ -218,12 +222,15 @@ export function parseFragment(document, html) {
       var attrMatch;
       attrRe.lastIndex = 0;
       while ((attrMatch = attrRe.exec(rest)) !== null) {
-        element.setAttribute(attrMatch[1], _decodeHtmlEntities(attrMatch[2]));
+        element.setAttribute(attrMatch[1], attrMatch[2] === undefined ? '' : _decodeHtmlEntities(attrMatch[2]));
       }
       if (stack.length > 0) {
         stack[stack.length - 1].appendChild(element);
       } else {
         root = element;
+      }
+      if (/\/\s*$/.test(rest) || VOID_ELEMENTS[tagMatch[0].toLowerCase()] === 1) {
+        continue;
       }
       stack.push(element);
       continue;

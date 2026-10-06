@@ -133,7 +133,7 @@ public static class QuickWindowPreviewDocumentFactory
         var instanceCode = $"{InstanceCodePrefix}{definition.EffectiveCode}";
         var scene = definition.EffectiveContent.ToScene(instanceCode, definition.EffectiveTitle, definition.DefinitionKey, instanceCode);
         var warnings = new List<string>();
-        var sceneRoot = Ft100SceneExporter.BuildSceneRootHtml(scene, sourceContent: string.Empty, input.TagCatalog, warnings);
+        var sceneRoot = Ft100SceneExporter.BuildSceneRootHtml(scene, sourceContent: string.Empty, input.TagCatalog, warnings, quickWindowFragment: true);
         var testBench = input.TestBench ?? new QuickWindowTestBenchValues();
         var title = HtmlEncoder.Default.Encode(
             string.IsNullOrWhiteSpace(testBench.TitleOverride) ? definition.EffectiveTitle : testBench.TitleOverride!);

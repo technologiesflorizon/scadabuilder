@@ -48,13 +48,16 @@ internal static class QuickWindowCompiler
             var sceneWarnings = new List<string>();
 
             // The content reuses the exported Element+ geometry: one semantics for pages and quick windows.
+            // No host injects bindings into a quick-window fragment, so it carries its TagBinding and table
+            // cell bindings itself (package contract §11b.2).
             var html = Ft100SceneExporter.BuildDocumentHtml(
                 scene,
                 $"css/{ns}.css",
                 sourceContent: string.Empty,
                 runtimeScriptSource: null,
                 project.TagCatalog,
-                sceneWarnings);
+                sceneWarnings,
+                quickWindowFragment: true);
             var css = Ft100SceneExporter.BuildDocumentCss(scene);
             warnings.AddRange(sceneWarnings);
 
