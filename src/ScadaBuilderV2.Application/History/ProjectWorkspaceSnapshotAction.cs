@@ -8,25 +8,12 @@ public sealed record EditorPageSelectionSnapshot(
     IReadOnlyList<string> ElementIds,
     string? PrimaryElementId = null);
 
-/// <summary>Restorable selection and active-definition state for the dedicated quick-window editor.</summary>
-/// <remarks>
-/// Decisions: DEC-0050, FR-014.
-/// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §14.1.
-/// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowHistoryTests.cs.
-/// </remarks>
-public sealed record QuickWindowEditorSelectionSnapshot(
-    Guid? SelectedDefinitionKey,
-    Guid? ActiveDefinitionKey,
-    IReadOnlyList<string> ElementIds,
-    string? PrimaryElementId = null);
-
 /// <summary>Restorable project-tree and editor-tab state.</summary>
 public sealed record ProjectWorkspaceUiSnapshot(
     IReadOnlyList<Guid> OpenPageKeys,
     Guid? SelectedPageKey,
     Guid? ActivePageKey,
-    IReadOnlyDictionary<Guid, EditorPageSelectionSnapshot> PageSelections,
-    QuickWindowEditorSelectionSnapshot? QuickWindowSelection = null);
+    IReadOnlyDictionary<Guid, EditorPageSelectionSnapshot> PageSelections);
 
 /// <summary>Immutable in-memory state used by project-scoped undo/redo.</summary>
 /// <remarks>No filesystem, WPF or WebView state is captured.</remarks>

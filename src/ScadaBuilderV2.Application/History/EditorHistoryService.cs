@@ -1,5 +1,4 @@
 using ScadaBuilderV2.Domain.Projects;
-using ScadaBuilderV2.Domain.QuickWindows;
 using ScadaBuilderV2.Domain.Scenes;
 
 namespace ScadaBuilderV2.Application.History;
@@ -63,14 +62,6 @@ public sealed class EditorHistoryContext
     /// </summary>
     public Action<ProjectWorkspaceHistorySnapshot>? RestoreProjectWorkspaceSnapshot { get; init; }
 
-    /// <summary>Resolves one quick-window definition by key, or null when it is not loaded.</summary>
-    /// <remarks>Decisions: DEC-0050, FR-035.</remarks>
-    public Func<Guid, QuickWindowDefinition?>? GetQuickWindowDefinition { get; init; }
-
-    /// <summary>Replaces one quick-window definition in the loaded workspace.</summary>
-    /// <remarks>Decisions: DEC-0050, FR-035.</remarks>
-    public Action<QuickWindowDefinition>? ReplaceQuickWindowDefinition { get; init; }
-
     public required Action MarkDirty { get; init; }
 
     public required Func<Task> RefreshPreviewAsync { get; init; }
@@ -95,14 +86,6 @@ public sealed class EditorHistoryContext
                 RestoreWorkspaceUi is not null &&
                 SetPendingDeletedPageKeys is not null &&
                 SetWorkspaceDirty is not null);
-        }
-
-        if (target.Scope == EditorHistoryScope.QuickWindow)
-        {
-            return GetQuickWindowDefinition is not null &&
-                ReplaceQuickWindowDefinition is not null &&
-                target.QuickWindowDefinitionKey is { } definitionKey &&
-                GetQuickWindowDefinition(definitionKey) is not null;
         }
 
         if (target.PageKey is { } pageKey)
