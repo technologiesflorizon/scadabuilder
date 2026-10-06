@@ -11,7 +11,9 @@ namespace ScadaBuilderV2.App.QuickWindows;
 /// The dialog never proposes a silent partial paste and never offers to promote a refused reference into
 /// the local interface of the target definition.
 ///
-/// Decisions: DEC-0050, FR-031, FR-034, FR-UI-23.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé pour compatibilité
+/// des projets existants : ouvert par ResolveQuickWindowPasteAsync quand un collage porte des références refusées.
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-031, FR-034, FR-UI-23.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowClipboardTests.cs.
 /// </remarks>
 public partial class QuickWindowPasteDiagnosticsDialog : Window

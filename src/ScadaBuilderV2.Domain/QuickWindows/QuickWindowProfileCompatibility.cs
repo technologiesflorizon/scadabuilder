@@ -11,7 +11,11 @@ public sealed record QuickWindowProfileCompatibilityResult(bool IsCompatible, st
 /// fact it still states truthfully - a 2.1/2.2 manifest schema carries no QuickWindows section - and is
 /// exercised directly by its own tests, not through <c>ValidateQuickWindows</c> any more.
 ///
-/// Decisions: DEC-0050.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; code mort mais couplé : aucun
+/// appelant dans src, mais ses codes de résultat sont épinglés par la fixture de conformance gelée
+/// tests/conformance/quick-window-contract-handshake/expectations.json (cas profile-2.x), dont le test de poignée de
+/// main est la seule preuve exécutable. Non retiré le 2026-10-06 (KNOWN_GAPS_V2.md entrée 40).
+/// Decisions: DEC-0050 (décommissionné).
 /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowContractHandshakeTests.cs.
 /// </remarks>

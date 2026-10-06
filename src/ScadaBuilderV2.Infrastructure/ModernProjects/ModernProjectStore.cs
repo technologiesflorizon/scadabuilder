@@ -7,6 +7,14 @@ using ScadaBuilderV2.Domain.Versioning;
 
 namespace ScadaBuilderV2.Infrastructure.ModernProjects;
 
+/// <summary>Loads and transactionally saves one modern project folder: project, scenes, parameter sheets and quick windows.</summary>
+/// <remarks>
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé pour compatibilité
+/// des projets existants : les portions QuickWindowStore chargent, valident et sauvegardent les définitions
+/// quick-windows/*.quick-window.json déjà enregistrées et refusent les définitions inline ; le refus des anciens
+/// types de commande retirés par DEC-0050 reste en vigueur.
+/// Decisions: DEC-0049, DEC-0050 (décommissionné), DEC-0052.
+/// </remarks>
 public sealed class ModernProjectStore : IPageWorkspaceStore, IPageWorkspaceReader
 {
     private static readonly JsonSerializerOptions JsonOptions = new()

@@ -103,7 +103,10 @@ public sealed record QuickWindowClipboardAnalysis(IReadOnlyList<QuickWindowClipb
 /// whose target is gone or one already owned by another caller — is refused too. Nothing is ever promoted
 /// automatically into the local interface: stripping leaves the property unbound.
 ///
-/// Decisions: DEC-0050, FR-031, FR-034, FR-UI-23.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé pour compatibilité
+/// des projets existants : chaque collage passe par PreparePasteAsync et protège les commandes héritées qui portent
+/// un QuickWindowInvocationKey. La cible QuickWindowClipboardTarget.ForQuickWindow n'est plus atteinte.
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-031, FR-034, FR-UI-23.
 /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §9.5.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowClipboardTests.cs.
 /// </remarks>

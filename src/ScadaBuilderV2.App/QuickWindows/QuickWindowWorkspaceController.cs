@@ -36,7 +36,20 @@ public sealed record QuickWindowPastePlan(
 
 /// <summary>Visual callback boundary between the quick-window workspace and the WPF shell.</summary>
 /// <remarks>
-/// Decisions: DEC-0050, FR-UI-12, FR-UI-14, FR-UI-25.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé car DEC-0052 en
+/// dépend : RequestQuickWindowNameAsync et ConfirmParameterSheetDeletionAsync servent les feuilles de paramètres,
+/// ResolveQuickWindowPasteAsync le collage et ReportQuickWindowStatus tous les messages.
+///
+/// Note de revue — futur chantier : les membres ActivateQuickWindowAsync, ConfirmQuickWindowDeletionAsync,
+/// RequestInterfaceMemberAsync, ConfirmInterfaceMemberDeletionAsync et ConfirmInterfaceVersionImpactAsync ne servent
+/// qu'au CRUD/hébergement de définitions DEC-0050 et à l'Interface locale typée (code mort côté UI, prouvé le
+/// 2026-10-06 : leurs seuls appelants sont OpenAsync, DeleteAsync, AddInterfaceMemberAsync,
+/// EditInterfaceMemberAsync, ApplyInlineInterfaceEditAsync et DeleteInterfaceMemberAsync de
+/// QuickWindowWorkspaceController, qu'aucun code de src n'appelle ; MainWindow n'utilise que Load, les membres
+/// *SheetAsync, ClearActiveContext, PreparePasteAsync, RetireMigratedInvocation et les panneaux) ; non retirés car
+/// leur retrait impose d'amputer cette interface et ses doubles de test. À retirer lors de la refonte de
+/// IQuickWindowWorkspaceHost (KNOWN_GAPS_V2.md entrée 40).
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-UI-12, FR-UI-14, FR-UI-25.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowShellContractTests.cs.
 /// </remarks>
 public interface IQuickWindowWorkspaceHost
@@ -97,7 +110,11 @@ public interface IQuickWindowWorkspaceHost
 /// services it delegates to. Mutations are prepared as immutable workspace snapshots and applied by the
 /// caller through the existing page workspace pipeline, so undo/redo stays on the single stack.
 ///
-/// Decisions: DEC-0050, FR-001, FR-033, FR-035, FR-UI-12, FR-UI-13, FR-UI-22, FR-UI-25.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé pour compatibilité
+/// des projets existants : Load, PreparePasteAsync, RetireMigratedInvocation et ClearActiveContext servent les
+/// projets existants ; les membres de feuilles de paramètres relèvent de DEC-0052. Les membres de CRUD, d'hébergement
+/// et d'Interface locale typée sont décrits par la note de revue de IQuickWindowWorkspaceHost.
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-001, FR-033, FR-035, FR-UI-12, FR-UI-13, FR-UI-22, FR-UI-25.
 /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §9.1.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowShellContractTests.cs.
 /// </remarks>

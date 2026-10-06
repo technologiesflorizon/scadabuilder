@@ -15,7 +15,10 @@ namespace ScadaBuilderV2.Application.QuickWindows;
 /// definition is later deleted or a bound tag drifts, build/export raises an error pinned to a command that
 /// looks correctly configured, with no UI left to fix it (controller fix round 1 on Task 10).
 ///
-/// Decisions: DEC-0050, DEC-0052.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé pour compatibilité
+/// des projets existants : InvocationKeyToRetire et WithoutInvocation migrent une commande OpenQuickWindow héritée
+/// (QuickWindowInvocationKey) vers une paire feuille + page.
+/// Decisions: DEC-0050 (décommissionné), DEC-0052.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowInvocationMigrationTests.cs.
 /// </remarks>
 public static class QuickWindowInvocationMigration

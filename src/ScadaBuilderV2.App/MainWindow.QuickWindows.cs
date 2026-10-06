@@ -15,15 +15,22 @@ using ScadaBuilderV2.Rendering;
 namespace ScadaBuilderV2.App;
 
 /// <summary>
-/// Quick-window authoring surface of the shell: project group, selection, creation, duplication,
-/// rename, deletion and the bounded editor context that hides page-only commands.
+/// Quick-window surface of the shell: the parameter-sheet group of the "Fenêtres rapides" panel, the `#N`
+/// local interface, the test bench, the bounded editor context that hides page-only commands, and the
+/// paste/migration guards that protect legacy quick-window commands.
 /// </summary>
 /// <remarks>
 /// Every decision lives in <see cref="QuickWindowWorkspaceController"/> and the Application services it
 /// delegates to. This file owns only the WPF wiring: event handlers, dialogs and status projection.
 ///
-/// Decisions: DEC-0050, FR-001, FR-033, FR-035, FR-UI-12, FR-UI-13, FR-UI-14, FR-UI-22, FR-UI-25, FR-UI-26.
-/// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §9.1.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052). Ce fichier câble surtout
+/// DEC-0052 (panneau « Fenêtres rapides » des feuilles de paramètres, Interface locale #N, banc d'essai) ; le
+/// collage et la migration des commandes héritées sont conservés pour compatibilité des projets existants. Les
+/// implémentations d'hôte d'hébergement, de suppression de définition et d'Interface locale typée ne sont
+/// atteintes que par les membres décrits dans la note de revue de IQuickWindowWorkspaceHost.
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-001, FR-033, FR-035, FR-UI-12, FR-UI-13, FR-UI-14, FR-UI-22, FR-UI-25, FR-UI-26.
+/// Contracts: docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md,
+/// docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §9.1 (décommissionnée).
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowShellContractTests.cs.
 /// </remarks>
 public partial class MainWindow : IQuickWindowWorkspaceHost

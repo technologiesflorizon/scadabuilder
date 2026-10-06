@@ -86,7 +86,10 @@ public sealed record QuickWindowPreviewDocument(
 /// hydration, cascade dispose — has exactly one implementation shared with the frozen Phase 0 prototype.
 /// The preview never enters the project model, never becomes a page and is never exported.
 ///
-/// Decisions: DEC-0050, FR-019, FR-020, FR-UI-07, FR-UI-08, FR-UI-21.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé car DEC-0052 en
+/// dépend : le banc d'essai DEC-0052 (BuilderQuickWindowHostAdapter) prévisualise ici la définition abaissée d'une
+/// paire feuille + page.
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-019, FR-020, FR-UI-07, FR-UI-08, FR-UI-21.
 /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §§8.2, 9.3.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowPreviewTests.cs.
 /// </remarks>

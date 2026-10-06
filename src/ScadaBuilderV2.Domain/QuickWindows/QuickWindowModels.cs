@@ -10,7 +10,11 @@ namespace ScadaBuilderV2.Domain.QuickWindows;
 /// No navigation, route, header/footer, interface or lifecycle policy is contained here.
 /// </summary>
 /// <remarks>
-/// Decisions: DEC-0050, FR-019, FR-020.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé car DEC-0052 en
+/// dépend : ParameterSheetLowering construit une QuickWindowDefinition (VisualContent.FromScene, membres d'interface,
+/// présentation) par page de type Fenêtre rapide, que la validation build, le compilateur et l'exporteur consomment.
+/// CreateEmpty ne sert plus qu'au CRUD de définitions sans point d'entrée (KNOWN_GAPS_V2.md entrée 40).
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-019, FR-020.
 /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §8.2.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowDomainTests.cs.
 /// </remarks>

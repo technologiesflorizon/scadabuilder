@@ -1,15 +1,18 @@
 # Fenêtres rapides paramétrées - Registre de décisions et spécification d’orientation
 
 Date: 2026-08-10
-Status: Approved - `DEC-0050`; phases 0 to 2 validated, phase 3 pending, all runtime capabilities blocked
-Document version: `V2.1.5.0026`
+Status: Décommissionné — voir DEC-0052 (modèle d'authoring remplacé par les feuilles de paramètres, 2026-10-06); historiquement Approved - `DEC-0050`
+Document version: `V2.1.6.0070`
 Portée: SCADA Builder V2, runtime partagé `.sb2` et services host TF100Web
 Dépendances: `docs/02_architecture/GLOBAL_ARCHITECTURE_V2.md`, `docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md`, `docs/03_runtime_contracts/PREVIEW_BUILD_EXPORT_CONTRACT_V2.md`, `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md`, `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`, `docs/04_editor/STATE_MANAGEMENT_CONTRACT_V2.md`
+
+> **Décommissionné — voir DEC-0052.** Depuis le 2026-10-06, `DEC-0050` n'est plus le modèle d'authoring des fenêtres rapides : les pages de type Fenêtre rapide et les feuilles de paramètres de `docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md` le remplacent. Les sections d'authoring de ce document (shell §9, Interface locale typée, onglet `Liaisons`, réparation des invocations, portée d'historique `QuickWindow`) sont historiques. Les sections modèle (`QuickWindowDefinition`, `QuickWindowInvocation`), validation, manifeste 2.3, runtime partagé et package restent normatives : ce sont les structures cibles de l'abaissement `DEC-0052` et celles des définitions déjà enregistrées. Inventaire du code conservé : entrée 40 de `docs/08_implementation_status/KNOWN_GAPS_V2.md`.
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-10-06 | `V2.1.6.0070` | `PENDING` | Bandeau « Décommissionné — voir DEC-0052 » : `DEC-0050` est décommissionnée comme modèle d'authoring. Les sections d'authoring (§9 shell, Interface locale typée, `Liaisons`, réparation, historique `QuickWindow`) ne sont plus normatives; les sections modèle, runtime, manifeste 2.3 et package restent la référence des structures produites par l'abaissement `DEC-0052`. |
 | 2026-08-21 | `V2.1.5.0026` | `1452849` | Précision `FR-032` : réalignement automatique par invocation sur transition compatible; `Outdated` reste dérivé du couple de versions, sans champ persistant. |
 | 2026-08-21 | `V2.1.5.0023` | `b0159f9` | Fermeture des lacunes d’audit avant Phase 3 : composition header/pied, presse-papier inter-contextes, évolution d’Interface locale versionnée, duplication de définition, bibliothèque Element+, portée undo/redo et coexistence popup legacy (`FR-030..036`, `FR-UI-23..26`). |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Phase 2 synchronisée : services Application, dépendances, historique workspace atomique et validation build/export fail-closed implémentés sans promotion de capacité runtime. |

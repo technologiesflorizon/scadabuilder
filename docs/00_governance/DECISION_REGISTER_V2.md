@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active authoritative decision register
-Document version: `V2.1.6.0034`
+Document version: `V2.1.6.0070`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-10-06 | `V2.1.6.0070` | `PENDING` | `DEC-0050` passe `Deprecated` : décommissionnée comme modèle d'authoring, remplacée par `DEC-0052`; ses structures restent la cible de l'abaissement et la compatibilité des projets existants est conservée. Paragraphe « Décommissionnement » ajouté (clauses toujours en vigueur, code mort retiré, résidus inventoriés à l'entrée 40 de `KNOWN_GAPS_V2.md`). |
 | 2026-09-30 | `V2.1.6.0034` | `a32545a` | Ajout de `DEC-0052` : les fenêtres rapides sont désormais authorées comme des pages `QuickWindow` paramétrées par `#N`, résolues par des feuilles de paramètres substituées au montage de l'instance; supersède `2026-09-24-fragment-to-quick-window-conversion-design.md` et modifie `FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` §11b/§12.4. |
 | 2026-09-10 | `V2.1.6.0017` | `f5589e9` | Tâche 7 du chantier C close, re-cadrée par les Rulings 16 et 17 du contrôleur : le convertisseur projet 0 → 1 règle l'identité de page une fois, dans le fichier, avec la dérivation `PageKeyFactory.CreateDeterministic` (et non une dérivation SHA-256 incompatible); la suppression des règles de `ModernProjectMigration` promise par le brief est retirée, ce normaliseur restant nécessaire aux écritures et à la construction en mémoire. |
 | 2026-09-08 | `V2.1.6.0012` | `37bf604` | `DEC-0049` : le volet refus vers l'arrière de D5 est marqué implémenté dans la couverture de régression. |
@@ -181,12 +182,12 @@ Le dépôt TF100Web doit adopter le même épinglage avant l'exécution de la co
 
 ### DEC-0050 - Fenêtres rapides paramétrées comme entités typées distinctes
 
-Status: Active
+Status: Deprecated — Décommissionné (modèle d'authoring) — remplacé par DEC-0052 ; structures conservées comme cible de lowering
 Created: 2026-08-10 00:00 America/Toronto
 Created in commit: `fc5b333`
-Deprecated: N/A
-Deprecated in commit: N/A
-Superseded by: N/A
+Deprecated: 2026-10-06 00:00 America/Toronto
+Deprecated in commit: `PENDING`
+Superseded by: DEC-0052 (modèle d'authoring uniquement)
 Owner document: `docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md`
 
 Context:
@@ -216,6 +217,10 @@ Les Phases 0 à 7 sont livrées. Phase 0 : isolation DOM/CSS validée sur la fix
 Phase 6 : onze des treize capacités approuvées sont promues `Supported` et l'export strict 2.3 est ouvert. **Deux restent `Blocked`, pour des raisons distinctes** : `quick-window.binding.parent-port` est implémentée côté Builder et runtime partagé mais aucun paquet déployé ne l'exerce, donc elle n'a aucune preuve host; `quick-window.legacy-fragment-adapter` n'a aucune implémentation nulle part. Ouvrir le chemin d'export pour la première fois a révélé trois défauts latents, tous corrigés : `OwnerPageKey` était exporté contre `ValidateNoInternalPageKeys`, `quickWindowInvocationKey` n'était pas sérialisé — un paquet exporté aurait donc porté des commandes d'ouverture inertes — et l'analyseur de capacités n'inspectait pas le contenu des définitions.
 
 Phase 7 : la verticale moteur `win00054` est exécutée sur un catalogue de tags synthétique, le projet de référence industriel restant intact, faute de commande d'écriture moteur dans son catalogue réel. `FR-UI-03` — repli de la barre de titre déployée sur le `DisplayName` — est un écart connu délibérément reporté, consigné dans `docs/08_implementation_status/KNOWN_GAPS_V2.md`.
+
+Décommissionnement (2026-10-06) :
+
+Décision de l'utilisateur : « L'ancien modèle doit être déclaré obsolète/décommissionné (tant que cela ne brise pas ou ne force pas une réécriture de code). Si la version DEC-0052 dépend d'un fichier/méthode/classe lié à DEC-0050, il faut le garder. » Le modèle d'authoring de la présente décision — définition créée par le « + », Interface locale typée éditée à la main, onglet `Liaisons`, surface de réparation des invocations, hébergement d'une définition sur le canevas, portée d'historique `QuickWindow` — est décommissionné et remplacé par `DEC-0052`. Restent en vigueur, parce que `DEC-0052` en dépend ou que les projets existants doivent toujours s'ouvrir : `QuickWindowDefinition` et `QuickWindowInvocation` comme structures cibles de l'abaissement (`ParameterSheetLowering`); la validation build fail-closed; le manifeste 2.3 et les capacités `quick-window.*`; le runtime partagé, l'hôte `SinglePerDefinition` et `CloseQuickWindow(Self)`; le retrait des types de commande popup (`DEC-0019`, `DEC-0020` et `DEC-0022` restent supersédées); la lecture et l'écriture des définitions déjà enregistrées sous `quick-windows/*.quick-window.json`, le garde de collage et la migration des commandes héritées vers une paire feuille + page. Le code sans point d'entrée dont la mort a été prouvée a été retiré (dialogue de réparation, éditeur de liaisons, portée d'historique `QuickWindow`); le code mort encore couplé à l'interface `IQuickWindowWorkspaceHost`, à ses doubles de test ou à une fixture de conformance est conservé et inventorié à l'entrée 40 de `docs/08_implementation_status/KNOWN_GAPS_V2.md`. Les en-têtes `<remarks>` du code conservé portent la mention « DEC-0050 (décommissionné) » et la raison de leur conservation.
 
 Regression coverage:
 

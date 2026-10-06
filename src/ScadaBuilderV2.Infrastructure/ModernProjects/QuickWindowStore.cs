@@ -11,7 +11,10 @@ namespace ScadaBuilderV2.Infrastructure.ModernProjects;
 /// with ordered JSON and atomic transaction semantics consistent with scenes.
 /// </summary>
 /// <remarks>
-/// Decisions: DEC-0050, FR-001, FR-019.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé pour compatibilité
+/// des projets existants : lecture et écriture des définitions quick-windows/*.quick-window.json déjà enregistrées
+/// (par exemple « fenetre » de TEST_CONVERSION). L'abaissement DEC-0052 ne persiste rien ici.
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-001, FR-019.
 /// Contracts: docs/superpowers/plans/2026-08-10-parameterized-quick-window-management.md Task 1.4.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowStoreTests.cs.
 /// </remarks>

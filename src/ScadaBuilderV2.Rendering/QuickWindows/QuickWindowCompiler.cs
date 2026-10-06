@@ -18,7 +18,9 @@ namespace ScadaBuilderV2.Rendering.QuickWindows;
 /// Determinism: definitions are ordered by `DefinitionKey`, invocations by `InvocationKey`, members and
 /// bindings by `MemberKey`, and files by relative path. Two compilations of the same project are identical.
 ///
-/// Decisions: DEC-0047, DEC-0050, FR-019, FR-020.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé car DEC-0052 en
+/// dépend : Ft100SceneExporter compile ici les définitions et invocations abaissées vers le manifeste 2.3 (§12).
+/// Decisions: DEC-0047, DEC-0050 (décommissionné), DEC-0052, FR-019, FR-020.
 /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md §12.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowExporterTests.cs.
 /// </remarks>

@@ -11,7 +11,11 @@ namespace ScadaBuilderV2.App.QuickWindows;
 /// A page never offers `CloseQuickWindow`; a quick-window content offers it as `Self` without any free
 /// target. No Toggle command kind exists: `DEC-0050` removed the popup command kinds entirely.
 ///
-/// Decisions: DEC-0050, FR-011, FR-013, FR-UI-18, FR-UI-19.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé car DEC-0052 en
+/// dépend : QuickWindowCommandAuthoringContext alimente ElementCommandDialog (CloseQuickWindow(Self) sur une page de
+/// type Fenêtre rapide) et ElementPropertiesDialog. Ses arguments ParentPorts et FindInvocation sont des résidus
+/// DEC-0050. L'éditeur de liaisons qui partageait ce fichier a été retiré le 2026-10-06.
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-011, FR-013, FR-UI-18, FR-UI-19.
 /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §9.2.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowBindingAuthoringTests.cs.
 /// </remarks>

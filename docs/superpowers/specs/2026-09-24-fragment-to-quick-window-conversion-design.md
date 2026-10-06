@@ -2,14 +2,17 @@
 
 Date: 2026-09-24
 Status: Superseded by docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md (DEC-0052)
-Document version: `V2.1.6.0034`
+Document version: `V2.1.6.0070`
 Portée: SCADA Builder V2, éditeur et modèle de projet. Aucune capacité runtime, aucun contrat de package modifié.
 Dépendances: `docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md` (`DEC-0050`), `docs/03_runtime_contracts/PROJECT_MODEL_CONTRACT_V2.md`, `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`, `docs/06_ui_ux/UI_ARCHITECTURE_V2.md`
+
+> **Décommissionné — voir DEC-0052.** Cette spec était déjà *Superseded*; le modèle `DEC-0050` sur lequel elle reposait est en outre décommissionné comme modèle d'authoring depuis le 2026-10-06.
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-10-06 | `V2.1.6.0070` | `PENDING` | Bandeau « Décommissionné — voir DEC-0052 » : la dépendance `DEC-0050` de cette spec est elle-même décommissionnée comme modèle d'authoring. |
 | 2026-09-30 | `V2.1.6.0034` | `a32545a` | Statut passé à *Superseded* par `docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md` (`DEC-0052`) : la conversion vers une définition séparée que cette spec décrivait est rendue inutile par le modèle de feuilles de paramètres. |
 | 2026-09-24 | `V2.1.6.0032` | `8c8e544` | Création. Ferme la lacune laissée par `DEC-0050` : `ScadaPageType.Fragment` et `QuickWindowDefinition` coexistaient sans passerelle, de sorte qu'aucun popup legacy ne pouvait devenir une fenêtre rapide et qu'une page Fragment n'avait ni interface locale ni banc d'essai. |
 

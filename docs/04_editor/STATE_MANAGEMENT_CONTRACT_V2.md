@@ -2,12 +2,13 @@
 
 Date: 2026-07-15
 Status: Active editor state contract
-Document version: `V2.1.5.0027`
+Document version: `V2.1.6.0070`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-10-06 | `V2.1.6.0070` | `PENDING` | Portée d’historique `QuickWindow` retirée (`DEC-0050` décommissionnée) : `QuickWindowContentChangedAction`, `EditorHistoryTarget.ForQuickWindow` et `QuickWindowEditorSelectionSnapshot` n’avaient plus de producteur; les fenêtres rapides `DEC-0052` passent par la portée projet. Tests liés : `QuickWindowHistoryTests` retiré, `ParameterSheetWorkspaceMutationTests` couvre l’undo/redo des mutations de feuilles. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Portée d’historique `QuickWindow` ajoutée : pile unique partagée avec les pages, activation déterministe du contexte cible et refus non destructif d’une action non résoluble. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Historique QuickWindow Phase 2 : snapshot projet/scènes/UI/dirty atomique, sélection dédiée et restauration exacte de l’appelant, commande, invocation et liaisons. |
 | 2026-07-29 | `V2.1.5.0000` | `8fe1077` | Une fenêtre possède zéro ou une session projet active; fermer réinitialise tout état projet. |
@@ -30,7 +31,7 @@ State ownership must be explicit. Durable behavior belongs to project/scene/appl
 5. History state: undo/redo stacks per active scene context.
 6. Element lock state: `ScadaElement.IsLocked`; les toggles UI projettent l'agregation de la fermeture selection/groupe sans posseder un etat durable distinct.
 7. Table authoring session: surface, mode, configuration de creation, plage et portee; elle ne transporte aucun `ScadaElement` et ne remplace jamais la definition persistante du Tableau. Le WebView recoit un snapshot atomique derive (`mode`, visibilite effective A/1, id actif) apres chaque transition ou rerender.
-8. QuickWindow workspace state: définitions et invocations dans le projet, scène de l’appelant, sélection page/Fenêtre rapide et dirty state restaurés comme une seule unité; aucune pile d’historique n’est persistée sur disque.
+8. QuickWindow workspace state: feuilles de paramètres, définitions et invocations dans le projet, scène de l’appelant, sélection de page et dirty state restaurés comme une seule unité; aucune pile d’historique n’est persistée sur disque.
 
 ## 3. State Diagram
 
@@ -53,9 +54,9 @@ stateDiagram-v2
 
 `PageWorkspaceSnapshot` includes the project, scenes, active/selected page, open tabs, dirty state, and pending file deletions. `ProjectWorkspaceSnapshotAction` restores this state even after an onglet closes or a page is removed. `ModernProjectStore.SaveWorkspaceSnapshotAsync` stages and commits project/scenes as one recoverable transaction; `SaveSceneAsync` no longer upserts the authoritative page inventory.
 
-`EditorHistoryTarget` possède une portée `QuickWindow` identifiée par `QuickWindowDefinitionKey`. Les Fenêtres rapides ne créent aucun second service d’historique : `QuickWindowContentChangedAction` rend le `VisualContent` d’une définition réversible sur la pile unique du workspace et rafraîchit son propre contexte avant d’afficher l’état restauré, de sorte qu’annuler une action visant un contexte inactif l’active d’abord. Le basculement page ↔ Fenêtre rapide ne vide, ne tronque ni ne fusionne la pile. `EditorHistoryContext` refuse une action QuickWindow qu’il ne peut pas résoudre et la laisse au sommet plutôt que de la perdre.
+`EditorHistoryTarget` ne connaît que les portées `Scene` et `Project`. Les Fenêtres rapides ne créent aucun second service d’historique : depuis `DEC-0052`, une fenêtre rapide est une page de type Fenêtre rapide, éditée et annulée comme toute page, et chaque mutation de feuille de paramètres est une action projet sur la pile unique. La portée `QuickWindow` de `DEC-0050` (`QuickWindowContentChangedAction`, `EditorHistoryTarget.ForQuickWindow`, résolution par `QuickWindowDefinitionKey`) n’avait plus aucun producteur depuis le retrait de l’hébergement d’une définition sur le canevas; elle a été retirée le 2026-10-06 (`DEC-0050` décommissionnée, `KNOWN_GAPS_V2.md` entrée 40). L’historique n’étant jamais persisté, aucun projet existant n’en dépend.
 
-`QuickWindowWorkspaceSnapshotAction` réutilise la cible d’historique projet et restaure exactement projet, scènes, sélection `QuickWindowEditorSelectionSnapshot`, dirty state et suppressions de pages en attente. `EditorHistoryContext.RestoreProjectWorkspaceSnapshot` permet au host d’effectuer un swap atomique unique; les callbacks granulaires historiques restent le chemin de compatibilité. Une exception de restore conserve l’action au sommet de la pile afin qu’un échec ne perde pas la capacité d’annuler.
+`QuickWindowWorkspaceSnapshotAction` réutilise la cible d’historique projet et restaure exactement projet, scènes, sélection de page, dirty state et suppressions de pages en attente. `EditorHistoryContext.RestoreProjectWorkspaceSnapshot` permet au host d’effectuer un swap atomique unique; les callbacks granulaires historiques restent le chemin de compatibilité. Une exception de restore conserve l’action au sommet de la pile afin qu’un échec ne perde pas la capacité d’annuler.
 
 ## 5. Related Decisions
 
@@ -63,7 +64,8 @@ stateDiagram-v2
 2. `DEC-0038` - Modern Page Identity And Lifecycle Commands.
 3. `DEC-0040` - Advanced Table Authoring And Persistent Element Position Lock.
 4. `DEC-0041` - Deterministic Table Interaction And Immediate Element Position Lock.
-5. `DEC-0050` - Fenêtres rapides paramétrées comme entités typées distinctes.
+5. `DEC-0050` - Fenêtres rapides paramétrées comme entités typées distinctes (décommissionnée comme modèle d’authoring).
+6. `DEC-0052` - Fenêtres rapides paramétrées par feuilles de paramètres.
 
 ## 6. Related Tests
 
@@ -73,4 +75,4 @@ stateDiagram-v2
 4. `tests/ScadaBuilderV2.Tests/ModernProjectAtomicSnapshotTests.cs`
 5. `tests/ScadaBuilderV2.Tests/TableAuthoringSessionTests.cs`
 6. `tests/ScadaBuilderV2.Tests/TableEditorWebViewStateTests.cs`
-7. `tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowHistoryTests.cs`
+7. `tests/ScadaBuilderV2.Tests/QuickWindows/ParameterSheetWorkspaceMutationTests.cs`

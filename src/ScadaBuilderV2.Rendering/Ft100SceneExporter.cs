@@ -1015,7 +1015,10 @@ public sealed partial class Ft100SceneExporter
     /// editor preview), and <paramref name="quickWindowPlaceholderDatatypes"/> maps a `#N` read tag to the mapping
     /// datatype every invocation agrees on: see <see cref="BuildSceneRootHtml"/>.
     ///
-    /// Decisions: DEC-0038, DEC-0050, DEC-0052.
+    /// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé car DEC-0052 en
+    /// dépend : le contenu des fenêtres rapides abaissées est rendu par ce chemin fragment, et l'export strict 2.3
+    /// appelle QuickWindowCompiler.Compile.
+    /// Decisions: DEC-0038, DEC-0050 (décommissionné), DEC-0052.
     /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md §11b.2.
     /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowFragmentValueBindingTests.cs.
     /// </remarks>

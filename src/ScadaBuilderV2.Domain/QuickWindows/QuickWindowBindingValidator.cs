@@ -9,7 +9,10 @@ namespace ScadaBuilderV2.Domain.QuickWindows;
 /// Covers type, access, write authorization, interface version, required/optional neutrality and anti-injection.
 /// </summary>
 /// <remarks>
-/// Decisions: DEC-0050, FR-010.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé car DEC-0052 en
+/// dépend : InferDataTypeFromTag sert à l'abaissement (ParameterSheetLowering) et ValidateInvocation à la validation
+/// build (ScadaProjectBuildValidator).
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-010.
 /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowBindingTests.cs.
 /// </remarks>

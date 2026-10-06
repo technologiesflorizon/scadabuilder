@@ -153,7 +153,10 @@ public static partial class Ft100PackageValidator
     /// not appear in `Pages`, its CSS file name must stay unique because deployment flattens `scada/css/`, and
     /// every invocation must target a declared definition.
     ///
-    /// Decisions: DEC-0050.
+    /// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé car DEC-0052 en
+    /// dépend : ValidateQuickWindows contrôle les répertoires qw-&lt;key8&gt; et les invocations exportés depuis les
+    /// projets abaissés.
+    /// Decisions: DEC-0050 (décommissionné), DEC-0052.
     /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md §12.
     /// Tests: tests/ScadaBuilderV2.Tests/Ft100PackageValidatorTests.cs.
     /// </remarks>

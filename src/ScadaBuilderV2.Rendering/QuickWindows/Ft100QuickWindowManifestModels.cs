@@ -8,7 +8,9 @@ namespace ScadaBuilderV2.Rendering.QuickWindows;
 /// The manifest keeps the .NET PascalCase field contract; the runtime JSON embedded in HTML attributes keeps
 /// the Builder camelCase contract. The two casings are never collapsed into one rule.
 ///
-/// Decisions: DEC-0050.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé car DEC-0052 en
+/// dépend : forme sérialisée (§12, §12.4) des définitions et invocations abaissées, lue par TF100Web.
+/// Decisions: DEC-0050 (décommissionné), DEC-0052.
 /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md §12.4.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowExporterTests.cs.
 /// </remarks>

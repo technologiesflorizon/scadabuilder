@@ -43,7 +43,11 @@ public sealed record QuickWindowInterfaceTransition(
 /// `Outdated` is derived from the interface version pair; no fourth identifier and no persisted status
 /// field are introduced (FR-027).
 ///
-/// Decisions: DEC-0050, FR-018, FR-027, FR-032.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé pour compatibilité
+/// des projets existants : StatusOf dérive le statut Outdated des invocations déjà enregistrées pour
+/// QuickWindowWorkspaceController.Load. Classify, Realign et BreakingReasonsFor ne servent plus qu'au versionnement
+/// d'Interface locale sans point d'entrée (KNOWN_GAPS_V2.md entrée 40).
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-018, FR-027, FR-032.
 /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §9.4.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowInterfaceVersioningTests.cs.
 /// </remarks>

@@ -29,7 +29,11 @@ public sealed record SceneClipboardOrigin(bool IsQuickWindow, Guid? ContextKey =
 /// Quick windows never create a second clipboard: they extend this one with the origin context needed by
 /// the fail-closed boundary validation (`FR-036`).
 ///
-/// Decisions: DEC-0050, FR-031, FR-036.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé pour compatibilité
+/// des projets existants : le presse-papier unique et l'origine ForPage sont vivants.
+/// SceneClipboardOrigin.ForQuickWindow et CrossesQuickWindowBoundary n'ont plus de producteur hors tests
+/// (KNOWN_GAPS_V2.md entrée 40).
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-031, FR-036.
 /// Tests: tests/ScadaBuilderV2.Tests/SceneClipboardTests.cs.
 /// </remarks>
 public sealed class SceneClipboard

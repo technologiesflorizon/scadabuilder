@@ -261,7 +261,10 @@ public sealed record ScadaBuildValidationIssue(
 
 /// <summary>Validates the durable project model fail-closed before build or export.</summary>
 /// <remarks>
-/// Decisions: DEC-0038, DEC-0047, DEC-0050.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé car DEC-0052 en
+/// dépend : ValidateQuickWindows, ValidateQuickWindowCommand et ValidateQuickWindowDependencyGraph valident le projet
+/// abaissé (champs QuickWindows et QuickWindowInvocations) avant build et export.
+/// Decisions: DEC-0038, DEC-0047, DEC-0050 (décommissionné), DEC-0052.
 /// Contracts: docs/03_runtime_contracts/PREVIEW_BUILD_EXPORT_CONTRACT_V2.md.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowBuildValidationTests.cs.
 /// </remarks>

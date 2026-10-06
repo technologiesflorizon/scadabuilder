@@ -53,7 +53,11 @@ public sealed record QuickWindowDependencyAnalysis(
 
 /// <summary>Builds the page/definition/invocation graph without WPF, persistence or runtime dependencies.</summary>
 /// <remarks>
-/// Decisions: DEC-0050, FR-012, FR-014, FR-018.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé pour compatibilité
+/// des projets existants : analyse le graphe des définitions et invocations déjà enregistrées à chaque
+/// QuickWindowWorkspaceController.Load. GetMemberUsages ne sert plus qu'à l'Interface locale typée sans point
+/// d'entrée.
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-012, FR-014, FR-018.
 /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §§8.4, 11, 14.1.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowApplicationTests.cs.
 /// </remarks>

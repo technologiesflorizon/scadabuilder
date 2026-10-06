@@ -67,7 +67,10 @@ public sealed record QuickWindowBinding(
 /// Compiled invocation is not yet a runtime instance.
 /// </summary>
 /// <remarks>
-/// Decisions: DEC-0050, FR-008, FR-015, FR-027.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé car DEC-0052 en
+/// dépend : ParameterSheetLowering produit les QuickWindowInvocation et QuickWindowBinding de chaque appelant ; la
+/// validation build les contrôle et le compilateur les sérialise au manifeste 2.3 (§12.4).
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-008, FR-015, FR-027.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowBindingTests.cs.
 /// </remarks>
 public sealed record QuickWindowInvocation(

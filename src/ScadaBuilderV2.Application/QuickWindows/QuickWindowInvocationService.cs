@@ -9,9 +9,13 @@ namespace ScadaBuilderV2.Application.QuickWindows;
 
 /// <summary>Coordinates caller commands and invocation descriptors as one immutable workspace mutation.</summary>
 /// <remarks>
-/// Decisions: DEC-0050, FR-008, FR-014, FR-022.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé pour compatibilité
+/// des projets existants : RetireMigratedInvocation retire l'invocation héritée quand une commande migre vers une
+/// paire feuille + page. Upsert, Repair, RemoveInvocation et DeleteCaller, sans point d'entrée, ont été retirés le
+/// 2026-10-06.
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-008, FR-014, FR-022.
 /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §§8.4, 8.5, 14.1.
-/// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowApplicationTests.cs.
+/// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowInvocationMigrationTests.cs.
 /// </remarks>
 public sealed class QuickWindowInvocationService(QuickWindowDependencyAnalyzer? dependencyAnalyzer = null)
 {

@@ -238,7 +238,10 @@ public static class ScadaRuntimeCapabilityCatalog
     /// runtime and TF100Web evidence plus a conformance probe carrying exactly that id. No umbrella id such
     /// as `quick-window.v1` may exist, and no `command.toggle-quick-window` is created.
     ///
-    /// Decisions: DEC-0047, DEC-0050.
+    /// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé car DEC-0052 en
+    /// dépend : les capacités quick-window.* promues en Phase 6 sur les preuves DEC-0050 négocient le manifeste 2.3
+    /// des projets abaissés.
+    /// Decisions: DEC-0047, DEC-0050 (décommissionné), DEC-0052.
     /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §10.2.
     /// Tests: tests/ScadaBuilderV2.Tests/RuntimeContracts/ScadaRuntimeCapabilityCatalogTests.cs.
     /// </remarks>

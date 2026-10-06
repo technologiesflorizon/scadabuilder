@@ -71,7 +71,11 @@ public sealed class QuickWindowTestBenchRowViewModel : INotifyPropertyChanged
 /// The bench never writes into the project: <see cref="ToTestBenchValues"/> produces a transient payload
 /// consumed by the preview document only, and the guardrail is asserted by contract tests.
 ///
-/// Decisions: DEC-0050, FR-UI-21.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052). LoadPage, SelectSheet,
+/// SetLoweringDiagnostics et Clear servent le banc d'essai DEC-0052. Rows, Load(QuickWindowDefinition),
+/// ToTestBenchValues et QuickWindowTestBenchRowViewModel sont des résidus DEC-0050 sans appelant hors tests
+/// (KNOWN_GAPS_V2.md entrée 40).
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-UI-21.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowPreviewTests.cs.
 /// </remarks>
 public sealed class QuickWindowTestBenchViewModel : INotifyPropertyChanged

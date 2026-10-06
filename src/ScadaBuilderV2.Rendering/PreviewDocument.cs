@@ -67,7 +67,9 @@ public sealed record PreviewDocument
     /// The materialized files live only under the editor preview root; they are never part of the project
     /// model and never reach a `.sb2` package.
     ///
-    /// Decisions: DEC-0050, FR-019, FR-UI-21.
+    /// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé car DEC-0052 en
+    /// dépend : MaterializeQuickWindowAsync matérialise l'aperçu du banc d'essai DEC-0052.
+    /// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-019, FR-UI-21.
     /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowPreviewTests.cs.
     /// </remarks>
     public static async Task<PreviewDocument> MaterializeQuickWindowAsync(

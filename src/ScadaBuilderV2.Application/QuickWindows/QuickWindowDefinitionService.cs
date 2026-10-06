@@ -54,7 +54,12 @@ public sealed record QuickWindowOutdatedInvocation(
 
 /// <summary>Creates, updates, routes to and deletes quick-window definitions without WPF or file I/O.</summary>
 /// <remarks>
-/// Decisions: DEC-0050, FR-001, FR-014, FR-018, FR-019.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé pour compatibilité
+/// des projets existants : QuickWindowWorkspaceMutation porte toute mutation de feuille (DEC-0052 en dépend) et
+/// ListOutdatedInvocations alimente QuickWindowWorkspaceController.Load. CreateEmpty, Update, ListUsages,
+/// NavigateToUsage et Delete ne servent qu'au CRUD de définitions sans point d'entrée (note de revue de
+/// IQuickWindowWorkspaceHost).
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-001, FR-014, FR-018, FR-019.
 /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §§8.2, 9.1, 11.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowApplicationTests.cs.
 /// </remarks>

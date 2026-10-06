@@ -9,7 +9,11 @@ namespace ScadaBuilderV2.App.QuickWindows;
 /// hidden rather than left active and ambiguous. The context also carries the badge and title that make
 /// the active surface unambiguous in the shell.
 ///
-/// Decisions: DEC-0050, FR-001, FR-019, FR-UI-12, FR-UI-13, FR-UI-14.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé pour compatibilité
+/// des projets existants : ForPage et IsCommandVisible portent le contexte d'édition de la page active.
+/// ForQuickWindow n'est atteint que par l'hébergement de définition sans point d'entrée (note de revue de
+/// IQuickWindowWorkspaceHost).
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-001, FR-019, FR-UI-12, FR-UI-13, FR-UI-14.
 /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §9.1.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowShellContractTests.cs.
 /// </remarks>

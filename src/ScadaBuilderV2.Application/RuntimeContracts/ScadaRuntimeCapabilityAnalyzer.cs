@@ -74,7 +74,9 @@ public static class ScadaRuntimeCapabilityAnalyzer
     /// carries exactly its own id.
     /// </summary>
     /// <remarks>
-    /// Decisions: DEC-0047, DEC-0050.
+    /// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé car DEC-0052 en
+    /// dépend : AnalyzeQuickWindows s'exécute sur le projet abaissé à chaque validation, build et export.
+    /// Decisions: DEC-0047, DEC-0050 (décommissionné), DEC-0052.
     /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §10.2.
     /// Tests: tests/ScadaBuilderV2.Tests/RuntimeContracts/ScadaRuntimeCapabilityAnalyzerTests.cs.
     /// </remarks>

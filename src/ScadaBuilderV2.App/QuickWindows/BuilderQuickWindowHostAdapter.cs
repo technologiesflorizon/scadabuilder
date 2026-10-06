@@ -29,7 +29,10 @@ public sealed record QuickWindowPreviewSession(
 /// adapted from the frozen Phase 0 prototype; duplicating them here would create a second semantics.
 /// Every artifact produced by this adapter lives under the editor preview root and is never exported.
 ///
-/// Decisions: DEC-0050, FR-021, FR-022, FR-UI-21.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé car DEC-0052 en
+/// dépend : hôte d'aperçu du banc d'essai DEC-0052 (gestionnaire OnQuickWindowTestBenchSheetSelected de
+/// MainWindow.QuickWindows.cs).
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-021, FR-022, FR-UI-21.
 /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §9.3.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowPreviewTests.cs.
 /// </remarks>

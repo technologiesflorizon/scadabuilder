@@ -7,6 +7,10 @@ public enum ScadaCommandTrigger { OnClick, OnRelease, OnHover, OnHoverEnter, OnH
 
 /// <summary>Kind of runtime action performed by one Element+ command.</summary>
 /// <remarks>
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé car DEC-0052 en
+/// dépend : OpenQuickWindow, CloseQuickWindow et QuickWindowInvocationKey sont assignés par l'abaissement et exigés
+/// par la validation build et le runtime. La clause de retrait des anciens types de commande ci-dessous reste en
+/// vigueur.
 /// Decisions: DEC-0050 removes OpenPopup/TogglePopup/ClosePopup (never completed end-to-end) and adds OpenQuickWindow/CloseQuickWindow. Legacy popup actions remain as ScadaActionKind phased-out residues, never as modern command proofs.
 /// </remarks>
 public enum ScadaCommandKind { WriteTag, Navigate, OpenQuickWindow, CloseQuickWindow, OpenUrl, Back }

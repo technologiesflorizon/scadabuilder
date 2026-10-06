@@ -9,7 +9,10 @@ namespace ScadaBuilderV2.Domain.QuickWindows;
 /// Validates persistent quick window contracts fail-closed before build/export.
 /// </summary>
 /// <remarks>
-/// Decisions: DEC-0050, FR-005, FR-006, FR-017, FR-018, FR-019, FR-020, FR-027.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé car DEC-0052 en
+/// dépend : ValidateDefinition contrôle les définitions abaissées à la validation build et les définitions déjà
+/// enregistrées au chargement et à la sauvegarde (QuickWindowStore, ModernProjectStore).
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-005, FR-006, FR-017, FR-018, FR-019, FR-020, FR-027.
 /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowDomainTests.cs.
 /// </remarks>

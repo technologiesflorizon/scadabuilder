@@ -5,7 +5,10 @@ namespace ScadaBuilderV2.Application.History;
 /// editor selection and dirty state as one workspace unit.
 /// </summary>
 /// <remarks>
-/// Decisions: DEC-0050, FR-014, FR-022.
+/// Statut : DEC-0050 décommissionné comme modèle d'authoring (remplacé par DEC-0052) ; conservé car DEC-0052 en
+/// dépend : chaque mutation de feuille de paramètres et la migration d'une commande héritée passent par
+/// QuickWindowWorkspaceMutation.ToHistoryAction, sur la pile unique en portée Project.
+/// Decisions: DEC-0050 (décommissionné), DEC-0052, FR-014, FR-022.
 /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §§8.5, 14.1.
 /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/ParameterSheetWorkspaceMutationTests.cs.
 /// </remarks>
