@@ -7,7 +7,7 @@ namespace ScadaBuilderV2.Application.History;
 /// <remarks>
 /// Decisions: DEC-0050, FR-014, FR-022.
 /// Contracts: docs/superpowers/specs/2026-08-04-parameterized-popup-management-architecture-design.md §§8.5, 14.1.
-/// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowHistoryTests.cs.
+/// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/ParameterSheetWorkspaceMutationTests.cs.
 /// </remarks>
 public sealed record QuickWindowWorkspaceSnapshotAction(
     ProjectWorkspaceHistorySnapshot Before,

@@ -165,61 +165,6 @@ public sealed class QuickWindowApplicationTests
         Assert.IsTrue(first.Diagnostics.Any(issue => issue.Code == "quick-window.port-removed"));
     }
 
-    [TestMethod]
-    public void InvocationServiceKeepsTwoCallersIndependentAndDeletesCallerAtomically()
-    {
-        var member = new QuickWindowInterfaceMember(
-            Guid.NewGuid(),
-            "MotorName",
-            QuickWindowInterfaceFamily.PublicParameter,
-            QuickWindowDataType.String,
-            QuickWindowMemberAccess.Read);
-        var definition = Definition("motor", members: [member]);
-        var callerA = CreateCaller("caller-a", "open-a", null);
-        var callerB = CreateCaller("caller-b", "open-b", null);
-        var page = CreatePage("page", callerA, callerB);
-        var snapshot = AddQuickWindows(CreateSnapshot(page), [definition], []);
-        var service = new QuickWindowInvocationService();
-
-        var first = service.Upsert(snapshot, new UpsertQuickWindowInvocationRequest(
-            page.PageKey,
-            callerA.Id,
-            "open-a",
-            definition.DefinitionKey,
-            [QuickWindowBinding.FromLiteral(member.MemberKey, "M101")]));
-        var second = service.Upsert(first.After, new UpsertQuickWindowInvocationRequest(
-            page.PageKey,
-            callerB.Id,
-            "open-b",
-            definition.DefinitionKey,
-            [QuickWindowBinding.FromLiteral(member.MemberKey, "M102")]));
-
-        Assert.AreEqual(2, second.After.Project.EffectiveQuickWindowInvocations.Count);
-        var invocationA = second.After.Project.EffectiveQuickWindowInvocations.Single(item => item.OwnerElementId == callerA.Id);
-        var invocationB = second.After.Project.EffectiveQuickWindowInvocations.Single(item => item.OwnerElementId == callerB.Id);
-        Assert.AreNotEqual(invocationA.InvocationKey, invocationB.InvocationKey);
-        Assert.AreNotSame(invocationA.Bindings, invocationB.Bindings);
-        Assert.AreEqual("M101", invocationA.Bindings.Single().LiteralValue);
-        Assert.AreEqual("M102", invocationB.Bindings.Single().LiteralValue);
-        Assert.AreEqual(invocationA.InvocationKey, second.After.Scenes[page.PageKey].FindElementRecursive(callerA.Id)!
-            .EffectiveCommandConfig.Commands.Single().QuickWindowInvocationKey);
-
-        var updatedA = service.Upsert(second.After, new UpsertQuickWindowInvocationRequest(
-            page.PageKey,
-            callerA.Id,
-            "open-a",
-            definition.DefinitionKey,
-            [QuickWindowBinding.FromLiteral(member.MemberKey, "M101-updated")],
-            invocationA.InvocationKey));
-        Assert.AreEqual("M102", updatedA.After.Project.EffectiveQuickWindowInvocations.Single(item => item.InvocationKey == invocationB.InvocationKey).Bindings.Single().LiteralValue);
-
-        var deleted = service.DeleteCaller(updatedA.After, page.PageKey, callerA.Id);
-        Assert.IsNull(deleted.After.Scenes[page.PageKey].FindElementRecursive(callerA.Id));
-        Assert.IsNotNull(deleted.After.Scenes[page.PageKey].FindElementRecursive(callerB.Id));
-        Assert.IsFalse(deleted.After.Project.EffectiveQuickWindowInvocations.Any(item => item.InvocationKey == invocationA.InvocationKey));
-        Assert.IsTrue(deleted.After.Project.EffectiveQuickWindowInvocations.Any(item => item.InvocationKey == invocationB.InvocationKey));
-    }
-
     private static PageWorkspaceSnapshot CreateSnapshot(params ScadaScene[] scenes)
     {
         var references = scenes.Select(scene => new ScadaSceneReference(

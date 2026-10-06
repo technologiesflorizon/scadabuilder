@@ -555,37 +555,6 @@ public sealed class QuickWindowWorkspaceController(
     }
 
     /// <summary>
-    /// Saves one typed invocation authored by the `Liaisons` tab, together with its caller command, as a
-    /// single prepared transition. Incomplete bindings stay saveable and are returned as diagnostics; a
-    /// broken owner or definition reference blocks the mutation.
-    /// </summary>
-    /// <remarks>
-    /// Decisions: DEC-0050, FR-009, FR-010, FR-UI-18, FR-UI-19.
-    /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowBindingAuthoringTests.cs.
-    /// </remarks>
-    public QuickWindowWorkspaceMutation SaveInvocation(
-        PageWorkspaceSnapshot snapshot,
-        Guid ownerPageKey,
-        string ownerElementId,
-        QuickWindowInvocationAuthoringRequest request)
-    {
-        ArgumentNullException.ThrowIfNull(snapshot);
-        ArgumentNullException.ThrowIfNull(request);
-        var mutation = invocations.Upsert(snapshot, new UpsertQuickWindowInvocationRequest(
-            ownerPageKey,
-            ownerElementId,
-            request.CommandId,
-            request.DefinitionKey,
-            request.Bindings ?? [],
-            request.InvocationKey,
-            request.TitleOverride));
-        host.ReportQuickWindowStatus(mutation.Result.Status == CommandResultStatus.Succeeded
-            ? "Liaisons de la fenêtre rapide enregistrées."
-            : $"Enregistrement des liaisons refusé : {mutation.Result.Message}");
-        return mutation;
-    }
-
-    /// <summary>
     /// Applies a command edit that migrates an `OpenQuickWindow` command from a legacy
     /// `QuickWindowInvocationKey` to a `ParameterSheetKey`/`QuickWindowPageKey` pair, retiring the
     /// now-orphaned invocation from the project in the same transition (controller fix round 1, Task 10).
@@ -608,20 +577,6 @@ public sealed class QuickWindowWorkspaceController(
             ? "Commande migrée vers une feuille de paramètres ; l'ancienne liaison a été retirée."
             : $"Migration de la commande refusée : {mutation.Result.Message}");
         return mutation;
-    }
-
-    /// <summary>Removes one invocation and clears exactly the caller command that owned it.</summary>
-    public QuickWindowWorkspaceMutation RemoveInvocation(PageWorkspaceSnapshot snapshot, Guid invocationKey)
-    {
-        ArgumentNullException.ThrowIfNull(snapshot);
-        return invocations.RemoveInvocation(snapshot, invocationKey);
-    }
-
-    /// <summary>Deletes one caller element and every invocation owned by its command subtree.</summary>
-    public QuickWindowWorkspaceMutation DeleteCaller(PageWorkspaceSnapshot snapshot, Guid pageKey, string elementId)
-    {
-        ArgumentNullException.ThrowIfNull(snapshot);
-        return invocations.DeleteCaller(snapshot, pageKey, elementId);
     }
 
     /// <summary>
