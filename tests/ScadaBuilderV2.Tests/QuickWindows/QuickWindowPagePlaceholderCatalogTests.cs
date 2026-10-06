@@ -21,254 +21,164 @@ namespace ScadaBuilderV2.Tests.QuickWindows;
 public sealed class QuickWindowPagePlaceholderCatalogTests
 {
     [TestMethod]
-    public void LinkedSheetYieldsExactlyItsThreeEntriesInNumericOrder()
+    public void EverySheetContributesWhetherLinkedToThisPageToAnotherPageOrToNoPageAtAll()
     {
+        // "Toutes les feuilles comptent": no filtering by `Ouvrir une fenêtre rapide` command.
         var pageKey = Guid.NewGuid();
-        var sheet = Sheet("#1 := {FAN_03_RUN}\n#2 := \"Ventilateur 3\"\n#10 := {FAN_03_SPEED} * 0.1");
-        var project = Project([sheet], CommandCatalog());
-        var callerPage = Page("win00001", OpenCommand(sheet.SheetKey, pageKey));
-        var scenes = Scenes(callerPage);
-
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
-
-        CollectionAssert.AreEqual(new[] { "#1", "#2", "#10" }, catalog.Tags.Select(tag => tag.Id).ToArray());
-    }
-
-    [TestMethod]
-    public void NoLinkingCommandFallsBackToTheUnionOfEverySheet()
-    {
-        var pageKey = Guid.NewGuid();
-        var sheetA = Sheet("#1 := {FAN_03_RUN}");
-        var sheetB = Sheet("#2 := \"Ventilateur 3\"");
-        var project = Project([sheetA, sheetB], CommandCatalog());
-        var scenes = Scenes(Page("win00001"));
-
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
-
-        CollectionAssert.AreEqual(new[] { "#1", "#2" }, catalog.Tags.Select(tag => tag.Id).ToArray());
-    }
-
-    [TestMethod]
-    public void TwoLinkedSheetsWithDifferentNumbersYieldTheirUnion()
-    {
-        var pageKey = Guid.NewGuid();
-        var sheetA = Sheet("#1 := {FAN_03_RUN}");
-        var sheetB = Sheet("#5 := {FAN_03_SPEED} * 0.1");
-        var project = Project([sheetA, sheetB], CommandCatalog());
-        var callerPage = Page(
+        var unlinked = NamedSheet("A_libre", "#1 := {FAN_03_RUN}");
+        var linkedHere = NamedSheet("B_ici", "#2 := {FAN_03_START}");
+        var linkedElsewhere = NamedSheet("C_ailleurs", "#3 := \"autre fenetre\"");
+        var elsewherePage = Page(
             "win00001",
-            OpenCommand(sheetA.SheetKey, pageKey, elementId: "open-a", commandId: "cmd-a"),
-            OpenCommand(sheetB.SheetKey, pageKey, elementId: "open-b", commandId: "cmd-b"));
-        var scenes = Scenes(callerPage);
+            OpenCommand(linkedHere.SheetKey, pageKey, elementId: "open-a", commandId: "cmd-a"),
+            OpenCommand(linkedElsewhere.SheetKey, Guid.NewGuid(), elementId: "open-b", commandId: "cmd-b"));
 
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
+        var catalog = BuildCatalog(Project([unlinked, linkedHere, linkedElsewhere], CommandCatalog()), null, pageKey, elsewherePage);
 
-        CollectionAssert.AreEqual(new[] { "#1", "#5" }, catalog.Tags.Select(tag => tag.Id).ToArray());
+        CollectionAssert.AreEqual(new[] { "#1", "#2", "#3" }, catalog.Tags.Select(tag => tag.Id).ToArray());
     }
 
     [TestMethod]
-    public void APageReferencedNumberAbsentFromRetainedSheetsIsKeptAndMarkedUndefined()
-    {
-        var pageKey = Guid.NewGuid();
-        var sheet = Sheet("#1 := {FAN_03_RUN}");
-        var project = Project([sheet], CommandCatalog());
-        var callerPage = Page("win00001", OpenCommand(sheet.SheetKey, pageKey));
-        var quickWindowPage = PageWithTextUsage(pageKey, "#7");
-        var scenes = Scenes(callerPage, quickWindowPage);
-
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
-
-        CollectionAssert.AreEqual(new[] { "#1", "#7" }, catalog.Tags.Select(tag => tag.Id).ToArray());
-        var undefined = catalog.Tags.Single(tag => tag.Id == "#7");
-        // DisplayName MUST equal Id exactly (fix round 2) - the descriptive text lives in Device instead.
-        Assert.AreEqual("#7", undefined.DisplayName);
-        StringAssert.Contains(undefined.Device, "non défini");
-        // Writeable ruling (fix round 1): an undefined #N must stay offered to the write-tag selector until
-        // the sheet is fixed, or an already-authored write command regresses (table write-tag combo filters
-        // by Writeable: TableCellNumericInputInspector.cs:39, TableEditCoordinator.cs:187).
-        Assert.IsTrue(undefined.Writeable);
-    }
-
-    [TestMethod]
-    public void LinkingCommandsOnTwoDifferentPagesFromTwoDifferentScenesSourcesBothContributeToTheUnion()
-    {
-        // Fix round 1 (project-wide "feuilles liées" search): MainWindow.BuildActiveQuickWindowPagePlaceholderCatalog
-        // merges a project-wide snapshot's scenes with an in-memory overlay (open tabs, the active scene)
-        // before calling Build. Reproduce that merge of two distinct sources here (no WPF host in this test
-        // project) and assert the union still carries both sheets' #N entries, not just the overlay's.
-        var pageKey = Guid.NewGuid();
-        var sheetA = Sheet("#1 := {FAN_03_RUN}");
-        var sheetB = Sheet("#5 := {FAN_03_SPEED} * 0.1");
-        var project = Project([sheetA, sheetB], CommandCatalog());
-
-        var callerPageFromSnapshot = Page("win00001", OpenCommand(sheetA.SheetKey, pageKey, elementId: "open-a", commandId: "cmd-a"));
-        var callerPageFromOverlay = Page("win00003", OpenCommand(sheetB.SheetKey, pageKey, elementId: "open-b", commandId: "cmd-b"));
-
-        var scenes = new Dictionary<Guid, ScadaScene>();
-        foreach (var (key, scene) in Scenes(callerPageFromSnapshot)) scenes[key] = scene;
-        foreach (var (key, scene) in Scenes(callerPageFromOverlay)) scenes[key] = scene;
-
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
-
-        CollectionAssert.AreEqual(new[] { "#1", "#5" }, catalog.Tags.Select(tag => tag.Id).ToArray());
-    }
-
-    [TestMethod]
-    public void ALinkedSheetAndAnUnlinkedSheetBothContributeAndTheCaptionNamesBothInOrder()
-    {
-        // Sheet-named captions (user change request): a sheet created before its command must show up, and
-        // the caption must say which sheet each source comes from, in a deterministic order (sheet
-        // DisplayName ordinal-ignore-case, then SheetKey) whatever the project's sheet order is.
-        var pageKey = Guid.NewGuid();
-        var sheet1 = NamedSheet("Condenseur_1", "#1 := {FAN_03_RUN}");
-        var sheet2 = NamedSheet("Condenseur_2", "#1 := {FAN_03_START}");
-        var callerPage = Page("win00001", OpenCommand(sheet1.SheetKey, pageKey));
-        var scenes = Scenes(callerPage);
-
-        foreach (var sheets in new[] { new[] { sheet1, sheet2 }, new[] { sheet2, sheet1 } })
-        {
-            var catalog = QuickWindowPagePlaceholderCatalog.Build(Project(sheets, CommandCatalog()), scenes, pageKey);
-
-            var tag = catalog.Tags.Single();
-            Assert.AreEqual("#1", tag.DisplayName);
-            Assert.AreEqual("Paramètre — Condenseur_1 : {FAN_03_RUN} · Condenseur_2 : {FAN_03_START}", tag.Device);
-        }
-    }
-
-    [TestMethod]
-    public void ASheetLinkedOnlyToAnotherPageIsExcluded()
-    {
-        var pageKey = Guid.NewGuid();
-        var otherPageKey = Guid.NewGuid();
-        var mine = NamedSheet("Condenseur_1", "#1 := {FAN_03_RUN}");
-        var theirs = NamedSheet("Evaporateur_1", "#1 := {FAN_03_START}\n#9 := \"autre fenetre\"");
-        var callerPage = Page(
-            "win00001",
-            OpenCommand(mine.SheetKey, pageKey, elementId: "open-a", commandId: "cmd-a"),
-            OpenCommand(theirs.SheetKey, otherPageKey, elementId: "open-b", commandId: "cmd-b"));
-        var scenes = Scenes(callerPage);
-
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(Project([mine, theirs], CommandCatalog()), scenes, pageKey);
-
-        var tag = catalog.Tags.Single();
-        Assert.AreEqual("#1", tag.Id);
-        Assert.AreEqual("Paramètre — Condenseur_1 : {FAN_03_RUN}", tag.Device);
-    }
-
-    [TestMethod]
-    public void WhenEverySheetIsLinkedOnlyToOtherPagesTheCatalogFallsBackToEverySheet()
+    public void ASheetLinkedOnlyToAnotherPageStillContributes()
     {
         var pageKey = Guid.NewGuid();
         var theirs = NamedSheet("Evaporateur_1", "#4 := {FAN_03_RUN}");
         var callerPage = Page("win00001", OpenCommand(theirs.SheetKey, Guid.NewGuid()));
-        var scenes = Scenes(callerPage);
 
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(Project([theirs], CommandCatalog()), scenes, pageKey);
+        var catalog = BuildCatalog(Project([theirs], CommandCatalog()), null, pageKey, callerPage);
 
-        CollectionAssert.AreEqual(new[] { "#4" }, catalog.Tags.Select(tag => tag.Id).ToArray());
+        Assert.AreEqual("Paramètre — ex. : {FAN_03_RUN}", catalog.Tags.Single(t => t.Id == "#4").Device);
     }
 
     [TestMethod]
-    public void TheCaptionOfASingleSheetNamesIt()
+    public void APageReferencedNumberAbsentFromEverySheetIsKeptAndMarkedUndefined()
     {
         var pageKey = Guid.NewGuid();
-        var sheet = NamedSheet("Condenseur_1", "#1 := {FAN_03_RUN}");
-        var scenes = Scenes(Page("win00001", OpenCommand(sheet.SheetKey, pageKey)));
+        var sheet = Sheet("#1 := {FAN_03_RUN}");
+        var quickWindowPage = PageWithTextUsage(pageKey, "#7");
 
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(Project([sheet], CommandCatalog()), scenes, pageKey);
+        var catalog = BuildCatalog(Project([sheet], CommandCatalog()), quickWindowPage, pageKey);
 
-        Assert.AreEqual("Paramètre — Condenseur_1 : {FAN_03_RUN}", catalog.Tags.Single().Device);
+        CollectionAssert.AreEqual(new[] { "#1", "#7" }, catalog.Tags.Select(tag => tag.Id).ToArray());
+        var undefined = catalog.Tags.Single(tag => tag.Id == "#7");
+        // DisplayName MUST equal Id exactly - the descriptive text lives in Device instead.
+        Assert.AreEqual("#7", undefined.DisplayName);
+        Assert.AreEqual("Paramètre — (non défini dans les feuilles)", undefined.Device);
+        // An undefined #N must stay offered to the write-tag selector until the sheet is fixed.
+        Assert.IsTrue(undefined.Writeable);
     }
 
     [TestMethod]
-    public void LiteralAndExpressionSourcesAreRenderedWithTheirSheetName()
+    public void TheCaptionListsOneTwoOrThreeDistinctSourcesWithoutSheetNames()
+    {
+        var pageKey = Guid.NewGuid();
+        var sheets = Enumerable.Range(1, 3).Select(i => NamedSheet($"Condenseur_{i}", $"#1 := {{T{i}}}")).ToArray();
+
+        Assert.AreEqual("Paramètre — ex. : {T1}", DeviceOf(sheets.Take(1), pageKey));
+        Assert.AreEqual("Paramètre — ex. : {T1}, {T2}", DeviceOf(sheets.Take(2), pageKey));
+        Assert.AreEqual("Paramètre — ex. : {T1}, {T2}, {T3}", DeviceOf(sheets.Take(3), pageKey));
+    }
+
+    [TestMethod]
+    public void TheCaptionOfFiveDistinctSourcesShowsThreeAndCountsTheTwoOthers()
+    {
+        var pageKey = Guid.NewGuid();
+        var sheets = Enumerable.Range(1, 5).Select(i => NamedSheet($"Condenseur_{i}", $"#1 := {{T{i}}}")).ToArray();
+
+        Assert.AreEqual("Paramètre — ex. : {T1}, {T2}, {T3}, … (+2)", DeviceOf(sheets, pageKey));
+    }
+
+    [TestMethod]
+    public void TheCaptionOrderIsDeterministicWhateverTheSheetOrder()
+    {
+        var pageKey = Guid.NewGuid();
+        var sheet1 = NamedSheet("Condenseur_1", "#1 := {FAN_03_RUN}");
+        var sheet2 = NamedSheet("condenseur_2", "#1 := {FAN_03_START}");
+
+        Assert.AreEqual("Paramètre — ex. : {FAN_03_RUN}, {FAN_03_START}", DeviceOf([sheet1, sheet2], pageKey));
+        Assert.AreEqual("Paramètre — ex. : {FAN_03_RUN}, {FAN_03_START}", DeviceOf([sheet2, sheet1], pageKey));
+    }
+
+    [TestMethod]
+    public void ADuplicatedSourceAcrossMergedSheetsIsListedOnce()
+    {
+        var pageKey = Guid.NewGuid();
+        var sheets = new[]
+        {
+            NamedSheet("A", "#1 := {FAN_03_RUN}"),
+            NamedSheet("B", "#1 := {FAN_03_RUN}"),
+            NamedSheet("C", "#1 := {FAN_03_START}"),
+            NamedSheet("D", "#1 := {FAN_03_RUN}")
+        };
+
+        Assert.AreEqual("Paramètre — ex. : {FAN_03_RUN}, {FAN_03_START}", DeviceOf(sheets, pageKey));
+    }
+
+    [TestMethod]
+    public void LiteralAndExpressionSourcesAreRenderedAsTheyAlwaysWere()
     {
         var pageKey = Guid.NewGuid();
         var sheet = NamedSheet("Condenseur_1", "#2 := \"Ventilateur 3\"\n#3 := {FAN_03_SPEED} * 0.1");
-        var scenes = Scenes(Page("win00001", OpenCommand(sheet.SheetKey, pageKey)));
 
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(Project([sheet], CommandCatalog()), scenes, pageKey);
+        var catalog = BuildCatalog(Project([sheet], CommandCatalog()), null, pageKey);
 
-        Assert.AreEqual("Paramètre — Condenseur_1 : \"Ventilateur 3\"", catalog.Tags.Single(t => t.Id == "#2").Device);
-        Assert.AreEqual("Paramètre — Condenseur_1 : {FAN_03_SPEED} * 0.1", catalog.Tags.Single(t => t.Id == "#3").Device);
+        Assert.AreEqual("Paramètre — ex. : \"Ventilateur 3\"", catalog.Tags.Single(t => t.Id == "#2").Device);
+        Assert.AreEqual("Paramètre — ex. : {FAN_03_SPEED} * 0.1", catalog.Tags.Single(t => t.Id == "#3").Device);
     }
 
     [TestMethod]
-    public void AnUndefinedNumberKeepsItsUnchangedCaptionAndEveryDisplayNameStillEqualsItsId()
+    public void WholeValuesAreDroppedAndCountedWhenTheCaptionWouldExceedEightyCharacters()
     {
         var pageKey = Guid.NewGuid();
-        var sheet = NamedSheet("Condenseur_1", "#1 := {FAN_03_RUN}");
-        var scenes = Scenes(Page("win00001", OpenCommand(sheet.SheetKey, pageKey)), PageWithTextUsage(pageKey, "#7"));
+        var a = "{" + new string('A', 20) + "}";
+        var b = "{" + new string('B', 20) + "}";
+        var c = "{" + new string('C', 20) + "}";
+        var threeShort = new[] { NamedSheet("1", $"#1 := {a}"), NamedSheet("2", $"#1 := {b}"), NamedSheet("3", $"#1 := {c}") };
 
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(Project([sheet], CommandCatalog()), scenes, pageKey);
+        var twoShown = DeviceOf(threeShort, pageKey);
 
-        Assert.AreEqual("Paramètre — (non défini dans les feuilles)", catalog.Tags.Single(t => t.Id == "#7").Device);
-        foreach (var tag in catalog.Tags) Assert.AreEqual(tag.Id, tag.DisplayName);
+        Assert.AreEqual($"Paramètre — ex. : {a}, {b}, … (+1)", twoShown);
+        Assert.IsTrue(twoShown.Length <= 80, twoShown);
+
+        var x = "{" + new string('X', 28) + "}";
+        var y = "{" + new string('Y', 28) + "}";
+        var z = "{" + new string('Z', 28) + "}";
+        var threeLong = new[] { NamedSheet("1", $"#1 := {x}"), NamedSheet("2", $"#1 := {y}"), NamedSheet("3", $"#1 := {z}") };
+
+        var oneShown = DeviceOf(threeLong, pageKey);
+
+        Assert.AreEqual($"Paramètre — ex. : {x}, … (+2)", oneShown);
+        Assert.IsTrue(oneShown.Length <= 80, oneShown);
     }
 
     [TestMethod]
-    public void ALongCaptionIsTruncatedBetweenSegmentsNeverInsideAToken()
+    public void AFirstValueTooLongForTheLimitIsTruncatedWithAnEllipsisKeepingTheCountOfTheOthers()
     {
         var pageKey = Guid.NewGuid();
-        var sheets = Enumerable.Range(1, 8)
-            .Select(i => NamedSheet($"Condenseur_numero_{i:00}", $"#1 := {{FAN_03_RUN}} + {i}"))
-            .ToArray();
-        var scenes = Scenes(Page("win00001", OpenCommand(sheets[0].SheetKey, pageKey)));
+        var huge = "{" + new string('Z', 100) + "}";
 
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(Project(sheets, CommandCatalog()), scenes, pageKey);
+        var alone = DeviceOf([NamedSheet("1", $"#1 := {huge}")], pageKey);
 
-        var device = catalog.Tags.Single().Device!;
-        Assert.IsTrue(device.Length <= 160, device);
-        Assert.IsTrue(device.EndsWith(" · …", StringComparison.Ordinal), device);
-        Assert.IsTrue(device.StartsWith("Paramètre — Condenseur_numero_01 : {FAN_03_RUN} + 1 · Condenseur_numero_02", StringComparison.Ordinal), device);
-        var withoutSuffix = device[..^" · …".Length];
-        foreach (var segment in withoutSuffix["Paramètre — ".Length..].Split(" · "))
-        {
-            StringAssert.Matches(segment, new System.Text.RegularExpressions.Regex(@"^Condenseur_numero_\d\d : \{FAN_03_RUN\} \+ \d$"));
-        }
+        Assert.AreEqual(80, alone.Length, alone);
+        Assert.AreEqual("Paramètre — ex. : " + huge[..61] + "…", alone);
+
+        var withOther = DeviceOf([NamedSheet("1", $"#1 := {huge}"), NamedSheet("2", "#1 := {OTHER}")], pageKey);
+
+        Assert.AreEqual(80, withOther.Length, withOther);
+        Assert.AreEqual("Paramètre — ex. : " + huge[..53] + "…, … (+1)", withOther);
     }
 
     [TestMethod]
-    public void TheDisplayedSourceLivesInDeviceNeverInDisplayName()
+    public void EveryDisplayNameEqualsItsIdForDefinedMultiSourceLiteralExpressionAndUndefinedEntries()
     {
-        // Fix round 2 (bug report on Popup_Fan_Condenseur): ElementStateRuleDialog.BuildExpressionFromVariable
-        // and ExpressionCreationDialog compose `{tag.DisplayName}` (now `{tag.Id}` via ScadaTagExpressionComposer,
-        // but DisplayName is still matched elsewhere) directly into expression source text, and
-        // ScadaExpressionValidator.TryResolveTagReference matches a parsed token against DisplayName as its
-        // second resolution step. Putting the sheet's source description there produced
-        // `{#1 — {BP_1A_AUTO}}`, unparsable. The source now lives in Device; DisplayName is always the bare Id.
-        var pageKey = Guid.NewGuid();
-        var sheet = Sheet("#1 := {FAN_03_RUN}");
-        var project = Project([sheet], CommandCatalog());
-        var callerPage = Page("win00001", OpenCommand(sheet.SheetKey, pageKey));
-        var scenes = Scenes(callerPage);
-
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
-
-        var tag = catalog.Tags.Single(t => t.Id == "#1");
-        Assert.AreEqual("#1", tag.DisplayName);
-        StringAssert.Contains(tag.Device, "FAN_03_RUN");
-    }
-
-    [TestMethod]
-    public void ARegressionTest_EveryPlaceholderEntryHasDisplayNameEqualToId()
-    {
-        // Required regression test (a): DisplayName == Id == "#N" for defined, multi-source, literal,
-        // expression and undefined entries - DisplayName is an identifier-bearing field throughout the app
-        // (ElementStateRuleDialog, ExpressionCreationDialog, ScadaExpressionValidator.TryResolveTagReference),
-        // never a display-only one. A violation here is exactly the bug reported on Popup_Fan_Condenseur.
+        // DisplayName is an identifier-bearing field throughout the app (ElementStateRuleDialog,
+        // ExpressionCreationDialog, ScadaExpressionValidator.TryResolveTagReference), never a display-only one.
         var pageKey = Guid.NewGuid();
         var sheetA = Sheet("#1 := {FAN_03_RUN}\n#2 := \"Ventilateur 3\"\n#3 := {FAN_03_SPEED} * 0.1\n#5 := {FAN_03_SPEED}");
-        var sheetB = Sheet("#5 := {FAN_03_START}"); // second source for the same number -> multi-source
+        var sheetB = Sheet("#5 := {FAN_03_START}");
         var project = Project([sheetA, sheetB], CommandCatalog());
-        var callerPage = Page(
-            "win00001",
-            OpenCommand(sheetA.SheetKey, pageKey, elementId: "open-a", commandId: "cmd-a"),
-            OpenCommand(sheetB.SheetKey, pageKey, elementId: "open-b", commandId: "cmd-b"));
-        var quickWindowPage = PageWithTextUsage(pageKey, "#7"); // undefined
-        var scenes = Scenes(callerPage, quickWindowPage);
 
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
+        var catalog = BuildCatalog(project, PageWithTextUsage(pageKey, "#7"), pageKey);
 
         CollectionAssert.AreEqual(new[] { "#1", "#2", "#3", "#5", "#7" }, catalog.Tags.Select(t => t.Id).ToArray());
         foreach (var tag in catalog.Tags)
@@ -283,10 +193,7 @@ public sealed class QuickWindowPagePlaceholderCatalogTests
         var pageKey = Guid.NewGuid();
         var sheet = Sheet("#1 := 1\n#10 := 1\n#100 := 1");
         var project = Project([sheet], CommandCatalog());
-        var callerPage = Page("win00001", OpenCommand(sheet.SheetKey, pageKey));
-        var scenes = Scenes(callerPage);
-
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
+        var catalog = BuildCatalog(project, null, pageKey);
 
         CollectionAssert.AreEqual(new[] { "#1", "#10", "#100" }, catalog.Tags.Select(tag => tag.Id).ToArray());
     }
@@ -297,10 +204,7 @@ public sealed class QuickWindowPagePlaceholderCatalogTests
         var pageKey = Guid.NewGuid();
         var sheet = Sheet("#1 := {FAN_03_START}");
         var project = Project([sheet], CommandCatalog());
-        var callerPage = Page("win00001", OpenCommand(sheet.SheetKey, pageKey));
-        var scenes = Scenes(callerPage);
-
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
+        var catalog = BuildCatalog(project, null, pageKey);
 
         var tag = catalog.Tags.Single(t => t.Id == "#1");
         Assert.IsTrue(tag.Writeable);
@@ -313,10 +217,7 @@ public sealed class QuickWindowPagePlaceholderCatalogTests
         var pageKey = Guid.NewGuid();
         var sheet = Sheet("#1 := \"Ventilateur 3\"");
         var project = Project([sheet], CommandCatalog());
-        var callerPage = Page("win00001", OpenCommand(sheet.SheetKey, pageKey));
-        var scenes = Scenes(callerPage);
-
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
+        var catalog = BuildCatalog(project, null, pageKey);
 
         Assert.IsFalse(catalog.Tags.Single(t => t.Id == "#1").Writeable);
     }
@@ -330,13 +231,7 @@ public sealed class QuickWindowPagePlaceholderCatalogTests
         var sheetA = Sheet("#1 := {FAN_03_SP}");
         var sheetB = Sheet("#1 := {FAN_04_SP}");
         var project = Project([sheetA, sheetB], CommandCatalog());
-        var callerPage = Page(
-            "win00001",
-            OpenCommand(sheetA.SheetKey, pageKey, elementId: "open-a", commandId: "cmd-a"),
-            OpenCommand(sheetB.SheetKey, pageKey, elementId: "open-b", commandId: "cmd-b"));
-        var scenes = Scenes(callerPage);
-
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
+        var catalog = BuildCatalog(project, null, pageKey);
 
         var tag = catalog.Tags.Single(t => t.Id == "#1");
         Assert.IsTrue(tag.Writeable);
@@ -350,13 +245,7 @@ public sealed class QuickWindowPagePlaceholderCatalogTests
         var sheetA = Sheet("#1 := {FAN_03_SP}"); // writable
         var sheetB = Sheet("#1 := {FAN_05_SP}"); // not writable
         var project = Project([sheetA, sheetB], CommandCatalog());
-        var callerPage = Page(
-            "win00001",
-            OpenCommand(sheetA.SheetKey, pageKey, elementId: "open-a", commandId: "cmd-a"),
-            OpenCommand(sheetB.SheetKey, pageKey, elementId: "open-b", commandId: "cmd-b"));
-        var scenes = Scenes(callerPage);
-
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
+        var catalog = BuildCatalog(project, null, pageKey);
 
         Assert.IsFalse(catalog.Tags.Single(t => t.Id == "#1").Writeable);
     }
@@ -470,6 +359,18 @@ public sealed class QuickWindowPagePlaceholderCatalogTests
         return page.WithElement(textElement);
     }
 
-    private static Dictionary<Guid, ScadaScene> Scenes(params ScadaScene[] pages) =>
-        pages.ToDictionary(page => page.PageKey);
+    /// <summary>
+    /// Builds the catalog of <paramref name="pageKey"/>. <paramref name="otherPages"/> (typically pages carrying
+    /// `Ouvrir une fenêtre rapide` commands) are deliberately irrelevant to the catalog: it only needs the project
+    /// and the active page scene.
+    /// </summary>
+    private static ScadaTagCatalog BuildCatalog(
+        ScadaProject project,
+        ScadaScene? pageScene,
+        Guid pageKey,
+        params ScadaScene[] otherPages) =>
+        QuickWindowPagePlaceholderCatalog.Build(project, pageScene);
+
+    private static string DeviceOf(IEnumerable<ParameterSheet> sheets, Guid pageKey) =>
+        BuildCatalog(Project(sheets.ToArray(), CommandCatalog()), null, pageKey).Tags.Single(t => t.Id == "#1").Device!;
 }

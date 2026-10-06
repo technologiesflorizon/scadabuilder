@@ -165,12 +165,9 @@ public sealed class QuickWindowShellContractTests
                 $"'{businessType}' is quick-window business logic and must live outside MainWindow.xaml.cs.");
         }
 
-        // Budget raised 12 -> 13 (fix round 1, DEC-0052): ActivatePageAsync gained one controller-wiring call,
-        // `await RefreshQuickWindowPageSnapshotScenesAsync();`, refreshing the project-wide snapshot the #N
-        // placeholder catalog's "feuilles liées" search reads. One line of pure delegation, not business logic.
         var quickWindowLines = source.Split('\n').Count(line => line.Contains("QuickWindow", StringComparison.Ordinal));
         Assert.IsTrue(
-            quickWindowLines <= 13,
+            quickWindowLines <= 12,
             $"MainWindow.xaml.cs carries {quickWindowLines} quick-window lines; only controller wiring belongs here.");
     }
 

@@ -165,22 +165,7 @@ public sealed class ScadaTagExpressionComposerTests
                     new ScadaTagDefinition("tf100.mapping.103", "FAN_03_SPEED", Datatype: "Decimal"),
                 ])
         };
-        var callerPage = ScadaScene.CreateEmpty("win00001", "win00001", CanvasSize.DefaultDesktop) with
-        {
-            PageKey = Guid.NewGuid(),
-            PageCode = "win00001"
-        };
-        callerPage = callerPage.WithElement(ScadaElement.CreateButton("open", "Ouvrir", 20, 20) with
-        {
-            CommandConfig = new ScadaElementCommandConfig(
-            [
-                new ScadaCommandBinding("open-cmd", "Ouvrir", true, ScadaCommandTrigger.OnClick, ScadaCommandKind.OpenQuickWindow,
-                    ParameterSheetKey: sheet.SheetKey, QuickWindowPageKey: pageKey)
-            ])
-        });
-
-        var scenes = new Dictionary<Guid, ScadaScene> { [callerPage.PageKey] = callerPage };
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
+        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, null);
         tag = catalog.Tags.Single(t => t.Id == "#1");
         return catalog;
     }

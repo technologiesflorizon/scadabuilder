@@ -12,18 +12,14 @@ namespace ScadaBuilderV2.Application.QuickWindows;
 /// `#1`..`#999` placeholder list (DEC-0052).
 /// </summary>
 /// <remarks>
-/// Pure and deterministic: no I/O, no WPF. <see cref="Build"/> never captures a workspace snapshot itself; it
-/// only sees the <paramref name="scenes"/> its caller passes in, so finding every linking command project-wide
-/// is the caller's responsibility (fix round 1, DEC-0052: the App layer passes a coherent workspace snapshot's
-/// scenes, overlaid with every open tab's live scene, from <c>MainWindow.BuildActiveQuickWindowPagePlaceholderCatalog</c>).
-/// A caller that passes a partial <paramref name="scenes"/> map degrades safely rather than incorrectly: a
-/// linking command on a page missing from that map is not found, so its sheet is treated as linked to no page
-/// at all and stays retained - over-offering rather than hiding a sheet that may belong to this page.
+/// Pure and deterministic: no I/O, no WPF. Every parameter sheet of the project contributes, always: a sheet is
+/// never filtered by the `Ouvrir une fenêtre rapide` commands that link it (or not) to a page, so no scene
+/// other than the active page's is needed. That scene is only used to keep a `#N` the page references but no
+/// sheet defines. Entries, captions, `Writeable` and `Datatype` all derive from every sheet.
 ///
-/// Retained sheets (sheet-named captions change): the sheets linked to THIS page by a command, plus the sheets
-/// linked to NO page at all (a sheet created before its command); a sheet linked only to OTHER pages belongs to
-/// another quick window and is excluded; when that set is empty every sheet of the project is retained. Entries,
-/// captions, `Writeable` and `Datatype` all derive from the retained set.
+/// Caption (stored in `Device`, display only): `Paramètre — ex. : {BP_1A_AUTO}, {BP_1B_AUTO}` - the distinct
+/// sources only (no sheet name), at most <c>MaxDisplayedSources</c> of them followed by `, … (+N)` for the N
+/// not shown, and never longer than <c>MaxLabelLength</c> characters.
 ///
 /// Decisions: DEC-0052.
 /// Contracts: docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md §5, §6.
@@ -33,33 +29,21 @@ public static class QuickWindowPagePlaceholderCatalog
 {
     private const string SchemaId = "quick-window-page-placeholder-parameters/2.0";
     private const string DeviceLabel = "Paramètre";
-    private const int MaxLabelLength = 160;
+    private const int MaxLabelLength = 80;
+    private const int MaxDisplayedSources = 3;
 
     /// <summary>
-    /// Builds the catalog for <paramref name="pageKey"/>: the union of `#N` entries defined by every retained
-    /// parameter sheet - those linked to that page by an `Ouvrir une fenêtre rapide` command plus those linked
-    /// to no page at all, or every sheet of the project when that set is empty - plus any `#N` the page itself
-    /// references but no retained sheet defines.
+    /// Builds the catalog of a quick-window page: the union of `#N` entries defined by every parameter sheet of
+    /// <paramref name="project"/>, plus any `#N` the page itself references but no sheet defines.
     /// </summary>
     /// <param name="project">The project owning the parameter sheets and the project tag catalog.</param>
-    /// <param name="scenes">Every scene currently available in memory, keyed by page key; need not be complete.</param>
-    /// <param name="pageKey">The quick-window page the catalog is built for.</param>
-    public static ScadaTagCatalog Build(ScadaProject project, IReadOnlyDictionary<Guid, ScadaScene> scenes, Guid pageKey)
+    /// <param name="pageScene">The scene of the page the catalog is built for, or <c>null</c> when unavailable.</param>
+    public static ScadaTagCatalog Build(ScadaProject project, ScadaScene? pageScene)
     {
         ArgumentNullException.ThrowIfNull(project);
-        ArgumentNullException.ThrowIfNull(scenes);
-
-        var (linkedToThisPage, linkedToAnyPage) = FindLinkedSheetKeys(scenes, pageKey);
-        var retainedSheets = project.EffectiveParameterSheets
-            .Where(sheet => linkedToThisPage.Contains(sheet.SheetKey) || !linkedToAnyPage.Contains(sheet.SheetKey))
-            .ToArray();
-        if (retainedSheets.Length == 0)
-        {
-            retainedSheets = project.EffectiveParameterSheets.ToArray();
-        }
 
         var byNumber = new SortedDictionary<int, List<(ParameterSheet Sheet, ParameterEntry Entry)>>();
-        foreach (var sheet in retainedSheets)
+        foreach (var sheet in project.EffectiveParameterSheets)
         {
             var parse = ParameterSheetParser.Parse(sheet.Text);
             foreach (var entry in parse.Entries.Values)
@@ -74,10 +58,10 @@ public static class QuickWindowPagePlaceholderCatalog
             }
         }
 
-        // Ruling: a `#N` the page itself still references but no retained sheet defines must stay in the
+        // Ruling: a `#N` the page itself still references but no sheet defines must stay in the
         // catalog (marked undefined) or the current value of an existing state/command would vanish from the
         // selector the moment this catalog replaces the static #1..#999 list.
-        if (scenes.TryGetValue(pageKey, out var pageScene))
+        if (pageScene is not null)
         {
             var (usages, _) = QuickWindowPlaceholderUsageCollector.Collect(pageScene);
             foreach (var usage in usages)
@@ -94,38 +78,6 @@ public static class QuickWindowPagePlaceholderCatalog
             .ToArray();
 
         return new ScadaTagCatalog(SchemaId, tags);
-    }
-
-    /// <summary>
-    /// Returns the `SheetKey` of every parameter sheet paired with <paramref name="pageKey"/> by an
-    /// `Ouvrir une fenêtre rapide` command, and of every sheet paired with ANY page (a command carrying both a
-    /// sheet and a page), wherever those commands are posed among <paramref name="scenes"/>.
-    /// Mirrors the element-flattening walk of <c>QuickWindowDependencyAnalyzer</c>/<c>ParameterSheetUsageFinder</c>.
-    /// </summary>
-    private static (HashSet<Guid> ThisPage, HashSet<Guid> AnyPage) FindLinkedSheetKeys(
-        IReadOnlyDictionary<Guid, ScadaScene> scenes,
-        Guid pageKey)
-    {
-        var thisPage = new HashSet<Guid>();
-        var anyPage = new HashSet<Guid>();
-        foreach (var scene in scenes.Values)
-        {
-            foreach (var element in Flatten(scene.Elements ?? Array.Empty<ScadaElement>()))
-            {
-                foreach (var command in element.EffectiveCommandConfig.Commands)
-                {
-                    if (command.Kind == ScadaCommandKind.OpenQuickWindow &&
-                        command.QuickWindowPageKey is { } linkedPageKey &&
-                        command.ParameterSheetKey is { } sheetKey)
-                    {
-                        anyPage.Add(sheetKey);
-                        if (linkedPageKey == pageKey) thisPage.Add(sheetKey);
-                    }
-                }
-            }
-        }
-
-        return (thisPage, anyPage);
     }
 
     private static ScadaTagDefinition BuildTagDefinition(
@@ -155,14 +107,15 @@ public static class QuickWindowPagePlaceholderCatalog
             return new ScadaTagDefinition(id, id, Device: $"{DeviceLabel} — (non défini dans les feuilles)", Writeable: true, Enabled: true);
         }
 
-        // Sheet-named caption: "Paramètre — Condenseur_1 : {BP_1A_AUTO} · Condenseur_2 : {BP_1B_AUTO}", one
-        // segment per contributing sheet, in a deterministic order (sheet name ordinal-ignore-case, then SheetKey).
-        var segments = contributions
+        // Caption: the distinct sources only, in a deterministic order (sheet name ordinal-ignore-case, then
+        // SheetKey), bounded in count and length by BuildCaption.
+        var sources = contributions
             .OrderBy(contribution => SheetCaptionName(contribution.Sheet), StringComparer.OrdinalIgnoreCase)
             .ThenBy(contribution => contribution.Sheet.SheetKey)
-            .Select(contribution => $"{SheetCaptionName(contribution.Sheet)} : {DescribeSource(contribution.Entry)}")
+            .Select(contribution => DescribeSource(contribution.Entry))
+            .Distinct(StringComparer.Ordinal)
             .ToArray();
-        var device = BuildCaption(segments);
+        var device = BuildCaption(sources);
 
         // Writeable/Datatype ruling (fix round 1): several sheets may legitimately bind the same #N to
         // different tags (e.g. two fan speed setpoints), so Writeable does not require a single contribution -
@@ -244,44 +197,24 @@ public static class QuickWindowPagePlaceholderCatalog
         string.IsNullOrWhiteSpace(sheet.DisplayName) ? sheet.Code : sheet.DisplayName;
 
     /// <summary>
-    /// Joins the caption <paramref name="segments"/> after the device label, never exceeding
-    /// <c>MaxLabelLength</c> and never cutting inside a segment (a sheet name or a source): segments that do not
-    /// fit are replaced by a trailing " · …". Only when the very first segment alone is too long is it cut,
-    /// ending with "…".
+    /// Builds `Paramètre — ex. : a, b, c, … (+N)` from the distinct <paramref name="sources"/>: at most
+    /// <c>MaxDisplayedSources</c> values are shown, the others are counted in `+N`, and the whole label never
+    /// exceeds <c>MaxLabelLength</c> characters. Whole values are dropped (and counted) before anything is cut;
+    /// only when the first value alone does not fit is it truncated with "…".
     /// </summary>
-    private static string BuildCaption(IReadOnlyList<string> segments)
+    private static string BuildCaption(IReadOnlyList<string> sources)
     {
-        const string separator = " · ";
-        const string ellipsis = "…";
-        var prefix = $"{DeviceLabel} — ";
-        var accepted = new List<string>();
-        var length = prefix.Length;
-        for (var index = 0; index < segments.Count; index++)
+        var prefix = $"{DeviceLabel} — ex. : ";
+        for (var shown = Math.Min(MaxDisplayedSources, sources.Count); shown >= 1; shown--)
         {
-            var added = (accepted.Count == 0 ? 0 : separator.Length) + segments[index].Length;
-            var reserve = index < segments.Count - 1 ? separator.Length + ellipsis.Length : 0;
-            if (length + added + reserve > MaxLabelLength) break;
-            accepted.Add(segments[index]);
-            length += added;
+            var caption = prefix + string.Join(", ", sources.Take(shown)) + MoreSuffix(sources.Count - shown);
+            if (caption.Length <= MaxLabelLength) return caption;
         }
 
-        if (accepted.Count == 0)
-        {
-            var room = Math.Max(0, MaxLabelLength - prefix.Length - ellipsis.Length);
-            return prefix + segments[0][..Math.Min(room, segments[0].Length)] + ellipsis;
-        }
-
-        var caption = prefix + string.Join(separator, accepted);
-        return accepted.Count < segments.Count ? caption + separator + ellipsis : caption;
+        var suffix = MoreSuffix(sources.Count - 1);
+        var room = Math.Max(0, MaxLabelLength - prefix.Length - suffix.Length - 1);
+        return prefix + sources[0][..Math.Min(room, sources[0].Length)] + "…" + suffix;
     }
 
-    private static IEnumerable<ScadaElement> Flatten(IEnumerable<ScadaElement> elements)
-    {
-        foreach (var element in elements)
-        {
-            yield return element;
-            foreach (var child in Flatten(element.ChildElements))
-                yield return child;
-        }
-    }
+    private static string MoreSuffix(int hidden) => hidden > 0 ? $", … (+{hidden})" : string.Empty;
 }

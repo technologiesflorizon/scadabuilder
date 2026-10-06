@@ -37,24 +37,11 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
     private bool _isQuickWindowTestBenchBound;
     private BuilderQuickWindowHostAdapter? _quickWindowPreviewHost;
 
-    /// <summary>
-    /// Every scene of the project as of the last coherent workspace capture made while the active page was a
-    /// <see cref="ScadaPageType.QuickWindow"/> page, or <c>null</c> when the active page is not one (fix round
-    /// 1, DEC-0052): the project-wide source <see cref="BuildActiveQuickWindowPagePlaceholderCatalog"/> reads
-    /// to find every `Ouvrir une fenêtre rapide` command linking a parameter sheet to the active page, wherever
-    /// in the project it is posed. Refreshed in <see cref="ActivatePageAsync"/> and
-    /// <see cref="RefreshQuickWindowGroupAsync"/>; never <see cref="PageWorkspaceController.GetScene"/>'s
-    /// <c>historyScenes</c> fallback, which can hold a scene from a past undo/redo state rather than the
-    /// project's current one.
-    /// </summary>
-    private IReadOnlyDictionary<Guid, ScadaScene>? _quickWindowPageSnapshotScenes;
-
     /// <summary>Memoization of <see cref="BuildActiveQuickWindowPagePlaceholderCatalog"/> (fix round 1).</summary>
     private ScadaTagCatalog? _cachedQuickWindowPagePlaceholderCatalog;
     private Guid? _cachedQuickWindowPagePlaceholderCatalogPageKey;
     private ScadaProject? _cachedQuickWindowPagePlaceholderCatalogProject;
     private ScadaScene? _cachedQuickWindowPagePlaceholderCatalogActiveScene;
-    private IReadOnlyDictionary<Guid, ScadaScene>? _cachedQuickWindowPagePlaceholderCatalogSnapshotScenes;
 
     /// <summary>
     /// Gets whether the canvas currently hosts a quick-window projection instead of a page.
@@ -86,7 +73,7 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
     /// <summary>
     /// Gets whether the active page (not a hosted quick-window definition) carries
     /// <see cref="ScadaPageType.QuickWindow"/>: its selectors offer the `#N` parameters defined by the
-    /// parameter sheets linked to it instead of project tags (DEC-0052).
+    /// parameter sheets of the project instead of project tags (DEC-0052).
     /// </summary>
     private bool IsActivePageOfQuickWindowType =>
         _activeSceneTab?.PageKey is { } pageKey &&
@@ -97,20 +84,13 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
     /// (<see cref="QuickWindowPagePlaceholderCatalog"/>), replacing the former static `#1`..`#999` list.
     /// </summary>
     /// <remarks>
-    /// Starts from <see cref="_quickWindowPageSnapshotScenes"/> (every page of the project as of the last
-    /// coherent capture taken while a QuickWindow page was active, fix round 1), then overlays every open
-    /// tab's live <see cref="SceneWorkspaceTab.Scene"/> and <see cref="_activeScene"/> on top, since an open
-    /// tab's in-memory scene can be ahead of that snapshot (an edit not yet captured). This makes the "feuilles
-    /// liées" search genuinely project-wide: a linking command is found wherever it is posed, not only on a
-    /// page opened this session. <see cref="PageWorkspaceController.CaptureSnapshotAsync"/> is cheap since
-    /// `SceneFileCache` (perf commit `dbd18bd`) skips re-reading an unchanged scene file (17-48 ms warm on the
-    /// reference project), so this is no longer the disk-read concern the first round of this fix avoided.
+    /// Every parameter sheet of the project contributes (no filtering by linking command), so only the project
+    /// and the active scene (to keep a `#N` the page references but no sheet defines) are needed.
     ///
-    /// Memoized on (<see cref="_modernProject"/>, <see cref="_activeScene"/>,
-    /// <see cref="_quickWindowPageSnapshotScenes"/>, page key) by reference (fix round 1): every mutation in
-    /// this codebase replaces these records rather than mutating them in place, so an unchanged reference means
-    /// an unchanged answer. This avoids re-parsing every linked sheet and re-walking every in-memory scene on
-    /// each of several `FormatProjectTag` calls a single selection-changed refresh can make
+    /// Memoized on (<see cref="_modernProject"/>, <see cref="_activeScene"/>, page key) by reference: every
+    /// mutation in this codebase replaces these records rather than mutating them in place, so an unchanged
+    /// reference means an unchanged answer. This avoids re-parsing every sheet on each of several
+    /// `FormatProjectTag` calls a single selection-changed refresh can make
     /// (<see cref="RefreshStateAndCommandTabs"/>).
     ///
     /// Decisions: DEC-0052.
@@ -126,58 +106,18 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         if (_cachedQuickWindowPagePlaceholderCatalog is { } cached &&
             _cachedQuickWindowPagePlaceholderCatalogPageKey == pageKey &&
             ReferenceEquals(_cachedQuickWindowPagePlaceholderCatalogProject, _modernProject) &&
-            ReferenceEquals(_cachedQuickWindowPagePlaceholderCatalogActiveScene, _activeScene) &&
-            ReferenceEquals(_cachedQuickWindowPagePlaceholderCatalogSnapshotScenes, _quickWindowPageSnapshotScenes))
+            ReferenceEquals(_cachedQuickWindowPagePlaceholderCatalogActiveScene, _activeScene))
         {
             return cached;
         }
 
-        var scenes = new Dictionary<Guid, ScadaScene>();
-        if (_quickWindowPageSnapshotScenes is { } snapshotScenes)
-        {
-            foreach (var (key, scene) in snapshotScenes) scenes[key] = scene;
-        }
-
-        foreach (var tab in _pageWorkspaceController.OpenTabs)
-        {
-            scenes[tab.PageKey] = tab.Scene;
-        }
-
-        if (_activeScene is not null) scenes[pageKey] = _activeScene;
-
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(_modernProject, scenes, pageKey);
+        var catalog = QuickWindowPagePlaceholderCatalog.Build(_modernProject, _activeScene);
 
         _cachedQuickWindowPagePlaceholderCatalog = catalog;
         _cachedQuickWindowPagePlaceholderCatalogPageKey = pageKey;
         _cachedQuickWindowPagePlaceholderCatalogProject = _modernProject;
         _cachedQuickWindowPagePlaceholderCatalogActiveScene = _activeScene;
-        _cachedQuickWindowPagePlaceholderCatalogSnapshotScenes = _quickWindowPageSnapshotScenes;
         return catalog;
-    }
-
-    /// <summary>
-    /// Refreshes <see cref="_quickWindowPageSnapshotScenes"/> from a fresh coherent workspace capture when the
-    /// active page is a <see cref="ScadaPageType.QuickWindow"/> page, or clears it otherwise (fix round 1,
-    /// DEC-0052): the project-wide "feuilles liées" search only ever needs this snapshot while such a page is
-    /// active, so no page that is never activated as a QuickWindow page pays its capture cost.
-    /// </summary>
-    private async Task RefreshQuickWindowPageSnapshotScenesAsync()
-    {
-        if (_modernProject is null || !IsActivePageOfQuickWindowType)
-        {
-            _quickWindowPageSnapshotScenes = null;
-            return;
-        }
-
-        try
-        {
-            var snapshot = await _pageWorkspaceController.CaptureSnapshotAsync();
-            _quickWindowPageSnapshotScenes = snapshot.Scenes;
-        }
-        catch (Exception ex)
-        {
-            SetStatus($"Chargement des feuilles liées impossible: {ex.Message}");
-        }
     }
 
     private void OnShowQuickWindowsAnchorableClick(object sender, RoutedEventArgs e) =>
@@ -203,9 +143,7 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         _activeEditorContext?.IsCommandVisible(definition.Id) ?? true;
 
     /// <summary>
-    /// Reloads the quick-window group from the current workspace snapshot, and reuses that same snapshot to
-    /// refresh <see cref="_quickWindowPageSnapshotScenes"/> (fix round 1, DEC-0052) rather than capturing a
-    /// second one.
+    /// Reloads the quick-window group from the current workspace snapshot.
     /// </summary>
     private async Task RefreshQuickWindowGroupAsync()
     {
@@ -214,7 +152,6 @@ public partial class MainWindow : IQuickWindowWorkspaceHost
         {
             var snapshot = await _pageWorkspaceController.CaptureSnapshotAsync();
             QuickWindowWorkspace.Load(snapshot);
-            _quickWindowPageSnapshotScenes = IsActivePageOfQuickWindowType ? snapshot.Scenes : null;
         }
         catch (Exception ex)
         {

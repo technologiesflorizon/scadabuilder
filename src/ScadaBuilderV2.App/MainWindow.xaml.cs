@@ -581,7 +581,6 @@ public partial class MainWindow : Window, IPageWorkspaceHost, IProjectLifecycleH
         LoadPageProperties(_activeScene);
         RefreshModernSceneUi();
         await LoadActiveTabPreviewAsync();
-        await RefreshQuickWindowPageSnapshotScenesAsync();
     }
 
     private async Task LoadActiveTabPreviewAsync()

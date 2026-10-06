@@ -310,7 +310,7 @@ public sealed class QuickWindowInterfaceAuthoringTests
         // to the project tag catalogue.
         StringAssert.Contains(wiring, "IsActivePageOfQuickWindowType");
         StringAssert.Contains(wiring, "BuildActiveQuickWindowPagePlaceholderCatalog");
-        StringAssert.Contains(wiring, "QuickWindowPagePlaceholderCatalog.Build(_modernProject, scenes, pageKey)");
+        StringAssert.Contains(wiring, "QuickWindowPagePlaceholderCatalog.Build(_modernProject, _activeScene)");
 
         var catalogAccessor = ExtractMember(wiring, "private ScadaTagCatalog? ActiveSelectorTagCatalog =>");
         StringAssert.Contains(catalogAccessor, "_hostedQuickWindowDefinition is { } definition");
