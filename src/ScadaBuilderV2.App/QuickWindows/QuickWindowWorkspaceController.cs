@@ -45,7 +45,8 @@ public sealed record QuickWindowPastePlan(
 /// qu'au CRUD/hébergement de définitions DEC-0050 et à l'Interface locale typée (code mort côté UI, prouvé le
 /// 2026-10-06 : leurs seuls appelants sont OpenAsync, DeleteAsync, AddInterfaceMemberAsync,
 /// EditInterfaceMemberAsync, ApplyInlineInterfaceEditAsync et DeleteInterfaceMemberAsync de
-/// QuickWindowWorkspaceController, qu'aucun code de src n'appelle ; MainWindow n'utilise que Load, les membres
+/// QuickWindowWorkspaceController, ConfirmInterfaceVersionImpactAsync l'étant à travers le privé ApplyMembersAsync
+/// que seules ces quatre opérations appellent ; aucun code de src n'appelle ces six opérations ; MainWindow n'utilise que Load, les membres
 /// *SheetAsync, ClearActiveContext, PreparePasteAsync, RetireMigratedInvocation et les panneaux) ; non retirés car
 /// leur retrait impose d'amputer cette interface et ses doubles de test. À retirer lors de la refonte de
 /// IQuickWindowWorkspaceHost (KNOWN_GAPS_V2.md entrée 40).
