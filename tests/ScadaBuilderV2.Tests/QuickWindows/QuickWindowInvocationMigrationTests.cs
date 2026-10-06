@@ -1,4 +1,5 @@
 using ScadaBuilderV2.Application.Commands;
+using ScadaBuilderV2.Application.History;
 using ScadaBuilderV2.Application.Pages;
 using ScadaBuilderV2.Application.QuickWindows;
 using ScadaBuilderV2.Domain.ElementEvents.Command;
@@ -134,6 +135,67 @@ public sealed class QuickWindowInvocationMigrationTests
         var beforeCommand = mutation.Before.Scenes[page.PageKey].FindElementRecursive(caller.Id)!.EffectiveCommandConfig.Commands.Single();
         Assert.AreEqual(InvocationKey, beforeCommand.QuickWindowInvocationKey);
         Assert.IsTrue(mutation.Before.Project.EffectiveQuickWindowInvocations.Any(item => item.InvocationKey == InvocationKey));
+    }
+
+    [TestMethod]
+    public async Task RetiringAMigratedInvocationIsOneUndoableHistoryEntryThatRestoresInvocationAndCommandTogether()
+    {
+        // Same path as MainWindow.RetireMigratedQuickWindowInvocationAsync: the mutation goes through
+        // QuickWindowWorkspaceMutation.ToHistoryAction onto the single project-scoped stack.
+        var caller = CreateCaller("caller", "open", InvocationKey);
+        var page = CreatePage("page", caller);
+        var orphan = new QuickWindowInvocation(InvocationKey, Guid.NewGuid(), []);
+        var baseSnapshot = CreateSnapshot(page);
+        var snapshot = baseSnapshot with { Project = baseSnapshot.Project with { QuickWindowInvocations = [orphan] } };
+        var mutation = new QuickWindowInvocationService().RetireMigratedInvocation(
+            snapshot, page.PageKey, caller.Id, "open", MigratedCommand(), InvocationKey);
+        Assert.AreEqual(CommandResultStatus.Succeeded, mutation.Result.Status);
+
+        var ui = new ProjectWorkspaceUiSnapshot([], null, null, new Dictionary<Guid, EditorPageSelectionSnapshot>());
+        var history = new EditorHistoryService();
+        history.Push(mutation.ToHistoryAction(ui, ui, beforeWasDirty: false));
+        Assert.AreEqual(1, history.UndoCount, "the migration is exactly one history entry");
+        var workspace = new MigrationWorkspace(mutation.After.Project, mutation.After.Scenes);
+
+        Assert.IsTrue(await history.UndoAsync(workspace.CreateContext()));
+        Assert.IsTrue(workspace.Project.EffectiveQuickWindowInvocations.Any(item => item.InvocationKey == InvocationKey),
+            "undo restores the retired invocation");
+        var restored = workspace.Scenes[page.PageKey].FindElementRecursive(caller.Id)!.EffectiveCommandConfig.Commands.Single();
+        Assert.AreEqual(InvocationKey, restored.QuickWindowInvocationKey, "undo restores the legacy caller command in the same step");
+        Assert.IsNull(restored.ParameterSheetKey);
+        Assert.IsFalse(workspace.IsDirty, "undo restores the dirty state the migration started from");
+
+        Assert.IsTrue(await history.RedoAsync(workspace.CreateContext()));
+        Assert.IsFalse(workspace.Project.EffectiveQuickWindowInvocations.Any(item => item.InvocationKey == InvocationKey));
+        var redone = workspace.Scenes[page.PageKey].FindElementRecursive(caller.Id)!.EffectiveCommandConfig.Commands.Single();
+        Assert.IsNull(redone.QuickWindowInvocationKey);
+        Assert.AreEqual(SheetKey, redone.ParameterSheetKey);
+        Assert.AreEqual(QuickWindowPageKey, redone.QuickWindowPageKey);
+    }
+
+    private sealed class MigrationWorkspace(ScadaProject project, IReadOnlyDictionary<Guid, ScadaScene> scenes)
+    {
+        public ScadaProject Project { get; private set; } = project;
+
+        public Dictionary<Guid, ScadaScene> Scenes { get; private set; } = scenes.ToDictionary(item => item.Key, item => item.Value);
+
+        public bool IsDirty { get; private set; } = true;
+
+        public EditorHistoryContext CreateContext() => new()
+        {
+            ActiveSceneId = string.Empty,
+            GetActiveScene = () => null,
+            ReplaceActiveScene = _ => throw new AssertFailedException("The migration history must use an atomic project restore."),
+            RestoreProjectWorkspaceSnapshot = restored =>
+            {
+                Project = restored.Project;
+                Scenes = restored.Scenes.ToDictionary(item => item.Key, item => item.Value);
+                IsDirty = restored.IsDirty;
+            },
+            MarkDirty = () => IsDirty = true,
+            RefreshPreviewAsync = () => Task.CompletedTask,
+            SetStatus = _ => { }
+        };
     }
 
     [TestMethod]
