@@ -26,7 +26,7 @@ namespace ScadaBuilderV2.Tests.QuickWindows;
 /// <remarks>
 /// This is the Builder half of the TF100Web animation probe
 /// (<c>frontend/tests_runtime_js/quick-window-parameter-sheet.test.mjs</c> on TF100Web's
-/// <c>codex/quick-window-v1</c> branch): that JS test loads THIS exact package's bundled runtime and
+/// <c>main</c>, merged from <c>codex/quick-window-v1</c>): that JS test loads THIS exact package's bundled runtime and
 /// manifest, opens the invocation through the real, unmodified TF100Web host
 /// (<c>static/asset/js/quick-window-host.js</c>), feeds a new value to the tag bound to <c>#1</c>
 /// through the tag bridge, and asserts the mounted element's visible text changes — closing the "no
@@ -115,21 +115,17 @@ public sealed class QuickWindowParameterSheetAnimationFixtureTests
         var builderFixture = Path.Combine(conformanceDirectory, FixtureName);
         Assert.IsTrue(File.Exists(builderFixture), "the Builder fixture must exist; run with SCADA_UPDATE_QUICK_WINDOW_PARAMETER_SHEET=1");
 
-        var tf100Root = Tf100WebFixtureTestSupport.ResolveTf100WebWorktree();
-        if (tf100Root is null)
+        var vendored = Tf100WebFixtureTestSupport.ReadVendoredFixture(FixtureName, out var source);
+        if (vendored is null)
         {
             Assert.Inconclusive("TF100Web is not available on this machine; the vendored copy cannot be compared.");
             return;
         }
 
-        var vendored = Path.Combine(tf100Root, "frontend", "test_fixtures", FixtureName);
-        Assert.IsTrue(File.Exists(vendored),
-            $"TF100Web is checked out on {Tf100WebFixtureTestSupport.ExpectedTf100Branch} at {tf100Root} but carries no vendored fixture.");
-
         CollectionAssert.AreEqual(
             File.ReadAllBytes(builderFixture),
-            File.ReadAllBytes(vendored),
-            "both repositories must execute the identical parameter-sheet animation artifact");
+            vendored,
+            $"both repositories must execute the identical parameter-sheet animation artifact ({source})");
     }
 
     private static async Task<byte[]> BuildArchiveAsync(

@@ -116,21 +116,17 @@ public sealed class QuickWindowRuntimeHandshakeFixtureTests
         var builderFixture = Path.Combine(repositoryRoot, "tests", "conformance", FixtureName);
         Assert.IsTrue(File.Exists(builderFixture), "the Builder fixture must exist");
 
-        var tf100Root = Tf100WebFixtureTestSupport.ResolveTf100WebWorktree();
-        if (tf100Root is null)
+        var vendored = Tf100WebFixtureTestSupport.ReadVendoredFixture(FixtureName, out var source);
+        if (vendored is null)
         {
             Assert.Inconclusive("TF100Web is not available on this machine; the vendored copy cannot be compared.");
             return;
         }
 
-        var vendored = Path.Combine(tf100Root, "frontend", "test_fixtures", FixtureName);
-        Assert.IsTrue(File.Exists(vendored),
-            $"TF100Web is checked out on {Tf100WebFixtureTestSupport.ExpectedTf100Branch} at {tf100Root} but carries no vendored fixture.");
-
         CollectionAssert.AreEqual(
             File.ReadAllBytes(builderFixture),
-            File.ReadAllBytes(vendored),
-            "both repositories must execute the identical handshake artifact");
+            vendored,
+            $"both repositories must execute the identical handshake artifact ({source})");
     }
 
     [TestMethod]
