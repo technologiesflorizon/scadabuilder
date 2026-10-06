@@ -272,8 +272,15 @@
                         </UniformGrid>
                         <TextBlock Text="Format affichage" Margin="0,8,0,0"/>
                         <TextBox x:Name="DisplayFormatTextBox"/>
-                        <TextBlock Text="Mapping / Tag" Visibility="Collapsed"/>
-                        <TextBox x:Name="TagBindingTextBox" Visibility="Collapsed"/>
+                        <Border x:Name="LegacyTagBindingPanel" Visibility="Collapsed" Padding="10" Margin="0,8,0,0" CornerRadius="4" BorderThickness="1" BorderBrush="#E0C46C" Background="#FFF9E6">
+                            <StackPanel>
+                                <TextBlock Text="TagBinding (legacy)" FontWeight="SemiBold"/>
+                                <TextBox x:Name="TagBindingTextBox" IsReadOnly="True" Margin="0,3,0,4"/>
+                                <TextBlock Text="Champ legacy — utilisez Lecture de variable" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                <TextBlock x:Name="LegacyTagBindingStatusText" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="0,2,0,6"/>
+                                <Button x:Name="ConvertLegacyTagBindingButton" Content="Convertir en Lecture de variable" Click="OnConvertLegacyTagBindingClick" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </Border>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

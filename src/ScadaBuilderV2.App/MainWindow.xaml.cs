@@ -4321,6 +4321,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         dialog.SaveStateConfig = config => SaveElementStateConfigFromDialog(current.Id, config);
         dialog.SaveCommandConfig = config => SaveElementCommandConfigFromDialog(current.Id, config);
         dialog.SaveMigratedQuickWindowCommand = (migrated, retiredKey) => RetireMigratedQuickWindowInvocationAsync(current.Id, migrated, retiredKey);
+        ConfigureLegacyTagBindingConversion(dialog, current.Id);
         dialog.QuickWindowContext = BuildQuickWindowAuthoringContext();
         dialog.ParameterSheets = _modernProject?.EffectiveParameterSheets ?? [];
         if (dialog.ShowDialog() != true || dialog.Result is null)
@@ -5602,7 +5603,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 Decimals = ParseNullableInt(message.DecimalsText ?? ""),
                 Unit = string.IsNullOrWhiteSpace(message.Unit) ? null : message.Unit,
                 DisplayFormat = string.IsNullOrWhiteSpace(message.DisplayFormat) ? null : message.DisplayFormat,
-                TagBinding = string.IsNullOrWhiteSpace(message.TagBinding) ? null : message.TagBinding,
                 IsReadOnly = message.IsReadOnly
             },
             ButtonBehavior = current.Kind == ScadaElementKind.Button
@@ -5769,7 +5769,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 ElementDecimalsTextBox.Text = "";
                 ElementUnitTextBox.Text = "";
                 ElementFormatTextBox.Text = "";
-                ElementTagBindingTextBox.Text = "";
+                RefreshLegacyTagBindingPanel(null);
                 RefreshStateAndCommandTabs();
                 return;
             }
@@ -5829,7 +5829,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ElementDecimalsTextBox.Text = data.Decimals?.ToString() ?? "";
             ElementUnitTextBox.Text = data.Unit ?? "";
             ElementFormatTextBox.Text = data.DisplayFormat ?? "";
-            ElementTagBindingTextBox.Text = data.TagBinding ?? "";
+            RefreshLegacyTagBindingPanel(element);
             RefreshStateAndCommandTabs();
         }
         finally
@@ -6188,7 +6188,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 Decimals = result.Decimals,
                 Unit = result.Unit,
                 DisplayFormat = result.DisplayFormat,
-                TagBinding = result.TagBinding,
                 IsReadOnly = result.IsReadOnly
             }
         };
@@ -6480,7 +6479,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
                 Decimals = ParseNullableInt(ElementDecimalsTextBox.Text),
                 Unit = string.IsNullOrWhiteSpace(ElementUnitTextBox.Text) ? null : ElementUnitTextBox.Text,
                 DisplayFormat = string.IsNullOrWhiteSpace(ElementFormatTextBox.Text) ? null : ElementFormatTextBox.Text,
-                TagBinding = string.IsNullOrWhiteSpace(ElementTagBindingTextBox.Text) ? null : ElementTagBindingTextBox.Text,
                 IsReadOnly = ElementReadOnlyCheckBox.IsChecked == true
             }
         };

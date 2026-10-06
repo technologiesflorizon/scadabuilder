@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using ScadaBuilderV2.App.QuickWindows;
+using ScadaBuilderV2.Application.Conversion;
 using ScadaBuilderV2.Application.QuickWindows;
 using ScadaBuilderV2.Domain.ElementEvents.Command;
 using ScadaBuilderV2.Domain.QuickWindows;
@@ -24,6 +25,8 @@ public partial class ElementPropertiesDialog : Window
     private readonly IReadOnlyList<ScadaSceneReference> pageReferences;
     private readonly ScadaTagCatalog? tagCatalog;
     private ScadaElement currentElement;
+    private Func<(ScadaElement Element, string Message)>? convertLegacyTagBinding;
+    private bool isQuickWindowPage;
 
     public ElementPropertiesDialog(
         ScadaElement element,
@@ -82,6 +85,68 @@ public partial class ElementPropertiesDialog : Window
     /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowInvocationMigrationTests.cs.
     /// </remarks>
     public Func<ScadaCommandBinding, Guid, Task<ScadaElement>>? SaveMigratedQuickWindowCommand { get; set; }
+
+    /// <summary>
+    /// Invoked by « Convertir en Lecture de variable »: converts the legacy <c>Data.TagBinding</c> of the underlying
+    /// element to <c>Data.ReadTagId</c> as one undoable transition and returns the latest element with the operator
+    /// message (the conversion done, or why nothing changed).
+    /// </summary>
+    /// <remarks>
+    /// The legacy field itself is read-only: the dialog never writes <c>TagBinding</c> back (DEC-0053).
+    /// Decisions: DEC-0053.
+    /// Contracts: docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md §2 règle 5.
+    /// Tests: tests/ScadaBuilderV2.Tests/LegacyTagBindingConverterTests.cs,
+    /// tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs.
+    /// </remarks>
+    public Func<(ScadaElement Element, string Message)>? ConvertLegacyTagBinding
+    {
+        get => convertLegacyTagBinding;
+        set
+        {
+            convertLegacyTagBinding = value;
+            RefreshLegacyTagBindingPanel();
+        }
+    }
+
+    /// <summary>Gets or sets whether the edited element lives on a page of type Fenêtre rapide.</summary>
+    public bool IsQuickWindowPage
+    {
+        get => isQuickWindowPage;
+        set
+        {
+            isQuickWindowPage = value;
+            RefreshLegacyTagBindingPanel();
+        }
+    }
+
+    private void RefreshLegacyTagBindingPanel(string? message = null)
+    {
+        var state = LegacyTagBindingConverter.Inspect(currentElement);
+        LegacyTagBindingPanel.Visibility = state == LegacyTagBindingState.None ? Visibility.Collapsed : Visibility.Visible;
+        TagBindingTextBox.Text = currentElement.Data?.TagBinding ?? "";
+        LegacyTagBindingStatusText.Text = message ?? LegacyTagBindingConverter.Describe(state, IsQuickWindowPage);
+        ConvertLegacyTagBindingButton.Visibility = state == LegacyTagBindingState.Convertible && ConvertLegacyTagBinding is not null
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+    }
+
+    private void OnConvertLegacyTagBindingClick(object sender, RoutedEventArgs e)
+    {
+        if (ConvertLegacyTagBinding is null)
+        {
+            return;
+        }
+
+        var (latest, message) = ConvertLegacyTagBinding();
+        var converted = LegacyTagBindingConverter.Inspect(latest) == LegacyTagBindingState.None;
+        currentElement = latest;
+        RefreshLegacyTagBindingPanel(message);
+        if (converted)
+        {
+            // The panel collapses with the legacy field; keep the outcome visible to the operator.
+            MessageBox.Show(this, message, "Lecture de variable", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+    }
 
     private void RefreshStateAndCommandLists()
     {
@@ -352,7 +417,7 @@ public partial class ElementPropertiesDialog : Window
         DecimalsTextBox.Text = data.Decimals?.ToString() ?? "";
         UnitTextBox.Text = data.Unit ?? "";
         DisplayFormatTextBox.Text = data.DisplayFormat ?? "";
-        TagBindingTextBox.Text = data.TagBinding ?? "";
+        RefreshLegacyTagBindingPanel();
         UpdateDataConstraintState();
     }
 
@@ -545,7 +610,6 @@ public partial class ElementPropertiesDialog : Window
             Decimals: decimals,
             Unit: string.IsNullOrWhiteSpace(UnitTextBox.Text) ? null : UnitTextBox.Text,
             DisplayFormat: string.IsNullOrWhiteSpace(DisplayFormatTextBox.Text) ? null : DisplayFormatTextBox.Text,
-            TagBinding: string.IsNullOrWhiteSpace(TagBindingTextBox.Text) ? null : TagBindingTextBox.Text,
             IsReadOnly: ReadOnlyCheckBox.IsChecked == true,
             FontWeight: BoldToggle.IsChecked == true ? "Bold" : "Normal",
             FontStyle: ItalicToggle.IsChecked == true ? "Italic" : "Normal",
@@ -697,7 +761,6 @@ public sealed record ElementPropertiesDialogResult(
     int? Decimals,
     string? Unit,
     string? DisplayFormat,
-    string? TagBinding,
     bool IsReadOnly,
     string Foreground = "#0F2A30",
     string FontWeight = "Normal",

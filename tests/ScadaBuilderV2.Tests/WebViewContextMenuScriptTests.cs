@@ -920,14 +920,42 @@ public sealed class WebViewContextMenuScriptTests
         StringAssert.Contains(mainXaml, "<StackPanel Margin=\"0,8,4,0\" Visibility=\"Collapsed\">");
         StringAssert.Contains(mainXaml, "x:Name=\"ElementDecimalsTextBox\" TextChanged=\"OnElementPropertyChanged\"");
         StringAssert.Contains(mainXaml, "x:Name=\"ElementUnitTextBox\" TextChanged=\"OnElementPropertyChanged\"");
-        StringAssert.Contains(mainXaml, "x:Name=\"ElementTagBindingTextBox\"");
-        StringAssert.Contains(mainXaml, "Visibility=\"Collapsed\"");
         StringAssert.Contains(dialogXaml, "Text=\"Contraintes de saisie\"");
-        StringAssert.Contains(dialogXaml, "x:Name=\"TagBindingTextBox\" Visibility=\"Collapsed\"");
         StringAssert.Contains(source, "canEditNumericInputConstraints");
         StringAssert.Contains(source, "element.Data?.IsReadOnly != true");
         StringAssert.Contains(dialogCode, "UpdateDataConstraintState();");
         StringAssert.Contains(dialogCode, "ReadOnlyCheckBox.IsChecked != true");
+    }
+
+    /// <summary>
+    /// DEC-0053: `TagBinding` is a legacy field shown read-only on both property surfaces, with the French legacy
+    /// notice and the assisted conversion, and no surface writes it back.
+    /// </summary>
+    [TestMethod]
+    public void LegacyTagBindingFieldIsReadOnlyWithConversionOnBothPropertySurfaces()
+    {
+        var mainXaml = ReadMainWindowFile("MainWindow.xaml");
+        var dialogXaml = ReadMainWindowFile("ElementPropertiesDialog.xaml");
+        var source = ReadMainWindowSource();
+        var dialogCode = ReadMainWindowFile("ElementPropertiesDialog.xaml.cs");
+
+        StringAssert.Contains(mainXaml, "<TextBox x:Name=\"ElementTagBindingTextBox\" IsReadOnly=\"True\"");
+        StringAssert.Contains(dialogXaml, "<TextBox x:Name=\"TagBindingTextBox\" IsReadOnly=\"True\"");
+        foreach (var xaml in new[] { mainXaml, dialogXaml })
+        {
+            StringAssert.Contains(xaml, "Text=\"Champ legacy — utilisez Lecture de variable\"");
+            StringAssert.Contains(xaml, "Content=\"Convertir en Lecture de variable\" Click=\"OnConvertLegacyTagBindingClick\"");
+            var field = xaml[xaml.IndexOf("TagBindingTextBox\"", StringComparison.Ordinal)..];
+            field = field[..field.IndexOf("/>", StringComparison.Ordinal)];
+            Assert.IsFalse(field.Contains("TextChanged", StringComparison.Ordinal), "the legacy field accepts no new input");
+        }
+
+        StringAssert.Contains(mainXaml, "Click=\"OnConvertAllLegacyTagBindingsClick\"");
+        Assert.IsFalse(System.Text.RegularExpressions.Regex.IsMatch(source, @"(?<![A-Za-z])TagBinding\s*=[^=>]"),
+            "no MainWindow surface (docked panel, dialog result, canvas message) may write TagBinding back");
+        Assert.IsFalse(dialogCode.Contains("TagBinding:", StringComparison.Ordinal),
+            "the dialog result no longer carries TagBinding");
+        StringAssert.Contains(ExtractMethod(source, "private void ApplyLegacyTagBindingConversion("), "_activeSceneTab?.History.Push(action);");
     }
 
     [TestMethod]

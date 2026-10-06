@@ -313,10 +313,15 @@ public static class ScadaProjectBuildValidator
             ValidateSceneValueBindings(issues, scene, tagsById);
             ValidateSceneActions(issues, scene, tagsById, pagesById, pagesByKey);
             AuditOrphanedEventBindings(issues, scene);
+            AuditLegacyTagBindings(issues, scene, IsQuickWindowPage(scene, pagesByKey));
             ValidateSceneCommandBindings(issues, scene, project.TagCatalog, pagesById, pagesByKey, project);
         }
 
         ValidateQuickWindows(issues, project);
+        foreach (var definition in project.EffectiveQuickWindows)
+        {
+            AuditLegacyTagBindings(issues, definition);
+        }
 
         return issues;
     }
@@ -915,6 +920,125 @@ public static class ScadaProjectBuildValidator
                 $"Les EventBindings ne sont pas exportes comme runtime TF100Web.{extra}",
                 scene.Id));
         }
+    }
+
+    /// <summary>Warning code of a legacy <c>Data.TagBinding</c> left on a normal page, where it is inert.</summary>
+    public const string LegacyTagBindingInertCode = "tag-binding.legacy-inert";
+
+    /// <summary>Warning code of a legacy <c>Data.TagBinding</c> left in quick-window content, where it is still read.</summary>
+    public const string LegacyTagBindingQuickWindowCode = "tag-binding.legacy-quick-window";
+
+    /// <summary>
+    /// Emits one warning per element of a page scene that still carries a legacy <c>Data.TagBinding</c>: inert on
+    /// a normal page (the Builder never exports it there), legacy but still read on a page of type Fenêtre rapide.
+    /// </summary>
+    /// <remarks>
+    /// Warnings only: an existing project keeps building. A Custom element's <c>TagBinding</c> is its library
+    /// <c>.sep</c> reference and is never reported (<see cref="LegacyTagBinding.Of"/>).
+    /// Decisions: DEC-0053.
+    /// Contracts: docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md §2 règle 5.
+    /// Tests: tests/ScadaBuilderV2.Tests/LegacyTagBindingValidationTests.cs.
+    /// </remarks>
+    public static void AuditLegacyTagBindings(
+        List<ScadaBuildValidationIssue> issues,
+        ScadaScene scene,
+        bool isQuickWindowPage)
+    {
+        ArgumentNullException.ThrowIfNull(issues);
+        ArgumentNullException.ThrowIfNull(scene);
+        foreach (var element in FlattenElements(scene.Elements))
+        {
+            if (LegacyTagBinding.Of(element) is not { } tagBinding)
+            {
+                continue;
+            }
+
+            issues.Add(isQuickWindowPage
+                ? QuickWindowLegacyTagBindingIssue($"Page Fenêtre rapide '{scene.EffectivePageCode}'", element, tagBinding, scene.EffectivePageCode, scene.PageKey)
+                : InertLegacyTagBindingIssue(scene, element, tagBinding));
+        }
+    }
+
+    /// <summary>
+    /// Emits one warning per element of a quick-window definition's content that still carries a legacy
+    /// <c>Data.TagBinding</c>: the fragment still emits it as its read tag, but « Lecture de variable » is preferred.
+    /// </summary>
+    /// <remarks>
+    /// A lowered page of type Fenêtre rapide is a definition keyed by its page key (DEC-0052 R4), so the warning
+    /// carries that key and the diagnostics panel can open the page.
+    /// Decisions: DEC-0053, DEC-0052.
+    /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md §11b.2.
+    /// Tests: tests/ScadaBuilderV2.Tests/LegacyTagBindingValidationTests.cs.
+    /// </remarks>
+    public static void AuditLegacyTagBindings(
+        List<ScadaBuildValidationIssue> issues,
+        QuickWindowDefinition definition)
+    {
+        ArgumentNullException.ThrowIfNull(issues);
+        ArgumentNullException.ThrowIfNull(definition);
+        // A definition without content is refused as quick-window.content-missing; it has nothing to audit here.
+        foreach (var element in FlattenElements(definition.Content?.EffectiveElements ?? Array.Empty<ScadaElement>()))
+        {
+            if (LegacyTagBinding.Of(element) is not { } tagBinding)
+            {
+                continue;
+            }
+
+            issues.Add(QuickWindowLegacyTagBindingIssue(
+                $"Fenêtre rapide '{definition.EffectiveCode}'",
+                element,
+                tagBinding,
+                definition.EffectiveCode,
+                definition.DefinitionKey));
+        }
+    }
+
+    private static bool IsQuickWindowPage(ScadaScene scene, IReadOnlyDictionary<Guid, ScadaSceneReference> pagesByKey) =>
+        scene.PageType == ScadaPageType.QuickWindow ||
+        (scene.PageKey != Guid.Empty && pagesByKey.TryGetValue(scene.PageKey, out var reference) && reference.Type == ScadaPageType.QuickWindow);
+
+    private static ScadaBuildValidationIssue InertLegacyTagBindingIssue(ScadaScene scene, ScadaElement element, string tagBinding)
+    {
+        var hasReadTagId = LegacyTagBinding.HasReadTagId(element);
+        return new ScadaBuildValidationIssue(
+            ScadaBuildValidationSeverity.Warning,
+            LegacyTagBindingInertCode,
+            $"Page '{scene.EffectivePageCode}', élément '{element.Id}' ({element.DisplayName}) : TagBinding legacy « {tagBinding} » inerte sur cette page — " +
+            "le Builder ne l'exporte pas sur une page normale et TF100Web ne le lit pas." +
+            (hasReadTagId
+                ? " Il est résiduel : la Lecture de variable (ReadTagId) déjà définie est seule lue."
+                : " Utilisez « Convertir en Lecture de variable » dans l'onglet Données."),
+            scene.EffectivePageCode,
+            scene.PageKey == Guid.Empty ? null : scene.PageKey,
+            ElementId: element.Id,
+            PropertyPath: $"Elements[{element.Id}].Data.TagBinding",
+            SuggestedFix: hasReadTagId
+                ? "Aucune action requise : la Lecture de variable (ReadTagId) remplace déjà ce TagBinding."
+                : "Convertissez le TagBinding en Lecture de variable (onglet Données de l'élément).");
+    }
+
+    private static ScadaBuildValidationIssue QuickWindowLegacyTagBindingIssue(
+        string owner,
+        ScadaElement element,
+        string tagBinding,
+        string pageId,
+        Guid pageKey)
+    {
+        var hasReadTagId = LegacyTagBinding.HasReadTagId(element);
+        return new ScadaBuildValidationIssue(
+            ScadaBuildValidationSeverity.Warning,
+            LegacyTagBindingQuickWindowCode,
+            $"{owner}, élément '{element.Id}' ({element.DisplayName}) : TagBinding legacy « {tagBinding} »" +
+            (hasReadTagId
+                ? " ignoré — la Lecture de variable (ReadTagId) déjà définie a priorité."
+                : " encore émis comme lecture du fragment, mais c'est un champ legacy : préférez « Lecture de variable »."),
+            pageId,
+            pageKey == Guid.Empty ? null : pageKey,
+            ElementId: element.Id,
+            PropertyPath: $"Elements[{element.Id}].Data.TagBinding",
+            SuggestedFix: hasReadTagId
+                ? "Aucune action requise : la Lecture de variable (ReadTagId) remplace déjà ce TagBinding."
+                : "Convertissez le TagBinding en Lecture de variable (onglet Données de l'élément).");
     }
 
     private static bool HasModernRuntimeConfig(ScadaElement element)

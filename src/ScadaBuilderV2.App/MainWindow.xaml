@@ -1622,11 +1622,16 @@
                                                 <TextBox x:Name="ElementFormatTextBox"
                                                          Margin="0,3,0,8"
                                                          TextChanged="OnElementPropertyChanged"/>
-                                                <TextBlock Text="Mapping / Tag" Visibility="Collapsed"/>
-                                                <TextBox x:Name="ElementTagBindingTextBox"
-                                                         Margin="0,3,0,8"
-                                                         Visibility="Collapsed"
-                                                         TextChanged="OnElementPropertyChanged"/>
+                                                <Border x:Name="ElementLegacyTagBindingPanel" Visibility="Collapsed" Padding="10" Margin="0,4,0,8" CornerRadius="4" BorderThickness="1" BorderBrush="#E0C46C" Background="#FFF9E6">
+                                                    <StackPanel>
+                                                        <TextBlock Text="TagBinding (legacy)" FontWeight="SemiBold"/>
+                                                        <TextBox x:Name="ElementTagBindingTextBox" IsReadOnly="True" Margin="0,3,0,4"/>
+                                                        <TextBlock Text="Champ legacy — utilisez Lecture de variable" FontWeight="SemiBold" TextWrapping="Wrap"/>
+                                                        <TextBlock x:Name="ElementLegacyTagBindingStatusText" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="0,2,0,6"/>
+                                                        <Button x:Name="ConvertLegacyTagBindingButton" Content="Convertir en Lecture de variable" Click="OnConvertLegacyTagBindingClick" Margin="0,0,0,4"/>
+                                                        <Button x:Name="ConvertAllLegacyTagBindingsButton" Content="Convertir tous les TagBinding convertibles de la page" Click="OnConvertAllLegacyTagBindingsClick"/>
+                                                    </StackPanel>
+                                                </Border>
                                             </StackPanel>
                                         </TabItem>
                                         <TabItem Header="Tableau">

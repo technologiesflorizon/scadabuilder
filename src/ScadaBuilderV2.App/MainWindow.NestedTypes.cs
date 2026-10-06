@@ -210,8 +210,6 @@ public partial class MainWindow
 
         public string? DisplayFormat { get; set; }
 
-        public string? TagBinding { get; set; }
-
         public string? Background { get; set; }
 
         public string? BorderStyle { get; set; }
