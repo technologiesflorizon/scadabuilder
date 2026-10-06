@@ -41,8 +41,11 @@ CHANGELOG_ROW = re.compile(
     r"\s*(?P<commit>`?PENDING`?)\s*\|(?P<rest>.*)$"
 )
 
-# Created in commit: `PENDING`   /   Deprecated in commit: `PENDING`
-DECISION_FIELD = re.compile(r"^(?P<label>(?:Created|Deprecated) in commit):\s*`PENDING`\s*$")
+# Created in commit: `PENDING`   /   Deprecated in commit: `PENDING`   /   Superseded in commit: `PENDING`
+DECISION_FIELD = re.compile(r"^(?P<label>(?:Created|Deprecated|Superseded) in commit):\s*`PENDING`\s*$")
+
+# Deprecated: 2026-10-06 00:00 America/Toronto   (date d'une transition hors creation)
+DECISION_DATE_FIELD = re.compile(r"^(?P<label>Deprecated|Superseded):\s*(?P<value>\d{4}-\d{2}-\d{2}.*)$")
 
 DECISION_HEADING = re.compile(r"^### (DEC-\d{4})")
 
@@ -71,6 +74,27 @@ def introducing_commit(needle: str, relative_path: str) -> str | None:
     return hashes[0] if hashes else None
 
 
+def transition_commit(
+    transition: str,
+    created_commit_line: str | None,
+    transition_lines: dict[str, str],
+    relative_path: str,
+) -> str | None:
+    """Return the commit that recorded a decision's `Deprecated`/`Superseded` date.
+
+    The pickaxe needle is the decision's own resolved `Created in commit` line followed by its
+    dated transition line, which only the deprecating commit can have introduced; without a
+    resolved creation line the dated line alone is used. Without a dated line (still `N/A`)
+    nothing is resolved: the placeholder stays visible instead of receiving a wrong hash.
+    """
+    dated = transition_lines.get(transition)
+    if dated is None:
+        return None
+    if created_commit_line and "PENDING" not in created_commit_line and transition == "Deprecated":
+        return introducing_commit(f"{created_commit_line}\n{dated}", relative_path)
+    return introducing_commit(dated, relative_path)
+
+
 def first_commit_for_file(relative_path: str) -> str | None:
     """Return the short hash of the first commit that touched the file."""
     out = git("log", "--reverse", "--format=%h", "--", relative_path)
@@ -90,11 +114,24 @@ def scan_file(path: Path) -> list[tuple[int, str, str]]:
     lines = path.read_text(encoding="utf-8", newline="").splitlines()
     resolved: list[tuple[int, str, str]] = []
     current_decision: str | None = None
+    # Lines of the current decision that anchor a non-creation transition: the commit that
+    # wrote `Deprecated: <date>` is the deprecating commit, not the one that created the heading.
+    created_commit_line: str | None = None
+    transition_lines: dict[str, str] = {}
 
     for index, line in enumerate(lines):
         heading = DECISION_HEADING.match(line)
         if heading:
             current_decision = heading.group(1)
+            created_commit_line = None
+            transition_lines = {}
+
+        if current_decision:
+            if line.startswith("Created in commit:"):
+                created_commit_line = line.strip()
+            date_field = DECISION_DATE_FIELD.match(line.strip())
+            if date_field:
+                transition_lines[date_field.group("label")] = line.strip()
 
         row = CHANGELOG_ROW.match(line)
         if row:
@@ -113,7 +150,11 @@ def scan_file(path: Path) -> list[tuple[int, str, str]]:
 
         field = DECISION_FIELD.match(line)
         if field and current_decision:
-            commit = introducing_commit(f"### {current_decision} ", relative)
+            label = field.group("label")
+            if label == "Created in commit":
+                commit = introducing_commit(f"### {current_decision} ", relative)
+            else:
+                commit = transition_commit(label.split()[0], created_commit_line, transition_lines, relative)
             if commit:
                 replacement = f"{field.group('label')}: `{commit}`"
                 resolved.append((index, commit, replacement))
