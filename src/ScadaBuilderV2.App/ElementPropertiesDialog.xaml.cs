@@ -26,6 +26,7 @@ public partial class ElementPropertiesDialog : Window
     private readonly ScadaTagCatalog? tagCatalog;
     private ScadaElement currentElement;
     private Func<(ScadaElement Element, string Message)>? convertLegacyTagBinding;
+    private Func<(ScadaElement Element, string Message)>? clearResidualTagBinding;
     private bool isQuickWindowPage;
 
     public ElementPropertiesDialog(
@@ -108,6 +109,37 @@ public partial class ElementPropertiesDialog : Window
         }
     }
 
+    /// <summary>
+    /// Invoked by « Effacer le TagBinding résiduel »: clears the legacy <c>Data.TagBinding</c> of an element that
+    /// already reads through <c>Data.ReadTagId</c>, as one undoable transition, and returns the latest element with
+    /// the operator message.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0053.
+    /// Contracts: docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md §2 règle 21.
+    /// Tests: tests/ScadaBuilderV2.Tests/LegacyTagBindingConverterTests.cs.
+    /// </remarks>
+    public Func<(ScadaElement Element, string Message)>? ClearResidualTagBinding
+    {
+        get => clearResidualTagBinding;
+        set
+        {
+            clearResidualTagBinding = value;
+            RefreshLegacyTagBindingPanel();
+        }
+    }
+
+    /// <summary>
+    /// Invoked by the read-variable « Supprimer »: removes every read binding of the underlying element, both
+    /// <c>StateConfig.ReadVariable</c> and <c>Data.ReadTagId</c>, and returns the latest element. When unset, only
+    /// the read variable is removed through <see cref="SaveStateConfig"/>.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0053.
+    /// Tests: tests/ScadaBuilderV2.Tests/LegacyTagBindingConverterTests.cs.
+    /// </remarks>
+    public Func<ScadaElement>? RemoveReadBinding { get; set; }
+
     /// <summary>Gets or sets whether the edited element lives on a page of type Fenêtre rapide.</summary>
     public bool IsQuickWindowPage
     {
@@ -128,6 +160,9 @@ public partial class ElementPropertiesDialog : Window
         ConvertLegacyTagBindingButton.Visibility = state == LegacyTagBindingState.Convertible && ConvertLegacyTagBinding is not null
             ? Visibility.Visible
             : Visibility.Collapsed;
+        ClearResidualTagBindingButton.Visibility = state == LegacyTagBindingState.Residual && ClearResidualTagBinding is not null
+            ? Visibility.Visible
+            : Visibility.Collapsed;
     }
 
     private void OnConvertLegacyTagBindingClick(object sender, RoutedEventArgs e)
@@ -137,11 +172,27 @@ public partial class ElementPropertiesDialog : Window
             return;
         }
 
-        var (latest, message) = ConvertLegacyTagBinding();
-        var converted = LegacyTagBindingConverter.Inspect(latest) == LegacyTagBindingState.None;
+        ApplyLegacyTagBindingOutcome(ConvertLegacyTagBinding());
+    }
+
+    private void OnClearResidualTagBindingClick(object sender, RoutedEventArgs e)
+    {
+        if (ClearResidualTagBinding is null)
+        {
+            return;
+        }
+
+        ApplyLegacyTagBindingOutcome(ClearResidualTagBinding());
+    }
+
+    private void ApplyLegacyTagBindingOutcome((ScadaElement Element, string Message) outcome)
+    {
+        var (latest, message) = outcome;
+        var resolved = LegacyTagBindingConverter.Inspect(latest) == LegacyTagBindingState.None;
         currentElement = latest;
         RefreshLegacyTagBindingPanel(message);
-        if (converted)
+        RefreshStateAndCommandLists();
+        if (resolved)
         {
             // The panel collapses with the legacy field; keep the outcome visible to the operator.
             MessageBox.Show(this, message, "Lecture de variable", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -153,24 +204,23 @@ public partial class ElementPropertiesDialog : Window
         StateRulesListBox.ItemsSource = currentElement.EffectiveStateConfig.States;
         CommandsListBox.ItemsSource = currentElement.EffectiveCommandConfig.Commands;
 
-        var readVariable = currentElement.EffectiveStateConfig.ReadVariable;
-        var hasReadVariable = readVariable is not null;
-        var readVarTagLabel = hasReadVariable
-            ? (tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
-                .Where(t => t.Id == readVariable!.TagId)
-                .Select(t =>
-                {
-                    var name = t.KeywordLabel ?? t.DisplayName ?? t.Id;
-                    return string.IsNullOrWhiteSpace(t.Device) ? name : $"{name} ({t.Device})";
-                })
-                .FirstOrDefault() ?? readVariable.TagId
-            : null;
-        ReadVariableSummaryText.Text = hasReadVariable
-            ? $"Lecture: {readVarTagLabel}{(string.IsNullOrWhiteSpace(readVariable!.DisplayFormat) ? "" : $" -> {readVariable.DisplayFormat}")}"
-            : "Aucune lecture de variable configuree.";
-        AddReadVariableButton.Visibility = hasReadVariable ? Visibility.Collapsed : Visibility.Visible;
-        EditReadVariableButton.Visibility = hasReadVariable ? Visibility.Visible : Visibility.Collapsed;
-        RemoveReadVariableButton.Visibility = hasReadVariable ? Visibility.Visible : Visibility.Collapsed;
+        var summary = ReadBindingPresentation.Describe(currentElement, TagLabel);
+        ReadVariableSummaryText.Text = summary.Text;
+        AddReadVariableButton.Visibility = summary.HasReadVariable ? Visibility.Collapsed : Visibility.Visible;
+        EditReadVariableButton.Visibility = summary.HasReadVariable ? Visibility.Visible : Visibility.Collapsed;
+        RemoveReadVariableButton.Visibility = summary.HasReadBinding ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private string TagLabel(string tagId)
+    {
+        return (tagCatalog?.Tags ?? Array.Empty<ScadaTagDefinition>())
+            .Where(t => t.Id == tagId)
+            .Select(t =>
+            {
+                var name = t.KeywordLabel ?? t.DisplayName ?? t.Id;
+                return string.IsNullOrWhiteSpace(t.Device) ? name : $"{name} ({t.Device})";
+            })
+            .FirstOrDefault() ?? tagId;
     }
 
     private void OnEditReadVariableClick(object sender, RoutedEventArgs e)
@@ -192,6 +242,13 @@ public partial class ElementPropertiesDialog : Window
 
     private void OnRemoveReadVariableClick(object sender, RoutedEventArgs e)
     {
+        if (RemoveReadBinding is not null)
+        {
+            currentElement = RemoveReadBinding();
+            RefreshStateAndCommandLists();
+            return;
+        }
+
         if (SaveStateConfig is null)
         {
             return;

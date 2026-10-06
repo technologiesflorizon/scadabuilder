@@ -4321,7 +4321,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         dialog.SaveStateConfig = config => SaveElementStateConfigFromDialog(current.Id, config);
         dialog.SaveCommandConfig = config => SaveElementCommandConfigFromDialog(current.Id, config);
         dialog.SaveMigratedQuickWindowCommand = (migrated, retiredKey) => RetireMigratedQuickWindowInvocationAsync(current.Id, migrated, retiredKey);
-        ConfigureLegacyTagBindingConversion(dialog, current.Id);
+        ConfigureReadBindingSurfaces(dialog, current.Id);
         dialog.QuickWindowContext = BuildQuickWindowAuthoringContext();
         dialog.ParameterSheets = _modernProject?.EffectiveParameterSheets ?? [];
         if (dialog.ShowDialog() != true || dialog.Result is null)
@@ -5732,7 +5732,6 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             ElementDecimalsTextBox.IsEnabled = isEnabled;
             ElementUnitTextBox.IsEnabled = isEnabled;
             ElementFormatTextBox.IsEnabled = isEnabled;
-            ElementTagBindingTextBox.IsEnabled = isEnabled;
 
             if (element is null)
             {
@@ -5846,14 +5845,11 @@ await PreviewWebView.ExecuteScriptAsync($$"""
         StateRulesListBox.ItemsSource = element?.EffectiveStateConfig.States;
         CommandsListBox.ItemsSource = element?.EffectiveCommandConfig.Commands;
 
-        var readVariable = element?.EffectiveStateConfig.ReadVariable;
-        var hasReadVariable = readVariable is not null;
-        ReadVariableSummaryText.Text = hasReadVariable
-            ? $"Lecture: {FormatProjectTag(readVariable!.TagId)}{(string.IsNullOrWhiteSpace(readVariable.DisplayFormat) ? "" : $" -> {readVariable.DisplayFormat}")}"
-            : "Aucune lecture de variable configuree.";
-        AddReadVariableButton.Visibility = hasReadVariable ? Visibility.Collapsed : Visibility.Visible;
-        EditReadVariableButton.Visibility = hasReadVariable ? Visibility.Visible : Visibility.Collapsed;
-        RemoveReadVariableButton.Visibility = hasReadVariable ? Visibility.Visible : Visibility.Collapsed;
+        var summary = ReadBindingPresentation.Describe(element, FormatProjectTag);
+        ReadVariableSummaryText.Text = summary.Text;
+        AddReadVariableButton.Visibility = summary.HasReadVariable ? Visibility.Collapsed : Visibility.Visible;
+        EditReadVariableButton.Visibility = summary.HasReadVariable ? Visibility.Visible : Visibility.Collapsed;
+        RemoveReadVariableButton.Visibility = summary.HasReadBinding ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void OnEditReadVariableClick(object sender, RoutedEventArgs e)
@@ -5893,9 +5889,7 @@ await PreviewWebView.ExecuteScriptAsync($$"""
             return;
         }
 
-        var config = element.EffectiveStateConfig with { ReadVariable = null };
-        _activeScene = _activeScene.WithElementStateConfig(_selectedSceneObject.Id, config);
-        RefreshStateAndCommandTabs();
+        RemoveReadBinding(element.Id);
     }
 
     private void OnAddStateRuleClick(object sender, RoutedEventArgs e)

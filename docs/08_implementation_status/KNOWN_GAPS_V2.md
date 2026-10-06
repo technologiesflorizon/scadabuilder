@@ -2,13 +2,12 @@
 
 Date: 2026-08-13
 Status: Active known gaps register
-Document version: `V2.1.6.0071`
+Document version: `V2.1.6.0070`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-10-06 | `V2.1.6.0071` | `PENDING` | Nouvelle entrée 41 (`DEC-0053`) : un `TagBinding` résiduel (élément qui a déjà un `ReadTagId`) ne peut pas être effacé depuis l'éditeur, et son avertissement `tag-binding.*` réapparaît à chaque validation. |
 | 2026-10-06 | `V2.1.6.0070` | `4decd86` | Nouvelle entrée 40 : résidus de code de `DEC-0050` décommissionnée. Inventaire de ce qui a été retiré après preuve (réparation des invocations, éditeur de liaisons, portée d'historique `QuickWindow`), note de revue « futur chantier » des membres de `IQuickWindowWorkspaceHost` et du CRUD/hébergement et de l'Interface locale typée conservés, `QuickWindowProfileCompatibility` mort mais couplé à une fixture gelée, résidus du banc d'essai et du presse-papier, runtime JS non annoté. Entrée 25 marquée sans objet. |
 | 2026-10-06 | `V2.1.6.0069` | `51b0603` | Entrée 36 : la partie « reste non couvert » est fermée. `Data.TagBinding` et les `ValueBindings` de cellule de tableau sont désormais émis dans le fragment d'une définition de Fenêtre rapide (`data-scada-read-tag`/`data-scada-write-tag`, avec `data-scada-format`/`data-scada-datatype`), substitués au montage et lus par l'hôte (contrat §11b.2). L'avertissement « non résolu » d'un `{#N}` d'état en fenêtre rapide était du bruit et disparaît. Restent consignés : écriture non exécutée par l'hôte sur ces attributs, rafraîchissement absent quand tous les tags sont déjà en cache, `TagBinding` inerte sur une page, type omis (catalogue `Decimal`, `#N` de types divergents, cellule en écriture seule). Les tests de fixture vendorisée ne dépendent plus d'un checkout TF100Web sur `codex/quick-window-v1` (lecture par `git show`). |
 | 2026-09-30 | `V2.1.6.0063` | `983bf5f` | Nouvelle entrée 39 (revue finale du chantier, correctif M/gap non couvert) : les `Actions` de scène héritées d'une page importée convertie en page Fenêtre rapide sont abandonnées sans diagnostic, `VisualContent.FromScene` ne recopiant ni `ScadaScene.Actions` ni rien d'autre que la taille de canevas, le fond et les éléments. Traité par `DEC-0052`. |
@@ -157,8 +156,6 @@ Document version: `V2.1.6.0071`
     - **Mort mais couplé** : `QuickWindowProfileCompatibility` n'a aucun appelant dans `src`, mais ses codes `profile.quick-window-unsupported`/`profile.compatible` sont épinglés par la fixture gelée `tests/conformance/quick-window-contract-handshake/expectations.json`, dont le bloc de `QuickWindowContractHandshakeTests.MutationsAreRejectedWithStableCategories` est la seule preuve exécutable. Son retrait demande de décider du sort de ces cas de fixture.
     - **Résidus hors du lot approuvé** : `QuickWindowTestBenchViewModel.Rows`, `Load(QuickWindowDefinition)`, `ToTestBenchValues` et `QuickWindowTestBenchRowViewModel`, ainsi que `SceneClipboard.CrossesQuickWindowBoundary`, n'ont plus d'appelant hors tests; les arguments `ParentPorts`/`FindInvocation` de `QuickWindowCommandAuthoringContext` ne sont plus alimentés que par des valeurs neutres.
     - **Runtime embarqué** : les branches `ParentPort` et `readPort`/`writePort` de `src/ScadaBuilderV2.Rendering/Runtime/quick-window-runtime.js` relèvent de `DEC-0050` mais restent dans le contrat TF100Web (capacité `quick-window.binding.parent-port` `Blocked`). Le fichier n'est pas annoté : il est empaqueté avec un `RuntimeSha256` vérifié, et un seul octet changé ferait dériver les paquets gelés de `tests/conformance/` et la copie vendorisée TF100Web.
-
-41. **Un `TagBinding` résiduel ne peut pas être effacé depuis l'éditeur** (2026-10-06, `DEC-0053`). Le champ est en lecture seule et « Convertir en Lecture de variable » n'est offert que sans `ReadTagId` (le `ReadTagId` gagne déjà). Un élément qui porte les deux garde donc son `TagBinding`, et l'avertissement `tag-binding.legacy-inert` ou `tag-binding.legacy-quick-window` réapparaît à chaque validation, sans effet sur l'export (le `TagBinding` est ignoré partout où un `ReadTagId` existe). Fermeture possible : une action « Effacer le TagBinding résiduel », si l'utilisateur la demande.
 
 26. `DEC-0051` a ré-épinglé le moteur de vérification sur Node `24.15.x`. Les trois legs du gate Phase 0 — Node headless, WebView2 réel et Edge/TF100Web — sont rejoués `PASS` sur `v24.15.0` avec le hash de fixture gelé inchangé, et la fixture vendorisée dans TF100Web est réalignée octet pour octet (LF épinglé, espaces de fin restaurés). La lacune d'épinglage est fermée. Le dépôt TF100Web porte ces corrections sur `codex/quick-window-v1` sans push.
 

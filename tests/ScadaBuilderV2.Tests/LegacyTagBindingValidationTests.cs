@@ -95,6 +95,7 @@ public sealed class LegacyTagBindingValidationTests
 
         Assert.AreEqual("tag-binding.legacy-inert", issue.Code);
         StringAssert.Contains(issue.Message, "résiduel");
+        StringAssert.Contains(issue.SuggestedFix, "Effacer le TagBinding résiduel", "a residual warning must point to its way out");
     }
 
     [TestMethod]

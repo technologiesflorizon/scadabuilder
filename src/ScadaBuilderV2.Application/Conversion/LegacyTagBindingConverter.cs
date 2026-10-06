@@ -35,6 +35,9 @@ public sealed record LegacyTagBindingConversion(
 /// <summary>One element converted by <see cref="LegacyTagBindingConverter.ConvertScene"/>.</summary>
 public sealed record LegacyTagBindingConvertedElement(string ElementId, string TagBinding, string ReadTagId);
 
+/// <summary>One residual legacy binding (element already reading through <c>ReadTagId</c>) cleared by <see cref="LegacyTagBindingConverter.ConvertScene"/>.</summary>
+public sealed record LegacyTagBindingClearedElement(string ElementId, string TagBinding, string ReadTagId);
+
 /// <summary>One element left untouched by <see cref="LegacyTagBindingConverter.ConvertScene"/>, with its reason.</summary>
 public sealed record LegacyTagBindingSkippedElement(string ElementId, string TagBinding, string Reason);
 
@@ -42,29 +45,40 @@ public sealed record LegacyTagBindingSkippedElement(string ElementId, string Tag
 /// <param name="Scene">The scene after the conversion, or the unchanged input scene.</param>
 /// <param name="Converted">The converted elements.</param>
 /// <param name="Skipped">The elements left untouched, with their reason.</param>
+/// <param name="Cleared">The residual legacy bindings cleared (their <c>ReadTagId</c> already won).</param>
 /// <param name="HistoryAction">The single undoable transition covering every conversion, when any.</param>
 public sealed record LegacyTagBindingSceneConversion(
     ScadaScene Scene,
     IReadOnlyList<LegacyTagBindingConvertedElement> Converted,
     IReadOnlyList<LegacyTagBindingSkippedElement> Skipped,
-    IEditorHistoryAction? HistoryAction)
+    IEditorHistoryAction? HistoryAction,
+    IReadOnlyList<LegacyTagBindingClearedElement>? Cleared = null)
 {
+    /// <summary>Gets the residual legacy bindings cleared, empty when none.</summary>
+    public IReadOnlyList<LegacyTagBindingClearedElement> EffectiveCleared => Cleared ?? Array.Empty<LegacyTagBindingClearedElement>();
+
     /// <summary>Gets the French summary shown to the operator: counts, then one line per skipped element.</summary>
     public string Summary
     {
         get
         {
-            if (Converted.Count == 0 && Skipped.Count == 0)
+            if (Converted.Count == 0 && Skipped.Count == 0 && EffectiveCleared.Count == 0)
             {
                 return "Aucun TagBinding legacy sur cette page.";
             }
 
             var lines = new List<string>
             {
-                $"{Converted.Count} TagBinding converti(s) en Lecture de variable, {Skipped.Count} ignoré(s)."
+                $"{Converted.Count} TagBinding converti(s) en Lecture de variable, {EffectiveCleared.Count} résiduel(s) effacé(s), {Skipped.Count} ignoré(s)."
             };
             lines.AddRange(Converted.Select(item => $"Converti — élément '{item.ElementId}' : « {item.TagBinding} » → ReadTagId « {item.ReadTagId} »."));
+            lines.AddRange(EffectiveCleared.Select(item => $"Effacé — élément '{item.ElementId}' : TagBinding résiduel « {item.TagBinding} », la Lecture de variable (ReadTagId) « {item.ReadTagId} » reste seule lue."));
             lines.AddRange(Skipped.Select(item => $"Ignoré — élément '{item.ElementId}' : {item.Reason}"));
+            if (Converted.Count > 0)
+            {
+                lines.Add(LegacyTagBindingConverter.ResultLocation);
+            }
+
             return string.Join(Environment.NewLine, lines);
         }
     }
@@ -75,12 +89,14 @@ public sealed record LegacyTagBindingSceneConversion(
 /// (« Lecture de variable »), one element or one whole page at a time, as one undoable transition.
 /// </summary>
 /// <remarks>
-/// The value is resolved exactly as the read-variable selector would offer it: a <c>#N</c> parameter stays as is
-/// on a page of type Fenêtre rapide (and is refused elsewhere), anything else must name exactly one enabled tag of
-/// the project catalog (id, display name or keyword label) and becomes its canonical id, the form the runtime
-/// mapping cache is keyed by. An unresolved value is never converted: the binding is kept and the operator is told
-/// why. An element that already has a <c>ReadTagId</c> is never converted either (it already wins); its legacy
-/// binding is only reported as residual. The transition is a <see cref="SceneSnapshotChangedAction"/>, which never
+/// The value is resolved like the read-variable selector would store it: a <c>#N</c> parameter stays as is on a
+/// page of type Fenêtre rapide (and is refused elsewhere), anything else must name exactly one enabled tag of the
+/// project catalog (id, display name or keyword label) and becomes its canonical id, the form the runtime mapping
+/// cache is keyed by. On a Fenêtre rapide page a project tag is accepted too, exactly as the fragment exporter
+/// resolves a TagBinding there, although that page's selector offers only <c>#N</c>. An unresolved value is never
+/// converted: the binding is kept and the operator is told why. An element that already has a <c>ReadTagId</c> is
+/// never converted either (it already wins); its legacy binding is residual and is cleared instead
+/// (<see cref="ClearResidual"/>, and by <see cref="ConvertScene"/>). The transition is a <see cref="SceneSnapshotChangedAction"/>, which never
 /// merges with a neighbouring property edit, so one undo restores exactly the scene before the conversion.
 ///
 /// Decisions: DEC-0053.
@@ -91,6 +107,12 @@ public static class LegacyTagBindingConverter
 {
     /// <summary>History label of a conversion transition.</summary>
     public const string HistoryLabel = "conversion TagBinding en Lecture de variable";
+
+    /// <summary>History label of a residual-clearing transition.</summary>
+    public const string ClearHistoryLabel = "effacement TagBinding residuel";
+
+    /// <summary>Tells the operator where a converted read binding is shown.</summary>
+    public const string ResultLocation = "Résultat visible dans l'onglet État, section « Lecture de variable » (liaison ReadTagId).";
 
     /// <summary>Returns what the editor offers for the legacy binding of <paramref name="element"/>.</summary>
     public static LegacyTagBindingState Inspect(ScadaElement element)
@@ -112,7 +134,7 @@ public static class LegacyTagBindingConverter
         LegacyTagBindingState.Convertible =>
             "Inerte sur cette page : le Builder ne l'exporte pas. Convertissez-le en Lecture de variable.",
         LegacyTagBindingState.Residual =>
-            "Résiduel : la Lecture de variable (ReadTagId) déjà définie a priorité, ce TagBinding est ignoré.",
+            "Résiduel : la Lecture de variable (ReadTagId) déjà définie a priorité, ce TagBinding est ignoré. Vous pouvez l'effacer.",
         _ => string.Empty
     };
 
@@ -158,7 +180,7 @@ public static class LegacyTagBindingConverter
         var after = scene.WithReplacedElementRecursive(Converted(element, readTagId));
         return new LegacyTagBindingConversion(
             true,
-            $"TagBinding « {tagBinding} » converti en Lecture de variable : ReadTagId « {readTagId} ».",
+            $"TagBinding « {tagBinding} » converti en Lecture de variable : ReadTagId « {readTagId} ». {ResultLocation}",
             after,
             readTagId,
             new SceneSnapshotChangedAction(scene.Id, scene, after, HistoryLabel));
@@ -180,6 +202,7 @@ public static class LegacyTagBindingConverter
 
         var converted = new List<LegacyTagBindingConvertedElement>();
         var skipped = new List<LegacyTagBindingSkippedElement>();
+        var cleared = new List<LegacyTagBindingClearedElement>();
         var after = scene;
         foreach (var element in Flatten(scene.Elements))
         {
@@ -190,7 +213,9 @@ public static class LegacyTagBindingConverter
 
             if (LegacyTagBinding.HasReadTagId(element))
             {
-                skipped.Add(new LegacyTagBindingSkippedElement(element.Id, tagBinding, ResidualReason(tagBinding)));
+                var residual = after.FindElementRecursive(element.Id) ?? element;
+                after = after.WithReplacedElementRecursive(Cleared(residual));
+                cleared.Add(new LegacyTagBindingClearedElement(element.Id, tagBinding, element.Data!.ReadTagId!.Trim()));
                 continue;
             }
 
@@ -205,11 +230,53 @@ public static class LegacyTagBindingConverter
             converted.Add(new LegacyTagBindingConvertedElement(element.Id, tagBinding, readTagId));
         }
 
+        var changed = converted.Count > 0 || cleared.Count > 0;
         return new LegacyTagBindingSceneConversion(
-            converted.Count == 0 ? scene : after,
+            changed ? after : scene,
             converted,
             skipped,
-            converted.Count == 0 ? null : new SceneSnapshotChangedAction(scene.Id, scene, after, HistoryLabel));
+            changed ? new SceneSnapshotChangedAction(scene.Id, scene, after, HistoryLabel) : null,
+            cleared);
+    }
+
+    /// <summary>
+    /// Clears the residual legacy binding of element <paramref name="elementId"/>, which already reads through
+    /// <c>Data.ReadTagId</c>, as one undoable transition; anything else is left unchanged with the reason.
+    /// </summary>
+    /// <remarks>
+    /// The way out of a residual binding: the field is read-only and the conversion is not offered once a
+    /// <c>ReadTagId</c> wins, so without this action its validation warning would stay forever. Never applies to a
+    /// Custom element (<see cref="LegacyTagBinding.Of"/> returns null for its library reference).
+    /// </remarks>
+    public static LegacyTagBindingConversion ClearResidual(ScadaScene scene, string elementId)
+    {
+        ArgumentNullException.ThrowIfNull(scene);
+        ArgumentException.ThrowIfNullOrWhiteSpace(elementId);
+
+        var element = scene.FindElementRecursive(elementId);
+        if (element is null)
+        {
+            return Unchanged(scene, $"Effacement impossible : élément '{elementId}' introuvable.");
+        }
+
+        if (LegacyTagBinding.Of(element) is not { } tagBinding)
+        {
+            return Unchanged(scene, "Aucun TagBinding legacy à effacer sur cet élément.");
+        }
+
+        if (!LegacyTagBinding.HasReadTagId(element))
+        {
+            return Unchanged(scene, $"Effacement refusé : le TagBinding « {tagBinding} » n'est pas résiduel (aucune Lecture de variable ReadTagId). Convertissez-le plutôt en Lecture de variable.");
+        }
+
+        var readTagId = element.Data!.ReadTagId!.Trim();
+        var after = scene.WithReplacedElementRecursive(Cleared(element));
+        return new LegacyTagBindingConversion(
+            true,
+            $"TagBinding résiduel « {tagBinding} » effacé : la Lecture de variable (ReadTagId) « {readTagId} » reste seule lue.",
+            after,
+            readTagId,
+            new SceneSnapshotChangedAction(scene.Id, scene, after, ClearHistoryLabel));
     }
 
     /// <summary>
@@ -268,10 +335,13 @@ public static class LegacyTagBindingConverter
     }
 
     private static string ResidualReason(string tagBinding) =>
-        $"Lecture de variable (ReadTagId) déjà définie : le TagBinding « {tagBinding} » est résiduel et n'est pas converti.";
+        $"Lecture de variable (ReadTagId) déjà définie : le TagBinding « {tagBinding} » est résiduel et n'est pas converti ; utilisez « Effacer le TagBinding résiduel ».";
 
     private static ScadaElement Converted(ScadaElement element, string readTagId) =>
         element with { Data = element.Data! with { ReadTagId = readTagId, TagBinding = null } };
+
+    private static ScadaElement Cleared(ScadaElement element) =>
+        element with { Data = element.Data! with { TagBinding = null } };
 
     private static LegacyTagBindingConversion Unchanged(ScadaScene scene, string message) =>
         new(false, message, scene, null, null);

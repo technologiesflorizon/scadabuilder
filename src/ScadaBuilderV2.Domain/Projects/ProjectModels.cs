@@ -1006,14 +1006,14 @@ public static class ScadaProjectBuildValidator
             $"Page '{scene.EffectivePageCode}', élément '{element.Id}' ({element.DisplayName}) : TagBinding legacy « {tagBinding} » inerte sur cette page — " +
             "le Builder ne l'exporte pas sur une page normale et TF100Web ne le lit pas." +
             (hasReadTagId
-                ? " Il est résiduel : la Lecture de variable (ReadTagId) déjà définie est seule lue."
+                ? " Il est résiduel : la Lecture de variable (ReadTagId) déjà définie est seule lue. Utilisez « Effacer le TagBinding résiduel » dans l'onglet Données."
                 : " Utilisez « Convertir en Lecture de variable » dans l'onglet Données."),
             scene.EffectivePageCode,
             scene.PageKey == Guid.Empty ? null : scene.PageKey,
             ElementId: element.Id,
             PropertyPath: $"Elements[{element.Id}].Data.TagBinding",
             SuggestedFix: hasReadTagId
-                ? "Aucune action requise : la Lecture de variable (ReadTagId) remplace déjà ce TagBinding."
+                ? "Effacez le TagBinding résiduel avec « Effacer le TagBinding résiduel » (onglet Données de l'élément) ; la Lecture de variable (ReadTagId) le remplace déjà."
                 : "Convertissez le TagBinding en Lecture de variable (onglet Données de l'élément).");
     }
 
@@ -1030,14 +1030,14 @@ public static class ScadaProjectBuildValidator
             LegacyTagBindingQuickWindowCode,
             $"{owner}, élément '{element.Id}' ({element.DisplayName}) : TagBinding legacy « {tagBinding} »" +
             (hasReadTagId
-                ? " ignoré — la Lecture de variable (ReadTagId) déjà définie a priorité."
+                ? " ignoré — la Lecture de variable (ReadTagId) déjà définie a priorité. Utilisez « Effacer le TagBinding résiduel » dans l'onglet Données."
                 : " encore émis comme lecture du fragment, mais c'est un champ legacy : préférez « Lecture de variable »."),
             pageId,
             pageKey == Guid.Empty ? null : pageKey,
             ElementId: element.Id,
             PropertyPath: $"Elements[{element.Id}].Data.TagBinding",
             SuggestedFix: hasReadTagId
-                ? "Aucune action requise : la Lecture de variable (ReadTagId) remplace déjà ce TagBinding."
+                ? "Effacez le TagBinding résiduel avec « Effacer le TagBinding résiduel » (onglet Données de l'élément) ; la Lecture de variable (ReadTagId) le remplace déjà."
                 : "Convertissez le TagBinding en Lecture de variable (onglet Données de l'élément).");
     }
 

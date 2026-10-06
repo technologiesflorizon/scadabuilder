@@ -1,5 +1,6 @@
 using ScadaBuilderV2.Application.Conversion;
 using ScadaBuilderV2.Application.History;
+using ScadaBuilderV2.Domain.ElementEvents.State;
 using ScadaBuilderV2.Domain.Projects;
 using ScadaBuilderV2.Domain.Scenes;
 
@@ -142,7 +143,7 @@ public sealed class LegacyTagBindingConverterTests
     }
 
     [TestMethod]
-    public async Task ConvertingAPageConvertsEveryConvertibleBindingAsOneTransitionAndExplainsTheRest()
+    public async Task ConvertingAPageConvertsEveryConvertibleBindingClearsResidualsAsOneTransitionAndExplainsTheRest()
     {
         var residual = TagBindingText("residual", "FAN_03_SPEED");
         residual = residual with { Data = residual.Data! with { ReadTagId = "tf100.mapping.302" } };
@@ -157,17 +158,108 @@ public sealed class LegacyTagBindingConverterTests
         var result = LegacyTagBindingConverter.ConvertScene(scene, Catalog(), isQuickWindowPage: false);
 
         CollectionAssert.AreEquivalent(new[] { "level", "nested" }, result.Converted.Select(item => item.ElementId).ToArray());
-        CollectionAssert.AreEquivalent(new[] { "unknown", "residual" }, result.Skipped.Select(item => item.ElementId).ToArray());
+        CollectionAssert.AreEquivalent(new[] { "unknown" }, result.Skipped.Select(item => item.ElementId).ToArray());
+        CollectionAssert.AreEquivalent(new[] { "residual" }, result.EffectiveCleared.Select(item => item.ElementId).ToArray());
         Assert.AreEqual("tf100.mapping.302", result.Scene.FindElementRecursive("nested")!.Data!.ReadTagId);
         Assert.AreEqual("NOPE", result.Scene.FindElementRecursive("unknown")!.Data!.TagBinding);
-        StringAssert.Contains(result.Summary, "2 TagBinding converti(s) en Lecture de variable, 2 ignoré(s).");
+        Assert.IsNull(result.Scene.FindElementRecursive("residual")!.Data!.TagBinding, "a residual binding is cleared, not skipped");
+        Assert.AreEqual("tf100.mapping.302", result.Scene.FindElementRecursive("residual")!.Data!.ReadTagId);
+        StringAssert.Contains(result.Summary, "2 TagBinding converti(s) en Lecture de variable, 1 résiduel(s) effacé(s), 1 ignoré(s).");
         StringAssert.Contains(result.Summary, "NOPE");
+        StringAssert.Contains(result.Summary, "onglet État");
 
         var history = new EditorHistoryService();
         history.Push(result.HistoryAction!);
         scene = result.Scene;
         Assert.IsTrue(await history.UndoAsync(Context(() => scene, replacement => scene = replacement)));
         Assert.AreSame(original, scene, "one undo reverts the whole page conversion");
+    }
+
+    [TestMethod]
+    public async Task ClearingAResidualBindingKeepsTheReadTagIdInOneUndoableTransition()
+    {
+        var element = TagBindingText("level", "FAN_03_RUN");
+        element = element with { Data = element.Data! with { ReadTagId = "tf100.mapping.302" } };
+        var original = Scene(element);
+        var scene = original;
+
+        var result = LegacyTagBindingConverter.ClearResidual(scene, "level");
+
+        Assert.IsTrue(result.Converted, result.Message);
+        Assert.IsNull(result.Scene.FindElementRecursive("level")!.Data!.TagBinding);
+        Assert.AreEqual("tf100.mapping.302", result.Scene.FindElementRecursive("level")!.Data!.ReadTagId);
+        StringAssert.Contains(result.Message, "effacé");
+        var history = new EditorHistoryService();
+        history.Push(result.HistoryAction!);
+        scene = result.Scene;
+        Assert.IsTrue(await history.UndoAsync(Context(() => scene, replacement => scene = replacement)));
+        Assert.AreSame(original, scene);
+    }
+
+    [TestMethod]
+    public void ClearingIsRefusedForAConvertibleBindingAndNeverTouchesACustomLibraryReference()
+    {
+        var convertible = Scene(TagBindingText("level", "FAN_03_RUN"));
+        var custom = new ScadaElement(
+            "custom",
+            "custom",
+            ScadaElementKind.Custom,
+            new SceneBounds(0, 0, 40, 40),
+            null,
+            ScadaElementLayout.Absolute,
+            ScadaElementStyle.DefaultText,
+            new ScadaElementData("<svg></svg>", null, null, null, null, null, null, null, "pompe.sep", false, ReadTagId: "tf100.mapping.302"));
+        var customScene = Scene(custom);
+
+        var refused = LegacyTagBindingConverter.ClearResidual(convertible, "level");
+        var customResult = LegacyTagBindingConverter.ClearResidual(customScene, "custom");
+        var customPage = LegacyTagBindingConverter.ConvertScene(customScene, Catalog(), false);
+
+        Assert.IsFalse(refused.Converted);
+        Assert.AreSame(convertible, refused.Scene);
+        Assert.IsFalse(customResult.Converted);
+        Assert.AreEqual("pompe.sep", customResult.Scene.FindElementRecursive("custom")!.Data!.TagBinding);
+        Assert.AreSame(customScene, customPage.Scene);
+        Assert.AreEqual(0, customPage.EffectiveCleared.Count);
+    }
+
+    [TestMethod]
+    public void TheConversionMessageSaysWhereToSeeTheResultAndNeverWritesTheStateReadVariable()
+    {
+        var scene = Scene(TagBindingText("level", "FAN_03_RUN"));
+
+        var result = LegacyTagBindingConverter.ConvertElement(scene, "level", Catalog(), false);
+
+        StringAssert.Contains(result.Message, "onglet État");
+        Assert.IsNull(result.Scene.FindElementRecursive("level")!.EffectiveStateConfig.ReadVariable,
+            "writing StateConfig.ReadVariable would declare the state.read-variable capability");
+    }
+
+    [TestMethod]
+    public void TheStateTabShowsAReadTagIdOnlyBindingAndRemovingItClearsBothReadSites()
+    {
+        var converted = LegacyTagBindingConverter.ConvertElement(Scene(TagBindingText("level", "FAN_03_RUN")), "level", Catalog(), false).Scene;
+        var element = converted.FindElementRecursive("level");
+
+        var summary = ReadBindingPresentation.Describe(element, id => id == "tf100.mapping.301" ? "FAN_03_RUN" : id);
+
+        Assert.AreEqual("Lecture de variable : FAN_03_RUN (liaison ReadTagId)", summary.Text);
+        Assert.IsFalse(summary.HasReadVariable);
+        Assert.IsTrue(summary.HasReadBinding, "the shown binding can be removed");
+        Assert.AreEqual(ReadBindingPresentation.NoneText, ReadBindingPresentation.Describe(ScadaElement.CreateText("x", "x", 0, 0), id => id).Text);
+
+        var withVariable = element! with
+        {
+            StateConfig = element.EffectiveStateConfig with { ReadVariable = new ScadaReadVariableRule("tf100.mapping.302", "{valeur} L") }
+        };
+        var variableSummary = ReadBindingPresentation.Describe(withVariable, id => id);
+        Assert.AreEqual("Lecture: tf100.mapping.302 -> {valeur} L", variableSummary.Text);
+        Assert.IsTrue(variableSummary.HasReadVariable);
+
+        var removed = ReadBindingPresentation.WithoutReadBinding(converted.WithReplacedElementRecursive(withVariable), "level").FindElementRecursive("level")!;
+        Assert.IsNull(removed.Data!.ReadTagId);
+        Assert.IsNull(removed.EffectiveStateConfig.ReadVariable);
+        Assert.IsFalse(ReadBindingPresentation.Describe(removed, id => id).HasReadBinding);
     }
 
     [TestMethod]

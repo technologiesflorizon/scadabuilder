@@ -7,7 +7,8 @@ namespace ScadaBuilderV2.App;
 
 /// <summary>
 /// Legacy <c>Data.TagBinding</c> surface of the shell: the read-only field of the « Données » tab, the
-/// « Convertir en Lecture de variable » action for one element and the page-wide conversion.
+/// « Convertir en Lecture de variable » and « Effacer le TagBinding résiduel » actions for one element, the
+/// page-wide conversion, and the removal of a read binding shown by the State tab.
 /// </summary>
 /// <remarks>
 /// Every decision lives in <see cref="LegacyTagBindingConverter"/>; this file owns only the WPF wiring and the
@@ -28,13 +29,73 @@ public partial class MainWindow
         ElementTagBindingTextBox.Text = element?.Data?.TagBinding ?? "";
         ElementLegacyTagBindingStatusText.Text = LegacyTagBindingConverter.Describe(state, IsActivePageOfQuickWindowType);
         ConvertLegacyTagBindingButton.Visibility = state == LegacyTagBindingState.Convertible ? Visibility.Visible : Visibility.Collapsed;
+        ClearResidualTagBindingButton.Visibility = state == LegacyTagBindingState.Residual ? Visibility.Visible : Visibility.Collapsed;
     }
 
-    /// <summary>Wires the modal properties dialog to the same conversion as the docked panel.</summary>
-    private void ConfigureLegacyTagBindingConversion(ElementPropertiesDialog dialog, string elementId)
+    /// <summary>
+    /// Wires the modal properties dialog to the same legacy conversion, residual clearing and read-binding removal
+    /// as the docked panel. Each runs immediately as its own undoable transition, so it persists even if the dialog
+    /// is then cancelled (as <c>SaveStateConfig</c> does).
+    /// </summary>
+    private void ConfigureReadBindingSurfaces(ElementPropertiesDialog dialog, string elementId)
     {
         dialog.IsQuickWindowPage = IsActivePageOfQuickWindowType;
         dialog.ConvertLegacyTagBinding = () => ConvertLegacyTagBinding(elementId);
+        dialog.ClearResidualTagBinding = () => ClearResidualTagBinding(elementId);
+        dialog.RemoveReadBinding = () => RemoveReadBinding(elementId);
+    }
+
+    private void OnClearResidualTagBindingClick(object sender, RoutedEventArgs e)
+    {
+        if (_selectedSceneObject is null)
+        {
+            SetStatus("Aucun Element+ selectionne pour l'effacement du TagBinding.");
+            return;
+        }
+
+        var (_, message) = ClearResidualTagBinding(_selectedSceneObject.Id);
+        SetStatus(message);
+    }
+
+    /// <summary>Clears the residual legacy binding of <paramref name="elementId"/> and returns the latest element with the operator message.</summary>
+    private (ScadaElement Element, string Message) ClearResidualTagBinding(string elementId)
+    {
+        if (_activeScene is null)
+        {
+            return (ScadaElement.CreateText(elementId, elementId, 0, 0), "Effacement impossible : aucune page active.");
+        }
+
+        var result = LegacyTagBindingConverter.ClearResidual(_activeScene, elementId);
+        if (result.HistoryAction is { } action)
+        {
+            ApplyLegacyTagBindingConversion(result.Scene, action);
+        }
+
+        var latest = _activeScene.FindElementRecursive(elementId) ?? ScadaElement.CreateText(elementId, elementId, 0, 0);
+        return (latest, result.Message);
+    }
+
+    /// <summary>
+    /// Removes every read binding of <paramref name="elementId"/> (<c>StateConfig.ReadVariable</c> and
+    /// <c>Data.ReadTagId</c>) as one undoable transition and returns the latest element.
+    /// </summary>
+    private ScadaElement RemoveReadBinding(string elementId)
+    {
+        if (_activeScene is null)
+        {
+            return ScadaElement.CreateText(elementId, elementId, 0, 0);
+        }
+
+        var before = _activeScene;
+        var after = ReadBindingPresentation.WithoutReadBinding(before, elementId);
+        if (!ReferenceEquals(before, after))
+        {
+            ApplyLegacyTagBindingConversion(after, new SceneSnapshotChangedAction(before.Id, before, after, "retrait lecture de variable"));
+            SetStatus("Lecture de variable retiree (ReadVariable et liaison ReadTagId).");
+        }
+
+        RefreshStateAndCommandTabs();
+        return _activeScene.FindElementRecursive(elementId) ?? ScadaElement.CreateText(elementId, elementId, 0, 0);
     }
 
     private void OnConvertLegacyTagBindingClick(object sender, RoutedEventArgs e)

@@ -945,6 +945,7 @@ public sealed class WebViewContextMenuScriptTests
         {
             StringAssert.Contains(xaml, "Text=\"Champ legacy — utilisez Lecture de variable\"");
             StringAssert.Contains(xaml, "Content=\"Convertir en Lecture de variable\" Click=\"OnConvertLegacyTagBindingClick\"");
+            StringAssert.Contains(xaml, "Content=\"Effacer le TagBinding résiduel\" Click=\"OnClearResidualTagBindingClick\"");
             var field = xaml[xaml.IndexOf("TagBindingTextBox\"", StringComparison.Ordinal)..];
             field = field[..field.IndexOf("/>", StringComparison.Ordinal)];
             Assert.IsFalse(field.Contains("TextChanged", StringComparison.Ordinal), "the legacy field accepts no new input");
@@ -956,6 +957,11 @@ public sealed class WebViewContextMenuScriptTests
         Assert.IsFalse(dialogCode.Contains("TagBinding:", StringComparison.Ordinal),
             "the dialog result no longer carries TagBinding");
         StringAssert.Contains(ExtractMethod(source, "private void ApplyLegacyTagBindingConversion("), "_activeSceneTab?.History.Push(action);");
+        Assert.IsFalse(source.Contains("ElementTagBindingTextBox.IsEnabled", StringComparison.Ordinal));
+        StringAssert.Contains(ExtractMethod(source, "private void RefreshStateAndCommandTabs()"), "ReadBindingPresentation.Describe(");
+        StringAssert.Contains(ExtractMethod(dialogCode, "private void RefreshStateAndCommandLists()"), "ReadBindingPresentation.Describe(");
+        StringAssert.Contains(ExtractMethod(source, "private void OnRemoveReadVariableClick("), "RemoveReadBinding(");
+        StringAssert.Contains(ExtractMethod(dialogCode, "private void OnRemoveReadVariableClick("), "RemoveReadBinding(");
     }
 
     [TestMethod]

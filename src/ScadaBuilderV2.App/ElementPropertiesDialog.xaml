@@ -279,6 +279,7 @@
                                 <TextBlock Text="Champ legacy — utilisez Lecture de variable" FontWeight="SemiBold" TextWrapping="Wrap"/>
                                 <TextBlock x:Name="LegacyTagBindingStatusText" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="0,2,0,6"/>
                                 <Button x:Name="ConvertLegacyTagBindingButton" Content="Convertir en Lecture de variable" Click="OnConvertLegacyTagBindingClick" HorizontalAlignment="Left"/>
+                                <Button x:Name="ClearResidualTagBindingButton" Content="Effacer le TagBinding résiduel" Click="OnClearResidualTagBindingClick" HorizontalAlignment="Left"/>
                             </StackPanel>
                         </Border>
                     </StackPanel>
