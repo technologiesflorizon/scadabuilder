@@ -865,10 +865,20 @@ public sealed partial class Ft100SceneExporter
     /// expression ASTs. Returns the normalized config and adds warnings for
     /// unresolved references. Throws on ambiguous references.
     /// </summary>
+    /// <remarks>
+    /// In a quick-window fragment (<paramref name="quickWindowFragment"/>) a `#N` tagRef is a placeholder the
+    /// shared runtime substitutes at mount time by its <c>tagName</c>: it is kept as is (canonicalization never
+    /// resolves it) and is not reported as unresolved. On a page a `#N` is never substituted and stays warned.
+    ///
+    /// Decisions: DEC-0036, DEC-0052.
+    /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md §11b.1, §11b.2.
+    /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowFragmentValueBindingTests.cs.
+    /// </remarks>
     private static ScadaElementStateConfig NormalizeStateConfigForExport(
         ScadaElementStateConfig config,
         ScadaTagCatalog? catalog,
-        List<string> warnings)
+        List<string> warnings,
+        bool quickWindowFragment = false)
     {
         if (config.States.Count == 0) return config;
 
@@ -887,7 +897,7 @@ public sealed partial class Ft100SceneExporter
                 ambiguousMessages.AddRange(ambiguous);
             }
 
-            EmitUnresolvedWarnings(normalizedAst, state.Expression.Source, warnings);
+            EmitUnresolvedWarnings(normalizedAst, state.Expression.Source, warnings, quickWindowFragment);
 
             var referencedTags = CollectCanonicalTags(normalizedAst);
             var normalizedExpression = new ScadaExpression(
@@ -931,11 +941,16 @@ public sealed partial class Ft100SceneExporter
     }
 
     private static void EmitUnresolvedWarnings(
-        ScadaExprNode node, string expressionSource, List<string> warnings)
+        ScadaExprNode node, string expressionSource, List<string> warnings, bool quickWindowFragment = false)
     {
         switch (node)
         {
             case ScadaExprTagRef tagRef:
+                if (quickWindowFragment && QuickWindowPlaceholder.TryParseName(tagRef.TagName, out _))
+                {
+                    break;
+                }
+
                 if (!tagRef.TagName.StartsWith("tf100.mapping.", StringComparison.OrdinalIgnoreCase))
                 {
                     AddWarningOnce(
@@ -945,15 +960,15 @@ public sealed partial class Ft100SceneExporter
                 }
                 break;
             case ScadaExprUnary unary:
-                EmitUnresolvedWarnings(unary.Operand, expressionSource, warnings);
+                EmitUnresolvedWarnings(unary.Operand, expressionSource, warnings, quickWindowFragment);
                 break;
             case ScadaExprBinary binary:
-                EmitUnresolvedWarnings(binary.Left, expressionSource, warnings);
-                EmitUnresolvedWarnings(binary.Right, expressionSource, warnings);
+                EmitUnresolvedWarnings(binary.Left, expressionSource, warnings, quickWindowFragment);
+                EmitUnresolvedWarnings(binary.Right, expressionSource, warnings, quickWindowFragment);
                 break;
             case ScadaExprFunc func:
                 foreach (var arg in func.Args)
-                    EmitUnresolvedWarnings(arg, expressionSource, warnings);
+                    EmitUnresolvedWarnings(arg, expressionSource, warnings, quickWindowFragment);
                 break;
         }
     }
@@ -997,7 +1012,8 @@ public sealed partial class Ft100SceneExporter
     /// <summary>Builds one exported page or quick-window definition document.</summary>
     /// <remarks>
     /// <paramref name="quickWindowFragment"/> is true only for a quick-window definition (compiled content and
-    /// editor preview): see <see cref="BuildSceneRootHtml"/>.
+    /// editor preview), and <paramref name="quickWindowPlaceholderDatatypes"/> maps a `#N` read tag to the mapping
+    /// datatype every invocation agrees on: see <see cref="BuildSceneRootHtml"/>.
     ///
     /// Decisions: DEC-0038, DEC-0050, DEC-0052.
     /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md §11b.2.
@@ -1009,13 +1025,14 @@ public sealed partial class Ft100SceneExporter
         string sourceContent,
         string? runtimeScriptSource,
         ScadaTagCatalog? tagCatalog, List<string> warnings,
-        bool quickWindowFragment = false)
+        bool quickWindowFragment = false,
+        IReadOnlyDictionary<string, string>? quickWindowPlaceholderDatatypes = null)
     {
         var title = HtmlEncoder.Default.Encode(scene.Title);
         var runtimeScript = string.IsNullOrWhiteSpace(runtimeScriptSource)
             ? string.Empty
             : $"  <script src=\"{HtmlEncoder.Default.Encode(runtimeScriptSource)}\" defer></script>";
-        var sceneRoot = BuildSceneRootHtml(scene, sourceContent, tagCatalog, warnings, quickWindowFragment);
+        var sceneRoot = BuildSceneRootHtml(scene, sourceContent, tagCatalog, warnings, quickWindowFragment, quickWindowPlaceholderDatatypes);
 
         return $$"""
 <!doctype html>
@@ -1039,11 +1056,15 @@ public sealed partial class Ft100SceneExporter
     /// quick-window instance preview, so both consume exactly one Element+ geometry semantics.
     /// </summary>
     /// <remarks>
-    /// A page transports <c>Data.TagBinding</c> and numeric table-cell <c>ValueBindings</c> only through its
-    /// manifest objects, from which TF100Web injects the mapping server side. A quick-window fragment is served
-    /// without injection and has no manifest objects, so with <paramref name="quickWindowFragment"/> both sites
+    /// A page's numeric table-cell <c>ValueBindings</c> travel only through its manifest objects, from which
+    /// TF100Web injects the mapping server side (<c>Data.TagBinding</c> is not transported on a page at all). A
+    /// quick-window fragment is served without injection and has no manifest objects, so with
+    /// <paramref name="quickWindowFragment"/> both sites
     /// are emitted in the markup as <c>data-scada-read-tag</c>/<c>data-scada-write-tag</c>, the attributes the
-    /// shared runtime substitutes (<c>#N</c>) and the host reads. Page bytes never change.
+    /// shared runtime substitutes (<c>#N</c>) and the host reads. Every quick-window read tag also carries the
+    /// <c>data-scada-format</c>/<c>data-scada-datatype</c> TF100Web would have injected on a page, and a `#N` in a
+    /// state expression is left for mount-time substitution without the unresolved-tag warning. Page bytes never
+    /// change.
     ///
     /// Decisions: DEC-0038, DEC-0050, DEC-0052.
     /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md §11b.2.
@@ -1055,9 +1076,10 @@ public sealed partial class Ft100SceneExporter
         string sourceContent,
         ScadaTagCatalog? tagCatalog,
         List<string> warnings,
-        bool quickWindowFragment = false)
+        bool quickWindowFragment = false,
+        IReadOnlyDictionary<string, string>? quickWindowPlaceholderDatatypes = null)
     {
-        var scope = Ft100ExportScope.ForScene(scene, quickWindowFragment);
+        var scope = Ft100ExportScope.ForScene(scene, quickWindowFragment, quickWindowPlaceholderDatatypes);
         var pageId = HtmlEncoder.Default.Encode(scene.Id);
         var rootDomId = HtmlEncoder.Default.Encode(scope.RootDomId);
         var pageClass = HtmlEncoder.Default.Encode(CssIdentifier(scene.Id));
@@ -1099,7 +1121,7 @@ public sealed partial class Ft100SceneExporter
                 var groupKind = HtmlEncoder.Default.Encode(element.Kind.ToString());
                 var groupInlineStyle = HtmlEncoder.Default.Encode(BuildRuntimeGroupInlineStyle(element, absoluteX, absoluteY));
                 var groupValueBindingAttributes = BuildValueBindingAttributes(element, scope, tagCatalog, warnings);
-                var groupStateCommandAttributes = BuildStateCommandAttributes(element, tagCatalog, warnings);
+                var groupStateCommandAttributes = BuildStateCommandAttributes(element, tagCatalog, warnings, scope.IsQuickWindowFragment);
                 var groupActionBindingAttributes = BuildActionBindingAttribute(element);
                 var children = string.Concat(element.ChildElements.Select(child => BuildElementHtml(child, 0, 0, scope, tagCatalog, warnings)));
 
@@ -1119,9 +1141,9 @@ public sealed partial class Ft100SceneExporter
         var kind = HtmlEncoder.Default.Encode(element.Kind.ToString());
         var inlineStyle = HtmlEncoder.Default.Encode(BuildElementInlineStyle(element, absoluteX, absoluteY));
         var content = BuildElementContent(element, scope, tagCatalog, warnings);
-        var valueBindingAttributes = BuildValueBindingAttributes(element, scope, tagCatalog, warnings);
+        var valueBindingAttributes = BuildValueBindingAttributes(element, scope, tagCatalog, warnings, content);
         var buttonRuntimeAttributes = BuildButtonRuntimeAttributes(element);
-        var stateCommandAttributes = BuildStateCommandAttributes(element, tagCatalog, warnings);
+        var stateCommandAttributes = BuildStateCommandAttributes(element, tagCatalog, warnings, scope.IsQuickWindowFragment);
         var actionBindingAttributes = BuildActionBindingAttribute(element);
 
         return $$"""
@@ -1180,7 +1202,7 @@ public sealed partial class Ft100SceneExporter
     }
 
     private static string BuildStateCommandAttributes(
-        ScadaElement element, ScadaTagCatalog? catalog, List<string> warnings)
+        ScadaElement element, ScadaTagCatalog? catalog, List<string> warnings, bool quickWindowFragment = false)
     {
         var stateConfig = element.EffectiveStateConfig;
         var commandConfig = element.EffectiveCommandConfig;
@@ -1197,7 +1219,7 @@ public sealed partial class Ft100SceneExporter
         var attributes = new StringBuilder();
         if (hasStateConfig)
         {
-            var exportConfig = NormalizeStateConfigForExport(stateConfig, catalog, warnings);
+            var exportConfig = NormalizeStateConfigForExport(stateConfig, catalog, warnings, quickWindowFragment);
             var json = JsonSerializer.Serialize(exportConfig, StateCommandJsonOptions);
             attributes.Append(" data-scada-state-config=\"");
             attributes.Append(HtmlEncoder.Default.Encode(json));
@@ -1254,16 +1276,111 @@ public sealed partial class Ft100SceneExporter
         ScadaElement element,
         Ft100ExportScope scope,
         ScadaTagCatalog? tagCatalog,
-        List<string> warnings)
+        List<string> warnings,
+        string? content = null)
     {
         var readTagId = element.Data?.ReadTagId;
-        if (scope.IsQuickWindowFragment && QuickWindowFragmentBindings.InlineTagBinding(element) is { } tagBinding)
+        if (!scope.IsQuickWindowFragment)
+        {
+            return BuildTagAttributes(readTagId, element.Data?.WriteTagId);
+        }
+
+        if (QuickWindowFragmentBindings.InlineTagBinding(element) is { } tagBinding)
         {
             readTagId = ResolveQuickWindowTagBinding(element, tagBinding, tagCatalog, warnings);
         }
 
-        return BuildTagAttributes(readTagId, element.Data?.WriteTagId);
+        // TF100Web views.py: format = Objects[].Data.DisplayFormat (Data is exported for InputNumeric only)
+        // or the element's initial hash-mask text.
+        var displayFormat = element.Kind == ScadaElementKind.InputNumeric && !string.IsNullOrEmpty(element.Data?.DisplayFormat)
+            ? element.Data!.DisplayFormat
+            : InitialHashMask(content);
+        return BuildTagAttributes(readTagId, element.Data?.WriteTagId)
+            + BuildQuickWindowFormatAttributes(readTagId, displayFormat, scope, tagCatalog);
     }
+
+    /// <summary>
+    /// Builds the <c>data-scada-format</c>/<c>data-scada-datatype</c> pair TF100Web injects on a page's bound
+    /// element (<c>_inject_scada_element_attrs</c>) but never into a quick-window fragment. The datatype is the
+    /// read mapping's <c>RegisterMapping.DataType</c> code: from the catalog tag of a real read tag, or, for a
+    /// `#N`, the code every invocation's bound tag agrees on; it is omitted when unknown, as on a page whose
+    /// mapping does not resolve.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0052.
+    /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md §11b.2.
+    /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowFragmentValueBindingTests.cs.
+    /// </remarks>
+    private static string BuildQuickWindowFormatAttributes(
+        string? readTagId,
+        string? displayFormat,
+        Ft100ExportScope scope,
+        ScadaTagCatalog? tagCatalog)
+    {
+        if (string.IsNullOrWhiteSpace(readTagId))
+        {
+            return string.Empty;
+        }
+
+        var attributes = new StringBuilder();
+        if (!string.IsNullOrEmpty(displayFormat))
+        {
+            attributes.Append(" data-scada-format=\"");
+            attributes.Append(HtmlEncoder.Default.Encode(displayFormat));
+            attributes.Append('"');
+        }
+
+        var datatype = QuickWindowPlaceholder.TryParseName(readTagId, out _)
+            ? scope.PlaceholderDatatypes?.GetValueOrDefault(readTagId)
+            : NormalizeMappingDatatype(tagCatalog?.Tags.FirstOrDefault(tag => string.Equals(tag.Id, readTagId, StringComparison.Ordinal))?.Datatype);
+        if (!string.IsNullOrEmpty(datatype))
+        {
+            attributes.Append(" data-scada-datatype=\"");
+            attributes.Append(HtmlEncoder.Default.Encode(datatype));
+            attributes.Append('"');
+        }
+
+        return attributes.ToString();
+    }
+
+    private static readonly Regex HashMaskRegex = new("^[#0]+(?:\\.[#0]+)?$", RegexOptions.CultureInvariant);
+
+    /// <summary>
+    /// TF100Web <c>_scada_hash_masks_by_id</c>: the element's own text content, when it has no child element and
+    /// is a hash mask such as <c>###.#</c>.
+    /// </summary>
+    private static string? InitialHashMask(string? content)
+    {
+        if (string.IsNullOrEmpty(content) || content.Contains('<', StringComparison.Ordinal))
+        {
+            return null;
+        }
+
+        var text = System.Net.WebUtility.HtmlDecode(content).Trim();
+        return HashMaskRegex.IsMatch(text) ? text : null;
+    }
+
+    private static readonly IReadOnlyDictionary<string, string> MappingDatatypes =
+        new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            ["BOOL"] = "BOOL", ["Booléen"] = "BOOL",
+            ["SINT8"] = "SINT8", ["Int8"] = "SINT8",
+            ["UINT8"] = "UINT8",
+            ["INT16"] = "INT16", ["UINT16"] = "UINT16",
+            ["INT32"] = "INT32", ["UINT32"] = "UINT32",
+            ["INT64"] = "INT64", ["UINT64"] = "UINT64",
+            ["FLOAT32"] = "FLOAT32", ["FLOAT64"] = "FLOAT64",
+            ["STRING"] = "STRING",
+            ["BYTES"] = "BYTES", ["Octets (blob)"] = "BYTES",
+        };
+
+    /// <summary>
+    /// Maps a catalog <c>Datatype</c> (the TF100Web export's <c>datatype_label</c>, e.g. <c>Int16</c>, or its
+    /// <c>datatype</c> code) to the <c>RegisterMapping.DataType</c> code TF100Web injects as
+    /// <c>data-scada-datatype</c>; anything else (e.g. a Builder-side <c>Decimal</c>) is unknown.
+    /// </summary>
+    internal static string? NormalizeMappingDatatype(string? datatype) =>
+        datatype is not null && MappingDatatypes.TryGetValue(datatype.Trim(), out var code) ? code : null;
 
     private static string BuildTagAttributes(string? readTagId, string? writeTagId)
     {
@@ -1323,15 +1440,17 @@ public sealed partial class Ft100SceneExporter
     /// </summary>
     private static IReadOnlyDictionary<(int Row, int Column), string>? BuildQuickWindowCellBindingAttributes(
         ScadaElement table,
+        Ft100ExportScope scope,
         ScadaTagCatalog? tagCatalog,
         List<string> warnings)
     {
-        var entries = Ft100TableCellBindingManifestBuilder.Build(table, tagCatalog, warnings);
+        var entries = Ft100TableCellBindingManifestBuilder.Build(table, tagCatalog, warnings, quickWindowPlaceholders: true);
         return entries.Count == 0
             ? null
             : entries.ToDictionary(
                 entry => (entry.Row, entry.Column),
-                entry => BuildTagAttributes(entry.ValueBindings.ReadTagId, entry.ValueBindings.WriteTagId));
+                entry => BuildTagAttributes(entry.ValueBindings.ReadTagId, entry.ValueBindings.WriteTagId)
+                    + BuildQuickWindowFormatAttributes(entry.ValueBindings.ReadTagId, entry.Data.DisplayFormat, scope, tagCatalog));
     }
 
     private static string BuildElementContent(
@@ -1354,7 +1473,7 @@ public sealed partial class Ft100SceneExporter
             ScadaElementKind.Table => ModernTableHtmlRenderer.Render(
                 element,
                 scope.ElementDomId(element.Id),
-                scope.IsQuickWindowFragment ? BuildQuickWindowCellBindingAttributes(element, tagCatalog, warnings) : null),
+                scope.IsQuickWindowFragment ? BuildQuickWindowCellBindingAttributes(element, scope, tagCatalog, warnings) : null),
             _ => ""
         };
     }
@@ -2504,11 +2623,12 @@ Apply any viewport scale to the composed page container, not independently to he
 
     private sealed class Ft100ExportScope
     {
-        private Ft100ExportScope(string sceneId, bool isQuickWindowFragment)
+        private Ft100ExportScope(string sceneId, bool isQuickWindowFragment, IReadOnlyDictionary<string, string>? placeholderDatatypes)
         {
             RootDomId = $"ft100-{CssIdentifier(sceneId)}";
             RootSelector = $"#{RootDomId}";
             IsQuickWindowFragment = isQuickWindowFragment;
+            PlaceholderDatatypes = placeholderDatatypes;
         }
 
         public string RootDomId { get; }
@@ -2518,9 +2638,15 @@ Apply any viewport scale to the composed page container, not independently to he
         /// <summary>True when the markup is a quick-window definition fragment, which no host injects bindings into.</summary>
         public bool IsQuickWindowFragment { get; }
 
-        public static Ft100ExportScope ForScene(ScadaScene scene, bool isQuickWindowFragment = false)
+        /// <summary>For a quick-window fragment, the agreed mapping datatype code of each `#N` read tag.</summary>
+        public IReadOnlyDictionary<string, string>? PlaceholderDatatypes { get; }
+
+        public static Ft100ExportScope ForScene(
+            ScadaScene scene,
+            bool isQuickWindowFragment = false,
+            IReadOnlyDictionary<string, string>? placeholderDatatypes = null)
         {
-            return new Ft100ExportScope(scene.Id, isQuickWindowFragment);
+            return new Ft100ExportScope(scene.Id, isQuickWindowFragment, placeholderDatatypes);
         }
 
         public string Descendant(string selector)

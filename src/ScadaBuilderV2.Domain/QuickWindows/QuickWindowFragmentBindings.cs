@@ -7,12 +7,13 @@ namespace ScadaBuilderV2.Domain.QuickWindows;
 /// because no host injects it there.
 /// </summary>
 /// <remarks>
-/// On a page, TF100Web reads <c>Data.TagBinding</c> from the page's manifest objects and injects the resolved
-/// mapping into the composed fragment server side. A quick-window fragment is served without any injection
-/// and its definition has no manifest objects, so the exporter emits that binding as
-/// <c>data-scada-read-tag</c> in the fragment, and the capability analyzer declares it. Both read this rule so
+/// TF100Web animates a page binding by injecting the resolved mapping into the composed fragment server side,
+/// from the page's manifest objects (whose <c>Data</c> does not even carry <c>TagBinding</c> today). A
+/// quick-window fragment is served without any injection and its definition has no manifest objects, so the
+/// exporter emits that binding as <c>data-scada-read-tag</c> in the fragment, and the capability analyzer
+/// declares it. Both read this rule so
 /// the emitted markup and the negotiated contract can never disagree. <c>Data.ReadTagId</c> wins when both are
-/// set (the page path gives <c>ValueBindings.ReadTagId</c> the same precedence), and a Custom element's
+/// set (TF100Web's legacy binding path gives <c>ValueBindings.ReadTagId</c> the same precedence), and a Custom element's
 /// <c>TagBinding</c> records the library <c>.sep</c> it was instantiated from, never a tag.
 ///
 /// Decisions: DEC-0050, DEC-0052.

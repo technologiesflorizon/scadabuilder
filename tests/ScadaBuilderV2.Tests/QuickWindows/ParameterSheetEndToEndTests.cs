@@ -33,8 +33,8 @@ namespace ScadaBuilderV2.Tests.QuickWindows;
 /// proof as a shape with the least markup. The table (`#6`) is the one site that only exists on a table: its
 /// numeric cell emits a self-closing `&lt;input /&gt;`, which `parseFragment` treats as an empty element.
 ///
-/// `#5` (a direct <c>Data.TagBinding</c>) and `#6` (a numeric table cell's read binding) are the two sites a
-/// page only transports through its manifest objects; the quick-window fragment must carry them itself
+/// `#5` (a direct <c>Data.TagBinding</c>) and `#6` (a numeric table cell's read binding) are the two sites no
+/// host injects into a quick-window fragment; the fragment must carry them itself
 /// (package contract §11b.2), and the JS test proves both are substituted and displayed by the host.
 ///
 /// Decisions: DEC-0050, DEC-0052.

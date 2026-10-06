@@ -215,8 +215,8 @@ test('closing Ventilateur 3 and opening Ventilateur 5 shows only the second shee
   assert.ok(findByText(fan3.root, 'Ventilateur 3'), 'the first root is not mutated by opening the second');
 });
 
-// ── #5 (Data.TagBinding) and #6 (table cell ValueBindings): the two sites a page only transports in its
-// manifest objects. A quick-window fragment carries them itself (package contract §11b.2); these tests
+// ── #5 (Data.TagBinding) and #6 (table cell ValueBindings): no host injects either into a quick-window
+// fragment, so the fragment carries them itself (package contract §11b.2); these tests
 // prove the real exported fragment gets them substituted per invocation and displayed by the host. ─────
 
 /**

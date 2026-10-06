@@ -57,7 +57,8 @@ internal static class QuickWindowCompiler
                 runtimeScriptSource: null,
                 project.TagCatalog,
                 sceneWarnings,
-                quickWindowFragment: true);
+                quickWindowFragment: true,
+                PlaceholderDatatypes(project, definition));
             var css = Ft100SceneExporter.BuildDocumentCss(scene);
             warnings.AddRange(sceneWarnings);
 
@@ -89,6 +90,42 @@ internal static class QuickWindowCompiler
             invocations,
             files.OrderBy(file => file.RelativeHtmlPath, StringComparer.Ordinal).ToArray(),
             warnings.Distinct(StringComparer.Ordinal).OrderBy(warning => warning, StringComparer.Ordinal).ToArray());
+    }
+
+    /// <summary>
+    /// Maps each `#N` member of <paramref name="definition"/> to the mapping datatype code
+    /// (<see cref="Ft100SceneExporter.NormalizeMappingDatatype"/>) that every invocation's bound tag agrees on. A
+    /// member bound by any invocation to a non-tag, to an unknown tag or to a tag of another datatype has none, so
+    /// its fragment omits <c>data-scada-datatype</c> exactly as a page whose mapping does not resolve.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0052.
+    /// Contracts: docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md §11b.2.
+    /// Tests: tests/ScadaBuilderV2.Tests/QuickWindows/QuickWindowFragmentValueBindingTests.cs.
+    /// </remarks>
+    private static IReadOnlyDictionary<string, string>? PlaceholderDatatypes(ScadaProject project, QuickWindowDefinition definition)
+    {
+        var tags = (project.TagCatalog?.Tags ?? [])
+            .GroupBy(tag => tag.Id, StringComparer.Ordinal)
+            .ToDictionary(group => group.Key, group => group.First(), StringComparer.Ordinal);
+        var invocations = project.EffectiveQuickWindowInvocations
+            .Where(invocation => invocation.DefinitionKey == definition.DefinitionKey)
+            .ToArray();
+        var result = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var member in definition.EffectiveInterfaceMembers)
+        {
+            if (!QuickWindowPlaceholder.TryParseName(member.Name, out _) || invocations.Length == 0) continue;
+            var codes = invocations
+                .Select(invocation => (invocation.Bindings ?? []).FirstOrDefault(binding => binding.MemberKey == member.MemberKey))
+                .Select(binding => binding is { SourceKind: QuickWindowBindingSourceKind.Tag, TagId: { } tagId } && tags.TryGetValue(tagId, out var tag)
+                    ? Ft100SceneExporter.NormalizeMappingDatatype(tag.Datatype)
+                    : null)
+                .Distinct(StringComparer.Ordinal)
+                .ToArray();
+            if (codes is [{ } code]) result[member.Name] = code;
+        }
+
+        return result.Count == 0 ? null : result;
     }
 
     private static Ft100QuickWindowMember ToManifestMember(QuickWindowInterfaceMember member) => new(

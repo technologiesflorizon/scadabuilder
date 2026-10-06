@@ -29,11 +29,16 @@ public sealed record Ft100TableCellBindingManifestEntry(
 /// <remarks>Decisions: DEC-0042. Contracts: docs/superpowers/specs/2026-07-15-table-cell-numeric-input-tf100web-design.md. Tests: tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs.</remarks>
 public static class Ft100TableCellBindingManifestBuilder
 {
-    /// <summary>Builds the bound numeric anchors of one table without creating synthetic manifest objects.</summary>
+    /// <summary>
+    /// Builds the bound numeric anchors of one table without creating synthetic manifest objects.
+    /// <paramref name="quickWindowPlaceholders"/> is true only for a quick-window fragment, whose `#N` tags are
+    /// substituted at mount time and therefore never looked up in the catalog; on a page a `#N` stays reported.
+    /// </summary>
     public static IReadOnlyList<Ft100TableCellBindingManifestEntry> Build(
         ScadaElement tableElement,
         ScadaTagCatalog? tagCatalog,
-        ICollection<string> warnings)
+        ICollection<string> warnings,
+        bool quickWindowPlaceholders = false)
     {
         ArgumentNullException.ThrowIfNull(tableElement);
         ArgumentNullException.ThrowIfNull(warnings);
@@ -66,8 +71,8 @@ public static class Ft100TableCellBindingManifestBuilder
                 continue;
             }
 
-            WarnForTag(tableElement.Id, cell, readTagId, write: false, tags, warnings);
-            WarnForTag(tableElement.Id, cell, writeTagId, write: true, tags, warnings);
+            WarnForTag(tableElement.Id, cell, readTagId, write: false, tags, warnings, quickWindowPlaceholders);
+            WarnForTag(tableElement.Id, cell, writeTagId, write: true, tags, warnings, quickWindowPlaceholders);
             var content = cell.EffectiveContent;
             result.Add(new Ft100TableCellBindingManifestEntry(
                 cell.Row,
@@ -93,10 +98,11 @@ public static class Ft100TableCellBindingManifestBuilder
         string? tagId,
         bool write,
         IReadOnlyDictionary<string, ScadaTagDefinition> tags,
-        ICollection<string> warnings)
+        ICollection<string> warnings,
+        bool quickWindowPlaceholders)
     {
         // A quick-window `#N` is substituted at mount time from the invocation, never looked up here.
-        if (tagId is null || QuickWindowPlaceholder.TryParseName(tagId, out _))
+        if (tagId is null || (quickWindowPlaceholders && QuickWindowPlaceholder.TryParseName(tagId, out _)))
         {
             return;
         }
