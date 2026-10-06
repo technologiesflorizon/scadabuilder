@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active authoritative decision register
-Document version: `V2.1.6.0070`
+Document version: `V2.1.6.0071`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-10-06 | `V2.1.6.0071` | `PENDING` | Ajout de `DEC-0053` : `Data.TagBinding` devient un champ legacy en lecture seule (décision utilisateur, option B). Les deux surfaces de propriétés l'affichent sans saisie possible, « Convertir en Lecture de variable » le recopie dans `Data.ReadTagId` en une transition annulable, et la validation émet un avertissement par élément qui en porte encore un (`tag-binding.legacy-inert` sur une page normale, `tag-binding.legacy-quick-window` dans une fenêtre rapide). Export, format persisté et contrat TF100Web inchangés. |
 | 2026-10-06 | `V2.1.6.0070` | `4decd86` | `DEC-0050` passe `Deprecated` : décommissionnée comme modèle d'authoring, remplacée par `DEC-0052`; ses structures restent la cible de l'abaissement et la compatibilité des projets existants est conservée. Paragraphe « Décommissionnement » ajouté (clauses toujours en vigueur, code mort retiré, résidus inventoriés à l'entrée 40 de `KNOWN_GAPS_V2.md`). |
 | 2026-09-30 | `V2.1.6.0034` | `a32545a` | Ajout de `DEC-0052` : les fenêtres rapides sont désormais authorées comme des pages `QuickWindow` paramétrées par `#N`, résolues par des feuilles de paramètres substituées au montage de l'instance; supersède `2026-09-24-fragment-to-quick-window-conversion-design.md` et modifie `FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` §11b/§12.4. |
 | 2026-09-10 | `V2.1.6.0017` | `f5589e9` | Tâche 7 du chantier C close, re-cadrée par les Rulings 16 et 17 du contrôleur : le convertisseur projet 0 → 1 règle l'identité de page une fois, dans le fichier, avec la dérivation `PageKeyFactory.CreateDeterministic` (et non une dérivation SHA-256 incompatible); la suppression des règles de `ModernProjectMigration` promise par le brief est retirée, ce normaliseur restant nécessaire aux écritures et à la construction en mémoire. |
@@ -122,6 +123,30 @@ Regression coverage:
 ```
 
 ## 3. Active Decisions
+
+### DEC-0053 - TagBinding est un champ legacy en lecture seule
+
+Status: Active
+Created: 2026-10-06 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md`
+
+Context:
+
+Le Builder n'exporte jamais `Data.TagBinding` d'une page normale (ni dans `Objects[]` du manifeste, ni dans le HTML) ; TF100Web ne le lit que pour d'anciens paquets et du HTML legacy importé. Sur une page créée dans le Builder, un `TagBinding` est donc inerte. Depuis `V2.1.6.0069` (contrat §11b.2), il est en revanche émis comme `data-scada-read-tag` dans le fragment d'une fenêtre rapide, `ReadTagId` restant prioritaire. L'outil moderne équivalent, qui fonctionne partout, est la lecture de variable `Data.ReadTagId`. Le champ restait pourtant aller-retour dans l'éditeur (masqué mais réécrit à chaque modification de propriété).
+
+Decision:
+
+Décision de l'utilisateur (option B) : « le TagBinding est un champ legacy ». (1) Les deux surfaces de propriétés (`MainWindow`, `ElementPropertiesDialog`) l'affichent en lecture seule, avec la mention « Champ legacy — utilisez Lecture de variable », uniquement pour un élément qui en porte un ; aucune surface ne le réécrit plus ; le champ reste dans le modèle pour les projets existants. (2) « Convertir en Lecture de variable », offert seulement quand l'élément n'a pas de `ReadTagId`, résout la valeur comme le sélecteur de lecture de variable — id canonique d'un tag activé et unique du catalogue projet, ou `#N` conservé tel quel sur une page Fenêtre rapide —, l'écrit dans `ReadTagId` et vide `TagBinding`, en une seule transition annulable qui ne fusionne avec aucune autre ; une valeur non résolue, ambiguë ou désignant un tag désactivé n'est pas convertie et le refus est expliqué. Un élément qui a déjà un `ReadTagId` n'offre pas l'action ; son `TagBinding` est signalé comme résiduel. La page entière peut être convertie d'un geste, avec un résumé convertis/ignorés et raison, annulable en bloc. (3) La validation émet un avertissement (jamais une erreur) par élément portant encore un `TagBinding` : `tag-binding.legacy-inert` sur une page normale, `tag-binding.legacy-quick-window` dans le contenu d'une fenêtre rapide. Le `TagBinding` d'un élément `Custom` (référence au `.sep` de bibliothèque) n'est jamais concerné.
+
+Consequences:
+
+Inchangés : l'émission du `TagBinding` dans les fragments de fenêtre rapide, le format persisté, le contrat TF100Web et le runtime JS embarqué. Le chemin mort `updateModernElementProperties` du canvas, qui aurait effacé silencieusement le champ, ne le touche plus. Limite assumée : un `TagBinding` résiduel ne peut pas être effacé depuis l'éditeur et son avertissement persiste (`KNOWN_GAPS_V2.md` entrée 41).
+
+Regression coverage: `tests/ScadaBuilderV2.Tests/LegacyTagBindingConverterTests.cs`, `tests/ScadaBuilderV2.Tests/LegacyTagBindingValidationTests.cs`, `tests/ScadaBuilderV2.Tests/WebViewContextMenuScriptTests.cs` (`LegacyTagBindingFieldIsReadOnlyWithConversionOnBothPropertySurfaces`).
 
 ### DEC-0052 - Fenêtres rapides paramétrées par feuilles de paramètres
 

@@ -2,12 +2,13 @@
 
 Date: 2026-06-19
 Status: Active properties panel contract
-Document version: `V2.1.4.0039`
+Document version: `V2.1.6.0071`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-10-06 | `V2.1.6.0071` | `PENDING` | `DEC-0053` : `TagBinding` (« TagBinding (legacy) ») est affiché en lecture seule dans l'onglet Données des deux surfaces, avec la mention « Champ legacy — utilisez Lecture de variable » et, pour un élément sans `ReadTagId`, l'action « Convertir en Lecture de variable » ; le panneau ancré offre aussi « Convertir tous les TagBinding convertibles de la page ». Règles 5 et 21, tests associés. |
 | 2026-07-15 | `V2.1.4.0039` | `ce99ff9` | Ajout de l'inspecteur/dialogue Input numerique Tableau : valeur, placeholder, readonly, min/max/pas, format et tags lecture/ecriture. |
 | 2026-07-15 | `V2.1.4.0030` | `5d762bb` | Origine du format Tableau explicitee et fusion/defusion remplacee par un bouton contextuel unique. |
 | 2026-07-15 | `V2.1.4.0028` | `c873744` | La case explicite `Verrouiller la position` est visible dans Propriété > Général et partage l'état normal/mixte avec toutes les autres surfaces. |
@@ -52,7 +53,7 @@ The properties panel edits model-backed properties through commands or applicati
 2. Mixed values are blank or explicitly represented as mixed.
 3. Invalid values must be blocked or warning-only; they must not silently export invalid runtime output.
 4. CSS/runtime effect properties require metadata, validation, serialization, preview, and export rules before becoming active.
-5. Raw `Mapping / Tag` authoring is deprecated. Runtime value bindings are authored through `Evenement` as `Lire valeur` / `Ecrire valeur`.
+5. Raw `Mapping / Tag` authoring is deprecated. Runtime value bindings are authored through `Evenement` as `Lire valeur` / `Ecrire valeur`. `DEC-0053` : `Data.TagBinding` est un champ legacy en lecture seule (règle 21) ; aucune surface ne le réécrit.
 6. Context-menu `Propriete` edits only converted Element+ scene objects; source legacy objects must be converted before the property panel can edit durable model-backed properties.
 7. Button Element+ text is a model-backed `Data.Text` property and must render in preview and FT100 export.
 8. Element+ runtime events are edited through the `Evenement` entry and must write scene actions plus Element+ event bindings, not WPF-only state.
@@ -68,6 +69,7 @@ The properties panel edits model-backed properties through commands or applicati
 18. `Format affichage` may use hash masks such as `##.#`; the mask defines visible digit budget and decimal placement. Example: raw numeric value `999` with `##.#` displays as `99.9`, and the maximum visible value for the mask is `99.9`.
 19. `Min` and `Max` are operator-entry clamp constraints only for numeric inputs that are not `Lecture seulement`; they are disabled for read-only displays.
 20. `Propriété > Général` affiche toujours la case `Verrouiller la position` pour une sélection Element+; elle est cochée si tout est verrouillé, indéterminée pour une sélection mixte et décochée sinon.
+21. `DEC-0053` — `TagBinding` legacy. L'onglet `Donnees` du panneau ancré et d'`ElementPropertiesDialog` affiche un bloc « TagBinding (legacy) » uniquement pour un élément qui porte un `TagBinding` (jamais pour un élément `Custom`, dont le `TagBinding` est la référence `.sep` de bibliothèque) : champ en lecture seule, mention « Champ legacy — utilisez Lecture de variable » et état. Sans `ReadTagId`, « Convertir en Lecture de variable » recopie la valeur dans `Data.ReadTagId` — id canonique d'un tag activé et unique du catalogue projet (id, nom affiché ou libellé), ou `#N` tel quel sur une page Fenêtre rapide (refusé ailleurs) — et vide `TagBinding`, en une seule transition annulable (`SceneSnapshotChangedAction`, jamais fusionnée). Une valeur non résolue, ambiguë ou désignant un tag désactivé n'est pas convertie : le message l'explique et rien ne change. Avec un `ReadTagId`, l'action n'apparaît pas et le bloc signale le `TagBinding` comme résiduel. Le panneau ancré offre « Convertir tous les TagBinding convertibles de la page » : un résumé convertis/ignorés avec raison, une seule transition annulable. La validation de build émet un avertissement par élément portant encore un `TagBinding` : `tag-binding.legacy-inert` (page normale, inerte car non exporté) ou `tag-binding.legacy-quick-window` (contenu de fenêtre rapide, encore émis comme `data-scada-read-tag`). La logique vit dans `LegacyTagBindingConverter` (Application) et `ScadaProjectBuildValidator.AuditLegacyTagBindings` (Domain).
 
 ## 3. Table Inspector Contract
 
@@ -86,3 +88,5 @@ The properties panel edits model-backed properties through commands or applicati
 2. `tests/ScadaBuilderV2.Tests/ModernProjectStoreTests.cs`
 3. `tests/ScadaBuilderV2.Tests/OfficialSceneDomainTests.cs`
 4. `tests/ScadaBuilderV2.Tests/Ft100SceneExporterTests.cs`
+5. `tests/ScadaBuilderV2.Tests/LegacyTagBindingConverterTests.cs`
+6. `tests/ScadaBuilderV2.Tests/LegacyTagBindingValidationTests.cs`
