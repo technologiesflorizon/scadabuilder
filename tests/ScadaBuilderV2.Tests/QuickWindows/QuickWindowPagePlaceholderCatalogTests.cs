@@ -114,18 +114,118 @@ public sealed class QuickWindowPagePlaceholderCatalogTests
     }
 
     [TestMethod]
-    public void AnUnlinkedSheetContributesNothingOnceAtLeastOneSheetIsLinked()
+    public void ALinkedSheetAndAnUnlinkedSheetBothContributeAndTheCaptionNamesBothInOrder()
     {
+        // Sheet-named captions (user change request): a sheet created before its command must show up, and
+        // the caption must say which sheet each source comes from, in a deterministic order (sheet
+        // DisplayName ordinal-ignore-case, then SheetKey) whatever the project's sheet order is.
         var pageKey = Guid.NewGuid();
-        var linked = Sheet("#1 := {FAN_03_RUN}");
-        var unlinked = Sheet("#99 := \"jamais liee\"");
-        var project = Project([linked, unlinked], CommandCatalog());
-        var callerPage = Page("win00001", OpenCommand(linked.SheetKey, pageKey));
+        var sheet1 = NamedSheet("Condenseur_1", "#1 := {FAN_03_RUN}");
+        var sheet2 = NamedSheet("Condenseur_2", "#1 := {FAN_03_START}");
+        var callerPage = Page("win00001", OpenCommand(sheet1.SheetKey, pageKey));
         var scenes = Scenes(callerPage);
 
-        var catalog = QuickWindowPagePlaceholderCatalog.Build(project, scenes, pageKey);
+        foreach (var sheets in new[] { new[] { sheet1, sheet2 }, new[] { sheet2, sheet1 } })
+        {
+            var catalog = QuickWindowPagePlaceholderCatalog.Build(Project(sheets, CommandCatalog()), scenes, pageKey);
 
-        CollectionAssert.AreEqual(new[] { "#1" }, catalog.Tags.Select(tag => tag.Id).ToArray());
+            var tag = catalog.Tags.Single();
+            Assert.AreEqual("#1", tag.DisplayName);
+            Assert.AreEqual("Paramètre — Condenseur_1 : {FAN_03_RUN} · Condenseur_2 : {FAN_03_START}", tag.Device);
+        }
+    }
+
+    [TestMethod]
+    public void ASheetLinkedOnlyToAnotherPageIsExcluded()
+    {
+        var pageKey = Guid.NewGuid();
+        var otherPageKey = Guid.NewGuid();
+        var mine = NamedSheet("Condenseur_1", "#1 := {FAN_03_RUN}");
+        var theirs = NamedSheet("Evaporateur_1", "#1 := {FAN_03_START}\n#9 := \"autre fenetre\"");
+        var callerPage = Page(
+            "win00001",
+            OpenCommand(mine.SheetKey, pageKey, elementId: "open-a", commandId: "cmd-a"),
+            OpenCommand(theirs.SheetKey, otherPageKey, elementId: "open-b", commandId: "cmd-b"));
+        var scenes = Scenes(callerPage);
+
+        var catalog = QuickWindowPagePlaceholderCatalog.Build(Project([mine, theirs], CommandCatalog()), scenes, pageKey);
+
+        var tag = catalog.Tags.Single();
+        Assert.AreEqual("#1", tag.Id);
+        Assert.AreEqual("Paramètre — Condenseur_1 : {FAN_03_RUN}", tag.Device);
+    }
+
+    [TestMethod]
+    public void WhenEverySheetIsLinkedOnlyToOtherPagesTheCatalogFallsBackToEverySheet()
+    {
+        var pageKey = Guid.NewGuid();
+        var theirs = NamedSheet("Evaporateur_1", "#4 := {FAN_03_RUN}");
+        var callerPage = Page("win00001", OpenCommand(theirs.SheetKey, Guid.NewGuid()));
+        var scenes = Scenes(callerPage);
+
+        var catalog = QuickWindowPagePlaceholderCatalog.Build(Project([theirs], CommandCatalog()), scenes, pageKey);
+
+        CollectionAssert.AreEqual(new[] { "#4" }, catalog.Tags.Select(tag => tag.Id).ToArray());
+    }
+
+    [TestMethod]
+    public void TheCaptionOfASingleSheetNamesIt()
+    {
+        var pageKey = Guid.NewGuid();
+        var sheet = NamedSheet("Condenseur_1", "#1 := {FAN_03_RUN}");
+        var scenes = Scenes(Page("win00001", OpenCommand(sheet.SheetKey, pageKey)));
+
+        var catalog = QuickWindowPagePlaceholderCatalog.Build(Project([sheet], CommandCatalog()), scenes, pageKey);
+
+        Assert.AreEqual("Paramètre — Condenseur_1 : {FAN_03_RUN}", catalog.Tags.Single().Device);
+    }
+
+    [TestMethod]
+    public void LiteralAndExpressionSourcesAreRenderedWithTheirSheetName()
+    {
+        var pageKey = Guid.NewGuid();
+        var sheet = NamedSheet("Condenseur_1", "#2 := \"Ventilateur 3\"\n#3 := {FAN_03_SPEED} * 0.1");
+        var scenes = Scenes(Page("win00001", OpenCommand(sheet.SheetKey, pageKey)));
+
+        var catalog = QuickWindowPagePlaceholderCatalog.Build(Project([sheet], CommandCatalog()), scenes, pageKey);
+
+        Assert.AreEqual("Paramètre — Condenseur_1 : \"Ventilateur 3\"", catalog.Tags.Single(t => t.Id == "#2").Device);
+        Assert.AreEqual("Paramètre — Condenseur_1 : {FAN_03_SPEED} * 0.1", catalog.Tags.Single(t => t.Id == "#3").Device);
+    }
+
+    [TestMethod]
+    public void AnUndefinedNumberKeepsItsUnchangedCaptionAndEveryDisplayNameStillEqualsItsId()
+    {
+        var pageKey = Guid.NewGuid();
+        var sheet = NamedSheet("Condenseur_1", "#1 := {FAN_03_RUN}");
+        var scenes = Scenes(Page("win00001", OpenCommand(sheet.SheetKey, pageKey)), PageWithTextUsage(pageKey, "#7"));
+
+        var catalog = QuickWindowPagePlaceholderCatalog.Build(Project([sheet], CommandCatalog()), scenes, pageKey);
+
+        Assert.AreEqual("Paramètre — (non défini dans les feuilles)", catalog.Tags.Single(t => t.Id == "#7").Device);
+        foreach (var tag in catalog.Tags) Assert.AreEqual(tag.Id, tag.DisplayName);
+    }
+
+    [TestMethod]
+    public void ALongCaptionIsTruncatedBetweenSegmentsNeverInsideAToken()
+    {
+        var pageKey = Guid.NewGuid();
+        var sheets = Enumerable.Range(1, 8)
+            .Select(i => NamedSheet($"Condenseur_numero_{i:00}", $"#1 := {{FAN_03_RUN}} + {i}"))
+            .ToArray();
+        var scenes = Scenes(Page("win00001", OpenCommand(sheets[0].SheetKey, pageKey)));
+
+        var catalog = QuickWindowPagePlaceholderCatalog.Build(Project(sheets, CommandCatalog()), scenes, pageKey);
+
+        var device = catalog.Tags.Single().Device!;
+        Assert.IsTrue(device.Length <= 160, device);
+        Assert.IsTrue(device.EndsWith(" · …", StringComparison.Ordinal), device);
+        Assert.IsTrue(device.StartsWith("Paramètre — Condenseur_numero_01 : {FAN_03_RUN} + 1 · Condenseur_numero_02", StringComparison.Ordinal), device);
+        var withoutSuffix = device[..^" · …".Length];
+        foreach (var segment in withoutSuffix["Paramètre — ".Length..].Split(" · "))
+        {
+            StringAssert.Matches(segment, new System.Text.RegularExpressions.Regex(@"^Condenseur_numero_\d\d : \{FAN_03_RUN\} \+ \d$"));
+        }
     }
 
     [TestMethod]
@@ -313,6 +413,9 @@ public sealed class QuickWindowPagePlaceholderCatalogTests
 
     private static ParameterSheet Sheet(string text) =>
         new(Guid.NewGuid(), $"sheet-{Guid.NewGuid():N}", "Feuille", text);
+
+    private static ParameterSheet NamedSheet(string displayName, string text) =>
+        new(Guid.NewGuid(), $"sheet-{Guid.NewGuid():N}", displayName, text);
 
     private static ScadaTagCatalog CommandCatalog() => new(
         "quick-window-page-placeholder-catalog-tests",
