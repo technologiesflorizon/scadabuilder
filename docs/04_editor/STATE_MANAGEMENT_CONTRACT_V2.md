@@ -8,7 +8,7 @@ Document version: `V2.1.6.0070`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-10-06 | `V2.1.6.0070` | `PENDING` | Portée d’historique `QuickWindow` retirée (`DEC-0050` décommissionnée) : `QuickWindowContentChangedAction`, `EditorHistoryTarget.ForQuickWindow` et `QuickWindowEditorSelectionSnapshot` n’avaient plus de producteur; les fenêtres rapides `DEC-0052` passent par la portée projet. Tests liés : `QuickWindowHistoryTests` retiré, `ParameterSheetWorkspaceMutationTests` couvre l’undo/redo des mutations de feuilles; le refus d’une action non résoluble reste énoncé et couvert par `EditorHistoryServiceTests`. |
+| 2026-10-06 | `V2.1.6.0070` | `4decd86` | Portée d’historique `QuickWindow` retirée (`DEC-0050` décommissionnée) : `QuickWindowContentChangedAction`, `EditorHistoryTarget.ForQuickWindow` et `QuickWindowEditorSelectionSnapshot` n’avaient plus de producteur; les fenêtres rapides `DEC-0052` passent par la portée projet. Tests liés : `QuickWindowHistoryTests` retiré, `ParameterSheetWorkspaceMutationTests` couvre l’undo/redo des mutations de feuilles; le refus d’une action non résoluble reste énoncé et couvert par `EditorHistoryServiceTests`. |
 | 2026-08-23 | `V2.1.5.0027` | `ec6e6f7` | Portée d’historique `QuickWindow` ajoutée : pile unique partagée avec les pages, activation déterministe du contexte cible et refus non destructif d’une action non résoluble. |
 | 2026-08-13 | `V2.1.5.0022` | `436d38f` | Historique QuickWindow Phase 2 : snapshot projet/scènes/UI/dirty atomique, sélection dédiée et restauration exacte de l’appelant, commande, invocation et liaisons. |
 | 2026-07-29 | `V2.1.5.0000` | `8fe1077` | Une fenêtre possède zéro ou une session projet active; fermer réinitialise tout état projet. |

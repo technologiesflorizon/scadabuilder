@@ -8,7 +8,7 @@ Document version: `V2.1.6.0070`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-10-06 | `V2.1.6.0070` | `PENDING` | Résolveur de `PENDING` corrigé : `Deprecated in commit` (et `Superseded in commit`) se résout sur le commit qui a écrit la ligne datée `Deprecated:` de la décision, et non plus sur le commit de création de son en-tête (défaut révélé par la dépréciation de `DEC-0050`). |
+| 2026-10-06 | `V2.1.6.0070` | `5acfccb` | Résolveur de `PENDING` corrigé : `Deprecated in commit` (et `Superseded in commit`) se résout sur le commit qui a écrit la ligne datée `Deprecated:` de la décision, et non plus sur le commit de création de son en-tête (défaut révélé par la dépréciation de `DEC-0050`). |
 | 2026-08-21 | `V2.1.5.0024` | `f881bbe` | Boucle de fermeture des `PENDING` rendue obligatoire et outillee par `tools/docs/resolve-pending-commits.py`; exemption explicite des commits de bookkeeping et de `docs/10_generated/`. |
 | 2026-07-15 | `V2.1.4.0034` | `b75f1d7` | Bump d'iteration pour l'implementation et la validation corrective de `DEC-0041`. |
 | 2026-07-15 | `V2.1.4.0033` | `e811253` | Bump d'iteration pour l'approbation du contrat correctif Tableau/verrou. |

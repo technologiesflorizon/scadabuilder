@@ -12,7 +12,7 @@ Dépendances: `docs/superpowers/specs/2026-08-04-parameterized-popup-management-
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-10-06 | `V2.1.6.0070` | `PENDING` | Bandeau « Décommissionné — voir DEC-0052 » : la dépendance `DEC-0050` de cette spec est elle-même décommissionnée comme modèle d'authoring. |
+| 2026-10-06 | `V2.1.6.0070` | `4decd86` | Bandeau « Décommissionné — voir DEC-0052 » : la dépendance `DEC-0050` de cette spec est elle-même décommissionnée comme modèle d'authoring. |
 | 2026-09-30 | `V2.1.6.0034` | `a32545a` | Statut passé à *Superseded* par `docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md` (`DEC-0052`) : la conversion vers une définition séparée que cette spec décrivait est rendue inutile par le modèle de feuilles de paramètres. |
 | 2026-09-24 | `V2.1.6.0032` | `8c8e544` | Création. Ferme la lacune laissée par `DEC-0050` : `ScadaPageType.Fragment` et `QuickWindowDefinition` coexistaient sans passerelle, de sorte qu'aucun popup legacy ne pouvait devenir une fenêtre rapide et qu'une page Fragment n'avait ni interface locale ni banc d'essai. |
 
