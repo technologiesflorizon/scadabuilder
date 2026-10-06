@@ -8,8 +8,8 @@ Document version: `V2.1.6.0071`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-10-06 | `V2.1.6.0071` | `PENDING` | `DEC-0053`, fix round 1 de revue : plus d'avertissement permanent ni d'impasse — « Effacer le TagBinding résiduel » efface un `TagBinding` dont le `ReadTagId` gagne déjà, et la conversion de page efface les résiduels au lieu de les ignorer ; la section « Lecture de variable » de l'onglet État affiche aussi une liaison `ReadTagId` seule et « Supprimer » la retire ; précision sur l'acceptation des tags projet sur une page Fenêtre rapide. |
-| 2026-10-06 | `V2.1.6.0071` | `PENDING` | Ajout de `DEC-0053` : `Data.TagBinding` devient un champ legacy en lecture seule (décision utilisateur, option B). Les deux surfaces de propriétés l'affichent sans saisie possible, « Convertir en Lecture de variable » le recopie dans `Data.ReadTagId` en une transition annulable, et la validation émet un avertissement par élément qui en porte encore un (`tag-binding.legacy-inert` sur une page normale, `tag-binding.legacy-quick-window` dans une fenêtre rapide). Export, format persisté et contrat TF100Web inchangés. |
+| 2026-10-06 | `V2.1.6.0071` | `1dfedc6` | `DEC-0053`, fix round 1 de revue : plus d'avertissement permanent ni d'impasse — « Effacer le TagBinding résiduel » efface un `TagBinding` dont le `ReadTagId` gagne déjà, et la conversion de page efface les résiduels au lieu de les ignorer ; la section « Lecture de variable » de l'onglet État affiche aussi une liaison `ReadTagId` seule et « Supprimer » la retire ; précision sur l'acceptation des tags projet sur une page Fenêtre rapide. |
+| 2026-10-06 | `V2.1.6.0071` | `2896be5` | Ajout de `DEC-0053` : `Data.TagBinding` devient un champ legacy en lecture seule (décision utilisateur, option B). Les deux surfaces de propriétés l'affichent sans saisie possible, « Convertir en Lecture de variable » le recopie dans `Data.ReadTagId` en une transition annulable, et la validation émet un avertissement par élément qui en porte encore un (`tag-binding.legacy-inert` sur une page normale, `tag-binding.legacy-quick-window` dans une fenêtre rapide). Export, format persisté et contrat TF100Web inchangés. |
 | 2026-10-06 | `V2.1.6.0070` | `4decd86` | `DEC-0050` passe `Deprecated` : décommissionnée comme modèle d'authoring, remplacée par `DEC-0052`; ses structures restent la cible de l'abaissement et la compatibilité des projets existants est conservée. Paragraphe « Décommissionnement » ajouté (clauses toujours en vigueur, code mort retiré, résidus inventoriés à l'entrée 40 de `KNOWN_GAPS_V2.md`). |
 | 2026-09-30 | `V2.1.6.0034` | `a32545a` | Ajout de `DEC-0052` : les fenêtres rapides sont désormais authorées comme des pages `QuickWindow` paramétrées par `#N`, résolues par des feuilles de paramètres substituées au montage de l'instance; supersède `2026-09-24-fragment-to-quick-window-conversion-design.md` et modifie `FT100_TF100WEB_PACKAGE_CONTRACT_V2.md` §11b/§12.4. |
 | 2026-09-10 | `V2.1.6.0017` | `f5589e9` | Tâche 7 du chantier C close, re-cadrée par les Rulings 16 et 17 du contrôleur : le convertisseur projet 0 → 1 règle l'identité de page une fois, dans le fichier, avec la dérivation `PageKeyFactory.CreateDeterministic` (et non une dérivation SHA-256 incompatible); la suppression des règles de `ModernProjectMigration` promise par le brief est retirée, ce normaliseur restant nécessaire aux écritures et à la construction en mémoire. |
@@ -129,7 +129,7 @@ Regression coverage:
 
 Status: Active
 Created: 2026-10-06 00:00 America/Toronto
-Created in commit: `PENDING`
+Created in commit: `2896be5`
 Deprecated: N/A
 Deprecated in commit: N/A
 Superseded by: N/A
