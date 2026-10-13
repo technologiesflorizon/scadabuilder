@@ -354,7 +354,7 @@
   /**
    * Resolves a `#N` placeholder to a tag id, or the reason it cannot be used as a tag. `site` is
    * `'read'` for a read site (`data-scada-read-tag`, `readVariable.tagId`, a command's `readTagId`)
-   * and `'write'` for a write site, so the refusal names the site that needed the tag.
+   * and `'write'` for a write site (`data-scada-write-tag`, a command's `writeTagId` or `interlockTagId`), so the refusal names the site that needed the tag.
    */
   function _tagFor(ports, name, site) {
     var port = ports[name];
@@ -520,6 +520,12 @@
             var readCommandResolved = _tagFor(ports, command.readTagId, 'read');
             if (readCommandResolved.error) return _refuse(readCommandResolved.error, command.readTagId);
             command.readTagId = readCommandResolved.tagId;
+          }
+          if (typeof command.interlockTagId === 'string' && PLACEHOLDER_EXACT.test(command.interlockTagId)) {
+            // DEC-0054: the interlock is written, so it is a write site like writeTagId.
+            var interlockResolved = _tagFor(ports, command.interlockTagId, 'write');
+            if (interlockResolved.error) return _refuse(interlockResolved.error, command.interlockTagId);
+            command.interlockTagId = interlockResolved.tagId;
           }
         }
         element.setAttribute('data-scada-command-config', JSON.stringify(commandConfig));

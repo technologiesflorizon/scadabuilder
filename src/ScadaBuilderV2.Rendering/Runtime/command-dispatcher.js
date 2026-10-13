@@ -105,7 +105,15 @@
     });
   }
 
-  function _write(cmd, value, payload) {
+  function _send(cmd, tagId, value, payload) {
+    var bridge = window.ScadaRuntime && window.ScadaRuntime.TagBridge;
+    var metadata = payload || {};
+    metadata.commandId = cmd.id || '';
+    metadata.contractVersion = INTENT_VERSION;
+    return bridge.writeTag(tagId, value, metadata);
+  }
+
+  function _canWrite(cmd, value) {
     if (!cmd.writeTagId || value === null || value === undefined || value === '') {
       _diagnose('write-data-missing', cmd);
       return false;
@@ -119,10 +127,35 @@
       _diagnose('tag-bridge-unavailable', cmd);
       return false;
     }
-    var metadata = payload || {};
-    metadata.commandId = cmd.id || '';
-    metadata.contractVersion = INTENT_VERSION;
-    return _trackWrite(cmd, bridge.writeTag(cmd.writeTagId, value, metadata));
+    return true;
+  }
+
+  function _write(cmd, value, payload) {
+    if (!_canWrite(cmd, value)) return false;
+    return _trackWrite(cmd, _send(cmd, cmd.writeTagId, value, payload));
+  }
+
+  /**
+   * Toggle interlock (DEC-0054): writes 0 to `interlockTagId`, then 1 to `writeTagId` only if the first write
+   * was accepted. The whole sequence is one in-flight command, so a second click during it is refused.
+   */
+  function _writeWithInterlock(cmd) {
+    if (!_canWrite(cmd, '1')) return false;
+    var proceed = function (accepted) {
+      if (accepted === false) {
+        _diagnose('interlock-write-failed', cmd);
+        return false;
+      }
+      return _send(cmd, cmd.writeTagId, '1', { mode: 'Toggle' });
+    };
+    var first = _send(cmd, cmd.interlockTagId, '0', { mode: 'ToggleInterlock' });
+    if (!first || typeof first.then !== 'function') {
+      return _trackWrite(cmd, proceed(first));
+    }
+    return _trackWrite(cmd, first.then(proceed, function (error) {
+      _diagnose('interlock-write-failed', cmd, error && error.message ? error.message : String(error));
+      return false;
+    }));
   }
 
   function _booleanValue(value) {
@@ -155,7 +188,9 @@
           _diagnose('toggle-read-missing', cmd);
           return false;
         }
-        return _write(cmd, booleanValue ? '0' : '1', { mode: 'Toggle' });
+        var target = booleanValue ? '0' : '1';
+        if (target === '1' && cmd.interlockTagId) return _writeWithInterlock(cmd);
+        return _write(cmd, target, { mode: 'Toggle' });
       }
       case 'setFixed':
         return _write(cmd, cmd.fixedValue, { mode: 'SetFixed' });

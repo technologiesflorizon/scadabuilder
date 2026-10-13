@@ -130,7 +130,9 @@ function writeSiteRoots(window, placeholder) {
   attr.setAttribute('data-scada-write-tag', placeholder);
   const commandWrite = make();
   commandWrite.setAttribute('data-scada-command-config', JSON.stringify({ commands: [{ id: 'cmd', writeTagId: placeholder, readTagId: null }] }));
-  return { 'data-scada-write-tag': attr, 'command writeTagId': commandWrite };
+  const commandInterlock = make();
+  commandInterlock.setAttribute('data-scada-command-config', JSON.stringify({ commands: [{ id: 'cmd', writeTagId: '#1', readTagId: null, interlockTagId: placeholder }] }));
+  return { 'data-scada-write-tag': attr, 'command writeTagId': commandWrite, 'command interlockTagId': commandInterlock };
 }
 
 test('every read site bound to a Literal or an Expression refuses placeholder-read-not-tag', () => {
@@ -157,6 +159,29 @@ test('every write site bound to a Literal or an Expression keeps refusing placeh
       assert.equal(result.code, 'placeholder-write-not-tag', `${site} ${placeholder}`);
     }
   }
+});
+
+test('a command config interlockTagId #5 becomes the tag id, and an unbound one refuses the mount', () => {
+  const window = loadQuickWindow();
+  const root = window.document.createElement('div');
+  const el = window.document.createElement('div');
+  el.setAttribute('data-scada-command-config', JSON.stringify({
+    commands: [{ id: 'cmd-1', name: 'Start', writeTagId: '#1', readTagId: null, interlockTagId: '#5' }]
+  }));
+  root.appendChild(el);
+
+  assert.equal(window.ScadaRuntime.QuickWindow.substituteInstance(root, PORTS).ok, true);
+  assert.equal(JSON.parse(el.getAttribute('data-scada-command-config')).commands[0].interlockTagId, 'tf100.mapping.777');
+
+  const unboundRoot = window.document.createElement('div');
+  const unbound = window.document.createElement('div');
+  unbound.setAttribute('data-scada-command-config', JSON.stringify({
+    commands: [{ id: 'cmd-2', writeTagId: '#1', readTagId: null, interlockTagId: '#9' }]
+  }));
+  unboundRoot.appendChild(unbound);
+  const refused = window.ScadaRuntime.QuickWindow.substituteInstance(unboundRoot, PORTS);
+  assert.equal(refused.ok, false);
+  assert.equal(refused.code, 'placeholder-unbound');
 });
 
 test('every read site bound to a Tag is substituted without refusal', () => {
