@@ -1071,6 +1071,7 @@ public static class ScadaProjectBuildValidator
 
             foreach (var cmd in element.EffectiveCommandConfig.Commands)
             {
+                ValidateCommandInterlock(issues, scene, element, cmd, catalog);
                 if (cmd.Kind == ElementEvents.Command.ScadaCommandKind.Navigate)
                 {
                     ValidateCommandPageTarget(issues, scene, element, cmd, ScadaPageType.Default, "navigation", pagesById, pagesByKey);
@@ -1136,6 +1137,84 @@ public static class ScadaProjectBuildValidator
                     }
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Validates the optional interlock of a Toggle command: reserved to Toggle, an existing, enabled, writeable,
+    /// boolean tag, distinct from the write and read tags. A quick-window #N is exempt from the catalog checks
+    /// (its tag is only known once a parameter sheet binds it) but not from the same-tag rule.
+    /// </summary>
+    /// <remarks>
+    /// Decisions: DEC-0054.
+    /// Contracts: docs/superpowers/specs/2026-10-13-toggle-interlock-design.md §6.
+    /// Tests: tests/ScadaBuilderV2.Tests/ElementEvents/ToggleInterlockValidationTests.cs.
+    /// </remarks>
+    private static void ValidateCommandInterlock(
+        List<ScadaBuildValidationIssue> issues,
+        ScadaScene scene,
+        ScadaElement element,
+        ElementEvents.Command.ScadaCommandBinding command,
+        ScadaTagCatalog? catalog)
+    {
+        var interlock = command.InterlockTagId;
+        if (string.IsNullOrWhiteSpace(interlock))
+            return;
+
+        void Add(string code, string message, string fix) => issues.Add(new ScadaBuildValidationIssue(
+            ScadaBuildValidationSeverity.Error,
+            code,
+            $"Scene '{scene.Id}', element '{element.Id}', commande '{command.Name}' : {message}",
+            scene.EffectivePageCode,
+            scene.PageKey,
+            element.Id,
+            command.Id,
+            $"Scene.Elements[{element.Id}].CommandConfig.Commands[{command.Id}].InterlockTagId",
+            SuggestedFix: fix));
+
+        if (command.Kind != ElementEvents.Command.ScadaCommandKind.WriteTag ||
+            command.WriteMode != ElementEvents.Command.ScadaWriteMode.Toggle)
+        {
+            Add("command.interlock-requires-toggle",
+                "l'interverrouillage n'est valable qu'en mode Toggle.",
+                "Passez la commande en mode Toggle ou retirez l'interverrouillage.");
+            return;
+        }
+
+        if (string.Equals(interlock, command.WriteTagId, StringComparison.Ordinal) ||
+            string.Equals(interlock, command.ReadTagId, StringComparison.Ordinal))
+        {
+            Add("command.interlock-same-tag",
+                $"le tag d'interverrouillage '{interlock}' est aussi le tag d'écriture ou de lecture : la commande s'annulerait elle-même.",
+                "Choisissez le tag de la commande opposée (Arrêt pour Départ, Man pour Auto).");
+            return;
+        }
+
+        if (QuickWindows.QuickWindowPlaceholder.TryParseName(interlock, out _))
+            return;
+
+        var tag = catalog?.Tags?.FirstOrDefault(t => string.Equals(t.Id, interlock, StringComparison.Ordinal));
+        if (tag is null || !tag.Enabled)
+        {
+            Add("command.interlock-tag-missing",
+                $"le tag d'interverrouillage '{interlock}' est absent du catalogue ou désactivé.",
+                "Sélectionnez un tag actif du catalogue.");
+            return;
+        }
+
+        if (!tag.Writeable)
+        {
+            Add("command.interlock-tag-readonly",
+                $"le tag d'interverrouillage '{interlock}' n'est pas accessible en écriture.",
+                "Sélectionnez un tag accessible en écriture.");
+            return;
+        }
+
+        if (!IsBooleanDatatype(tag.Datatype))
+        {
+            Add("command.interlock-tag-not-boolean",
+                $"le tag d'interverrouillage '{interlock}' n'est pas booléen ({tag.Datatype}).",
+                "Sélectionnez un tag booléen.");
         }
     }
 

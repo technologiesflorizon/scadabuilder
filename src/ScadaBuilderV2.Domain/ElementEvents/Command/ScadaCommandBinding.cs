@@ -26,7 +26,8 @@ public sealed record ScadaConfirmation(string Message);
 /// a popup/URL. Independent from display-state rules; never changes appearance directly.
 /// </summary>
 /// <remarks>
-/// Decisions: DEC-0036.
+/// Decisions: DEC-0036, DEC-0054.
+/// InterlockTagId: Toggle only; written to 0 before WriteTagId is written to 1 (docs/superpowers/specs/2026-10-13-toggle-interlock-design.md).
 /// Contracts: docs/superpowers/specs/2026-07-07-element-plus-state-command-events-design.md.
 /// Tests: tests/ScadaBuilderV2.Tests/ElementEvents/ScadaElementCommandConfigTests.cs.
 /// </remarks>
@@ -49,7 +50,8 @@ public sealed record ScadaCommandBinding(
     Guid? TargetPageKey = null,
     Guid? QuickWindowInvocationKey = null,
     Guid? ParameterSheetKey = null,
-    Guid? QuickWindowPageKey = null)
+    Guid? QuickWindowPageKey = null,
+    string? InterlockTagId = null)
 {
     /// <summary>
     /// Gets the tag id read for <see cref="ScadaWriteMode.Toggle"/>: <see cref="ReadTagId"/>

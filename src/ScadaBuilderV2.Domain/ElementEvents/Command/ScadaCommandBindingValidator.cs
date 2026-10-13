@@ -8,7 +8,7 @@ namespace ScadaBuilderV2.Domain.ElementEvents.Command;
 /// not human-readable labels.
 /// </summary>
 /// <remarks>
-/// Decisions: DEC-0036, D9.
+/// Decisions: DEC-0036, DEC-0054, D9.
 /// Contracts: docs/superpowers/specs/2026-07-09-expression-tag-id-reference.md §3.0.
 /// </remarks>
 public static class ScadaCommandBindingValidator
@@ -30,6 +30,7 @@ public static class ScadaCommandBindingValidator
 
         CheckTagId(command.WriteTagId, "WriteTagId", command.Name, catalog, tagIds, issues);
         CheckTagId(command.ReadTagId, "ReadTagId", command.Name, catalog, tagIds, issues);
+        CheckTagId(command.InterlockTagId, "InterlockTagId", command.Name, catalog, tagIds, issues);
 
         return issues;
     }
