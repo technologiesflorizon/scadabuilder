@@ -10,7 +10,7 @@ Dépendances: `docs/superpowers/specs/2026-07-07-element-plus-state-command-even
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-10-13 | `V2.1.6.0072` | `PENDING` | `DEC-0054` : interverrouillage optionnel des commandes Toggle (`InterlockTagId`, capacité `command.write.toggle-interlock`). Contrat mis à jour avant l'implémentation. |
+| 2026-10-13 | `V2.1.6.0072` | `e892596` | `DEC-0054` : interverrouillage optionnel des commandes Toggle (`InterlockTagId`, capacité `command.write.toggle-interlock`). Contrat mis à jour avant l'implémentation. |
 | 2026-10-13 | `V2.1.6.0071` | — | Création, après cadrage avec l'utilisateur. |
 
 ## 1. Le problème

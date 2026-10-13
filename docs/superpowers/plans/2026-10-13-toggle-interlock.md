@@ -8,7 +8,7 @@ Document version: `V2.1.6.0072`
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-10-13 | `V2.1.6.0072` | `PENDING` | Ajout des métadonnées documentaires standard au plan (exigées par `verify-docs.ps1`). |
+| 2026-10-13 | `V2.1.6.0072` | `e892596` | Ajout des métadonnées documentaires standard au plan (exigées par `verify-docs.ps1`). |
 
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
@@ -145,7 +145,7 @@ NN. `data-scada-command-config` and manifest `CommandConfig` carry `interlockTag
 Écrire `V2.1.6.0072` dans `VERSION`. Dans chacun des fichiers touchés (les trois contrats, le registre, la spec, `docs/README.md`), passer `Document version:` à `` `V2.1.6.0072` `` et ajouter en tête de la table « Historique des changements » :
 
 ```markdown
-| 2026-10-13 | `V2.1.6.0072` | `PENDING` | `DEC-0054` : interverrouillage optionnel des commandes Toggle (`InterlockTagId`, capacité `command.write.toggle-interlock`). Contrat mis à jour avant l'implémentation. |
+| 2026-10-13 | `V2.1.6.0072` | `18aba0b` | `DEC-0054` : interverrouillage optionnel des commandes Toggle (`InterlockTagId`, capacité `command.write.toggle-interlock`). Contrat mis à jour avant l'implémentation. |
 ```
 
 Dans la spec, passer `Status:` à `Approved - DEC-0054`.
