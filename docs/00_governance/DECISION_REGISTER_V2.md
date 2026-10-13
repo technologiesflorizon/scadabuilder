@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active authoritative decision register
-Document version: `V2.1.6.0071`
+Document version: `V2.1.6.0072`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-10-13 | `V2.1.6.0072` | `PENDING` | `DEC-0054` : interverrouillage optionnel des commandes Toggle (`InterlockTagId`, capacité `command.write.toggle-interlock`). Contrat mis à jour avant l'implémentation. |
 | 2026-10-06 | `V2.1.6.0071` | `1dfedc6` | `DEC-0053`, fix round 1 de revue : plus d'avertissement permanent ni d'impasse — « Effacer le TagBinding résiduel » efface un `TagBinding` dont le `ReadTagId` gagne déjà, et la conversion de page efface les résiduels au lieu de les ignorer ; la section « Lecture de variable » de l'onglet État affiche aussi une liaison `ReadTagId` seule et « Supprimer » la retire ; précision sur l'acceptation des tags projet sur une page Fenêtre rapide. |
 | 2026-10-06 | `V2.1.6.0071` | `2896be5` | Ajout de `DEC-0053` : `Data.TagBinding` devient un champ legacy en lecture seule (décision utilisateur, option B). Les deux surfaces de propriétés l'affichent sans saisie possible, « Convertir en Lecture de variable » le recopie dans `Data.ReadTagId` en une transition annulable, et la validation émet un avertissement par élément qui en porte encore un (`tag-binding.legacy-inert` sur une page normale, `tag-binding.legacy-quick-window` dans une fenêtre rapide). Export, format persisté et contrat TF100Web inchangés. |
 | 2026-10-06 | `V2.1.6.0070` | `4decd86` | `DEC-0050` passe `Deprecated` : décommissionnée comme modèle d'authoring, remplacée par `DEC-0052`; ses structures restent la cible de l'abaissement et la compatibilité des projets existants est conservée. Paragraphe « Décommissionnement » ajouté (clauses toujours en vigueur, code mort retiré, résidus inventoriés à l'entrée 40 de `KNOWN_GAPS_V2.md`). |
@@ -124,6 +125,31 @@ Regression coverage:
 ```
 
 ## 3. Active Decisions
+
+### DEC-0054 - Interverrouillage des commandes Toggle
+
+Status: Active
+Created: 2026-10-13 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/03_runtime_contracts/STATE_COMMAND_RUNTIME_CONTRACT_V1.md`
+Spec: `docs/superpowers/specs/2026-10-13-toggle-interlock-design.md`
+
+Context:
+
+Sur le site AMR, Départ/Arrêt et Auto/Man sont des paires de tags distincts pilotées par des boutons Toggle ; activer l'un ne désactive pas l'autre.
+
+Decision:
+
+Une commande `WriteTag` en mode `Toggle` peut porter un `InterlockTagId` optionnel. Quand le clic HMI fait passer le tag d'écriture à 1, le runtime écrit d'abord 0 sur le tag d'interverrouillage, puis 1 sur le tag d'écriture seulement si la première écriture est acceptée. Seul le clic déclenche l'interverrouillage (jamais un changement venu de l'automate). Le comportement est négocié par la capacité `command.write.toggle-interlock`, exigée seulement si une commande l'utilise.
+
+Consequences:
+
+TF100Web doit accepter la capacité avant tout paquet qui l'utilise ; un paquet sans interverrouillage reste identique et accepté par un TF100Web antérieur.
+
+Regression coverage: définie par le plan `2026-10-13-toggle-interlock` (tests de modèle, validation, compilateur, runtime partagé et capacité).
 
 ### DEC-0053 - TagBinding est un champ legacy en lecture seule
 

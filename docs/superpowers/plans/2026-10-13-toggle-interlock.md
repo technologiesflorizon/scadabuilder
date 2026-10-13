@@ -1,5 +1,16 @@
 # Interverrouillage des commandes Toggle - Plan d'implémentation
 
+Date: 2026-10-13
+Status: Active - plan d'implémentation (DEC-0054)
+Document version: `V2.1.6.0072`
+
+## Historique des changements
+
+| Date | Version | Commit | Changement |
+| --- | --- | --- | --- |
+| 2026-10-13 | `V2.1.6.0072` | `PENDING` | Ajout des métadonnées documentaires standard au plan (exigées par `verify-docs.ps1`). |
+
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Ajouter aux commandes `WriteTag` en mode `Toggle` un champ optionnel `InterlockTagId` : quand le clic HMI fait passer le tag d'écriture à 1, le tag d'interverrouillage est d'abord écrit à 0, et le 1 n'est écrit que si cette première écriture réussit.

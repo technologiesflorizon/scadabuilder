@@ -1,8 +1,8 @@
 # Interverrouillage des commandes Toggle - Spécification
 
 Date: 2026-10-13
-Status: Draft - en revue
-Document version: `V2.1.6.0071`
+Status: Approved - DEC-0054
+Document version: `V2.1.6.0072`
 Portée: SCADA Builder V2 (modèle, éditeur, validation, compilateur, runtime partagé embarqué dans le paquet) et TF100Web (liste des capacités runtime supportées)
 Dépendances: `docs/superpowers/specs/2026-07-07-element-plus-state-command-events-design.md` (`DEC-0036`), `docs/superpowers/specs/2026-09-30-quick-window-parameter-sheets-design.md` (`DEC-0052`), `docs/03_runtime_contracts/FT100_TF100WEB_PACKAGE_CONTRACT_V2.md`, `docs/04_editor/ACTIONS_EVENTS_CONTRACT_V2.md`
 
@@ -10,6 +10,7 @@ Dépendances: `docs/superpowers/specs/2026-07-07-element-plus-state-command-even
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-10-13 | `V2.1.6.0072` | `PENDING` | `DEC-0054` : interverrouillage optionnel des commandes Toggle (`InterlockTagId`, capacité `command.write.toggle-interlock`). Contrat mis à jour avant l'implémentation. |
 | 2026-10-13 | `V2.1.6.0071` | — | Création, après cadrage avec l'utilisateur. |
 
 ## 1. Le problème

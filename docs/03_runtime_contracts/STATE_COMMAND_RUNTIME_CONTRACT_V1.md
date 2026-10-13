@@ -2,13 +2,14 @@
 
 Date: 2026-07-17
 Status: Active implemented runtime contract
-Document version: `V2.1.4.0065`
+Document version: `V2.1.6.0072`
 Owner: SCADA Builder V2 authoring team and shared package runtime. TF100Web owns host services only (`F:\Projet\Git\TF100Web`).
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-10-13 | `V2.1.6.0072` | `PENDING` | `DEC-0054` : interverrouillage optionnel des commandes Toggle (`InterlockTagId`, capacité `command.write.toggle-interlock`). Contrat mis à jour avant l'implémentation. |
 | 2026-07-17 | `V2.1.4.0065` | `4bee5ab` | Filtre Etat SVG corrige : overlay visible au-dessus des geometries opaques, contenu semantique preserve et ordre auteur entre objets inchange. |
 | 2026-07-17 | `V2.1.4.0064` | `f73b3e3` | Artefact industriel regenere apres ajout de commandes/voyants non mappes; aucune semantique runtime Etat/Commande n'est modifiee. |
 | 2026-07-17 | `V2.1.4.0063` | Builder `6603992`, TF100Web `f9afcba` | Casing AST ferme : lower-camel canonique exporte execute directement, PascalCase historique accepte, probes exacts pour chaque operateur. |
@@ -140,7 +141,10 @@ past is not null.
 
 - `WriteTag` + `Momentary`: write `onValue` on trigger-press, `offValue` on release.
 - `WriteTag` + `Toggle`: read current value of `readTagId` (fallback: `writeTagId`), write
-  its logical negation to `writeTagId`.
+  its logical negation to `writeTagId`. When the negation is `1` and `interlockTagId` is set
+  (`DEC-0054`), first write `0` to `interlockTagId` (metadata `mode: 'ToggleInterlock'`), then
+  write `1` to `writeTagId` only if that write was accepted; otherwise report
+  `interlock-write-failed` and write nothing else. The whole sequence is one in-flight command.
 - `WriteTag` + `SetFixed`: write `fixedValue` verbatim on trigger.
 - `WriteTag` + `SetFromInput`: write the operator-entered runtime value (no design-time
   value is stored).

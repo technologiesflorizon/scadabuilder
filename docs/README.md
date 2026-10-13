@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.6.0071`
+Document version: `V2.1.6.0072`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-10-13 | `V2.1.6.0072` | `PENDING` | `DEC-0054` : interverrouillage optionnel des commandes Toggle (`InterlockTagId`, capacité `command.write.toggle-interlock`). Contrat mis à jour avant l'implémentation. |
 | 2026-10-06 | `V2.1.6.0071` | `1dfedc6` | `DEC-0053`, fix round 1 de revue : « Effacer le TagBinding résiduel » (aucun avertissement sans issue ; la conversion de page efface aussi les résiduels), la section « Lecture de variable » de l'onglet État affiche une liaison `ReadTagId` seule après conversion et « Supprimer » la retire, champ legacy plus jamais activé/désactivé par le code. Voir `docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md` règle 21. |
 | 2026-10-06 | `V2.1.6.0071` | `2896be5` | `DEC-0053` (décision utilisateur, option B) : `Data.TagBinding` devient un champ legacy en lecture seule. Les deux surfaces de propriétés l'affichent sans saisie possible avec « Champ legacy — utilisez Lecture de variable » ; « Convertir en Lecture de variable » le recopie dans `ReadTagId` (id canonique du catalogue, ou `#N` sur une page Fenêtre rapide) en une transition annulable, refusée avec message si la valeur ne se résout pas, absente si un `ReadTagId` existe déjà ; conversion de toute la page avec résumé, annulable en bloc. La validation avertit par élément : `tag-binding.legacy-inert` (page normale) et `tag-binding.legacy-quick-window` (fenêtre rapide). Export, format persisté, contrat TF100Web et runtime inchangés. Voir `docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md` règle 21. |
 | 2026-10-06 | `V2.1.6.0070` | `4decd86` | `DEC-0050` décommissionnée comme modèle d'authoring (remplacée par `DEC-0052`, structures conservées comme cible de l'abaissement) : statut `Deprecated` au registre, bandeau « Décommissionné — voir DEC-0052 » sur les specs 2026-08-04 et 2026-09-24, en-têtes `<remarks>` du code conservé (raison de conservation, note de revue sur `IQuickWindowWorkspaceHost`). Code mort prouvé et retiré : dialogue de réparation des invocations, éditeur de liaisons, portée d'historique `QuickWindow`. Résidus conservés inventoriés à l'entrée 40 de `KNOWN_GAPS_V2.md`; contrat d'état mis à jour. |
