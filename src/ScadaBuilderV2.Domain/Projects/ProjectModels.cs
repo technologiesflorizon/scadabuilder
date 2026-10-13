@@ -1071,7 +1071,7 @@ public static class ScadaProjectBuildValidator
 
             foreach (var cmd in element.EffectiveCommandConfig.Commands)
             {
-                ValidateCommandInterlock(issues, scene, element, cmd, catalog);
+                ValidateCommandInterlock(issues, scene, element, cmd, catalog, IsQuickWindowPage(scene, pagesByKey));
                 if (cmd.Kind == ElementEvents.Command.ScadaCommandKind.Navigate)
                 {
                     ValidateCommandPageTarget(issues, scene, element, cmd, ScadaPageType.Default, "navigation", pagesById, pagesByKey);
@@ -1142,8 +1142,9 @@ public static class ScadaProjectBuildValidator
 
     /// <summary>
     /// Validates the optional interlock of a Toggle command: reserved to Toggle, an existing, enabled, writeable,
-    /// boolean tag, distinct from the write and read tags. A quick-window #N is exempt from the catalog checks
-    /// (its tag is only known once a parameter sheet binds it) but not from the same-tag rule.
+    /// boolean tag, distinct from the write and read tags. A #N is exempt from the catalog checks only on a
+    /// quick-window page (its tag is only known once a parameter sheet binds it) and never from the same-tag rule;
+    /// on any other page an unsubstituted #N falls through to the catalog checks (command.interlock-tag-missing).
     /// </summary>
     /// <remarks>
     /// Decisions: DEC-0054.
@@ -1155,7 +1156,8 @@ public static class ScadaProjectBuildValidator
         ScadaScene scene,
         ScadaElement element,
         ElementEvents.Command.ScadaCommandBinding command,
-        ScadaTagCatalog? catalog)
+        ScadaTagCatalog? catalog,
+        bool isQuickWindowPage)
     {
         var interlock = command.InterlockTagId;
         if (string.IsNullOrWhiteSpace(interlock))
@@ -1190,7 +1192,7 @@ public static class ScadaProjectBuildValidator
             return;
         }
 
-        if (QuickWindows.QuickWindowPlaceholder.TryParseName(interlock, out _))
+        if (isQuickWindowPage && QuickWindows.QuickWindowPlaceholder.TryParseName(interlock, out _))
             return;
 
         var tag = catalog?.Tags?.FirstOrDefault(t => string.Equals(t.Id, interlock, StringComparison.Ordinal));

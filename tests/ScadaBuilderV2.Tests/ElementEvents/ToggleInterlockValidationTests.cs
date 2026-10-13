@@ -28,16 +28,22 @@ public sealed class ToggleInterlockValidationTests
             WriteTagId: write, ReadTagId: read, WriteMode: mode, FixedValue: mode == ScadaWriteMode.SetFixed ? "1" : null,
             InterlockTagId: interlock);
 
-    private static IReadOnlyList<ScadaBuildValidationIssue> Validate(ScadaCommandBinding command)
+    private static IReadOnlyList<ScadaBuildValidationIssue> Validate(ScadaCommandBinding command, bool quickWindow = false)
     {
-        var scene = ScadaScene.CreateEmpty(PageId, "Page", new CanvasSize(400, 200))
+        var pageKey = Guid.Parse("11112222-3333-4444-5555-666677778888");
+        var type = quickWindow ? ScadaPageType.QuickWindow : ScadaPageType.Default;
+        var scene = (ScadaScene.CreateEmpty(PageId, "Page", new CanvasSize(400, 200)) with
+            {
+                PageKey = quickWindow ? pageKey : Guid.Empty,
+                PageType = type
+            })
             .WithElement(ScadaElement.CreateButton("btn", "Depart", 0, 0) with
             {
                 CommandConfig = new ScadaElementCommandConfig(new[] { command })
             });
         var project = ScadaProject.CreateDefault("P") with
         {
-            Scenes = new[] { new ScadaSceneReference(PageId, "Page", $"scenes/{PageId}.scene.json") },
+            Scenes = new[] { new ScadaSceneReference(PageId, "Page", $"scenes/{PageId}.scene.json", type, PageKey: quickWindow ? pageKey : default, PageCode: PageId) },
             TagCatalog = Catalog()
         };
         return ScadaProjectBuildValidator.Validate(project, new[] { scene })
@@ -95,8 +101,14 @@ public sealed class ToggleInterlockValidationTests
     [TestMethod]
     public void APlaceholderInterlockIsExemptFromCatalogChecksButNotFromTheSameTagRule()
     {
-        Assert.AreEqual(0, Validate(Toggle("#4", write: "#3")).Count);
-        Assert.AreEqual("command.interlock-same-tag", Validate(Toggle("#3", write: "#3")).Single().Code);
+        Assert.AreEqual(0, Validate(Toggle("#4", write: "#3"), quickWindow: true).Count);
+        Assert.AreEqual("command.interlock-same-tag", Validate(Toggle("#3", write: "#3"), quickWindow: true).Single().Code);
+    }
+
+    [TestMethod]
+    public void APlaceholderInterlockOnADefaultPageIsAnError()
+    {
+        Assert.AreEqual("command.interlock-tag-missing", Validate(Toggle("#4", write: "#3")).Single().Code);
     }
 
     [TestMethod]
