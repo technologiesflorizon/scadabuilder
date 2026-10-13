@@ -255,7 +255,7 @@ public partial class ElementCommandDialog : Window
                 : null,
             ParameterSheetKey: kind == ScadaCommandKind.OpenQuickWindow ? _parameterSheetKey : null,
             QuickWindowPageKey: kind == ScadaCommandKind.OpenQuickWindow ? _quickWindowPageKey : null,
-            InterlockTagId: (ScadaWriteMode?)WriteModeComboBox.SelectedItem == ScadaWriteMode.Toggle ? (InterlockTagComboBox.SelectedItem as TagItem)?.Id : null);
+            InterlockTagId: kind == ScadaCommandKind.WriteTag && (ScadaWriteMode?)WriteModeComboBox.SelectedItem == ScadaWriteMode.Toggle ? (InterlockTagComboBox.SelectedItem as TagItem)?.Id : null);
 
         DialogResult = true;
     }
