@@ -91,6 +91,7 @@ public partial class ElementCommandDialog : Window
             .ToArray();
         WriteTagComboBox.ItemsSource = tagItems;
         ReadTagComboBox.ItemsSource = tagItems;
+        InterlockTagComboBox.ItemsSource = tagItems;
 
         if (existingCommand is not null)
         {
@@ -99,6 +100,7 @@ public partial class ElementCommandDialog : Window
             KindComboBox.SelectedItem = kindOptions.First(option => option.Kind == existingCommand.Kind);
             WriteTagComboBox.SelectedItem = tagItems.FirstOrDefault(t => t.Id == existingCommand.WriteTagId);
             ReadTagComboBox.SelectedItem = tagItems.FirstOrDefault(t => t.Id == existingCommand.ReadTagId);
+            InterlockTagComboBox.SelectedItem = tagItems.FirstOrDefault(t => t.Id == existingCommand.InterlockTagId);
             WriteModeComboBox.SelectedItem = existingCommand.WriteMode;
             OnValueTextBox.Text = existingCommand.OnValue ?? string.Empty;
             OffValueTextBox.Text = existingCommand.OffValue ?? string.Empty;
@@ -192,6 +194,11 @@ public partial class ElementCommandDialog : Window
         var mode = (ScadaWriteMode?)WriteModeComboBox.SelectedItem;
         MomentaryValuesPanel.Visibility = mode == ScadaWriteMode.Momentary ? Visibility.Visible : Visibility.Collapsed;
         FixedValueTextBox.Visibility = mode == ScadaWriteMode.SetFixed ? Visibility.Visible : Visibility.Collapsed;
+        InterlockTagComboBox.IsEnabled = mode == ScadaWriteMode.Toggle;
+        if (mode != ScadaWriteMode.Toggle)
+        {
+            InterlockTagComboBox.SelectedItem = null;
+        }
     }
 
     private void OnSaveClick(object sender, RoutedEventArgs e)
@@ -247,7 +254,8 @@ public partial class ElementCommandDialog : Window
                 ? _existingCommand?.QuickWindowInvocationKey
                 : null,
             ParameterSheetKey: kind == ScadaCommandKind.OpenQuickWindow ? _parameterSheetKey : null,
-            QuickWindowPageKey: kind == ScadaCommandKind.OpenQuickWindow ? _quickWindowPageKey : null);
+            QuickWindowPageKey: kind == ScadaCommandKind.OpenQuickWindow ? _quickWindowPageKey : null,
+            InterlockTagId: (ScadaWriteMode?)WriteModeComboBox.SelectedItem == ScadaWriteMode.Toggle ? (InterlockTagComboBox.SelectedItem as TagItem)?.Id : null);
 
         DialogResult = true;
     }

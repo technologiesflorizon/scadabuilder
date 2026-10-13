@@ -72,6 +72,20 @@ public sealed class ElementCommandDialogKindListSourceContractTests
             + "never appear - exactly the case this feature exists to cover.");
     }
 
+    [TestMethod]
+    public void TheInterlockListExistsIsEnabledOnlyInToggleAndIsSavedOnlyInToggle()
+    {
+        var xaml = ReadAppFile("ElementCommandDialog.xaml");
+        var code = ReadAppFile("ElementCommandDialog.xaml.cs");
+
+        StringAssert.Contains(xaml, "x:Name=\"InterlockTagComboBox\"");
+        StringAssert.Contains(xaml, "Interverrouillage (optionnel)");
+        StringAssert.Contains(code, "InterlockTagComboBox.ItemsSource = tagItems;");
+        StringAssert.Contains(code, "InterlockTagComboBox.IsEnabled = mode == ScadaWriteMode.Toggle;");
+        StringAssert.Contains(code,
+            "InterlockTagId: (ScadaWriteMode?)WriteModeComboBox.SelectedItem == ScadaWriteMode.Toggle ? (InterlockTagComboBox.SelectedItem as TagItem)?.Id : null");
+    }
+
     private static string ReadAppFile(string relativePath)
     {
         var directory = new DirectoryInfo(AppContext.BaseDirectory);

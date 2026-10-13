@@ -42,6 +42,9 @@
                 <ComboBox x:Name="WriteTagComboBox" Margin="0,2,0,8"/>
                 <TextBlock Text="Tag lecture (optionnel)" Foreground="{StaticResource MutedBrush}"/>
                 <ComboBox x:Name="ReadTagComboBox" Margin="0,2,0,8"/>
+                <TextBlock Text="Interverrouillage (optionnel)" Foreground="{StaticResource MutedBrush}"
+                           ToolTip="Mode Toggle uniquement : quand ce bouton passe le tag d'ecriture a 1, ce tag est d'abord mis a 0 (ex. Arret pour Depart)."/>
+                <ComboBox x:Name="InterlockTagComboBox" Margin="0,2,0,8" IsEnabled="False"/>
                 <TextBlock Text="Mode" Foreground="{StaticResource MutedBrush}"/>
                 <ComboBox x:Name="WriteModeComboBox" Margin="0,2,0,8" SelectionChanged="OnWriteModeChanged"/>
                 <StackPanel x:Name="MomentaryValuesPanel" Orientation="Horizontal" Visibility="Collapsed" Margin="0,0,0,8">
