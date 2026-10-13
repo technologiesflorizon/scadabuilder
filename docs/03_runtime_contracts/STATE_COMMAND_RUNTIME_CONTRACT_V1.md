@@ -9,6 +9,7 @@ Owner: SCADA Builder V2 authoring team and shared package runtime. TF100Web owns
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-10-13 | `V2.1.6.0072` | `PENDING` | `DEC-0054` revue finale : les séquences d'interverrouillage sont sérialisées à l'échelle du runtime (mises en file, jamais refusées) ; un interverrouillage refusé ne journalise plus que `interlock-write-failed`. |
 | 2026-10-13 | `V2.1.6.0072` | `e892596` | `DEC-0054` : interverrouillage optionnel des commandes Toggle (`InterlockTagId`, capacité `command.write.toggle-interlock`). Contrat mis à jour avant l'implémentation. |
 | 2026-07-17 | `V2.1.4.0065` | `4bee5ab` | Filtre Etat SVG corrige : overlay visible au-dessus des geometries opaques, contenu semantique preserve et ordre auteur entre objets inchange. |
 | 2026-07-17 | `V2.1.4.0064` | `f73b3e3` | Artefact industriel regenere apres ajout de commandes/voyants non mappes; aucune semantique runtime Etat/Commande n'est modifiee. |
@@ -145,6 +146,8 @@ past is not null.
   (`DEC-0054`), first write `0` to `interlockTagId` (metadata `mode: 'ToggleInterlock'`), then
   write `1` to `writeTagId` only if that write was accepted; otherwise report
   `interlock-write-failed` and write nothing else. The whole sequence is one in-flight command.
+  Interlock sequences are serialized runtime-wide: one started while another is in flight is
+  queued behind it and runs once it settles (queued, never refused).
 - `WriteTag` + `SetFixed`: write `fixedValue` verbatim on trigger.
 - `WriteTag` + `SetFromInput`: write the operator-entered runtime value (no design-time
   value is stored).
