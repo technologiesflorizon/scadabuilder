@@ -587,6 +587,44 @@ public static class ParameterSheetLowering
                                 owner, element, command, sheet.SheetKey);
                             break;
                     }
+
+                    // Final review F4 (DEC-0054): the `#N` mirror of the command validator's interlock rules, which
+                    // skip `#N` members. The runtime writes '0' to the interlock then '1' to the write tag, so the
+                    // interlock must be a Boolean tag and never the same tag as that command's write `#N`.
+                    if (canonicalId is not null)
+                    {
+                        foreach (var interlock in group.Where(usage => usage.Site == PlaceholderUsageSite.CommandInterlockTag))
+                        {
+                            var interlockSite = $"l'interverrouillage de la commande '{interlock.CommandId}' de l'élément '{interlock.ElementId}'";
+                            var datatype = project.TagCatalog?.Tags
+                                .FirstOrDefault(tag => string.Equals(tag.Id, canonicalId, StringComparison.Ordinal))?.Datatype;
+                            if (QuickWindowBindingValidator.InferDataTypeFromTagDatatype(datatype) != QuickWindowDataType.Boolean)
+                            {
+                                valid = false;
+                                AddCommandIssue(ScadaBuildValidationSeverity.Error, "parameter-sheet.interlock-not-boolean",
+                                    $"{linePrefix} : #{number} est {interlockSite} et doit être lié à un tag booléen, " +
+                                    $"pas au tag '{tagName}' (type « {datatype ?? "inconnu"} »).",
+                                    owner, element, command, sheet.SheetKey);
+                            }
+
+                            var writeNumbers = quickWindow.Usages
+                                .Where(usage => usage.Site == PlaceholderUsageSite.CommandWriteTag &&
+                                    string.Equals(usage.ElementId, interlock.ElementId, StringComparison.Ordinal) &&
+                                    string.Equals(usage.CommandId, interlock.CommandId, StringComparison.Ordinal))
+                                .Select(usage => usage.Number)
+                                .Distinct()
+                                .OrderBy(writeNumber => writeNumber);
+                            foreach (var writeNumber in writeNumbers)
+                            {
+                                if (!string.Equals(ResolveSheetTag(parsed, writeNumber), canonicalId, StringComparison.Ordinal)) continue;
+                                valid = false;
+                                AddCommandIssue(ScadaBuildValidationSeverity.Error, "parameter-sheet.interlock-same-tag",
+                                    $"{linePrefix} : #{number} est {interlockSite} et désigne le même tag '{tagName}' que son écriture #{writeNumber} : " +
+                                    "la commande s'annulerait elle-même.",
+                                    owner, element, command, sheet.SheetKey);
+                            }
+                        }
+                    }
                 }
 
                 // An Expression binding's ExpressionAst is serialized RAW into the manifest (no
@@ -685,6 +723,14 @@ public static class ParameterSheetLowering
                 OwnerCommandId: command.Id));
 
             return command with { QuickWindowInvocationKey = invocationKey };
+        }
+
+        /// <summary>The canonical tag id a sheet's `#N` resolves to, or null when it is not a resolvable tag.</summary>
+        private string? ResolveSheetTag(ParsedSheet parsed, int number)
+        {
+            if (!parsed.Parse.Entries.TryGetValue(number, out var entry) || entry.Kind != ParameterValueKind.Tag) return null;
+            var resolved = ScadaExpressionValidator.TryResolveTagReference(((ScadaExprTagRef)entry.Node).TagName, project.TagCatalog);
+            return resolved.Status == TagResolveStatus.Resolved ? resolved.CanonicalId : null;
         }
 
         private void AddCommandIssue(

@@ -390,6 +390,58 @@ public sealed class ParameterSheetLoweringTests
     }
 
     [TestMethod]
+    public void AnInterlockBoundToANonBooleanTagIsAnError()
+    {
+        // Final review F4 (DEC-0054): the runtime writes '0' to the interlock, so a `#N` interlock bound to a
+        // non-Boolean tag fails here, with the sheet line, like the command validator does for a direct tag.
+        var result = Lower(
+            "#1 := {FAN_03_RUN}\n#2 := {FAN_03_START}\n#3 := {FAN_03_SPEED}\n#4 := \"Ventilateur 3\"\n#5 := {FAN_03_SPEED}",
+            [.. FanPageElements(), InterlockCommandElement("stop", "#2", "#5")]);
+
+        var issue = Single(result, "parameter-sheet.interlock-not-boolean");
+        Assert.AreEqual(ScadaBuildValidationSeverity.Error, issue.Severity);
+        StringAssert.Contains(issue.Message, "#5");
+        StringAssert.Contains(issue.Message, "ligne 5");
+        StringAssert.Contains(issue.Message, $"Feuille '{SheetName}'");
+        Assert.IsNull(
+            result.Project.EffectiveQuickWindowInvocations.Single().FindBinding(QuickWindowKeys.Member(QuickWindowPageKey, 5)),
+            "an invalid pair produces no binding for that #N");
+    }
+
+    [TestMethod]
+    public void AnInterlockBoundToTheSameTagAsItsCommandsWriteIsAnError()
+    {
+        // Final review F4 (DEC-0054): two different `#N` that resolve to the same canonical tag (here by a
+        // differently cased display name) would make the command cancel itself: 0 then 1 on the same tag.
+        var result = Lower(
+            "#1 := {FAN_03_RUN}\n#2 := {FAN_03_START}\n#3 := {FAN_03_SPEED}\n#4 := \"Ventilateur 3\"\n#5 := {fan_03_start}",
+            [.. FanPageElements(), InterlockCommandElement("stop", "#2", "#5")]);
+
+        var issue = Single(result, "parameter-sheet.interlock-same-tag");
+        Assert.AreEqual(ScadaBuildValidationSeverity.Error, issue.Severity);
+        StringAssert.Contains(issue.Message, "#5");
+        StringAssert.Contains(issue.Message, "#2");
+        StringAssert.Contains(issue.Message, "ligne 5");
+        StringAssert.Contains(issue.Message, $"Feuille '{SheetName}'");
+        Assert.IsNull(
+            result.Project.EffectiveQuickWindowInvocations.Single().FindBinding(QuickWindowKeys.Member(QuickWindowPageKey, 5)),
+            "an invalid pair produces no binding for that #N");
+    }
+
+    [TestMethod]
+    public void ADistinctBooleanInterlockLowersWithoutAnInterlockIssue()
+    {
+        var result = Lower(
+            "#1 := {FAN_03_RUN}\n#2 := {FAN_03_START}\n#3 := {FAN_03_SPEED}\n#4 := \"Ventilateur 3\"\n#5 := {FAN_03_RUN}",
+            [.. FanPageElements(), InterlockCommandElement("stop", "#2", "#5")]);
+
+        Assert.IsFalse(result.Diagnostics.Any(issue => issue.Code.StartsWith("parameter-sheet.interlock-", StringComparison.Ordinal)),
+            string.Join(", ", result.Diagnostics.Select(issue => issue.Code)));
+        Assert.AreEqual("tf100.mapping.101",
+            result.Project.EffectiveQuickWindowInvocations.Single().FindBinding(QuickWindowKeys.Member(QuickWindowPageKey, 5))?.TagId);
+    }
+
+    [TestMethod]
     public void AWriteToANonTagIsAnError()
     {
         var result = Lower(

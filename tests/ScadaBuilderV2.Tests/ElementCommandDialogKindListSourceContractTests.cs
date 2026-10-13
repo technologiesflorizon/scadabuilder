@@ -80,10 +80,27 @@ public sealed class ElementCommandDialogKindListSourceContractTests
 
         StringAssert.Contains(xaml, "x:Name=\"InterlockTagComboBox\"");
         StringAssert.Contains(xaml, "Interverrouillage (optionnel)");
-        StringAssert.Contains(code, "InterlockTagComboBox.ItemsSource = tagItems;");
+        StringAssert.Contains(code, "InterlockTagComboBox.ItemsSource = interlockItems;");
         StringAssert.Contains(code, "InterlockTagComboBox.IsEnabled = mode == ScadaWriteMode.Toggle;");
         StringAssert.Contains(code,
             "InterlockTagId: kind == ScadaCommandKind.WriteTag && (ScadaWriteMode?)WriteModeComboBox.SelectedItem == ScadaWriteMode.Toggle ? (InterlockTagComboBox.SelectedItem as TagItem)?.Id : null");
+    }
+
+    [TestMethod]
+    public void AnInterlockWhoseTagLeftTheCatalogStaysVisibleAndIsSavedUnchanged()
+    {
+        var code = ReadAppFile("ElementCommandDialog.xaml.cs");
+
+        // Final review F3 (DEC-0054): an interlock tag no longer in the enabled tag list is shown as one extra
+        // "(introuvable)" item of the interlock list only, selected, so the save keeps it and the build validation
+        // reports command.interlock-tag-missing instead of the dialog silently dropping it.
+        StringAssert.Contains(code, "var missingInterlockTagId = existingCommand?.InterlockTagId;");
+        StringAssert.Contains(code,
+            "interlockItems = tagItems.Append(new TagItem(missingInterlockTagId, \"(introuvable) \" + missingInterlockTagId)).ToArray();");
+        StringAssert.Contains(code,
+            "InterlockTagComboBox.SelectedItem = interlockItems.FirstOrDefault(t => t.Id == existingCommand.InterlockTagId);");
+        StringAssert.Contains(code, "WriteTagComboBox.ItemsSource = tagItems;");
+        StringAssert.Contains(code, "ReadTagComboBox.ItemsSource = tagItems;");
     }
 
     private static string ReadAppFile(string relativePath)

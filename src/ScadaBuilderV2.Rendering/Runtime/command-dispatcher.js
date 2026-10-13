@@ -11,6 +11,8 @@
   };
   var _bindings = new WeakMap();
   var _pendingCommands = new WeakMap();
+  /** Tail of the runtime-wide interlock queue (DEC-0054): null when no interlock sequence is in flight. */
+  var _interlockQueue = null;
 
   function _diagnose(code, cmd, detail) {
     if (window.console && typeof window.console.warn === 'function') {
@@ -90,16 +92,26 @@
     return _dispatchIntent(kind, { id: actionId || '' }, payload || {});
   }
 
-  function _trackWrite(cmd, result) {
+  function _errorText(error) {
+    return error && error.message ? error.message : String(error);
+  }
+
+  /** Diagnoses an asynchronous write outcome: refused (`write-rejected`) or failed (`write-failed`). */
+  function _observeWrite(cmd, result) {
     if (!result || typeof result.then !== 'function') return result;
-    _pendingCommands.set(cmd, result);
     return result.then(function (ok) {
       if (ok === false) _diagnose('write-rejected', cmd);
       return ok;
     }, function (error) {
-      _diagnose('write-failed', cmd, error && error.message ? error.message : String(error));
+      _diagnose('write-failed', cmd, _errorText(error));
       return false;
-    }).then(function (resultValue) {
+    });
+  }
+
+  function _trackWrite(cmd, result) {
+    if (!result || typeof result.then !== 'function') return result;
+    _pendingCommands.set(cmd, result);
+    return _observeWrite(cmd, result).then(function (resultValue) {
       _pendingCommands.delete(cmd);
       return resultValue;
     });
@@ -136,25 +148,58 @@
   }
 
   /**
-   * Toggle interlock (DEC-0054): writes 0 to `interlockTagId`, then 1 to `writeTagId` only if the first write
-   * was accepted. The whole sequence is one in-flight command, so a second click during it is refused.
+   * One interlock sequence: 0 to `interlockTagId`, then 1 to `writeTagId` only if the first write was accepted.
+   * A refused interlock logs `interlock-write-failed` only; the main write was never sent.
    */
-  function _writeWithInterlock(cmd) {
-    if (!_canWrite(cmd, '1')) return false;
+  function _interlockSequence(cmd) {
     var proceed = function (accepted) {
       if (accepted === false) {
         _diagnose('interlock-write-failed', cmd);
         return false;
       }
-      return _send(cmd, cmd.writeTagId, '1', { mode: 'Toggle' });
+      return _observeWrite(cmd, _send(cmd, cmd.writeTagId, '1', { mode: 'Toggle' }));
     };
     var first = _send(cmd, cmd.interlockTagId, '0', { mode: 'ToggleInterlock' });
-    if (!first || typeof first.then !== 'function') {
-      return _trackWrite(cmd, proceed(first));
-    }
-    return _trackWrite(cmd, first.then(proceed, function (error) {
-      _diagnose('interlock-write-failed', cmd, error && error.message ? error.message : String(error));
+    if (!first || typeof first.then !== 'function') return proceed(first);
+    return first.then(proceed, function (error) {
+      _diagnose('interlock-write-failed', cmd, _errorText(error));
       return false;
+    });
+  }
+
+  /**
+   * Holds `cmd` in flight and makes `sequence` the tail of the interlock queue until it settles. The returned
+   * promise never rejects, so the queue and `_pendingCommands` are always released.
+   */
+  function _holdInterlock(cmd, sequence) {
+    var settled = sequence.then(null, function (error) {
+      _diagnose('write-failed', cmd, _errorText(error));
+      return false;
+    }).then(function (resultValue) {
+      _pendingCommands.delete(cmd);
+      if (_interlockQueue === settled) _interlockQueue = null;
+      return resultValue;
+    });
+    _pendingCommands.set(cmd, settled);
+    _interlockQueue = settled;
+    return settled;
+  }
+
+  /**
+   * Toggle interlock (DEC-0054). All interlock sequences are serialized runtime-wide: a sequence started while
+   * another is in flight is queued behind it (never refused), so two reciprocal commands clicked within one
+   * round trip cannot interleave. With nothing in flight the sequence starts synchronously. A second click on
+   * the same command while it is queued or in flight is refused (`write-in-flight`).
+   */
+  function _writeWithInterlock(cmd) {
+    if (!_canWrite(cmd, '1')) return false;
+    if (_interlockQueue === null) {
+      var result = _interlockSequence(cmd);
+      if (!result || typeof result.then !== 'function') return result;
+      return _holdInterlock(cmd, result);
+    }
+    return _holdInterlock(cmd, _interlockQueue.then(function () {
+      return _interlockSequence(cmd);
     }));
   }
 

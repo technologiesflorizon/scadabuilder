@@ -91,7 +91,17 @@ public partial class ElementCommandDialog : Window
             .ToArray();
         WriteTagComboBox.ItemsSource = tagItems;
         ReadTagComboBox.ItemsSource = tagItems;
-        InterlockTagComboBox.ItemsSource = tagItems;
+        // Final review F3 (DEC-0054): an interlock whose tag left the enabled tag list stays visible and selected
+        // as one extra "(introuvable)" item of this list only, so saving keeps it unchanged and the build
+        // validation reports command.interlock-tag-missing instead of the dialog silently dropping it.
+        var interlockItems = tagItems;
+        var missingInterlockTagId = existingCommand?.InterlockTagId;
+        if (!string.IsNullOrWhiteSpace(missingInterlockTagId) && tagItems.All(t => t.Id != missingInterlockTagId))
+        {
+            interlockItems = tagItems.Append(new TagItem(missingInterlockTagId, "(introuvable) " + missingInterlockTagId)).ToArray();
+        }
+
+        InterlockTagComboBox.ItemsSource = interlockItems;
 
         if (existingCommand is not null)
         {
@@ -100,7 +110,7 @@ public partial class ElementCommandDialog : Window
             KindComboBox.SelectedItem = kindOptions.First(option => option.Kind == existingCommand.Kind);
             WriteTagComboBox.SelectedItem = tagItems.FirstOrDefault(t => t.Id == existingCommand.WriteTagId);
             ReadTagComboBox.SelectedItem = tagItems.FirstOrDefault(t => t.Id == existingCommand.ReadTagId);
-            InterlockTagComboBox.SelectedItem = tagItems.FirstOrDefault(t => t.Id == existingCommand.InterlockTagId);
+            InterlockTagComboBox.SelectedItem = interlockItems.FirstOrDefault(t => t.Id == existingCommand.InterlockTagId);
             WriteModeComboBox.SelectedItem = existingCommand.WriteMode;
             OnValueTextBox.Text = existingCommand.OnValue ?? string.Empty;
             OffValueTextBox.Text = existingCommand.OffValue ?? string.Empty;
