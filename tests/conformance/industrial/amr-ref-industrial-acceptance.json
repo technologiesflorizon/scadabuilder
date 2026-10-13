@@ -1,9 +1,9 @@
 {
   "Schema": "scada-v2-industrial-acceptance-v1",
-  "GeneratedUtc": "2026-10-06T12:37:00.9823913+00:00",
-  "BuilderVersion": "V2.1.6.0068",
+  "GeneratedUtc": "2026-10-13T19:53:36.4627508+00:00",
+  "BuilderVersion": "V2.1.6.0072",
   "ManifestVersion": "2.3",
-  "RuntimeSha256": "b968f8fc59c0b0102141d05e4d621373dba95860a41bd2216af43676de8d939f",
+  "RuntimeSha256": "6893a00d712bf6f7839047b4b26fb949b769d19a806a6890738567d1a31e4f41",
   "RequiredCapabilities": [
     "action.navigate",
     "binding.element.read",
@@ -53,8 +53,8 @@
     "table.cell.input-numeric",
     "table.cell.text"
   ],
-  "PackageSha256": "09c0a40f6764d41bdef3d45d54638a0d849d9b6ce36ca652d7c9145b2b568844",
-  "ExportDurationMs": 71145.895,
+  "PackageSha256": "b0f675341c645eef25800219c0cda6ab1fbd3faa47d3592eaf7c5bfabd5b5e13",
+  "ExportDurationMs": 61162.301,
   "PageCount": 27,
   "LiveWritesExecuted": false,
   "Pages": {

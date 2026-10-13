@@ -15,7 +15,7 @@ Document version: `V2.1.4.0062`
 
 The strict 2.3 status is deliberately conservative. Every `Supported` row has Builder, shared-runtime and TF100Web evidence and is exercised by the exact-SHA shared conformance gate. Every remaining `Blocked` row is rejected by the strict Builder exporter and TF100Web deployment validator.
 
-Summary: 173 capabilities; 126 Supported; 47 Blocked; 0 Deprecated.
+Summary: 174 capabilities; 127 Supported; 47 Blocked; 0 Deprecated.
 
 | Capability | Minimum contract | Owner | Status | Artifacts | Fixture | Builder tests | Shared-runtime tests | TF100Web tests |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -72,6 +72,7 @@ Summary: 173 capabilities; 126 Supported; 47 Blocked; 0 Deprecated.
 | command.write.set-fixed | 1.0 | SharedRuntime | Supported | &lt;page-id&gt;/&lt;page-id&gt;.html:data-scada-*&lt;br&gt;scada-runtime.&lt;hash&gt;.js | conformance:command.write.set-fixed | tests/ScadaBuilderV2.Tests/RuntimeContracts/RuntimeConformancePackageTests.cs | tests/runtime-js&lt;br&gt;tests/ScadaBuilderV2.Tests/Runtime/RuntimeJsModulesTests.cs | F:/Projet/Git/TF100Web/frontend/tests_runtime_conformance.py |
 | command.write.set-from-input | 1.0 | SharedRuntime | Supported | &lt;page-id&gt;/&lt;page-id&gt;.html:data-scada-*&lt;br&gt;scada-runtime.&lt;hash&gt;.js | conformance:command.write.set-from-input | tests/ScadaBuilderV2.Tests/RuntimeContracts/RuntimeConformancePackageTests.cs | tests/runtime-js&lt;br&gt;tests/ScadaBuilderV2.Tests/Runtime/RuntimeJsModulesTests.cs | F:/Projet/Git/TF100Web/frontend/tests_runtime_conformance.py |
 | command.write.toggle | 1.0 | SharedRuntime | Supported | &lt;page-id&gt;/&lt;page-id&gt;.html:data-scada-*&lt;br&gt;scada-runtime.&lt;hash&gt;.js | conformance:command.write.toggle | tests/ScadaBuilderV2.Tests/RuntimeContracts/RuntimeConformancePackageTests.cs | tests/runtime-js&lt;br&gt;tests/ScadaBuilderV2.Tests/Runtime/RuntimeJsModulesTests.cs | F:/Projet/Git/TF100Web/frontend/tests_runtime_conformance.py |
+| command.write.toggle-interlock | 1.0 | SharedRuntime | Supported | &lt;page-id&gt;/&lt;page-id&gt;.html:data-scada-*&lt;br&gt;scada-runtime.&lt;hash&gt;.js | conformance:command.write.toggle-interlock | tests/ScadaBuilderV2.Tests/RuntimeContracts/RuntimeConformancePackageTests.cs | tests/runtime-js&lt;br&gt;tests/ScadaBuilderV2.Tests/Runtime/RuntimeJsModulesTests.cs | F:/Projet/Git/TF100Web/frontend/tests_runtime_conformance.py |
 | effect.animation | 1.0 | SharedRuntime | Blocked | &lt;page-id&gt;/&lt;page-id&gt;.html:data-scada-*&lt;br&gt;scada-runtime.&lt;hash&gt;.js | blocked:effect.animation | - | - | - |
 | effect.animation.blink | 1.0 | SharedRuntime | Blocked | &lt;page-id&gt;/&lt;page-id&gt;.html:data-scada-*&lt;br&gt;scada-runtime.&lt;hash&gt;.js | blocked:effect.animation.blink | - | - | - |
 | effect.animation.halo | 1.0 | SharedRuntime | Blocked | &lt;page-id&gt;/&lt;page-id&gt;.html:data-scada-*&lt;br&gt;scada-runtime.&lt;hash&gt;.js | blocked:effect.animation.halo | - | - | - |

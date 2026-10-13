@@ -362,6 +362,9 @@ internal static class ScadaV2RuntimeConformanceProjectFactory
                 ScadaCommandKind.WriteTag, WriteTagId: "conformance.tag.write", WriteMode: ScadaWriteMode.SetFixed, FixedValue: "12.5"),
             new ScadaCommandBinding("write-input", "Input", true, ScadaCommandTrigger.OnClick,
                 ScadaCommandKind.WriteTag, WriteTagId: "conformance.tag.write", WriteMode: ScadaWriteMode.SetFromInput),
+            new ScadaCommandBinding("write-toggle-interlock", "Toggle interlock", true, ScadaCommandTrigger.OnClick,
+                ScadaCommandKind.WriteTag, WriteTagId: "conformance.tag.write", WriteMode: ScadaWriteMode.Toggle,
+                InterlockTagId: "conformance.tag.bool"),
             // The caller half of the quick-window vertical. Only the open command belongs on a page:
             // CloseQuickWindow is valid solely inside a definition's own content, so it lives in the inner
             // window below, which is also where a real close button lives.

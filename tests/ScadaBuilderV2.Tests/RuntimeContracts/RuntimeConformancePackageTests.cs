@@ -92,8 +92,8 @@ public sealed class RuntimeConformancePackageTests
         var supportedFixtures = fixtures
             .Where(fixture => fixture.GetProperty("Status").GetString() == nameof(ScadaRuntimeCapabilityStatus.Supported))
             .ToArray();
-        // 115 before Phase 6, plus the eleven quick-window capabilities promoted there.
-        Assert.AreEqual(126, supportedFixtures.Length);
+        // 115 before Phase 6, the eleven quick-window capabilities promoted there, and DEC-0054's toggle interlock.
+        Assert.AreEqual(127, supportedFixtures.Length);
         Assert.AreEqual(
             supportedFixtures.Length,
             supportedFixtures.Select(fixture => fixture.GetProperty("ExpectedResult").GetString()).Distinct().Count(),

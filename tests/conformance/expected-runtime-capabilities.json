@@ -2,7 +2,7 @@
   "Schema": "scada-v2-runtime-conformance-v2",
   "ContractVersion": "1.0",
   "PackageFile": "scada-v2-runtime-conformance.sb2",
-  "PackageSha256": "bb48ad2e1cbcbede414a6b7377d87609dd492b0dd2a38c3c88d39f31d4bca6e7",
+  "PackageSha256": "3c1e0cf109202ea861b4e3097495f981ba5fc7744d89125a4f4f8aeaa1220e3d",
   "Fixtures": [
     {
       "CapabilityId": "action.close-popup",
@@ -622,6 +622,19 @@
       },
       "Gesture": "dispatch-command",
       "ExpectedResult": "probe:command.write.toggle",
+      "ExpectedDiagnostic": null
+    },
+    {
+      "CapabilityId": "command.write.toggle-interlock",
+      "FixtureId": "conformance:command.write.toggle-interlock",
+      "Status": "Supported",
+      "PageId": "conformance-main",
+      "InitialValues": {
+        "conformance.tag.bool": false,
+        "conformance.tag.number": 12.5
+      },
+      "Gesture": "dispatch-command",
+      "ExpectedResult": "probe:command.write.toggle-interlock",
       "ExpectedDiagnostic": null
     },
     {
