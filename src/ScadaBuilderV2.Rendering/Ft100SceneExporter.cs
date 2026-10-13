@@ -2357,52 +2357,59 @@ Serve images/ next to that CSS/HTML path or preserve the relative paths.
     /// buttons that can never open anything — but writing it as `null` on every other command would move
     /// the bytes of every package ever exported, including the locked industrial evidence, for a property
     /// those packages have no use for. `TargetPageKey` stays absent either way: that one is editor
-    /// identity, not contract identity.
+    /// identity, not contract identity. `InterlockTagId` follows the same rule (DEC-0054).
     /// </remarks>
     private static object BuildRuntimeCommandConfig(ScadaElementCommandConfig config)
     {
         return new
         {
-            Commands = config.Commands.Select(command => command.QuickWindowInvocationKey is { } invocationKey
-                ? new
-                {
-                    command.Id,
-                    command.Name,
-                    command.Enabled,
-                    command.Trigger,
-                    command.Kind,
-                    command.Confirmation,
-                    command.WriteTagId,
-                    command.ReadTagId,
-                    command.WriteMode,
-                    command.OnValue,
-                    command.OffValue,
-                    command.FixedValue,
-                    command.TargetPageId,
-                    command.Url,
-                    command.NewTab,
-                    QuickWindowInvocationKey = invocationKey.ToString("D")
-                }
-                : (object)new
-                {
-                    command.Id,
-                    command.Name,
-                    command.Enabled,
-                    command.Trigger,
-                    command.Kind,
-                    command.Confirmation,
-                    command.WriteTagId,
-                    command.ReadTagId,
-                    command.WriteMode,
-                    command.OnValue,
-                    command.OffValue,
-                    command.FixedValue,
-                    command.TargetPageId,
-                    command.Url,
-                    command.NewTab
-                }).ToArray()
+            Commands = config.Commands.Select(command => new RuntimeCommandProjection(
+                command.Id,
+                command.Name,
+                command.Enabled,
+                command.Trigger,
+                command.Kind,
+                command.Confirmation,
+                command.WriteTagId,
+                command.ReadTagId,
+                string.IsNullOrWhiteSpace(command.InterlockTagId) ? null : command.InterlockTagId,
+                command.WriteMode,
+                command.OnValue,
+                command.OffValue,
+                command.FixedValue,
+                command.TargetPageId,
+                command.Url,
+                command.NewTab,
+                command.QuickWindowInvocationKey?.ToString("D"))).ToArray()
         };
     }
+
+    /// <summary>
+    /// Runtime shape of one command. Property order is the serialized order and must not change: it keeps every
+    /// package without an interlock or an invocation byte-identical to earlier exports.
+    /// </summary>
+    /// <remarks>
+    /// `InterlockTagId` (DEC-0054) and `QuickWindowInvocationKey` are omitted when null rather than written as
+    /// `null`, for the reason given on <see cref="BuildRuntimeCommandConfig"/>.
+    /// </remarks>
+    private sealed record RuntimeCommandProjection(
+        string Id,
+        string Name,
+        bool Enabled,
+        ScadaCommandTrigger Trigger,
+        ScadaCommandKind Kind,
+        ScadaConfirmation? Confirmation,
+        string? WriteTagId,
+        string? ReadTagId,
+        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? InterlockTagId,
+        ScadaWriteMode? WriteMode,
+        string? OnValue,
+        string? OffValue,
+        string? FixedValue,
+        string? TargetPageId,
+        string? Url,
+        bool NewTab,
+        [property: JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)] string? QuickWindowInvocationKey);
 
     private static object? BuildManifestElementData(ScadaElement element)
     {

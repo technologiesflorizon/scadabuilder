@@ -385,6 +385,10 @@ public static class ScadaRuntimeCapabilityAnalyzer
             {
                 Add(capabilities, ScadaRuntimeCapabilityCatalog.WriteModes[writeMode]);
             }
+            if (command.WriteMode == ScadaWriteMode.Toggle && !string.IsNullOrWhiteSpace(command.InterlockTagId))
+            {
+                Add(capabilities, ScadaRuntimeCapabilityCatalog.CommandToggleInterlock);
+            }
             if (command.Confirmation is not null)
             {
                 Add(capabilities, ScadaRuntimeCapabilityCatalog.CommandConfirmation);

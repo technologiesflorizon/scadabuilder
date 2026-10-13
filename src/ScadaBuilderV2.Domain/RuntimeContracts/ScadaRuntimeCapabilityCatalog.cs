@@ -219,6 +219,14 @@ public static class ScadaRuntimeCapabilityCatalog
     public static ScadaRuntimeCapability StateDefaultEffect { get; } = Capability("state.default-effect", ScadaRuntimeCapabilityOwner.SharedRuntime);
     /// <summary>Gets the command confirmation capability.</summary>
     public static ScadaRuntimeCapability CommandConfirmation { get; } = Capability("command.confirmation", ScadaRuntimeCapabilityOwner.SharedRuntime);
+
+    /// <summary>Gets the Toggle interlock capability: the interlock tag is written to 0 before the toggle writes 1.</summary>
+    /// <remarks>
+    /// Decisions: DEC-0054.
+    /// Contracts: docs/superpowers/specs/2026-10-13-toggle-interlock-design.md §8-§9.
+    /// Tests: tests/ScadaBuilderV2.Tests/ToggleInterlockExportTests.cs, tests/runtime-js/command-dispatcher-interlock.test.mjs.
+    /// </remarks>
+    public static ScadaRuntimeCapability CommandToggleInterlock { get; } = Capability("command.write.toggle-interlock", ScadaRuntimeCapabilityOwner.SharedRuntime);
     /// <summary>Gets the legacy action condition capability.</summary>
     public static ScadaRuntimeCapability ActionCondition { get; } = Blocked("action.condition", ScadaRuntimeCapabilityOwner.SharedRuntime);
     /// <summary>Gets the legacy action condition-group capability.</summary>
@@ -299,7 +307,7 @@ public static class ScadaRuntimeCapabilityCatalog
             ElementReadBinding, ElementWriteBinding, DistinctElementWriteBinding,
             TableReadBinding, TableWriteBinding, DistinctTableWriteBinding,
             StateRules, StateReadVariable, StateQualityFallback, StateDefaultEffect,
-            CommandConfirmation, ActionCondition, ActionConditionGroup, PopupOptions,
+            CommandConfirmation, CommandToggleInterlock, ActionCondition, ActionConditionGroup, PopupOptions,
             ButtonDisabled, ButtonHover, ButtonPressed,
             QuickWindowDefinition, QuickWindowLocalInterfaceTyped, QuickWindowPortBinding,
             QuickWindowPortRequired, QuickWindowParentPortBinding, QuickWindowSinglePerDefinition,
