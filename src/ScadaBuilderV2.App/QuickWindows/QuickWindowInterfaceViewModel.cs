@@ -542,6 +542,7 @@ public sealed class QuickWindowInterfacePanelViewModel : INotifyPropertyChanged
         PlaceholderUsageSite.ReadVariable => "Variable lue",
         PlaceholderUsageSite.CommandWriteTag => "Commande (écriture)",
         PlaceholderUsageSite.CommandReadTag => "Commande (lecture)",
+        PlaceholderUsageSite.CommandInterlockTag => "Commande (interverrouillage)",
         PlaceholderUsageSite.Text => "Texte",
         _ => site.ToString()
     };

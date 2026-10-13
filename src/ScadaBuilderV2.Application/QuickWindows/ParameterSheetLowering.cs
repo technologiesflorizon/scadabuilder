@@ -708,7 +708,7 @@ public static class ParameterSheetLowering
     }
 
     private static bool IsWrite(PlaceholderUsageSite site) =>
-        site is PlaceholderUsageSite.WriteTag or PlaceholderUsageSite.CommandWriteTag;
+        site is PlaceholderUsageSite.WriteTag or PlaceholderUsageSite.CommandWriteTag or PlaceholderUsageSite.CommandInterlockTag;
 
     private static int CountLegacyStatic(IReadOnlyList<ScadaElement> elements) =>
         elements.Sum(element => (element.IsLegacyStatic ? 1 : 0) + CountLegacyStatic(element.ChildElements));

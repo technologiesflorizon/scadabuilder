@@ -52,6 +52,28 @@ public sealed class QuickWindowClipboardTests
     }
 
     [TestMethod]
+    public void AnInterlockTagPastedIntoAQuickWindowIsRefusedAndStrippedLikeTheWriteTag()
+    {
+        var element = ScadaElement.CreateButton("start", "Depart", 0, 0) with
+        {
+            CommandConfig = new ScadaElementCommandConfig(
+            [
+                new ScadaCommandBinding("cmd", "Depart", true, ScadaCommandTrigger.OnClick, ScadaCommandKind.WriteTag,
+                    WriteTagId: "Speed", WriteMode: ScadaWriteMode.Toggle, InterlockTagId: "motor.run")
+            ])
+        };
+
+        var target = QuickWindowClipboardTarget.ForQuickWindow(Definition());
+        var analysis = QuickWindowClipboardValidator.Analyze([element], target, Project());
+
+        Assert.IsTrue(analysis.Issues.Any(issue => issue.PropertyPath == "CommandConfig.Commands[cmd].InterlockTagId"),
+            string.Join("; ", analysis.Issues.Select(issue => issue.PropertyPath)));
+        var stripped = QuickWindowClipboardValidator.StripRefusedReferences([element], analysis).Single();
+        Assert.IsNull(stripped.EffectiveCommandConfig.Commands.Single().InterlockTagId);
+        Assert.AreEqual("Speed", stripped.EffectiveCommandConfig.Commands.Single().WriteTagId);
+    }
+
+    [TestMethod]
     public void ALocalInterfaceMemberPastedOnAPageIsRefused()
     {
         var element = ScadaElement.CreateText("label", "Etiquette", 0, 0) with

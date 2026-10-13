@@ -19,6 +19,8 @@ public enum PlaceholderUsageSite
     CommandWriteTag,
     /// <summary>The tag read back by an Element+ command.</summary>
     CommandReadTag,
+    /// <summary>The tag a Toggle command writes to 0 before writing its own tag to 1 (DEC-0054).</summary>
+    CommandInterlockTag,
     /// <summary>A token inside a displayed text.</summary>
     Text
 }
@@ -267,6 +269,7 @@ public static class QuickWindowPlaceholderUsageCollector
         {
             AddExact(usages, command.WriteTagId, PlaceholderUsageSite.CommandWriteTag, id, command.Id);
             AddExact(usages, command.ReadTagId, PlaceholderUsageSite.CommandReadTag, id, command.Id);
+            AddExact(usages, command.InterlockTagId, PlaceholderUsageSite.CommandInterlockTag, id, command.Id);
         }
 
         foreach (var cell in element.Table?.EffectiveCells ?? [])

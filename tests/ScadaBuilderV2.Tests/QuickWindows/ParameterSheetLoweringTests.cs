@@ -365,6 +365,31 @@ public sealed class ParameterSheetLoweringTests
     }
 
     [TestMethod]
+    public void AnInterlockPlaceholderIsCollectedAsACommandInterlockWriteSite()
+    {
+        var scene = ScadaScene.CreateEmpty("qw", "qw", new CanvasSize(400, 200)) with
+        {
+            Elements = [InterlockCommandElement("start", "#2", "#5")]
+        };
+
+        var (usages, invalid) = QuickWindowPlaceholderUsageCollector.Collect(scene);
+
+        Assert.AreEqual(0, invalid.Count);
+        CollectionAssert.Contains(usages.ToArray(), new PlaceholderUsage(5, PlaceholderUsageSite.CommandInterlockTag, "start", "start-cmd"));
+    }
+
+    [TestMethod]
+    public void AnInterlockBoundToANonTagIsAWriteNotTagError()
+    {
+        var result = Lower(
+            "#1 := {FAN_03_RUN}\n#2 := {FAN_03_START}\n#3 := {FAN_03_SPEED}\n#4 := \"Ventilateur 3\"\n#5 := \"pas un tag\"",
+            [.. FanPageElements(), InterlockCommandElement("stop", "#1", "#5")]);
+
+        var issue = Single(result, "parameter-sheet.write-not-tag");
+        StringAssert.Contains(issue.Message, "#5");
+    }
+
+    [TestMethod]
     public void AWriteToANonTagIsAnError()
     {
         var result = Lower(
@@ -1130,6 +1155,16 @@ public sealed class ParameterSheetLoweringTests
         var element = ScadaElement.CreateText(id, id, 0, 0);
         return element with { Data = element.Data! with { Text = string.Empty, WriteTagId = tagId } };
     }
+
+    private static ScadaElement InterlockCommandElement(string id, string writeTagId, string interlockTagId) =>
+        ScadaElement.CreateButton(id, "Marche", 0, 0) with
+        {
+            CommandConfig = new ScadaElementCommandConfig(
+            [
+                new ScadaCommandBinding($"{id}-cmd", "Marche", true, ScadaCommandTrigger.OnClick, ScadaCommandKind.WriteTag,
+                    WriteTagId: writeTagId, WriteMode: ScadaWriteMode.Toggle, InterlockTagId: interlockTagId)
+            ])
+        };
 
     private static ScadaElement WriteCommandElement(string id, string writeTagId) =>
         ScadaElement.CreateButton(id, "Marche", 0, 0) with

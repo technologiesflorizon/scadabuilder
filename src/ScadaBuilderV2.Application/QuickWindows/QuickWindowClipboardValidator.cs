@@ -275,10 +275,12 @@ public static class QuickWindowClipboardValidator
                 var writePath = $"CommandConfig.Commands[{command.Id}].WriteTagId";
                 var readPath = $"CommandConfig.Commands[{command.Id}].ReadTagId";
                 var invocationPath = $"CommandConfig.Commands[{command.Id}].QuickWindowInvocationKey";
+                var interlockPath = $"CommandConfig.Commands[{command.Id}].InterlockTagId";
                 return command with
                 {
                     WriteTagId = paths.Contains(writePath) ? null : command.WriteTagId,
                     ReadTagId = paths.Contains(readPath) ? null : command.ReadTagId,
+                    InterlockTagId = paths.Contains(interlockPath) ? null : command.InterlockTagId,
                     QuickWindowInvocationKey = paths.Contains(invocationPath) ? null : command.QuickWindowInvocationKey
                 };
             }).ToArray();
@@ -393,6 +395,8 @@ public static class QuickWindowClipboardValidator
                 yield return ($"CommandConfig.Commands[{command.Id}].WriteTagId", command.WriteTagId!);
             if (!string.IsNullOrWhiteSpace(command.ReadTagId))
                 yield return ($"CommandConfig.Commands[{command.Id}].ReadTagId", command.ReadTagId!);
+            if (!string.IsNullOrWhiteSpace(command.InterlockTagId))
+                yield return ($"CommandConfig.Commands[{command.Id}].InterlockTagId", command.InterlockTagId!);
         }
 
         foreach (var cell in element.Table?.Cells ?? [])
