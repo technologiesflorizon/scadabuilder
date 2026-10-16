@@ -10,7 +10,7 @@ Dépendances: `docs/superpowers/specs/2026-09-08-project-format-versioning-and-c
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
-| 2026-10-15 | `V2.1.6.0073` | `PENDING` | Création du document de socle à partir des entrevues du 2026-10-06 et du 2026-10-15 : toutes les réponses Q1–Q20 (licences et sécurité) et P1–P18 (serveur, pilotes, tags) intégrées, avec table de traçabilité (annexe A) et points de tension à confirmer (§19). Ajouts du 2026-10-15 au soir : Builder renommé Scada AnyWare Windows Maker (complet + fork Lite `.sb2`), nouveau dépôt Scada AnyWare, pilote PCCC (SLC 500 / MicroLogix) natif, FINS TCP et PCCC en phase 1. `DEC-0055`. |
+| 2026-10-15 | `V2.1.6.0073` | `2de91c3` | Création du document de socle à partir des entrevues du 2026-10-06 et du 2026-10-15 : toutes les réponses Q1–Q20 (licences et sécurité) et P1–P18 (serveur, pilotes, tags) intégrées, avec table de traçabilité (annexe A) et points de tension à confirmer (§19). Ajouts du 2026-10-15 au soir : Builder renommé Scada AnyWare Windows Maker (complet + fork Lite `.sb2`), nouveau dépôt Scada AnyWare, pilote PCCC (SLC 500 / MicroLogix) natif, FINS TCP et PCCC en phase 1. `DEC-0055`. |
 
 ## 1. Objet et règles de lecture
 
