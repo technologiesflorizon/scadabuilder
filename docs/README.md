@@ -2,12 +2,13 @@
 
 Date: 2026-08-11
 Status: Active enterprise documentation map
-Document version: `V2.1.6.0072`
+Document version: `V2.1.6.0073`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-10-15 | `V2.1.6.0073` | `PENDING` | `DEC-0055` : document de socle de Scada AnyWare 2027 regroupant toutes les décisions des entrevues (licences et sécurité Q1–Q20, serveur, pilotes et tags P1–P18), avec traçabilité et points de tension à confirmer. Architecture cible, rien d'implémenté. |
 | 2026-10-13 | `V2.1.6.0072` | `e892596` | `DEC-0054` : interverrouillage optionnel des commandes Toggle (`InterlockTagId`, capacité `command.write.toggle-interlock`). Contrat mis à jour avant l'implémentation. |
 | 2026-10-06 | `V2.1.6.0071` | `1dfedc6` | `DEC-0053`, fix round 1 de revue : « Effacer le TagBinding résiduel » (aucun avertissement sans issue ; la conversion de page efface aussi les résiduels), la section « Lecture de variable » de l'onglet État affiche une liaison `ReadTagId` seule après conversion et « Supprimer » la retire, champ legacy plus jamais activé/désactivé par le code. Voir `docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md` règle 21. |
 | 2026-10-06 | `V2.1.6.0071` | `2896be5` | `DEC-0053` (décision utilisateur, option B) : `Data.TagBinding` devient un champ legacy en lecture seule. Les deux surfaces de propriétés l'affichent sans saisie possible avec « Champ legacy — utilisez Lecture de variable » ; « Convertir en Lecture de variable » le recopie dans `ReadTagId` (id canonique du catalogue, ou `#N` sur une page Fenêtre rapide) en une transition annulable, refusée avec message si la valeur ne se résout pas, absente si un `ReadTagId` existe déjà ; conversion de toute la page avec résumé, annulable en bloc. La validation avertit par élément : `tag-binding.legacy-inert` (page normale) et `tag-binding.legacy-quick-window` (fenêtre rapide). Export, format persisté, contrat TF100Web et runtime inchangés. Voir `docs/04_editor/PROPERTIES_PANEL_CONTRACT_V2.md` règle 21. |
@@ -379,6 +380,7 @@ Active specifications and implementation plans:
 24. `superpowers/plans/2026-08-10-parameterized-quick-window-management.md` - plan cross-repository dérivé de `DEC-0050`; Phases 0 à 2 validées, Phase 3 en attente et capacités toujours `Blocked`.
 25. `superpowers/reports/2026-08-10-quick-window-dom-css-isolation-prototype.md` - preuve de gate Phase 0 corrigée, exécutée dans WebView2 et Edge réels avec fixture gelée `1.0.2`.
 26. `superpowers/reports/2026-08-13-quick-window-phase-0-1-implementation-audit.md` - audit des écarts Phases 0/1, corrections appliquées et limites restantes.
+27. `superpowers/specs/2026-10-15-scada-anyware-server-foundation-design.md` - spécification approuvée `DEC-0055` : socle de Scada AnyWare 2027 — serveur, pilotes, tags, licences, sécurité, conformité et mises à jour (architecture cible, non implémentée).
 
 Generated documentation:
 

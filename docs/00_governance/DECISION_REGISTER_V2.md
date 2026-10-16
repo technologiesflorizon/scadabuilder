@@ -2,12 +2,13 @@
 
 Date: 2026-08-10
 Status: Active authoritative decision register
-Document version: `V2.1.6.0072`
+Document version: `V2.1.6.0073`
 
 ## Historique des changements
 
 | Date | Version | Commit | Changement |
 | --- | --- | --- | --- |
+| 2026-10-15 | `V2.1.6.0073` | `PENDING` | `DEC-0055` : document de socle de Scada AnyWare 2027 regroupant toutes les décisions des entrevues (licences et sécurité Q1–Q20, serveur, pilotes et tags P1–P18), avec traçabilité et points de tension à confirmer. Architecture cible, rien d'implémenté. |
 | 2026-10-13 | `V2.1.6.0072` | `e892596` | `DEC-0054` : interverrouillage optionnel des commandes Toggle (`InterlockTagId`, capacité `command.write.toggle-interlock`). Contrat mis à jour avant l'implémentation. |
 | 2026-10-06 | `V2.1.6.0071` | `1dfedc6` | `DEC-0053`, fix round 1 de revue : plus d'avertissement permanent ni d'impasse — « Effacer le TagBinding résiduel » efface un `TagBinding` dont le `ReadTagId` gagne déjà, et la conversion de page efface les résiduels au lieu de les ignorer ; la section « Lecture de variable » de l'onglet État affiche aussi une liaison `ReadTagId` seule et « Supprimer » la retire ; précision sur l'acceptation des tags projet sur une page Fenêtre rapide. |
 | 2026-10-06 | `V2.1.6.0071` | `2896be5` | Ajout de `DEC-0053` : `Data.TagBinding` devient un champ legacy en lecture seule (décision utilisateur, option B). Les deux surfaces de propriétés l'affichent sans saisie possible, « Convertir en Lecture de variable » le recopie dans `Data.ReadTagId` en une transition annulable, et la validation émet un avertissement par élément qui en porte encore un (`tag-binding.legacy-inert` sur une page normale, `tag-binding.legacy-quick-window` dans une fenêtre rapide). Export, format persisté et contrat TF100Web inchangés. |
@@ -125,6 +126,31 @@ Regression coverage:
 ```
 
 ## 3. Active Decisions
+
+### DEC-0055 - Socle d'architecture de Scada AnyWare 2027 (serveur, tags, licences et sécurité)
+
+Status: Active
+Created: 2026-10-15 00:00 America/Toronto
+Created in commit: `PENDING`
+Deprecated: N/A
+Deprecated in commit: N/A
+Superseded by: N/A
+Owner document: `docs/superpowers/specs/2026-10-15-scada-anyware-server-foundation-design.md`
+Spec: `docs/superpowers/specs/2026-10-15-scada-anyware-server-foundation-design.md`
+
+Context:
+
+Le serveur SCADA de Scada AnyWare 2027 doit être conçu en deux volets (pilotes et tags ; licences et sécurité) qui partagent des points de contact. Les entrevues du 2026-10-06 et du 2026-10-15 ont fixé les choix de l'utilisateur.
+
+Decision:
+
+Le serveur est fait de services découplés communiquant en gRPC local (un service par pilote signé). Les tags ont un identifiant stable, sont créés dans le Builder et seulement modifiés sur le serveur ; les alarmes sont des objets séparés. Toute écriture passe par la licence, les droits du rôle, le mode d'accès et les bornes du tag, puis l'audit, avant le pilote. Clients navigateur et natif Avalonia + WebView en TLS obligatoire. Stockage PostgreSQL + TimescaleDB, secours chaud. Les licences sont construites en interne (cryptographie .NET, clé privée chez l'éditeur), en un fichier signé par serveur listant ses droits, attribuées à des comptes via un portail ; licence standard en ligne (grâce de 7 jours au-delà de 2 h sans contact), licence hors ligne d'un an ; doublon traité comme une expiration ; quatre rôles + rôles personnalisés, permissions par écran, commande et fenêtre rapide, quatre journaux d'audit ; IEC 62443 et mode FDA 21 CFR Part 11 ; mises à jour signées, jamais automatiques. Le développement commence par le service de tags, gRPC et trois pilotes (OPC UA, FINS TCP, PCCC SLC 500 / MicroLogix). Le Builder devient Scada AnyWare Windows Maker : la version complète part dans un nouveau dépôt Scada AnyWare (fork de ce dépôt), et ce dépôt-ci devient le Maker Lite, limité au `.sb2` pour TF100Web.
+
+Consequences:
+
+Architecture cible : rien n'est implémenté et le contrat `.sb2` avec TF100Web est inchangé. Le paquet compilé devra porter un dictionnaire de tags structuré à identifiants stables (spec pilotes et tags à venir).
+
+Regression coverage: N/A (aucun code) ; définie par les specs et plans de chaque volet.
 
 ### DEC-0054 - Interverrouillage des commandes Toggle
 
